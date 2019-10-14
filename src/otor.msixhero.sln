@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otor.msixhero.ui", "otor.msixhero.ui\otor.msixhero.ui.csproj", "{40A4609E-D606-4037-BD91-66E2307B2B2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.ui", "otor.msixhero.ui\otor.msixhero.ui.csproj", "{40A4609E-D606-4037-BD91-66E2307B2B2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otor.msixhero.lib", "otor.msixhero.lib\otor.msixhero.lib.csproj", "{86813830-4887-4BE2-BC0E-429A3769E0A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.lib", "otor.msixhero.lib\otor.msixhero.lib.csproj", "{86813830-4887-4BE2-BC0E-429A3769E0A7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1353E27B-1F60-434E-AD0E-56631BE1CF3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otor.msixhero.lib.tests", "otor.msixhero.lib.tests\otor.msixhero.lib.tests.csproj", "{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.lib.tests", "otor.msixhero.lib.tests\otor.msixhero.lib.tests.csproj", "{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otor.msixhero.adminhelper", "otor.msixhero.adminhelper\otor.msixhero.adminhelper.csproj", "{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

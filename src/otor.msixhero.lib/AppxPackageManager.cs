@@ -3,16 +3,30 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 using Windows.Management.Deployment;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
+using otor.msixhero.lib;
+using Process = System.Diagnostics.Process;
 
 namespace otor.msihero.lib
 {
+    public enum PackageFindMode
+    {
+        Auto,
+        CurrentUser,
+        AllUsers
+    }
+
     public class AppxPackageManager
     {
         public void RunTool(Package package, string toolName)
@@ -77,37 +91,116 @@ namespace otor.msihero.lib
             p.Start();
         }
 
-        public IEnumerable<Package> GetPackages()
-        {
-            var pkgMan = new PackageManager();
-            foreach (var item in pkgMan.FindPackagesForUser(string.Empty))
-            {
-                string installLocation = null;
-                try
-                {
-                    installLocation = item.InstalledLocation?.Path;
-                }
-                catch(Exception)
-                {
-                    continue;
-                }
-                
-                var details = GetManifestDetails(installLocation);
+        private static int processPid = 0;
 
-                yield return new Package()
+        private IEnumerable<Package> GetPackagesAdmin()
+        {
+            var process = processPid == 0 ? null : Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault(p => p.Id == processPid);
+            if (process == null)
+            {
+                var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper" + ".exe"), "--pipe " + Process.GetCurrentProcess().Id);
+                psi.Verb = "runas";
+                psi.UseShellExecute = true;
+                psi.WindowStyle = ProcessWindowStyle.Normal;
+
+                var p = Process.Start(psi);
+                System.Threading.Thread.Sleep(400);
+                processPid = p.Id;
+            }
+
+            // using var pipeClient = new NamedPipeClientStream("msixhero-" + Process.GetCurrentProcess().Id);
+            // pipeClient.Connect(1000);
+            // var stream = pipeClient;
+
+            using var tcpClient = new TcpClient();
+            tcpClient.Connect("localhost", 45678);
+            using var stream = tcpClient.GetStream();
+
+            using var binaryWriter = new BinaryWriter(stream);
+            using var binaryReader = new BinaryReader(stream);
+
+            binaryWriter.Write("listAllUserPackages");
+            var result = binaryReader.ReadBoolean();
+            if (!result)
+            {
+                var exceptionName = binaryReader.ReadString();
+                var stackTrace = binaryReader.ReadString();
+                throw new InvalidOperationException(exceptionName + "\r\n" + stackTrace);
+            }
+
+            var xmlSerializer = new XmlSerializer(typeof(List<Package>));
+            var byteLength = binaryReader.ReadInt32();
+
+            var byteArray = binaryReader.ReadBytes(byteLength);
+            using var memoryStream = new MemoryStream(byteArray);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            var str = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
+
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            var deserialized = (List<Package>)xmlSerializer.Deserialize(memoryStream);
+            return deserialized;
+        }
+
+        public IEnumerable<Package> GetPackages(PackageFindMode mode = PackageFindMode.Auto, bool elevateIfRequired = true)
+        {
+            if (mode == PackageFindMode.Auto)
+            {
+                mode = UserHelper.IsAdministrator() ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+            }
+
+            if (elevateIfRequired && mode == PackageFindMode.AllUsers && !UserHelper.IsAdministrator())
+            {
+                foreach (var item in this.GetPackagesAdmin())
                 {
-                    DisplayName = details.DisplayName,
-                    Name = item.Id.Name,
-                    Image = details.Logo,
-                    ProductId = item.Id.FullName,
-                    InstallLocation = installLocation,
-                    PackageFamilyName = item.Id.FamilyName,
-                    Description = details.Description,
-                    DisplayPublisherName = details.DisplayPublisherName,
-                    Publisher = item.Id.Publisher,
-                    Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
-                    SignatureKind = Convert(item.SignatureKind)
-                };
+                    yield return item;
+                }
+            }
+            else
+            {
+                var pkgMan = new PackageManager();
+                IEnumerable<Windows.ApplicationModel.Package> allPackages;
+
+                switch (mode)
+                {
+                    case PackageFindMode.CurrentUser:
+                        allPackages = pkgMan.FindPackagesForUser(string.Empty);
+                        break;
+                    case PackageFindMode.AllUsers:
+                        allPackages = pkgMan.FindPackages();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+                }
+
+                foreach (var item in allPackages)
+                {
+                    string installLocation = null;
+                    try
+                    {
+                        installLocation = item.InstalledLocation?.Path;
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+
+                    var details = GetManifestDetails(installLocation);
+
+                    yield return new Package()
+                    {
+                        DisplayName = details.DisplayName,
+                        Name = item.Id.Name,
+                        Image = details.Logo,
+                        ProductId = item.Id.FullName,
+                        InstallLocation = installLocation,
+                        PackageFamilyName = item.Id.FamilyName,
+                        Description = details.Description,
+                        DisplayPublisherName = details.DisplayPublisherName,
+                        Publisher = item.Id.Publisher,
+                        Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
+                        SignatureKind = Convert(item.SignatureKind)
+                    };
+                }
             }
         }
 

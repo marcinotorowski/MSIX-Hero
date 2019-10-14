@@ -5,8 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using otor.msihero.lib;
+using otor.msixhero.lib;
 
 namespace MSI_Hero.ViewModel
 {
@@ -14,6 +16,7 @@ namespace MSI_Hero.ViewModel
     {
         private bool isSelected, isLoading;
         private string filterString;
+        private bool allUsers;
         private PackageViewModel selectedPackage;
         private bool showStoreApps, showSystemApps, showSideLoadedApps;
 
@@ -25,6 +28,20 @@ namespace MSI_Hero.ViewModel
             this.AllPackages = new ObservableCollection<PackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
             this.AllPackagesView.Filter += this.FilterPackage;
+
+            this.allUsers = UserHelper.IsAdministrator();
+        }
+
+        public bool AllUsers
+        {
+            get => this.allUsers;
+            set
+            {
+                this.SetField(ref this.allUsers, value);
+#pragma warning disable 4014
+                this.RefreshPackages();
+#pragma warning restore 4014
+            }
         }
 
         public bool ShowSideLoadedApps
@@ -147,7 +164,10 @@ namespace MSI_Hero.ViewModel
                 this.IsLoading = true;
                 await Task.Delay(100);
 
-                var task = Task.Run(() => this.PackageManager.GetPackages(), CancellationToken.None);
+                var task = Task.Run(
+                    () => this.PackageManager.GetPackages(this.allUsers
+                        ? PackageFindMode.AllUsers
+                        : PackageFindMode.CurrentUser), CancellationToken.None);
                 var result = await task;
 
                 await Task.Delay(100);
@@ -174,6 +194,14 @@ namespace MSI_Hero.ViewModel
                     this.SelectedPackage = pkgViewModel;
                     this.SelectedPackages.Add(pkgViewModel);
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // todo: Right dialog
+                MessageBox.Show("Access denied. Do you want to run this command as a local administrator?", "Access denied", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+            }
+            catch (Exception e)
+            {
             }
             finally
             {

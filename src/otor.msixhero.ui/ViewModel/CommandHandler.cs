@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 using MSI_Hero.Commands.RoutedCommand;
 using otor.msihero.lib;
@@ -14,14 +16,20 @@ namespace MSI_Hero.ViewModel
             this.packageList = packageList;
             this.Refresh = new DelegateCommand(this.RefreshExecute, this.CanRefresh);
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(param as PackageViewModel), param => this.CanOpenExplorer(param as PackageViewModel));
+            this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(param as PackageViewModel), param => this.CanOpenExplorerUser(param as PackageViewModel));
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(param as PackageViewModel), param => this.CanOpenManifest(param as PackageViewModel));
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(param as PackageViewModel), param => this.CanRunApp(param as PackageViewModel));
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(packageList.SelectedPackage, param as ToolViewModel), param => this.CanRunTool(packageList.SelectedPackage, param as ToolViewModel));
+            this.OpenPowerShell = new DelegateCommand(this.OpenPowerShellExecute, this.CanOpenPowerShell);
         }
 
         public ICommand Refresh { get; }
 
+        public ICommand OpenPowerShell { get; }
+
         public ICommand OpenExplorer { get; }
+
+        public ICommand OpenExplorerUser { get; }
 
         public ICommand OpenManifest { get; }
 
@@ -43,6 +51,17 @@ namespace MSI_Hero.ViewModel
             return true;
         }
 
+        private void OpenPowerShellExecute(object obj)
+        {
+            var process = new ProcessStartInfo("powershell.exe", "-NoExit -NoLogo -Command \"Import-Module Appx; Write-Host \"Module [Appx] has been automatically imported by MSIX Hero.\"");
+            Process.Start(process);
+        }
+
+        private bool CanOpenPowerShell(object obj)
+        {
+            return true;
+        }
+
         private void OpenExplorerExecute(PackageViewModel package)
         {
             if (package == null)
@@ -54,6 +73,21 @@ namespace MSI_Hero.ViewModel
         }
 
         private bool CanOpenExplorer(PackageViewModel package)
+        {
+            return package != null;
+        }
+
+        private void OpenExplorerUserExecute(PackageViewModel package)
+        {
+            if (package == null)
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start("explorer.exe", "/e," + package.UserDataPath);
+        }
+
+        private bool CanOpenExplorerUser(PackageViewModel package)
         {
             return package != null;
         }

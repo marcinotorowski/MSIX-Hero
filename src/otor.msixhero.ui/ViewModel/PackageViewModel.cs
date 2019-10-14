@@ -32,6 +32,11 @@ namespace MSI_Hero.ViewModel
             get => this.package.SignatureKind;
         }
 
+        public string UserDataPath
+        {
+            get => this.package.UserDataPath;
+        }
+
         public static explicit operator Package(PackageViewModel packageViewModel)
         {
             return packageViewModel.package;

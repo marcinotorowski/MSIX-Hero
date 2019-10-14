@@ -20,6 +20,10 @@ namespace MSI_Hero.ViewModel
             this.Tools.Add(new ToolViewModel("notepad.exe"));
             this.Tools.Add(new ToolViewModel("regedit.exe"));
             this.Tools.Add(new ToolViewModel("powershell.exe"));
+
+#pragma warning disable 4014
+            this.PackageList.RefreshPackages();
+#pragma warning restore 4014
         }
 
         public MainViewModel() : this(new AppxPackageManager())

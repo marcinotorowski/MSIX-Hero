@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\otor.msixhero.adminhelper\otor.msixhero.adminhelper.csproj" />
     <ProjectReference Include="..\otor.msixhero.lib\otor.msixhero.lib.csproj" />
   </ItemGroup>
 
