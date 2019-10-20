@@ -27,7 +27,7 @@ namespace otor.msihero.lib
         AllUsers
     }
 
-    public class AppxPackageManager
+    public class AppxPackageManager : IAppxPackageManager
     {
         public void RunTool(Package package, string toolName)
         {

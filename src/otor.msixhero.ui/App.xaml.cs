@@ -9,21 +9,53 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
+using CommonServiceLocator;
+using MSI_Hero.Modules.Installed;
+using MSI_Hero.Modules.Installed.View;
+using MSI_Hero.Modules.Installed.ViewModel;
+using MSI_Hero.Modules.Main;
+using MSI_Hero.Modules.Settings;
+using MSI_Hero.Modules.Settings.View;
+using MSI_Hero.Modules.Settings.ViewModel;
+using MSI_Hero.Services;
+using MSI_Hero.ViewModel;
 using otor.msihero.lib;
+using Prism.Ioc;
+using Prism.Modularity;
+using Prism.Mvvm;
+using Prism.Unity;
+using Prism.Unity.Ioc;
 
 namespace MSI_Hero
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            base.OnStartup(e);
-            var window = new MainWindow();
-            Application.Current.MainWindow = window;
-            window.Show();
+            containerRegistry.RegisterSingleton(typeof(IAppxPackageManager), typeof(AppxPackageManager));
+            containerRegistry.RegisterSingleton(typeof(IBusyManager), typeof(BusyManager));
+        }
+        
+        protected override Window CreateShell()
+        {
+            return ServiceLocator.Current.GetInstance<MainWindow>();
+        }
+
+        protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
+        {
+            moduleCatalog.AddModule<MainModule>();
+            moduleCatalog.AddModule<SettingsModule>();
+            moduleCatalog.AddModule<InstalledModule>();
+        }
+        
+        protected override void ConfigureViewModelLocator()
+        {
+            base.ConfigureViewModelLocator();
+            ViewModelLocationProvider.Register<MainView, MainViewModel>();
+            ViewModelLocationProvider.Register<InstalledView, InstalledViewModel>();
         }
     }
 }

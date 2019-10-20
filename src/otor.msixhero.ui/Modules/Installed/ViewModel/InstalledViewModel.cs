@@ -7,21 +7,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using MSI_Hero.Modules.Installed.Events;
+using MSI_Hero.Services;
+using MSI_Hero.ViewModel;
 using otor.msihero.lib;
 using otor.msixhero.lib;
+using Prism;
+using Prism.Events;
+using Prism.Regions;
 
-namespace MSI_Hero.ViewModel
+namespace MSI_Hero.Modules.Installed.ViewModel
 {
-    public class PackageListViewModel : NotifyPropertyChanged
+    public class InstalledViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {
-        private bool isSelected, isLoading;
+        private readonly IBusyManager busyManager;
+        private bool isSelected;
         private string filterString;
         private bool allUsers;
         private PackageViewModel selectedPackage;
         private bool showStoreApps, showSystemApps, showSideLoadedApps;
+        private bool isActive;
 
-        public PackageListViewModel(AppxPackageManager packageManager)
+        public InstalledViewModel(IAppxPackageManager packageManager, IEventAggregator eventAggregator, IBusyManager busyManager)
         {
+            this.busyManager = busyManager;
             this.PackageManager = packageManager;
             this.showSideLoadedApps = true;
 
@@ -30,6 +39,50 @@ namespace MSI_Hero.ViewModel
             this.AllPackagesView.Filter += this.FilterPackage;
 
             this.allUsers = UserHelper.IsAdministrator();
+
+            eventAggregator.GetEvent<InstalledListRefreshRequestEvent>().Subscribe(this.OnInstalledListRefreshRequest);
+        }
+
+        private async void OnInstalledListRefreshRequest(bool obj)
+        {
+            await this.RefreshPackages().ConfigureAwait(false);
+        }
+
+        public bool IsActive
+        {
+            get
+            {
+                return this.isActive;
+            }
+            set
+            {
+                this.isActive = value;
+                var iac = this.IsActiveChanged;
+                if (iac != null)
+                {
+                    iac(this, new EventArgs());
+                }
+
+#pragma warning disable 4014
+                this.RefreshPackages();
+#pragma warning restore 4014
+            }
+        }
+
+        public event EventHandler IsActiveChanged;
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
         }
 
         public bool AllUsers
@@ -149,19 +202,20 @@ namespace MSI_Hero.ViewModel
             private set => this.SetField(ref this.isSelected, value);
         }
 
-        public bool IsLoading
+        public IAppxPackageManager PackageManager { get; }
+
+        public Task RefreshPackages()
         {
-            get => this.isLoading;
-            private set => this.SetField(ref this.isLoading, value);
+            return this.busyManager.Execute(this.RefreshPackagesList);
         }
 
-        public AppxPackageManager PackageManager { get; }
-
-        public async Task RefreshPackages()
+        private async Task RefreshPackagesList(IBusyContext busyContext)
         {
             try
             {
-                this.IsLoading = true;
+                busyContext.Message = "Loading packages";
+                busyContext.Progress = 50;
+
                 await Task.Delay(100);
 
                 var task = Task.Run(
@@ -199,13 +253,6 @@ namespace MSI_Hero.ViewModel
             {
                 // todo: Right dialog
                 MessageBox.Show("Access denied. Do you want to run this command as a local administrator?", "Access denied", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-            }
-            catch (Exception e)
-            {
-            }
-            finally
-            {
-                this.IsLoading = false;
             }
         }
     }

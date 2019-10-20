@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "otor.msixhero.adminhelper": {
+      "commandName": "Project",
+      "commandLineArgs": "--pipeWrite 2332 --pipeRead 2568"
+    }
+  }
+}

@@ -1,7 +1,8 @@
-﻿<Application x:Class="MSI_Hero.App"
+﻿<unity:PrismApplication x:Class="MSI_Hero.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Application.Resources>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:unity="http://prismlibrary.com/">
+    <unity:PrismApplication.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
@@ -9,5 +10,5 @@
                 <ResourceDictionary Source="Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Application.Resources>
-</Application>
+    </unity:PrismApplication.Resources>
+</unity:PrismApplication>

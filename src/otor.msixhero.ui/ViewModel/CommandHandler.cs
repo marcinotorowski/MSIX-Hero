@@ -1,26 +1,40 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using MSI_Hero.Commands.RoutedCommand;
+using MSI_Hero.Modules.Installed;
+using MSI_Hero.Modules.Installed.Events;
+using MSI_Hero.Modules.Installed.ViewModel;
+using MSI_Hero.Modules.Settings;
 using otor.msihero.lib;
+using Prism.Events;
+using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace MSI_Hero.ViewModel
 {
     public class CommandHandler
     {
-        private readonly PackageListViewModel packageList;
+        private readonly IEventAggregator eventAggregator;
+        private readonly IRegionManager regionManager;
+        private readonly IDialogService dialogService;
 
-        public CommandHandler(PackageListViewModel packageList)
+        public CommandHandler(IEventAggregator eventAggregator, IRegionManager regionManager, IDialogService dialogService)
         {
-            this.packageList = packageList;
-            this.Refresh = new DelegateCommand(this.RefreshExecute, this.CanRefresh);
+            this.eventAggregator = eventAggregator;
+            this.regionManager = regionManager;
+            this.dialogService = dialogService;
+
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(param as PackageViewModel), param => this.CanOpenExplorer(param as PackageViewModel));
             this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(param as PackageViewModel), param => this.CanOpenExplorerUser(param as PackageViewModel));
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(param as PackageViewModel), param => this.CanOpenManifest(param as PackageViewModel));
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(param as PackageViewModel), param => this.CanRunApp(param as PackageViewModel));
-            this.RunTool = new DelegateCommand(param => this.RunToolExecute(packageList.SelectedPackage, param as ToolViewModel), param => this.CanRunTool(packageList.SelectedPackage, param as ToolViewModel));
+            // this.RunTool = new DelegateCommand(param => this.RunToolExecute(packageList.SelectedPackage, param as ToolViewModel), param => this.CanRunTool(packageList.SelectedPackage, param as ToolViewModel));
             this.OpenPowerShell = new DelegateCommand(this.OpenPowerShellExecute, this.CanOpenPowerShell);
+
+            this.Refresh = new DelegateCommand(this.RefreshExecute, this.CanRefresh);
         }
 
         public ICommand Refresh { get; }
@@ -37,22 +51,30 @@ namespace MSI_Hero.ViewModel
 
         public ICommand RunTool { get; }
 
-#pragma warning disable 1998
-        private async void RefreshExecute(object obj)
-#pragma warning restore 1998
+        private void RefreshExecute(object obj)
         {
-#pragma warning disable 4014
-            this.packageList.RefreshPackages();
-#pragma warning restore 4014
+            this.eventAggregator.GetEvent<InstalledListRefreshRequestEvent>().Publish(true);
         }
 
         private bool CanRefresh(object obj)
         {
+            var hasRegion = this.regionManager.Regions.ContainsRegionWithName(InstalledModule.Path);
+            if (!hasRegion)
+            {
+                return false;
+            }
+
+            var region = this.regionManager.Regions[InstalledModule.Path];
             return true;
         }
 
         private void OpenPowerShellExecute(object obj)
         {
+            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters(), c =>
+            {
+
+            });
+
             var process = new ProcessStartInfo("powershell.exe", "-NoExit -NoLogo -Command \"Import-Module Appx; Write-Host \"Module [Appx] has been automatically imported by MSIX Hero.\"");
             Process.Start(process);
         }
@@ -115,7 +137,7 @@ namespace MSI_Hero.ViewModel
                 return;
             }
 
-            this.packageList.PackageManager.RunApp((Package)package);
+            //this.packageList.PackageManager.RunApp((Package)package);
         }
 
         private bool CanRunApp(PackageViewModel package)
@@ -130,7 +152,7 @@ namespace MSI_Hero.ViewModel
                 return;
             }
 
-            this.packageList.PackageManager.RunTool((Package)package, tool.Name);
+            //this.packageList.PackageManager.RunTool((Package)package, tool.Name);
         }
 
         private bool CanRunTool(PackageViewModel package, ToolViewModel tool)
