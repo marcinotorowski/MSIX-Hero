@@ -25,4 +25,6 @@
     </Style>
 
     <converters:NegativeConverter x:Key="NegativeConverter" />
+    <converters:NegativeEnumToBooleanConverter x:Key="NegativeEnumToBooleanConverter" />
+    <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
 </ResourceDictionary>

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Serialization;
 using CommonServiceLocator;
+using MSI_Hero.Domain;
+using MSI_Hero.Domain.State;
 using MSI_Hero.Modules.Installed;
 using MSI_Hero.Modules.Installed.View;
 using MSI_Hero.Modules.Installed.ViewModel;
@@ -25,6 +27,7 @@ using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Unity;
 using Prism.Unity.Ioc;
+using ApplicationState = MSI_Hero.Domain.State.ApplicationState;
 
 namespace MSI_Hero
 {
@@ -37,6 +40,7 @@ namespace MSI_Hero
         {
             containerRegistry.RegisterSingleton(typeof(IAppxPackageManager), typeof(AppxPackageManager));
             containerRegistry.RegisterSingleton(typeof(IBusyManager), typeof(BusyManager));
+            containerRegistry.RegisterSingleton(typeof(IApplicationStateManager), typeof(ApplicationStateManager));
         }
         
         protected override Window CreateShell()

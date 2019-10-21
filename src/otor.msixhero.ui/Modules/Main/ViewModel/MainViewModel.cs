@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Input;
-using MSI_Hero.Modules.Installed.ViewModel;
+using MSI_Hero.Domain;
+using MSI_Hero.Domain.Actions;
+using MSI_Hero.Domain.Events;
+using MSI_Hero.Domain.State.Enums;
 using MSI_Hero.Services;
 using otor.msihero.lib;
 using Prism.Events;
@@ -18,39 +14,112 @@ namespace MSI_Hero.ViewModel
 {
     public class MainViewModel : NotifyPropertyChanged
     {
-        private readonly IEventAggregator eventAggregator;
+        private readonly IApplicationStateManager stateManager;
+        private readonly IAppxPackageManager appxPackageManager;
         private readonly IRegionManager regionManager;
+        private readonly IDialogService dialogService;
         private bool isLoading;
         private string loadingMessage;
         private int loadingProgress;
-        private IDialogService dialogService;
-        private readonly InstalledViewModel installedPackages;
 
         public MainViewModel(
-            IEventAggregator eventAggregator, 
+            IApplicationStateManager stateManager,
+            IAppxPackageManager appxPackageManager, 
             IRegionManager regionManager, 
             IDialogService dialogService, 
-            IBusyManager busyManager,
-            InstalledViewModel installedPackages)
+            IBusyManager busyManager)
         {
-            this.eventAggregator = eventAggregator;
+            this.stateManager = stateManager;
+            this.appxPackageManager = appxPackageManager;
             this.regionManager = regionManager;
             this.dialogService = dialogService;
-            this.installedPackages = installedPackages;
             this.Tools = new ObservableCollection<ToolViewModel>();
             this.Tools.Add(new ToolViewModel("notepad.exe"));
             this.Tools.Add(new ToolViewModel("regedit.exe"));
             this.Tools.Add(new ToolViewModel("powershell.exe"));
+            this.Tools.Add(new ToolViewModel("cmd.exe"));
 
             busyManager.StatusChanged += BusyManagerOnStatusChanged;
-            this.InstalledPackages = installedPackages;
+
+            stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
         }
 
-        public InstalledViewModel InstalledPackages { get; }
-
-        public CommandHandler CommandHandler => new CommandHandler(this.eventAggregator, this.regionManager, this.dialogService);
+        public CommandHandler CommandHandler => new CommandHandler(this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);
 
         public ObservableCollection<ToolViewModel> Tools { get; }
+
+        public PackageContext Context
+        {
+            get => this.stateManager.CurrentState.Packages.Context;
+            set => this.stateManager.Executor.ExecuteAsync(new SetPackageContext(value));
+        }
+
+        public bool HasSelection
+        {
+            get
+            {
+                return this.stateManager.CurrentState.Packages.SelectedItems.Any();
+            }
+        }
+        
+        public bool ShowSideLoadedApps
+        {
+            get => (this.stateManager.CurrentState.Packages.Filter & PackageFilter.Developer) == PackageFilter.Developer;
+            set
+            {
+                var currentFilter = this.stateManager.CurrentState.Packages.Filter;
+                if (value)
+                {
+                    currentFilter |= PackageFilter.Developer;
+                }
+                else
+                {
+                    currentFilter &= ~PackageFilter.Developer;
+                }
+
+                this.stateManager.Executor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+            }
+        }
+
+        public bool ShowStoreApps
+        {
+            get => (this.stateManager.CurrentState.Packages.Filter & PackageFilter.Store) == PackageFilter.Store;
+            set
+            {
+                var currentFilter = this.stateManager.CurrentState.Packages.Filter;
+                if (value)
+                {
+                    currentFilter |= PackageFilter.Store;
+                }
+                else
+                {
+                    currentFilter &= ~PackageFilter.Store;
+                }
+
+                this.stateManager.Executor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+            }
+        }
+
+        public bool ShowSystemApps
+        {
+            get => (this.stateManager.CurrentState.Packages.Filter & PackageFilter.System) == PackageFilter.System;
+            set
+            {
+                var currentFilter = this.stateManager.CurrentState.Packages.Filter;
+                if (value)
+                {
+                    currentFilter |= PackageFilter.System;
+                }
+                else
+                {
+                    currentFilter &= ~PackageFilter.System;
+                }
+
+                this.stateManager.Executor.Execute(SetPackageFilter.CreateFrom(currentFilter));
+            }
+        }
 
         public bool IsLoading
         {
@@ -75,6 +144,25 @@ namespace MSI_Hero.ViewModel
             this.IsLoading = e.IsBusy;
             this.LoadingMessage = e.Message;
             this.LoadingProgress = e.Progress;
+        }
+        private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
+        {
+            this.OnPropertyChanged(nameof(HasSelection));
+        }
+
+        private void OnPackageFilterChanged(PackagesFilterChangedPayload obj)
+        {
+            if (obj.NewFilter != obj.OldFilter)
+            {
+                this.OnPropertyChanged(nameof(ShowSystemApps));
+                this.OnPropertyChanged(nameof(ShowSideLoadedApps));
+                this.OnPropertyChanged(nameof(ShowStoreApps));
+            }
+        }
+
+        private void OnPackageLoaded(PackageContext obj)
+        {
+            this.OnPropertyChanged(nameof(Context));
         }
     }
 }

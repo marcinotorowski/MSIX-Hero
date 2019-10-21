@@ -10,6 +10,10 @@ namespace MSI_Hero.Services
 
         Task Execute(Func<IBusyContext, Task> taskFactory);
 
+        IBusyContext Begin();
+
+        void End(IBusyContext context);
+
         event EventHandler<IBusyStatusChange> StatusChanged;
     }
 }

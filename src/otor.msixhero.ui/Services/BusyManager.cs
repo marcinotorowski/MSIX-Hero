@@ -17,11 +17,23 @@ namespace MSI_Hero.Services
             this.eventAggregator = eventAggregator;
         }
 
-        public void Execute(Action<IBusyContext> action)
+        public IBusyContext Begin()
         {
             var context = new BusyContext(this);
             this.contexts.Add(context);
             this.RefreshStatus();
+            return context;
+        }
+
+        public void End(IBusyContext context)
+        {
+            contexts.Remove(context);
+            this.RefreshStatus();
+        }
+
+        public void Execute(Action<IBusyContext> action)
+        {
+            var context = this.Begin();
 
             try
             {
@@ -29,16 +41,13 @@ namespace MSI_Hero.Services
             }
             finally
             {
-                contexts.Remove(context);
-                this.RefreshStatus();
+                this.End(context);
             }
         }
 
         public async Task Execute(Func<IBusyContext, Task> taskFactory)
         {
-            var context = new BusyContext(this);
-            this.contexts.Add(context);
-            this.RefreshStatus();
+            var context = this.Begin();
 
             try
             {
@@ -46,8 +55,7 @@ namespace MSI_Hero.Services
             }
             finally
             {
-                contexts.Remove(context);
-                this.RefreshStatus();
+                this.End(context);
             }
         }
 

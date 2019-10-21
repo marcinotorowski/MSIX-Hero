@@ -13,16 +13,14 @@
 
     <DockPanel>
         <Border DockPanel.Dock="Top">
-            <TextBox VerticalAlignment="Center" Height="22" HorizontalAlignment="Right" Margin="5" Width="200" Text="{Binding PackageList.FilterString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+            <TextBox VerticalAlignment="Center" Height="22" HorizontalAlignment="Right" Margin="5" Width="200" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
         </Border>
         <ListView 
-            IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
             SelectionChanged="OnSelectionChanged"
             ScrollViewer.VerticalScrollBarVisibility="Auto" 
             ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-            Grid.Row="2" 
             SelectedItem="{Binding SelectedPackage}" 
-            ItemsSource="{Binding AllPackagesView}">
+            ItemsSource="{Binding AllPackages}">
 
             <ListView.ContextMenu>
                 <ContextMenu>

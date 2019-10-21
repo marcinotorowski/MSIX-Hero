@@ -4,42 +4,42 @@ namespace MSI_Hero.ViewModel
 {
     public class PackageViewModel : NotifyPropertyChanged
     {
-        private readonly Package package;
-
         public PackageViewModel(Package package)
         {
-            this.package = package;
+            this.Model = package;
         }
 
-        public string Description => this.package.Description;
+        public string Description => this.Model.Description;
 
-        public string DisplayName => this.package.DisplayName;
+        public string DisplayName => this.Model.DisplayName;
 
-        public string Version => this.package.Version.ToString();
+        public string Version => this.Model.Version.ToString();
 
-        public string DisplayPublisherName => this.package.DisplayPublisherName;
+        public string DisplayPublisherName => this.Model.DisplayPublisherName;
 
-        public string InstallLocation => this.package.InstallLocation;
+        public string InstallLocation => this.Model.InstallLocation;
 
-        public string ManifestLocation => this.package.ManifestLocation;
+        public string ManifestLocation => this.Model.ManifestLocation;
 
-        public string Image => this.package.Image;
+        public string Image => this.Model.Image;
 
-        public string ProductId => this.package.ProductId;
+        public string ProductId => this.Model.ProductId;
 
         public SignatureKind SignatureKind
         {
-            get => this.package.SignatureKind;
+            get => this.Model.SignatureKind;
         }
 
         public string UserDataPath
         {
-            get => this.package.UserDataPath;
+            get => this.Model.UserDataPath;
         }
+
+        public Package Model { get; }
 
         public static explicit operator Package(PackageViewModel packageViewModel)
         {
-            return packageViewModel.package;
+            return packageViewModel.Model;
         }
     }
 }

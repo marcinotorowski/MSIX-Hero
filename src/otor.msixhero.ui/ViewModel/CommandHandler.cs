@@ -1,15 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using MSI_Hero.Commands.RoutedCommand;
-using MSI_Hero.Modules.Installed;
-using MSI_Hero.Modules.Installed.Events;
-using MSI_Hero.Modules.Installed.ViewModel;
-using MSI_Hero.Modules.Settings;
+using MSI_Hero.Domain;
+using MSI_Hero.Domain.Actions;
 using otor.msihero.lib;
-using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -17,24 +12,30 @@ namespace MSI_Hero.ViewModel
 {
     public class CommandHandler
     {
-        private readonly IEventAggregator eventAggregator;
+        private readonly IApplicationStateManager stateManager;
+        private readonly IAppxPackageManager packageManager;
         private readonly IRegionManager regionManager;
         private readonly IDialogService dialogService;
 
-        public CommandHandler(IEventAggregator eventAggregator, IRegionManager regionManager, IDialogService dialogService)
+        public CommandHandler(
+            IApplicationStateManager stateManager, 
+            IAppxPackageManager packageManager,
+            IRegionManager regionManager, 
+            IDialogService dialogService)
         {
-            this.eventAggregator = eventAggregator;
+            this.stateManager = stateManager;
+            this.packageManager = packageManager;
             this.regionManager = regionManager;
             this.dialogService = dialogService;
 
-            this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(param as PackageViewModel), param => this.CanOpenExplorer(param as PackageViewModel));
-            this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(param as PackageViewModel), param => this.CanOpenExplorerUser(param as PackageViewModel));
-            this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(param as PackageViewModel), param => this.CanOpenManifest(param as PackageViewModel));
-            this.RunApp = new DelegateCommand(param => this.RunAppExecute(param as PackageViewModel), param => this.CanRunApp(param as PackageViewModel));
-            // this.RunTool = new DelegateCommand(param => this.RunToolExecute(packageList.SelectedPackage, param as ToolViewModel), param => this.CanRunTool(packageList.SelectedPackage, param as ToolViewModel));
-            this.OpenPowerShell = new DelegateCommand(this.OpenPowerShellExecute, this.CanOpenPowerShell);
+            this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanOpenExplorer());
+            this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(), param => this.CanOpenExplorerUser());
+            this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanOpenManifest());
+            this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanRunApp());
+            this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolViewModel), param => this.CanRunTool(param as ToolViewModel));
+            this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
 
-            this.Refresh = new DelegateCommand(this.RefreshExecute, this.CanRefresh);
+            this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
         }
 
         public ICommand Refresh { get; }
@@ -51,71 +52,65 @@ namespace MSI_Hero.ViewModel
 
         public ICommand RunTool { get; }
 
-        private void RefreshExecute(object obj)
+        private void RefreshExecute()
         {
-            this.eventAggregator.GetEvent<InstalledListRefreshRequestEvent>().Publish(true);
+            this.stateManager.Executor.ExecuteAsync(new ReloadPackages());
         }
 
-        private bool CanRefresh(object obj)
+        private bool CanRefresh()
         {
-            var hasRegion = this.regionManager.Regions.ContainsRegionWithName(InstalledModule.Path);
-            if (!hasRegion)
-            {
-                return false;
-            }
-
-            var region = this.regionManager.Regions[InstalledModule.Path];
+            // todo: refresh only when region activated
             return true;
         }
 
-        private void OpenPowerShellExecute(object obj)
+        private void OpenPowerShellExecute()
         {
-            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters(), c =>
-            {
-
-            });
-
             var process = new ProcessStartInfo("powershell.exe", "-NoExit -NoLogo -Command \"Import-Module Appx; Write-Host \"Module [Appx] has been automatically imported by MSIX Hero.\"");
             Process.Start(process);
         }
 
-        private bool CanOpenPowerShell(object obj)
+        private bool CanOpenPowerShell()
         {
             return true;
         }
 
-        private void OpenExplorerExecute(PackageViewModel package)
+        private void OpenExplorerExecute()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null)
             {
                 return;
             }
 
-            System.Diagnostics.Process.Start("explorer.exe", "/e," + package.InstallLocation);
+            Process.Start("explorer.exe", "/e," + package.InstallLocation);
         }
 
-        private bool CanOpenExplorer(PackageViewModel package)
+        private bool CanOpenExplorer()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             return package != null;
         }
 
-        private void OpenExplorerUserExecute(PackageViewModel package)
+        private void OpenExplorerUserExecute()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null)
             {
                 return;
             }
 
-            System.Diagnostics.Process.Start("explorer.exe", "/e," + package.UserDataPath);
+            Process.Start("explorer.exe", "/e," + package.UserDataPath);
         }
 
-        private bool CanOpenExplorerUser(PackageViewModel package)
+        private bool CanOpenExplorerUser()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             return package != null;
         }
 
-        private void OpenManifestExecute(PackageViewModel package)
+        private void OpenManifestExecute()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null)
             {
                 return;
@@ -125,39 +120,48 @@ namespace MSI_Hero.ViewModel
             Process.Start(spi);
         }
 
-        private bool CanOpenManifest(PackageViewModel package)
+        private bool CanOpenManifest()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             return package != null;
         }
 
-        private void RunAppExecute(PackageViewModel package)
+        private void RunAppExecute()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null)
             {
                 return;
             }
 
-            //this.packageList.PackageManager.RunApp((Package)package);
+            this.packageManager.RunApp(package);
         }
 
-        private bool CanRunApp(PackageViewModel package)
+        private bool CanRunApp()
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             return package != null;
         }
 
-        private void RunToolExecute(PackageViewModel package, ToolViewModel tool)
+        private void RunToolExecute(ToolViewModel tool)
         {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null || tool == null)
             {
                 return;
             }
 
-            //this.packageList.PackageManager.RunTool((Package)package, tool.Name);
+            this.packageManager.RunTool(package, tool.Name);
         }
 
-        private bool CanRunTool(PackageViewModel package, ToolViewModel tool)
+        private bool CanRunTool(ToolViewModel tool)
         {
-            return package != null && tool != null;
+            if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            {
+                return false;
+            }
+
+            return tool != null;
         }
     }
 }
