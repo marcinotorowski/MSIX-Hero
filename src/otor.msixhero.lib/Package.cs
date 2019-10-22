@@ -3,6 +3,13 @@ using System.IO;
 
 namespace otor.msihero.lib
 {
+    public enum RegistryMountState
+    {
+        NotApplicable,
+        Mounted,
+        NotMounted
+    }
+
     public class Package
     {
         public string ProductId { get; set; }
@@ -39,6 +46,8 @@ namespace otor.msihero.lib
         public SignatureKind SignatureKind { get; set; }
 
         public string Image { get; set; }
+
+        public RegistryMountState HasRegistry { get; set; }
 
         public string UserDataPath
         {

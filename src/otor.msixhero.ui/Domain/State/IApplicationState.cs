@@ -7,5 +7,7 @@ namespace MSI_Hero.Domain.State
         IPackageListState Packages { get; }    
 
         IEventAggregator EventAggregator { get; }
+
+        ILocalSettings LocalSettings { get; }
     }
 }

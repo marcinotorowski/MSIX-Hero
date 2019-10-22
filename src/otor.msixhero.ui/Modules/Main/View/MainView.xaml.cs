@@ -42,8 +42,8 @@ namespace MSI_Hero
 
         public MainView(IRegionManager regionManager, IApplicationStateManager appStateManager) : this()
         {
-            regionManager.RegisterViewWithRegion("ContentRegion", typeof(InstalledView));
-            regionManager.RequestNavigate("ContentRegion", InstalledModule.Path);
+            regionManager.RegisterViewWithRegion("ContentRegion", typeof(PackageListView));
+            regionManager.RequestNavigate("ContentRegion", PackageListModule.Path);
             this.appStateManager = appStateManager;
             appStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
         }

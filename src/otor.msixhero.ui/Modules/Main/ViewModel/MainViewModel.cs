@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using MSI_Hero.Domain;
 using MSI_Hero.Domain.Actions;
 using MSI_Hero.Domain.Events;
@@ -44,6 +45,12 @@ namespace MSI_Hero.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
+        }
+
+        private void OnPackagesSidebarVisibilityChanged(bool newVisibility)
+        {
+            this.OnPropertyChanged(nameof(ShowSidebar));
         }
 
         public CommandHandler CommandHandler => new CommandHandler(this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);
@@ -81,6 +88,12 @@ namespace MSI_Hero.ViewModel
 
                 this.stateManager.Executor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
             }
+        }
+
+        public bool ShowSidebar
+        {
+            get => this.stateManager.CurrentState.LocalSettings.ShowSidebar;
+            set => this.stateManager.Executor.ExecuteAsync(new SetPackageSidebarVisibility(value), CancellationToken.None);
         }
 
         public bool ShowStoreApps

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using MSI_Hero.Domain;
 using MSI_Hero.Domain.Actions;
 using MSI_Hero.Domain.Events;
@@ -16,17 +18,20 @@ using Prism.Regions;
 
 namespace MSI_Hero.Modules.Installed.ViewModel
 {
-    public class InstalledViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
+    public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {
         private readonly IApplicationStateManager stateManager;
         private PackageViewModel selectedPackage;
         private bool isActive;
 
-        public InstalledViewModel(IApplicationStateManager stateManager)
+        public PackageListViewModel(IApplicationStateManager stateManager)
         {
             this.stateManager = stateManager;
 
             this.AllPackages = new ObservableCollection<PackageViewModel>();
+            this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
+            //this.AllPackagesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(PackageViewModel.DisplayPublisherName)));
+
             stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackagesLoaded, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged, ThreadOption.UIThread);
@@ -117,6 +122,8 @@ namespace MSI_Hero.Modules.Installed.ViewModel
         }
 
         public ObservableCollection<PackageViewModel> AllPackages { get; }
+
+        public ICollectionView AllPackagesView { get; }
         
         public PackageViewModel SelectedPackage
         {

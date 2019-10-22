@@ -35,12 +35,19 @@ namespace MSI_Hero.ViewModel
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolViewModel), param => this.CanRunTool(param as ToolViewModel));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
 
+            this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanMountRegistry());
+            this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());
+
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
         }
 
         public ICommand Refresh { get; }
 
         public ICommand OpenPowerShell { get; }
+
+        public ICommand UnmountRegistry { get; }
+
+        public ICommand MountRegistry { get; }
 
         public ICommand OpenExplorer { get; }
 
@@ -67,6 +74,50 @@ namespace MSI_Hero.ViewModel
         {
             var process = new ProcessStartInfo("powershell.exe", "-NoExit -NoLogo -Command \"Import-Module Appx; Write-Host \"Module [Appx] has been automatically imported by MSIX Hero.\"");
             Process.Start(process);
+        }
+
+        private void MountRegistryExecute()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            this.packageManager.MountRegistry(selection.First(), true);
+        }
+
+        private void UnmountRegistryExecute()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            this.packageManager.UnmountRegistry(selection.First());
+        }
+
+        private bool CanMountRegistry()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            return this.packageManager.GetRegistryMountState(selection.First()) == RegistryMountState.NotMounted;
+        }
+
+        private bool CanUnmountRegistry()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            return this.packageManager.GetRegistryMountState(selection.First()) == RegistryMountState.Mounted;
         }
 
         private bool CanOpenPowerShell()

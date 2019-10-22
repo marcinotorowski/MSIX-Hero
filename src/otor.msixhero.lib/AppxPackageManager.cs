@@ -62,6 +62,87 @@ namespace otor.msihero.lib
             ps.Invoke();
         }
 
+        public RegistryMountState GetRegistryMountState(Package package)
+        {
+            return this.GetRegistryMountState(package.InstallLocation, package.Name);
+        }
+
+        public RegistryMountState GetRegistryMountState(string installLocation, string packageName)
+        {
+            RegistryMountState hasRegistry;
+
+            if (!System.IO.File.Exists(Path.Combine(installLocation, "registry.dat")))
+            {
+                hasRegistry = RegistryMountState.NotApplicable;
+            }
+            else
+            {
+                using (var reg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("MSIX-Hero-" + packageName))
+                {
+                    if (reg != null)
+                    {
+                        hasRegistry = RegistryMountState.Mounted;
+                    }
+                    else
+                    {
+                        hasRegistry = RegistryMountState.NotMounted;
+                    }
+                }
+            }
+
+            return hasRegistry;
+        }
+
+        public void UnmountRegistry(Package package)
+        {
+
+            var proc = new ProcessStartInfo("cmd.exe", @"/c REG UNLOAD HKLM\MSIX-Hero-" + package.Name);
+            proc.UseShellExecute = true;
+            proc.Verb = "runas";
+
+            var p = Process.Start(proc);
+            p.WaitForExit();
+        }
+
+        public void MountRegistry(Package package, bool startRegedit = false)
+        {
+            var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + package.Name + " \"" + Path.Combine(package.InstallLocation, "Registry.dat" + "\""));
+            proc.UseShellExecute = true;
+            proc.Verb = "runas";
+
+            var p = Process.Start(proc);
+            p.WaitForExit();
+
+            if (startRegedit)
+            {
+                using (var registry = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit"))
+                {
+                    var currentValue = registry.GetValue("LastKey") as string;
+
+                    SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + package.Name + @"\REGISTRY");
+
+                    proc = new ProcessStartInfo("regedit.exe") { Verb = "runas", UseShellExecute = true };
+                    p = Process.Start(proc);
+                    System.Threading.Thread.Sleep(200);
+
+                    if (registry != null && currentValue != null)
+                    {
+                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", currentValue);
+                    }
+                }
+            }
+        }
+
+        private static void SetRegistryValue(string key, string name, string value)
+        {
+            var proc = new ProcessStartInfo("cmd.exe");
+            proc.Arguments = $@"/c REG ADD ""{key}"" /v ""{name}"" /d ""{value}"" /f";
+            proc.UseShellExecute = true;
+            proc.Verb = "runas";
+            var p = Process.Start(proc);
+            p.WaitForExit();
+        }
+        
         public void RunApp(Package package)
         {
             if (package == null)
@@ -186,6 +267,8 @@ namespace otor.msihero.lib
 
                     var details = GetManifestDetails(installLocation);
 
+                    var hasRegistry = this.GetRegistryMountState(installLocation, item.Id.Name);
+
                     yield return new Package()
                     {
                         DisplayName = details.DisplayName,
@@ -198,7 +281,8 @@ namespace otor.msihero.lib
                         DisplayPublisherName = details.DisplayPublisherName,
                         Publisher = item.Id.Publisher,
                         Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
-                        SignatureKind = Convert(item.SignatureKind)
+                        SignatureKind = Convert(item.SignatureKind),
+                        HasRegistry = hasRegistry
                     };
                 }
             }

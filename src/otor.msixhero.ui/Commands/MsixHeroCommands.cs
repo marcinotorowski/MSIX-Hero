@@ -15,6 +15,8 @@ namespace MSI_Hero.Commands
             RunApp = new RoutedUICommand { Text = "Run app", InputGestures = { new KeyGesture(Key.Enter, ModifierKeys.Control) } };
             RunTool = new RoutedUICommand { Text = "Run tool in package context" };
             OpenPowerShell = new RoutedUICommand { Text = "Open PowerShell console" };
+            MountRegistry = new RoutedUICommand { Text = "Mount registry" };
+            UnmountRegistry = new RoutedUICommand { Text = "Unmount registry" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -28,5 +30,9 @@ namespace MSI_Hero.Commands
         public static RoutedUICommand RunApp { get; }
 
         public static RoutedUICommand OpenPowerShell { get; }
+
+        public static RoutedUICommand MountRegistry { get; }
+
+        public static RoutedUICommand UnmountRegistry { get; }
     }
 }

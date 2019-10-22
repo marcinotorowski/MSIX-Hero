@@ -7,11 +7,11 @@ namespace MSI_Hero.ViewModel
 {
     public class ApplicationState : NotifyPropertyChanged
     {
-        public ApplicationState(InstalledViewModel installed)
+        public ApplicationState(PackageListViewModel installed)
         {
             Installed = installed;
         }
 
-        public InstalledViewModel Installed { get; private set; }
+        public PackageListViewModel Installed { get; private set; }
     }
 }

@@ -3,11 +3,11 @@
 namespace MSI_Hero.Modules.Installed.View
 {
     /// <summary>
-    /// Interaction logic for InstalledView.xaml
+    /// Interaction logic for PackageListView.xaml
     /// </summary>
-    public partial class InstalledView : UserControl
+    public partial class PackageListView
     {
-        public InstalledView()
+        public PackageListView()
         {
             InitializeComponent();
         }

@@ -56,6 +56,7 @@ namespace MSI_Hero.Domain
             this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action, this.appxPackageManager, this.busyManager);
             this.reducerFactories[typeof(ReloadPackages)] = action => new ReloadPackagesReducer();
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action);
+            this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action);
         }
     }
 }

@@ -13,6 +13,8 @@ namespace MSI_Hero.ViewModel
 
         public string DisplayName => this.Model.DisplayName;
 
+        public string Name => this.Model.Name;
+
         public string Version => this.Model.Version.ToString();
 
         public string DisplayPublisherName => this.Model.DisplayPublisherName;
@@ -23,8 +25,12 @@ namespace MSI_Hero.ViewModel
 
         public string Image => this.Model.Image;
 
+        public string Publisher => this.Model.Publisher;
+
         public string ProductId => this.Model.ProductId;
 
+        public string PackageFamilyName => this.Model.PackageFamilyName;
+        
         public SignatureKind SignatureKind
         {
             get => this.Model.SignatureKind;

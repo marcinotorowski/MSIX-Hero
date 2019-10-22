@@ -8,14 +8,14 @@ using Prism.Modularity;
 
 namespace MSI_Hero.Modules.Installed
 {
-    public class InstalledModule : IModule
+    public class PackageListModule : IModule
     {
-        public static string Path = "Installed";
+        public static string Path = "PackageList";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<InstalledView>(Path);
-            containerRegistry.RegisterSingleton(typeof(InstalledViewModel));
+            containerRegistry.RegisterForNavigation<PackageListView>(Path);
+            containerRegistry.RegisterSingleton(typeof(PackageListViewModel));
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

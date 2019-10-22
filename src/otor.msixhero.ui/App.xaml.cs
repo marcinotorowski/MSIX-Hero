@@ -52,14 +52,14 @@ namespace MSI_Hero
         {
             moduleCatalog.AddModule<MainModule>();
             moduleCatalog.AddModule<SettingsModule>();
-            moduleCatalog.AddModule<InstalledModule>();
+            moduleCatalog.AddModule<PackageListModule>();
         }
         
         protected override void ConfigureViewModelLocator()
         {
             base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<MainView, MainViewModel>();
-            ViewModelLocationProvider.Register<InstalledView, InstalledViewModel>();
+            ViewModelLocationProvider.Register<PackageListView, PackageListViewModel>();
         }
     }
 }
