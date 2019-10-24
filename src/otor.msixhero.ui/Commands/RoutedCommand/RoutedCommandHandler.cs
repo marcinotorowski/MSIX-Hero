@@ -49,7 +49,7 @@ namespace MSI_Hero.Commands
         /// <summary> Proxy to the current Command.CanExecute(object). </summary>
         private void HandleCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Command?.CanExecute(e.Parameter) != null;
+            e.CanExecute = Command?.CanExecute(e.Parameter) == true;
             e.Handled = true;
         }
 

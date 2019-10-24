@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -280,6 +281,7 @@ namespace otor.msihero.lib
                         Description = details.Description,
                         DisplayPublisherName = details.DisplayPublisherName,
                         Publisher = item.Id.Publisher,
+                        TileColor = details.Color,
                         Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
                         SignatureKind = Convert(item.SignatureKind),
                         HasRegistry = hasRegistry
@@ -321,6 +323,7 @@ namespace otor.msihero.lib
             string name = null;
             string publisher = null;
             string description = null;
+            string color = null;
 
             if (installLocation == null)
             {
@@ -376,8 +379,12 @@ namespace otor.msihero.lib
                         break;
                 }
             }
-            
-            return new PkgDetails(name, publisher, img, description);
+
+            node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
+
+            color = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
+
+            return new PkgDetails(name, publisher, img, description, color);
         }
 
         private static SignatureKind Convert(Windows.ApplicationModel.PackageSignatureKind signatureKind)
@@ -401,18 +408,20 @@ namespace otor.msihero.lib
 
         private struct PkgDetails
         {
-            public PkgDetails(string displayName, string displayPublisherName, string logo, string description)
+            public PkgDetails(string displayName, string displayPublisherName, string logo, string description, string color)
             {
-                DisplayName = displayName;
-                DisplayPublisherName = displayPublisherName;
-                Logo = logo;
-                Description = description;
+                this.DisplayName = displayName;
+                this.DisplayPublisherName = displayPublisherName;
+                this.Logo = logo;
+                this.Description = description;
+                this.Color = color;
             }
 
             public string Description;
             public string DisplayName;
             public string DisplayPublisherName;
             public string Logo;
+            public string Color;
         }
     }
 }

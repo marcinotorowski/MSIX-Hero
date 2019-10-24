@@ -47,6 +47,8 @@ namespace otor.msihero.lib
 
         public string Image { get; set; }
 
+        public string TileColor { get; set; }
+
         public RegistryMountState HasRegistry { get; set; }
 
         public string UserDataPath

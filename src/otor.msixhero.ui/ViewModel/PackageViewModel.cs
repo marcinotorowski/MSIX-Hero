@@ -25,6 +25,8 @@ namespace MSI_Hero.ViewModel
 
         public string Image => this.Model.Image;
 
+        public string TileColor => this.Model.TileColor;
+
         public string Publisher => this.Model.Publisher;
 
         public string ProductId => this.Model.ProductId;

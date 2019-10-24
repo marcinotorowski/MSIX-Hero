@@ -91,7 +91,9 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
                                     <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="32" MaxHeight="32" Stretch="Uniform" StretchDirection="DownOnly" />
+                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                        </Border>
                                     </Border>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
