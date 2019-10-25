@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace otor.msihero.lib
+﻿namespace otor.msixhero.lib
 {
     public enum SignatureKind
     { 

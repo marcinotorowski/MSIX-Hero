@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using MSI_Hero.Domain;
-using MSI_Hero.Domain.Actions;
-using MSI_Hero.Domain.Events;
-using MSI_Hero.Domain.State.Enums;
-using MSI_Hero.ViewModel;
-using otor.msihero.lib;
+using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.Events;
+using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Events;
 using Prism.Regions;
 
-namespace MSI_Hero.Modules.Installed.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
     public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {

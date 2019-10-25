@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Collections.Specialized;
-using System.Text;
 using System.Windows;
 
-namespace MSI_Hero.Commands
+namespace otor.msixhero.ui.Commands.RoutedCommand
 {
     /// <summary>
     ///  Holds a collection of <see cref="RoutedCommandHandler"/> that should be

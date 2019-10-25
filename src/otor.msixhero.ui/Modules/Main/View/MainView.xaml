@@ -1,28 +1,28 @@
-﻿<UserControl x:Class="MSI_Hero.MainView"
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Main.View.MainView"
                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:Fluent="urn:fluent-ribbon"
                      regions:ViewModelLocator.AutoWireViewModel="True"
-                     xmlns:commands="clr-namespace:MSI_Hero.Commands"
                      xmlns:regions="http://prismlibrary.com/"
                      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:viewModel="clr-namespace:MSI_Hero.ViewModel"
-                     xmlns:enums="clr-namespace:MSI_Hero.Domain.State.Enums"
+                     xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
+                     xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+                     xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
-    <commands:RoutedCommandHandlers.Commands>
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorer}" Command="{Binding CommandHandler.OpenExplorer}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunApp}" Command="{Binding CommandHandler.RunApp}" />
-        <commands:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
-    </commands:RoutedCommandHandlers.Commands>
+    <routedCommand:RoutedCommandHandlers.Commands>
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorer}" Command="{Binding CommandHandler.OpenExplorer}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunApp}" Command="{Binding CommandHandler.RunApp}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
+    </routedCommand:RoutedCommandHandlers.Commands>
     <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding LoadingMessage}">
         <Grid>
             <Grid.RowDefinitions>
@@ -70,7 +70,7 @@
                                 <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
                             </Fluent:RadioButton.Icon>
                         </Fluent:RadioButton>
-                        <Fluent:RadioButton GroupName="Users2" Header="All users" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.Admin}}">
+                        <Fluent:RadioButton GroupName="Users2" Header="All users" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.AllUsers}}">
                             <Fluent:RadioButton.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
                             </Fluent:RadioButton.SizeDefinition>

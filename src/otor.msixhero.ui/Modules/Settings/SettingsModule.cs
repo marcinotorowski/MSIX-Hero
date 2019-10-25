@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MSI_Hero.Modules.Settings.View;
-using MSI_Hero.Modules.Settings.ViewModel;
+﻿using otor.msixhero.ui.Modules.Settings.View;
+using otor.msixhero.ui.Modules.Settings.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
-namespace MSI_Hero.Modules.Settings
+namespace otor.msixhero.ui.Modules.Settings
 {
     public class SettingsModule : IModule
     {

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MSI_Hero.Modules.Installed.View;
-using MSI_Hero.Modules.Installed.ViewModel;
+﻿using otor.msixhero.ui.Modules.PackageList.View;
+using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
-namespace MSI_Hero.Modules.Installed
+namespace otor.msixhero.ui.Modules.PackageList
 {
     public class PackageListModule : IModule
     {

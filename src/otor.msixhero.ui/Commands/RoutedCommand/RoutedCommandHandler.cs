@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 
-namespace MSI_Hero.Commands
+namespace otor.msixhero.ui.Commands.RoutedCommand
 {
     /// <summary>
     ///  Allows associated a routed command with a non-routed command.  Used by

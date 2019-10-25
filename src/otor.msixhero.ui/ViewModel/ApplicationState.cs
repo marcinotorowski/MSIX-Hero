@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MSI_Hero.Modules.Installed.ViewModel;
+﻿using otor.msixhero.ui.Modules.PackageList.ViewModel;
 
-namespace MSI_Hero.ViewModel
+namespace otor.msixhero.ui.ViewModel
 {
     public class ApplicationState : NotifyPropertyChanged
     {

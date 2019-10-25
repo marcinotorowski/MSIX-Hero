@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace MSI_Hero.Modules.Installed.View
+namespace otor.msixhero.ui.Modules.PackageList.View
 {
     /// <summary>
     /// Interaction logic for PackageListView.xaml

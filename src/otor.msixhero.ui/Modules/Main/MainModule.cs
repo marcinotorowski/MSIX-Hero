@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MSI_Hero.Modules.Installed.View;
-using MSI_Hero.ViewModel;
+﻿using otor.msixhero.ui.Modules.Main.View;
+using otor.msixhero.ui.Modules.Main.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
-namespace MSI_Hero.Modules.Main
+namespace otor.msixhero.ui.Modules.Main
 {
     public class MainModule : IModule
     {

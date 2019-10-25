@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace otor.msihero.lib
+namespace otor.msixhero.lib
 {
     public enum PackageFindMode
     {

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace MSI_Hero.Converters
+namespace otor.msixhero.ui.Converters
 {
     public class NegativeEnumToBooleanConverter : IValueConverter
     {

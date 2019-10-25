@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <RootNamespace>MSI_Hero</RootNamespace>
+    <RootNamespace>otor.msixhero.ui</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
@@ -18,6 +18,11 @@
   <ItemGroup>
     <ProjectReference Include="..\otor.msixhero.adminhelper\otor.msixhero.adminhelper.csproj" />
     <ProjectReference Include="..\otor.msixhero.lib\otor.msixhero.lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Domain\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

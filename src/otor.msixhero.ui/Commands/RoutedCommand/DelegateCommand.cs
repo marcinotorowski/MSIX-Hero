@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
-namespace MSI_Hero.Commands.RoutedCommand
+namespace otor.msixhero.ui.Commands.RoutedCommand
 {
     public class DelegateCommand : ICommand
     {

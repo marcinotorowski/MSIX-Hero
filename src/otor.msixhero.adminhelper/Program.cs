@@ -9,7 +9,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using otor.msihero.lib;
 using otor.msixhero.lib;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Ipc.Commands;

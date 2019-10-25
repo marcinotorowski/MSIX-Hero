@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using otor.msixhero.lib;
 
-namespace otor.msihero.lib
+namespace otor.msixhero.lib
 {
     public class AppxPackageManager : IAppxPackageManager
     {

@@ -1,7 +1,8 @@
-﻿using MSI_Hero.Modules.Main;
+﻿using otor.msixhero.ui.Modules.Main;
+using otor.msixhero.ui.Modules.Main.View;
 using Prism.Regions;
 
-namespace MSI_Hero
+namespace otor.msixhero.ui
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

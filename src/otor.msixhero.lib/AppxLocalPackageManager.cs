@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 using System.Xml;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
-using otor.msixhero.lib;
 
-namespace otor.msihero.lib
+namespace otor.msixhero.lib
 {
     public class AppxLocalPackageManager : IAppxPackageManager
     {

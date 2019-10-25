@@ -1,27 +1,13 @@
-﻿using otor.msihero.lib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MSI_Hero.Domain;
-using MSI_Hero.Domain.Events;
-using MSI_Hero.Modules.Installed;
-using MSI_Hero.Modules.Installed.View;
-using MSI_Hero.ViewModel;
+using otor.msixhero.lib.BusinessLayer.Events;
+using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.ui.Modules.PackageList;
+using otor.msixhero.ui.Modules.PackageList.View;
 using Prism.Events;
 using Prism.Regions;
 
-namespace MSI_Hero
+namespace otor.msixhero.ui.Modules.Main.View
 {
     /// <summary>
     /// Interaction logic for MainView.xaml

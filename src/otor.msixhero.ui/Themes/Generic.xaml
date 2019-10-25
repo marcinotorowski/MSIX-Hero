@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:MSI_Hero.Converters">
+                    xmlns:converters="clr-namespace:otor.msixhero.ui.Converters">
 
     <FontFamily x:Key="SourceSansPro">pack://application:,,,/Resources/Fonts/#Source Sans Pro</FontFamily>
 

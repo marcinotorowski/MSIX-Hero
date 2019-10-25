@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace otor.msihero.lib
+namespace otor.msixhero.lib
 {
     public enum RegistryMountState
     {

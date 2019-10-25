@@ -1,17 +1,18 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using MSI_Hero.Domain;
-using MSI_Hero.Domain.Actions;
-using MSI_Hero.Domain.Events;
-using MSI_Hero.Domain.State.Enums;
-using MSI_Hero.Services;
-using otor.msihero.lib;
+using otor.msixhero.lib;
+using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.Events;
+using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
-namespace MSI_Hero.ViewModel
+namespace otor.msixhero.ui.Modules.Main.ViewModel
 {
     public class MainViewModel : NotifyPropertyChanged
     {

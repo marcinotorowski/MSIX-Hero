@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Ipc.Commands;
 
-namespace otor.msihero.lib
+namespace otor.msixhero.lib
 {
     public class AppxProxyPackageManager : IAppxPackageManager
     {

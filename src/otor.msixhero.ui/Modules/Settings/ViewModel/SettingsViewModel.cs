@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Prism.Services.Dialogs;
 
-namespace MSI_Hero.Modules.Settings.ViewModel
+namespace otor.msixhero.ui.Modules.Settings.ViewModel
 {
     public class SettingsViewModel : IDialogAware
     {

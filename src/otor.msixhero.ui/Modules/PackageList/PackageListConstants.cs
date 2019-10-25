@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MSI_Hero.Modules.Installed
+﻿namespace otor.msixhero.ui.Modules.PackageList
 {
     public class PackageListConstants
     {

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows.Data;
 
-namespace MSI_Hero.Converters
+namespace otor.msixhero.ui.Converters
 {
     public class EnumToBooleanConverter : IValueConverter
     {

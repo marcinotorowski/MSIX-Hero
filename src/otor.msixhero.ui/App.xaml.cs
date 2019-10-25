@@ -1,35 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Xml.Serialization;
+﻿using System.Windows;
 using CommonServiceLocator;
-using MSI_Hero.Domain;
-using MSI_Hero.Domain.State;
-using MSI_Hero.Modules.Installed;
-using MSI_Hero.Modules.Installed.View;
-using MSI_Hero.Modules.Installed.ViewModel;
-using MSI_Hero.Modules.Main;
-using MSI_Hero.Modules.Settings;
-using MSI_Hero.Modules.Settings.View;
-using MSI_Hero.Modules.Settings.ViewModel;
-using MSI_Hero.Services;
-using MSI_Hero.ViewModel;
-using otor.msihero.lib;
+using otor.msixhero.lib;
+using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.ui.Modules.Main;
+using otor.msixhero.ui.Modules.Main.View;
+using otor.msixhero.ui.Modules.Main.ViewModel;
+using otor.msixhero.ui.Modules.PackageList;
+using otor.msixhero.ui.Modules.PackageList.View;
+using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using otor.msixhero.ui.Modules.Settings;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Unity;
-using Prism.Unity.Ioc;
-using ApplicationState = MSI_Hero.Domain.State.ApplicationState;
 
-namespace MSI_Hero
+namespace otor.msixhero.ui
 {
     /// <summary>
     /// Interaction logic for App.xaml

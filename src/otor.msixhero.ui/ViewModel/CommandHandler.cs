@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using MSI_Hero.Commands.RoutedCommand;
-using MSI_Hero.Domain;
-using MSI_Hero.Domain.Actions;
-using otor.msihero.lib;
+using otor.msixhero.lib;
+using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.ui.Commands.RoutedCommand;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
-namespace MSI_Hero.ViewModel
+namespace otor.msixhero.ui.ViewModel
 {
     public class CommandHandler
     {

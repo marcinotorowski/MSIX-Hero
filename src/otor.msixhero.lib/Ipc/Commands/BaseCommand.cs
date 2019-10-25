@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using otor.msihero.lib;
 
 namespace otor.msixhero.lib.Ipc.Commands
 {

@@ -1,6 +1,6 @@
-﻿using otor.msihero.lib;
+﻿using otor.msixhero.lib;
 
-namespace MSI_Hero.ViewModel
+namespace otor.msixhero.ui.ViewModel
 {
     public class PackageViewModel : NotifyPropertyChanged
     {
