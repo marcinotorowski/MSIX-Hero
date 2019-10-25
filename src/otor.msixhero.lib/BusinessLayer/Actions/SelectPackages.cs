@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace otor.msixhero.lib.BusinessLayer.Actions
 {
@@ -11,19 +13,38 @@ namespace otor.msixhero.lib.BusinessLayer.Actions
         ReplaceSelection
     }
 
+    [Serializable]
     public class SelectPackages : BaseAction
     {
-        public SelectPackages(IReadOnlyCollection<Package> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        public SelectPackages()
         {
-            Selection = selection;
-            SelectionMode = selectionMode;
+            this.Selection = new List<Package>();
+            this.SelectionMode = SelectionMode.ReplaceSelection;
         }
-        
-        public SelectPackages(params Package[] selection) : this(selection, SelectionMode.ReplaceSelection)
+
+        public SelectPackages(List<Package> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        {
+            this.Selection = selection;
+            this.SelectionMode = selectionMode;
+        }
+
+        public SelectPackages(Package selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        {
+            this.Selection = new List<Package> { selection };
+            this.SelectionMode = selectionMode;
+        }
+
+        public SelectPackages(IEnumerable<Package> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        {
+            this.Selection = new List<Package>(selection);
+            this.SelectionMode = selectionMode;
+        }
+
+        public SelectPackages(params Package[] selection) : this(selection.ToList(), SelectionMode.ReplaceSelection)
         {
         }
 
-        public IReadOnlyCollection<Package> Selection { get; set; }
+        public List<Package> Selection { get; set; }
 
         public SelectionMode SelectionMode { get; set; }
 

@@ -11,9 +11,17 @@ namespace otor.msixhero.lib
     }
     public interface IAppxPackageManager
     {
+        Task<IList<string>> GetUsersForPackage(Package package);
+
+        Task<IList<string>> GetUsersForPackage(string packageName);
+
         Task MountRegistry(Package package, bool startRegedit = false);
 
+        Task MountRegistry(string packageName, string installLocation, bool startRegedit = false);
+
         Task UnmountRegistry(Package package);
+
+        Task UnmountRegistry(string packageName);
 
         Task RunTool(Package package, string toolName);
 

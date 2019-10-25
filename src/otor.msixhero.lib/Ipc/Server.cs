@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using otor.msixhero.lib.Ipc.Commands;
+using otor.msixhero.lib.BusinessLayer.Actions;
 using otor.msixhero.lib.Ipc.Helpers;
 using otor.msixhero.lib.Ipc.Streams;
 
@@ -13,7 +13,7 @@ namespace otor.msixhero.lib.Ipc
     {
         private readonly string instanceId;
 
-        private readonly Dictionary<Type, Func<BaseCommand, BaseCommand>> handlers = new Dictionary<Type, Func<BaseCommand, BaseCommand>>();
+        private readonly Dictionary<Type, Func<BaseAction, Task<byte[]>>> handlers = new Dictionary<Type, Func<BaseAction, Task<byte[]>>>();
         private readonly HashSet<Type> inputOutputTypes = new HashSet<Type>();
 
         public Server(string instanceId)
@@ -21,7 +21,7 @@ namespace otor.msixhero.lib.Ipc
             this.instanceId = instanceId;
         }
 
-        public void AddHandler<T>(Func<T, T> handler) where T : BaseCommand
+        public void AddHandler<T>(Func<T, Task<byte[]>> handler) where T : BaseAction
         {
             this.handlers.Add(typeof(T), command => handler((T)command));
             this.inputOutputTypes.Add(typeof(T));
@@ -47,22 +47,25 @@ namespace otor.msixhero.lib.Ipc
                         var binaryWriter = new BinaryStreamProcessor(stream);
                         var binaryReader = new BinaryStreamProcessor(stream);
 
-                        var command = await binaryReader.Read<BaseCommand>();
+                        var command = await binaryReader.Read<BaseAction>();
 
                         if (this.handlers.TryGetValue(command.GetType(), out var handler))
                         {
                             try
                             {
-                                var result = handler(command);
+                                var result = await handler(command);
                                 await binaryWriter.Write(true).ConfigureAwait(false);
                                 await binaryWriter.Write(result).ConfigureAwait(false);
                                 await stream.FlushAsync().ConfigureAwait(false);
+                            }
+                            catch (OperationCanceledException)
+                            {
                             }
                             catch (Exception e)
                             {
                                 await binaryWriter.Write(false);
                                 await binaryWriter.Write(e.Message);
-                                await binaryWriter.Write(e.StackTrace);
+                                await binaryWriter.Write(e.ToString());
                                 await stream.FlushAsync().ConfigureAwait(false);
                             }
 
@@ -71,7 +74,9 @@ namespace otor.msixhero.lib.Ipc
                         }
                         else
                         {
-                            throw new NotSupportedException("Not supported command: " + command.GetType().Name);
+                            await binaryWriter.Write(false);
+                            await binaryWriter.Write("The command " + command.GetType().Name + " is not supported.");
+                            await binaryWriter.Write((string)null);
                         }
                     }
                 }

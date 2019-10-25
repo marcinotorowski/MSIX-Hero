@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows.Input;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Actions;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.Ipc;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -61,7 +64,7 @@ namespace otor.msixhero.ui.ViewModel
 
         private void RefreshExecute()
         {
-            this.stateManager.Executor.ExecuteAsync(new ReloadPackages());
+            this.stateManager.Executor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context));
         }
 
         private bool CanRefresh()
@@ -84,7 +87,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.MountRegistry(selection.First(), true);
+            this.stateManager.Executor.ExecuteAsync(new MountRegistry(selection.First(), true));
         }
 
         private void UnmountRegistryExecute()
@@ -95,7 +98,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.UnmountRegistry(selection.First());
+            this.stateManager.Executor.ExecuteAsync(new UnmountRegistry(selection.First()));
         }
 
         private bool CanMountRegistry()

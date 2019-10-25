@@ -16,7 +16,7 @@ namespace otor.msixhero.lib.BusinessLayer.Actions
 
         public SetPackageContext(PackageContext context, bool force = false)
         {
-            Context = context;
+            this.Context = context;
         }
 
         [XmlElement]

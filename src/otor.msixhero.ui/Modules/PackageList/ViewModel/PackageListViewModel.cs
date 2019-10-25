@@ -146,7 +146,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         public Task RefreshPackages(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return this.stateManager.Executor.ExecuteAsync(new ReloadPackages(), cancellationToken);
+            return this.stateManager.Executor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), cancellationToken);
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace otor.msixhero.lib.BusinessLayer.Actions
+﻿using System;
+
+namespace otor.msixhero.lib.BusinessLayer.Actions
 {
+    [Serializable]
     public class SetPackageSidebarVisibility : BaseAction
     {
         public SetPackageSidebarVisibility() : this(true)

@@ -10,8 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using otor.msixhero.lib;
+using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
-using otor.msixhero.lib.Ipc.Commands;
 using otor.msixhero.lib.Ipc.Helpers;
 
 namespace otor.msixhero.adminhelper
@@ -26,22 +27,32 @@ namespace otor.msixhero.adminhelper
             }
         }
 
-        private static GetPackagesCommand Handle(GetPackagesCommand command)
+        private static async Task<byte[]> Handle(GetPackages command)
         {
             var pkgManager = new AppxPackageManager();
-            var packages = pkgManager.GetPackages(command.Mode).Result.ToList();
-            command.Result = packages;
-            return command;
+            var packages = new List<Package>(await pkgManager.GetPackages(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser));
+            return ReturnAsBytes(packages);
         }
 
-        private static GetPackagesCommand Handle(MountRegistryCommand command)
+        private static async Task<byte[]> Handle(MountRegistry command)
         {
-            throw new NotImplementedException();
+            var pkgManager = new AppxPackageManager();
+            await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit);
+            return ReturnAsBytes(true);
         }
 
-        private static GetPackagesCommand Handle(UnmountRegistryCommand command)
+        private static async Task<byte[]> Handle(UnmountRegistry command)
         {
-            throw new NotImplementedException();
+            var pkgManager = new AppxPackageManager();
+            await pkgManager.UnmountRegistry(command.PackageName);
+            return ReturnAsBytes(true);
+        }
+
+        private static async Task<byte[]> Handle(FindUsersOfPackage command)
+        {
+            var pkgManager = new AppxPackageManager();
+            var list = await pkgManager.GetUsersForPackage(command.FullProductId);
+            return ReturnAsBytes((List<string>)list);
         }
 
         private static async Task StartPipe(string instanceId)
@@ -49,49 +60,11 @@ namespace otor.msixhero.adminhelper
             try
             {
                 var server = new Server(instanceId);
-                server.AddHandler<GetPackagesCommand>(Handle);
+                server.AddHandler<GetPackages>(Handle);
+                server.AddHandler<MountRegistry>(Handle);
+                server.AddHandler<UnmountRegistry>(Handle);
+                server.AddHandler<FindUsersOfPackage>(Handle);
                 await server.Start();
-                return;
-
-                // var tcpServer = new TcpListener(45678);
-                // tcpServer.Start();
-
-                var ps = new PipeSecurity();
-                var sid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-                // var me = System.Security.Principal.WindowsIdentity.GetCurrent().User;
-
-                ps.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
-
-                // using var pipeServer = NamedPipeNative.CreateNamedPipe("msixhero-" + instanceId, ps);
-                using var pipeServer = NamedPipeNative.CreateNamedPipe("msixhero-" + instanceId, ps);
-                
-                // new NamedPipeServerStream()
-
-                // using var pipeServer = new NamedPipeServerStream("msixhero-" + instanceId, PipeDirection.InOut, 10, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 1024, 1024);
-
-                // pipeServer.SetAccessControl(ps);
-
-                while (true)
-                {
-                    // var client = await tcpServer.AcceptTcpClientAsync();
-                    await pipeServer.WaitForConnectionAsync();
-
-                    var stream = pipeServer;
-                    // using var stream = client.GetStream();
-                    using var binaryWriter = new BinaryWriter(stream, Encoding.UTF8);
-                    using var binaryReader = new BinaryReader(stream, Encoding.UTF8);
-
-                    var command = binaryReader.ReadString();
-                    Console.WriteLine("Got command " + command);
-                    switch (command)
-                    {
-                        case "listAllUserPackages":
-                            await ListAllUserPackages(binaryReader, binaryWriter);
-                            break;
-                        default:
-                            break;
-                    }
-                }
             }
             catch (Exception e)
             {
@@ -132,6 +105,15 @@ namespace otor.msixhero.adminhelper
                 writer.Write(e.GetType().Name);
                 writer.Write(e.StackTrace);
             }
+        }
+
+        private static byte[] ReturnAsBytes<T>(T input)
+        {
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            using var memory = new MemoryStream();
+            xmlSerializer.Serialize(memory, input);
+            memory.Seek(0, SeekOrigin.Begin);
+            return memory.ToArray();
         }
     }
 }

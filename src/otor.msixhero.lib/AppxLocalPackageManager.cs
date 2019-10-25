@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Xml;
 using Windows.Management.Deployment;
@@ -11,8 +12,23 @@ using Microsoft.Win32;
 
 namespace otor.msixhero.lib
 {
-    public class AppxLocalPackageManager : IAppxPackageManager
+    public class AppxPackageManager : IAppxPackageManager
     {
+        public Task<IList<string>> GetUsersForPackage(Package package)
+        {
+            return this.GetUsersForPackage(package.Name);
+        }
+
+        public Task<IList<string>> GetUsersForPackage(string packageName)
+        {
+            var pkgManager = new PackageManager();
+            return Task.Run(() =>
+            {
+                var list = pkgManager.FindUsers(packageName).Select(u => SidToAccountName(u.UserSecurityId)).ToList();
+                return (IList<string>)list;
+            });
+        }
+
         public async Task RunTool(Package package, string toolName)
         {
             if (package == null)
@@ -79,9 +95,14 @@ namespace otor.msixhero.lib
 
         public Task UnmountRegistry(Package package)
         {
+            return this.UnmountRegistry(package.Name);
+        }
+
+        public Task UnmountRegistry(string packageName)
+        {
             return Task.Run(() =>
             {
-                var proc = new ProcessStartInfo("cmd.exe", @"/c REG UNLOAD HKLM\MSIX-Hero-" + package.Name);
+                var proc = new ProcessStartInfo("cmd.exe", @"/c REG UNLOAD HKLM\MSIX-Hero-" + packageName);
                 proc.UseShellExecute = true;
                 proc.Verb = "runas";
 
@@ -97,11 +118,18 @@ namespace otor.msixhero.lib
 
         public Task MountRegistry(Package package, bool startRegedit = false)
         {
+            return this.MountRegistry(package.Name, package.InstallLocation, startRegedit);
+        }
+
+        public Task MountRegistry(string packageName, string installLocation, bool startRegedit = false)
+        {
             return Task.Run(() => {
-                var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + package.Name + " \"" + Path.Combine(package.InstallLocation, "Registry.dat") + "\"");
-                proc.UseShellExecute = true;
-                proc.CreateNoWindow = true;
-                proc.Verb = "runas";
+                var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + packageName + " \"" + Path.Combine(installLocation, "Registry.dat") + "\"")
+                {
+                    UseShellExecute = true, 
+                    CreateNoWindow = true, 
+                    Verb = "runas"
+                };
 
                 var p = Process.Start(proc);
                 if (p == null)
@@ -111,50 +139,50 @@ namespace otor.msixhero.lib
 
                 p.WaitForExit();
 
-                if (startRegedit)
+                if (!startRegedit)
                 {
-                    RegistryKey registry = null;
-                    try
+                    return;
+                }
+
+                RegistryKey registry = null;
+                try
+                {
+                    registry = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit");
+
+                    if (registry == null)
                     {
-                        registry = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit");
-
-                        if (registry == null)
-                        {
-                            registry = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit");
-                        }
-
-                        if (registry == null)
-                        {
-                            throw new InvalidOperationException();
-                        }
-
-                        var currentValue = registry.GetValue("LastKey") as string;
-
-                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey",
-                            @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + package.Name + @"\REGISTRY");
-
-                        proc = new ProcessStartInfo("regedit.exe")
-                        {
-                            Verb = "runas", 
-                            UseShellExecute = true
-                        };
-
-                        Process.Start(proc);
-                        System.Threading.Thread.Sleep(200);
-
-                        if (currentValue != null)
-                        {
-                            SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", currentValue);
-                        }
+                        registry = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit");
                     }
-                    finally
+
+                    if (registry == null)
                     {
-                        if (registry != null)
-                        {
-                            registry.Dispose();
-                        }
+                        throw new InvalidOperationException();
                     }
-                    
+
+                    var currentValue = registry.GetValue("LastKey") as string;
+
+                    SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + packageName + @"\REGISTRY");
+
+                    proc = new ProcessStartInfo("regedit.exe")
+                    {
+                        Verb = "runas", 
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(proc);
+                    System.Threading.Thread.Sleep(200);
+
+                    if (currentValue != null)
+                    {
+                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", currentValue);
+                    }
+                }
+                finally
+                {
+                    if (registry != null)
+                    {
+                        registry.Dispose();
+                    }
                 }
             });
         }
@@ -278,6 +306,20 @@ namespace otor.msixhero.lib
             }
         }
 
+        private static string SidToAccountName(string sidString)
+        {
+            var sid = new SecurityIdentifier(sidString);
+            try
+            {
+                var account = (NTAccount)sid.Translate(typeof(NTAccount));
+                return account.ToString();
+            }
+            catch (IdentityNotMappedException)
+            {
+                return sidString;
+            }
+        }
+
         private static async Task<PkgDetails> GetManifestDetails(string installLocation)
         {
             string img = null;
@@ -362,7 +404,11 @@ namespace otor.msixhero.lib
                     throw new InvalidOperationException();
                 }
 
-                regKey.SetValue(name, value);
+                regKey.DeleteValue(name, false);
+                if (!string.IsNullOrEmpty(value))
+                {
+                    regKey.SetValue(name, value, RegistryValueKind.String);
+                }
             }
             finally
             {

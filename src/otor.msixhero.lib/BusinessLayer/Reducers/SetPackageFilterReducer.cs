@@ -12,7 +12,7 @@ using otor.msixhero.lib.BusinessLayer.State.Enums;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal interface IReducer<T> where T : IApplicationState
+    internal interface IReducer<in T> where T : IApplicationState
     {
         Task<bool> ReduceAsync(IApplicationStateManager<T> state, CancellationToken cancellationToken);
     }

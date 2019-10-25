@@ -1,13 +1,19 @@
-﻿using otor.msixhero.lib.BusinessLayer.State.Enums;
+﻿using System;
+using otor.msixhero.lib.BusinessLayer.State.Enums;
 
 namespace otor.msixhero.lib.BusinessLayer.Actions
 {
+    [Serializable]
     public class SetPackageFilter : BaseAction
     {
+        public SetPackageFilter()
+        {
+        }
+
         public SetPackageFilter(PackageFilter filter, string searchKey)
         {
-            Filter = filter;
-            SearchKey = searchKey;
+            this.Filter = filter;
+            this.SearchKey = searchKey;
         }
 
         /// <summary>

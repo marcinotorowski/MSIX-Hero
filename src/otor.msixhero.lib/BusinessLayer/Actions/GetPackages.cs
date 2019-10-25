@@ -8,19 +8,20 @@ namespace otor.msixhero.lib.BusinessLayer.Actions
 {
 
     [Serializable]
-    public class ReloadPackages : BaseElevatedAction
+    public class GetPackages : BaseElevatedAction
     {
-        public ReloadPackages()
+        public GetPackages()
         {
+            this.Context = PackageContext.CurrentUser;
         }
 
-        public ReloadPackages(PackageContext context)
+        public GetPackages(PackageContext context)
         {
             this.Context = context;
         }
 
         [XmlElement]
-        public PackageContext? Context { get; set; }
+        public PackageContext Context { get; set; }
 
         public override bool RequiresElevation
         {
