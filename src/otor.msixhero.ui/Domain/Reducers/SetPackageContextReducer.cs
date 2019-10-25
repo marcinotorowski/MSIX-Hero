@@ -38,16 +38,16 @@ namespace MSI_Hero.Domain.Reducers
             var context = this.busyManager.Begin();
             try
             {
-                List<Package> packageSource;
+                IList<Package> packageSource;
 
                 switch (action.Context)
                 {
                     case PackageContext.Admin:
-                        packageSource = await Task.Run(() => (this.packageManager.GetPackages(PackageFindMode.AllUsers, true).ToList()), cancellationToken);
+                        packageSource = await this.packageManager.GetPackages(PackageFindMode.AllUsers);
                         break;
 
                     case PackageContext.CurrentUser:
-                        packageSource = await Task.Run(() => (this.packageManager.GetPackages(PackageFindMode.CurrentUser, false).ToList()), cancellationToken);
+                        packageSource = await this.packageManager.GetPackages(PackageFindMode.CurrentUser);
                         break;
 
                     default:
@@ -64,6 +64,8 @@ namespace MSI_Hero.Domain.Reducers
                 stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Publish(state.Packages.Context);
                 await stateManager.Executor.ExecuteAsync(new SetPackageFilter(state.Packages.Filter, state.Packages.SearchKey), cancellationToken).ConfigureAwait(false);
                 await stateManager.Executor.ExecuteAsync(new SelectPackages(state.Packages.VisibleItems.Where(item => selectedPackageNames.Contains(item.Name)).ToList()), cancellationToken).ConfigureAwait(false);
+                state.Packages.Context = this.action.Context;
+
                 return true;
             }
             finally

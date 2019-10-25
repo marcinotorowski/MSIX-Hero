@@ -1,427 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Management.Automation;
-using System.Management.Automation.Runspaces;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
-using System.Xml;
-using System.Xml.Serialization;
-using Windows.Management.Deployment;
-using Windows.Storage.Streams;
-using Windows.UI.Xaml;
+using System.Threading.Tasks;
 using otor.msixhero.lib;
-using Process = System.Diagnostics.Process;
 
 namespace otor.msihero.lib
 {
-    public enum PackageFindMode
-    {
-        Auto,
-        CurrentUser,
-        AllUsers
-    }
-
     public class AppxPackageManager : IAppxPackageManager
     {
-        public void RunTool(Package package, string toolName)
+        protected readonly IAppxPackageManager Proxy = new AppxProxyPackageManager();
+
+        protected readonly IAppxPackageManager Local = new AppxLocalPackageManager();
+
+        public Task MountRegistry(Package package, bool startRegedit = false)
         {
-            if (package == null)
+            if (UserHelper.IsAdministrator())
             {
-                throw new ArgumentNullException(nameof(package));
+                return this.Local.MountRegistry(package, startRegedit);
             }
 
-            if (toolName == null)
-            {
-                throw new ArgumentNullException(nameof(toolName));
-            }
-            
-            using var ps = PowerShell.Create();
-            ps.AddCommand("Set-ExecutionPolicy");
-            ps.AddParameter("ExecutionPolicy", "ByPass");
-            ps.AddParameter("Scope", "Process");
-            ps.Invoke();
-            ps.Commands.Clear();
-
-            ps.AddCommand("Import-Module");
-            ps.AddParameter("Name", "Appx");
-            ps.Invoke();
-            ps.Commands.Clear();
-
-            ps.AddCommand("Invoke-CommandInDesktopPackage");
-            ps.AddParameter("Command", toolName);
-            ps.AddParameter("PackageFamilyName", package.PackageFamilyName);
-            ps.AddParameter("AppId", package.Name);
-            ps.AddParameter("PreventBreakaway");
-
-            ps.Invoke();
+            return this.Proxy.MountRegistry(package, startRegedit);
         }
 
-        public RegistryMountState GetRegistryMountState(Package package)
+        public Task UnmountRegistry(Package package)
         {
-            return this.GetRegistryMountState(package.InstallLocation, package.Name);
+            if (UserHelper.IsAdministrator())
+            {
+                return this.Local.UnmountRegistry(package);
+            }
+
+            return this.Proxy.UnmountRegistry(package);
         }
 
-        public RegistryMountState GetRegistryMountState(string installLocation, string packageName)
+        public Task RunTool(Package package, string toolName)
         {
-            RegistryMountState hasRegistry;
+            //if (UserHelper.IsAdministrator())
+            //{
+                return this.Local.RunTool(package, toolName);
+            //}
 
-            if (!System.IO.File.Exists(Path.Combine(installLocation, "registry.dat")))
+            //return this.Proxy.RunTool(package, toolName);
+        }
+
+        public Task RunApp(Package package)
+        {
+            //if (UserHelper.IsAdministrator())
+            //{
+                return this.Local.RunApp(package);
+            //}
+
+            //return this.Proxy.RunApp(package);
+        }
+
+        public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName)
+        {
+            return this.Local.GetRegistryMountState(installLocation, packageName);
+        }
+
+        public Task<RegistryMountState> GetRegistryMountState(Package package)
+        {
+            return this.Local.GetRegistryMountState(package);
+        }
+
+        public Task<IList<Package>> GetPackages(PackageFindMode mode = PackageFindMode.Auto)
+        {
+            switch (mode)
             {
-                hasRegistry = RegistryMountState.NotApplicable;
-            }
-            else
-            {
-                using (var reg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("MSIX-Hero-" + packageName))
-                {
-                    if (reg != null)
+                case PackageFindMode.CurrentUser:
+                    return this.Local.GetPackages(mode);
+                case PackageFindMode.Auto:
+                case PackageFindMode.AllUsers:
+                    if (UserHelper.IsAdministrator())
                     {
-                        hasRegistry = RegistryMountState.Mounted;
-                    }
-                    else
-                    {
-                        hasRegistry = RegistryMountState.NotMounted;
-                    }
-                }
-            }
-
-            return hasRegistry;
-        }
-
-        public void UnmountRegistry(Package package)
-        {
-
-            var proc = new ProcessStartInfo("cmd.exe", @"/c REG UNLOAD HKLM\MSIX-Hero-" + package.Name);
-            proc.UseShellExecute = true;
-            proc.Verb = "runas";
-
-            var p = Process.Start(proc);
-            p.WaitForExit();
-        }
-
-        public void MountRegistry(Package package, bool startRegedit = false)
-        {
-            var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + package.Name + " \"" + Path.Combine(package.InstallLocation, "Registry.dat" + "\""));
-            proc.UseShellExecute = true;
-            proc.Verb = "runas";
-
-            var p = Process.Start(proc);
-            p.WaitForExit();
-
-            if (startRegedit)
-            {
-                using (var registry = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit"))
-                {
-                    var currentValue = registry.GetValue("LastKey") as string;
-
-                    SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + package.Name + @"\REGISTRY");
-
-                    proc = new ProcessStartInfo("regedit.exe") { Verb = "runas", UseShellExecute = true };
-                    p = Process.Start(proc);
-                    System.Threading.Thread.Sleep(200);
-
-                    if (registry != null && currentValue != null)
-                    {
-                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", currentValue);
-                    }
-                }
-            }
-        }
-
-        private static void SetRegistryValue(string key, string name, string value)
-        {
-            var proc = new ProcessStartInfo("cmd.exe");
-            proc.Arguments = $@"/c REG ADD ""{key}"" /v ""{name}"" /d ""{value}"" /f";
-            proc.UseShellExecute = true;
-            proc.Verb = "runas";
-            var p = Process.Start(proc);
-            p.WaitForExit();
-        }
-        
-        public void RunApp(Package package)
-        {
-            if (package == null)
-            {
-                throw new ArgumentNullException(nameof(package));
-            }
-
-            if (package.ManifestLocation == null || !System.IO.File.Exists(package.ManifestLocation))
-            {
-                throw new FileNotFoundException();
-            }
-
-            var entryPoint = GetEntryPoints(package).FirstOrDefault();
-            if (entryPoint == null)
-            {
-                throw new InvalidOperationException("This package has no entry points.");
-            }
-
-            var p = new Process();
-            var startInfo = new ProcessStartInfo
-            {
-                UseShellExecute = true, 
-                FileName = entryPoint
-            };
-
-            p.StartInfo = startInfo;
-            p.Start();
-        }
-
-        private static int processPid = 0;
-
-        private IEnumerable<Package> GetPackagesAdmin()
-        {
-            var process = processPid == 0 ? null : Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault(p => p.Id == processPid);
-            if (process == null)
-            {
-                var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper" + ".exe"), "--pipe " + Process.GetCurrentProcess().Id);
-                psi.Verb = "runas";
-                psi.UseShellExecute = true;
-                psi.WindowStyle = ProcessWindowStyle.Normal;
-
-                var p = Process.Start(psi);
-                System.Threading.Thread.Sleep(400);
-                processPid = p.Id;
-            }
-
-            // using var pipeClient = new NamedPipeClientStream("msixhero-" + Process.GetCurrentProcess().Id);
-            // pipeClient.Connect(1000);
-            // var stream = pipeClient;
-
-            using var tcpClient = new TcpClient();
-            tcpClient.Connect("localhost", 45678);
-            using var stream = tcpClient.GetStream();
-
-            using var binaryWriter = new BinaryWriter(stream);
-            using var binaryReader = new BinaryReader(stream);
-
-            binaryWriter.Write("listAllUserPackages");
-            var result = binaryReader.ReadBoolean();
-            if (!result)
-            {
-                var exceptionName = binaryReader.ReadString();
-                var stackTrace = binaryReader.ReadString();
-                throw new InvalidOperationException(exceptionName + "\r\n" + stackTrace);
-            }
-
-            var xmlSerializer = new XmlSerializer(typeof(List<Package>));
-            var byteLength = binaryReader.ReadInt32();
-
-            var byteArray = binaryReader.ReadBytes(byteLength);
-            using var memoryStream = new MemoryStream(byteArray);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            var str = System.Text.Encoding.UTF8.GetString(memoryStream.ToArray());
-
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            var deserialized = (List<Package>)xmlSerializer.Deserialize(memoryStream);
-            return deserialized;
-        }
-
-        public IEnumerable<Package> GetPackages(PackageFindMode mode = PackageFindMode.Auto, bool elevateIfRequired = true)
-        {
-            if (mode == PackageFindMode.Auto)
-            {
-                mode = UserHelper.IsAdministrator() ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
-            }
-
-            if (elevateIfRequired && mode == PackageFindMode.AllUsers && !UserHelper.IsAdministrator())
-            {
-                foreach (var item in this.GetPackagesAdmin())
-                {
-                    yield return item;
-                }
-            }
-            else
-            {
-                var pkgMan = new PackageManager();
-                IEnumerable<Windows.ApplicationModel.Package> allPackages;
-
-                switch (mode)
-                {
-                    case PackageFindMode.CurrentUser:
-                        allPackages = pkgMan.FindPackagesForUser(string.Empty);
-                        break;
-                    case PackageFindMode.AllUsers:
-                        allPackages = pkgMan.FindPackages();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-                }
-
-                foreach (var item in allPackages)
-                {
-                    string installLocation = null;
-                    try
-                    {
-                        installLocation = item.InstalledLocation?.Path;
-                    }
-                    catch (Exception)
-                    {
-                        continue;
+                        mode = PackageFindMode.CurrentUser;
+                        return this.Local.GetPackages(mode);
                     }
 
-                    var details = GetManifestDetails(installLocation);
-
-                    var hasRegistry = this.GetRegistryMountState(installLocation, item.Id.Name);
-
-                    yield return new Package()
-                    {
-                        DisplayName = details.DisplayName,
-                        Name = item.Id.Name,
-                        Image = details.Logo,
-                        ProductId = item.Id.FullName,
-                        InstallLocation = installLocation,
-                        PackageFamilyName = item.Id.FamilyName,
-                        Description = details.Description,
-                        DisplayPublisherName = details.DisplayPublisherName,
-                        Publisher = item.Id.Publisher,
-                        TileColor = details.Color,
-                        Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
-                        SignatureKind = Convert(item.SignatureKind),
-                        HasRegistry = hasRegistry
-                    };
-                }
-            }
-        }
-
-        private static IEnumerable<string> GetEntryPoints(Package package)
-        {
-            if (!System.IO.File.Exists(package.ManifestLocation))
-            {
-                yield break;
+                    return this.Proxy.GetPackages(mode);
             }
 
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(package.ManifestLocation);
-            var nodes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
-
-            foreach (var node in nodes.OfType<XmlNode>())
-            {
-                var attrVal = node.Attributes["Id"]?.Value;
-                if (string.IsNullOrEmpty(attrVal))
-                {
-                    attrVal = string.Empty;
-                }
-                else
-                {
-                    attrVal = "!" + attrVal;
-                }
-
-                yield return @"shell:appsFolder\" + package.PackageFamilyName + attrVal;
-            }
-        }
-
-        private static PkgDetails GetManifestDetails(string installLocation)
-        {
-            string img = null;
-            string name = null;
-            string publisher = null;
-            string description = null;
-            string color = null;
-
-            if (installLocation == null)
-            {
-                return new PkgDetails();
-            }
-                       
-            var appxManifest = System.IO.Path.Combine(installLocation, "AppxManifest.xml");
-            if (!System.IO.File.Exists(appxManifest))
-            {
-                return new PkgDetails();
-            }
-
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(appxManifest);
-
-            var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
-
-            foreach (XmlNode subNode in node.ChildNodes)
-            {
-                switch (subNode.LocalName)
-                {
-                    case "DisplayName":
-                        name = subNode.InnerText;
-                        break;
-                    case "Logo":
-
-                        img = System.IO.Path.Combine(installLocation, subNode.InnerText);
-                        if (!System.IO.File.Exists(img))
-                        {
-                            var extension = System.IO.Path.GetExtension(img);
-                            var baseName = System.IO.Path.GetFileNameWithoutExtension(img);
-                            var baseFolder = System.IO.Path.GetDirectoryName(img);
-
-                            img = null;
-
-                            var dirInfo = new DirectoryInfo(Path.Combine(installLocation, baseFolder));
-                            if (dirInfo.Exists)
-                            {
-                                var found = dirInfo.EnumerateFiles(baseName + "*" + extension).FirstOrDefault();
-                                if (found != null)
-                                {
-                                    img = found.FullName;
-                                }
-                            }
-                        }
-
-                        break;
-                    case "PublisherDisplayName":
-                        publisher = subNode.InnerText;
-                        break;
-                    case "Description":
-                        description = subNode.InnerText;
-                        break;
-                }
-            }
-
-            node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
-
-            color = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
-
-            return new PkgDetails(name, publisher, img, description, color);
-        }
-
-        private static SignatureKind Convert(Windows.ApplicationModel.PackageSignatureKind signatureKind)
-        {
-            switch (signatureKind)
-            {
-                case Windows.ApplicationModel.PackageSignatureKind.None:
-                    return SignatureKind.None;
-                case Windows.ApplicationModel.PackageSignatureKind.Developer:
-                    return SignatureKind.Developer;
-                case Windows.ApplicationModel.PackageSignatureKind.Enterprise:
-                    return SignatureKind.Enterprise;
-                case Windows.ApplicationModel.PackageSignatureKind.Store:
-                    return SignatureKind.Store;
-                case Windows.ApplicationModel.PackageSignatureKind.System:
-                    return SignatureKind.System;
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        private struct PkgDetails
-        {
-            public PkgDetails(string displayName, string displayPublisherName, string logo, string description, string color)
-            {
-                this.DisplayName = displayName;
-                this.DisplayPublisherName = displayPublisherName;
-                this.Logo = logo;
-                this.Description = description;
-                this.Color = color;
-            }
-
-            public string Description;
-            public string DisplayName;
-            public string DisplayPublisherName;
-            public string Logo;
-            public string Color;
+            throw new NotSupportedException();
         }
     }
 }

@@ -1,20 +1,28 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace otor.msihero.lib
 {
+    public enum PackageFindMode
+    {
+        Auto,
+        CurrentUser,
+        AllUsers
+    }
     public interface IAppxPackageManager
     {
-        void MountRegistry(Package package, bool startRegedit = false);
-        void UnmountRegistry(Package package);
+        Task MountRegistry(Package package, bool startRegedit = false);
 
-        void RunTool(Package package, string toolName);
+        Task UnmountRegistry(Package package);
 
-        void RunApp(Package package);
+        Task RunTool(Package package, string toolName);
 
-        RegistryMountState GetRegistryMountState(string installLocation, string packageName);
+        Task RunApp(Package package);
 
-        RegistryMountState GetRegistryMountState(Package package);
+        Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName);
 
-        IEnumerable<Package> GetPackages(PackageFindMode mode = PackageFindMode.Auto, bool elevateIfRequired = true);
+        Task<RegistryMountState> GetRegistryMountState(Package package);
+
+        Task<IList<Package>> GetPackages(PackageFindMode mode = PackageFindMode.Auto);
     }
 }

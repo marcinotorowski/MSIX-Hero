@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using otor.msihero.lib;
+using otor.msixhero.lib;
+using otor.msixhero.lib.Ipc;
+using otor.msixhero.lib.Ipc.Commands;
+using otor.msixhero.lib.Ipc.Helpers;
 
 namespace otor.msixhero.adminhelper
 {
@@ -19,29 +23,62 @@ namespace otor.msixhero.adminhelper
         {
             if (args.Length > 1 && args[0] == "--pipe")
             {
-                StartPipe(args[1]);
+                StartPipe(args[1]).Wait();
             }
+        }
 
-            Console.WriteLine("Waiting for key");
-            Console.ReadKey();
+        private static GetPackagesCommand Handle(GetPackagesCommand command)
+        {
+            var pkgManager = new AppxPackageManager();
+            var packages = pkgManager.GetPackages(command.Mode).Result.ToList();
+            command.Result = packages;
+            return command;
+        }
+
+        private static GetPackagesCommand Handle(MountRegistryCommand command)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static GetPackagesCommand Handle(UnmountRegistryCommand command)
+        {
+            throw new NotImplementedException();
         }
 
         private static async Task StartPipe(string instanceId)
         {
             try
             {
-                var tcpServer = new TcpListener(45678);
-                tcpServer.Start();
+                var server = new Server(instanceId);
+                server.AddHandler<GetPackagesCommand>(Handle);
+                await server.Start();
+                return;
 
-                // var pipeServer = new NamedPipeServerStream("msixhero-" + instanceId, PipeDirection.InOut, 10, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 1024, 1024);
+                // var tcpServer = new TcpListener(45678);
+                // tcpServer.Start();
+
+                var ps = new PipeSecurity();
+                var sid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                // var me = System.Security.Principal.WindowsIdentity.GetCurrent().User;
+
+                ps.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+
+                // using var pipeServer = NamedPipeNative.CreateNamedPipe("msixhero-" + instanceId, ps);
+                using var pipeServer = NamedPipeNative.CreateNamedPipe("msixhero-" + instanceId, ps);
                 
+                // new NamedPipeServerStream()
+
+                // using var pipeServer = new NamedPipeServerStream("msixhero-" + instanceId, PipeDirection.InOut, 10, PipeTransmissionMode.Byte, PipeOptions.WriteThrough, 1024, 1024);
+
+                // pipeServer.SetAccessControl(ps);
+
                 while (true)
                 {
-                    var client = await tcpServer.AcceptTcpClientAsync();
-                    //    await pipeServer.WaitForConnectionAsync();
+                    // var client = await tcpServer.AcceptTcpClientAsync();
+                    await pipeServer.WaitForConnectionAsync();
 
-                    // var stream = pipeServer;
-                    using var stream = client.GetStream();
+                    var stream = pipeServer;
+                    // using var stream = client.GetStream();
                     using var binaryWriter = new BinaryWriter(stream, Encoding.UTF8);
                     using var binaryReader = new BinaryReader(stream, Encoding.UTF8);
 
@@ -68,12 +105,8 @@ namespace otor.msixhero.adminhelper
             try
             {
                 Console.WriteLine("Getting all tasks");
-                var allTasks = (await Task.Run(() =>
-                {
-                    var pkgManager = new AppxPackageManager();
-                    return pkgManager.GetPackages(PackageFindMode.AllUsers, false);
-                })).ToList();
-
+                var pkgManager = new AppxPackageManager();
+                var allTasks = await pkgManager.GetPackages(PackageFindMode.AllUsers);
                 var xmlSerializer = new XmlSerializer(typeof(List<Package>));
 
                 using var memStream = new MemoryStream();

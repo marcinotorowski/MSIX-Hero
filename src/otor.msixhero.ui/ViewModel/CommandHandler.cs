@@ -106,7 +106,7 @@ namespace MSI_Hero.ViewModel
                 return false;
             }
 
-            return this.packageManager.GetRegistryMountState(selection.First()) == RegistryMountState.NotMounted;
+            return this.packageManager.GetRegistryMountState(selection.First()).Result == RegistryMountState.NotMounted;
         }
 
         private bool CanUnmountRegistry()
@@ -117,7 +117,7 @@ namespace MSI_Hero.ViewModel
                 return false;
             }
 
-            return this.packageManager.GetRegistryMountState(selection.First()) == RegistryMountState.Mounted;
+            return this.packageManager.GetRegistryMountState(selection.First()).Result == RegistryMountState.Mounted;
         }
 
         private bool CanOpenPowerShell()
