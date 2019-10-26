@@ -41,7 +41,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.Tools.Add(new ToolViewModel("powershell.exe"));
             this.Tools.Add(new ToolViewModel("cmd.exe"));
 
-            busyManager.StatusChanged += BusyManagerOnStatusChanged;
+            busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
 
             stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
@@ -61,7 +61,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         public PackageContext Context
         {
             get => this.stateManager.CurrentState.Packages.Context;
-            set => this.stateManager.Executor.ExecuteAsync(new SetPackageContext(value));
+            set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageContext(value));
         }
 
         public bool HasSelection
@@ -87,14 +87,14 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.Developer;
                 }
 
-                this.stateManager.Executor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
             }
         }
 
         public bool ShowSidebar
         {
             get => this.stateManager.CurrentState.LocalSettings.ShowSidebar;
-            set => this.stateManager.Executor.ExecuteAsync(new SetPackageSidebarVisibility(value), CancellationToken.None);
+            set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageSidebarVisibility(value), CancellationToken.None);
         }
 
         public bool ShowStoreApps
@@ -112,7 +112,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.Store;
                 }
 
-                this.stateManager.Executor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
             }
         }
 
@@ -131,7 +131,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.System;
                 }
 
-                this.stateManager.Executor.Execute(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.Execute(SetPackageFilter.CreateFrom(currentFilter));
             }
         }
 

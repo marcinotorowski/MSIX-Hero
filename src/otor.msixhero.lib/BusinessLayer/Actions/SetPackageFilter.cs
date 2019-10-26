@@ -4,7 +4,7 @@ using otor.msixhero.lib.BusinessLayer.State.Enums;
 namespace otor.msixhero.lib.BusinessLayer.Actions
 {
     [Serializable]
-    public class SetPackageFilter : BaseAction
+    public class SetPackageFilter : BaseCommand
     {
         public SetPackageFilter()
         {

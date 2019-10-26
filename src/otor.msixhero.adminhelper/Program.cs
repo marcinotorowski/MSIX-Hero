@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Net.Sockets;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Actions;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
-using otor.msixhero.lib.Ipc.Helpers;
 
 namespace otor.msixhero.adminhelper
 {
@@ -21,89 +14,76 @@ namespace otor.msixhero.adminhelper
     {
         static void Main(string[] args)
         {
-            if (args.Length > 1 && args[0] == "--pipe")
+            if (args.Length > 0 && args[0] == "--selfElevate")
             {
-                StartPipe(args[1]).Wait();
+                StartPipe().GetAwaiter().GetResult();
+            }
+            else
+            {
+                Environment.ExitCode = 1;
             }
         }
 
         private static async Task<byte[]> Handle(GetPackages command)
         {
+            Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
             var packages = new List<Package>(await pkgManager.GetPackages(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser));
+            Console.WriteLine("Returning back " + packages.Count + " results.");
             return ReturnAsBytes(packages);
         }
 
         private static async Task<byte[]> Handle(MountRegistry command)
         {
+            Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
             await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit);
+            Console.WriteLine("Registry mounted.");
             return ReturnAsBytes(true);
         }
 
         private static async Task<byte[]> Handle(UnmountRegistry command)
         {
+            Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
             await pkgManager.UnmountRegistry(command.PackageName);
+            Console.WriteLine("Registry unmounted.");
             return ReturnAsBytes(true);
         }
 
-        private static async Task<byte[]> Handle(FindUsersOfPackage command)
+        private static async Task<byte[]> Handle(GetUsersOfPackage command)
         {
+            Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
             var list = await pkgManager.GetUsersForPackage(command.FullProductId);
-            return ReturnAsBytes((List<string>)list);
+            Console.WriteLine("Returning back " + list.Count + " results.");
+            return ReturnAsBytes(list);
         }
 
-        private static async Task StartPipe(string instanceId)
+        private static async Task<byte[]> Handle(RemovePackage command)
+        {
+            Console.WriteLine("Handling " + command.GetType().Name);
+            var pkgManager = new AppxPackageManager();
+            await pkgManager.RemoveApp(command.Package);
+            Console.WriteLine("Package uninstalled.");
+            return ReturnAsBytes(true);
+        }
+
+        private static async Task StartPipe()
         {
             try
             {
-                var server = new Server(instanceId);
+                var server = new Server();
                 server.AddHandler<GetPackages>(Handle);
                 server.AddHandler<MountRegistry>(Handle);
                 server.AddHandler<UnmountRegistry>(Handle);
-                server.AddHandler<FindUsersOfPackage>(Handle);
+                server.AddHandler<GetUsersOfPackage>(Handle);
+                server.AddHandler<RemovePackage>(Handle);
                 await server.Start();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-            }
-        }
-
-        private static async Task ListAllUserPackages(BinaryReader reader, BinaryWriter writer)
-        {
-            try
-            {
-                Console.WriteLine("Getting all tasks");
-                var pkgManager = new AppxPackageManager();
-                var allTasks = await pkgManager.GetPackages(PackageFindMode.AllUsers);
-                var xmlSerializer = new XmlSerializer(typeof(List<Package>));
-
-                using var memStream = new MemoryStream();
-                xmlSerializer.Serialize(memStream, allTasks);
-
-                memStream.Seek(0, SeekOrigin.Begin);
-                Console.WriteLine(System.Text.Encoding.UTF8.GetString(memStream.ToArray()));
-
-                var arr = memStream.ToArray();
-                memStream.Seek(0, SeekOrigin.Begin);
-                Console.WriteLine(allTasks.Count + "elements in " + arr.Length + " bytes");
-
-                Console.WriteLine("Return true");
-                writer.Write(true);
-                writer.Write(arr.Length);
-                writer.Write(arr);
-            }
-            catch (Exception e)
-            {
-                // in case of failure, write false, then name of the exception and then the stack trace
-                Console.WriteLine("Return false");
-                writer.Write(false);
-                Console.WriteLine(e.ToString());
-                writer.Write(e.GetType().Name);
-                writer.Write(e.StackTrace);
             }
         }
 

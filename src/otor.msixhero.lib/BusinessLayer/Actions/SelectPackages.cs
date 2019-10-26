@@ -14,7 +14,7 @@ namespace otor.msixhero.lib.BusinessLayer.Actions
     }
 
     [Serializable]
-    public class SelectPackages : BaseAction
+    public class SelectPackages : BaseCommand
     {
         public SelectPackages()
         {
@@ -40,7 +40,7 @@ namespace otor.msixhero.lib.BusinessLayer.Actions
             this.SelectionMode = selectionMode;
         }
 
-        public SelectPackages(params Package[] selection) : this(selection.ToList(), SelectionMode.ReplaceSelection)
+        public SelectPackages(params Package[] selection) : this(selection.ToList())
         {
         }
 

@@ -7,31 +7,25 @@ using otor.msixhero.lib.BusinessLayer.Actions;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
-using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal interface IReducer<in T> where T : IApplicationState
-    {
-        Task<bool> ReduceAsync(IApplicationStateManager<T> state, CancellationToken cancellationToken);
-    }
-
-
-    internal class SetPackageFilterReducer : IReducer<ApplicationState>
+    internal class SetPackageFilterReducer : IReducer<ApplicationState, bool>
     {
         private readonly SetPackageFilter action;
-        private readonly IAppxPackageManager packageManager;
-        private readonly IBusyManager busyManager;
 
-        public SetPackageFilterReducer(SetPackageFilter action, IAppxPackageManager packageManager, IBusyManager busyManager)
+        public SetPackageFilterReducer(SetPackageFilter action)
         {
             this.action = action;
-            this.packageManager = packageManager;
-            this.busyManager = busyManager;
         }
 
-        public Task<bool> ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
+        public Task ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
+        {
+            return this.ReduceAndOutputAsync(state, cancellationToken);
+        }
+
+        public Task<bool> ReduceAndOutputAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
         {
             var state = stateManager.CurrentState;
             var oldSearchKey = state.Packages.SearchKey;
@@ -60,7 +54,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             if (eventRequired)
             {
                 var eventToSend = new PackagesFilterChangedPayload(newFilter, oldFilter, newSearchKey, oldSearchKey);
-                state.EventAggregator.GetEvent<PackagesFilterChanged>().Publish(eventToSend);
+                stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Publish(eventToSend);
             }
 
             var toHide = new List<Package>();
@@ -152,7 +146,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             if (toHide.Any() || toShow.Any()) 
             {
-                state.EventAggregator.GetEvent<PackagesVisibilityChanged>().Publish(new PackagesVisibilityChangedPayLoad(toShow, toHide));
+                stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Publish(new PackagesVisibilityChangedPayLoad(toShow, toHide));
                 return Task.FromResult(true);
             }
             

@@ -1,4 +1,5 @@
 ﻿using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Ipc;
 using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
@@ -8,10 +9,11 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         public ApplicationStateManager(
             IEventAggregator eventAggregator,
             IAppxPackageManager packageManager,
-            IBusyManager busyManager)
+            IBusyManager busyManager,
+            IProcessManager processManager)
         {
-            this.CurrentState = new ApplicationState(eventAggregator);
-            this.Executor = new ActionExecutor(this, packageManager, busyManager);
+            this.CurrentState = new ApplicationState();
+            this.CommandExecutor = new CommandExecutor(this, packageManager, busyManager, processManager);
             this.EventAggregator = eventAggregator;
         }
 
@@ -19,7 +21,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 
         IApplicationState IApplicationStateManager.CurrentState => this.CurrentState;
 
-        public IActionExecutor Executor { get; }
+        public ICommandExecutor CommandExecutor { get; }
 
         public IEventAggregator EventAggregator { get; }
     }

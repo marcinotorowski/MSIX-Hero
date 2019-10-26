@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 namespace otor.msixhero.lib.BusinessLayer.Actions
 {
     [Serializable]
-    public class UnmountRegistry : BaseElevatedAction
+    public class UnmountRegistry : BaseSelfElevatedBaseCommand
     {
         public UnmountRegistry()
         {

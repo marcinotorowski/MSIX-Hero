@@ -1,4 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Actions;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
@@ -7,39 +10,34 @@ using otor.msixhero.lib.Ipc;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    // ReSharper disable once IdentifierTypo
-    internal class UnmountRegistryReducer : BaseSelfElevationReducer<ApplicationState>
+    public class RemovePackageReducer : BaseSelfElevationReducer<ApplicationState>
     {
-        private readonly UnmountRegistry action;
+        private readonly RemovePackage action;
         private readonly IAppxPackageManager packageManager;
         private readonly IBusyManager busyManager;
 
-        // ReSharper disable once IdentifierTypo
-        public UnmountRegistryReducer(
-            UnmountRegistry action, 
-            IAppxPackageManager packageManager, 
-            IBusyManager busyManager,
-            IProcessManager processManager) : base(processManager)
+        public RemovePackageReducer(RemovePackage action, IAppxPackageManager packageManager, IBusyManager busyManager, IProcessManager processManager) : base(processManager)
         {
             this.action = action;
             this.packageManager = packageManager;
             this.busyManager = busyManager;
         }
-        
+
         public override async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin();
+            context.Progress = 30;
+            context.Message = "Removing " + this.action.Package.DisplayName;
+
             try
             {
-                context.Message = "Un-mounting registry...";
-                var state = stateManager.CurrentState;
-                if (this.action.RequiresElevation && !state.IsElevated)
+                if (this.action.RequiresElevation && !stateManager.CurrentState.IsElevated)
                 {
-                    await this.SelfElevateAndExecute(this.action, cancellationToken);
+                    await this.packageManager.RemoveApp(this.action.Package).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.packageManager.UnmountRegistry(this.action.PackageName);
+                    await this.SelfElevateAndExecute(this.action, cancellationToken).ConfigureAwait(false);
                 }
             }
             finally

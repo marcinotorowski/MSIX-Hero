@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using otor.msixhero.lib.BusinessLayer.Models;
 
 namespace otor.msixhero.lib
 {
@@ -11,9 +12,9 @@ namespace otor.msixhero.lib
     }
     public interface IAppxPackageManager
     {
-        Task<IList<string>> GetUsersForPackage(Package package);
+        Task<List<User>> GetUsersForPackage(Package package);
 
-        Task<IList<string>> GetUsersForPackage(string packageName);
+        Task<List<User>> GetUsersForPackage(string packageName);
 
         Task MountRegistry(Package package, bool startRegedit = false);
 
@@ -32,5 +33,6 @@ namespace otor.msixhero.lib
         Task<RegistryMountState> GetRegistryMountState(Package package);
 
         Task<IList<Package>> GetPackages(PackageFindMode mode = PackageFindMode.Auto);
+        Task RemoveApp(Package package, bool forAllUsers = false, bool preserveAppData = false);
     }
 }

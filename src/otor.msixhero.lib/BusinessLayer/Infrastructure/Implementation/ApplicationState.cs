@@ -5,15 +5,12 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
     public class ApplicationState : IApplicationState
     {
-        public ApplicationState(IEventAggregator eventAggregator)
+        public ApplicationState()
         {
             this.Packages = new PackageListState(this);
-            this.EventAggregator = eventAggregator;
             this.LocalSettings = new LocalSettings();
         }
-
-        public IEventAggregator EventAggregator { get; }
-
+        
         public PackageListState Packages { get; }
 
         public LocalSettings LocalSettings { get; }

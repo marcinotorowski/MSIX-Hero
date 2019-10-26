@@ -10,6 +10,7 @@ namespace otor.msixhero.lib
         NotMounted
     }
 
+    [Serializable]
     public class Package
     {
         public string ProductId { get; set; }

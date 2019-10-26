@@ -10,7 +10,7 @@ using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class SelectPackagesReducer : IReducer<ApplicationState>
+    internal class SelectPackagesReducer : IReducer<ApplicationState, IList<Package>>
     {
         private readonly SelectPackages action;
 
@@ -19,8 +19,9 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public Task<bool> ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
+        public Task ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
         {
+
             IReadOnlyCollection<Package> select;
             IReadOnlyCollection<Package> deselect;
             switch (this.action.SelectionMode)
@@ -46,7 +47,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
                 case SelectionMode.RemoveFromSelection:
                 {
-                    select = new Package[0]; 
+                    select = new Package[0];
                     deselect = this.action.Selection.Intersect(state.CurrentState.Packages.SelectedItems).ToList();
                     break;
                 }
@@ -62,19 +63,24 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (!select.Any() && !deselect.Any())
+            if (select.Any() || deselect.Any())
             {
-                return Task.FromResult(false);
+                state.CurrentState.Packages.SelectedItems.AddRange(select);
+                foreach (var item in deselect)
+                {
+                    state.CurrentState.Packages.SelectedItems.Remove(item);
+                }
+
+                state.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(new PackagesSelectionChangedPayLoad(@select, deselect));
             }
 
-            state.CurrentState.Packages.SelectedItems.AddRange(select);
-            foreach (var item in deselect)
-            {
-                state.CurrentState.Packages.SelectedItems.Remove(item);
-            }
-
-            state.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(new PackagesSelectionChangedPayLoad(@select, deselect));
             return Task.FromResult(true);
+        }
+
+        public async Task<IList<Package>> ReduceAndOutputAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
+        {
+            await this.ReduceAsync(state, cancellationToken).ConfigureAwait(false);
+            return state.CurrentState.Packages.SelectedItems;
         }
     }
 }

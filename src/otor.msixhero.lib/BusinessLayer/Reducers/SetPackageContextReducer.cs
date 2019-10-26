@@ -15,16 +15,16 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public async Task<bool> ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
+        public async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
         {
             var state = stateManager.CurrentState;
 
             if (state.Packages.Context == action.Context && !this.action.Force)
             {
-                return false;
+                return;
             }
 
-            return await stateManager.Executor.ExecuteAsync(new GetPackages(action.Context), cancellationToken);
+            await stateManager.CommandExecutor.ExecuteAsync(new GetPackages(action.Context), cancellationToken);
         }
     }
 }

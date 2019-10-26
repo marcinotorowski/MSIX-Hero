@@ -16,7 +16,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public Task<bool> ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
+        public Task ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
         {
             if (this.action.IsVisible == state.CurrentState.LocalSettings.ShowSidebar)
             {

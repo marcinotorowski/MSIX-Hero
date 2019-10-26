@@ -3,7 +3,7 @@
 namespace otor.msixhero.lib.BusinessLayer.Actions
 {
     [Serializable]
-    public class SetPackageSidebarVisibility : BaseAction
+    public class SetPackageSidebarVisibility : BaseCommand
     {
         public SetPackageSidebarVisibility() : this(true)
         {

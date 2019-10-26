@@ -7,7 +7,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure
     {
         IApplicationState CurrentState { get; }
 
-        IActionExecutor Executor { get; }
+        ICommandExecutor CommandExecutor { get; }
 
         IEventAggregator EventAggregator { get; }
     }

@@ -10,6 +10,7 @@
                      xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
                      xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
                      xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
+                     xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Main.ViewModel"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -19,6 +20,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunApp}" Command="{Binding CommandHandler.RunApp}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
@@ -127,7 +129,7 @@
                         </Fluent:SplitButton>
                     </Fluent:RibbonGroupBox>
                     <Fluent:RibbonGroupBox Header="Control">
-                        <Fluent:Button Header="Uninstall">
+                        <Fluent:Button Header="Uninstall" Command="Delete">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 9.383 4 4 9.383 4 16 C 4 16.672 4.0647344 17.339 4.1777344 18 L 6.2128906 18 C 6.0758906 17.341 6 16.673 6 16 C 6 10.486 10.486 6 16 6 C 21.514 6 26 10.486 26 16 C 26 16.087545 25.988867 16.174352 25.986328 16.261719 C 25.349748 16.097269 24.6861 16 24 16 C 21.488603 16 19.240982 17.175028 17.771484 19 L 4 19 L 4 27 L 16.591797 27 C 17.78536 29.923538 20.66037 32 24 32 C 28.4 32 32 28.4 32 24 C 32 21.034216 30.36099 18.43607 27.947266 17.054688 C 27.980835 16.704504 28 16.353089 28 16 C 28 9.383 22.617 4 16 4 z M 16 8 C 11.593562 8 8 11.593562 8 16 L 10 16 C 10 12.674438 12.674438 10 16 10 L 16 8 z M 16 13 C 14.346 13 13 14.346 13 16 C 13 16.771 13.300297 17.468 13.779297 18 L 18.220703 18 C 18.700703 17.468 19 16.771 19 16 C 19 14.346 17.654 13 16 13 z M 16 15 C 16.552 15 17 15.449 17 16 C 17 16.551 16.552 17 16 17 C 15.448 17 15 16.551 15 16 C 15 15.449 15.448 15 16 15 z M 24 18 C 27.3 18 30 20.7 30 24 C 30 27.3 27.3 30 24 30 C 20.7 30 18 27.3 18 24 C 18 20.7 20.7 18 24 18 z M 21.699219 20.300781 L 20.300781 21.699219 L 22.599609 24 L 20.300781 26.300781 L 21.699219 27.699219 L 24 25.400391 L 26.300781 27.699219 L 27.699219 26.300781 L 25.400391 24 L 27.699219 21.699219 L 26.300781 20.300781 L 24 22.599609 L 21.699219 20.300781 z M 6 21 L 16.591797 21 C 16.212827 21.928256 16 22.93963 16 24 C 16 24.339374 16.028764 24.67143 16.070312 25 L 6 25 L 6 21 z" />
                             </Fluent:Button.LargeIcon>

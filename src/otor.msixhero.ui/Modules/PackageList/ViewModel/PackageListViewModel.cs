@@ -1,24 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Actions;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Events;
 using Prism.Regions;
+using DelegateCommand = Prism.Commands.DelegateCommand;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
     public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {
         private readonly IApplicationStateManager stateManager;
+        private readonly Lazy<ICommand> findUsers;
         private PackageViewModel selectedPackage;
         private bool isActive;
 
@@ -34,6 +40,19 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackagesLoaded, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
+
+            this.findUsers = new Lazy<ICommand>(() => new DelegateCommand(() => this.FindUsersExecuteAsync(), this.FindUsersCanExecute));
+        }
+
+        private bool FindUsersCanExecute()
+        {
+            return true;
+        }
+
+        private async Task FindUsersExecuteAsync()
+        {
+            var list = await this.stateManager.CommandExecutor.ExecuteAsync<List<User>>(new GetUsersOfPackage(this.selectedPackage.ProductId));
+            this.SelectedPackage.Users = list;
         }
 
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
@@ -116,7 +135,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public string SearchKey
         {
             get => this.stateManager.CurrentState.Packages.SearchKey;
-            set => this.stateManager.Executor.ExecuteAsync(SetPackageFilter.CreateFrom(value));
+            set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(value));
         }
 
         public ObservableCollection<PackageViewModel> AllPackages { get; }
@@ -130,11 +149,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 if (value == null)
                 {
-                    this.stateManager.Executor.ExecuteAsync(SelectPackages.CreateEmpty());
+                    this.stateManager.CommandExecutor.ExecuteAsync(SelectPackages.CreateEmpty());
                 }
                 else
                 {
-                    this.stateManager.Executor.ExecuteAsync(new SelectPackages(value.Model));
+                    this.stateManager.CommandExecutor.ExecuteAsync(new SelectPackages(value.Model));
                 }
             }
         }
@@ -143,10 +162,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         {
             get => this.selectedPackage != null;
         }
-        
+
+        public ICommand FindUsers
+        {
+            get => this.findUsers.Value;
+        }
+
         public Task RefreshPackages(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return this.stateManager.Executor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), cancellationToken);
+            return this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), cancellationToken);
         }
     }
 }

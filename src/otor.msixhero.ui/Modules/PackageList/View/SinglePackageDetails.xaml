@@ -3,44 +3,61 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel:PackageViewModel}"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
+             xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
+             mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <Label Style="{StaticResource Label}" Content="{Binding DisplayName}" />
-        
-        <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-            <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+    <DockPanel>
+        <Label DockPanel.Dock="Top" Style="{StaticResource Label}" Content="{Binding SelectedPackage.DisplayName}" />
+
+        <DockPanel DockPanel.Dock="Top" >
+            <Border DataContext="{Binding SelectedPackage}" Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                </Border>
             </Border>
-        </Border>
+            <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
+        </DockPanel>
 
-        <StackPanel>
-            <TextBlock TextWrapping="Wrap" Text="{Binding Description}" />
-        </StackPanel>
+        <TabControl DockPanel.Dock="Top" Margin="0 10 0 0">
+            <TabItem Header="Properties" DataContext="{Binding SelectedPackage}">
+                <StackPanel Margin="10">
+                    <StackPanel Margin="0 10 0 0">
+                        <TextBlock Text="Version" />
+                        <TextBlock Opacity="0.7" Text="{Binding Version}" TextWrapping="Wrap" />
+                    </StackPanel>
 
-        <StackPanel Margin="0 10 0 0">
-            <TextBlock Text="Version" />
-            <TextBlock Opacity="0.7" Text="{Binding Version}" TextWrapping="Wrap" />
-        </StackPanel>
+                    <StackPanel Margin="0 10 0 0">
+                        <TextBlock Text="Publisher" />
+                        <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
+                    </StackPanel>
 
-        <StackPanel Margin="0 10 0 0">
-            <TextBlock Text="Publisher" />
-            <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
-        </StackPanel>
+                    <StackPanel Margin="0 10 0 0">
+                        <TextBlock Text="Subject" />
+                        <TextBlock Opacity="0.7" Text="{Binding Publisher}" TextWrapping="Wrap" />
+                    </StackPanel>
 
-        <StackPanel Margin="0 10 0 0">
-            <TextBlock Text="Subject" />
-            <TextBlock Opacity="0.7" Text="{Binding Publisher}" TextWrapping="Wrap" />
-        </StackPanel>
+                    <StackPanel Margin="0 10 0 0">
+                        <TextBlock Text="Family name" />
+                        <TextBlock Opacity="0.7" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
+                    </StackPanel>
 
-        <StackPanel Margin="0 10 0 0">
-            <TextBlock Text="Family name" />
-            <TextBlock Opacity="0.7" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
-        </StackPanel>
+                    <StackPanel Margin="0 10 0 0">
+                        <TextBlock Text="Product ID" />
+                        <TextBlock Opacity="0.7" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Volumes">
 
-        <StackPanel Margin="0 10 0 0">
-            <TextBlock Text="Product ID" />
-            <TextBlock Opacity="0.7" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
-        </StackPanel>
-    </StackPanel>
+            </TabItem>
+            <TabItem Header="Installed by">
+                <DockPanel>
+                    <Button DockPanel.Dock="Top" HorizontalAlignment="Left" Content="Find local users" Command="{Binding FindUsers}" />
+                    <ListBox DisplayMemberPath="Name" Margin="0 10 0 0" ItemsSource="{Binding SelectedPackage.Users}" />
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+
+    </DockPanel>
 </UserControl>
