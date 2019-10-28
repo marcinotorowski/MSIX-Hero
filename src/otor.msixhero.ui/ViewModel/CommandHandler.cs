@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Modules.Dialogs;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -44,6 +45,7 @@ namespace otor.msixhero.ui.ViewModel
             this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());
 
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
+            this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
         }
 
         public ICommand Refresh { get; }
@@ -53,6 +55,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand UnmountRegistry { get; }
 
         public ICommand RemovePackage { get; }
+
+        public ICommand NewSelfSignedCert { get; }
 
         public ICommand MountRegistry { get; }
 
@@ -237,6 +241,15 @@ namespace otor.msixhero.ui.ViewModel
             }
 
             return tool != null;
+        }
+
+        private void NewSelfSignedCertExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.NewSelfSignedPath, new DialogParameters(), this.OnSelfSignedDialogClosed);
+        }
+
+        private void OnSelfSignedDialogClosed(IDialogResult obj)
+        {
         }
     }
 }

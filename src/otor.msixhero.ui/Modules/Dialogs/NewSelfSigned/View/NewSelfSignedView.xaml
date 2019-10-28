@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View.NewSelfSignedView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
+             mc:Ignorable="d" 
+             Width="400"
+             Height="500"
+             d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
+    <UserControl.CommandBindings>
+        <CommandBinding 
+            Command="Save"
+            CanExecute="CanSave"
+            Executed="SaveExecuted" />
+        <CommandBinding 
+            Command="Close"
+            Executed="CloseExecuted" />
+        <CommandBinding 
+            Command="Open"
+            Executed="OpenExecuted" />
+    </UserControl.CommandBindings>
+    <DockPanel>
+        <Border Background="#eee" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right">
+                <Button Padding="8 4" Margin="4" Command="Save" Content="OK" />
+                <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Margin="8">
+            <TextBlock Text="Publisher friendly name" Margin="0 0 0 5" />
+            <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="Publisher name" Margin="0 15 0 5" />
+            <TextBox TabIndex="2" Text="{Binding PublisherName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="Password" Margin="0 15 0 5" />
+            <PasswordBox TabIndex="3" PasswordChanged="OnPasswordChanged" />
+
+            <TextBlock Text="Output path" Margin="0 15 0 5" />
+            <DockPanel>
+                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="8 0 0 0" />
+                <TextBox TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" />
+            </DockPanel>
+        </StackPanel>
+
+    </DockPanel>
+</UserControl>

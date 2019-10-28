@@ -10,6 +10,7 @@ using System.Xml;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.PowerShellInterop;
 
 namespace otor.msixhero.lib
 {
@@ -30,33 +31,18 @@ namespace otor.msixhero.lib
             });
         }
 
-        public Task RemoveApp(Package package, bool forAllUsers = false, bool preserveAppData = false)
+        public async Task RemoveApp(Package package, bool forAllUsers = false, bool preserveAppData = false)
         {
             if (package == null)
             {
                 throw new ArgumentNullException(nameof(package));
             }
-
-            return Task.Run(() =>
-            {
-                using var ps = PowerShell.Create();
-                ps.AddCommand("Set-ExecutionPolicy");
-                ps.AddParameter("ExecutionPolicy", "ByPass");
-                ps.AddParameter("Scope", "Process");
-                ps.Invoke();
-                ps.Commands.Clear();
-
-                ps.AddCommand("Import-Module");
-                ps.AddParameter("Name", "Appx");
-                ps.Invoke();
-                ps.Commands.Clear();
-
-                ps.AddCommand("Remove-AppxPackage");
-                ps.AddParameter("Package", package.ProductId);
-                ps.AddParameter("AllUsers", forAllUsers);
-                // ps.AddParameter("PreserveApplicationData", preserveAppData); // MSDN says this is only for sideloading
-                ps.Invoke();
-            });
+            
+            using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
+            ps.AddCommand("Remove-AppxPackage");
+            ps.AddParameter("Package", package.ProductId);
+            ps.AddParameter("AllUsers", forAllUsers);
+            await ps.InvokeAsync().ConfigureAwait(false);
         }
 
         public async Task RunTool(Package package, string toolName)
@@ -71,25 +57,13 @@ namespace otor.msixhero.lib
                 throw new ArgumentNullException(nameof(toolName));
             }
 
-            using var ps = PowerShell.Create();
-            ps.AddCommand("Set-ExecutionPolicy");
-            ps.AddParameter("ExecutionPolicy", "ByPass");
-            ps.AddParameter("Scope", "Process");
-            ps.Invoke();
-            ps.Commands.Clear();
-
-            ps.AddCommand("Import-Module");
-            ps.AddParameter("Name", "Appx");
-            ps.Invoke();
-            ps.Commands.Clear();
-
+            using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             ps.AddCommand("Invoke-CommandInDesktopPackage");
             ps.AddParameter("Command", toolName);
             ps.AddParameter("PackageFamilyName", package.PackageFamilyName);
             ps.AddParameter("AppId", package.Name);
             ps.AddParameter("PreventBreakaway");
-
-            await ps.InvokeAsync();
+            await ps.InvokeAsync().ConfigureAwait(false);
         }
 
         public Task<RegistryMountState> GetRegistryMountState(Package package)

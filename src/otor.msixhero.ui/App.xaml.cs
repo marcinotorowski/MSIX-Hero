@@ -5,6 +5,9 @@ using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.ui.Modules.Dialogs;
+using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
+using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
 using otor.msixhero.ui.Modules.Main;
 using otor.msixhero.ui.Modules.Main.View;
 using otor.msixhero.ui.Modules.Main.ViewModel;
@@ -29,9 +32,10 @@ namespace otor.msixhero.ui
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton(typeof(IAppxPackageManager), typeof(AppxPackageManager));
+            containerRegistry.RegisterSingleton(typeof(IAppxSigningManager), typeof(AppxSigningManager));
             containerRegistry.RegisterSingleton(typeof(IBusyManager), typeof(BusyManager));
-            containerRegistry.RegisterInstance(typeof(IProcessManager), this.processManager);
             containerRegistry.RegisterSingleton(typeof(IApplicationStateManager), typeof(ApplicationStateManager));
+            containerRegistry.RegisterInstance(typeof(IProcessManager), this.processManager);
         }
         
         protected override Window CreateShell()
@@ -50,6 +54,7 @@ namespace otor.msixhero.ui
             moduleCatalog.AddModule<MainModule>();
             moduleCatalog.AddModule<SettingsModule>();
             moduleCatalog.AddModule<PackageListModule>();
+            moduleCatalog.AddModule<DialogsModule>();
         }
         
         protected override void ConfigureViewModelLocator()
@@ -57,6 +62,7 @@ namespace otor.msixhero.ui
             base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<MainView, MainViewModel>();
             ViewModelLocationProvider.Register<PackageListView, PackageListViewModel>();
+            ViewModelLocationProvider.Register<NewSelfSignedView, NewSelfSignedViewModel>();
         }
 
         public void Dispose()

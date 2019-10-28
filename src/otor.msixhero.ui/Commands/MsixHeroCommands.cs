@@ -14,11 +14,14 @@ namespace otor.msixhero.ui.Commands
             OpenPowerShell = new RoutedUICommand { Text = "Open PowerShell console" };
             MountRegistry = new RoutedUICommand { Text = "Mount registry" };
             UnmountRegistry = new RoutedUICommand { Text = "Unmount registry" };
+            CreateSelfSign = new RoutedUICommand { Text = "Create new self-signed certificate "};
         }
 
         public static RoutedUICommand OpenExplorer { get; }
 
         public static RoutedUICommand OpenExplorerUser { get; }
+
+        public static RoutedUICommand CreateSelfSign { get; }
 
         public static RoutedUICommand OpenManifest { get; }
 
