@@ -88,6 +88,8 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action);
             this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.appxPackageManager, this.busyManager, this.processManager);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action);
+            this.reducerFactories[typeof(RemovePackage)] = action => new RemovePackageReducer((RemovePackage)action, this.appxPackageManager, this.busyManager, this.processManager);
+            this.reducerFactories[typeof(GetSelectionDetails)] = action => new GetSelectionDetailsReducer((GetSelectionDetails)action, this.processManager);
             this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.appxPackageManager, this.processManager);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action);
             this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.appxPackageManager, this.busyManager, this.processManager);

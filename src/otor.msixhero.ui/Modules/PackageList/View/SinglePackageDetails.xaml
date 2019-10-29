@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
@@ -52,10 +53,13 @@
 
             </TabItem>
             <TabItem Header="Installed by">
-                <DockPanel>
-                    <Button DockPanel.Dock="Top" HorizontalAlignment="Left" Content="Find local users" Command="{Binding FindUsers}" />
-                    <ListBox DisplayMemberPath="Name" Margin="0 10 0 0" ItemsSource="{Binding SelectedPackage.Users}" />
-                </DockPanel>
+                <xctk:BusyIndicator IsBusy="{Binding SelectionDetails.IsLoading}">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Top" HorizontalAlignment="Left" Content="Find local users" Command="{Binding FindUsers}" />
+                        
+                        <ListBox DisplayMemberPath="Name" Margin="0 10 0 0" ItemsSource="{Binding SelectionDetails.CurrentValue.InstalledOn.Users}" />
+                    </DockPanel>
+                </xctk:BusyIndicator>
             </TabItem>
         </TabControl>
 

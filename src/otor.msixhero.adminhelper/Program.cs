@@ -28,7 +28,7 @@ namespace otor.msixhero.adminhelper
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
-            var packages = new List<Package>(await pkgManager.GetPackages(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser));
+            var packages = new List<Package>(await pkgManager.GetPackages(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser).ConfigureAwait(false));
             Console.WriteLine("Returning back " + packages.Count + " results.");
             return ReturnAsBytes(packages);
         }
@@ -37,7 +37,7 @@ namespace otor.msixhero.adminhelper
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
-            await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit);
+            await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit).ConfigureAwait(false);
             Console.WriteLine("Registry mounted.");
             return ReturnAsBytes(true);
         }
@@ -46,16 +46,25 @@ namespace otor.msixhero.adminhelper
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
-            await pkgManager.UnmountRegistry(command.PackageName);
+            await pkgManager.UnmountRegistry(command.PackageName).ConfigureAwait(false);
             Console.WriteLine("Registry unmounted.");
             return ReturnAsBytes(true);
+        }
+
+        private static async Task<byte[]> Handle(GetSelectionDetails command)
+        {
+            Console.WriteLine("Handling " + command.GetType().Name);
+            var pkgManager = new AppxPackageManager();
+            var users = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
+            Console.WriteLine("Got " + users.Count + " users.");
+            return ReturnAsBytes(users);
         }
 
         private static async Task<byte[]> Handle(GetUsersOfPackage command)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
-            var list = await pkgManager.GetUsersForPackage(command.FullProductId);
+            var list = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
             Console.WriteLine("Returning back " + list.Count + " results.");
             return ReturnAsBytes(list);
         }
@@ -64,7 +73,7 @@ namespace otor.msixhero.adminhelper
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var pkgManager = new AppxPackageManager();
-            await pkgManager.RemoveApp(command.Package);
+            await pkgManager.RemoveApp(command.Package).ConfigureAwait(false);
             Console.WriteLine("Package uninstalled.");
             return ReturnAsBytes(true);
         }
@@ -79,6 +88,7 @@ namespace otor.msixhero.adminhelper
                 server.AddHandler<UnmountRegistry>(Handle);
                 server.AddHandler<GetUsersOfPackage>(Handle);
                 server.AddHandler<RemovePackage>(Handle);
+                server.AddHandler<GetSelectionDetails>(Handle);
                 await server.Start();
             }
             catch (Exception e)

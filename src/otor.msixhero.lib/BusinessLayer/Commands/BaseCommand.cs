@@ -14,6 +14,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     [XmlInclude(typeof(UnmountRegistry))]
     [XmlInclude((typeof(GetUsersOfPackage)))]
     [XmlInclude((typeof(RemovePackage)))]
+    [XmlInclude((typeof(GetSelectionDetails)))]
     public abstract class BaseCommand
     {
     }

@@ -15,6 +15,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public abstract Task<TOutput> ReduceAndOutputAsync(IApplicationStateManager<T> state, CancellationToken cancellationToken);
 
+        public override Task ReduceAsync(IApplicationStateManager<T> state, CancellationToken cancellationToken)
+        {
+            return this.ReduceAndOutputAsync(state, cancellationToken);
+        }
+
         protected async Task<TOutput> GetOutputFromSelfElevation<TInput>(TInput inputAction, CancellationToken cancellationToken) where TInput : BaseCommand
         {
             var client = new Client(processManager);

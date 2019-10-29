@@ -29,11 +29,6 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.packageManager = packageManager;
         }
 
-        public override Task ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
-        {
-            return this.ReduceAndOutputAsync(state, cancellationToken);
-        }
-
         public override async Task<List<Package>> ReduceAndOutputAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin();

@@ -45,7 +45,6 @@ namespace otor.msixhero.lib.Ipc
 
                         try
                         {
-
                             if (this.handlers.TryGetValue(command.GetType(), out var handler))
                             {
                                 try
