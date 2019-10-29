@@ -7,5 +7,7 @@
         ILocalSettings LocalSettings { get; }
 
         bool IsElevated { get; }
+
+        bool HasSelfElevated { get; }
     }
 }

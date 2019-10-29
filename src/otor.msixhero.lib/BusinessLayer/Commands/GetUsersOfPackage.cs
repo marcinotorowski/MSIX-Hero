@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace otor.msixhero.lib.BusinessLayer.Actions
+namespace otor.msixhero.lib.BusinessLayer.Commands
 {
     [Serializable]
     public class GetUsersOfPackage : BaseSelfElevatedBaseCommand

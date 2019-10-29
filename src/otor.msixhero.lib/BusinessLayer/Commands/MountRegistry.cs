@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace otor.msixhero.lib.BusinessLayer.Actions
+namespace otor.msixhero.lib.BusinessLayer.Commands
 {
     [Serializable]
     public class MountRegistry : BaseSelfElevatedBaseCommand

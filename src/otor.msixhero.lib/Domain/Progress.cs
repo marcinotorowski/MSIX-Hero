@@ -5,7 +5,7 @@ using System.Text;
 
 namespace otor.msixhero.lib.Domain
 {
-    public class Progress : Progress<PathData>
+    public class Progress : Progress<Progress.ProgressData>
     {
         public struct  ProgressData
         {

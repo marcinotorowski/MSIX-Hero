@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="XCOPY /E /I &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;" />
+    <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;" />
   </Target>
 
 </Project>

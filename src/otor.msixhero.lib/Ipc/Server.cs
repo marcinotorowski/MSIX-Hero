@@ -4,7 +4,7 @@ using System.IO.Pipes;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.Ipc.Helpers;
 using otor.msixhero.lib.Ipc.Streams;
 

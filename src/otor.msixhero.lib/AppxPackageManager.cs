@@ -39,9 +39,9 @@ namespace otor.msixhero.lib
             }
             
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            ps.AddCommand("Remove-AppxPackage");
-            ps.AddParameter("Package", package.ProductId);
-            ps.AddParameter("AllUsers", forAllUsers);
+            var cmd = ps.AddCommand("Remove-AppxPackage");
+            cmd.AddParameter("Package", package.ProductId);
+            cmd.AddParameter("AllUsers", forAllUsers);
             await ps.InvokeAsync().ConfigureAwait(false);
         }
 
@@ -58,11 +58,11 @@ namespace otor.msixhero.lib
             }
 
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            ps.AddCommand("Invoke-CommandInDesktopPackage");
-            ps.AddParameter("Command", toolName);
-            ps.AddParameter("PackageFamilyName", package.PackageFamilyName);
-            ps.AddParameter("AppId", package.Name);
-            ps.AddParameter("PreventBreakaway");
+            var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");
+            cmd.AddParameter("Command", toolName);
+            cmd.AddParameter("PackageFamilyName", package.PackageFamilyName);
+            cmd.AddParameter("AppId", package.Name);
+            cmd.AddParameter("PreventBreakaway");
             await ps.InvokeAsync().ConfigureAwait(false);
         }
 

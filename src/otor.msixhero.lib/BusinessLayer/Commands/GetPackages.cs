@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 
-namespace otor.msixhero.lib.BusinessLayer.Actions
+namespace otor.msixhero.lib.BusinessLayer.Commands
 {
 
     [Serializable]

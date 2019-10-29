@@ -1,39 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
 
 namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
 {
     /// <summary>
-    /// Interaction logic for NewSelfSignedView.xaml
+    /// Interaction logic for NewSelfSignedView.
     /// </summary>
-    public partial class NewSelfSignedView : UserControl
+    public partial class NewSelfSignedView
     {
         public NewSelfSignedView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ((NewSelfSignedViewModel)this.DataContext).Save().GetAwaiter().GetResult();
-            // ReSharper disable once PossibleNullReferenceException
-            Window.GetWindow(this).Close();
+            ((NewSelfSignedViewModel)this.DataContext).Save().ContinueWith(t =>
+            {
+                if (t.Exception == null && !t.IsCanceled && t.IsCompleted)
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    Window.GetWindow(this).Close();
+                }
+            });
         }
 
         private void CanSave(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = ((NewSelfSignedViewModel) this.DataContext).CanCloseDialog();
+            var dataContext = ((NewSelfSignedViewModel) this.DataContext);
+            e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
             e.ContinueRouting = !e.CanExecute;
         }
 

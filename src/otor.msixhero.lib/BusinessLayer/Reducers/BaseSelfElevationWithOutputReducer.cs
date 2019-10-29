@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Ipc;
@@ -18,7 +18,8 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         protected async Task<TOutput> GetOutputFromSelfElevation<TInput>(TInput inputAction, CancellationToken cancellationToken) where TInput : BaseCommand
         {
             var client = new Client(processManager);
-            return await client.Execute<TInput, TOutput>(inputAction, cancellationToken);
+            var result = await client.Execute<TInput, TOutput>(inputAction, cancellationToken);
+            return result;
         }
     }
 }

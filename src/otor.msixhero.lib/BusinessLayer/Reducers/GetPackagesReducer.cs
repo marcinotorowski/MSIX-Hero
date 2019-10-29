@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Actions;
+using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
@@ -44,6 +44,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 if (this.action.RequiresElevation && !stateManager.CurrentState.IsElevated)
                 {
                     packageSource = await this.GetOutputFromSelfElevation(this.action, cancellationToken).ConfigureAwait(false);
+                    stateManager.CurrentState.HasSelfElevated = true;
                 }
                 else
                 {

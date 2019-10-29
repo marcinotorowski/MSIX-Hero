@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace otor.msixhero.lib.BusinessLayer.Actions
+namespace otor.msixhero.lib.BusinessLayer.Commands
 {
     public abstract class BaseSelfElevatedBaseCommand : BaseCommand
     {
