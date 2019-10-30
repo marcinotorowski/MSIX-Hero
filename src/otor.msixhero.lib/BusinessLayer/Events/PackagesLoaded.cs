@@ -3,7 +3,7 @@ using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Events
 {
-    public class PackagesLoadedEvent : PubSubEvent<PackageContext>
+    public class PackagesLoaded : PubSubEvent<PackageContext>
     {
     }
 }

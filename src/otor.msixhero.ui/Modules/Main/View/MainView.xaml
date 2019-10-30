@@ -84,12 +84,6 @@
                         </Fluent:RadioButton>
                     </Fluent:RibbonGroupBox>
 
-                    <Fluent:RibbonGroupBox Header="App types">
-                        <Fluent:CheckBox IsChecked="{Binding ShowStoreApps}" Header="Show Store apps" />
-                        <Fluent:CheckBox IsChecked="{Binding ShowSideLoadedApps}" Header="Show Side-loaded apps" />
-                        <Fluent:CheckBox IsChecked="{Binding ShowSystemApps}" Header="Show System apps" />
-                    </Fluent:RibbonGroupBox>
-
                     <Fluent:RibbonGroupBox Header="Actions">
                         <Fluent:Button Header="Install package..." >
                             <Fluent:Button.LargeIcon>
@@ -99,11 +93,35 @@
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
                 <Fluent:RibbonTabItem Header="VIEW">
-                    <Fluent:RibbonGroupBox>
-                        <Fluent:ToggleButton Header="Show sidebar" Size="Large" IsChecked="{Binding ShowSidebar}">
-                            <Fluent:ToggleButton.Icon>
-                                <Path Data="{StaticResource VectorCopy}" Style="{StaticResource LargeIcon}" />
-                            </Fluent:ToggleButton.Icon>
+                    <Fluent:RibbonGroupBox Header="Panel">
+                        <Fluent:ToggleButton Header="Show information panel" Size="Large" IsChecked="{Binding ShowSidebar}">
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Data="{StaticResource VectorSidebarRight}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:ToggleButton.LargeIcon>
+                        </Fluent:ToggleButton>
+                    </Fluent:RibbonGroupBox>
+
+                    <Fluent:RibbonGroupBox Header="App types">
+                        <Fluent:CheckBox IsChecked="{Binding ShowStoreApps}" Header="Show Store apps" />
+                        <Fluent:CheckBox IsChecked="{Binding ShowSideLoadedApps}" Header="Show Side-loaded apps" />
+                        <Fluent:CheckBox IsChecked="{Binding ShowSystemApps}" Header="Show System apps" />
+                    </Fluent:RibbonGroupBox>
+
+                    <Fluent:RibbonGroupBox Header="Display mode">
+                        <Fluent:ToggleButton Header="Flat list" Size="Large" IsChecked="{Binding Path=Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageGroup.None}}">
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Data="{StaticResource VectorCollection}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:ToggleButton.LargeIcon>
+                        </Fluent:ToggleButton>
+                        <Fluent:ToggleButton Header="Group by publisher" Size="Large" IsChecked="{Binding Path=Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageGroup.Publisher}}">
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Data="{StaticResource VectorUsers2}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:ToggleButton.LargeIcon>
+                        </Fluent:ToggleButton>
+                        <Fluent:ToggleButton Header="Group by type" Size="Large" IsChecked="{Binding Path=Group, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageGroup.Type}}">
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Data="{StaticResource VectorBulb}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:ToggleButton.LargeIcon>
                         </Fluent:ToggleButton>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>

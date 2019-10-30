@@ -1,10 +1,10 @@
 ﻿using System;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Manager
 {
     [Serializable]
-    public class RemovePackage : BaseSelfElevatedBaseCommand
+    public class RemovePackage : SelfElevatedCommand<bool>
     {
         public RemovePackage()
         {

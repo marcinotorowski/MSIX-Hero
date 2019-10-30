@@ -256,7 +256,7 @@ namespace otor.msixhero.lib
                 {
                     continue;
                 }
-
+                
                 var details = await GetManifestDetails(installLocation).ConfigureAwait(false);
                 var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name).ConfigureAwait(false);
 
@@ -269,6 +269,7 @@ namespace otor.msixhero.lib
                     InstallLocation = installLocation,
                     PackageFamilyName = item.Id.FamilyName,
                     Description = details.Description,
+                    InstallDate = item.InstalledDate.LocalDateTime,
                     DisplayPublisherName = details.DisplayPublisherName,
                     Publisher = item.Id.Publisher,
                     TileColor = details.Color,

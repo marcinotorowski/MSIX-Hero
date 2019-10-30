@@ -1,30 +1,31 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class SetPackageSidebarVisibilityReducer : IReducer<ApplicationState>
+    public class SetPackageSidebarVisibilityReducer : BaseReducer<ApplicationState>
     {
         private readonly SetPackageSidebarVisibility action;
 
-        public SetPackageSidebarVisibilityReducer(SetPackageSidebarVisibility action)
+        public SetPackageSidebarVisibilityReducer(SetPackageSidebarVisibility action, IApplicationStateManager<ApplicationState> stateManager) : base(action, stateManager)
         {
             this.action = action;
         }
 
-        public Task ReduceAsync(IApplicationStateManager<ApplicationState> state, CancellationToken cancellationToken)
+        public override Task Reduce(CancellationToken cancellationToken)
         {
-            if (this.action.IsVisible == state.CurrentState.LocalSettings.ShowSidebar)
+            if (this.action.IsVisible == this.StateManager.CurrentState.LocalSettings.ShowSidebar)
             {
                 return Task.FromResult(false);
             }
 
-            state.CurrentState.LocalSettings.ShowSidebar = action.IsVisible;
-            state.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Publish(action.IsVisible);
+            this.StateManager.CurrentState.LocalSettings.ShowSidebar = action.IsVisible;
+            this.StateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Publish(action.IsVisible);
             return Task.FromResult(true);
         }
     }

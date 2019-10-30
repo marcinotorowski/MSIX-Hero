@@ -6,6 +6,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
@@ -17,35 +18,44 @@
                     <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                 </Border>
             </Border>
-            <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
+            <TextBlock TextWrapping="Wrap" Text="{Binding SelectedPackage.Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
         </DockPanel>
 
         <TabControl DockPanel.Dock="Top" Margin="0 10 0 0">
             <TabItem Header="Properties" DataContext="{Binding SelectedPackage}">
                 <StackPanel Margin="10">
                     <StackPanel Margin="0 10 0 0">
-                        <TextBlock Text="Version" />
-                        <TextBlock Opacity="0.7" Text="{Binding Version}" TextWrapping="Wrap" />
+                        <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
+                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
                     </StackPanel>
 
                     <StackPanel Margin="0 10 0 0">
-                        <TextBlock Text="Publisher" />
-                        <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
+                        <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
                     </StackPanel>
 
                     <StackPanel Margin="0 10 0 0">
-                        <TextBlock Text="Subject" />
-                        <TextBlock Opacity="0.7" Text="{Binding Publisher}" TextWrapping="Wrap" />
+                        <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
+                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
+                    </StackPanel>
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Package identity" DataContext="{Binding SelectedPackage}">
+                <StackPanel Margin="10">
+                    <StackPanel Margin="0 10 0 0">
+                        <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
+                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
                     </StackPanel>
 
                     <StackPanel Margin="0 10 0 0">
-                        <TextBlock Text="Family name" />
-                        <TextBlock Opacity="0.7" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
+                        <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
+                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
                     </StackPanel>
 
                     <StackPanel Margin="0 10 0 0">
-                        <TextBlock Text="Product ID" />
-                        <TextBlock Opacity="0.7" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                        <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
+                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
                     </StackPanel>
                 </StackPanel>
             </TabItem>
@@ -53,12 +63,21 @@
 
             </TabItem>
             <TabItem Header="Installed by">
-                <xctk:BusyIndicator IsBusy="{Binding SelectionDetails.IsLoading}">
-                    <DockPanel>
-                        <Button DockPanel.Dock="Top" HorizontalAlignment="Left" Content="Find local users" Command="{Binding FindUsers}" />
+                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageExtendedInfo.IsLoading}">
+                    <Grid>
+                        <StackPanel VerticalAlignment="Center" Visibility="{Binding SelectedPackageExtendedInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+
+                            <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
+                            <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                                    <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                         
-                        <ListBox DisplayMemberPath="Name" Margin="0 10 0 0" ItemsSource="{Binding SelectionDetails.CurrentValue.InstalledOn.Users}" />
-                    </DockPanel>
+                        <ListBox Visibility="{Binding SelectedPackageExtendedInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 10 0 0" ItemsSource="{Binding SelectedPackageExtendedInfo.CurrentValue.InstalledBy}" />
+                    </Grid>
                 </xctk:BusyIndicator>
             </TabItem>
         </TabControl>

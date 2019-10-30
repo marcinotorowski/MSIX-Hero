@@ -7,8 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using Microsoft.PowerShell.Commands;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Models;
@@ -36,15 +38,16 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             this.AllPackages = new ObservableCollection<PackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
-            //this.AllPackagesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(PackageViewModel.DisplayPublisherName)));
+            this.SetSortingAndGrouping();
 
-            stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackagesLoaded, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged);
+            stateManager.EventAggregator.GetEvent<PackagesLoaded>().Subscribe(this.OnPackagesLoaded, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnGroupAndSortChanged);
         }
 
-        public AsyncProperty<SelectionDetails> SelectionDetails { get; } = new AsyncProperty<SelectionDetails>();
+        public AsyncProperty<SelectionDetailsViewModel> SelectedPackageExtendedInfo { get; } = new AsyncProperty<SelectionDetailsViewModel>();
 
         private bool FindUsersCanExecute()
         {
@@ -53,7 +56,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private async Task FindUsersExecuteAsync()
         {
-            var list = await this.stateManager.CommandExecutor.ExecuteAsync<List<User>>(new GetUsersOfPackage(this.selectedPackage.ProductId));
+            var list = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetUsersOfPackage(this.selectedPackage.ProductId));
             this.SelectedPackage.Users = list;
         }
 
@@ -64,16 +67,116 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.OnPropertyChanged(nameof(IsSelected));
 
 #pragma warning disable 4014
-            this.SelectionDetails.Load(this.GetSelectionDetails( selectedPackage.Model, false));
-#pragma warning restore 4014
+            if (selectedPackage == null)
+            {
+                this.SelectedPackageExtendedInfo.Load(Task.FromResult((SelectionDetailsViewModel)null));
+            }
+            else
+            {
+                try
+                {
+                    this.SelectedPackageExtendedInfo.Load(this.GetSelectionDetails(selectedPackage.Model, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.HasSelfElevated));
+                }
+                catch (Exception)
+                {
+                    this.SelectedPackageExtendedInfo.Load(this.GetSelectionDetails(selectedPackage.Model, false));
+                }
+#pragma warning restore 4014   
+            }
         }
 
-        private async Task<SelectionDetails> GetSelectionDetails(Package package, bool forceElevation)
+        private async Task<SelectionDetailsViewModel> GetSelectionDetails(Package package, bool forceElevation)
         {
-            var stateDetails = await this.stateManager.CommandExecutor.ExecuteAsync<SelectionDetails>(new GetSelectionDetails(package, forceElevation)).ConfigureAwait(false);
-            return stateDetails;
+            var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetSelectionDetails(package, forceElevation)).ConfigureAwait(false);
+            return new SelectionDetailsViewModel(stateDetails);
         }
-        
+
+        private void OnGroupAndSortChanged(PackageGroupAndSortChangedPayload payload)
+        {
+            this.SetSortingAndGrouping();
+        }
+
+        private void SetSortingAndGrouping()
+        {
+            var currentSort = this.stateManager.CurrentState.Packages.Sort;
+            var currentSortDescending = this.stateManager.CurrentState.Packages.SortDescending;
+            var currentGroup = this.stateManager.CurrentState.Packages.Group;
+
+            using (this.AllPackagesView.DeferRefresh())
+            {
+                string sortProperty;
+                string groupProperty;
+
+                switch (currentSort)
+                {
+                    case PackageSort.Name:
+                        sortProperty = nameof(PackageViewModel.Name);
+                        break;
+                    case PackageSort.Publisher:
+                        sortProperty = nameof(PackageViewModel.DisplayPublisherName);
+                        break;
+                    case PackageSort.InstallDate:
+                        sortProperty = nameof(PackageViewModel.InstallDate);
+                        break;
+                    case PackageSort.Type:
+                        sortProperty = nameof(PackageViewModel.Type);
+                        break;
+                    case PackageSort.Version:
+                        sortProperty = nameof(PackageViewModel.Version);
+                        break;
+                    default:
+                        sortProperty = null;
+                        break;
+                }
+
+                switch (currentGroup)
+                {
+                    case PackageGroup.None:
+                        groupProperty = null;
+                        break;
+                    case PackageGroup.Publisher:
+                        groupProperty = nameof(PackageViewModel.DisplayPublisherName);
+                        break;
+                    case PackageGroup.Type:
+                        groupProperty = nameof(PackageViewModel.Type);
+                        break;
+                    default:
+                        groupProperty = null;
+                        return;
+                }
+
+                // 1) First grouping
+                if (groupProperty == null)
+                {
+                    this.AllPackagesView.GroupDescriptions.Clear();
+                }
+                else
+                {
+                    var pgd = this.AllPackagesView.GroupDescriptions.OfType<PropertyGroupDescription>().FirstOrDefault();
+                    if (pgd == null || pgd.PropertyName != groupProperty)
+                    {
+                        this.AllPackagesView.GroupDescriptions.Clear();
+                        this.AllPackagesView.GroupDescriptions.Add(new PropertyGroupDescription(groupProperty));
+                    }
+                }
+
+                // 2) Then sorting
+                if (sortProperty == null)
+                {
+                    this.AllPackagesView.SortDescriptions.Clear();
+                }
+                else
+                {
+                    var sd = this.AllPackagesView.SortDescriptions.FirstOrDefault();
+                    if (sd == null || sd.PropertyName != sortProperty || sd.Direction != (currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+                    {
+                        this.AllPackagesView.SortDescriptions.Clear();
+                        this.AllPackagesView.SortDescriptions.Add(new SortDescription(sortProperty, currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+                    }
+                }
+            }
+        }
+
         private void OnPackagesVisibilityChanged(PackagesVisibilityChangedPayLoad visibilityInfo)
         {
             for (var i = this.AllPackages.Count - 1; i >= 0 ; i--)
@@ -182,7 +285,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return this.findUsers ?? (this.findUsers = new DelegateCommand(() =>
                 {
 #pragma warning disable 4014
-                    this.SelectionDetails.Load(this.GetSelectionDetails( this.SelectedPackage.Model, true));
+                    this.SelectedPackageExtendedInfo.Load(this.GetSelectionDetails( this.SelectedPackage.Model, true));
 #pragma warning restore 4014
                 }));
             }

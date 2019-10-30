@@ -1,13 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class RemovePackageReducer : BaseSelfElevationReducer<ApplicationState>
+    public class RemovePackageReducer : SelfElevationReducer<ApplicationState>
     {
         private readonly RemovePackage action;
         private readonly IAppxPackageManager packageManager;
@@ -15,10 +16,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         private readonly IClientCommandRemoting clientCommandRemoting;
 
         public RemovePackageReducer(
-            RemovePackage action, 
+            RemovePackage action,
+            IApplicationStateManager<ApplicationState> stateManager,
             IAppxPackageManager packageManager, 
             IBusyManager busyManager, 
-            IClientCommandRemoting clientCommandRemoting)
+            IClientCommandRemoting clientCommandRemoting) : base(action, stateManager)
         {
             this.action = action;
             this.packageManager = packageManager;
@@ -26,7 +28,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.clientCommandRemoting = clientCommandRemoting;
         }
 
-        public override async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
+        public override async Task Reduce(CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin();
             context.Progress = 30;
@@ -34,13 +36,13 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             try
             {
-                if (this.action.RequiresElevation && !stateManager.CurrentState.IsElevated)
+                if (this.action.RequiresElevation && !this.StateManager.CurrentState.IsElevated)
                 {
                     await this.packageManager.RemoveApp(this.action.Package).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.clientCommandRemoting.Execute(this.action, cancellationToken).ConfigureAwait(false);
+                    await this.clientCommandRemoting.GetClientInstance().Execute(this.action, cancellationToken).ConfigureAwait(false);
                 }
             }
             finally

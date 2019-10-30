@@ -9,10 +9,10 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
+             xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
-
-    <Grid Margin="5">
+    <Grid Margin="5" x:Name="Grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -27,100 +27,115 @@
             <TextBox VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
         </Border>
 
-        <ListView 
+        <AdornerDecorator
             Grid.Column="0"
-            Grid.Row="1"
-            SelectionChanged="OnSelectionChanged"
-            ScrollViewer.VerticalScrollBarVisibility="Auto" 
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-            SelectedItem="{Binding SelectedPackage}" 
-            ItemsSource="{Binding AllPackages}">
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Margin" Value="0,0,0,5"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock FontWeight="Bold" Text="{Binding Path=Name}" FontSize="18" />
-                                                <TextBlock FontWeight="Bold" Text="{Binding Path=ItemCount}"/>
+            Grid.Row="1">
+            <ListView 
+                    SelectionChanged="OnSelectionChanged"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                    SelectedItem="{Binding SelectedPackage}" 
+                    ItemsSource="{Binding AllPackagesView}">
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Margin" Value="0,0,0,5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Label Style="{StaticResource Label}" Content="{Binding Path=Name}" Margin="8 12 8 4" />
+                                                    <Label Style="{StaticResource Label}" Content="{Binding Path=ItemCount}" Margin="0 12 0 4"/>
+                                                </StackPanel>
+                                                <ItemsPresenter />
                                             </StackPanel>
-                                            <ItemsPresenter />
-                                        </StackPanel>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Copy">
-                        <MenuItem Header="Package name" />
-                        <MenuItem Header="Publisher (display name)" />
-                        <MenuItem Header="Publisher (raw)" />
-                        <MenuItem Header="Install path" />
-                        <MenuItem Header="Version" />
-                    </MenuItem>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackage}">
-                        <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Open manifest" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackage}">
-                        <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.RunApp}" Header="Run app" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackage}">
-                        <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
-            <ListView.View>
-                <GridView>
-                    <GridView.Columns>
-                        <GridViewColumn Header="Icon" Width="48">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
-                                    <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                            <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy">
+                            <MenuItem Header="Package name" />
+                            <MenuItem Header="Publisher (display name)" />
+                            <MenuItem Header="Publisher (raw)" />
+                            <MenuItem Header="Install path" />
+                            <MenuItem Header="Version" />
+                        </MenuItem>
+                        <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackage}">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Open manifest" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackage}">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Command="{x:Static commands:MsixHeroCommands.RunApp}" Header="Run app" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackage}">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView x:Name="GridView">
+                        <GridView.Columns>
+                            <GridViewColumn Width="48">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader IsHitTestVisible="False" Content="Icon" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                        <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                            </Border>
                                         </Border>
-                                    </Border>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=DisplayName}" />
-                        <GridViewColumn Header="Version">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
-                                    <TextBlock Opacity="0.7" Text="{Binding Version}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Publisher">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
-                                    <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" />
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView.Columns>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=DisplayName}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Content="Name" Tag="{x:Static enums:PackageSort.Name}" Click="ColumnClicked" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Content="Version" Tag="{x:Static enums:PackageSort.Version}" Click="ColumnClicked" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                        <TextBlock Opacity="0.7" Text="{Binding Version}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                        <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </AdornerDecorator>
 
-        <GridSplitter Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+        <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
-        <ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />
-        <view:SinglePackageDetails Margin="0 5 5 5" Grid.Row="1" Grid.Column="2" />
+        <!--<ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />-->
+        <view:SinglePackageDetails x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="1" Grid.Column="2" />
     </Grid>
 </UserControl>

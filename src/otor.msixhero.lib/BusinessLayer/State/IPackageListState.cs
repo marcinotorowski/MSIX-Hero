@@ -7,6 +7,12 @@ namespace otor.msixhero.lib.BusinessLayer.State
     {
         PackageFilter Filter { get; }
 
+        PackageGroup Group { get; }
+
+        PackageSort Sort { get; }
+
+        bool SortDescending { get; }
+
         PackageContext Context { get; }
 
         string SearchKey { get; }

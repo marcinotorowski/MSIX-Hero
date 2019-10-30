@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Developer
 {
     [Serializable]
-    public class UnmountRegistry : BaseSelfElevatedBaseCommand
+    public class UnmountRegistry : SelfElevatedCommand<bool>
     {
         public UnmountRegistry()
         {

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
+using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State;
@@ -43,15 +45,11 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
             busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
 
-            stateManager.EventAggregator.GetEvent<PackagesLoadedEvent>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesLoaded>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
-        }
-
-        private void OnPackagesSidebarVisibilityChanged(bool newVisibility)
-        {
-            this.OnPropertyChanged(nameof(ShowSidebar));
         }
 
         public CommandHandler CommandHandler => new CommandHandler(this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);
@@ -95,6 +93,12 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         {
             get => this.stateManager.CurrentState.LocalSettings.ShowSidebar;
             set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageSidebarVisibility(value), CancellationToken.None);
+        }
+
+        public PackageGroup Group
+        {
+            get => this.stateManager.CurrentState.Packages.Group;
+            set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageGrouping(value), CancellationToken.None);
         }
 
         public bool ShowStoreApps
@@ -172,6 +176,16 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                 this.OnPropertyChanged(nameof(ShowSideLoadedApps));
                 this.OnPropertyChanged(nameof(ShowStoreApps));
             }
+        }
+
+        private void OnPackagesSidebarVisibilityChanged(bool newVisibility)
+        {
+            this.OnPropertyChanged(nameof(ShowSidebar));
+        }
+
+        private void OnPackageGroupAndSortChanged(PackageGroupAndSortChangedPayload obj)
+        {
+            this.OnPropertyChanged(nameof(Group));
         }
 
         private void OnPackageLoaded(PackageContext obj)

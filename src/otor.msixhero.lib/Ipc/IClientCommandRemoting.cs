@@ -2,25 +2,18 @@
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
+using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Models;
 
 namespace otor.msixhero.lib.Ipc
 {
     public interface IClientCommandRemoting
     {
-        Task<SelectionDetails> Execute(GetSelectionDetails command, CancellationToken cancellationToken = default);
+        Server GetServerInstance(IAppxPackageManager packageManager);
 
-        Task<List<Package>> Execute(GetPackages command, CancellationToken cancellationToken = default);
-
-        Task<bool> Execute(UnmountRegistry command, CancellationToken cancellationToken = default);
-
-        Task<bool> Execute(MountRegistry command, CancellationToken cancellationToken = default);
-
-        Task<bool> Execute(RemovePackage command, CancellationToken cancellationToken = default);
-
-        Task<List<User>> Execute(GetUsersOfPackage command, CancellationToken cancellationToken = default);
-
-
+        Client GetClientInstance();
 
         Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default);
 

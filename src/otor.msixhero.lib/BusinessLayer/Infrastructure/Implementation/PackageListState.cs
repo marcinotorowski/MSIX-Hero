@@ -10,6 +10,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         {
             this.Context = UserHelper.IsAdministrator() ? PackageContext.AllUsers : PackageContext.CurrentUser;
             this.Filter = PackageFilter.Developer;
+            this.Group = PackageGroup.Publisher;
 
             this.VisibleItems = new List<Package>();
             this.HiddenItems = new List<Package>();
@@ -20,6 +21,10 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 
         public PackageContext Context { get; set; }
 
+        public PackageGroup Group { get; set; }
+
+        public PackageSort Sort { get; set; }
+
         public string SearchKey { get; set; }
 
         public List<Package> VisibleItems { get; }
@@ -27,6 +32,8 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         public List<Package> HiddenItems { get; }
 
         public List<Package> SelectedItems { get; }
+
+        public bool SortDescending { get; set; }
 
         IReadOnlyCollection<Package> IPackageListState.VisibleItems => this.VisibleItems;
 

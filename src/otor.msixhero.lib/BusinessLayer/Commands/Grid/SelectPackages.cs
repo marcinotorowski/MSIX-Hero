@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
     public enum SelectionMode
     {
@@ -14,7 +14,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     }
 
     [Serializable]
-    public class SelectPackages : BaseCommand
+    public class SelectPackages : BaseCommand<List<Package>>
     {
         public SelectPackages()
         {

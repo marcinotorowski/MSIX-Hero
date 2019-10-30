@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using otor.msixhero.lib.BusinessLayer.Models;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
-    public class GetSelectionDetails : BaseCommand
+    public class GetSelectionDetails : SelfElevatedCommand<SelectionDetails>
     {
         public GetSelectionDetails()
         {

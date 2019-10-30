@@ -33,6 +33,7 @@ namespace otor.msixhero.lib
         Task<RegistryMountState> GetRegistryMountState(Package package);
 
         Task<IList<Package>> GetPackages(PackageFindMode mode = PackageFindMode.Auto);
+
         Task RemoveApp(Package package, bool forAllUsers = false, bool preserveAppData = false);
     }
 }

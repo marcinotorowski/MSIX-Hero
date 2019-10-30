@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
-using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc.Streams;
 
 namespace otor.msixhero.lib.Ipc
@@ -21,7 +20,7 @@ namespace otor.msixhero.lib.Ipc
             this.processManager = processManager;
         }
 
-        public async Task Execute<TInput>(TInput command, CancellationToken cancellationToken) where TInput : BaseCommand
+        public async Task Execute(BaseCommand command, CancellationToken cancellationToken)
         {
             var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
 
@@ -84,45 +83,30 @@ namespace otor.msixhero.lib.Ipc
         }
 
         // ReSharper disable once MemberCanBeMadeStatic.Global
-        public async Task<TOutput> Execute<TInput, TOutput>(TInput command, CancellationToken cancellationToken) where TInput : BaseCommand
+        public async Task<TOutput> GetExecuted<TOutput>(BaseCommand<TOutput> command, CancellationToken cancellationToken)
         {
             var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
             
             if (process == null || process.HasExited)
             {
-                // make double checking with help of mutex
-                // if (!ClientMutex.WaitOne(TimeSpan.FromSeconds(30)))
-                // {
-                //     throw new InvalidOperationException("Could not get exclusive access.");
-                // }
-
-                try
+                process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
+                if (process == null || process.HasExited)
                 {
-                    process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
-                    if (process == null || process.HasExited)
+                    var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper.exe"), "--selfElevate")
                     {
-                        var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper.exe"), "--selfElevate")
-                        {
-                            Verb = "runas",
-                            UseShellExecute = true,
+                        Verb = "runas",
+                        UseShellExecute = true,
 #if !DEBUG
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true
 #endif
-                        };
+                    };
 
-                        var p = processManager.Start(psi);
-                        if (p == null)
-                        {
-                            throw new InvalidOperationException("Could not start the helper.");
-                        }
-
-                        await Task.Delay(400, cancellationToken).ConfigureAwait(false);
+                    var p = processManager.Start(psi);
+                    if (p == null)
+                    {
+                        throw new InvalidOperationException("Could not start the helper.");
                     }
-                }
-                finally
-                {
-                    //ClientMutex.ReleaseMutex();
                 }
             }
 

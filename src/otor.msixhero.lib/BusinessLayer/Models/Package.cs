@@ -25,6 +25,8 @@ namespace otor.msixhero.lib
 
         public string Publisher { get; set; }
 
+        public DateTime InstallDate { get; set; }
+
         public Version Version { get; set; }
 
         public string InstallLocation { get; set; }

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
+using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.Ipc;
 
@@ -42,11 +46,11 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             }
         }
 
-        public T Execute<T>(BaseCommand action)
+        public T GetExecute<T>(BaseCommand<T> action)
         {
             try
             {
-                return this.ExecuteAsync<T>(action, CancellationToken.None).Result;
+                return this.GetExecuteAsync(action, CancellationToken.None).Result;
             }
             catch (AggregateException e)
             {
@@ -54,7 +58,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             }
         }
 
-        public async Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default)
         {
             if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
             {
@@ -62,10 +66,10 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             }
 
             var lazyReducer = reducerFactory(action);
-            await lazyReducer.ReduceAsync(this.stateManager, cancellationToken).ConfigureAwait(false);
+            await lazyReducer.Reduce(cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<T> ExecuteAsync<T>(BaseCommand action, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default)
         {
             if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
             {
@@ -79,21 +83,23 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
                 throw new NotSupportedException("This reducer does not support output.");
             }
 
-            return await lazyReducerOutput.ReduceAndOutputAsync(this.stateManager, cancellationToken).ConfigureAwait(false);
+            return await lazyReducerOutput.GetReduced(cancellationToken).ConfigureAwait(false);
         }
 
         private void ConfigureReducers()
         {
-            this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action);
-            this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action);
-            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action);
-            this.reducerFactories[typeof(RemovePackage)] = action => new RemovePackageReducer((RemovePackage)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(GetSelectionDetails)] = action => new GetSelectionDetailsReducer((GetSelectionDetails)action, this.clientCommandRemoting);
-            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.appxPackageManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action);
-            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action, this.stateManager);
+            this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action, this.stateManager);
+            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action, this.stateManager);
+            this.reducerFactories[typeof(RemovePackage)] = action => new RemovePackageReducer((RemovePackage)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(GetSelectionDetails)] = action => new GetSelectionDetailsReducer((GetSelectionDetails)action, this.stateManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.stateManager);
+            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.stateManager);
+            this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);
         }
     }
 }

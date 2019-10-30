@@ -2,10 +2,10 @@
 using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
     [Serializable]
-    public class SetPackageContext : BaseCommand
+    public class SetPackageContext : BaseCommand<PackageContext>
     {
         public SetPackageContext()
         {

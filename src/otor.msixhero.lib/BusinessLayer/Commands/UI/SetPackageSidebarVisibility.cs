@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.UI
 {
     [Serializable]
     public class SetPackageSidebarVisibility : BaseCommand

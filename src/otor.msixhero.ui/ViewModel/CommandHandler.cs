@@ -5,6 +5,8 @@ using System.Threading;
 using System.Windows.Input;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;

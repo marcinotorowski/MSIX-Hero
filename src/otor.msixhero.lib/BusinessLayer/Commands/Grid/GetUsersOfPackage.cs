@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using otor.msixhero.lib.BusinessLayer.Models;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
     [Serializable]
-    public class GetUsersOfPackage : BaseSelfElevatedBaseCommand
+    public class GetUsersOfPackage : SelfElevatedCommand<List<User>>
     {
         public GetUsersOfPackage(string fullProductId)
         {

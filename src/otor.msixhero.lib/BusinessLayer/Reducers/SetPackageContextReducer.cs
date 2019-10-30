@@ -1,30 +1,31 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class SetPackageContextReducer : IReducer<ApplicationState>
+    internal class SetPackageContextReducer : BaseReducer<ApplicationState>
     {
         private readonly SetPackageContext action;
 
-        public SetPackageContextReducer(SetPackageContext action)
+        public SetPackageContextReducer(SetPackageContext action, IApplicationStateManager<ApplicationState> stateManager) : base(action, stateManager)
         {
             this.action = action;
         }
 
-        public async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
+        public override async Task Reduce(CancellationToken cancellationToken)
         {
-            var state = stateManager.CurrentState;
+            var state = this.StateManager.CurrentState;
 
             if (state.Packages.Context == action.Context && !this.action.Force)
             {
                 return;
             }
 
-            await stateManager.CommandExecutor.ExecuteAsync(new GetPackages(action.Context), cancellationToken);
+            await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(action.Context), cancellationToken);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
     [Serializable]
     public class SetPackageFilter : BaseCommand

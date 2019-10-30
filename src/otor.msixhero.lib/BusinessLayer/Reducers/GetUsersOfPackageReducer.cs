@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
@@ -10,7 +10,7 @@ using otor.msixhero.lib.Ipc;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class GetUsersOfPackageReducer : BaseSelfElevationWithOutputReducer<ApplicationState, List<User>>
+    public class GetUsersOfPackageReducer : SelfElevationReducer<ApplicationState, List<User>>
     {
         private readonly GetUsersOfPackage action;
         private readonly IAppxPackageManager packageManager;
@@ -18,26 +18,26 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public GetUsersOfPackageReducer(
             GetUsersOfPackage action, 
+            IApplicationStateManager<ApplicationState> applicationStateManager,
             IAppxPackageManager packageManager,
-            IClientCommandRemoting clientCommandRemoting)
+            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager)
         {
             this.action = action;
             this.packageManager = packageManager;
             this.clientCommandRemoting = clientCommandRemoting;
         }
 
-        public override async Task<List<User>> ReduceAndOutputAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
+        public override async Task<List<User>> GetReduced(CancellationToken cancellationToken)
         {
-            var state = stateManager.CurrentState;
+            var state = this.StateManager.CurrentState;
             if (!state.IsElevated)
             {
-                var result = await this.clientCommandRemoting.Execute(this.action, cancellationToken).ConfigureAwait(false);
-                stateManager.CurrentState.HasSelfElevated = true;
+                var result = await this.clientCommandRemoting.GetClientInstance().GetExecuted(this.action, cancellationToken).ConfigureAwait(false);
+                this.StateManager.CurrentState.HasSelfElevated = true;
                 return result;
             }
-
+            
             return await this.packageManager.GetUsersForPackage(this.action.FullProductId).ConfigureAwait(false);
-
         }
     }
 }

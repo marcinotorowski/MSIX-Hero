@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.ServiceModel;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
+using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 
@@ -21,34 +22,21 @@ namespace otor.msixhero.lib.Ipc
             this.processManager = processManager;
         }
 
-        public async Task<SelectionDetails> Execute(GetSelectionDetails command, CancellationToken cancellationToken = default)
+        public Server GetServerInstance(IAppxPackageManager packageManager)
         {
-            return await this.GetOutputFromSelfElevation<GetSelectionDetails, SelectionDetails>(command, cancellationToken).ConfigureAwait(false);
+            var server = new Server();
+            server.AddHandler<GetPackages>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<MountRegistry>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<UnmountRegistry>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<GetUsersOfPackage>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<RemovePackage>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<GetSelectionDetails>(action => this.Handle(action, packageManager, CancellationToken.None));
+            return server;
         }
 
-        public async Task<List<Package>> Execute(GetPackages command, CancellationToken cancellationToken = default)
+        public Client GetClientInstance()
         {
-            return await this.GetOutputFromSelfElevation<GetPackages, List<Package>>(command, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<bool> Execute(UnmountRegistry command, CancellationToken cancellationToken = default)
-        {
-            return await this.GetOutputFromSelfElevation<UnmountRegistry, bool>(command, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<bool> Execute(RemovePackage command, CancellationToken cancellationToken = default)
-        {
-            return await this.GetOutputFromSelfElevation<RemovePackage, bool>(command, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<List<User>> Execute(GetUsersOfPackage command, CancellationToken cancellationToken = default)
-        {
-            return await this.GetOutputFromSelfElevation<GetUsersOfPackage, List<User>>(command, cancellationToken).ConfigureAwait(false);
-        }
-
-        public async Task<bool> Execute(MountRegistry command, CancellationToken cancellationToken = default)
-        {
-            return await this.GetOutputFromSelfElevation<MountRegistry, bool>(command, cancellationToken).ConfigureAwait(false);
+            return new Client(this.processManager);
         }
 
         public async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
@@ -105,26 +93,6 @@ namespace otor.msixhero.lib.Ipc
             await pkgManager.RemoveApp(command.Package).ConfigureAwait(false);
             Console.WriteLine("Package uninstalled.");
             return ReturnAsBytes(true);
-        }
-
-        public Server GetServerInstance(IAppxPackageManager packageManager)
-        {
-            var server = new Server();
-            server.AddHandler<GetPackages>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<MountRegistry>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<UnmountRegistry>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<GetUsersOfPackage>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<RemovePackage>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<GetSelectionDetails>(action => this.Handle(action, packageManager, CancellationToken.None));
-
-            return server;
-        }
-
-        private async Task<TOutput> GetOutputFromSelfElevation<TInput, TOutput>(TInput inputAction, CancellationToken cancellationToken) where TInput : BaseCommand
-        {
-            var client = new Client(this.processManager);
-            var result = await client.Execute<TInput, TOutput>(inputAction, cancellationToken);
-            return result;
         }
 
         private static byte[] ReturnAsBytes<T>(T input)

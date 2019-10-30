@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace otor.msixhero.lib.BusinessLayer.Commands
+namespace otor.msixhero.lib.BusinessLayer.Commands.Developer
 {
     [Serializable]
-    public class MountRegistry : BaseSelfElevatedBaseCommand
+    public class MountRegistry : SelfElevatedCommand<bool>
     {
         public MountRegistry()
         {

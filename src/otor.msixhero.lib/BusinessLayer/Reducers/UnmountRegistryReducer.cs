@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
@@ -8,7 +9,7 @@ using otor.msixhero.lib.Ipc;
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
     // ReSharper disable once IdentifierTypo
-    internal class UnmountRegistryReducer : BaseSelfElevationReducer<ApplicationState>
+    internal class UnmountRegistryReducer : SelfElevationReducer<ApplicationState>
     {
         private readonly UnmountRegistry action;
         private readonly IAppxPackageManager packageManager;
@@ -17,10 +18,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         // ReSharper disable once IdentifierTypo
         public UnmountRegistryReducer(
-            UnmountRegistry action, 
+            UnmountRegistry action,
+            IApplicationStateManager<ApplicationState> stateManager,
             IAppxPackageManager packageManager, 
             IBusyManager busyManager,
-            IClientCommandRemoting clientCommandRemoting)
+            IClientCommandRemoting clientCommandRemoting) : base(action, stateManager)
         {
             this.action = action;
             this.packageManager = packageManager;
@@ -28,16 +30,16 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.clientCommandRemoting = clientCommandRemoting;
         }
         
-        public override async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
+        public override async Task Reduce(CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin();
             try
             {
                 context.Message = "Un-mounting registry...";
-                var state = stateManager.CurrentState;
+                var state = this.StateManager.CurrentState;
                 if (this.action.RequiresElevation && !state.IsElevated)
                 {
-                    await this.clientCommandRemoting.Execute(this.action, cancellationToken);
+                    await this.clientCommandRemoting.GetClientInstance().Execute(this.action, cancellationToken);
                 }
                 else
                 {
