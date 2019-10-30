@@ -16,16 +16,18 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     {
         private readonly GetPackages action;
         private readonly IBusyManager busyManager;
+        private readonly IClientCommandRemoting clientCommandRemoting;
         private readonly IAppxPackageManager packageManager;
 
         public GetPackagesReducer(
             GetPackages action, 
             IAppxPackageManager packageManager, 
             IBusyManager busyManager,
-            IProcessManager processManager) : base(processManager)
+            IClientCommandRemoting clientCommandRemoting)
         {
             this.action = action;
             this.busyManager = busyManager;
+            this.clientCommandRemoting = clientCommandRemoting;
             this.packageManager = packageManager;
         }
 
@@ -38,7 +40,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 
                 if (this.action.RequiresElevation && !stateManager.CurrentState.IsElevated)
                 {
-                    packageSource = await this.GetOutputFromSelfElevation(this.action, cancellationToken).ConfigureAwait(false);
+                    packageSource = await this.clientCommandRemoting.Execute(this.action, cancellationToken).ConfigureAwait(false);
                     stateManager.CurrentState.HasSelfElevated = true;
                 }
                 else

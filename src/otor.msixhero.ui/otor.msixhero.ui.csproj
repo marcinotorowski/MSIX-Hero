@@ -29,5 +29,10 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;" />
   </Target>
-
+  
+  <Target Name="WorkaroundForXAMLIntellisenseBuildIssue" AfterTargets="_CheckCompileDesignTimePrerequisite">
+    <PropertyGroup>
+      <BuildingProject>false</BuildingProject>
+    </PropertyGroup>
+  </Target>
 </Project>

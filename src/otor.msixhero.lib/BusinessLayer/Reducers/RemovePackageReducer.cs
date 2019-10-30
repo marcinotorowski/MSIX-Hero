@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
@@ -15,12 +12,18 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         private readonly RemovePackage action;
         private readonly IAppxPackageManager packageManager;
         private readonly IBusyManager busyManager;
+        private readonly IClientCommandRemoting clientCommandRemoting;
 
-        public RemovePackageReducer(RemovePackage action, IAppxPackageManager packageManager, IBusyManager busyManager, IProcessManager processManager) : base(processManager)
+        public RemovePackageReducer(
+            RemovePackage action, 
+            IAppxPackageManager packageManager, 
+            IBusyManager busyManager, 
+            IClientCommandRemoting clientCommandRemoting)
         {
             this.action = action;
             this.packageManager = packageManager;
             this.busyManager = busyManager;
+            this.clientCommandRemoting = clientCommandRemoting;
         }
 
         public override async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
@@ -37,7 +40,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 }
                 else
                 {
-                    await this.SelfElevateAndExecute(this.action, cancellationToken).ConfigureAwait(false);
+                    await this.clientCommandRemoting.Execute(this.action, cancellationToken).ConfigureAwait(false);
                 }
             }
             finally

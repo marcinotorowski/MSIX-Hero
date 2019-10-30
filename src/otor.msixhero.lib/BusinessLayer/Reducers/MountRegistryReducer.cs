@@ -12,16 +12,18 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         private readonly MountRegistry action;
         private readonly IAppxPackageManager packageManager;
         private readonly IBusyManager busyManager;
+        private readonly IClientCommandRemoting clientCommandRemoting;
 
         public MountRegistryReducer(
             MountRegistry action, 
             IAppxPackageManager packageManager, 
             IBusyManager busyManager,
-            IProcessManager processManager) : base(processManager)
+            IClientCommandRemoting clientCommandRemoting)
         {
             this.action = action;
             this.packageManager = packageManager;
             this.busyManager = busyManager;
+            this.clientCommandRemoting = clientCommandRemoting;
         }
 
         public override async Task ReduceAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
@@ -33,7 +35,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 var state = stateManager.CurrentState;
                 if (this.action.RequiresElevation && !state.IsElevated)
                 {
-                    await this.SelfElevateAndExecute(this.action, cancellationToken);
+                    await this.clientCommandRemoting.Execute(this.action, cancellationToken);
                     return;
                 }
 

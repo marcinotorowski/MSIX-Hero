@@ -34,6 +34,7 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton(typeof(IAppxPackageManager), typeof(AppxPackageManager));
             containerRegistry.RegisterSingleton(typeof(IAppxSigningManager), typeof(AppxSigningManager));
             containerRegistry.RegisterSingleton(typeof(IBusyManager), typeof(BusyManager));
+            containerRegistry.RegisterSingleton(typeof(IClientCommandRemoting), typeof(ClientCommandRemoting));
             containerRegistry.RegisterSingleton(typeof(IApplicationStateManager), typeof(ApplicationStateManager));
             containerRegistry.RegisterInstance(typeof(IProcessManager), this.processManager);
         }

@@ -14,18 +14,18 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         private readonly ApplicationStateManager stateManager;
         private readonly IAppxPackageManager appxPackageManager;
         private readonly IBusyManager busyManager;
-        private readonly IProcessManager processManager;
+        private readonly IClientCommandRemoting clientCommandRemoting;
 
         public CommandExecutor(
             ApplicationStateManager stateManager, 
             IAppxPackageManager appxPackageManager, 
             IBusyManager busyManager,
-            IProcessManager processManager)
+            IClientCommandRemoting clientCommandRemoting)
         {
             this.stateManager = stateManager;
             this.appxPackageManager = appxPackageManager;
             this.busyManager = busyManager;
-            this.processManager = processManager;
+            this.clientCommandRemoting = clientCommandRemoting;
 
             this.ConfigureReducers();
         }
@@ -86,14 +86,14 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         {
             this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action);
             this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action);
-            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.appxPackageManager, this.busyManager, this.processManager);
+            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action);
-            this.reducerFactories[typeof(RemovePackage)] = action => new RemovePackageReducer((RemovePackage)action, this.appxPackageManager, this.busyManager, this.processManager);
-            this.reducerFactories[typeof(GetSelectionDetails)] = action => new GetSelectionDetailsReducer((GetSelectionDetails)action, this.processManager);
-            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.appxPackageManager, this.processManager);
+            this.reducerFactories[typeof(RemovePackage)] = action => new RemovePackageReducer((RemovePackage)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(GetSelectionDetails)] = action => new GetSelectionDetailsReducer((GetSelectionDetails)action, this.clientCommandRemoting);
+            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.appxPackageManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action);
-            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.appxPackageManager, this.busyManager, this.processManager);
-            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.appxPackageManager, this.busyManager, this.processManager);
+            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
         }
     }
 }

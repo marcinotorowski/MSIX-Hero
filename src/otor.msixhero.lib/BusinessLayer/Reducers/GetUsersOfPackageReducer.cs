@@ -14,11 +14,16 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     {
         private readonly GetUsersOfPackage action;
         private readonly IAppxPackageManager packageManager;
+        private readonly IClientCommandRemoting clientCommandRemoting;
 
-        public GetUsersOfPackageReducer(GetUsersOfPackage action, IAppxPackageManager packageManager, IProcessManager processManager) : base(processManager)
+        public GetUsersOfPackageReducer(
+            GetUsersOfPackage action, 
+            IAppxPackageManager packageManager,
+            IClientCommandRemoting clientCommandRemoting)
         {
             this.action = action;
             this.packageManager = packageManager;
+            this.clientCommandRemoting = clientCommandRemoting;
         }
 
         public override async Task<List<User>> ReduceAndOutputAsync(IApplicationStateManager<ApplicationState> stateManager, CancellationToken cancellationToken)
@@ -26,7 +31,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             var state = stateManager.CurrentState;
             if (!state.IsElevated)
             {
-                var result = await this.GetOutputFromSelfElevation(this.action, cancellationToken).ConfigureAwait(false);
+                var result = await this.clientCommandRemoting.Execute(this.action, cancellationToken).ConfigureAwait(false);
                 stateManager.CurrentState.HasSelfElevated = true;
                 return result;
             }

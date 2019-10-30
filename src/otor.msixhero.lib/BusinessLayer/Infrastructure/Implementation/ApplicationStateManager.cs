@@ -4,16 +4,16 @@ using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
-    public class ApplicationStateManager : IApplicationStateManager<ApplicationState>, IApplicationStateManager
+    public class ApplicationStateManager : IApplicationStateManager<ApplicationState>
     {
         public ApplicationStateManager(
             IEventAggregator eventAggregator,
             IAppxPackageManager packageManager,
             IBusyManager busyManager,
-            IProcessManager processManager)
+            IClientCommandRemoting clientCommandRemoting)
         {
             this.CurrentState = new ApplicationState();
-            this.CommandExecutor = new CommandExecutor(this, packageManager, busyManager, processManager);
+            this.CommandExecutor = new CommandExecutor(this, packageManager, busyManager, clientCommandRemoting);
             this.EventAggregator = eventAggregator;
         }
 
