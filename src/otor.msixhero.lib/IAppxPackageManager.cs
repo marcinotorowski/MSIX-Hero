@@ -35,5 +35,7 @@ namespace otor.msixhero.lib
         Task<IList<Package>> GetPackages(PackageFindMode mode = PackageFindMode.Auto);
 
         Task RemoveApp(Package package, bool forAllUsers = false, bool preserveAppData = false);
+
+        Task<IList<Log>> GetLogs(int maxCount);
     }
 }

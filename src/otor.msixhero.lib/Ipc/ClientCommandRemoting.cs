@@ -31,9 +31,10 @@ namespace otor.msixhero.lib.Ipc
             server.AddHandler<GetUsersOfPackage>(action => this.Handle(action, packageManager, CancellationToken.None));
             server.AddHandler<RemovePackage>(action => this.Handle(action, packageManager, CancellationToken.None));
             server.AddHandler<GetSelectionDetails>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<GetLogs>(action => this.Handle(action, packageManager, CancellationToken.None));
             return server;
         }
-
+        
         public Client GetClientInstance()
         {
             return new Client(this.processManager);
@@ -53,6 +54,14 @@ namespace otor.msixhero.lib.Ipc
             await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit).ConfigureAwait(false);
             Console.WriteLine("Registry mounted.");
             return ReturnAsBytes(true);
+        }
+
+        private async Task<byte[]> Handle(GetLogs command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        {
+            Console.WriteLine("Handling " + command.GetType().Name);
+            var logs = await packageManager.GetLogs(command.MaxCount).ConfigureAwait(false);
+            Console.WriteLine("Returning " + logs.Count);
+            return ReturnAsBytes(logs);
         }
 
         public async Task<byte[]> Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)

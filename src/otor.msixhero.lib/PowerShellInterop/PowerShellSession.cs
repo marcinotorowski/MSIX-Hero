@@ -48,12 +48,12 @@ namespace otor.msixhero.lib.PowerShellInterop
             this.progressReporter.Report(new Progress.ProgressData(progressRecord.PercentComplete, progressRecord.StatusDescription ?? progressRecord.CurrentOperation));
         }
 
-        public async Task InvokeAsync(IProgress<Progress.ProgressData> progress = null)
+        public async Task<PSDataCollection<PSObject>> InvokeAsync(IProgress<Progress.ProgressData> progress = null)
         {
             try
             {
                 this.progressReporter = progress;
-                await this.powerShell.InvokeAsync().ConfigureAwait(false);
+                return await this.powerShell.InvokeAsync().ConfigureAwait(false);
 
                 if (this.exception != null)
                 {
@@ -69,6 +69,11 @@ namespace otor.msixhero.lib.PowerShellInterop
         public PowerShell AddCommand(string cmdlet, bool localScope = false)
         {
             return this.powerShell.AddCommand(cmdlet, localScope);
+        }
+
+        public PowerShell AddScript(string cmdlet, bool localScope = false)
+        {
+            return this.powerShell.AddScript(cmdlet, localScope);
         }
 
         public static async Task<PowerShellSession> CreateForModule(string module = null, bool skipEditionCheck = false)

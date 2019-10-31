@@ -59,13 +59,10 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Volumes">
-
-            </TabItem>
             <TabItem Header="Installed by">
                 <xctk:BusyIndicator IsBusy="{Binding SelectedPackageExtendedInfo.IsLoading}">
                     <Grid>
-                        <StackPanel VerticalAlignment="Center" Visibility="{Binding SelectedPackageExtendedInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                        <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageExtendedInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
 
                             <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
                             <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">

@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
@@ -43,6 +44,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             }
             else
             {
+                var ttt = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetLogs(5), cancellationToken).ConfigureAwait(false);
                 installedOn.Users = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetUsersOfPackage(), cancellationToken).ConfigureAwait(false);
             }
 

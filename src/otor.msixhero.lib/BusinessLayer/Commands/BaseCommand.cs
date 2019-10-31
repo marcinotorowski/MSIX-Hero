@@ -19,6 +19,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     [XmlInclude(typeof(GetSelectionDetails))]
     [XmlInclude(typeof(RemovePackage))]
     [XmlInclude(typeof(SetPackageSorting))]
+    [XmlInclude(typeof(GetLogs))]
     [XmlInclude(typeof(SetPackageGrouping))]
     public abstract class BaseCommand
     {

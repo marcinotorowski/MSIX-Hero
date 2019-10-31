@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Management.Automation;
@@ -69,6 +70,16 @@ namespace otor.msixhero.lib
         public Task<RegistryMountState> GetRegistryMountState(Package package)
         {
             return this.GetRegistryMountState(package.InstallLocation, package.Name);
+        }
+
+        public async Task<IList<Log>> GetLogs(int maxCount)
+        {
+            using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
+            var cmd = ps.AddScript("Get-AppxLog -All | Select -f " + maxCount);
+            var logs = await ps.InvokeAsync().ConfigureAwait(false);
+
+            // todo: logs
+            return new List<Log>();
         }
 
         public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName)

@@ -15,6 +15,7 @@ namespace otor.msixhero.ui.Commands
             MountRegistry = new RoutedUICommand { Text = "Mount registry" };
             UnmountRegistry = new RoutedUICommand { Text = "Unmount registry" };
             CreateSelfSign = new RoutedUICommand { Text = "Create new self-signed certificate "};
+            OpenLogs = new RoutedUICommand { Text = "Show event viewer"};
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -34,5 +35,7 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand MountRegistry { get; }
 
         public static RoutedUICommand UnmountRegistry { get; }
+
+        public static RoutedUICommand OpenLogs { get; }
     }
 }

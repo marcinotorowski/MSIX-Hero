@@ -48,6 +48,7 @@ namespace otor.msixhero.ui.ViewModel
 
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
             this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
+            this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
         }
 
         public ICommand Refresh { get; }
@@ -59,6 +60,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand RemovePackage { get; }
 
         public ICommand NewSelfSignedCert { get; }
+
+        public ICommand OpenLogs { get; }
 
         public ICommand MountRegistry { get; }
 
@@ -248,6 +251,11 @@ namespace otor.msixhero.ui.ViewModel
         private void NewSelfSignedCertExecute()
         {
             this.dialogService.ShowDialog(DialogsModule.NewSelfSignedPath, new DialogParameters(), this.OnSelfSignedDialogClosed);
+        }
+
+        private void OpenLogsExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.EventViewerPath, new DialogParameters(), this.OnSelfSignedDialogClosed);
         }
 
         private void OnSelfSignedDialogClosed(IDialogResult obj)

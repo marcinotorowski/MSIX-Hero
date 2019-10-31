@@ -3,13 +3,6 @@ using System.IO;
 
 namespace otor.msixhero.lib
 {
-    public enum RegistryMountState
-    {
-        NotApplicable,
-        Mounted,
-        NotMounted
-    }
-
     [Serializable]
     public class Package
     {

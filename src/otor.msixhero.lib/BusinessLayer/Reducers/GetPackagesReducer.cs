@@ -39,7 +39,8 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             try
             {
                 List<Package> packageSource;
-                
+
+                context.Message = "Getting the list of packages...";
                 if (this.action.RequiresElevation && !this.StateManager.CurrentState.IsElevated)
                 {
                     packageSource = await this.clientCommandRemoting.GetClientInstance().GetExecuted(this.action, cancellationToken).ConfigureAwait(false);
