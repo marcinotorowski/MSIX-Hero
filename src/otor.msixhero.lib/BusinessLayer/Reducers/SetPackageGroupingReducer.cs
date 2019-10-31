@@ -4,6 +4,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -16,7 +17,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.command = command;
         }
 
-        public override Task Reduce(CancellationToken cancellationToken)
+        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
         {
             this.StateManager.CurrentState.Packages.Group = this.command.GroupMode;
             this.StateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Publish(new PackageGroupAndSortChangedPayload(this.StateManager.CurrentState.Packages.Group, this.StateManager.CurrentState.Packages.Sort, this.StateManager.CurrentState.Packages.SortDescending));

@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
@@ -43,7 +42,7 @@ namespace otor.msixhero.lib.Ipc
         public async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            var packages = new List<Package>(await packageManager.GetPackages(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser).ConfigureAwait(false));
+            var packages = new List<Package>(await packageManager.Get(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser).ConfigureAwait(false));
             Console.WriteLine("Returning back " + packages.Count + " results.");
             return ReturnAsBytes(packages);
         }
@@ -99,7 +98,7 @@ namespace otor.msixhero.lib.Ipc
         public async Task<byte[]> Handle(RemovePackage command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            await pkgManager.RemoveApp(command.Package).ConfigureAwait(false);
+            await pkgManager.Remove(command.Package).ConfigureAwait(false);
             Console.WriteLine("Package uninstalled.");
             return ReturnAsBytes(true);
         }

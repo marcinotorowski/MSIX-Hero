@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.ui.Services;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Regions;
@@ -18,6 +19,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 {
     public class MainViewModel : NotifyPropertyChanged
     {
+        private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
         private readonly IAppxPackageManager appxPackageManager;
         private readonly IRegionManager regionManager;
@@ -27,12 +29,14 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         private int loadingProgress;
 
         public MainViewModel(
+            IInteractionService interactionService,
             IApplicationStateManager stateManager,
             IAppxPackageManager appxPackageManager, 
             IRegionManager regionManager, 
             IDialogService dialogService, 
             IBusyManager busyManager)
         {
+            this.interactionService = interactionService;
             this.stateManager = stateManager;
             this.appxPackageManager = appxPackageManager;
             this.regionManager = regionManager;
@@ -52,7 +56,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
         }
 
-        public CommandHandler CommandHandler => new CommandHandler(this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);
+        public CommandHandler CommandHandler => new CommandHandler(this.interactionService, this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);
 
         public ObservableCollection<ToolViewModel> Tools { get; }
 

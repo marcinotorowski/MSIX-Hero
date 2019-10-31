@@ -8,6 +8,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -20,7 +21,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override Task<List<Package>> GetReduced(CancellationToken cancellationToken)
+        public override Task<List<Package>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
         {
             IReadOnlyCollection<Package> select;
             IReadOnlyCollection<Package> deselect;

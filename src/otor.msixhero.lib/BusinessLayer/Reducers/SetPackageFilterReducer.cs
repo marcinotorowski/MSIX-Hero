@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -21,7 +22,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override Task Reduce(CancellationToken cancellationToken)
+        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
         {
             var state = this.StateManager.CurrentState;
             var oldSearchKey = state.Packages.SearchKey;

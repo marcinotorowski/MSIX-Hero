@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -33,7 +33,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.packageManager = packageManager;
         }
 
-        public override async Task<List<Package>> GetReduced(CancellationToken cancellationToken)
+        public override async Task<List<Package>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin();
             try
@@ -51,11 +51,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                     switch (action.Context)
                     {
                         case PackageContext.AllUsers:
-                            packageSource = new List<Package>(await this.packageManager.GetPackages(PackageFindMode.AllUsers));
+                            packageSource = new List<Package>(await this.packageManager.Get(PackageFindMode.AllUsers));
                             break;
 
                         case PackageContext.CurrentUser:
-                            packageSource = new List<Package>(await this.packageManager.GetPackages(PackageFindMode.CurrentUser));
+                            packageSource = new List<Package>(await this.packageManager.Get(PackageFindMode.CurrentUser));
                             break;
 
                         default:
@@ -71,7 +71,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 state.Packages.VisibleItems.Clear();
                 state.Packages.HiddenItems.Clear();
                 state.Packages.VisibleItems.AddRange(packageSource);
-
+                
                 this.StateManager.EventAggregator.GetEvent<PackagesLoaded>().Publish(state.Packages.Context);
                 await this.StateManager.CommandExecutor.ExecuteAsync(new SetPackageFilter(state.Packages.Filter, state.Packages.SearchKey), cancellationToken).ConfigureAwait(false);
                 await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(state.Packages.VisibleItems.Where(item => selectedPackageNames.Contains(item.Name)).ToList()), cancellationToken).ConfigureAwait(false);

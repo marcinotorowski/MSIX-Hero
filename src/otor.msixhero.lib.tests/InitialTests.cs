@@ -11,7 +11,7 @@ namespace otor.msixhero.lib.tests
         public void Test1()
         {
             var man = new AppxPackageManager();
-            var allPackages = man.GetPackages().Result.ToList();
+            var allPackages = man.Get().Result.ToList();
             var rvl = allPackages.FirstOrDefault(x => x.Name.Contains("Eval"));
         }
     }

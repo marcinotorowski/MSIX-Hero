@@ -31,6 +31,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private PackageViewModel selectedPackage;
         private bool isActive;
         private ICommand findUsers;
+        private bool disableSelectionPropagation;
 
         public PackageListViewModel(IApplicationStateManager stateManager)
         {
@@ -196,10 +197,18 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void OnPackagesLoaded(PackageContext context)
         {
-            this.AllPackages.Clear();
-            foreach (var item in this.stateManager.CurrentState.Packages.VisibleItems)
+            this.disableSelectionPropagation = true;
+            try
             {
-                this.AllPackages.Add(new PackageViewModel(item));
+                this.AllPackages.Clear();
+                foreach (var item in this.stateManager.CurrentState.Packages.VisibleItems)
+                {
+                    this.AllPackages.Add(new PackageViewModel(item));
+                }
+            }
+            finally
+            {
+                this.disableSelectionPropagation = false;
             }
         }
 
@@ -262,6 +271,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             get => this.selectedPackage;
             set
             {
+                if (this.disableSelectionPropagation)
+                {
+                    return;
+                }
+
                 if (value == null)
                 {
                     this.stateManager.CommandExecutor.ExecuteAsync(SelectPackages.CreateEmpty());

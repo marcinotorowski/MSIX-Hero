@@ -15,6 +15,7 @@ using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.Settings;
+using otor.msixhero.ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
@@ -31,12 +32,13 @@ namespace otor.msixhero.ui
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton(typeof(IAppxPackageManager), typeof(AppxPackageManager));
-            containerRegistry.RegisterSingleton(typeof(IAppxSigningManager), typeof(AppxSigningManager));
-            containerRegistry.RegisterSingleton(typeof(IBusyManager), typeof(BusyManager));
-            containerRegistry.RegisterSingleton(typeof(IClientCommandRemoting), typeof(ClientCommandRemoting));
-            containerRegistry.RegisterSingleton(typeof(IApplicationStateManager), typeof(ApplicationStateManager));
-            containerRegistry.RegisterInstance(typeof(IProcessManager), this.processManager);
+            containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
+            containerRegistry.RegisterSingleton<IAppxSigningManager, AppxSigningManager>();
+            containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
+            containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
+            containerRegistry.RegisterSingleton<IClientCommandRemoting, ClientCommandRemoting>();
+            containerRegistry.RegisterSingleton<IApplicationStateManager, ApplicationStateManager>();
+            containerRegistry.RegisterInstance<IProcessManager>(this.processManager);
         }
         
         protected override Window CreateShell()

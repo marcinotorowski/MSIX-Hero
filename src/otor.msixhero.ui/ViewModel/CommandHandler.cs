@@ -7,11 +7,13 @@ using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
+using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
+using otor.msixhero.ui.Services;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -19,17 +21,20 @@ namespace otor.msixhero.ui.ViewModel
 {
     public class CommandHandler
     {
+        private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
         private readonly IAppxPackageManager packageManager;
         private readonly IRegionManager regionManager;
         private readonly IDialogService dialogService;
 
         public CommandHandler(
+            IInteractionService interactionService,
             IApplicationStateManager stateManager, 
             IAppxPackageManager packageManager,
             IRegionManager regionManager, 
             IDialogService dialogService)
         {
+            this.interactionService = interactionService;
             this.stateManager = stateManager;
             this.packageManager = packageManager;
             this.regionManager = regionManager;
@@ -41,7 +46,7 @@ namespace otor.msixhero.ui.ViewModel
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanRunApp());
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolViewModel), param => this.CanRunTool(param as ToolViewModel));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
-            this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(), param => this.CanRemovePackage());
+            this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute((bool)param), param => this.CanRemovePackage());
 
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanMountRegistry());
             this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());
@@ -49,6 +54,7 @@ namespace otor.msixhero.ui.ViewModel
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
             this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
+            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
         }
 
         public ICommand Refresh { get; }
@@ -75,6 +81,8 @@ namespace otor.msixhero.ui.ViewModel
 
         public ICommand RunTool { get; }
 
+        public ICommand AddPackage { get; }
+
         private void RefreshExecute()
         {
             this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context));
@@ -84,6 +92,22 @@ namespace otor.msixhero.ui.ViewModel
         {
             // todo: refresh only when region activated
             return true;
+        }
+
+        private bool CanAddPackage()
+        {
+            return true;
+        }
+
+        private void AddPackageExecute()
+        {
+            if (!this.interactionService.SelectFile("MSIX packages (*.msix)|*.msix", out var selection))
+            {
+                return;
+            }
+
+
+            this.stateManager.CommandExecutor.ExecuteAsync(new AddPackage(selection), CancellationToken.None);
         }
 
         private void OpenPowerShellExecute()
@@ -207,10 +231,10 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.RunApp(package);
+            this.packageManager.Run(package);
         }
 
-        private void RemovePackageExecute()
+        private void RemovePackageExecute(bool allUsersRemoval)
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null)
@@ -218,7 +242,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.RemoveApp(package, this.stateManager.CurrentState.Packages.Context == PackageContext.AllUsers, false);
+            this.packageManager.Remove(package, allUsersRemoval, false);
         }
 
         private bool CanRunApp()
@@ -235,7 +259,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.RunTool(package, tool.Name);
+            this.packageManager.RunToolInContext(package, tool.Name);
         }
 
         private bool CanRunTool(ToolViewModel tool)

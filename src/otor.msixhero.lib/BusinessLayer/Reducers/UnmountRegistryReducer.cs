@@ -5,6 +5,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -30,7 +31,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.clientCommandRemoting = clientCommandRemoting;
         }
         
-        public override async Task Reduce(CancellationToken cancellationToken)
+        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
         {
             var context = this.busyManager.Begin();
             try

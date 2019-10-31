@@ -1,10 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI.Composition.Interactions;
 using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -28,8 +30,9 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.clientCommandRemoting = clientCommandRemoting;
         }
 
-        public override async Task Reduce(CancellationToken cancellationToken)
+        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
         {
+
             var context = this.busyManager.Begin();
             context.Progress = 30;
             context.Message = "Removing " + this.action.Package.DisplayName;
@@ -38,7 +41,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 if (this.action.RequiresElevation && !this.StateManager.CurrentState.IsElevated)
                 {
-                    await this.packageManager.RemoveApp(this.action.Package).ConfigureAwait(false);
+                    await this.packageManager.Remove(this.action.Package).ConfigureAwait(false);
                 }
                 else
                 {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
-using System.Management.Automation;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Xml;
@@ -15,7 +13,7 @@ using otor.msixhero.lib.PowerShellInterop;
 
 namespace otor.msixhero.lib
 {
-    public class AppxPackageManager : IAppxPackageManager
+    public class AppxPackageManager : IAppxPackageManager 
     {
         public Task<List<User>> GetUsersForPackage(Package package)
         {
@@ -32,13 +30,14 @@ namespace otor.msixhero.lib
             });
         }
 
-        public async Task RemoveApp(Package package, bool forAllUsers = false, bool preserveAppData = false)
+        public async Task Remove(Package package, bool forAllUsers = false, bool preserveAppData = false)
         {
             if (package == null)
             {
                 throw new ArgumentNullException(nameof(package));
             }
-            
+
+            var pkgMan = new PackageManager();
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             var cmd = ps.AddCommand("Remove-AppxPackage");
             cmd.AddParameter("Package", package.ProductId);
@@ -46,7 +45,20 @@ namespace otor.msixhero.lib
             await ps.InvokeAsync().ConfigureAwait(false);
         }
 
-        public async Task RunTool(Package package, string toolName)
+        public async Task Add(string filePath)
+        {
+            if (filePath == null)
+            {
+                throw new ArgumentNullException(nameof(filePath));
+            }
+
+            using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
+            var cmd = ps.AddCommand("Add-AppxPackage");
+            cmd.AddParameter("Path", filePath);
+            await ps.InvokeAsync().ConfigureAwait(false);
+        }
+
+        public async Task RunToolInContext(Package package, string toolName)
         {
             if (package == null)
             {
@@ -202,7 +214,7 @@ namespace otor.msixhero.lib
             });
         }
 
-        public Task RunApp(Package package)
+        public Task Run(Package package)
         {
             if (package == null)
             {
@@ -232,7 +244,7 @@ namespace otor.msixhero.lib
             return Task.FromResult(true);
         }
 
-        public async Task<IList<Package>> GetPackages(PackageFindMode mode = PackageFindMode.Auto)
+        public async Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto)
         {
             var list = new List<Package>();
 

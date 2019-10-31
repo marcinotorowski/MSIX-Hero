@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
@@ -17,17 +18,20 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         private readonly IDictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>>();
         private readonly ApplicationStateManager stateManager;
         private readonly IAppxPackageManager appxPackageManager;
+        private readonly IInteractionService interactionService;
         private readonly IBusyManager busyManager;
         private readonly IClientCommandRemoting clientCommandRemoting;
 
         public CommandExecutor(
             ApplicationStateManager stateManager, 
             IAppxPackageManager appxPackageManager, 
+            IInteractionService interactionService,
             IBusyManager busyManager,
             IClientCommandRemoting clientCommandRemoting)
         {
             this.stateManager = stateManager;
             this.appxPackageManager = appxPackageManager;
+            this.interactionService = interactionService;
             this.busyManager = busyManager;
             this.clientCommandRemoting = clientCommandRemoting;
 
@@ -66,7 +70,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             }
 
             var lazyReducer = reducerFactory(action);
-            await lazyReducer.Reduce(cancellationToken).ConfigureAwait(false);
+            await lazyReducer.Reduce(this.interactionService, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default)
@@ -83,7 +87,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
                 throw new NotSupportedException("This reducer does not support output.");
             }
 
-            return await lazyReducerOutput.GetReduced(cancellationToken).ConfigureAwait(false);
+            return await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken).ConfigureAwait(false);
         }
 
         private void ConfigureReducers()
@@ -101,6 +105,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager);
         }
     }
 }
