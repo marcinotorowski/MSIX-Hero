@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Managers;
@@ -27,7 +26,13 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default)
         {
+            var appxReader = await AppxManifestReader.FromMsix(this.command.FilePath);
             await this.busyManager.Execute(progress => this.packageManager.Add(this.command.FilePath, cancellationToken, progress));
+
+            var allPackages = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
+            var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
+            
+            await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected), cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -85,11 +85,13 @@ namespace otor.msixhero.lib.Managers
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            var pkgManager = new PackageManager();
-
+            var reader = await AppxManifestReader.FromMsix(filePath).ConfigureAwait(false);
+            var packageName = reader.DisplayName;
+            
             var deploymentProgress = new Progress<DeploymentProgress>();
             EventHandler<DeploymentProgress> handler = null;
 
+            var pkgManager = new PackageManager();
             try
             {
                 var task = pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.None).AsTask(CancellationToken.None, deploymentProgress);
@@ -109,6 +111,10 @@ namespace otor.msixhero.lib.Managers
                 if (result.ExtendedErrorCode != null)
                 {
                     throw result.ExtendedErrorCode;
+                }
+                else
+                {
+                    
                 }
             }
             finally
@@ -311,7 +317,12 @@ namespace otor.msixhero.lib.Managers
             return Task.FromResult(true);
         }
 
-        public async Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto)
+        public Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto)
+        {
+            return this.Get(null, mode);
+        }
+
+        public async Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto)
         {
             var list = new List<Package>();
 
@@ -323,16 +334,41 @@ namespace otor.msixhero.lib.Managers
             var pkgMan = new PackageManager();
             IList<Windows.ApplicationModel.Package> allPackages;
 
-            switch (mode)
+            if (string.IsNullOrEmpty(packageName))
             {
-                case PackageFindMode.CurrentUser:
-                    allPackages = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty).ToList()).ConfigureAwait(false);
-                    break;
-                case PackageFindMode.AllUsers:
-                    allPackages = await Task.Run(() => pkgMan.FindPackages().ToList()).ConfigureAwait(false);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+                switch (mode)
+                {
+                    case PackageFindMode.CurrentUser:
+                        allPackages = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty).ToList()).ConfigureAwait(false);
+                        break;
+                    case PackageFindMode.AllUsers:
+                        allPackages = await Task.Run(() => pkgMan.FindPackages().ToList()).ConfigureAwait(false);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+                }
+            }
+            else
+            {
+                switch (mode)
+                {
+                    case PackageFindMode.CurrentUser:
+                        allPackages = new List<Windows.ApplicationModel.Package>
+                        {
+                            await Task.Run(() => pkgMan.FindPackageForUser(string.Empty, packageName)).ConfigureAwait(false)
+                        };
+
+                        break;
+                    case PackageFindMode.AllUsers:
+                        allPackages = new List<Windows.ApplicationModel.Package>
+                        {
+                            await Task.Run(() => pkgMan.FindPackage(packageName)).ConfigureAwait(false)
+                        };
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+                }
             }
 
             foreach (var item in allPackages)
@@ -427,69 +463,38 @@ namespace otor.msixhero.lib.Managers
 
         private static async Task<PkgDetails> GetManifestDetails(string installLocation)
         {
-            string img = null;
-            string name = null;
-            string publisher = null;
-            string description = null;
-
-            if (installLocation == null)
+            try
             {
-                return new PkgDetails();
-            }
+                var reader = await AppxManifestReader.FromInstallLocation(installLocation);
+                var logo = Path.Combine(installLocation, reader.Logo);
 
-            var appxManifest = Path.Combine(installLocation, "AppxManifest.xml");
-            if (!File.Exists(appxManifest))
-            {
-                return new PkgDetails();
-            }
-
-            var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(await File.ReadAllTextAsync(appxManifest));
-
-            var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
-
-            foreach (XmlNode subNode in node.ChildNodes)
-            {
-                switch (subNode.LocalName)
+                if (File.Exists(Path.Combine(installLocation, logo)))
                 {
-                    case "DisplayName":
-                        name = subNode.InnerText;
-                        break;
-                    case "Logo":
-                        img = Path.Combine(installLocation, subNode.InnerText);
-                        if (!File.Exists(img))
-                        {
-                            var extension = Path.GetExtension(img);
-                            var baseName = Path.GetFileNameWithoutExtension(img);
-                            var baseFolder = Path.GetDirectoryName(img);
-
-                            img = null;
-
-                            var dirInfo = new DirectoryInfo(Path.Combine(installLocation, baseFolder));
-                            if (dirInfo.Exists)
-                            {
-                                var found = dirInfo.EnumerateFiles(baseName + "*" + extension).FirstOrDefault();
-                                if (found != null)
-                                {
-                                    img = found.FullName;
-                                }
-                            }
-                        }
-
-                        break;
-                    case "PublisherDisplayName":
-                        publisher = subNode.InnerText;
-                        break;
-                    case "Description":
-                        description = subNode.InnerText;
-                        break;
+                    return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor);
                 }
+
+                var extension = Path.GetExtension(logo);
+                var baseName = Path.GetFileNameWithoutExtension(logo);
+                var baseFolder = Path.GetDirectoryName(logo);
+
+                logo = null;
+
+                var dirInfo = new DirectoryInfo(Path.Combine(installLocation, baseFolder));
+                if (dirInfo.Exists)
+                {
+                    var found = dirInfo.EnumerateFiles(baseName + "*" + extension).FirstOrDefault();
+                    if (found != null)
+                    {
+                        logo = found.FullName;
+                    }
+                }
+
+                return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor);
             }
-
-            node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
-            var color = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
-
-            return new PkgDetails(name, publisher, img, description, color);
+            catch (Exception)
+            {
+                return new PkgDetails();
+            }
         }
 
         private static void SetRegistryValue(string key, string name, string value)

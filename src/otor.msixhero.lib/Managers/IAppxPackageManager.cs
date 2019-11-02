@@ -37,6 +37,8 @@ namespace otor.msixhero.lib.Managers
 
         Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto);
 
+        Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto);
+
         Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, IProgress<ProgressData> progress = null);
 
         Task<IList<Log>> GetLogs(int maxCount);
