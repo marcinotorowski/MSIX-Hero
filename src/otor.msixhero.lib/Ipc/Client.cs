@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
+using otor.msixhero.lib.Domain;
 using otor.msixhero.lib.Ipc.Streams;
 
 namespace otor.msixhero.lib.Ipc
@@ -20,7 +21,7 @@ namespace otor.msixhero.lib.Ipc
             this.processManager = processManager;
         }
 
-        public async Task Execute(BaseCommand command, CancellationToken cancellationToken)
+        public async Task Execute(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
 
@@ -68,22 +69,42 @@ namespace otor.msixhero.lib.Ipc
             var stream = pipeClient;
 
             var binaryProcessor = new BinaryStreamProcessor(stream);
+            // ReSharper disable once RedundantCast
             await binaryProcessor.Write((BaseCommand)command, cancellationToken);
             await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-            var success = await binaryProcessor.ReadBoolean(cancellationToken).ConfigureAwait(false);
 
-            if (!success)
+            while (true)
             {
-                var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                // ReSharper disable once UnusedVariable
-                var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                throw new Exception(msg);
+                var response = (ResponseType)await binaryProcessor.ReadInt32(cancellationToken).ConfigureAwait(false);
+                
+                switch (response)
+                {
+                    case ResponseType.Exception:
+                        var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                        var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                        await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                        throw new Exception(msg);
+
+                    case ResponseType.Progress:
+                        var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
+                        if (progress != null)
+                        {
+                            progress.Report(deserializedProgress);
+                        }
+
+                        break;
+
+                    case ResponseType.Result:
+                        return;
+
+                    default:
+                        throw new NotSupportedException();
+                }
             }
         }
 
         // ReSharper disable once MemberCanBeMadeStatic.Global
-        public async Task<TOutput> GetExecuted<TOutput>(BaseCommand<TOutput> command, CancellationToken cancellationToken)
+        public async Task<TOutput> GetExecuted<TOutput>(BaseCommand<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
             
@@ -118,19 +139,37 @@ namespace otor.msixhero.lib.Ipc
             var binaryProcessor = new BinaryStreamProcessor(stream);
             await binaryProcessor.Write((BaseCommand)command, cancellationToken);
             await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-            var success = await binaryProcessor.ReadBoolean(cancellationToken).ConfigureAwait(false);
 
-            if (!success)
+            while (true)
             {
-                var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                // ReSharper disable once UnusedVariable
-                var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                throw new Exception(msg);
-            }
+                var response = (ResponseType) await binaryProcessor.ReadInt32(cancellationToken).ConfigureAwait(false);
 
-            var deserializedObject = await binaryProcessor.Read<TOutput>(cancellationToken).ConfigureAwait(false);
-            return deserializedObject;
+                switch (response)
+                {
+                    case ResponseType.Exception:
+                        var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                        // ReSharper disable once UnusedVariable
+                        var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                        await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                        throw new Exception(msg);
+
+                    case ResponseType.Result:
+                        var deserializedObject = await binaryProcessor.Read<TOutput>(cancellationToken).ConfigureAwait(false);
+                        return deserializedObject;
+
+                    case ResponseType.Progress:
+                        var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
+                        if (progress != null)
+                        {
+                            progress.Report(deserializedProgress);
+                        }
+
+                        break;
+
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
         }
     }
 }

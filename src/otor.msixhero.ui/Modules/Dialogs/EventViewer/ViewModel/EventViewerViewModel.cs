@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using otor.msixhero.lib;
+using otor.msixhero.lib.BusinessLayer.Commands.Developer;
+using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.Domain;
+using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 
@@ -12,10 +17,20 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
 {
     public class EventViewerViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
     {
+        private readonly IApplicationStateManager stateManager;
         private int progress;
         private string progressMessage;
         private bool isLoading;
-        
+
+        public EventViewerViewModel(IApplicationStateManager stateManager)
+        {
+            this.stateManager = stateManager;
+            var col = new ObservableCollection<Log>();
+            this.LogsView = CollectionViewSource.GetDefaultView(col);
+            this.Logs = new AsyncProperty<ObservableCollection<Log>>(col);
+            this.Sort(nameof(Log.DateTime), false);
+        }
+
         public bool IsLoading
         {
             get => this.isLoading;
@@ -45,13 +60,36 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+#pragma warning disable 4014
+            this.Logs.Load(this.GetLogs());
+#pragma warning restore 4014
         }
 
+        public async Task<ObservableCollection<Log>> GetLogs()
+        {
+            try
+            {
+                this.IsLoading = true;
+
+                var action = new GetLogs(50);
+                var result = await this.stateManager.CommandExecutor.GetExecuteAsync(action);
+                return new ObservableCollection<Log>(result);
+            }
+            finally
+            {
+                this.IsLoading = false;
+            }
+        }
+
+        public AsyncProperty<ObservableCollection<Log>> Logs { get; }
+
+        public ICollectionView LogsView { get; }
+        
         public async Task Save()
         {
             var token = new Progress();
 
-            EventHandler<Progress.ProgressData> handler = (sender, data) =>
+            EventHandler<ProgressData> handler = (sender, data) =>
             {
                 this.Progress = data.Progress;
                 this.ProgressMessage = data.Message;
@@ -96,6 +134,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
         }
 
         public event Action<IDialogResult> RequestClose;
+
+        public void Sort(string columnName, bool descending)
+        {
+            this.LogsView.SortDescriptions.Clear();
+            this.LogsView.SortDescriptions.Add(new SortDescription(columnName, descending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+        }
     }
 }
 

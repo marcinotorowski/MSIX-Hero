@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain;
 using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -16,7 +18,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.StateManager = state;
         }
 
-        public abstract Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken);
+        public abstract Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default);
     }
 
     public abstract class BaseReducer<TState, TOutput> : BaseReducer<TState>, IReducer<TState, TOutput> where TState : IApplicationState
@@ -25,9 +27,9 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         {
         }
         
-        public abstract Task<TOutput> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken);
+        public abstract Task<TOutput> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default);
 
-        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default)
         {
             return this.GetReduced(interactionService, cancellationToken);
         }

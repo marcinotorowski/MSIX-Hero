@@ -9,6 +9,8 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.ui.Helpers;
+using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 
 namespace otor.msixhero.ui.Modules.PackageList.View
@@ -95,9 +97,30 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             }
         }
 
+        private bool disableSelectionNotification = false;
+
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionChanged)
         {
             this.UpdateSidebarVisibility();
+
+            try
+            {
+                this.disableSelectionNotification = true;
+
+                foreach (var item in selectionChanged.Selected)
+                {
+                    this.ListView.SelectedItems.Add(item);
+                }
+
+                foreach (var item in selectionChanged.Unselected)
+                {
+                    this.ListView.SelectedItems.Remove(item);
+                }
+            }
+            finally
+            {
+                this.disableSelectionNotification = false;
+            }
         }
 
         private void OnSidebarVisibilityChanged(bool explicitSidebarVisible)
@@ -107,37 +130,12 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            /*var viewModel = ((ListView)sender).DataContext as PackageListViewModel;
-            if (viewModel == null)
+            if (this.disableSelectionNotification)
             {
                 return;
             }
 
-            if (e.AddedItems != null)
-            {
-                foreach (var newItem in e.AddedItems.OfType<PackageViewModel>())
-                {
-                    viewModel.SelectedPackages.Add(newItem);
-                }
-            }
-
-            if (e.RemovedItems != null)
-            {
-                foreach (var oldItem in e.RemovedItems.OfType<PackageViewModel>())
-                {
-                    viewModel.SelectedPackages.Remove(oldItem);
-                }
-            }
-
-            if (this.TabMaintenance.IsSelected || this.TabDeveloper.IsSelected)
-            {
-                return;
-            }
-
-            if (viewModel.SelectedPackages.Any())
-            {
-                this.TabMaintenance.IsSelected = true;
-            }*/
+            this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
         }
 
         private void ColumnClicked(object sender, RoutedEventArgs e)

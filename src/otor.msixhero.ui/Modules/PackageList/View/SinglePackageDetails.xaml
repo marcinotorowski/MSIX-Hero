@@ -10,19 +10,19 @@
              mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
-        <Label DockPanel.Dock="Top" Style="{StaticResource Label}" Content="{Binding SelectedPackage.DisplayName}" />
+        <Label DockPanel.Dock="Top" Style="{StaticResource Label}" Content="{Binding SelectedPackages[0].DisplayName}" />
 
         <DockPanel DockPanel.Dock="Top" >
-            <Border DataContext="{Binding SelectedPackage}" Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <Border DataContext="{Binding SelectedPackages[0]}" Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
                     <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                 </Border>
             </Border>
-            <TextBlock TextWrapping="Wrap" Text="{Binding SelectedPackage.Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
+            <TextBlock TextWrapping="Wrap" Text="{Binding SelectedPackages[0].Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
         </DockPanel>
 
         <TabControl DockPanel.Dock="Top" Margin="0 10 0 0">
-            <TabItem Header="Properties" DataContext="{Binding SelectedPackage}">
+            <TabItem Header="Properties" DataContext="{Binding SelectedPackages[0]}">
                 <StackPanel Margin="10">
                     <StackPanel Margin="0 10 0 0">
                         <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
@@ -41,7 +41,7 @@
 
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Package identity" DataContext="{Binding SelectedPackage}">
+            <TabItem Header="Package identity" DataContext="{Binding SelectedPackages[0]}">
                 <StackPanel Margin="10">
                     <StackPanel Margin="0 10 0 0">
                         <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />

@@ -72,7 +72,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 state.Packages.HiddenItems.Clear();
                 state.Packages.VisibleItems.AddRange(packageSource);
                 
-                this.StateManager.EventAggregator.GetEvent<PackagesLoaded>().Publish(state.Packages.Context);
+                this.StateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Publish(new PackagesCollectionChangedPayLoad(state.Packages.Context, CollectionChangeType.Reset));
                 await this.StateManager.CommandExecutor.ExecuteAsync(new SetPackageFilter(state.Packages.Filter, state.Packages.SearchKey), cancellationToken).ConfigureAwait(false);
                 await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(state.Packages.VisibleItems.Where(item => selectedPackageNames.Contains(item.Name)).ToList()), cancellationToken).ConfigureAwait(false);
 

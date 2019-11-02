@@ -7,12 +7,21 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel"
              mc:Ignorable="d" 
-             MinWidth="500"
-             MinHeight="500"
              Background="#ffffff"
-             d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
-   
+             d:DesignWidth="600"
+             d:DesignHeight="200"
+             d:DataContext="{d:DesignInstance viewModel1:EventViewerViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="500" />
+            <Setter Property="Height" Value="500" />
+            <Setter Property="MinWidth" Value="400" />
+            <Setter Property="MinHeight" Value="300" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
     <UserControl.CommandBindings>
         <CommandBinding 
             Command="Save"
@@ -21,57 +30,91 @@
         <CommandBinding 
             Command="Close"
             Executed="CloseExecuted" />
-        <CommandBinding 
-            Command="Open"
-            Executed="OpenExecuted" />
     </UserControl.CommandBindings>
 
-    <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
-        <xctk:BusyIndicator.ProgressBarStyle>
-            <Style TargetType="ProgressBar">
-                <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
-            </Style>
-        </xctk:BusyIndicator.ProgressBarStyle>
-        <DockPanel>
-            <Border Background="#2B579A" DockPanel.Dock="Top">
-                <DockPanel Margin="16">
-                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorLogs}" />
-                    <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Event viewer</Label>
-                </DockPanel>
-            </Border>
-            <Border Background="#eee" DockPanel.Dock="Bottom">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                        <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-
-            <ContentControl DockPanel.Dock="Bottom" Content="{Binding Error}">
-                <ContentControl.Style>
-                    <Style TargetType="ContentControl">
-                        <Style.Triggers>
-                            <Trigger Property="Content" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
-                <ContentControl.ContentTemplate>
-                    <DataTemplate>
-                        <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
-
-            <Border >
-                <!-- Margin="8" Background="White" BorderThickness="1" BorderBrush="#bbb" -->
-                <StackPanel Margin="16">
-                    
+    <DockPanel>
+        <Border Background="#2B579A" DockPanel.Dock="Top">
+            <DockPanel Margin="16">
+                <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorLogs}" />
+                <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Event viewer</Label>
+            </DockPanel>
+        </Border>
+        <Border Background="#eee" DockPanel.Dock="Bottom">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                    <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
                 </StackPanel>
-            </Border>
-        </DockPanel>
-    </xctk:BusyIndicator>
+            </DockPanel>
+        </Border>
+
+        <ContentControl DockPanel.Dock="Bottom" Content="{Binding Error}">
+            <ContentControl.Style>
+                <Style TargetType="ContentControl">
+                    <Style.Triggers>
+                        <Trigger Property="Content" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
+                        <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                    </Border>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+
+        <Border >
+            <!-- Margin="8" Background="White" BorderThickness="1" BorderBrush="#bbb" -->
+            <xctk:BusyIndicator IsBusy="{Binding Logs.IsLoading}" BusyContent="{Binding ProgressMessage}">
+                <AdornerDecorator>
+                    <ListView Visibility="{Binding Logs.IsLoading, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Margin="10" ItemsSource="{Binding Logs.CurrentValue}">
+                        <ListView.View>
+                            <GridView x:Name="GridView">
+                                <GridView.Columns>
+                                    <GridViewColumn DisplayMemberBinding="{Binding DateTime}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="DateTime" Content="Created" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding ActivityId}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Level" Content="Level" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding PackageName}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="PackageName" Content="App" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding ActivityId}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ActivityId" Content="ActivityId" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Message}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Message" Content="Message" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding User}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="User" Content="User" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding ThreadId}">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ThreadId" Content="ThreadId" />
+                                        </GridViewColumn.Header>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </AdornerDecorator>
+            </xctk:BusyIndicator>
+        </Border>
+    </DockPanel>
 </UserControl>

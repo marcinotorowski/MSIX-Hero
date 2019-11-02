@@ -236,13 +236,13 @@ namespace otor.msixhero.ui.ViewModel
 
         private void RemovePackageExecute(bool allUsersRemoval)
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
-            if (package == null)
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (!selection.Any())
             {
                 return;
             }
 
-            this.packageManager.Remove(package, allUsersRemoval, false);
+            this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection));
         }
 
         private bool CanRunApp()

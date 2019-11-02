@@ -9,7 +9,7 @@ namespace otor.msixhero.lib.PowerShellInterop
     public class PowerShellSession : IDisposable
     {
         private readonly PowerShell powerShell;
-        private IProgress<Progress.ProgressData> progressReporter;
+        private IProgress<ProgressData> progressReporter;
         private Exception exception;
 
         public void Dispose()
@@ -45,20 +45,22 @@ namespace otor.msixhero.lib.PowerShellInterop
             }
 
             var progressRecord = ((PSDataCollection<ProgressRecord>)sender).First();
-            this.progressReporter.Report(new Progress.ProgressData(progressRecord.PercentComplete, progressRecord.StatusDescription ?? progressRecord.CurrentOperation));
+            this.progressReporter.Report(new ProgressData(progressRecord.PercentComplete, progressRecord.StatusDescription ?? progressRecord.CurrentOperation));
         }
 
-        public async Task<PSDataCollection<PSObject>> InvokeAsync(IProgress<Progress.ProgressData> progress = null)
+        public async Task<PSDataCollection<PSObject>> InvokeAsync(IProgress<ProgressData> progress = null)
         {
             try
             {
                 this.progressReporter = progress;
-                return await this.powerShell.InvokeAsync().ConfigureAwait(false);
+                var result = await this.powerShell.InvokeAsync().ConfigureAwait(false);
 
                 if (this.exception != null)
                 {
                     throw exception;
                 }
+
+                return result;
             }
             finally
             {

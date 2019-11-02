@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
@@ -25,7 +24,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.clientCommandRemoting = clientCommandRemoting;
         }
 
-        public override async Task<List<Log>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override async Task<List<Log>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default)
         {
             if (this.command.RequiresElevation)
             {

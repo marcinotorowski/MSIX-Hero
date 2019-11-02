@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Domain;
 using otor.msixhero.ui.ViewModel;
@@ -13,11 +13,12 @@ namespace otor.msixhero.ui.Helpers
         private T currentValue;
         private bool isLoading;
 
-        public AsyncProperty()
+        public AsyncProperty(T initialValue = default)
         {
+            this.currentValue = initialValue;
         }
 
-        public AsyncProperty(Task<T> loader, IProgress<Progress.ProgressData> progressReporter = null)
+        public AsyncProperty(Task<T> loader, IProgress<ProgressData> progressReporter = null)
         {
             if (loader != null)
             {
@@ -27,12 +28,38 @@ namespace otor.msixhero.ui.Helpers
             }
         }
 
-        public async Task Load(Task<T> loader, IProgress<Progress.ProgressData> progressReporter = null)
+        public async Task Load(Task<T> loader, IProgress<ProgressData> progressReporter = null)
         {
             try
             {
                 this.IsLoading = true;
-                var newValue = await loader.ConfigureAwait(false);
+                var newValue = await loader.ConfigureAwait(true);
+
+                if (this.CurrentValue != null && typeof(T).IsGenericType)
+                {
+                    var generic = typeof(T).GetGenericTypeDefinition();
+                    
+                    if (typeof(ObservableCollection<>) == generic)
+                    {
+                        // this is an observable collection, use events
+                        if (this.CurrentValue == null)
+                        {
+                            this.CurrentValue = (T)Activator.CreateInstance(typeof(ObservableCollection<>).MakeGenericType(typeof(T).GetGenericArguments()[0]));
+                        }
+                        else
+                        {
+                            ((IList)this.CurrentValue).Clear();
+                        }
+
+                        foreach (var item in (IList)newValue)
+                        {
+                            ((IList) this.CurrentValue).Add(item);
+                        }
+
+                        return;
+                    }
+                }
+                
                 this.CurrentValue = newValue;
             }
             finally

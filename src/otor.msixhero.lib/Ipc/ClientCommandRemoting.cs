@@ -7,8 +7,11 @@ using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.lib.Domain;
 
 namespace otor.msixhero.lib.Ipc
 {
@@ -24,13 +27,13 @@ namespace otor.msixhero.lib.Ipc
         public Server GetServerInstance(IAppxPackageManager packageManager)
         {
             var server = new Server();
-            server.AddHandler<GetPackages>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<MountRegistry>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<UnmountRegistry>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<GetUsersOfPackage>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<RemovePackage>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<GetSelectionDetails>(action => this.Handle(action, packageManager, CancellationToken.None));
-            server.AddHandler<GetLogs>(action => this.Handle(action, packageManager, CancellationToken.None));
+            server.AddHandler<GetPackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
+            server.AddHandler<MountRegistry>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
+            server.AddHandler<UnmountRegistry>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
+            server.AddHandler<GetUsersOfPackage>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
+            server.AddHandler<RemovePackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
+            server.AddHandler<GetSelectionDetails>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
+            server.AddHandler<GetLogs>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             return server;
         }
         
@@ -39,7 +42,7 @@ namespace otor.msixhero.lib.Ipc
             return new Client(this.processManager);
         }
 
-        public async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var packages = new List<Package>(await packageManager.Get(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser).ConfigureAwait(false));
@@ -47,7 +50,7 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(packages);
         }
 
-        public async Task<byte[]> Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)
+        public async Task<byte[]> Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit).ConfigureAwait(false);
@@ -55,7 +58,7 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(true);
         }
 
-        private async Task<byte[]> Handle(GetLogs command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        private async Task<byte[]> Handle(GetLogs command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var logs = await packageManager.GetLogs(command.MaxCount).ConfigureAwait(false);
@@ -63,7 +66,7 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(logs);
         }
 
-        public async Task<byte[]> Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)
+        public async Task<byte[]> Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             await pkgManager.UnmountRegistry(command.PackageName).ConfigureAwait(false);
@@ -71,7 +74,7 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(true);
         }
 
-        public async Task<byte[]> Handle(GetSelectionDetails command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)
+        public async Task<byte[]> Handle(GetSelectionDetails command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var users = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
@@ -87,7 +90,7 @@ namespace otor.msixhero.lib.Ipc
                 });
         }
 
-        public async Task<byte[]> Handle(GetUsersOfPackage command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)
+        public async Task<byte[]> Handle(GetUsersOfPackage command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var list = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
@@ -95,10 +98,11 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(list);
         }
 
-        public async Task<byte[]> Handle(RemovePackage command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default)
+        public async Task<byte[]> Handle(RemovePackages command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            await pkgManager.Remove(command.Package).ConfigureAwait(false);
+
+            await pkgManager.Remove(command.Packages).ConfigureAwait(false);
             Console.WriteLine("Package uninstalled.");
             return ReturnAsBytes(true);
         }

@@ -14,15 +14,23 @@ namespace otor.msixhero.adminhelper
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            if (args.Length > 0 && args[0] == "--selfElevate")
+            Console.WriteLine(string.Join(" ", args));
+            try
             {
-                StartPipe().GetAwaiter().GetResult();
+                if (args.Length > 0 && args[0] == "--selfElevate")
+                {
+                    StartPipe().GetAwaiter().GetResult();
+                }
+                else
+                {
+                    Environment.ExitCode = 1;
+                }
             }
-            else
+            catch (Exception e)
             {
-                Environment.ExitCode = 1;
+                Console.WriteLine(e);
             }
         }
 
@@ -37,6 +45,8 @@ namespace otor.msixhero.adminhelper
             {
                 Console.WriteLine(e);
             }
+
+            Console.ReadKey();
         }
     }
 }

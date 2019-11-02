@@ -17,7 +17,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     [XmlInclude(typeof(UnmountRegistry))]
     [XmlInclude(typeof(GetUsersOfPackage))]
     [XmlInclude(typeof(GetSelectionDetails))]
-    [XmlInclude(typeof(RemovePackage))]
+    [XmlInclude(typeof(RemovePackages))]
     [XmlInclude(typeof(SetPackageSorting))]
     [XmlInclude(typeof(GetLogs))]
     [XmlInclude(typeof(SetPackageGrouping))]

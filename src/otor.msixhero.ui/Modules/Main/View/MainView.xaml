@@ -26,11 +26,26 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
     </routedCommand:RoutedCommandHandlers.Commands>
     <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding LoadingMessage}">
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar">
+                <Setter Property="Value" Value="{Binding LoadingProgress, Mode=OneWay}" />
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Height" Value="10" />
+                <Style.Triggers>
+                    <Trigger Property="Value">
+                        <Trigger.Value>
+                            <system:Double>0</system:Double>
+                        </Trigger.Value>
+                        <Setter Property="IsIndeterminate" Value="True" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -150,7 +165,7 @@
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
                 <Fluent:RibbonTabItem x:Name="TabMaintenance" Header="BASICS" Group="{Binding Source={x:Reference ToolsGroup}}">
-                    <Fluent:RibbonGroupBox>
+                    <Fluent:RibbonGroupBox IsEnabled="{Binding HasSingleSelection}">
                         <Fluent:SplitButton Header="Copy" Size="Middle">
                             <Fluent:SplitButton.Icon>
                                 <Path Data="{StaticResource VectorCopy}" Style="{StaticResource MediumIcon}" />
@@ -163,7 +178,7 @@
                         </Fluent:SplitButton>
                     </Fluent:RibbonGroupBox>
                     <Fluent:RibbonGroupBox Header="Control">
-                        <Fluent:SplitButton Header="Remove" Command="Delete" ToolTip="Removes this app for the current user only">
+                        <Fluent:SplitButton IsEnabled="{Binding HasSelection}" Header="Remove" Command="Delete" ToolTip="Removes this app for the current user only">
                             <Fluent:SplitButton.CommandParameter>
                                 <system:Boolean>False</system:Boolean>
                             </Fluent:SplitButton.CommandParameter>
@@ -179,7 +194,7 @@
                                 </Fluent:Button.LargeIcon>
                             </Fluent:Button>
                         </Fluent:SplitButton>
-                        <Fluent:Button Header="Start" Command="{x:Static commands:MsixHeroCommands.RunPackage}" CommandParameter="{Binding SelectedPackage}">
+                        <Fluent:Button Header="Start" IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.RunPackage}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
                             </Fluent:Button.LargeIcon>
@@ -189,7 +204,7 @@
 
                 <Fluent:RibbonTabItem x:Name="TabDeveloper" Header="DEVELOPER" Group="{Binding Source={x:Reference ToolsGroup}}">
                     <Fluent:RibbonGroupBox Header="Navigation">
-                        <Fluent:Button Header="Open install location" Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" CommandParameter="{Binding SelectedPackage}">
+                        <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open install location" Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
                             </Fluent:Button.SizeDefinition>
@@ -197,7 +212,7 @@
                                 <Path Style="{StaticResource LargeIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                             </Fluent:Button.LargeIcon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Open user data location" Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" CommandParameter="{Binding SelectedPackage}">
+                        <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open user data location" Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
                             </Fluent:Button.SizeDefinition>
@@ -205,7 +220,7 @@
                                 <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                             </Fluent:Button.Icon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Open manifest" Command="{x:Static commands:MsixHeroCommands.OpenManifest}" CommandParameter="{Binding SelectedPackage}">
+                        <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open manifest" Command="{x:Static commands:MsixHeroCommands.OpenManifest}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
                             </Fluent:Button.SizeDefinition>
@@ -214,7 +229,7 @@
                             </Fluent:Button.Icon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
-                    <Fluent:RibbonGroupBox Header="Run in package context">
+                    <Fluent:RibbonGroupBox IsEnabled="{Binding HasSingleSelection}" Header="Run in package context">
                         <Fluent:InRibbonGallery ItemsSource="{Binding Tools}">
                             <Fluent:InRibbonGallery.ItemTemplate>
                                 <DataTemplate>
@@ -228,7 +243,7 @@
                             </Fluent:Button.LargeIcon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
-                    <Fluent:RibbonGroupBox Header="Registry">
+                    <Fluent:RibbonGroupBox IsEnabled="{Binding HasSingleSelection}" Header="Registry">
                         <Fluent:Button Header="Load registry" Command="{x:Static commands:MsixHeroCommands.MountRegistry}">
                             <Fluent:Button.LargeIcon>
                                 <Path Data="{StaticResource VectorRegistry}" Width="32" Height="32" Fill="Black" />

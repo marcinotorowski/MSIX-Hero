@@ -111,7 +111,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
         {
             var token = new Progress();
 
-            EventHandler<Progress.ProgressData> handler = (sender, data) =>
+            EventHandler<ProgressData> handler = (sender, data) =>
             {
                 this.Progress = data.Progress;
                 this.ProgressMessage = data.Message;

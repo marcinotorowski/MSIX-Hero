@@ -49,7 +49,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
             busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
 
-            stateManager.EventAggregator.GetEvent<PackagesLoaded>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged, ThreadOption.UIThread);
@@ -66,14 +66,10 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageContext(value));
         }
 
-        public bool HasSelection
-        {
-            get
-            {
-                return this.stateManager.CurrentState.Packages.SelectedItems.Any();
-            }
-        }
-        
+        public bool HasSelection => this.stateManager.CurrentState.Packages.SelectedItems.Any();
+
+        public bool HasSingleSelection => this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
+
         public bool ShowSideLoadedApps
         {
             get => (this.stateManager.CurrentState.Packages.Filter & PackageFilter.Developer) == PackageFilter.Developer;
@@ -170,6 +166,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
             this.OnPropertyChanged(nameof(HasSelection));
+            this.OnPropertyChanged(nameof(HasSingleSelection));
         }
 
         private void OnPackageFilterChanged(PackagesFilterChangedPayload obj)
@@ -192,7 +189,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.OnPropertyChanged(nameof(Group));
         }
 
-        private void OnPackageLoaded(PackageContext obj)
+        private void OnPackageLoaded(PackagesCollectionChangedPayLoad obj)
         {
             this.OnPropertyChanged(nameof(Context));
         }

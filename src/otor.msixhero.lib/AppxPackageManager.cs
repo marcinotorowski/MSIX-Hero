@@ -4,11 +4,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Windows.Foundation;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.Domain;
 using otor.msixhero.lib.PowerShellInterop;
 
 namespace otor.msixhero.lib
@@ -30,22 +35,52 @@ namespace otor.msixhero.lib
             });
         }
 
-        public async Task Remove(Package package, bool forAllUsers = false, bool preserveAppData = false)
+        public async Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, IProgress<ProgressData> progress = null)
         {
-            if (package == null)
+            if (packages == null)
             {
-                throw new ArgumentNullException(nameof(package));
+                return;
             }
 
-            var pkgMan = new PackageManager();
-            using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            var cmd = ps.AddCommand("Remove-AppxPackage");
-            cmd.AddParameter("Package", package.ProductId);
-            cmd.AddParameter("AllUsers", forAllUsers);
-            await ps.InvokeAsync().ConfigureAwait(false);
+            // ReSharper disable once PossibleMultipleEnumeration
+            var singleProgress = 100.0 / packages.Count();
+            var totalProgress = 0.0;
+
+            var mmm = new PackageManager();
+            // ReSharper disable once PossibleMultipleEnumeration
+            foreach (var item in packages)
+            {
+                if (progress != null)
+                {
+                    progress.Report(new ProgressData((int)totalProgress, "Removing " + item.DisplayName));
+                }
+
+                using (var cts = new CancellationTokenSource())
+                {
+                    try
+                    {
+                        var uwpTask = mmm.RemovePackageAsync(item.ProductId, forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None).AsTask(cts.Token);
+                        var maxTimeout = Task.Delay(TimeSpan.FromSeconds(7), cts.Token);
+
+                        var awaited = await Task.WhenAny(uwpTask, maxTimeout).ConfigureAwait(false);
+                        if (awaited == maxTimeout)
+                        {
+                            // Probably worth to check if the package has been already removed.
+                        }
+
+                        cts.Cancel();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        continue;
+                    }
+                }
+
+                totalProgress += singleProgress;
+            }
         }
 
-        public async Task Add(string filePath)
+        public async Task Add(string filePath, IProgress<ProgressData> progress = null)
         {
             if (filePath == null)
             {
@@ -53,9 +88,9 @@ namespace otor.msixhero.lib
             }
 
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            var cmd = ps.AddCommand("Add-AppxPackage");
-            cmd.AddParameter("Path", filePath);
-            await ps.InvokeAsync().ConfigureAwait(false);
+            using var cmd = ps.AddCommand("Add-AppxPackage");
+            using var param1 = cmd.AddParameter("Path", filePath);
+            using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public async Task RunToolInContext(Package package, string toolName)
@@ -71,12 +106,12 @@ namespace otor.msixhero.lib
             }
 
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");
-            cmd.AddParameter("Command", toolName);
-            cmd.AddParameter("PackageFamilyName", package.PackageFamilyName);
-            cmd.AddParameter("AppId", package.Name);
-            cmd.AddParameter("PreventBreakaway");
-            await ps.InvokeAsync().ConfigureAwait(false);
+            using var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");
+            using var param1 = cmd.AddParameter("Command", toolName);
+            using var param2 = cmd.AddParameter("PackageFamilyName", package.PackageFamilyName);
+            using var param3 = cmd.AddParameter("AppId", package.Name);
+            using var param4 = cmd.AddParameter("PreventBreakaway");
+            using var result = await ps.InvokeAsync().ConfigureAwait(false);
         }
 
         public Task<RegistryMountState> GetRegistryMountState(Package package)
@@ -87,11 +122,11 @@ namespace otor.msixhero.lib
         public async Task<IList<Log>> GetLogs(int maxCount)
         {
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            var cmd = ps.AddScript("Get-AppxLog -All | Select -f " + maxCount);
-            var logs = await ps.InvokeAsync().ConfigureAwait(false);
-
-            // todo: logs
-            return new List<Log>();
+            using var script = ps.AddScript("Get-AppxLog -All | Select -f " + maxCount);
+            using var logs = await ps.InvokeAsync().ConfigureAwait(false);
+            
+            var factory = new LogFactory();
+            return new List<Log>(logs.Select(log => factory.CreateFromPowerShellObject(log)));
         }
 
         public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName)
@@ -271,6 +306,7 @@ namespace otor.msixhero.lib
             foreach (var item in allPackages)
             {
                 string installLocation;
+                DateTime installDate;
                 try
                 {
                     installLocation = item.InstalledLocation?.Path;
@@ -278,6 +314,15 @@ namespace otor.msixhero.lib
                 catch (Exception)
                 {
                     continue;
+                }
+
+                try
+                {
+                    installDate = item.InstalledDate.LocalDateTime;
+                }
+                catch (Exception)
+                {
+                    installDate = DateTime.MinValue;
                 }
                 
                 var details = await GetManifestDetails(installLocation).ConfigureAwait(false);
@@ -292,13 +337,13 @@ namespace otor.msixhero.lib
                     InstallLocation = installLocation,
                     PackageFamilyName = item.Id.FamilyName,
                     Description = details.Description,
-                    InstallDate = item.InstalledDate.LocalDateTime,
                     DisplayPublisherName = details.DisplayPublisherName,
                     Publisher = item.Id.Publisher,
                     TileColor = details.Color,
                     Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
                     SignatureKind = Convert(item.SignatureKind),
-                    HasRegistry = hasRegistry
+                    HasRegistry = hasRegistry,
+                    InstallDate = installDate
                 };
 
                 list.Add(pkg);

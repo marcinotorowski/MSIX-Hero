@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -102,6 +103,20 @@ namespace otor.msixhero.lib.Ipc.Streams
             }
         }
 
+        public async Task<int> ReadInt32(CancellationToken cancellationToken = default)
+        {
+            using (var binaryReader = new AsyncBinaryReader(this.stream, true))
+            {
+                var numBytes = await binaryReader.ReadIntAsync(cancellationToken).ConfigureAwait(false);
+                if (numBytes != 4)
+                {
+                    throw new InvalidOperationException("Expected to receive 4 bytes but got " + numBytes);
+                }
+
+                return await binaryReader.ReadIntAsync(cancellationToken).ConfigureAwait(false);
+            }
+        }
+
         public async Task Write(bool value, CancellationToken cancellationToken = default)
         {
             using (var binaryWriter = new AsyncBinaryWriter(this.stream, true))
@@ -124,6 +139,16 @@ namespace otor.msixhero.lib.Ipc.Streams
             using (var binaryWriter = new AsyncBinaryWriter(this.stream, true))
             {
                 var bytes = System.Text.Encoding.UTF8.GetBytes(value);
+                await binaryWriter.WriteIntAsync(bytes.Length, cancellationToken).ConfigureAwait(false);
+                await binaryWriter.WriteBytesAsync(bytes, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        public async Task Write(int value, CancellationToken cancellationToken = default)
+        {
+            using (var binaryWriter = new AsyncBinaryWriter(this.stream, true))
+            {
+                var bytes = BitConverter.GetBytes(value);
                 await binaryWriter.WriteIntAsync(bytes.Length, cancellationToken).ConfigureAwait(false);
                 await binaryWriter.WriteBytesAsync(bytes, cancellationToken).ConfigureAwait(false);
             }

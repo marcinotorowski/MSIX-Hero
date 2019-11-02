@@ -16,6 +16,6 @@ namespace otor.msixhero.lib
             string publisherDisplayName,
             string password,
             CancellationToken cancellationToken = default,
-            IProgress<Progress.ProgressData> progress = null);
+            IProgress<ProgressData> progress = null);
     }
 }

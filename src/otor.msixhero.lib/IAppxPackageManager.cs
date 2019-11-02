@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.Domain;
 
 namespace otor.msixhero.lib
 {
@@ -34,10 +36,10 @@ namespace otor.msixhero.lib
 
         Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto);
 
-        Task Remove(Package package, bool forAllUsers = false, bool preserveAppData = false);
+        Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, IProgress<ProgressData> progress = null);
 
         Task<IList<Log>> GetLogs(int maxCount);
 
-        Task Add(string filePath);
+        Task Add(string filePath, IProgress<ProgressData> progress = null);
     }
 }
