@@ -10,19 +10,26 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
     public class BusyManager : IBusyManager
     {
         private readonly IList<IBusyContext> contexts = new List<IBusyContext>();
+        private readonly object lockObject = new object();
 
         public IBusyContext Begin()
         {
-            var context = new ProgressBusyContext(this);
-            this.contexts.Add(context);
-            this.RefreshStatus();
-            return context;
+            lock (lockObject)
+            {
+                var context = new ProgressBusyContext(this);
+                this.contexts.Add(context);
+                this.RefreshStatus();
+                return context;
+            }
         }
 
         public void End(IBusyContext context)
         {
-            contexts.Remove(context);
-            this.RefreshStatus();
+            lock (lockObject)
+            {
+                contexts.Remove(context);
+                this.RefreshStatus();
+            }
         }
 
         public void Execute(Action<IBusyContext> action)

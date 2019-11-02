@@ -22,7 +22,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         private readonly IInteractionService interactionService;
         private readonly IBusyManager busyManager;
         private readonly IClientCommandRemoting clientCommandRemoting;
-
+        
         public CommandExecutor(
             ApplicationStateManager stateManager, 
             IAppxPackageManager appxPackageManager, 

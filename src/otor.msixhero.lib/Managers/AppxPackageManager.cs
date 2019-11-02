@@ -86,49 +86,14 @@ namespace otor.msixhero.lib.Managers
             }
 
             var reader = await AppxManifestReader.FromMsix(filePath).ConfigureAwait(false);
-            var packageName = reader.DisplayName;
-            
-            var deploymentProgress = new Progress<DeploymentProgress>();
-            EventHandler<DeploymentProgress> handler = null;
-
             var pkgManager = new PackageManager();
-            try
-            {
-                var task = pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.None).AsTask(CancellationToken.None, deploymentProgress);
+            var aoh = new AsyncOperationHelper();
+            await aoh.ConvertToTask(
+                pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown), 
+                "Installing " + reader.DisplayName + "...", 
+                cancellationToken, 
+                progress).ConfigureAwait(false);
 
-                if (progress != null)
-                {
-                    handler = (s, p) =>
-                    {
-                        progress.Report(new ProgressData((int) p.percentage, "Installing " + filePath));
-                    };
-                }
-
-                deploymentProgress.ProgressChanged += handler;
-
-                var result = await task.ConfigureAwait(false);
-                
-                if (result.ExtendedErrorCode != null)
-                {
-                    throw result.ExtendedErrorCode;
-                }
-                else
-                {
-                    
-                }
-            }
-            finally
-            {
-                if (handler != null)
-                {
-                    deploymentProgress.ProgressChanged -= handler;
-                }
-            }
-
-            // using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            // using var cmd = ps.AddCommand("Add-AppxPackage");
-            // using var param1 = cmd.AddParameter("Path", filePath);
-            // using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public async Task RunToolInContext(Package package, string toolName)
