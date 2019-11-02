@@ -7,6 +7,7 @@ using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -15,16 +16,18 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     {
         private readonly AddPackage command;
         private readonly IAppxPackageManager packageManager;
+        private readonly IBusyManager busyManager;
 
-        public AddPackageReducer(AddPackage command, IApplicationStateManager<ApplicationState> state, IAppxPackageManager packageManager) : base(command, state)
+        public AddPackageReducer(AddPackage command, IApplicationStateManager<ApplicationState> state, IAppxPackageManager packageManager, IBusyManager busyManager) : base(command, state)
         {
             this.command = command;
             this.packageManager = packageManager;
+            this.busyManager = busyManager;
         }
 
-        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default)
         {
-            return Task.Run(() => { this.packageManager.Add(this.command.FilePath); });
+            await this.busyManager.Execute(progress => this.packageManager.Add(this.command.FilePath, cancellationToken, progress));
         }
     }
 }

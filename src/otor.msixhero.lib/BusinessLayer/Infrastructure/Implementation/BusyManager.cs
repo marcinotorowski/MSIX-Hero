@@ -3,24 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.State;
-using Prism.Events;
+using otor.msixhero.lib.Domain;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
     public class BusyManager : IBusyManager
     {
-        private readonly IEventAggregator eventAggregator;
-
         private readonly IList<IBusyContext> contexts = new List<IBusyContext>();
-
-        public BusyManager(IEventAggregator eventAggregator)
-        {
-            this.eventAggregator = eventAggregator;
-        }
 
         public IBusyContext Begin()
         {
-            var context = new BusyContext(this);
+            var context = new ProgressBusyContext(this);
             this.contexts.Add(context);
             this.RefreshStatus();
             return context;
@@ -82,13 +75,13 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             }
         }
 
-        public class BusyContext : IBusyContext
+        public class ProgressBusyContext : IBusyContext
         {
             private readonly BusyManager manager;
             private string message;
             private int progress;
 
-            public BusyContext(BusyManager manager)
+            public ProgressBusyContext(BusyManager manager)
             {
                 this.manager = manager;
             }
@@ -119,6 +112,13 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
                     this.progress = value;
                     this.manager.RefreshStatus();
                 }
+            }
+
+            public void Report(ProgressData value)
+            {
+                this.message = value.Message;
+                this.progress = value.Progress;
+                this.manager.RefreshStatus();
             }
         }
     }

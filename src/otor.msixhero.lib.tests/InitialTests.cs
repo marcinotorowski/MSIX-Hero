@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using otor.msixhero.lib.Managers;
 
 namespace otor.msixhero.lib.tests
 {

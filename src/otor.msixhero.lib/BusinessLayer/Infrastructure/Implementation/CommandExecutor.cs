@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
@@ -105,7 +106,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager);
+            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager, this.busyManager);
         }
     }
 }

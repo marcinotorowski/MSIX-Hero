@@ -5,6 +5,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.ui.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers

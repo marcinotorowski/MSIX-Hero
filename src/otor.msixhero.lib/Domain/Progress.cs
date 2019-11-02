@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 using System.Text;
+using otor.msixhero.lib.BusinessLayer.State;
 
 namespace otor.msixhero.lib.Domain
 {
     public class Progress : Progress<ProgressData>
     {
     }
-
     [Serializable]
     public struct ProgressData
     {

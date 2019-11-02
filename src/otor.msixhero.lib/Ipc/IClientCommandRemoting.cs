@@ -8,6 +8,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.Domain;
+using otor.msixhero.lib.Managers;
 
 namespace otor.msixhero.lib.Ipc
 {

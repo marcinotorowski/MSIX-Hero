@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib;
 using otor.msixhero.lib.Domain;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 

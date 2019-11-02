@@ -1,5 +1,6 @@
 ﻿using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.ui.Services;
 using Prism.Events;
 

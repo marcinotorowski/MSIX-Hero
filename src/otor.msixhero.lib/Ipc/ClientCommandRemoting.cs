@@ -12,6 +12,7 @@ using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Domain;
+using otor.msixhero.lib.Managers;
 
 namespace otor.msixhero.lib.Ipc
 {

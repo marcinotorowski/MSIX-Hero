@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Domain;
 
-namespace otor.msixhero.lib
+namespace otor.msixhero.lib.Managers
 {
     public interface IAppxSigningManager
     {

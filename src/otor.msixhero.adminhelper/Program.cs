@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
+using otor.msixhero.lib.Managers;
 
 namespace otor.msixhero.adminhelper
 {

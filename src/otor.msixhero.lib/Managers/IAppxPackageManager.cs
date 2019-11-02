@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.Domain;
 
-namespace otor.msixhero.lib
+namespace otor.msixhero.lib.Managers
 {
     public enum PackageFindMode
     {
@@ -40,6 +41,6 @@ namespace otor.msixhero.lib
 
         Task<IList<Log>> GetLogs(int maxCount);
 
-        Task Add(string filePath, IProgress<ProgressData> progress = null);
+        Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

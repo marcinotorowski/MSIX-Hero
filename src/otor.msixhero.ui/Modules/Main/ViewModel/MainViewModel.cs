@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.ui.Services;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;

@@ -7,16 +7,14 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using Windows.Foundation;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.Domain;
 using otor.msixhero.lib.PowerShellInterop;
 
-namespace otor.msixhero.lib
+namespace otor.msixhero.lib.Managers
 {
     public class AppxPackageManager : IAppxPackageManager 
     {
@@ -80,17 +78,51 @@ namespace otor.msixhero.lib
             }
         }
 
-        public async Task Add(string filePath, IProgress<ProgressData> progress = null)
+        public async Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (filePath == null)
             {
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
-            using var cmd = ps.AddCommand("Add-AppxPackage");
-            using var param1 = cmd.AddParameter("Path", filePath);
-            using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
+            var pkgManager = new PackageManager();
+
+            var deploymentProgress = new Progress<DeploymentProgress>();
+            EventHandler<DeploymentProgress> handler = null;
+
+            try
+            {
+                var task = pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.None).AsTask(CancellationToken.None, deploymentProgress);
+
+                if (progress != null)
+                {
+                    handler = (s, p) =>
+                    {
+                        progress.Report(new ProgressData((int) p.percentage, "Installing " + filePath));
+                    };
+                }
+
+                deploymentProgress.ProgressChanged += handler;
+
+                var result = await task.ConfigureAwait(false);
+                
+                if (result.ExtendedErrorCode != null)
+                {
+                    throw result.ExtendedErrorCode;
+                }
+            }
+            finally
+            {
+                if (handler != null)
+                {
+                    deploymentProgress.ProgressChanged -= handler;
+                }
+            }
+
+            // using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
+            // using var cmd = ps.AddCommand("Add-AppxPackage");
+            // using var param1 = cmd.AddParameter("Path", filePath);
+            // using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public async Task RunToolInContext(Package package, string toolName)
