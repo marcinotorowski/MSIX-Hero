@@ -84,7 +84,7 @@ namespace otor.msixhero.lib.PowerShellInterop
             var cmd = session.AddCommand("Set-ExecutionPolicy");
             cmd.AddParameter("ExecutionPolicy", "ByPass");
             cmd.AddParameter("Scope", "Process");
-            await cmd.InvokeAsync().ConfigureAwait(false);
+            await session.InvokeAsync().ConfigureAwait(false);
             session.powerShell.Commands.Clear();
 
             if (!string.IsNullOrEmpty(module))
@@ -95,6 +95,9 @@ namespace otor.msixhero.lib.PowerShellInterop
                 {
                     cmd2.AddParameter("SkipEditionCheck");
                 }
+
+                await session.InvokeAsync().ConfigureAwait(false);
+                session.powerShell.Commands.Clear();
             }
 
             return session;

@@ -39,42 +39,16 @@ namespace otor.msixhero.lib.Managers
             {
                 return;
             }
-
-            // ReSharper disable once PossibleMultipleEnumeration
-            var singleProgress = 100.0 / packages.Count();
-            var totalProgress = 0.0;
-
+            
             var mmm = new PackageManager();
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
-                if (progress != null)
-                {
-                    progress.Report(new ProgressData((int)totalProgress, "Removing " + item.DisplayName));
-                }
-
-                using (var cts = new CancellationTokenSource())
-                {
-                    try
-                    {
-                        var uwpTask = mmm.RemovePackageAsync(item.ProductId, forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None).AsTask(cts.Token);
-                        var maxTimeout = Task.Delay(TimeSpan.FromSeconds(7), cts.Token);
-
-                        var awaited = await Task.WhenAny(uwpTask, maxTimeout).ConfigureAwait(false);
-                        if (awaited == maxTimeout)
-                        {
-                            // Probably worth to check if the package has been already removed.
-                        }
-
-                        cts.Cancel();
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        continue;
-                    }
-                }
-
-                totalProgress += singleProgress;
+                var task = AsyncOperationHelper.ConvertToTask(
+                    mmm.RemovePackageAsync(item.ProductId,
+                        forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None),
+                    "Removing " + item.DisplayName, CancellationToken.None, progress);
+                await task.ConfigureAwait(false);
             }
         }
 
@@ -87,8 +61,7 @@ namespace otor.msixhero.lib.Managers
 
             var reader = await AppxManifestReader.FromMsix(filePath).ConfigureAwait(false);
             var pkgManager = new PackageManager();
-            var aoh = new AsyncOperationHelper();
-            await aoh.ConvertToTask(
+            await AsyncOperationHelper.ConvertToTask(
                 pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown), 
                 "Installing " + reader.DisplayName + "...", 
                 cancellationToken, 

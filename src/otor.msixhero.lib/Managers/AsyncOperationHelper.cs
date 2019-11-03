@@ -11,7 +11,7 @@ namespace otor.msixhero.lib.Managers
 {
     public class AsyncOperationHelper
     {
-        public async Task<T> ConvertToTask<T>(IAsyncOperationWithProgress<T, DeploymentProgress> operation, string caption, CancellationToken token = default, IProgress<ProgressData> progress = default)
+        public static async Task<T> ConvertToTask<T>(IAsyncOperationWithProgress<T, DeploymentProgress> operation, string caption, CancellationToken token = default, IProgress<ProgressData> progress = default)
         {
             if (progress != null)
             {
