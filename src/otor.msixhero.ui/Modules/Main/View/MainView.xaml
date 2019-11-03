@@ -12,7 +12,7 @@
                      xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
                      xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Main.ViewModel"
                      xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                     d:DesignWidth="500"
+                     d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -77,10 +77,13 @@
                 </Fluent:Ribbon.Menu>
 
                 <!--Tabs-->
-                <Fluent:RibbonTabItem Header="HOME">
+                <Fluent:RibbonTabItem Header="HOME" ReduceOrder="
+                                      RibbonHomeContext,RibbonHomeContext,RibbonHomeContext,
+                                      RibbonHomeActions,RibbonHomeActions,RibbonHomeActions,
+                                      RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
 
-                    <Fluent:RibbonGroupBox Header="Context">
-                        <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh">
+                    <Fluent:RibbonGroupBox x:Name="RibbonHomeContext" Header="Context">
+                        <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Small">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
                             </Fluent:Button.LargeIcon>
@@ -106,32 +109,47 @@
                         </Fluent:RadioButton>
                     </Fluent:RibbonGroupBox>
 
-                    <Fluent:RibbonGroupBox Header="Actions">
+                    <Fluent:RibbonGroupBox x:Name="RibbonHomeActions" Header="Actions">
                         <Fluent:Button Header="Install package from MSIX..." Command="{x:Static commands:MsixHeroCommands.AddPackage}">
                             <Fluent:Button.LargeIcon>
                                 <Path Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 Z" Style="{StaticResource LargeIcon}" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 Z" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
 
-                    <Fluent:RibbonGroupBox Header="Troubleshooting and diagnostics">
-                        <Fluent:Button Header="Open PowerShell" Command="{x:Static commands:MsixHeroCommands.OpenPowerShell}">
+                    <Fluent:RibbonGroupBox x:Name="RibbonHomeTroubleshooting" Header="Troubleshooting and diagnostics" >
+                        <Fluent:Button Header="Open PowerShell" Command="{x:Static commands:MsixHeroCommands.OpenPowerShell}" SizeDefinition="Large, Medium, Medium">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPowerShell}" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPowerShell}" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Open MSIX logs" Command="{x:Static commands:MsixHeroCommands.OpenLogs}">
+                        <Fluent:Button Header="Open MSIX logs" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Medium, Medium">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorLogs}" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorLogs}" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
                         <Separator />
-                        <Fluent:Button Header="Apps and features" Size="Middle" Command="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}">
+                        <Fluent:Button Header="Apps and features" SizeDefinition="Medium,Medium,Small" Command="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}">
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPowerList}" />
+                            </Fluent:Button.LargeIcon>
                             <Fluent:Button.Icon>
                                 <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPowerList}" />
                             </Fluent:Button.Icon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Developer settings" Size="Middle" Command="{x:Static commands:MsixHeroCommands.OpenDevSettings}">
+                        <Fluent:Button Header="Developer settings" SizeDefinition="Medium,Medium,Small" Command="{x:Static commands:MsixHeroCommands.OpenDevSettings}">
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
+                            </Fluent:Button.LargeIcon>
                             <Fluent:Button.Icon>
                                 <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSelfSign}" />
                             </Fluent:Button.Icon>
@@ -154,7 +172,7 @@
                     </Fluent:RibbonGroupBox>
 
                     <Fluent:RibbonGroupBox Header="Group by">
-                        <Fluent:InRibbonGallery ItemWidth="64" ItemHeight="64" SelectedValue="{Binding Group}" SelectedValuePath="Tag" Size="Large" MinItemsInRow="3">
+                        <Fluent:InRibbonGallery Orientation="Horizontal" ItemWidth="64" ItemHeight="58" SelectedValue="{Binding Group}" SelectedValuePath="Tag" Size="Large" MinItemsInRow="3">
                             <Fluent:InRibbonGallery.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Large" Small="Middle" />
                             </Fluent:InRibbonGallery.SizeDefinition>
