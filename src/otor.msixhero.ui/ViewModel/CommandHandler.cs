@@ -56,6 +56,8 @@ namespace otor.msixhero.ui.ViewModel
             this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
+            this.OpenAppsFeatures = new DelegateCommand(param => this.OpenAppsFeaturesExecute());
+            this.OpenDevSettings = new DelegateCommand(param => this.OpenDevSettingsExecute());
         }
 
         public ICommand Refresh { get; }
@@ -83,6 +85,10 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand RunTool { get; }
 
         public ICommand AddPackage { get; }
+
+        public ICommand OpenAppsFeatures { get; }
+
+        public ICommand OpenDevSettings { get; }
 
         private void RefreshExecute()
         {
@@ -114,6 +120,18 @@ namespace otor.msixhero.ui.ViewModel
         private void OpenPowerShellExecute()
         {
             var process = new ProcessStartInfo("powershell.exe", "-NoExit -NoLogo -Command \"Import-Module Appx; Write-Host \"Module [Appx] has been automatically imported by MSIX Hero.\"");
+            Process.Start(process);
+        }
+
+        private void OpenAppsFeaturesExecute()
+        {
+            var process = new ProcessStartInfo("ms-settings:appsfeatures") { UseShellExecute = true };
+            Process.Start(process);
+        }
+
+        private void OpenDevSettingsExecute()
+        {
+            var process = new ProcessStartInfo("ms-settings:developers") { UseShellExecute = true };
             Process.Start(process);
         }
 

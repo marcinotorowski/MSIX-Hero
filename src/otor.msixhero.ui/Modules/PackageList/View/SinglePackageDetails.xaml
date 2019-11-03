@@ -10,7 +10,9 @@
              mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
-        <Label DockPanel.Dock="Top" Style="{StaticResource Label}" Content="{Binding SelectedPackages[0].DisplayName}" />
+        <Border Height="31" DockPanel.Dock="Top">
+            <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackages[0].DisplayName}" />
+        </Border>
 
         <DockPanel DockPanel.Dock="Top" >
             <Border DataContext="{Binding SelectedPackages[0]}" Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">

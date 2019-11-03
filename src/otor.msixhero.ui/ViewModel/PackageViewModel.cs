@@ -7,8 +7,6 @@ namespace otor.msixhero.ui.ViewModel
 {
     public class PackageViewModel : NotifyPropertyChanged
     {
-        private List<User> users;
-
         public PackageViewModel(Package package)
         {
             this.Model = package;
@@ -71,12 +69,7 @@ namespace otor.msixhero.ui.ViewModel
 
         public Package Model { get; }
 
-        public List<User> Users
-        {
-            get => this.users;
-            set => this.SetField(ref this.users, value);
-        }
-
+        
         public static explicit operator Package(PackageViewModel packageViewModel)
         {
             return packageViewModel.Model;

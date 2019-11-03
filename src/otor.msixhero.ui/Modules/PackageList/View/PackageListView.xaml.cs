@@ -45,7 +45,6 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             this.SetSorting(this.applicationStateManager.CurrentState.Packages.Sort, this.applicationStateManager.CurrentState.Packages.SortDescending);
         }
 
-
         private void OnPackageGroupAndSortChanged(PackageGroupAndSortChangedPayload groupAndSortSettings)
         {
             this.SetSorting(groupAndSortSettings.Sorting, groupAndSortSettings.SortingDescending);
@@ -110,11 +109,13 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                 foreach (var item in selectionChanged.Selected)
                 {
                     this.ListView.SelectedItems.Add(item);
+                    this.ListBox.SelectedItems.Add(item);
                 }
 
                 foreach (var item in selectionChanged.Unselected)
                 {
                     this.ListView.SelectedItems.Remove(item);
+                    this.ListBox.SelectedItems.Remove(item);
                 }
             }
             finally
@@ -128,7 +129,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             this.UpdateSidebarVisibility();
         }
 
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.disableSelectionNotification)
             {
@@ -136,6 +137,54 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             }
 
             this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
+
+            if (this.PanelListBox.Visibility == Visibility.Collapsed)
+            {
+                if (e.AddedItems != null)
+                {
+                    foreach (var item in e.AddedItems)
+                    {
+                        this.ListBox.SelectedItems.Add(item);
+                    }
+                }
+
+                if (e.RemovedItems != null)
+                {
+                    foreach (var item in e.RemovedItems)
+                    {
+                        this.ListBox.SelectedItems.Remove(item);
+                    }
+                }
+            }
+        }
+
+        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.disableSelectionNotification)
+            {
+                return;
+            }
+            
+            this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
+
+            if (this.PanelListView.Visibility == Visibility.Collapsed)
+            {
+                if (e.AddedItems != null)
+                {
+                    foreach (var item in e.AddedItems)
+                    {
+                        this.ListView.SelectedItems.Add(item);
+                    }
+                }
+
+                if (e.RemovedItems != null)
+                {
+                    foreach (var item in e.RemovedItems)
+                    {
+                        this.ListView.SelectedItems.Remove(item);
+                    }
+                }
+            }
         }
 
         private void ColumnClicked(object sender, RoutedEventArgs e)
@@ -145,6 +194,32 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
             this.applicationStateManager.CommandExecutor.ExecuteAsync(new SetPackageSorting(sorting));
             e.Handled = true;
+        }
+
+        private void OnViewListSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!e.WidthChanged)
+            {
+                return;
+            }
+
+            this.SetVisibility();
+        }
+
+        private void SetVisibility()
+        {
+            var width = this.Search.ActualWidth;
+
+            if (width > 500)
+            {
+                this.PanelListView.Visibility = Visibility.Visible;
+                this.PanelListBox.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                this.PanelListView.Visibility = Visibility.Collapsed;
+                this.PanelListBox.Visibility = Visibility.Visible;
+            }
         }
     }
 }

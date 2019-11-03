@@ -18,6 +18,8 @@ namespace otor.msixhero.ui.Commands
             OpenLogs = new RoutedUICommand { Text = "Show event viewer"};
             RemovePackage = new RoutedUICommand { Text = "Remove package" };
             AddPackage = new RoutedUICommand { Text = "Add package" };
+            OpenAppsFeatures = new RoutedUICommand { Text = "Open Apps and Features" };
+            OpenDevSettings = new RoutedUICommand { Text = "Open Developer Settings" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -35,6 +37,10 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand AddPackage { get; }
 
         public static RoutedUICommand OpenPowerShell { get; }
+
+        public static RoutedUICommand OpenAppsFeatures { get; }
+
+        public static RoutedUICommand OpenDevSettings { get; }
 
         public static RoutedUICommand MountRegistry { get; }
 

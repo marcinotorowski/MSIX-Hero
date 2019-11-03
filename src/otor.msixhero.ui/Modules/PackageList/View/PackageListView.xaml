@@ -10,9 +10,34 @@
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
              xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <Grid Margin="5" x:Name="Grid">
+        <Grid.Resources>
+            <Style TargetType="{x:Type GroupItem}" x:Key="GroupStyle">
+                <Setter Property="Margin" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                            <StackPanel>
+                                <Border DockPanel.Dock="Top" Background="#F0F0F0" Height="24">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Right" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10 0">
+                                            <Run Text="{Binding ItemCount, Mode=OneWay}" />
+                                        </TextBlock>
+                                        <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="10 0 0 0">
+                                            <Run Text="{Binding Name, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </DockPanel>
+                                </Border>
+                                <ItemsPresenter />
+                            </StackPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -23,41 +48,57 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
-            <TextBox VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+        <Border x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
+            <Grid>
+                <TextBox Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+                <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+                    <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
+                        <Path.LayoutTransform>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                        </Path.LayoutTransform>
+                    </Path>
+                    <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in application list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
+                                            <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                <Condition.Value>
+                                                    <system:Int32>0</system:Int32>
+                                                </Condition.Value>
+                                            </Condition>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DockPanel>
+            </Grid>
         </Border>
 
         <AdornerDecorator
+            x:Name="PanelListView"
+            Visibility="Collapsed"
             Grid.Column="0"
             Grid.Row="1">
             <ListView 
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                 x:Name="ListView"
-                SelectionChanged="OnSelectionChanged"
+                Foreground="Black"
+                BorderThickness="0"
+                Padding="0"
+                SelectionChanged="OnListViewSelectionChanged"
                 ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                 ItemsSource="{Binding AllPackagesView}">
-                <ListView.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Margin" Value="0,0,0,5"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Label Style="{StaticResource Label}" Content="{Binding Path=Name}" Margin="8 12 8 4" />
-                                                    <Label Style="{StaticResource Label}" Content="{Binding Path=ItemCount}" Margin="0 12 0 4"/>
-                                                </StackPanel>
-                                                <ItemsPresenter />
-                                            </StackPanel>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-                </ListView.GroupStyle>
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Copy">
@@ -85,6 +126,35 @@
                         </MenuItem>
                     </ContextMenu>
                 </ListView.ContextMenu>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="10" />
+                        <Setter Property="BorderThickness" Value="4 0 0 0" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                        <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
+                                            <GridViewRowPresenter Margin="{TemplateBinding Padding}"  />
+                                        </Border>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                <Setter Property="Background" Value="#E6F2FA" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                <Setter Property="Background" Value="#E6F2FA" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView x:Name="GridView">
                         <GridView.Columns>
@@ -130,12 +200,85 @@
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
+                <ListView.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                </ListView.GroupStyle>
             </ListView>
         </AdornerDecorator>
+
+        <Border
+            Visibility="Collapsed"
+            x:Name="PanelListBox"
+            Grid.Column="0" Grid.Row="1" >
+            <ListBox 
+                VirtualizingPanel.IsVirtualizing="True"
+                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                x:Name="ListBox"
+                SelectionMode="Extended"
+                SelectionChanged="OnListBoxSelectionChanged"
+                BorderThickness="0"
+                Padding="0"
+                Margin="0"
+                ItemsSource="{Binding AllPackagesView}" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                </Border>
+                            </Border>
+
+                            <TextBlock Text="{Binding Version}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
+
+                            <StackPanel Margin="10 0">
+                                <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding DisplayPublisherName}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                            </StackPanel>
+
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="10" />
+                        <Setter Property="BorderThickness" Value="4 0 0 0" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                        <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
+                                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                        </Border>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                <Setter Property="Background" Value="#E6F2FA" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                <Setter Property="Background" Value="#E6F2FA" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                </ListBox.GroupStyle>
+            </ListBox>
+        </Border>
 
         <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
         <!--<ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />-->
-        <view:SinglePackageDetails x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="1" Grid.Column="2" />
+        <view:SinglePackageDetails x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" />
     </Grid>
 </UserControl>
