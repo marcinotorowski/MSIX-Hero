@@ -133,24 +133,33 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                 return;
             }
 
-            this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
-            if (this.PanelListBox.Visibility == Visibility.Collapsed)
+            try
             {
-                if (e.AddedItems != null)
+                this.disableSelectionNotification = true;
+                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
+                
+                if (this.PanelListBox.Visibility == Visibility.Collapsed)
                 {
-                    foreach (var item in e.AddedItems)
+                    if (e.AddedItems != null)
                     {
-                        this.ListBox.SelectedItems.Add(item);
+                        foreach (var item in e.AddedItems)
+                        {
+                            this.ListBox.SelectedItems.Add(item);
+                        }
                     }
-                }
 
-                if (e.RemovedItems != null)
-                {
-                    foreach (var item in e.RemovedItems)
+                    if (e.RemovedItems != null)
                     {
-                        this.ListBox.SelectedItems.Remove(item);
+                        foreach (var item in e.RemovedItems)
+                        {
+                            this.ListBox.SelectedItems.Remove(item);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                this.disableSelectionNotification = false;
             }
         }
 
@@ -161,24 +170,33 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                 return;
             }
 
-            this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
-            if (this.PanelListView.Visibility == Visibility.Collapsed)
+            try
             {
-                if (e.AddedItems != null)
-                {
-                    foreach (var item in e.AddedItems)
-                    {
-                        this.ListView.SelectedItems.Add(item);
-                    }
-                }
+                this.disableSelectionNotification = true;
+                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
 
-                if (e.RemovedItems != null)
+                if (this.PanelListView.Visibility == Visibility.Collapsed)
                 {
-                    foreach (var item in e.RemovedItems)
+                    if (e.AddedItems != null)
                     {
-                        this.ListView.SelectedItems.Remove(item);
+                        foreach (var item in e.AddedItems)
+                        {
+                            this.ListView.SelectedItems.Add(item);
+                        }
+                    }
+
+                    if (e.RemovedItems != null)
+                    {
+                        foreach (var item in e.RemovedItems)
+                        {
+                            this.ListView.SelectedItems.Remove(item);
+                        }
                     }
                 }
+            }
+            finally
+            {
+                this.disableSelectionNotification = true;
             }
         }
 

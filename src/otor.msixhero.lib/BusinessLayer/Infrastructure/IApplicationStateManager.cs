@@ -1,4 +1,5 @@
-﻿using otor.msixhero.lib.BusinessLayer.State;
+﻿using System.Threading.Tasks;
+using otor.msixhero.lib.BusinessLayer.State;
 using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure
@@ -10,6 +11,8 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure
         ICommandExecutor CommandExecutor { get; }
 
         IEventAggregator EventAggregator { get; }
+
+        Task Initialize();
     }
 
     public interface IApplicationStateManager<out T> : IApplicationStateManager where T : IApplicationState

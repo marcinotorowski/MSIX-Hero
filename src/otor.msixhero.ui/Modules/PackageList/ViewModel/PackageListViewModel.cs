@@ -11,6 +11,7 @@ using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
@@ -47,7 +48,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
-            this.selectedPackage = this.AllPackages.FirstOrDefault(app => this.stateManager.CurrentState.Packages.SelectedItems.Contains(app.Model));
+            this.selectedPackage = this.AllPackages.LastOrDefault(app => this.stateManager.CurrentState.Packages.SelectedItems.Contains(app.Model));
 
             foreach (var item in selectionInfo.Selected)
             {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
 namespace otor.msixhero.ui.ViewModel
 {
@@ -10,6 +12,7 @@ namespace otor.msixhero.ui.ViewModel
         public PackageViewModel(Package package)
         {
             this.Model = package;
+            // this.TargetOperatingSystems = new ObservableCollection<OperatingSystemViewModel>(package.);
         }
 
         public string Description => this.Model.Description;
@@ -68,6 +71,8 @@ namespace otor.msixhero.ui.ViewModel
         }
 
         public Package Model { get; }
+
+        public ObservableCollection<OperatingSystemViewModel> TargetOperatingSystems { get; }
 
         
         public static explicit operator Package(PackageViewModel packageViewModel)

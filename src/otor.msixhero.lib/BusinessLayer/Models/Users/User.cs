@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace otor.msixhero.lib.BusinessLayer.Models
+namespace otor.msixhero.lib.BusinessLayer.Models.Users
 {
     [Serializable]
     public class User

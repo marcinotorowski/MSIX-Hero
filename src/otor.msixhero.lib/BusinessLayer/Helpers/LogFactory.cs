@@ -2,6 +2,7 @@
 using System.Management.Automation;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using otor.msixhero.lib.BusinessLayer.Models.Logs;
 
 namespace otor.msixhero.lib.BusinessLayer.Helpers
 {

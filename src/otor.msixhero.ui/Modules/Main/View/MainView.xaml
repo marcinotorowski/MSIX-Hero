@@ -275,7 +275,7 @@
                         <Fluent:InRibbonGallery ItemsSource="{Binding Tools}">
                             <Fluent:InRibbonGallery.ItemTemplate>
                                 <DataTemplate>
-                                    <Fluent:GalleryItem IsDefinitive="True" Content="{Binding Name}" Command="{x:Static commands:MsixHeroCommands.RunTool}" CommandParameter="{Binding}" />
+                                    <Fluent:GalleryItem IsDefinitive="True" Content="{Binding Name}" Command="{x:Static commands:MsixHeroCommands.RunTool}" CommandParameter="{Binding Path}" />
                                 </DataTemplate>
                             </Fluent:InRibbonGallery.ItemTemplate>
                         </Fluent:InRibbonGallery>

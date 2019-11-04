@@ -10,9 +10,11 @@ using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.Services;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Services;
@@ -46,7 +48,7 @@ namespace otor.msixhero.ui.ViewModel
             this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(), param => this.CanOpenExplorerUser());
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanOpenManifest());
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanRunApp());
-            this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolViewModel), param => this.CanRunTool(param as ToolViewModel));
+            this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as string), param => this.CanRunTool(param as string));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanRemovePackage());
 
@@ -271,7 +273,7 @@ namespace otor.msixhero.ui.ViewModel
             return package != null;
         }
 
-        private void RunToolExecute(ToolViewModel tool)
+        private void RunToolExecute(string tool)
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null || tool == null)
@@ -279,10 +281,10 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.RunToolInContext(package, tool.Name);
+            this.packageManager.RunToolInContext(package, tool);
         }
 
-        private bool CanRunTool(ToolViewModel tool)
+        private bool CanRunTool(string tool)
         {
             if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
             {

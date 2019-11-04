@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Events

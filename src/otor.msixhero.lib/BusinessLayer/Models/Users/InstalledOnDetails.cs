@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace otor.msixhero.lib.BusinessLayer.Models
+namespace otor.msixhero.lib.BusinessLayer.Models.Users
 {
     [Serializable]
     public class InstalledOnDetails

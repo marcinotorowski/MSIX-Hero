@@ -11,6 +11,10 @@ using Windows.Management.Deployment;
 using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.BusinessLayer.Models.Logs;
+using otor.msixhero.lib.BusinessLayer.Models.Manifest;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Domain;
 using otor.msixhero.lib.PowerShellInterop;
 
@@ -59,7 +63,7 @@ namespace otor.msixhero.lib.Managers
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            var reader = await AppxManifestReader.FromMsix(filePath).ConfigureAwait(false);
+            var reader = await AppxManifestSummary.FromMsix(filePath).ConfigureAwait(false);
             var pkgManager = new PackageManager();
             await AsyncOperationHelper.ConvertToTask(
                 pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown), 
@@ -87,7 +91,20 @@ namespace otor.msixhero.lib.Managers
             using var param2 = cmd.AddParameter("PackageFamilyName", package.PackageFamilyName);
             using var param3 = cmd.AddParameter("AppId", package.Name);
             using var param4 = cmd.AddParameter("PreventBreakaway");
-            using var result = await ps.InvokeAsync().ConfigureAwait(false);
+
+            try
+            {
+                using var result = await ps.InvokeAsync().ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                if (e.HResult == -2147024891 /* 0x80070005 E_ACCESSDENIED */)
+                {
+                    throw new DeveloperModeException("Developer mode must be enabled to use this feature.", e);
+                }
+
+                throw;
+            }
         }
 
         public Task<RegistryMountState> GetRegistryMountState(Package package)
@@ -403,7 +420,7 @@ namespace otor.msixhero.lib.Managers
         {
             try
             {
-                var reader = await AppxManifestReader.FromInstallLocation(installLocation);
+                var reader = await AppxManifestSummary.FromInstallLocation(installLocation);
                 var logo = Path.Combine(installLocation, reader.Logo);
 
                 if (File.Exists(Path.Combine(installLocation, logo)))

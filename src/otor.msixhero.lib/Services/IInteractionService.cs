@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-
-namespace otor.msixhero.ui.Services
+﻿namespace otor.msixhero.lib.Services
 {
     public enum InteractionResult
     {

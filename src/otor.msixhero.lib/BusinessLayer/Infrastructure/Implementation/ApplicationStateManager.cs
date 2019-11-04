@@ -1,20 +1,26 @@
-﻿using otor.msixhero.lib.BusinessLayer.State;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
-using otor.msixhero.ui.Services;
+using otor.msixhero.lib.Services;
 using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
     public class ApplicationStateManager : IApplicationStateManager<ApplicationState>
     {
+        private readonly IConfigurationService configurationService;
+
         public ApplicationStateManager(
             IEventAggregator eventAggregator,
             IAppxPackageManager packageManager,
             IBusyManager busyManager,
             IInteractionService interactionService,
-            IClientCommandRemoting clientCommandRemoting)
+            IClientCommandRemoting clientCommandRemoting,
+            IConfigurationService configurationService)
         {
+            this.configurationService = configurationService;
             this.CurrentState = new ApplicationState();
             this.CommandExecutor = new CommandExecutor(this, packageManager, interactionService, busyManager, clientCommandRemoting);
             this.EventAggregator = eventAggregator;
@@ -27,5 +33,10 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         public ICommandExecutor CommandExecutor { get; }
 
         public IEventAggregator EventAggregator { get; }
+
+        public async Task Initialize()
+        {
+            this.CurrentState.Configuration = await this.configurationService.GetConfiguration(CancellationToken.None).ConfigureAwait(false);
+        }
     }
 }

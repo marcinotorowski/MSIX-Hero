@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace otor.msixhero.lib
+namespace otor.msixhero.lib.BusinessLayer.Models.Logs
 {
     public class Log
     {

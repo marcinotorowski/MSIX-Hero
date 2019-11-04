@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.BusinessLayer.Models.Logs;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Domain;
 
 namespace otor.msixhero.lib.Managers

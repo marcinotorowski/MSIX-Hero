@@ -6,9 +6,10 @@ using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
+using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
-using otor.msixhero.ui.Services;
+using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {

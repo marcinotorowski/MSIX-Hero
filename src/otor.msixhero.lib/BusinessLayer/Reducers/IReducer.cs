@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain;
-using otor.msixhero.ui.Services;
+using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {

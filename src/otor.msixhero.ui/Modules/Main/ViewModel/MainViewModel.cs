@@ -1,20 +1,24 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Windows.Shapes;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.Models.Configuration;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.Services;
 using otor.msixhero.ui.Services;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using Path = System.IO.Path;
 
 namespace otor.msixhero.ui.Modules.Main.ViewModel
 {
@@ -43,18 +47,31 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.regionManager = regionManager;
             this.dialogService = dialogService;
             this.Tools = new ObservableCollection<ToolViewModel>();
-            this.Tools.Add(new ToolViewModel("notepad.exe"));
-            this.Tools.Add(new ToolViewModel("regedit.exe"));
-            this.Tools.Add(new ToolViewModel("powershell.exe"));
-            this.Tools.Add(new ToolViewModel("cmd.exe"));
 
             busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
-
             stateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
+
+            this.SetTools();
+        }
+
+        private void SetTools()
+        {
+            this.Tools.Clear();
+
+            foreach (var item in this.stateManager.CurrentState.Configuration?.List?.Tools ?? Enumerable.Empty<ToolListConfiguration>())
+            {
+                var itemName = item.Name;
+                if (string.IsNullOrEmpty(itemName) && !string.IsNullOrEmpty(item.Path))
+                {
+                    itemName = Path.GetFileNameWithoutExtension(item.Path);
+                }
+
+                this.Tools.Add(new ToolViewModel(itemName, item.Path));
+            }
         }
 
         public CommandHandler CommandHandler => new CommandHandler(this.interactionService, this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);

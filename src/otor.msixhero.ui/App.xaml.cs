@@ -6,6 +6,7 @@ using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.Services;
 using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
@@ -38,13 +39,18 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
             containerRegistry.RegisterSingleton<IClientCommandRemoting, ClientCommandRemoting>();
+            containerRegistry.RegisterSingleton<IConfigurationService, ConfigurationService>();
             containerRegistry.RegisterSingleton<IApplicationStateManager, ApplicationStateManager>();
             containerRegistry.RegisterInstance<IProcessManager>(this.processManager);
         }
         
         protected override Window CreateShell()
         {
-            return ServiceLocator.Current.GetInstance<MainWindow>();
+            var appStateManager = ServiceLocator.Current.GetInstance<IApplicationStateManager>();
+            appStateManager.Initialize().GetAwaiter().GetResult();
+
+            var shell = ServiceLocator.Current.GetInstance<MainWindow>();
+            return shell;
         }
 
         protected override void OnExit(ExitEventArgs e)

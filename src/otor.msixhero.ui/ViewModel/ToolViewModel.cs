@@ -2,10 +2,13 @@
 {
     public class ToolViewModel : NotifyPropertyChanged
     {
-        public ToolViewModel(string name)
+        public ToolViewModel(string name, string path)
         {
-            Name = name;
+            this.Path = path;
+            this.Name = name;
         }
+
+        public string Path { get; }
 
         public string Name { get; }
     }

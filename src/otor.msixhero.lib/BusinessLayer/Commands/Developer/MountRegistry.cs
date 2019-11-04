@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands.Developer
 {

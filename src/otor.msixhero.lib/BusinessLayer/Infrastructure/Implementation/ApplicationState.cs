@@ -1,4 +1,5 @@
-﻿using otor.msixhero.lib.BusinessLayer.State;
+﻿using otor.msixhero.lib.BusinessLayer.Models.Configuration;
+using otor.msixhero.lib.BusinessLayer.State;
 using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
@@ -22,5 +23,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         public bool IsElevated { get; } = UserHelper.IsAdministrator();
 
         public bool HasSelfElevated { get; set; }
+
+        public Configuration Configuration { get; set; }
     }
 }

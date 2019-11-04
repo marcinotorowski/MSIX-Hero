@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using otor.msixhero.lib.BusinessLayer.Models.Logs;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands.Developer
 {

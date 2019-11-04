@@ -10,7 +10,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
-using otor.msixhero.ui.Services;
+using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
