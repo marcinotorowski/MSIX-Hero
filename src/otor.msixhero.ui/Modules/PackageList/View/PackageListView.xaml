@@ -11,6 +11,7 @@
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
              xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <Grid Margin="5" x:Name="Grid">
@@ -37,6 +38,51 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <ContextMenu x:Key="PackageContextMenu">
+                <MenuItem Header="Copy">
+                    <MenuItem Header="Package name" />
+                    <MenuItem Header="Publisher (display name)" />
+                    <MenuItem Header="Publisher (raw)" />
+                    <MenuItem Header="Install path" />
+                    <MenuItem Header="Version" />
+                </MenuItem>
+                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Open manifest">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Remove for">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                    </MenuItem.Icon>
+                    <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroCommands.RemovePackage}">
+                        <MenuItem.CommandParameter>
+                            <system:Boolean>False</system:Boolean>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                    <MenuItem Header="All users"  Command="{x:Static commands:MsixHeroCommands.RemovePackage}">
+                        <MenuItem.Icon>
+                            <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                        </MenuItem.Icon>
+                        <MenuItem.CommandParameter>
+                            <system:Boolean>True</system:Boolean>
+                        </MenuItem.CommandParameter>
+                    </MenuItem>
+                </MenuItem>
+                <Separator />
+                <MenuItem Command="{x:Static commands:MsixHeroCommands.RunPackage}" Header="Run app">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -89,6 +135,7 @@
             Grid.Column="0"
             Grid.Row="1">
             <ListView 
+                IsSynchronizedWithCurrentItem="False"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                 x:Name="ListView"
@@ -97,35 +144,10 @@
                 Padding="0"
                 SelectionChanged="OnListViewSelectionChanged"
                 ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                ContextMenu="{StaticResource PackageContextMenu}"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                 ItemsSource="{Binding AllPackagesView}">
-                <ListView.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Copy">
-                            <MenuItem Header="Package name" />
-                            <MenuItem Header="Publisher (display name)" />
-                            <MenuItem Header="Publisher (raw)" />
-                            <MenuItem Header="Install path" />
-                            <MenuItem Header="Version" />
-                        </MenuItem>
-                        <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackages}">
-                            <MenuItem.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Open manifest" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackages}">
-                            <MenuItem.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Command="{x:Static commands:MsixHeroCommands.RunPackage}" Header="Run app" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.SelectedPackages}">
-                            <MenuItem.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListView.ContextMenu>
+               
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Padding" Value="10" />
@@ -211,17 +233,14 @@
             x:Name="PanelListBox"
             Grid.Column="0" Grid.Row="1" >
             <ListBox 
-                VirtualizingPanel.IsVirtualizing="True"
-                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
                 x:Name="ListBox"
                 SelectionMode="Extended"
+                ContextMenu="{StaticResource PackageContextMenu}"
                 SelectionChanged="OnListBoxSelectionChanged"
-                BorderThickness="0"
-                Padding="0"
-                Margin="0"
-                ItemsSource="{Binding AllPackagesView}" 
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                ScrollViewer.VerticalScrollBarVisibility="Auto">
+                ItemsSource="{Binding AllPackagesView}">
+                <ListBox.GroupStyle>
+                    <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                </ListBox.GroupStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
                         <DockPanel>
@@ -241,44 +260,13 @@
                         </DockPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="10" />
-                        <Setter Property="BorderThickness" Value="4 0 0 0" />
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                        <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
-                                            <ContentPresenter Margin="{TemplateBinding Padding}" />
-                                        </Border>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                <Setter Property="Background" Value="#E6F2FA" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                <Setter Property="Background" Value="#E6F2FA" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.GroupStyle>
-                    <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
-                </ListBox.GroupStyle>
             </ListBox>
         </Border>
 
         <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
         <!--<ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />-->
-        <view:SinglePackageDetails x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" />
+        <view:SinglePackageDetails 
+            x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" />
     </Grid>
 </UserControl>

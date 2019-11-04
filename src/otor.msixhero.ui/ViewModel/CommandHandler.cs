@@ -48,7 +48,7 @@ namespace otor.msixhero.ui.ViewModel
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanRunApp());
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolViewModel), param => this.CanRunTool(param as ToolViewModel));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
-            this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute((bool)param), param => this.CanRemovePackage());
+            this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanRemovePackage());
 
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanMountRegistry());
             this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());

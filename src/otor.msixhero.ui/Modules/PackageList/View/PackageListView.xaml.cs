@@ -9,7 +9,6 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 
@@ -100,8 +99,6 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionChanged)
         {
-            this.UpdateSidebarVisibility();
-
             try
             {
                 this.disableSelectionNotification = true;
@@ -137,7 +134,6 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             }
 
             this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
-
             if (this.PanelListBox.Visibility == Visibility.Collapsed)
             {
                 if (e.AddedItems != null)
@@ -164,9 +160,8 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             {
                 return;
             }
-            
-            this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
 
+            this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
             if (this.PanelListView.Visibility == Visibility.Collapsed)
             {
                 if (e.AddedItems != null)
