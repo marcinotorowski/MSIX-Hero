@@ -98,7 +98,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action, this.stateManager);
             this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(GetSelectionDetails)] = action => new GetSelectionDetailsReducer((GetSelectionDetails)action, this.stateManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.stateManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.stateManager);
             this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
@@ -107,6 +107,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager, this.busyManager);
+            this.reducerFactories[typeof(GetManifestedDetails)] = action => new GetManifestedDetailsReducer((GetManifestedDetails)action, this.stateManager);
         }
     }
 }

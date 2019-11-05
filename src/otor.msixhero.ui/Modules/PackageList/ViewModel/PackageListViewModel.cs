@@ -44,7 +44,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnGroupAndSortChanged);
         }
 
-        public AsyncProperty<SelectionDetailsViewModel> SelectedPackageExtendedInfo { get; } = new AsyncProperty<SelectionDetailsViewModel>();
+        public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
+
+        public AsyncProperty<ManifestDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<ManifestDetailsViewModel>();
         
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
@@ -77,26 +79,35 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 #pragma warning disable 4014
             if (selectedPackage == null)
             {
-                this.SelectedPackageExtendedInfo.Load(Task.FromResult((SelectionDetailsViewModel)null));
+                this.SelectedPackageUsersInfo.Load(Task.FromResult((FoundUsersViewModel)null));
+                this.SelectedPackageManifestInfo.Load(Task.FromResult((ManifestDetailsViewModel)null));
             }
             else
             {
+                this.SelectedPackageManifestInfo.Load(this.GetManifestDetails(selectedPackage.Model));
+
                 try
                 {
-                    this.SelectedPackageExtendedInfo.Load(this.GetSelectionDetails(selectedPackage.Model, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.HasSelfElevated));
+                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(selectedPackage.Model, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.HasSelfElevated));
                 }
                 catch (Exception)
                 {
-                    this.SelectedPackageExtendedInfo.Load(this.GetSelectionDetails(selectedPackage.Model, false));
+                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(selectedPackage.Model, false));
                 }
 #pragma warning restore 4014   
             }
         }
 
-        private async Task<SelectionDetailsViewModel> GetSelectionDetails(Package package, bool forceElevation)
+        private async Task<FoundUsersViewModel> GetSelectionDetails(Package package, bool forceElevation)
         {
-            var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetSelectionDetails(package, forceElevation)).ConfigureAwait(false);
-            return new SelectionDetailsViewModel(stateDetails);
+            var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(package, forceElevation)).ConfigureAwait(false);
+            return new FoundUsersViewModel(stateDetails);
+        }
+
+        private async Task<ManifestDetailsViewModel> GetManifestDetails(Package package)
+        {
+            var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetManifestedDetails(package)).ConfigureAwait(false);
+            return new ManifestDetailsViewModel(manifestDetails, this.stateManager.CurrentState);
         }
 
         private void OnGroupAndSortChanged(PackageGroupAndSortChangedPayload payload)
@@ -302,7 +313,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return this.findUsers ?? (this.findUsers = new DelegateCommand(() =>
                 {
 #pragma warning disable 4014
-                    this.SelectedPackageExtendedInfo.Load(this.GetSelectionDetails( this.SelectedPackages.Last().Model, true));
+                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails( this.SelectedPackages.Last().Model, true));
 #pragma warning restore 4014
                 }));
             }

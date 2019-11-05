@@ -9,62 +9,162 @@
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <DockPanel>
+        <DockPanel.Resources>
+            <Style  TargetType="{x:Type TabControl}">
+                <Setter Property="OverridesDefaultStyle" Value="True" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabControl}">
+                            <Grid KeyboardNavigation.TabNavigation="Local">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <TabPanel 
+                                    x:Name="HeaderPanel"
+                                    Grid.Row="0"
+                                    Panel.ZIndex="1"
+                                    IsItemsHost="True"
+                                    KeyboardNavigation.TabIndex="1"
+                                    Background="Transparent" />
+                                <Border x:Name="Border"
+                                    Grid.Row="1"
+                                    BorderThickness="1"
+                                    CornerRadius="2"
+                                    KeyboardNavigation.TabNavigation="Local"
+                                    KeyboardNavigation.DirectionalNavigation="Contained"
+                                    KeyboardNavigation.TabIndex="2">
+                                    <ContentPresenter x:Name="PART_SelectedContentHost"
+                                        Margin="0 8 0 0"
+                                        ContentSource="SelectedContent" />
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Grid x:Name="Root">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="SelectionStates">
+                                        <VisualState x:Name="Unselected" />
+                                        <VisualState x:Name="Selected" />
+                                    </VisualStateGroup>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="MouseOver" />
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Margin="0 0 0 0">
+                                        <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="0 0 0 8"
+                                              TextBlock.FontSize="13"
+                                              RecognizesAccessKey="True" />
+                                    </Border>
+                                    <Border VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Width="15" />
+                                </StackPanel>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="#E2E7EF" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </DockPanel.Resources>
         <Border Height="31" DockPanel.Dock="Top">
             <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackages[0].DisplayName}" />
         </Border>
 
-        <DockPanel DockPanel.Dock="Top" >
-            <Border DataContext="{Binding SelectedPackages[0]}" Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
-                </Border>
-            </Border>
-            <TextBlock TextWrapping="Wrap" Text="{Binding SelectedPackages[0].Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
-        </DockPanel>
-
-        <TabControl DockPanel.Dock="Top" Margin="0 10 0 0">
+        <TabControl DockPanel.Dock="Top" Margin="0 0 0 0">
             <TabItem Header="Properties" DataContext="{Binding SelectedPackages[0]}">
-                <StackPanel Margin="10">
-                    <StackPanel Margin="0 10 0 0">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
-                    </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="0">
 
-                    <StackPanel Margin="0 10 0 0">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
-                    </StackPanel>
+                        <DockPanel DockPanel.Dock="Top" >
+                            <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                </Border>
+                            </Border>
+                            <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
+                        </DockPanel>
 
-                    <StackPanel Margin="0 10 0 0">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
-                    </StackPanel>
+                        <StackPanel Margin="0 10 0 0">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
+                        </StackPanel>
 
-                </StackPanel>
+                        <StackPanel Margin="0 10 0 0">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0 10 0 0">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <StackPanel Margin="0 0 0 0">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0 10 0 0">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0 10 0 0">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
-            <TabItem Header="Package identity" DataContext="{Binding SelectedPackages[0]}">
-                <StackPanel Margin="10">
-                    <StackPanel Margin="0 10 0 0">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
-                    </StackPanel>
+            <TabItem Header="PSF">
+                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading manifest...">
+                    <StackPanel Margin="0">
 
-                    <StackPanel Margin="0 10 0 0">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
                     </StackPanel>
-
-                    <StackPanel Margin="0 10 0 0">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
-                    </StackPanel>
-                </StackPanel>
+                </xctk:BusyIndicator>
             </TabItem>
             <TabItem Header="Installed by">
-                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageExtendedInfo.IsLoading}">
+                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageUsersInfo.IsLoading}">
                     <Grid>
-                        <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageExtendedInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                        <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
 
                             <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
                             <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
@@ -74,9 +174,68 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
-                        
-                        <ListBox Visibility="{Binding SelectedPackageExtendedInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 10 0 0" ItemsSource="{Binding SelectedPackageExtendedInfo.CurrentValue.InstalledBy}" />
+
+                        <ListBox Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 0 0 0" ItemsSource="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy}" />
                     </Grid>
+                </xctk:BusyIndicator>
+            </TabItem>
+            <TabItem Header="Dependencies">
+                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading dependencies...">
+                    <DockPanel Margin="0">
+                        <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type viewModel1:OperatingSystemDependencyViewModel}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
+                                        <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
+                                        <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                        </TextBlock>
+
+                                        <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
+                                        <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
+                                        <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border Margin="0 4" Background="#b2b2b2" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" DockPanel.Dock="Top" />
+
+                        <ListBox ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type viewModel1:PackageDependencyViewModel}">
+                                    <!--<DockPanel Margin="5">
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding Name}" />
+                                            <TextBlock Text="{Binding DisplayPublisherName}" ToolTip="{Binding Publisher}" />
+                                        </StackPanel>
+
+                                        <TextBlock Text="{Binding Version}" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                    </DockPanel>-->
+                                    <DockPanel>
+                                        <!--<Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                            </Border>
+                                        </Border>-->
+
+                                        <TextBlock Text="{Binding Version}" Margin="10 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
+
+                                        <StackPanel Margin="0 0">
+                                            <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding DisplayPublisherName}" ToolTip="{Binding Publisher}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                        </StackPanel>
+
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                    </DockPanel>
+
                 </xctk:BusyIndicator>
             </TabItem>
         </TabControl>

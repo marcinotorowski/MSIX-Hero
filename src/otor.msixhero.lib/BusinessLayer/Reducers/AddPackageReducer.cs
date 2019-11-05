@@ -27,7 +27,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default)
         {
-            var appxReader = await AppxManifestSummary.FromMsix(this.command.FilePath);
+            var appxReader = await AppxManifestSummaryBuilder.FromMsix(this.command.FilePath);
 
             var context = this.busyManager.Begin();
             try

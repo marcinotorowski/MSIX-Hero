@@ -63,7 +63,7 @@ namespace otor.msixhero.lib.Managers
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            var reader = await AppxManifestSummary.FromMsix(filePath).ConfigureAwait(false);
+            var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
             var pkgManager = new PackageManager();
             await AsyncOperationHelper.ConvertToTask(
                 pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown), 
@@ -277,6 +277,31 @@ namespace otor.msixhero.lib.Managers
             return this.Get(null, mode);
         }
 
+        public async Task<Package> Get(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto)
+        {
+            var pkgMan = new PackageManager();
+
+            Windows.ApplicationModel.Package pkg;
+            switch (mode)
+            {
+                case PackageFindMode.CurrentUser:
+                    pkg = await Task.Run(() => pkgMan.FindPackagesForUser(packageName, publisher).First()).ConfigureAwait(false);
+                    break;
+                case PackageFindMode.AllUsers:
+                    pkg = await Task.Run(() => pkgMan.FindPackages(packageName, publisher).First()).ConfigureAwait(false);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+            }
+
+            if (pkg == null)
+            {
+                return null;
+            }
+
+            return await ConvertFrom(pkg).ConfigureAwait(false);
+        }
+
         public async Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto)
         {
             var list = new List<Package>();
@@ -328,51 +353,60 @@ namespace otor.msixhero.lib.Managers
 
             foreach (var item in allPackages)
             {
-                string installLocation;
-                DateTime installDate;
-                try
+                var converted = await ConvertFrom(item).ConfigureAwait(false);
+                if (converted != null)
                 {
-                    installLocation = item.InstalledLocation?.Path;
+                    list.Add(converted);
                 }
-                catch (Exception)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    installDate = item.InstalledDate.LocalDateTime;
-                }
-                catch (Exception)
-                {
-                    installDate = DateTime.MinValue;
-                }
-                
-                var details = await GetManifestDetails(installLocation).ConfigureAwait(false);
-                var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name).ConfigureAwait(false);
-
-                var pkg = new Package()
-                {
-                    DisplayName = details.DisplayName,
-                    Name = item.Id.Name,
-                    Image = details.Logo,
-                    ProductId = item.Id.FullName,
-                    InstallLocation = installLocation,
-                    PackageFamilyName = item.Id.FamilyName,
-                    Description = details.Description,
-                    DisplayPublisherName = details.DisplayPublisherName,
-                    Publisher = item.Id.Publisher,
-                    TileColor = details.Color,
-                    Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
-                    SignatureKind = Convert(item.SignatureKind),
-                    HasRegistry = hasRegistry,
-                    InstallDate = installDate
-                };
-
-                list.Add(pkg);
             }
 
             return list;
+        }
+
+        private async Task<Package> ConvertFrom(Windows.ApplicationModel.Package item)
+        {
+            string installLocation;
+            DateTime installDate;
+            try
+            {
+                installLocation = item.InstalledLocation?.Path;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            try
+            {
+                installDate = item.InstalledDate.LocalDateTime;
+            }
+            catch (Exception)
+            {
+                installDate = DateTime.MinValue;
+            }
+
+            var details = await GetManifestDetails(installLocation).ConfigureAwait(false);
+            var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name).ConfigureAwait(false);
+
+            var pkg = new Package()
+            {
+                DisplayName = details.DisplayName,
+                Name = item.Id.Name,
+                Image = details.Logo,
+                ProductId = item.Id.FullName,
+                InstallLocation = installLocation,
+                PackageFamilyName = item.Id.FamilyName,
+                Description = details.Description,
+                DisplayPublisherName = details.DisplayPublisherName,
+                Publisher = item.Id.Publisher,
+                TileColor = details.Color,
+                Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
+                SignatureKind = Convert(item.SignatureKind),
+                HasRegistry = hasRegistry,
+                InstallDate = installDate
+            };
+
+            return pkg;
         }
 
         private static IEnumerable<string> GetEntryPoints(Package package)
@@ -420,7 +454,7 @@ namespace otor.msixhero.lib.Managers
         {
             try
             {
-                var reader = await AppxManifestSummary.FromInstallLocation(installLocation);
+                var reader = await AppxManifestSummaryBuilder.FromInstallLocation(installLocation);
                 var logo = Path.Combine(installLocation, reader.Logo);
 
                 if (File.Exists(Path.Combine(installLocation, logo)))

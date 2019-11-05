@@ -1,25 +1,22 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Commands;
-using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
-using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class GetSelectionDetailsReducer : SelfElevationReducer<ApplicationState, SelectionDetails>
+    internal class FindUsersReducer : SelfElevationReducer<ApplicationState, FoundUsers>
     {
-        private readonly GetSelectionDetails action;
+        private readonly FindUsers action;
         private readonly IClientCommandRemoting clientCommandRemoting;
 
-        public GetSelectionDetailsReducer(
-            GetSelectionDetails action,
+        public FindUsersReducer(
+            FindUsers action,
             IApplicationStateManager<ApplicationState> applicationStateManager,
             IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager)
         {
@@ -27,7 +24,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.clientCommandRemoting = clientCommandRemoting;
         }
         
-        public override async Task<SelectionDetails> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override async Task<FoundUsers> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
         {
             var state = this.StateManager.CurrentState;
             if (!state.IsElevated && this.action.ForceElevation)
@@ -37,9 +34,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return result;
             }
 
-            var details = new SelectionDetails();
-            var installedOn = new InstalledOnDetails();
-            details.InstalledOn = installedOn;
+            var installedOn = new FoundUsers();
 
             if (!state.IsElevated)
             {
@@ -47,11 +42,10 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             }
             else
             {
-                var ttt = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetLogs(5), cancellationToken).ConfigureAwait(false);
                 installedOn.Users = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetUsersOfPackage(), cancellationToken).ConfigureAwait(false);
             }
 
-            return details;
+            return installedOn;
         }
     }
 }

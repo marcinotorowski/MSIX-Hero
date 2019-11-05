@@ -77,7 +77,7 @@
                 </Fluent:Ribbon.Menu>
 
                 <!--Tabs-->
-                <Fluent:RibbonTabItem Header="HOME" ReduceOrder="
+                <Fluent:RibbonTabItem Header="Home" ReduceOrder="
                                       RibbonHomeContext,RibbonHomeContext,RibbonHomeContext,
                                       RibbonHomeActions,RibbonHomeActions,RibbonHomeActions,
                                       RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
@@ -87,6 +87,9 @@
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
 
                         <Separator />
@@ -121,6 +124,9 @@
                     </Fluent:RibbonGroupBox>
 
                     <Fluent:RibbonGroupBox x:Name="RibbonHomeTroubleshooting" Header="Troubleshooting and diagnostics" >
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDebugging}" />
+                        </Fluent:RibbonGroupBox.Icon>
                         <Fluent:Button Header="Open PowerShell" Command="{x:Static commands:MsixHeroCommands.OpenPowerShell}" SizeDefinition="Large, Medium, Medium">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPowerShell}" />
@@ -156,7 +162,7 @@
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
-                <Fluent:RibbonTabItem Header="VIEW">
+                <Fluent:RibbonTabItem Header="View">
                     <Fluent:RibbonGroupBox Header="Panel">
                         <Fluent:ToggleButton Header="Show information panel" Size="Large" IsChecked="{Binding ShowSidebar}">
                             <Fluent:ToggleButton.LargeIcon>
@@ -197,16 +203,26 @@
                         </Fluent:InRibbonGallery>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
-                <Fluent:RibbonTabItem Header="TOOLS">
-                    <Fluent:RibbonGroupBox Header="Certificates">
+                <Fluent:RibbonTabItem Header="Tools">
+                    <Fluent:RibbonGroupBox Header="Certificates and signing">
                         <Fluent:Button Header="New self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
                             </Fluent:Button.LargeIcon>
                         </Fluent:Button>
+                        <Fluent:Button Header="Extract certificate from MSIX..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
+                            </Fluent:Button.LargeIcon>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Install certificate..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorImport}" />
+                            </Fluent:Button.LargeIcon>
+                        </Fluent:Button>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
-                <Fluent:RibbonTabItem x:Name="TabMaintenance" Header="BASICS" Group="{Binding Source={x:Reference ToolsGroup}}">
+                <Fluent:RibbonTabItem x:Name="TabMaintenance" Header="Management" Group="{Binding Source={x:Reference ToolsGroup}}">
                     <Fluent:RibbonGroupBox IsEnabled="{Binding HasSingleSelection}">
                         <Fluent:SplitButton Header="Copy" Size="Middle">
                             <Fluent:SplitButton.Icon>
@@ -244,19 +260,32 @@
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
 
-                <Fluent:RibbonTabItem x:Name="TabDeveloper" Header="DEVELOPER" Group="{Binding Source={x:Reference ToolsGroup}}">
-                    <Fluent:RibbonGroupBox Header="Navigation">
+                <Fluent:RibbonTabItem x:Name="TabDeveloper" 
+                    ReduceOrder="
+                      RibbonDevRun,RibbonDevRun,RibbonDevRun,
+                      RibbonDevNavi,RibbonDevNavi,RibbonDevNavi,
+                      RibbonDevReg,RibbonDevReg,RibbonDevReg"
+                      Header="Developer" Group="{Binding Source={x:Reference ToolsGroup}}">
+                    <Fluent:RibbonGroupBox x:Name="RibbonDevNavi" Header="Navigation">
+                        <Fluent:RibbonGroupBox>
+                            <Fluent:RibbonGroupBox.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                            </Fluent:RibbonGroupBox.Icon>
+                        </Fluent:RibbonGroupBox>
                         <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open install location" Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                             </Fluent:Button.SizeDefinition>
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
                         <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open user data location" Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
                             </Fluent:Button.SizeDefinition>
                             <Fluent:Button.Icon>
                                 <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
@@ -264,28 +293,43 @@
                         </Fluent:Button>
                         <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open manifest" Command="{x:Static commands:MsixHeroCommands.OpenManifest}" CommandParameter="{Binding SelectedPackage}">
                             <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
                             </Fluent:Button.SizeDefinition>
                             <Fluent:Button.Icon>
                                 <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
                             </Fluent:Button.Icon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
-                    <Fluent:RibbonGroupBox IsEnabled="{Binding HasSingleSelection}" Header="Run in package context">
+                    <Fluent:RibbonGroupBox x:Name="RibbonDevRun" IsEnabled="{Binding HasSingleSelection}" Header="Run in package context">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorWindow}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
                         <Fluent:InRibbonGallery ItemsSource="{Binding Tools}">
                             <Fluent:InRibbonGallery.ItemTemplate>
                                 <DataTemplate>
                                     <Fluent:GalleryItem IsDefinitive="True" Content="{Binding Name}" Command="{x:Static commands:MsixHeroCommands.RunTool}" CommandParameter="{Binding Path}" />
                                 </DataTemplate>
                             </Fluent:InRibbonGallery.ItemTemplate>
+                            <Fluent:InRibbonGallery.Icon>
+                                <Path Data="{StaticResource VectorWindow}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:InRibbonGallery.Icon>
+                            <Fluent:InRibbonGallery.LargeIcon>
+                                <Path Data="{StaticResource VectorWindow}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:InRibbonGallery.LargeIcon>
                         </Fluent:InRibbonGallery>
                         <Fluent:Button Header="Configure...">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 13.1875 3 L 13.03125 3.8125 L 12.4375 6.78125 C 11.484375 7.15625 10.625 7.683594 9.84375 8.3125 L 6.9375 7.3125 L 6.15625 7.0625 L 5.75 7.78125 L 3.75 11.21875 L 3.34375 11.9375 L 3.9375 12.46875 L 6.1875 14.4375 C 6.105469 14.949219 6 15.460938 6 16 C 6 16.539063 6.105469 17.050781 6.1875 17.5625 L 3.9375 19.53125 L 3.34375 20.0625 L 3.75 20.78125 L 5.75 24.21875 L 6.15625 24.9375 L 6.9375 24.6875 L 9.84375 23.6875 C 10.625 24.316406 11.484375 24.84375 12.4375 25.21875 L 13.03125 28.1875 L 13.1875 29 L 18.8125 29 L 18.96875 28.1875 L 19.5625 25.21875 C 20.515625 24.84375 21.375 24.316406 22.15625 23.6875 L 25.0625 24.6875 L 25.84375 24.9375 L 26.25 24.21875 L 28.25 20.78125 L 28.65625 20.0625 L 28.0625 19.53125 L 25.8125 17.5625 C 25.894531 17.050781 26 16.539063 26 16 C 26 15.460938 25.894531 14.949219 25.8125 14.4375 L 28.0625 12.46875 L 28.65625 11.9375 L 28.25 11.21875 L 26.25 7.78125 L 25.84375 7.0625 L 25.0625 7.3125 L 22.15625 8.3125 C 21.375 7.683594 20.515625 7.15625 19.5625 6.78125 L 18.96875 3.8125 L 18.8125 3 Z M 14.8125 5 L 17.1875 5 L 17.6875 7.59375 L 17.8125 8.1875 L 18.375 8.375 C 19.511719 8.730469 20.542969 9.332031 21.40625 10.125 L 21.84375 10.53125 L 22.40625 10.34375 L 24.9375 9.46875 L 26.125 11.5 L 24.125 13.28125 L 23.65625 13.65625 L 23.8125 14.25 C 23.941406 14.820313 24 15.402344 24 16 C 24 16.597656 23.941406 17.179688 23.8125 17.75 L 23.6875 18.34375 L 24.125 18.71875 L 26.125 20.5 L 24.9375 22.53125 L 22.40625 21.65625 L 21.84375 21.46875 L 21.40625 21.875 C 20.542969 22.667969 19.511719 23.269531 18.375 23.625 L 17.8125 23.8125 L 17.6875 24.40625 L 17.1875 27 L 14.8125 27 L 14.3125 24.40625 L 14.1875 23.8125 L 13.625 23.625 C 12.488281 23.269531 11.457031 22.667969 10.59375 21.875 L 10.15625 21.46875 L 9.59375 21.65625 L 7.0625 22.53125 L 5.875 20.5 L 7.875 18.71875 L 8.34375 18.34375 L 8.1875 17.75 C 8.058594 17.179688 8 16.597656 8 16 C 8 15.402344 8.058594 14.820313 8.1875 14.25 L 8.34375 13.65625 L 7.875 13.28125 L 5.875 11.5 L 7.0625 9.46875 L 9.59375 10.34375 L 10.15625 10.53125 L 10.59375 10.125 C 11.457031 9.332031 12.488281 8.730469 13.625 8.375 L 14.1875 8.1875 L 14.3125 7.59375 Z M 16 11 C 13.25 11 11 13.25 11 16 C 11 18.75 13.25 21 16 21 C 18.75 21 21 18.75 21 16 C 21 13.25 18.75 11 16 11 Z M 16 13 C 17.667969 13 19 14.332031 19 16 C 19 17.667969 17.667969 19 16 19 C 14.332031 19 13 17.667969 13 16 C 13 14.332031 14.332031 13 16 13 Z" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 13.1875 3 L 13.03125 3.8125 L 12.4375 6.78125 C 11.484375 7.15625 10.625 7.683594 9.84375 8.3125 L 6.9375 7.3125 L 6.15625 7.0625 L 5.75 7.78125 L 3.75 11.21875 L 3.34375 11.9375 L 3.9375 12.46875 L 6.1875 14.4375 C 6.105469 14.949219 6 15.460938 6 16 C 6 16.539063 6.105469 17.050781 6.1875 17.5625 L 3.9375 19.53125 L 3.34375 20.0625 L 3.75 20.78125 L 5.75 24.21875 L 6.15625 24.9375 L 6.9375 24.6875 L 9.84375 23.6875 C 10.625 24.316406 11.484375 24.84375 12.4375 25.21875 L 13.03125 28.1875 L 13.1875 29 L 18.8125 29 L 18.96875 28.1875 L 19.5625 25.21875 C 20.515625 24.84375 21.375 24.316406 22.15625 23.6875 L 25.0625 24.6875 L 25.84375 24.9375 L 26.25 24.21875 L 28.25 20.78125 L 28.65625 20.0625 L 28.0625 19.53125 L 25.8125 17.5625 C 25.894531 17.050781 26 16.539063 26 16 C 26 15.460938 25.894531 14.949219 25.8125 14.4375 L 28.0625 12.46875 L 28.65625 11.9375 L 28.25 11.21875 L 26.25 7.78125 L 25.84375 7.0625 L 25.0625 7.3125 L 22.15625 8.3125 C 21.375 7.683594 20.515625 7.15625 19.5625 6.78125 L 18.96875 3.8125 L 18.8125 3 Z M 14.8125 5 L 17.1875 5 L 17.6875 7.59375 L 17.8125 8.1875 L 18.375 8.375 C 19.511719 8.730469 20.542969 9.332031 21.40625 10.125 L 21.84375 10.53125 L 22.40625 10.34375 L 24.9375 9.46875 L 26.125 11.5 L 24.125 13.28125 L 23.65625 13.65625 L 23.8125 14.25 C 23.941406 14.820313 24 15.402344 24 16 C 24 16.597656 23.941406 17.179688 23.8125 17.75 L 23.6875 18.34375 L 24.125 18.71875 L 26.125 20.5 L 24.9375 22.53125 L 22.40625 21.65625 L 21.84375 21.46875 L 21.40625 21.875 C 20.542969 22.667969 19.511719 23.269531 18.375 23.625 L 17.8125 23.8125 L 17.6875 24.40625 L 17.1875 27 L 14.8125 27 L 14.3125 24.40625 L 14.1875 23.8125 L 13.625 23.625 C 12.488281 23.269531 11.457031 22.667969 10.59375 21.875 L 10.15625 21.46875 L 9.59375 21.65625 L 7.0625 22.53125 L 5.875 20.5 L 7.875 18.71875 L 8.34375 18.34375 L 8.1875 17.75 C 8.058594 17.179688 8 16.597656 8 16 C 8 15.402344 8.058594 14.820313 8.1875 14.25 L 8.34375 13.65625 L 7.875 13.28125 L 5.875 11.5 L 7.0625 9.46875 L 9.59375 10.34375 L 10.15625 10.53125 L 10.59375 10.125 C 11.457031 9.332031 12.488281 8.730469 13.625 8.375 L 14.1875 8.1875 L 14.3125 7.59375 Z M 16 11 C 13.25 11 11 13.25 11 16 C 11 18.75 13.25 21 16 21 C 18.75 21 21 18.75 21 16 C 21 13.25 18.75 11 16 11 Z M 16 13 C 17.667969 13 19 14.332031 19 16 C 19 17.667969 17.667969 19 16 19 C 14.332031 19 13 17.667969 13 16 C 13 14.332031 14.332031 13 16 13 Z" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
-                    <Fluent:RibbonGroupBox IsEnabled="{Binding HasSingleSelection}" Header="Registry">
+                    <Fluent:RibbonGroupBox x:Name="RibbonDevReg" IsEnabled="{Binding HasSingleSelection}" Header="Registry">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorRegistry}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
                         <Fluent:Button Header="Load registry" Command="{x:Static commands:MsixHeroCommands.MountRegistry}">
                             <Fluent:Button.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />

@@ -7,11 +7,8 @@ using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
-using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
-using otor.msixhero.lib.BusinessLayer.Models.Users;
-using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.lib.Domain;
 using otor.msixhero.lib.Managers;
@@ -35,7 +32,7 @@ namespace otor.msixhero.lib.Ipc
             server.AddHandler<UnmountRegistry>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
             server.AddHandler<GetUsersOfPackage>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
             server.AddHandler<RemovePackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
-            server.AddHandler<GetSelectionDetails>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
+            server.AddHandler<FindUsers>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             server.AddHandler<GetLogs>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             return server;
         }
@@ -77,19 +74,16 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(true);
         }
 
-        public async Task<byte[]> Handle(GetSelectionDetails command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<byte[]> Handle(FindUsers command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var users = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
             Console.WriteLine("Got " + users.Count + " users.");
             return ReturnAsBytes(
-                new SelectionDetails
+                new FoundUsers
                 {
-                    InstalledOn = new InstalledOnDetails
-                    {
-                        Users = users,
-                        Status = ElevationStatus.OK
-                    }
+                    Users = users,
+                    Status = ElevationStatus.OK
                 });
         }
 

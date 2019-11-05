@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using otor.msixhero.lib.BusinessLayer.Models.Users;
 
-namespace otor.msixhero.lib.BusinessLayer.Models.Users
+namespace otor.msixhero.lib.BusinessLayer.Models.Packages
 {
     [Serializable]
-    public class InstalledOnDetails
+    public class FoundUsers
     {
         [XmlElement]
         public ElevationStatus Status { get; set; }

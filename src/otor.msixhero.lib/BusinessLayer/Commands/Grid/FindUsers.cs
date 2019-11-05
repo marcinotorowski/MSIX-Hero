@@ -1,21 +1,20 @@
-﻿using otor.msixhero.lib.BusinessLayer.Models;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
+﻿using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
-    public class GetSelectionDetails : SelfElevatedCommand<SelectionDetails>
+    public class FindUsers : SelfElevatedCommand<FoundUsers>
     {
-        public GetSelectionDetails()
+        public FindUsers()
         {
         }
 
-        public GetSelectionDetails(Package package, bool forceElevation)
+        public FindUsers(Package package, bool forceElevation)
         {
             this.FullProductId = package.ProductId;
             ForceElevation = forceElevation;
         }
 
-        public GetSelectionDetails(string fullProductId, bool forceElevation)
+        public FindUsers(string fullProductId, bool forceElevation)
         {
             this.FullProductId = fullProductId;
             ForceElevation = forceElevation;

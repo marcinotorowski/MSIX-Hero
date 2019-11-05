@@ -3,12 +3,13 @@
 namespace otor.msixhero.lib.BusinessLayer.Models.Manifest
 {
     [Serializable]
-    public class TargetOperatingSystem
+    public class PackageDependency
     {
+    
         public string Name { get; set; }
 
-        public string TechnicalVersion { get; set; }
+        public string Version { get; set; }
         
-        public string MarketingCodename { get; set; }
+        public string Publisher { get; set; }
     }
 }

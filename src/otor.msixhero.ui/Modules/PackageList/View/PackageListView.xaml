@@ -266,7 +266,8 @@
         <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
         <!--<ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />-->
-        <view:SinglePackageDetails 
-            x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" />
+        <Border x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2">
+            <view:SinglePackageDetails Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Border>
     </Grid>
 </UserControl>

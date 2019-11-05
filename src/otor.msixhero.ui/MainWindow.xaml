@@ -5,6 +5,8 @@
      xmlns:Fluent="urn:fluent-ribbon"
      regions:RegionManager.RegionName="ShellRegion"
      Title="MSIX Hero" 
+     MinWidth="400"
+     MinHeight="350"
      Width="800" 
      Height="600">
 </Fluent:RibbonWindow>
