@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -9,6 +10,7 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.ui.Helpers;
+using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 
@@ -103,16 +105,42 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             {
                 this.disableSelectionNotification = true;
 
-                foreach (var item in selectionChanged.Selected)
+                this.ListView.SelectedItems.Clear();
+                this.ListBox.SelectedItems.Clear();
+
+                foreach (var item in ((PackageListViewModel) this.DataContext).SelectedPackages)
                 {
                     this.ListView.SelectedItems.Add(item);
                     this.ListBox.SelectedItems.Add(item);
                 }
 
-                foreach (var item in selectionChanged.Unselected)
+                return;
+
+                var added = new List<PackageViewModel>();
+                var removed = new List<PackageViewModel>();
+
+                foreach (var item in ((PackageListViewModel) this.DataContext).AllPackages)
+                {
+                    if (selectionChanged.Selected.Contains(item.Model))
+                    {
+                        added.Add(item);
+                    }
+                    else if (selectionChanged.Unselected.Contains(item.Model))
+                    {
+                        removed.Add(item);
+                    }
+                }
+
+                foreach (var item in removed)
                 {
                     this.ListView.SelectedItems.Remove(item);
                     this.ListBox.SelectedItems.Remove(item);
+                }
+
+                foreach (var item in added)
+                {
+                    this.ListView.SelectedItems.Add(item);
+                    this.ListBox.SelectedItems.Add(item);
                 }
             }
             finally
