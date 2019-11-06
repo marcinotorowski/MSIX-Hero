@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Commands.Signing;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
@@ -24,7 +25,7 @@ namespace otor.msixhero.lib.Ipc
             this.processManager = processManager;
         }
 
-        public Server GetServerInstance(IAppxPackageManager packageManager)
+        public Server GetServerInstance(IAppxPackageManager packageManager, IAppxSigningManager signingManager)
         {
             var server = new Server();
             server.AddHandler<GetPackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
@@ -34,6 +35,7 @@ namespace otor.msixhero.lib.Ipc
             server.AddHandler<RemovePackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
             server.AddHandler<FindUsers>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             server.AddHandler<GetLogs>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
+            server.AddHandler<InstallCertificate>((action, cancellation, progress) => this.Handle(action, signingManager, cancellation));
             return server;
         }
         
@@ -48,6 +50,14 @@ namespace otor.msixhero.lib.Ipc
             var packages = new List<Package>(await packageManager.Get(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser).ConfigureAwait(false));
             Console.WriteLine("Returning back " + packages.Count + " results.");
             return ReturnAsBytes(packages);
+        }
+
+        public async Task<byte[]> Handle(InstallCertificate command, IAppxSigningManager signingManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            Console.WriteLine("Handling " + command.GetType().Name);
+            await signingManager.InstallCertificate(command.FilePath, cancellationToken, progress).ConfigureAwait(false);
+            Console.WriteLine("Certificate installed.");
+            return ReturnAsBytes(true);
         }
 
         public async Task<byte[]> Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

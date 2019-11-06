@@ -29,6 +29,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
@@ -216,7 +217,7 @@
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                             </Fluent:Button.LargeIcon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Install certificate..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                        <Fluent:Button Header="Install certificate..." Command="{x:Static commands:MsixHeroCommands.InstallCertificate}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorImport}" />
                             </Fluent:Button.LargeIcon>

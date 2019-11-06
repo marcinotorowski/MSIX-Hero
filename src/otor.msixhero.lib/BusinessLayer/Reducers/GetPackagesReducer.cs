@@ -19,7 +19,6 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     {
         private readonly GetPackages action;
         private readonly IBusyManager busyManager;
-        private readonly IClientCommandRemoting clientCommandRemoting;
         private readonly IAppxPackageManager packageManager;
 
         public GetPackagesReducer(
@@ -27,11 +26,10 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             IApplicationStateManager<ApplicationState> applicationStateManager,
             IAppxPackageManager packageManager, 
             IBusyManager busyManager,
-            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager)
+            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager, clientCommandRemoting)
         {
             this.action = action;
             this.busyManager = busyManager;
-            this.clientCommandRemoting = clientCommandRemoting;
             this.packageManager = packageManager;
         }
 

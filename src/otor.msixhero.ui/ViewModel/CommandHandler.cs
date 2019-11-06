@@ -9,6 +9,7 @@ using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Commands.Signing;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
@@ -61,6 +62,7 @@ namespace otor.msixhero.ui.ViewModel
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
             this.OpenAppsFeatures = new DelegateCommand(param => this.OpenAppsFeaturesExecute());
             this.OpenDevSettings = new DelegateCommand(param => this.OpenDevSettingsExecute());
+            this.InstallCertificate = new DelegateCommand(param => this.InstallCertificateExecute());
         }
 
         public ICommand Refresh { get; }
@@ -72,6 +74,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand RemovePackage { get; }
 
         public ICommand NewSelfSignedCert { get; }
+
+        public ICommand InstallCertificate { get; }
 
         public ICommand OpenLogs { get; }
 
@@ -292,6 +296,16 @@ namespace otor.msixhero.ui.ViewModel
             }
 
             return tool != null;
+        }
+
+        private void InstallCertificateExecute()
+        {
+            if (!this.interactionService.SelectFile("*.cer|Certificate files (*.cer)", out var selectedFile))
+            {
+                return;
+            }
+
+            this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(selectedFile));
         }
 
         private void NewSelfSignedCertExecute()

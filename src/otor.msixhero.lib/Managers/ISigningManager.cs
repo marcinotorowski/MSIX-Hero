@@ -19,6 +19,11 @@ namespace otor.msixhero.lib.Managers
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null);
 
+        Task<bool> InstallCertificate(
+            string certificateFile,
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null);
+
         Task<bool> CreateSelfSignedCertificate(
             DirectoryInfo outputDirectory,
             string publisherName,

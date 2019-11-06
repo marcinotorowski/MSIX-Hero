@@ -17,6 +17,18 @@ namespace otor.msixhero.lib.Managers
             return this.ExtractCertificateFromMsix(msixFile, false, outputFile, cancellationToken, progress);
         }
 
+        public async Task<bool> InstallCertificate(string certificateFile, CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null)
+        {
+            var scriptPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "install-certificate.ps1");
+
+            using var ps = await PowerShellInterop.PowerShellSession.CreateForModule("PKI", true).ConfigureAwait(false);
+            using var cmd = ps.AddCommand(scriptPath, false);
+            using var paramCerOutputFileName = cmd.AddParameter("CerFileName", certificateFile);
+            using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
+            return true;
+        }
+
         public Task<bool> ImportCertificateFromMsix(
             string msixFile,
             CancellationToken cancellationToken = default,

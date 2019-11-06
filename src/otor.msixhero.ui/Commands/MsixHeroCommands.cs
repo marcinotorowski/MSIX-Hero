@@ -20,6 +20,7 @@ namespace otor.msixhero.ui.Commands
             AddPackage = new RoutedUICommand { Text = "Add package" };
             OpenAppsFeatures = new RoutedUICommand { Text = "Open Apps and Features" };
             OpenDevSettings = new RoutedUICommand { Text = "Open Developer Settings" };
+            InstallCertificate = new RoutedUICommand { Text = "Install certificate from a .CER file" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -27,6 +28,8 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand OpenExplorerUser { get; }
 
         public static RoutedUICommand CreateSelfSign { get; }
+
+        public static RoutedUICommand InstallCertificate { get; }
 
         public static RoutedUICommand OpenManifest { get; }
 

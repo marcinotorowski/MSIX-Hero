@@ -15,19 +15,17 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         private readonly MountRegistry action;
         private readonly IAppxPackageManager packageManager;
         private readonly IBusyManager busyManager;
-        private readonly IClientCommandRemoting clientCommandRemoting;
 
         public MountRegistryReducer(
             MountRegistry action,
             IApplicationStateManager<ApplicationState> stateManager,
             IAppxPackageManager packageManager,
             IBusyManager busyManager,
-            IClientCommandRemoting clientCommandRemoting) : base(action, stateManager)
+            IClientCommandRemoting clientCommandRemoting) : base(action, stateManager, clientCommandRemoting)
         {
             this.action = action;
             this.packageManager = packageManager;
             this.busyManager = busyManager;
-            this.clientCommandRemoting = clientCommandRemoting;
         }
 
         public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)

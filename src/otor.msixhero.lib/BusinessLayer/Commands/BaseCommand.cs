@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Commands.Signing;
 using otor.msixhero.lib.BusinessLayer.Commands.UI;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands
@@ -22,6 +23,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     [XmlInclude(typeof(GetLogs))]
     [XmlInclude(typeof(SetPackageGrouping))]
     [XmlInclude(typeof(GetManifestedDetails))]
+    [XmlInclude(typeof(InstallCertificate))]
     public abstract class BaseCommand
     {
     }

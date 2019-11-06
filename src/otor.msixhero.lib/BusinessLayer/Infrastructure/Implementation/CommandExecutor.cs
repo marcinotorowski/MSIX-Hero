@@ -6,6 +6,7 @@ using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
+using otor.msixhero.lib.BusinessLayer.Commands.Signing;
 using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.Ipc;
@@ -19,19 +20,22 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         private readonly IDictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>>();
         private readonly ApplicationStateManager stateManager;
         private readonly IAppxPackageManager appxPackageManager;
+        private readonly IAppxSigningManager signingManager;
         private readonly IInteractionService interactionService;
         private readonly IBusyManager busyManager;
         private readonly IClientCommandRemoting clientCommandRemoting;
         
         public CommandExecutor(
             ApplicationStateManager stateManager, 
-            IAppxPackageManager appxPackageManager, 
+            IAppxPackageManager appxPackageManager,
+            IAppxSigningManager signingManager,
             IInteractionService interactionService,
             IBusyManager busyManager,
             IClientCommandRemoting clientCommandRemoting)
         {
             this.stateManager = stateManager;
             this.appxPackageManager = appxPackageManager;
+            this.signingManager = signingManager;
             this.interactionService = interactionService;
             this.busyManager = busyManager;
             this.clientCommandRemoting = clientCommandRemoting;
@@ -108,6 +112,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager, this.busyManager);
             this.reducerFactories[typeof(GetManifestedDetails)] = action => new GetManifestedDetailsReducer((GetManifestedDetails)action, this.stateManager);
+            this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.stateManager, this.clientCommandRemoting, this.signingManager, this.busyManager);
         }
     }
 }

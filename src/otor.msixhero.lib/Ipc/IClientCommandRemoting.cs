@@ -14,7 +14,7 @@ namespace otor.msixhero.lib.Ipc
 {
     public interface IClientCommandRemoting
     {
-        Server GetServerInstance(IAppxPackageManager packageManager);
+        Server GetServerInstance(IAppxPackageManager packageManager, IAppxSigningManager signingManager);
 
         Client GetClientInstance();
 

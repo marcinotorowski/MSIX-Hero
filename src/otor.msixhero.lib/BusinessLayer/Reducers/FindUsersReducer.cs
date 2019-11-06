@@ -18,7 +18,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         public FindUsersReducer(
             FindUsers action,
             IApplicationStateManager<ApplicationState> applicationStateManager,
-            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager)
+            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager, clientCommandRemoting)
         {
             this.action = action;
             this.clientCommandRemoting = clientCommandRemoting;

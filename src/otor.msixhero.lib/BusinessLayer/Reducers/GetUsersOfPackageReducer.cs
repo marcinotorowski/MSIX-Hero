@@ -23,7 +23,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             GetUsersOfPackage action, 
             IApplicationStateManager<ApplicationState> applicationStateManager,
             IAppxPackageManager packageManager,
-            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager)
+            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager, clientCommandRemoting)
         {
             this.action = action;
             this.packageManager = packageManager;

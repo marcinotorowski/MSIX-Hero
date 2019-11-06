@@ -19,7 +19,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         private readonly IAppxPackageManager packageManager;
         private readonly IClientCommandRemoting clientCommandRemoting;
 
-        public GetLogsReducer(GetLogs command, IApplicationStateManager<ApplicationState> stateManager, IAppxPackageManager packageManager, IClientCommandRemoting clientCommandRemoting) : base(command, stateManager)
+        public GetLogsReducer(GetLogs command, IApplicationStateManager<ApplicationState> stateManager, IAppxPackageManager packageManager, IClientCommandRemoting clientCommandRemoting) : base(command, stateManager, clientCommandRemoting)
         {
             this.command = command;
             this.packageManager = packageManager;
