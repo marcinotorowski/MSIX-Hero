@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.PackageList.View.SinglePackageDetails"
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.PackageList.View.SinglePackageView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,10 @@
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
-             mc:Ignorable="d"  d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}"
+             xmlns:mvvm="http://prismlibrary.com/"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewModel1:SinglePackageViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -87,7 +90,7 @@
                                     <Trigger.EnterActions>
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                                <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </Trigger.EnterActions>
@@ -106,11 +109,11 @@
             </Style>
         </DockPanel.Resources>
         <Border Height="31" DockPanel.Dock="Top">
-            <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackages[0].DisplayName}" />
+            <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackage.DisplayName}" />
         </Border>
 
         <TabControl DockPanel.Dock="Top" Margin="0 0 0 0">
-            <TabItem Header="Properties" DataContext="{Binding SelectedPackages[0]}">
+            <TabItem Header="Properties" DataContext="{Binding SelectedPackage}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Margin="0">
 

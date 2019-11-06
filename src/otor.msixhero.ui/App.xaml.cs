@@ -72,6 +72,8 @@ namespace otor.msixhero.ui
             base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<MainView, MainViewModel>();
             ViewModelLocationProvider.Register<PackageListView, PackageListViewModel>();
+            ViewModelLocationProvider.Register<SinglePackageView, SinglePackageViewModel>();
+            ViewModelLocationProvider.Register<MultiSelectionView, MultiSelectionViewModel>();
             ViewModelLocationProvider.Register<NewSelfSignedView, NewSelfSignedViewModel>();
         }
 

@@ -7,11 +7,18 @@ namespace otor.msixhero.ui.Modules.PackageList
 {
     public class PackageListModule : IModule
     {
-        public static string Path = "PackageList";
+        public static string PackagesPath = "PackageList";
+        public static string SidebarSingleSelection = "SidebarSingle";
+        public static string SidebarEmptySelection = "SidebarEmpty";
+        public static string SidebarMultiSelection = "SidebarMulti";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<PackageListView>(Path);
+            containerRegistry.RegisterForNavigation<PackageListView>(PackagesPath);
+            containerRegistry.RegisterForNavigation<SinglePackageView>(SidebarSingleSelection);
+            containerRegistry.RegisterForNavigation<EmptySelectionView>(SidebarEmptySelection);
+            containerRegistry.RegisterForNavigation<MultiSelectionView>(SidebarMultiSelection);
+
             containerRegistry.RegisterSingleton(typeof(PackageListViewModel));
         }
 

@@ -29,10 +29,16 @@
     <Compile Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\PackageList\View\MultiSelectionView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <Page Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\PackageList\View\MultiSelectionView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

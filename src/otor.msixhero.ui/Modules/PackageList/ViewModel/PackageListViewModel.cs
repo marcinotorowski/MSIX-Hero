@@ -1,37 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Input;
-using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
-using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Events;
 using Prism.Regions;
-using DelegateCommand = Prism.Commands.DelegateCommand;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
     public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {
         private readonly IApplicationStateManager stateManager;
-        private PackageViewModel selectedPackage;
-        private bool isActive;
-        private ICommand findUsers;
+        private readonly IRegionManager regionManager;
 
-        public PackageListViewModel(IApplicationStateManager stateManager)
+        public PackageListViewModel(IApplicationStateManager stateManager, IRegionManager regionManager)
         {
             this.stateManager = stateManager;
+            this.regionManager = regionManager;
 
             this.AllPackages = new ObservableCollection<PackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
@@ -42,16 +36,12 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged);
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnGroupAndSortChanged);
+
+            this.RefreshPackages();
         }
 
-        public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
-
-        public AsyncProperty<ManifestDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<ManifestDetailsViewModel>();
-        
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
-            this.selectedPackage = this.AllPackages.LastOrDefault(app => this.stateManager.CurrentState.Packages.SelectedItems.Contains(app.Model));
-
             foreach (var item in selectionInfo.Selected)
             {
                 var vm = this.AllPackages.FirstOrDefault(m => m.Model == item);
@@ -74,40 +64,29 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 this.SelectedPackages.Remove(vm);
             }
 
-            this.OnPropertyChanged(nameof(IsSelected));
-
-#pragma warning disable 4014
-            if (selectedPackage == null)
+            switch (this.SelectedPackages.Count)
             {
-                this.SelectedPackageUsersInfo.Load(Task.FromResult((FoundUsersViewModel)null));
-                this.SelectedPackageManifestInfo.Load(Task.FromResult((ManifestDetailsViewModel)null));
-            }
-            else
-            {
-                this.SelectedPackageManifestInfo.Load(this.GetManifestDetails(selectedPackage.Model));
-
-                try
+                case 0:
                 {
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(selectedPackage.Model, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.HasSelfElevated));
+                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative));
+                    break;
                 }
-                catch (Exception)
+
+                case 1:
                 {
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(selectedPackage.Model, false));
+                    var selected = this.SelectedPackages.LastOrDefault();
+                    var fullName = selected?.ProductId;
+                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), fullName } });
+                    break;
                 }
-#pragma warning restore 4014   
+
+                default:
+                {
+                    var selected = this.SelectedPackages.Select(p => p.ProductId);
+                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), selected } });
+                    break;
+                }
             }
-        }
-
-        private async Task<FoundUsersViewModel> GetSelectionDetails(Package package, bool forceElevation)
-        {
-            var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(package, forceElevation)).ConfigureAwait(false);
-            return new FoundUsersViewModel(stateDetails);
-        }
-
-        private async Task<ManifestDetailsViewModel> GetManifestDetails(Package package)
-        {
-            var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetManifestedDetails(package)).ConfigureAwait(false);
-            return new ManifestDetailsViewModel(manifestDetails, this.stateManager.CurrentState);
         }
 
         private void OnGroupAndSortChanged(PackageGroupAndSortChangedPayload payload)
@@ -253,26 +232,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
         
-        public bool IsActive
-        {
-            get
-            {
-                return this.isActive;
-            }
-            set
-            {
-                this.isActive = value;
-                var iac = this.IsActiveChanged;
-                if (iac != null)
-                {
-                    iac(this, new EventArgs());
-                }
-
-#pragma warning disable 4014
-                this.RefreshPackages();
-#pragma warning restore 4014
-            }
-        }
+        public bool IsActive { get; set; }
 
         public event EventHandler IsActiveChanged;
 
@@ -300,25 +260,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ICollectionView AllPackagesView { get; }
         
         public ObservableCollection<PackageViewModel> SelectedPackages { get; } = new ObservableCollection<PackageViewModel>();
-
-        public bool IsSelected
-        {
-            get => this.selectedPackage != null;
-        }
-
-        public ICommand FindUsers
-        {
-            get 
-            {
-                return this.findUsers ?? (this.findUsers = new DelegateCommand(() =>
-                {
-#pragma warning disable 4014
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails( this.SelectedPackages.Last().Model, true));
-#pragma warning restore 4014
-                }));
-            }
-        }
-
+        
         public Task RefreshPackages(CancellationToken cancellationToken = default(CancellationToken))
         {
             return this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), cancellationToken);

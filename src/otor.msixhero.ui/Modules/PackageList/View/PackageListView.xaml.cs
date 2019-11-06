@@ -13,6 +13,7 @@ using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
+using Prism.Regions;
 
 namespace otor.msixhero.ui.Modules.PackageList.View
 {
@@ -25,11 +26,14 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private SortAdorner sortAdorner;
 
-        public PackageListView(IApplicationStateManager applicationStateManager = null)
+        public PackageListView(IApplicationStateManager applicationStateManager = null, IRegionManager regionManager = null)
         {
             this.applicationStateManager = applicationStateManager;
             InitializeComponent();
             Debug.Assert(applicationStateManager != null);
+            Debug.Assert(regionManager != null);
+
+            regionManager.RegisterViewWithRegion("PackageSidebar", typeof(EmptySelectionView));
 
             // Subscribe to events
             applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged, ThreadOption.UIThread);
@@ -183,6 +187,11 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                             this.ListBox.SelectedItems.Remove(item);
                         }
                     }
+
+                    if (e.AddedItems?.Count > 0)
+                    {
+                        this.ListBox.ScrollIntoView(e.AddedItems[0]);
+                    }
                 }
             }
             finally
@@ -220,11 +229,16 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                             this.ListView.SelectedItems.Remove(item);
                         }
                     }
+
+                    if (e.AddedItems?.Count > 0)
+                    {
+                        this.ListView.ScrollIntoView(e.AddedItems[0]);
+                    }
                 }
             }
             finally
             {
-                this.disableSelectionNotification = true;
+                this.disableSelectionNotification = false;
             }
         }
 
