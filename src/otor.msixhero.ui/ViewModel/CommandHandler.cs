@@ -300,7 +300,7 @@ namespace otor.msixhero.ui.ViewModel
 
         private void InstallCertificateExecute()
         {
-            if (!this.interactionService.SelectFile("*.cer|Certificate files (*.cer)", out var selectedFile))
+            if (!this.interactionService.SelectFile("Certificate files (*.cer)|*.cer|All files (*.*)|*.*", out var selectedFile))
             {
                 return;
             }
