@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace otor.msixhero.lib.BusinessLayer.Models.Manifest
+namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
 {
     [Serializable]
-    public class PackageDependency
+    public class AppxPackageDependency
     {
     
         public string Name { get; set; }
@@ -11,5 +11,7 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest
         public string Version { get; set; }
         
         public string Publisher { get; set; }
+
+        public AppxPackage Dependency { get; set; }
     }
 }

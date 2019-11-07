@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Logs;
+using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Domain;
@@ -40,7 +41,7 @@ namespace otor.msixhero.lib.Managers
 
         Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto);
 
-        Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto);
+        Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default);
 
         Task<Package> Get(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto);
 

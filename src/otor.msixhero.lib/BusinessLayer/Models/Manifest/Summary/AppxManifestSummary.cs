@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace otor.msixhero.lib.BusinessLayer.Models.Manifest
+namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 {
     [Serializable]
     public class AppxManifestSummary
@@ -26,8 +25,8 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest
 
         public string AccentColor { get; set; }
 
-        public List<OperatingSystemDependency> OperatingSystemDependencies { get; set; }
+        // public List<OperatingSystemDependency> OperatingSystemDependencies { get; set; }
 
-        public List<PackageDependency> PackageDependencies { get; set; }
+        // public List<PackageDependency> PackageDependencies { get; set; }
     }
 }

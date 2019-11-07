@@ -4,12 +4,13 @@ using System.Management.Automation.Language;
 using System.Text;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Manifest;
+using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
 
 namespace otor.msixhero.lib.BusinessLayer.Helpers
 {
     public class Windows10Parser
     {
-        public static TargetOperatingSystem GetOperatingSystemFromNameAndVersion(string name, string version)
+        public static AppxTargetOperatingSystem GetOperatingSystemFromNameAndVersion(string name, string version)
         {
             switch (name)
             {
@@ -23,9 +24,9 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             }
         }
 
-        private static TargetOperatingSystem GetWindowsDesktop(string version)
+        private static AppxTargetOperatingSystem GetWindowsDesktop(string version)
         {
-            var result = new TargetOperatingSystem();
+            var result = new AppxTargetOperatingSystem();
             result.TechnicalVersion = version;
 
             if (Version.TryParse(version, out var parsedVersion))

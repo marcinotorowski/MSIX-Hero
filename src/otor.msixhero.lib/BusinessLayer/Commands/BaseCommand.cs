@@ -22,7 +22,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     [XmlInclude(typeof(SetPackageSorting))]
     [XmlInclude(typeof(GetLogs))]
     [XmlInclude(typeof(SetPackageGrouping))]
-    [XmlInclude(typeof(GetManifestedDetails))]
+    [XmlInclude(typeof(GetPackageDetails))]
     [XmlInclude(typeof(InstallCertificate))]
     public abstract class BaseCommand
     {

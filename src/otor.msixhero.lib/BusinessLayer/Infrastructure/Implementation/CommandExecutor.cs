@@ -111,7 +111,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
             this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager, this.busyManager);
-            this.reducerFactories[typeof(GetManifestedDetails)] = action => new GetManifestedDetailsReducer((GetManifestedDetails)action, this.stateManager);
+            this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.stateManager, this.appxPackageManager);
             this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.stateManager, this.clientCommandRemoting, this.signingManager, this.busyManager);
         }
     }

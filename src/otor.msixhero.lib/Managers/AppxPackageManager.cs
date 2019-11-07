@@ -10,9 +10,9 @@ using System.Xml;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Helpers;
-using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Logs;
-using otor.msixhero.lib.BusinessLayer.Models.Manifest;
+using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
+using otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Domain;
@@ -302,7 +302,17 @@ namespace otor.msixhero.lib.Managers
             return await ConvertFrom(pkg).ConfigureAwait(false);
         }
 
-        public async Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto)
+        public Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default)
+        {
+            return Task.Run(() =>
+            {
+                var nativePkg = Native.QueryPackageInfo(packageName, Native.PackageConstants.PACKAGE_FILTER_HEAD);
+                var result = nativePkg.LastOrDefault();
+                return result;
+            }, cancellationToken);
+        }
+
+        private async Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto)
         {
             var list = new List<Package>();
 

@@ -1,13 +1,13 @@
-﻿using otor.msixhero.lib.BusinessLayer.Models.Manifest;
+﻿using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
 using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
     public class OperatingSystemDependencyViewModel : NotifyPropertyChanged
     {
-        private readonly OperatingSystemDependency model;
+        private readonly AppxOperatingSystemDependency model;
 
-        public OperatingSystemDependencyViewModel(OperatingSystemDependency model)
+        public OperatingSystemDependencyViewModel(AppxOperatingSystemDependency model)
         {
             this.model = model;
         }

@@ -26,7 +26,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
 
-        public AsyncProperty<ManifestDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<ManifestDetailsViewModel>();
+        public AsyncProperty<AppxDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<AppxDetailsViewModel>();
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -41,7 +41,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             if (lastSelected == null)
             {
                 this.SelectedPackageUsersInfo.Load(Task.FromResult((FoundUsersViewModel)null));
-                this.SelectedPackageManifestInfo.Load(Task.FromResult((ManifestDetailsViewModel)null));
+                this.SelectedPackageManifestInfo.Load(Task.FromResult((AppxDetailsViewModel)null));
             }
             else
             {
@@ -98,10 +98,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             return new FoundUsersViewModel(stateDetails);
         }
 
-        private async Task<ManifestDetailsViewModel> GetManifestDetails(Package package)
+        private async Task<AppxDetailsViewModel> GetManifestDetails(Package package)
         {
-            var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetManifestedDetails(package)).ConfigureAwait(false);
-            return new ManifestDetailsViewModel(manifestDetails, this.stateManager.CurrentState);
+            var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackageDetails(package)).ConfigureAwait(false);
+            return new AppxDetailsViewModel(manifestDetails);
         }
 
     }

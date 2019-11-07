@@ -7,6 +7,7 @@ using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models.Manifest;
+using otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary;
 using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 

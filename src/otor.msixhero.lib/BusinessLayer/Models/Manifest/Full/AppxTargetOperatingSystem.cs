@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace otor.msixhero.lib.BusinessLayer.Models.Manifest
+namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
 {
     [Serializable]
-    public class TargetOperatingSystem
+    public class AppxTargetOperatingSystem
     {
         public string Name { get; set; }
 
