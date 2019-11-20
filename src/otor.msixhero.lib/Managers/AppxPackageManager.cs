@@ -306,9 +306,37 @@ namespace otor.msixhero.lib.Managers
         {
             return Task.Run(() =>
             {
-                var nativePkg = Native.QueryPackageInfo(packageName, Native.PackageConstants.PACKAGE_FILTER_HEAD);
-                var result = nativePkg.LastOrDefault();
-                return result;
+                var nativePkg = Native.QueryPackageInfo(packageName, Native.PackageConstants.PACKAGE_INFORMATION_FULL);
+
+                AppxPackage mainApp = null;
+                IList<AppxPackage> dependencies = new List<AppxPackage>();
+
+                foreach (var item in nativePkg)
+                {
+                    if (mainApp == null)
+                    {
+                        mainApp = item;
+                    }
+                    else
+                    {
+                        dependencies.Add(item);
+                    }
+                }
+
+                if (mainApp == null)
+                {
+                    return null;
+                }
+
+                foreach (var dependency in mainApp.PackageDependencies)
+                {
+                    dependency.Dependency = dependencies.FirstOrDefault(d =>
+                        d.Publisher == dependency.Publisher &&
+                        d.Name == dependency.Name &&
+                        Version.Parse(d.Version) >= Version.Parse(dependency.Version));
+                }
+
+                return mainApp;
             }, cancellationToken);
         }
 

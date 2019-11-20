@@ -33,108 +33,173 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
         
         internal static IEnumerable<AppxPackage> QueryPackageInfo(string fullName, PackageConstants flags)
         {
-            IntPtr infoRef;
-            OpenPackageInfoByFullName(fullName, 0, out infoRef);
-            if (infoRef != IntPtr.Zero)
+            var disposables = new Stack<object>();
+            var infoBuffer = IntPtr.Zero;
+            var infoRef = IntPtr.Zero;
+
+            try
             {
-                IntPtr infoBuffer = IntPtr.Zero;
-                try
+                OpenPackageInfoByFullName(fullName, 0, out infoRef);
+                if (infoRef != IntPtr.Zero)
                 {
-                    int len = 0;
-                    int count;
-                    GetPackageInfo(infoRef, flags, ref len, IntPtr.Zero, out count);
-                    if (len > 0)
+                    var len = 0;
+                    GetPackageInfo(infoRef, flags, ref len, IntPtr.Zero, out var count);
+                    if (len == 0)
                     {
-                        // ReSharper disable once SuspiciousTypeConversion.Global
-                        var factory = (IAppxFactory)new AppxFactory();
-                        infoBuffer = Marshal.AllocHGlobal(len);
-                        var res = GetPackageInfo(infoRef, flags, ref len, infoBuffer, out count);
+                        yield break;
+                    }
 
-                        for (var i = 0; i < count; i++)
+                    // ReSharper disable once SuspiciousTypeConversion.Global
+                    var factory = (IAppxFactory)new AppxFactory();
+                    disposables.Push(factory);
+
+                    infoBuffer = Marshal.AllocHGlobal(len);
+                    GetPackageInfo(infoRef, flags, ref len, infoBuffer, out count);
+                            
+                    for (var i = 0; i < count; i++)
+                    {
+                        var info = (PACKAGE_INFO)Marshal.PtrToStructure(infoBuffer + i * Marshal.SizeOf(typeof(PACKAGE_INFO)), typeof(PACKAGE_INFO));
+                        
+                        // ReSharper disable once UseObjectOrCollectionInitializer
+                        var package = new AppxPackage();
+                        package.FamilyName = Marshal.PtrToStringUni(info.packageFamilyName);
+                        package.FullName = Marshal.PtrToStringUni(info.packageFullName);
+                        package.Path = Marshal.PtrToStringUni(info.path);
+                        package.Publisher = Marshal.PtrToStringUni(info.packageId.publisher);
+                        package.PublisherId = Marshal.PtrToStringUni(info.packageId.publisherId);
+                        package.ResourceId = Marshal.PtrToStringUni(info.packageId.resourceId);
+                        package.ProcessorArchitecture = info.packageId.processorArchitecture;
+                        package.Version = new Version(info.packageId.VersionMajor, info.packageId.VersionMinor, info.packageId.VersionBuild, info.packageId.VersionRevision).ToString(4);
+
+                        // read manifest
+                        string manifestPath = System.IO.Path.Combine(package.Path, "AppXManifest.xml");
+                        const int STGM_SHARE_DENY_NONE = 0x40;
+                        IStream strm;
+                        SHCreateStreamOnFileEx(manifestPath, STGM_SHARE_DENY_NONE, 0, false, IntPtr.Zero, out strm);
+                        disposables.Push(strm);
+
+                        if (strm != null)
                         {
-                            var info = (PACKAGE_INFO)Marshal.PtrToStructure(infoBuffer + i * Marshal.SizeOf(typeof(PACKAGE_INFO)), typeof(PACKAGE_INFO));
-                            var package = new AppxPackage();
-                            package.FamilyName = Marshal.PtrToStringUni(info.packageFamilyName);
-                            package.FullName = Marshal.PtrToStringUni(info.packageFullName);
-                            package.Path = Marshal.PtrToStringUni(info.path);
-                            package.Publisher = Marshal.PtrToStringUni(info.packageId.publisher);
-                            package.PublisherId = Marshal.PtrToStringUni(info.packageId.publisherId);
-                            package.ResourceId = Marshal.PtrToStringUni(info.packageId.resourceId);
-                            package.ProcessorArchitecture = info.packageId.processorArchitecture;
-                            package.Version = new Version(info.packageId.VersionMajor, info.packageId.VersionMinor, info.packageId.VersionBuild, info.packageId.VersionRevision);
+                            var reader = factory.CreateManifestReader(strm); 
+                            disposables.Push(reader);
+                                    
+                            var properties = reader.GetProperties();
+                            disposables.Push(properties);
 
-                            // read manifest
-                            string manifestPath = System.IO.Path.Combine(package.Path, "AppXManifest.xml");
-                            const int STGM_SHARE_DENY_NONE = 0x40;
-                            IStream strm;
-                            SHCreateStreamOnFileEx(manifestPath, STGM_SHARE_DENY_NONE, 0, false, IntPtr.Zero, out strm);
-                            if (strm != null)
+                            var packageId = reader.GetPackageId();
+                            try
                             {
-                                var reader = factory.CreateManifestReader(strm);
-                                var properties = reader.GetProperties();
-                                package.Description = GetPropertyStringValue("Description", properties);
-                                package.DisplayName = GetPropertyStringValue("DisplayName", properties);
-                                package.Logo = GetPropertyStringValue("Logo", properties);
-                                package.PublisherDisplayName = GetPropertyStringValue("PublisherDisplayName", properties);
-                                package.IsFramework = GetPropertyBoolValue("Framework", properties);
-
-                                var apps = reader.GetApplications();
-
-                                if (package.PackageDependencies != null)
-                                {
-                                    package.PackageDependencies = new List<AppxPackageDependency>();
-                                }
-
-                                while (apps.GetHasCurrent())
-                                {
-                                    var app = apps.GetCurrent();
-                                    var appx = new AppxApplication();
-                                    appx.Description = GetStringValue(app, "Description");
-                                    appx.Name = GetStringValue(app, "Name");
-                                    appx.Publisher = GetStringValue(app, "Publisher");
-                                    appx.DisplayName = GetStringValue(app, "DisplayName");
-                                    appx.EntryPoint = GetStringValue(app, "EntryPoint");
-                                    appx.Executable = GetStringValue(app, "Executable");
-                                    appx.Id = GetStringValue(app, "Id");
-                                    appx.Logo = GetStringValue(app, "Logo");
-                                    appx.SmallLogo = GetStringValue(app, "SmallLogo");
-                                    appx.StartPage = GetStringValue(app, "StartPage");
-                                    appx.Square150x150Logo = GetStringValue(app, "Square150x150Logo");
-                                    appx.Square30x30Logo = GetStringValue(app, "Square30x30Logo");
-                                    appx.BackgroundColor = GetStringValue(app, "BackgroundColor");
-                                    appx.ForegroundText = GetStringValue(app, "ForegroundText");
-                                    appx.WideLogo = GetStringValue(app, "WideLogo");
-                                    appx.Wide310x310Logo = GetStringValue(app, "Wide310x310Logo");
-                                    appx.ShortName = GetStringValue(app, "ShortName");
-                                    appx.Square310x310Logo = GetStringValue(app, "Square310x310Logo");
-                                    appx.Square70x70Logo = GetStringValue(app, "Square70x70Logo");
-                                    appx.MinWidth = GetStringValue(app, "MinWidth");
-                                    apps.MoveNext();
-                                }
-
-                                Native.
-
-
-                                package.PackageDependencies.Add(new AppxPackageDependency()
-                                {
-                                    Name = appx.Name,
-                                    Publisher = appx.Publisher,
-                                    Dependency = appx
-                                });
-
-                                Marshal.ReleaseComObject(strm);
+                                package.Name = packageId.GetName();
                             }
-                            yield return package;
+                            finally
+                            {
+                                Marshal.ReleaseComObject(packageId);
+                            }
+
+                            package.Description = GetPropertyStringValue("Description", properties);
+                            package.DisplayName = GetPropertyStringValue("DisplayName", properties);
+                            package.Logo = GetPropertyStringValue("Logo", properties);
+                            package.PublisherDisplayName = GetPropertyStringValue("PublisherDisplayName", properties);
+                            package.IsFramework = GetPropertyBoolValue("Framework", properties);
+
+                            var nativeApplications = reader.GetApplications();
+                            disposables.Push(nativeApplications);
+
+                            while (nativeApplications.GetHasCurrent())
+                            {
+                                var nativeApplication = nativeApplications.GetCurrent();
+                                try
+                                {
+                                    var appx = new AppxApplication();
+                                    appx.Description = GetStringValue(nativeApplication, "Description");
+                                    appx.Name = GetStringValue(nativeApplication, "Name");
+                                    appx.Publisher = GetStringValue(nativeApplication, "Publisher");
+                                    appx.DisplayName = GetStringValue(nativeApplication, "DisplayName");
+                                    appx.EntryPoint = GetStringValue(nativeApplication, "EntryPoint");
+                                    appx.Executable = GetStringValue(nativeApplication, "Executable");
+                                    appx.Id = GetStringValue(nativeApplication, "Id");
+                                    appx.Logo = GetStringValue(nativeApplication, "Logo");
+                                    appx.SmallLogo = GetStringValue(nativeApplication, "SmallLogo");
+                                    appx.StartPage = GetStringValue(nativeApplication, "StartPage");
+                                    appx.Square150x150Logo = GetStringValue(nativeApplication, "Square150x150Logo");
+                                    appx.Square30x30Logo = GetStringValue(nativeApplication, "Square30x30Logo");
+                                    appx.BackgroundColor = GetStringValue(nativeApplication, "BackgroundColor");
+                                    appx.ForegroundText = GetStringValue(nativeApplication, "ForegroundText");
+                                    appx.WideLogo = GetStringValue(nativeApplication, "WideLogo");
+                                    appx.Wide310x310Logo = GetStringValue(nativeApplication, "Wide310x310Logo");
+                                    appx.ShortName = GetStringValue(nativeApplication, "ShortName");
+                                    appx.Square310x310Logo = GetStringValue(nativeApplication, "Square310x310Logo");
+                                    appx.Square70x70Logo = GetStringValue(nativeApplication, "Square70x70Logo");
+                                    appx.MinWidth = GetStringValue(nativeApplication, "MinWidth");
+                                }
+                                finally
+                                {
+                                    Marshal.ReleaseComObject(nativeApplication);
+                                }
+
+                                nativeApplications.MoveNext();
+                            }
+
+                            if (package.PackageDependencies == null)
+                            {
+                                package.PackageDependencies = new List<AppxPackageDependency>();
+                            }
+
+                            var nativeDependencies = reader.GetPackageDependencies();
+                            disposables.Push(nativeDependencies);
+
+                            while (nativeDependencies.GetHasCurrent())
+                            {
+                                var nativeDependency = nativeDependencies.GetCurrent();
+                                try
+                                {
+                                    var appxDepdendency = new AppxPackageDependency();
+
+                                    ulong u;
+                                    nativeDependency.GetMinVersion(out u);
+                                    string s;
+                                    nativeDependency.GetName(out s);
+                                    appxDepdendency.Name = s;
+                                    nativeDependency.GetPublisher(out s);
+                                    appxDepdendency.Publisher = s;
+
+                                    var bitConvert = BitConverter.GetBytes(u);
+                                    appxDepdendency.Version = u == 0 ? null : string.Format(
+                                        "{0}.{1}.{2}.{3}",
+                                        BitConverter.ToUInt16(bitConvert, 6),
+                                        BitConverter.ToUInt16(bitConvert, 4),
+                                        BitConverter.ToUInt16(bitConvert, 2),
+                                        BitConverter.ToUInt16(bitConvert, 0));
+
+                                    nativeDependencies.MoveNext();
+                                    package.PackageDependencies.Add(appxDepdendency);
+                                }
+                                finally
+                                {
+                                    Marshal.ReleaseComObject(nativeDependency);
+                                }
+
+                            }
                         }
-                        Marshal.ReleaseComObject(factory);
+
+                        yield return package;
                     }
                 }
-                finally
+            }
+            finally
+            {
+                while (disposables.TryPop(out var disposable))
                 {
-                    if (infoBuffer != IntPtr.Zero)
-                    {
-                        Marshal.FreeHGlobal(infoBuffer);
-                    }
+                    Marshal.ReleaseComObject(disposable);
+                }
+
+                if (infoBuffer != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(infoBuffer);
+                }
+
+                if (infoRef != IntPtr.Zero)
+                {
                     ClosePackageInfo(infoRef);
                 }
             }
@@ -212,9 +277,13 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
         [Guid("4E1BD148-55A0-4480-A3D1-15544710637C"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         private interface IAppxManifestReader
         {
-            void _VtblGap0_1(); // skip 1 method
+            IAppxManifestPackageId GetPackageId();
+            
             IAppxManifestProperties GetProperties();
-            void _VtblGap1_5(); // skip 5 methods
+
+            IAppxManifestPackageDependenciesEnumerator GetPackageDependencies();
+
+            void _VtblGap1_4(); // skip 4 methods
             IAppxManifestApplicationsEnumerator GetApplications();
         }
 
@@ -226,11 +295,32 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             bool MoveNext();
         }
 
+        [Guid("b43bbcf9-65a6-42dd-bac0-8c6741e7f5a4"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IAppxManifestPackageDependenciesEnumerator
+        {
+            IAppxManifestPackageDependency GetCurrent();
+            bool GetHasCurrent();
+            bool MoveNext();
+        }
+
         [Guid("5DA89BF4-3773-46BE-B650-7E744863B7E8"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         internal interface IAppxManifestApplication
         {
             [PreserveSig]
-            int GetStringValue([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] out string vaue);
+            int GetStringValue([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] out string value);
+        }
+
+        [Guid("e4946b59-733e-43f0-a724-3bde4c1285a0"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        internal interface IAppxManifestPackageDependency
+        {
+            [PreserveSig]
+            int GetName([MarshalAs(UnmanagedType.LPWStr)] out string value);
+
+            [PreserveSig]
+            int GetPublisher([MarshalAs(UnmanagedType.LPWStr)] out string value);
+
+            [PreserveSig]
+            int GetMinVersion([MarshalAs(UnmanagedType.U8)] out ulong value);
         }
 
         [Guid("03FAF64D-F26F-4B2C-AAF7-8FE7789B8BCA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -240,6 +330,31 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             int GetBoolValue([MarshalAs(UnmanagedType.LPWStr)]string name, out bool value);
             [PreserveSig]
             int GetStringValue([MarshalAs(UnmanagedType.LPWStr)] string name, [MarshalAs(UnmanagedType.LPWStr)] out string vaue);
+        }
+
+        [Guid("283ce2d7-7153-4a91-9649-7a0f7240945f"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IAppxManifestPackageId : IDisposable
+        {
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetName();
+
+            AppxPackageArchitecture GetArchitecture();
+
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetPublisher();
+
+            ulong GetVersion();
+
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetResourceId();
+
+            bool ComparePublisher([In, MarshalAs(UnmanagedType.LPWStr)] string otherPublisher);
+
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetPackageFullName();
+
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetPackageFamilyName();
         }
 
         [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]

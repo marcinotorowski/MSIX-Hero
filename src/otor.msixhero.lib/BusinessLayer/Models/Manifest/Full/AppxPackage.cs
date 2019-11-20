@@ -6,6 +6,8 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
     [Serializable]
     public class AppxPackage
     {
+        public string Name { get; set; }
+
         public string FullName { get; set; }
 
         public string Path { get; set; }
@@ -30,7 +32,7 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
 
         public bool IsFramework { get; set; }
 
-        public Version Version { get; set; }
+        public string Version { get; set; }
 
         public AppxPackageArchitecture ProcessorArchitecture { get; set; }
         

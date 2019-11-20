@@ -35,7 +35,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             var lastSelected = this.stateManager.CurrentState.Packages.SelectedItems.LastOrDefault();
 
-            this.SelectedPackage = new PackageViewModel(lastSelected);
+            this.SelectedPackage = lastSelected == null ? null : new PackageViewModel(lastSelected);
 
 #pragma warning disable 4014
             if (lastSelected == null)
