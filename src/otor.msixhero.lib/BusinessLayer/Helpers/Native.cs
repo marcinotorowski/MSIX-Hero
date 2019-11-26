@@ -145,6 +145,52 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                                 package.PackageDependencies = new List<AppxPackageDependency>();
                             }
 
+                            if (package.OperatingSystemDependencies == null)
+                            {
+                                package.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
+                            }
+
+                            var nativeTargetPlatformDependencies = reader.GetTargetDeviceFamilies();
+                            disposables.Push(nativeTargetPlatformDependencies);
+
+                            while (nativeTargetPlatformDependencies.GetHasCurrent())
+                            {
+                                var nativeDependency = nativeTargetPlatformDependencies.GetCurrent();
+                                try
+                                {
+                                    nativeTargetPlatformDependencies.MoveNext();
+                                   
+                                    var minVersion = nativeDependency.GetMinVersion();
+                                    var maxVersion = nativeDependency.GetMaxVersionTested();
+                                    var bitConvert = BitConverter.GetBytes(minVersion);
+
+                                    var actualMinVersion = minVersion == 0 ? null : string.Format(
+                                        "{0}.{1}.{2}.{3}",
+                                        BitConverter.ToUInt16(bitConvert, 6),
+                                        BitConverter.ToUInt16(bitConvert, 4),
+                                        BitConverter.ToUInt16(bitConvert, 2),
+                                        BitConverter.ToUInt16(bitConvert, 0));
+
+                                    bitConvert = BitConverter.GetBytes(minVersion);
+                                    var actualMaxVersion = maxVersion == 0 ? null : string.Format(
+                                        "{0}.{1}.{2}.{3}",
+                                        BitConverter.ToUInt16(bitConvert, 6),
+                                        BitConverter.ToUInt16(bitConvert, 4),
+                                        BitConverter.ToUInt16(bitConvert, 2),
+                                        BitConverter.ToUInt16(bitConvert, 0));
+
+                                    package.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency()
+                                    {
+                                        Minimum = Windows10Parser.GetOperatingSystemFromNameAndVersion(nativeDependency.GetName(), actualMinVersion),
+                                        Tested = Windows10Parser.GetOperatingSystemFromNameAndVersion(nativeDependency.GetName(), actualMaxVersion),
+                                    });
+                                }
+                                finally
+                                {
+                                    Marshal.ReleaseComObject(nativeDependency);
+                                }
+                            }
+
                             var nativeDependencies = reader.GetPackageDependencies();
                             disposables.Push(nativeDependencies);
 
@@ -171,8 +217,8 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                                         BitConverter.ToUInt16(bitConvert, 2),
                                         BitConverter.ToUInt16(bitConvert, 0));
 
-                                    nativeDependencies.MoveNext();
                                     package.PackageDependencies.Add(appxDepdendency);
+                                    nativeDependencies.MoveNext();
                                 }
                                 finally
                                 {
@@ -271,11 +317,11 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
         private interface IAppxFactory
         {
             void _VtblGap0_2(); // skip 2 methods
-            IAppxManifestReader CreateManifestReader(IStream inputStream);
+            IAppxManifestReader3 CreateManifestReader(IStream inputStream);
         }
 
-        [Guid("4E1BD148-55A0-4480-A3D1-15544710637C"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        private interface IAppxManifestReader
+        [Guid("C43825AB-69B7-400A-9709-CC37F5A72D24"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IAppxManifestReader3 : IDisposable
         {
             IAppxManifestPackageId GetPackageId();
             
@@ -284,7 +330,12 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             IAppxManifestPackageDependenciesEnumerator GetPackageDependencies();
 
             void _VtblGap1_4(); // skip 4 methods
+
             IAppxManifestApplicationsEnumerator GetApplications();
+
+            void _VtblGap1_3(); // skip 3 methods
+
+            IAppxManifestTargetDeviceFamiliesEnumerator GetTargetDeviceFamilies();
         }
 
         [Guid("9EB8A55A-F04B-4D0D-808D-686185D4847A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -293,6 +344,28 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             IAppxManifestApplication GetCurrent();
             bool GetHasCurrent();
             bool MoveNext();
+        }
+
+        [Guid("36537F36-27A4-4788-88C0-733819575017"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IAppxManifestTargetDeviceFamiliesEnumerator : IDisposable
+        {
+            IAppxManifestTargetDeviceFamily GetCurrent();
+
+            bool GetHasCurrent();
+
+            bool MoveNext();
+        }
+
+
+        [Guid("9091B09B-C8D5-4F31-8687-A338259FAEFB"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IAppxManifestTargetDeviceFamily : IDisposable
+        {
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetName();
+
+            ulong GetMinVersion();
+
+            ulong GetMaxVersionTested();
         }
 
         [Guid("b43bbcf9-65a6-42dd-bac0-8c6741e7f5a4"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

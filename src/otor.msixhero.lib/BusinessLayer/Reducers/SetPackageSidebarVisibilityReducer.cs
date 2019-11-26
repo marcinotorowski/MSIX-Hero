@@ -5,6 +5,7 @@ using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -18,7 +19,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
             if (this.action.IsVisible == this.StateManager.CurrentState.LocalSettings.ShowSidebar)
             {

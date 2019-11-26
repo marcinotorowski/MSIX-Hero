@@ -49,7 +49,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
                 try
                 {
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.HasSelfElevated));
+                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated));
                 }
                 catch (Exception)
                 {

@@ -42,9 +42,23 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
+            for (var i = this.SelectedPackages.Count - 1; i >= 0; i--)
+            {
+                if (!selectionInfo.Selected.Contains(this.SelectedPackages[i].Model))
+                {
+                    this.SelectedPackages.RemoveAt(i);
+                }
+            }
+
             foreach (var item in selectionInfo.Selected)
             {
-                var vm = this.AllPackages.FirstOrDefault(m => m.Model == item);
+                var vm = this.SelectedPackages.FirstOrDefault(m => m.Model == item);
+                if (vm != null)
+                {
+                    continue;
+                }
+
+                vm = this.AllPackages.FirstOrDefault(m => m.Model == item);
                 if (vm == null)
                 {
                     continue;
@@ -53,18 +67,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 this.SelectedPackages.Add(vm);
             }
 
-            foreach (var item in selectionInfo.Unselected)
-            {
-                var vm = this.AllPackages.FirstOrDefault(m => m.Model == item);
-                if (vm == null)
-                {
-                    continue;
-                }
-
-                this.SelectedPackages.Remove(vm);
-            }
-
-            switch (this.SelectedPackages.Count)
+            switch (this.stateManager.CurrentState.Packages.SelectedItems.Count)
             {
                 case 0:
                 {

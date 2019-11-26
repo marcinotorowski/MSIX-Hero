@@ -11,7 +11,7 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void Test1()
         {
-            var man = new AppxPackageManager();
+            var man = new CurrentUserAppxPackageManager(new AppxSigningManager());
             var allPackages = man.Get().Result.ToList();
             var rvl = allPackages.FirstOrDefault(x => x.Name.Contains("Eval"));
         }

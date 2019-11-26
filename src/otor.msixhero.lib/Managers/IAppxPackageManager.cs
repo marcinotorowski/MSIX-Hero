@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Logs;
 using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
@@ -17,37 +16,42 @@ namespace otor.msixhero.lib.Managers
         CurrentUser,
         AllUsers
     }
+
     public interface IAppxPackageManager
     {
-        Task<List<User>> GetUsersForPackage(Package package);
+        Task<List<User>> GetUsersForPackage(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<List<User>> GetUsersForPackage(string packageName);
+        Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task MountRegistry(Package package, bool startRegedit = false);
+        Task MountRegistry(Package package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task MountRegistry(string packageName, string installLocation, bool startRegedit = false);
+        Task MountRegistry(string packageName, string installLocation, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task UnmountRegistry(Package package);
+        Task UnmountRegistry(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task UnmountRegistry(string packageName);
+        Task UnmountRegistry(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task RunToolInContext(Package package, string toolName);
+        Task RunToolInContext(Package package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task Run(Package package);
+        Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        
+        Task Run(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName);
+        Task Run(string packageManifestLocation, string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<RegistryMountState> GetRegistryMountState(Package package);
+        Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto);
+        Task<RegistryMountState> GetRegistryMountState(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default);
+        Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<Package> Get(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto);
+        Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, IProgress<ProgressData> progress = null);
+        Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<IList<Log>> GetLogs(int maxCount);
+        Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
+
+        Task<IList<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }

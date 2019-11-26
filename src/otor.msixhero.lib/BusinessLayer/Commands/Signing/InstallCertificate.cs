@@ -4,7 +4,7 @@ using System.Text;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands.Signing
 {
-    public class InstallCertificate : SelfElevatedCommand<bool>
+    public class InstallCertificate : SelfElevatedCommand
     {
         public InstallCertificate(string filePath)
         {

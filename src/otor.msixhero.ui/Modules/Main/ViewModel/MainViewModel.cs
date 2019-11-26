@@ -26,7 +26,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
     {
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
-        private readonly IAppxPackageManager appxPackageManager;
+        private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
         private readonly IRegionManager regionManager;
         private readonly IDialogService dialogService;
         private bool isLoading;
@@ -36,14 +36,14 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         public MainViewModel(
             IInteractionService interactionService,
             IApplicationStateManager stateManager,
-            IAppxPackageManager appxPackageManager, 
+            IAppxPackageManagerFactory appxPackageManagerFactory, 
             IRegionManager regionManager, 
             IDialogService dialogService, 
             IBusyManager busyManager)
         {
             this.interactionService = interactionService;
             this.stateManager = stateManager;
-            this.appxPackageManager = appxPackageManager;
+            this.appxPackageManagerFactory = appxPackageManagerFactory;
             this.regionManager = regionManager;
             this.dialogService = dialogService;
             this.Tools = new ObservableCollection<ToolViewModel>();
@@ -74,7 +74,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             }
         }
 
-        public CommandHandler CommandHandler => new CommandHandler(this.interactionService, this.stateManager, this.appxPackageManager, this.regionManager, this.dialogService);
+        public CommandHandler CommandHandler => new CommandHandler(this.interactionService, this.stateManager, this.dialogService);
 
         public ObservableCollection<ToolViewModel> Tools { get; }
 

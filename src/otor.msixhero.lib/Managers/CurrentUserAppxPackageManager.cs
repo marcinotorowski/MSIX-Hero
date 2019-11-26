@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Windows.Management.Deployment;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.Models.Logs;
@@ -20,24 +22,44 @@ using otor.msixhero.lib.PowerShellInterop;
 
 namespace otor.msixhero.lib.Managers
 {
-    public class AppxPackageManager : IAppxPackageManager 
+    [SuppressMessage("ReSharper", "UnusedVariable")]
+    public class CurrentUserAppxPackageManager : IAppxPackageManager 
     {
-        public Task<List<User>> GetUsersForPackage(Package package)
+        private readonly IAppxSigningManager signingManager;
+
+        public CurrentUserAppxPackageManager(IAppxSigningManager signingManager)
         {
-            return this.GetUsersForPackage(package.Name);
+            this.signingManager = signingManager;
         }
 
-        public Task<List<User>> GetUsersForPackage(string packageName)
+        public Task<List<User>> GetUsersForPackage(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var pkgManager = new PackageManager();
-            return Task.Run(() =>
+            return this.GetUsersForPackage(package.Name, cancellationToken, progress);
+        }
+
+        public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (!UserHelper.IsAdministrator())
             {
-                var list = pkgManager.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
-                return list;
-            });
+                return new List<User>();
+            }
+
+            var pkgManager = new PackageManager();
+            return await Task.Run(
+                () =>
+                {
+                    var list = pkgManager.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
+                    return list;
+                },
+                cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, IProgress<ProgressData> progress = null)
+        public Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            return this.signingManager.InstallCertificate(certificateFilePath, cancellationToken, progress);
+        }
+
+        public async Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (packages == null)
             {
@@ -73,27 +95,48 @@ namespace otor.msixhero.lib.Managers
 
         }
 
-        public async Task RunToolInContext(Package package, string toolName)
+        public Task RunToolInContext(Package package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (package == null)
             {
                 throw new ArgumentNullException(nameof(package));
             }
 
-            if (toolName == null)
+            if (toolPath == null)
             {
-                throw new ArgumentNullException(nameof(toolName));
+                throw new ArgumentNullException(nameof(toolPath));
+            }
+
+            return this.RunToolInContext(package.PackageFamilyName, package.Name, toolPath, arguments, cancellationToken, progress);
+        }
+
+        public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (packageFamilyName == null)
+            {
+                throw new ArgumentNullException(nameof(packageFamilyName));
+            }
+
+            if (toolPath == null)
+            {
+                throw new ArgumentNullException(nameof(toolPath));
             }
 
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");
-            using var param1 = cmd.AddParameter("Command", toolName);
-            using var param2 = cmd.AddParameter("PackageFamilyName", package.PackageFamilyName);
-            using var param3 = cmd.AddParameter("AppId", package.Name);
-            using var param4 = cmd.AddParameter("PreventBreakaway");
+            cmd.AddParameter("Command", toolPath);
+            cmd.AddParameter("PackageFamilyName", packageFamilyName);
+            cmd.AddParameter("AppId", appId);
+            cmd.AddParameter("PreventBreakaway");
+
+            if (!string.IsNullOrEmpty(arguments))
+            {
+                cmd.AddParameter("Args", arguments);
+            }
 
             try
             {
+                // ReSharper disable once UnusedVariable
                 using var result = await ps.InvokeAsync().ConfigureAwait(false);
             }
             catch (Exception e)
@@ -107,12 +150,12 @@ namespace otor.msixhero.lib.Managers
             }
         }
 
-        public Task<RegistryMountState> GetRegistryMountState(Package package)
+        public Task<RegistryMountState> GetRegistryMountState(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.GetRegistryMountState(package.InstallLocation, package.Name);
         }
 
-        public async Task<IList<Log>> GetLogs(int maxCount)
+        public async Task<IList<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var script = ps.AddScript("Get-AppxLog -All | Select -f " + maxCount);
@@ -122,7 +165,7 @@ namespace otor.msixhero.lib.Managers
             return new List<Log>(logs.Select(log => factory.CreateFromPowerShellObject(log)));
         }
 
-        public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName)
+        public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             RegistryMountState hasRegistry;
 
@@ -148,16 +191,17 @@ namespace otor.msixhero.lib.Managers
             return Task.FromResult(hasRegistry);
         }
 
-        public Task UnmountRegistry(Package package)
+        public Task UnmountRegistry(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.UnmountRegistry(package.Name);
+            return this.UnmountRegistry(package.Name, cancellationToken, progress);
         }
 
-        public Task UnmountRegistry(string packageName)
+        public Task UnmountRegistry(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return Task.Run(() =>
             {
                 var proc = new ProcessStartInfo("cmd.exe", @"/c REG UNLOAD HKLM\MSIX-Hero-" + packageName);
+                Console.WriteLine(@"/c REG UNLOAD HKLM\MSIX-Hero-" + packageName);
                 proc.UseShellExecute = true;
                 proc.Verb = "runas";
 
@@ -168,17 +212,23 @@ namespace otor.msixhero.lib.Managers
                 }
 
                 p.WaitForExit();
-            });
+                if (p.ExitCode != 0)
+                {
+                    throw new InvalidOperationException($"cmd.exe returned {p.ExitCode} exit code.");
+                }
+            },
+            cancellationToken);
         }
 
-        public Task MountRegistry(Package package, bool startRegedit = false)
+        public Task MountRegistry(Package package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.MountRegistry(package.Name, package.InstallLocation, startRegedit);
         }
 
-        public Task MountRegistry(string packageName, string installLocation, bool startRegedit = false)
+        public Task MountRegistry(string packageName, string installLocation, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return Task.Run(() => {
+                Console.WriteLine(@"/c REG LOAD HKLM\MSIX-Hero-" + packageName);
                 var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + packageName + " \"" + Path.Combine(installLocation, "Registry.dat") + "\"")
                 {
                     UseShellExecute = true, 
@@ -193,6 +243,10 @@ namespace otor.msixhero.lib.Managers
                 }
 
                 p.WaitForExit();
+                if (p.ExitCode != 0)
+                {
+                    throw new InvalidOperationException($"cmd.exe returned {p.ExitCode} exit code.");
+                }
 
                 if (!startRegedit)
                 {
@@ -214,9 +268,14 @@ namespace otor.msixhero.lib.Managers
                         throw new InvalidOperationException();
                     }
 
-                    var currentValue = registry.GetValue("LastKey") as string;
-
-                    SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + packageName + @"\REGISTRY");
+                    try
+                    {
+                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + packageName + @"\REGISTRY");
+                    }
+                    catch (Exception)
+                    {
+                        // todo: logging
+                    }
 
                     proc = new ProcessStartInfo("regedit.exe")
                     {
@@ -225,12 +284,6 @@ namespace otor.msixhero.lib.Managers
                     };
 
                     Process.Start(proc);
-                    System.Threading.Thread.Sleep(200);
-
-                    if (currentValue != null)
-                    {
-                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", currentValue);
-                    }
                 }
                 finally
                 {
@@ -239,22 +292,28 @@ namespace otor.msixhero.lib.Managers
                         registry.Dispose();
                     }
                 }
-            });
+            },
+            cancellationToken);
         }
 
-        public Task Run(Package package)
+        public Task Run(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException(nameof(package));
-            }
+            return this.Run(package.ManifestLocation, package.PackageFamilyName, cancellationToken, progress);
+        }
 
-            if (package.ManifestLocation == null || !File.Exists(package.ManifestLocation))
+        public Task Run(string packageManifestLocation, string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (packageManifestLocation == null || !File.Exists(packageManifestLocation))
             {
                 throw new FileNotFoundException();
             }
 
-            var entryPoint = GetEntryPoints(package).FirstOrDefault();
+            if (packageFamilyName == null)
+            {
+                throw new ArgumentNullException(nameof(packageFamilyName));
+            }
+
+            var entryPoint = GetEntryPoints(packageManifestLocation, packageFamilyName).FirstOrDefault();
             if (entryPoint == null)
             {
                 throw new InvalidOperationException("This package has no entry points.");
@@ -272,12 +331,12 @@ namespace otor.msixhero.lib.Managers
             return Task.FromResult(true);
         }
 
-        public Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto)
+        public Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.Get(null, mode);
+            return this.Get(null, mode, cancellationToken, progress);
         }
 
-        public async Task<Package> Get(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto)
+        public async Task<Package> Get(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var pkgMan = new PackageManager();
 
@@ -285,10 +344,10 @@ namespace otor.msixhero.lib.Managers
             switch (mode)
             {
                 case PackageFindMode.CurrentUser:
-                    pkg = await Task.Run(() => pkgMan.FindPackagesForUser(packageName, publisher).First()).ConfigureAwait(false);
+                    pkg = await Task.Run(() => pkgMan.FindPackagesForUser(packageName, publisher).First(), cancellationToken).ConfigureAwait(false);
                     break;
                 case PackageFindMode.AllUsers:
-                    pkg = await Task.Run(() => pkgMan.FindPackages(packageName, publisher).First()).ConfigureAwait(false);
+                    pkg = await Task.Run(() => pkgMan.FindPackages(packageName, publisher).First(), cancellationToken).ConfigureAwait(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -299,10 +358,10 @@ namespace otor.msixhero.lib.Managers
                 return null;
             }
 
-            return await ConvertFrom(pkg).ConfigureAwait(false);
+            return await ConvertFrom(pkg, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default)
+        public Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return Task.Run(() =>
             {
@@ -340,7 +399,7 @@ namespace otor.msixhero.lib.Managers
             }, cancellationToken);
         }
 
-        private async Task<IList<Package>> Get(string packageName, PackageFindMode mode = PackageFindMode.Auto)
+        private async Task<IList<Package>> Get(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             var list = new List<Package>();
 
@@ -391,7 +450,7 @@ namespace otor.msixhero.lib.Managers
 
             foreach (var item in allPackages)
             {
-                var converted = await ConvertFrom(item).ConfigureAwait(false);
+                var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
                 if (converted != null)
                 {
                     list.Add(converted);
@@ -401,7 +460,7 @@ namespace otor.msixhero.lib.Managers
             return list;
         }
 
-        private async Task<Package> ConvertFrom(Windows.ApplicationModel.Package item)
+        private async Task<Package> ConvertFrom(Windows.ApplicationModel.Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             string installLocation;
             DateTime installDate;
@@ -423,8 +482,8 @@ namespace otor.msixhero.lib.Managers
                 installDate = DateTime.MinValue;
             }
 
-            var details = await GetManifestDetails(installLocation).ConfigureAwait(false);
-            var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name).ConfigureAwait(false);
+            var details = await GetManifestDetails(installLocation, cancellationToken, progress).ConfigureAwait(false);
+            var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
 
             var pkg = new Package()
             {
@@ -447,15 +506,15 @@ namespace otor.msixhero.lib.Managers
             return pkg;
         }
 
-        private static IEnumerable<string> GetEntryPoints(Package package)
+        private static IEnumerable<string> GetEntryPoints(string manifestLocation, string familyName)
         {
-            if (!File.Exists(package.ManifestLocation))
+            if (!File.Exists(manifestLocation))
             {
                 yield break;
             }
 
             var xmlDocument = new XmlDocument();
-            xmlDocument.Load(package.ManifestLocation);
+            xmlDocument.Load(manifestLocation);
             var nodes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
 
             foreach (var node in nodes.OfType<XmlNode>())
@@ -470,7 +529,7 @@ namespace otor.msixhero.lib.Managers
                     attrVal = "!" + attrVal;
                 }
 
-                yield return @"shell:appsFolder\" + package.PackageFamilyName + attrVal;
+                yield return @"shell:appsFolder\" + familyName + attrVal;
             }
         }
 
@@ -488,10 +547,11 @@ namespace otor.msixhero.lib.Managers
             }
         }
 
-        private static async Task<PkgDetails> GetManifestDetails(string installLocation)
+        private static async Task<PkgDetails> GetManifestDetails(string installLocation, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var reader = await AppxManifestSummaryBuilder.FromInstallLocation(installLocation);
                 var logo = Path.Combine(installLocation, reader.Logo);
 
@@ -516,7 +576,12 @@ namespace otor.msixhero.lib.Managers
                     }
                 }
 
+                cancellationToken.ThrowIfCancellationRequested();
                 return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -541,10 +606,13 @@ namespace otor.msixhero.lib.Managers
                     throw new InvalidOperationException();
                 }
 
-                regKey.DeleteValue(name, false);
                 if (!string.IsNullOrEmpty(value))
                 {
                     regKey.SetValue(name, value, RegistryValueKind.String);
+                }
+                else
+                {
+                    regKey.DeleteValue(name, false);
                 }
             }
             finally

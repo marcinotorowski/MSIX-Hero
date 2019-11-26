@@ -42,8 +42,8 @@ namespace otor.msixhero.lib.Ipc
                         {
                             Verb = "runas",
                             UseShellExecute = true,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true
+                            // WindowStyle = ProcessWindowStyle.Hidden,
+                            // CreateNoWindow = true
                         };
 
                         var p = processManager.Start(psi);

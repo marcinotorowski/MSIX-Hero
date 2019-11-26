@@ -5,7 +5,7 @@ using otor.msixhero.lib.BusinessLayer.Models.Packages;
 namespace otor.msixhero.lib.BusinessLayer.Commands.Developer
 {
     [Serializable]
-    public class UnmountRegistry : SelfElevatedCommand<bool>
+    public class UnmountRegistry : SelfElevatedCommand
     {
         public UnmountRegistry()
         {

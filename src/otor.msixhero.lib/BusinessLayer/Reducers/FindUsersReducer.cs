@@ -1,11 +1,14 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
-using otor.msixhero.lib.Ipc;
+using otor.msixhero.lib.BusinessLayer.Models.Users;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -13,39 +16,28 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     internal class FindUsersReducer : SelfElevationReducer<ApplicationState, FoundUsers>
     {
         private readonly FindUsers action;
-        private readonly IClientCommandRemoting clientCommandRemoting;
 
         public FindUsersReducer(
             FindUsers action,
-            IApplicationStateManager<ApplicationState> applicationStateManager,
-            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager, clientCommandRemoting)
+            IApplicationStateManager<ApplicationState> applicationStateManager) : base(action, applicationStateManager)
         {
             this.action = action;
-            this.clientCommandRemoting = clientCommandRemoting;
         }
         
-        public override async Task<FoundUsers> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override async Task<FoundUsers> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            var state = this.StateManager.CurrentState;
-            if (!state.IsElevated && this.action.ForceElevation)
-            {
-                var result = await this.clientCommandRemoting.GetClientInstance().GetExecuted(this.action, cancellationToken).ConfigureAwait(false);
-                this.StateManager.CurrentState.HasSelfElevated = true;
-                return result;
-            }
+            var elevation = this.action.ForceElevation || this.StateManager.CurrentState.IsElevated || this.StateManager.CurrentState.IsSelfElevated
+                ? ElevationStatus.OK
+                : ElevationStatus.ElevationRequired;
 
-            var installedOn = new FoundUsers();
-
-            if (!state.IsElevated)
+            var users = await packageManager.GetUsersForPackage(this.action.FullProductId, cancellationToken).ConfigureAwait(false);
+            
+            var foundUsers = new FoundUsers
             {
-                installedOn.Status = ElevationStatus.ElevationRequired;
-            }
-            else
-            {
-                installedOn.Users = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetUsersOfPackage(), cancellationToken).ConfigureAwait(false);
-            }
-
-            return installedOn;
+                Status = elevation,
+                Users = new List<User>(users)
+            };
+            return foundUsers;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace otor.msixhero.lib.Ipc
             this.processManager = processManager;
         }
 
-        public Server GetServerInstance(IAppxPackageManager packageManager, IAppxSigningManager signingManager)
+        public Server GetServerInstance(IAppxPackageManager packageManager)
         {
             var server = new Server();
             server.AddHandler<GetPackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
@@ -35,7 +35,7 @@ namespace otor.msixhero.lib.Ipc
             server.AddHandler<RemovePackages>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation, progress));
             server.AddHandler<FindUsers>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             server.AddHandler<GetLogs>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
-            server.AddHandler<InstallCertificate>((action, cancellation, progress) => this.Handle(action, signingManager, cancellation));
+            server.AddHandler<InstallCertificate>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             return server;
         }
         
@@ -47,41 +47,39 @@ namespace otor.msixhero.lib.Ipc
         public async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            var packages = new List<Package>(await packageManager.Get(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser).ConfigureAwait(false));
+            var packages = new List<Package>(await packageManager.Get(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser, cancellationToken, progress).ConfigureAwait(false));
             Console.WriteLine("Returning back " + packages.Count + " results.");
             return ReturnAsBytes(packages);
         }
 
-        public async Task<byte[]> Handle(InstallCertificate command, IAppxSigningManager signingManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<byte[]> Handle(InstallCertificate command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            await signingManager.InstallCertificate(command.FilePath, cancellationToken, progress).ConfigureAwait(false);
+            await packageManager.InstallCertificate(command.FilePath, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Certificate installed.");
             return ReturnAsBytes(true);
         }
 
-        public async Task<byte[]> Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Console.WriteLine("Handling " + command.GetType().Name);
-            await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit).ConfigureAwait(false);
+            Console.WriteLine("Handling " + command.GetType().Name + " on " + pkgManager.GetType().Name);
+            await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Registry mounted.");
-            return ReturnAsBytes(true);
         }
 
         private async Task<byte[]> Handle(GetLogs command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            var logs = await packageManager.GetLogs(command.MaxCount).ConfigureAwait(false);
+            var logs = await packageManager.GetLogs(command.MaxCount, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Returning " + logs.Count);
             return ReturnAsBytes(logs);
         }
 
-        public async Task<byte[]> Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Console.WriteLine("Handling " + command.GetType().Name);
-            await pkgManager.UnmountRegistry(command.PackageName).ConfigureAwait(false);
+            Console.WriteLine("Handling " + command.GetType().Name + " on " + pkgManager.GetType().Name);
+            await pkgManager.UnmountRegistry(command.PackageName, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Registry unmounted.");
-            return ReturnAsBytes(true);
         }
 
         public async Task<byte[]> Handle(FindUsers command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -121,6 +119,21 @@ namespace otor.msixhero.lib.Ipc
             xmlSerializer.Serialize(memory, input);
             memory.Seek(0, SeekOrigin.Begin);
             return memory.ToArray();
+        }
+
+        private static byte[] ReturnAsBytes(bool input)
+        {
+            return BitConverter.GetBytes(input);
+        }
+
+        private static byte[] ReturnAsBytes(int input)
+        {
+            return BitConverter.GetBytes(input);
+        }
+
+        private static byte[] ReturnAsBytes(long input)
+        {
+            return BitConverter.GetBytes(input);
         }
     }
 }

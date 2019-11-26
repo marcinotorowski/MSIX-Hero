@@ -14,7 +14,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 
         public ApplicationStateManager(
             IEventAggregator eventAggregator,
-            IAppxPackageManager packageManager,
+            IAppxPackageManagerFactory packageManagerFactory,
             IAppxSigningManager signingManager,
             IBusyManager busyManager,
             IInteractionService interactionService,
@@ -23,7 +23,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
         {
             this.configurationService = configurationService;
             this.CurrentState = new ApplicationState();
-            this.CommandExecutor = new CommandExecutor(this, packageManager, signingManager, interactionService, busyManager, clientCommandRemoting);
+            this.CommandExecutor = new CommandExecutor(this, packageManagerFactory, interactionService, busyManager);
             this.EventAggregator = eventAggregator;
         }
 

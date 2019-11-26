@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
-using otor.msixhero.lib;
-using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Developer;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Commands.Manager;
@@ -13,13 +10,9 @@ using otor.msixhero.lib.BusinessLayer.Commands.Signing;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
-using otor.msixhero.lib.Ipc;
-using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
-using otor.msixhero.ui.Services;
-using Prism.Regions;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.ViewModel
@@ -28,21 +21,15 @@ namespace otor.msixhero.ui.ViewModel
     {
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
-        private readonly IAppxPackageManager packageManager;
-        private readonly IRegionManager regionManager;
         private readonly IDialogService dialogService;
 
         public CommandHandler(
             IInteractionService interactionService,
             IApplicationStateManager stateManager, 
-            IAppxPackageManager packageManager,
-            IRegionManager regionManager, 
             IDialogService dialogService)
         {
             this.interactionService = interactionService;
             this.stateManager = stateManager;
-            this.packageManager = packageManager;
-            this.regionManager = regionManager;
             this.dialogService = dialogService;
 
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanOpenExplorer());
@@ -172,7 +159,17 @@ namespace otor.msixhero.ui.ViewModel
                 return false;
             }
 
-            return this.packageManager.GetRegistryMountState(selection.First()).Result == RegistryMountState.NotMounted;
+            var selected = selection.First();
+
+            try
+            {
+                var regState = this.stateManager.CommandExecutor.GetExecute(new GetRegistryMountState(selected.InstallLocation, selected.Name));
+                return regState == RegistryMountState.NotMounted;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private bool CanUnmountRegistry()
@@ -183,7 +180,17 @@ namespace otor.msixhero.ui.ViewModel
                 return false;
             }
 
-            return this.packageManager.GetRegistryMountState(selection.First()).Result == RegistryMountState.Mounted;
+            var selected = selection.First();
+
+            try
+            {
+                var regState = this.stateManager.CommandExecutor.GetExecute(new GetRegistryMountState(selected.InstallLocation, selected.Name));
+                return regState == RegistryMountState.Mounted;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private bool CanOpenPowerShell()
@@ -257,7 +264,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.Run(package);
+            this.stateManager.CommandExecutor.Execute(new RunPackage(package.PackageFamilyName, package.ManifestLocation));
         }
 
         private void RemovePackageExecute(bool allUsersRemoval)
@@ -285,7 +292,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.packageManager.RunToolInContext(package, tool);
+            this.stateManager.CommandExecutor.Execute(new RunToolInPackage(package, tool));
         }
 
         private bool CanRunTool(string tool)

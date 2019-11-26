@@ -12,6 +12,6 @@ namespace otor.msixhero.lib.BusinessLayer.State
 
         bool IsElevated { get; }
 
-        bool HasSelfElevated { get; }
+        bool IsSelfElevated { get; }
     }
 }

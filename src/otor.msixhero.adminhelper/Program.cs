@@ -39,7 +39,7 @@ namespace otor.msixhero.adminhelper
         {
             try
             {
-                var server = new ClientCommandRemoting(new ProcessManager()).GetServerInstance(new AppxPackageManager(), new AppxSigningManager());
+                var server = new ClientCommandRemoting(new ProcessManager()).GetServerInstance(new CurrentUserAppxPackageManager(new AppxSigningManager()));
                 await server.Start();
             }
             catch (Exception e)

@@ -4,6 +4,7 @@ using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -17,7 +18,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
             var state = this.StateManager.CurrentState;
 

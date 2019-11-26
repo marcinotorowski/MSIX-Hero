@@ -9,7 +9,6 @@ using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
-using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 
@@ -19,21 +18,17 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     {
         private readonly GetPackages action;
         private readonly IBusyManager busyManager;
-        private readonly IAppxPackageManager packageManager;
 
         public GetPackagesReducer(
             GetPackages action, 
             IApplicationStateManager<ApplicationState> applicationStateManager,
-            IAppxPackageManager packageManager, 
-            IBusyManager busyManager,
-            IClientCommandRemoting clientCommandRemoting) : base(action, applicationStateManager, clientCommandRemoting)
+            IBusyManager busyManager) : base(action, applicationStateManager)
         {
             this.action = action;
             this.busyManager = busyManager;
-            this.packageManager = packageManager;
         }
 
-        public override async Task<List<Package>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override async Task<List<Package>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
             var context = this.busyManager.Begin();
             try
@@ -41,26 +36,19 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 List<Package> packageSource;
 
                 context.Message = "Getting the list of packages...";
-                if (this.action.RequiresElevation && !this.StateManager.CurrentState.IsElevated)
+                
+                switch (action.Context)
                 {
-                    packageSource = await this.clientCommandRemoting.GetClientInstance().GetExecuted(this.action, cancellationToken).ConfigureAwait(false);
-                    this.StateManager.CurrentState.HasSelfElevated = true;
-                }
-                else
-                {
-                    switch (action.Context)
-                    {
-                        case PackageContext.AllUsers:
-                            packageSource = new List<Package>(await this.packageManager.Get(PackageFindMode.AllUsers));
-                            break;
+                    case PackageContext.AllUsers:
+                        packageSource = new List<Package>(await packageManager.Get(PackageFindMode.AllUsers, cancellationToken));
+                        break;
 
-                        case PackageContext.CurrentUser:
-                            packageSource = new List<Package>(await this.packageManager.Get(PackageFindMode.CurrentUser));
-                            break;
+                    case PackageContext.CurrentUser:
+                        packageSource = new List<Package>(await packageManager.Get(PackageFindMode.CurrentUser, cancellationToken));
+                        break;
 
-                        default:
-                            throw new NotSupportedException();
-                    }
+                    default:
+                        throw new NotSupportedException();
                 }
 
 

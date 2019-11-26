@@ -1,4 +1,7 @@
-﻿using otor.msixhero.lib.BusinessLayer.Models.Packages;
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.BusinessLayer.Models.Users;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
 {
@@ -11,17 +14,28 @@ namespace otor.msixhero.lib.BusinessLayer.Commands.Grid
         public FindUsers(Package package, bool forceElevation)
         {
             this.FullProductId = package.ProductId;
-            ForceElevation = forceElevation;
+            this.ForceElevation = forceElevation;
         }
 
         public FindUsers(string fullProductId, bool forceElevation)
         {
             this.FullProductId = fullProductId;
-            ForceElevation = forceElevation;
+            this.ForceElevation = forceElevation;
         }
 
+        [XmlElement]
         public string FullProductId { get; set; }
 
+        [XmlElement]
         public bool ForceElevation { get; set; }
+
+        [XmlIgnore]
+        public override bool RequiresElevation
+        {
+            get
+            {
+                return this.ForceElevation;
+            }
+        }
     }
 }

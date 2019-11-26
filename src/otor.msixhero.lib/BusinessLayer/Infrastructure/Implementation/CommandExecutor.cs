@@ -9,7 +9,6 @@ using otor.msixhero.lib.BusinessLayer.Commands.Manager;
 using otor.msixhero.lib.BusinessLayer.Commands.Signing;
 using otor.msixhero.lib.BusinessLayer.Commands.UI;
 using otor.msixhero.lib.BusinessLayer.Reducers;
-using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 
@@ -19,26 +18,20 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
     {
         private readonly IDictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>>();
         private readonly ApplicationStateManager stateManager;
-        private readonly IAppxPackageManager appxPackageManager;
-        private readonly IAppxSigningManager signingManager;
+        private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
         private readonly IInteractionService interactionService;
         private readonly IBusyManager busyManager;
-        private readonly IClientCommandRemoting clientCommandRemoting;
-        
+
         public CommandExecutor(
-            ApplicationStateManager stateManager, 
-            IAppxPackageManager appxPackageManager,
-            IAppxSigningManager signingManager,
+            ApplicationStateManager stateManager,
+            IAppxPackageManagerFactory appxPackageManagerFactory,
             IInteractionService interactionService,
-            IBusyManager busyManager,
-            IClientCommandRemoting clientCommandRemoting)
+            IBusyManager busyManager)
         {
             this.stateManager = stateManager;
-            this.appxPackageManager = appxPackageManager;
-            this.signingManager = signingManager;
+            this.appxPackageManagerFactory = appxPackageManagerFactory;
             this.interactionService = interactionService;
             this.busyManager = busyManager;
-            this.clientCommandRemoting = clientCommandRemoting;
 
             this.ConfigureReducers();
         }
@@ -75,7 +68,30 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             }
 
             var lazyReducer = reducerFactory(action);
-            await lazyReducer.Reduce(this.interactionService, cancellationToken).ConfigureAwait(false);
+
+
+            bool elevate;
+            if (action is ISelfElevatedCommand selfElevateCommand)
+            {
+                elevate = selfElevateCommand.RequiresElevation;
+
+                if (this.stateManager.CurrentState.IsElevated)
+                {
+                    elevate = false;
+                }
+            }
+            else
+            {
+                elevate = false;
+            }
+
+            var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
+            await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+
+            if (elevate && !this.stateManager.CurrentState.IsSelfElevated)
+            {
+                this.stateManager.CurrentState.IsSelfElevated = true;
+            }
         }
 
         public async Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default)
@@ -92,27 +108,55 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
                 throw new NotSupportedException("This reducer does not support output.");
             }
 
-            return await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken).ConfigureAwait(false);
+            bool elevate;
+            
+            if (action is ISelfElevatedCommand selfElevateCommand)
+            {
+                elevate = selfElevateCommand.RequiresElevation;
+
+                if (this.stateManager.CurrentState.IsElevated)
+                {
+                    elevate = false;
+                }
+            }
+            else
+            {
+                elevate = false;
+            }
+
+            var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
+
+            var result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+
+            if (elevate && !this.stateManager.CurrentState.IsSelfElevated)
+            {
+                this.stateManager.CurrentState.IsSelfElevated = true;
+            }
+
+            return result;
         }
 
         private void ConfigureReducers()
         {
             this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action, this.stateManager);
-            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.stateManager, this.busyManager);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action, this.stateManager);
-            this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.stateManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateReducer((GetRegistryMountState)action, this.stateManager);
+            this.reducerFactories[typeof(RunPackage)] = action => new RunPackageReducer((RunPackage)action, this.stateManager);
+            this.reducerFactories[typeof(RunToolInPackage)] = action => new RunToolInPackageReducer((RunToolInPackage)action, this.stateManager);
+            this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.stateManager, this.busyManager);
+            this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.stateManager);
+            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.stateManager);
-            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.stateManager, this.appxPackageManager, this.busyManager, this.clientCommandRemoting);
+            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.stateManager, this.busyManager);
+            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.stateManager, this.busyManager);
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);
-            this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager, this.appxPackageManager, this.clientCommandRemoting);
-            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.appxPackageManager, this.busyManager);
-            this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.stateManager, this.appxPackageManager);
-            this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.stateManager, this.clientCommandRemoting, this.signingManager, this.busyManager);
+            this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.stateManager);
+            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.stateManager, this.busyManager);
+            this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.stateManager);
+            this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.stateManager, this.busyManager);
         }
     }
 }

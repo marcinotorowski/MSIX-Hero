@@ -22,7 +22,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 
         public bool IsElevated { get; } = UserHelper.IsAdministrator();
 
-        public bool HasSelfElevated { get; set; }
+        public bool IsSelfElevated { get; set; }
 
         public Configuration Configuration { get; set; }
     }

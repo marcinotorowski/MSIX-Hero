@@ -14,15 +14,15 @@ namespace otor.msixhero.lib.Ipc
 {
     public interface IClientCommandRemoting
     {
-        Server GetServerInstance(IAppxPackageManager packageManager, IAppxSigningManager signingManager);
+        Server GetServerInstance(IAppxPackageManager packageManager);
 
         Client GetClientInstance();
 
         Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<byte[]> Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<byte[]> Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task<byte[]> Handle(FindUsers command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

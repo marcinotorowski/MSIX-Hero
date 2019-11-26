@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Commands.Grid;
 using otor.msixhero.lib.BusinessLayer.Events;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -22,7 +22,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override Task<List<Package>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken)
+        public override Task<List<Package>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
             IReadOnlyCollection<Package> select;
             IReadOnlyCollection<Package> deselect;

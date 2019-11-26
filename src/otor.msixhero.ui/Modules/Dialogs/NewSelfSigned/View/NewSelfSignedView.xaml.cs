@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
@@ -24,7 +26,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
                     // ReSharper disable once PossibleNullReferenceException
                     Window.GetWindow(this).Close();
                 }
-            });
+            },
+            CancellationToken.None, 
+            TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.AttachedToParent, 
+            TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void CanSave(object sender, CanExecuteRoutedEventArgs e)

@@ -36,7 +36,7 @@ namespace otor.msixhero.ui
         {
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
             containerRegistry.RegisterSingleton<IAppxSigningManager, AppxSigningManager>();
-            containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
+            containerRegistry.RegisterSingleton<IAppxPackageManagerFactory, AppxPackageManagerFactory>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
             containerRegistry.RegisterSingleton<IClientCommandRemoting, ClientCommandRemoting>();
             containerRegistry.RegisterSingleton<IConfigurationService, ConfigurationService>();
