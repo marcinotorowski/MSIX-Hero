@@ -43,23 +43,25 @@ namespace otor.msixhero.lib.Ipc
                 var sid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
                 ps.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
 
-                // ReSharper disable once StringLiteralTypo
-                using (var stream = NamedPipeNative.CreateNamedPipe("msixhero", ps))
+                while (true)
                 {
-                    while (true)
+                    Console.WriteLine("Waiting for a client connection...");
+
+                    // ReSharper disable once StringLiteralTypo
+                    using (var stream = NamedPipeNative.CreateNamedPipe("msixhero", ps))
                     {
-                        // var client = await tcpServer.AcceptTcpClientAsync();
-                        await stream.WaitForConnectionAsync(cancellationToken);
-
-                        // using var stream = client.GetStream();
-                        var binaryWriter = new BinaryStreamProcessor(stream);
-                        var binaryReader = new BinaryStreamProcessor(stream);
-
-                        var command = await binaryReader.Read<BaseCommand>(cancellationToken);
-
-                        var isDone = false;
                         try
                         {
+                            // var client = await tcpServer.AcceptTcpClientAsync();
+                            await stream.WaitForConnectionAsync(cancellationToken);
+
+                            // using var stream = client.GetStream();
+                            var binaryWriter = new BinaryStreamProcessor(stream);
+                            var binaryReader = new BinaryStreamProcessor(stream);
+
+                            var command = await binaryReader.Read<BaseCommand>(cancellationToken);
+
+                            var isDone = false;
                             try
                             {
                                 Func<BaseCommand, CancellationToken, Progress, Task> handlerWithoutOutput = null;
@@ -67,9 +69,11 @@ namespace otor.msixhero.lib.Ipc
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 if (!this.handlersWithOutput.TryGetValue(command.GetType(), out var handlerWithOutput))
                                 {
-                                    if (!this.handlersWithoutOutput.TryGetValue(command.GetType(), out handlerWithoutOutput))
+                                    if (!this.handlersWithoutOutput.TryGetValue(command.GetType(),
+                                        out handlerWithoutOutput))
                                     {
-                                        throw new NotSupportedException("The command " + command.GetType().FullName + " is not supported. Only supported are:\r\n * " + string.Join("\r\n * ", this.handlersWithOutput.Keys.Select(k => k)));
+                                        throw new NotSupportedException(
+                                            $"The command {command.GetType().FullName} is not supported. Only supported are:\r\n * {string.Join("\r\n * ", this.handlersWithOutput.Keys.Select(k => k))}");
                                     }
                                 }
 
@@ -81,8 +85,10 @@ namespace otor.msixhero.lib.Ipc
                                         this.autoResetEvent.WaitOne();
                                         if (!isDone)
                                         {
-                                            Console.WriteLine("Write " + (int)ResponseType.Progress);
-                                            binaryWriter.Write((int)ResponseType.Progress, cancellationToken).GetAwaiter().GetResult();
+                                            Console.WriteLine("Write " + (int) ResponseType.Progress);
+                                            binaryWriter.Write((int) ResponseType.Progress, cancellationToken)
+                                                .GetAwaiter()
+                                                .GetResult();
                                             Console.WriteLine("Write progress data");
                                             binaryWriter.Write(data, cancellationToken).GetAwaiter().GetResult();
                                             stream.Flush();
@@ -129,8 +135,9 @@ namespace otor.msixhero.lib.Ipc
                                     this.autoResetEvent.WaitOne();
 
                                     isDone = true;
-                                    Console.WriteLine("Write " + (int)ResponseType.Result);
-                                    await binaryWriter.Write((int) ResponseType.Result, cancellationToken).ConfigureAwait(false);
+                                    Console.WriteLine("Return " + ResponseType.Result);
+                                    await binaryWriter.Write((int) ResponseType.Result, cancellationToken)
+                                        .ConfigureAwait(false);
 
                                     if (handlerWithOutput != null)
                                     {
@@ -139,6 +146,7 @@ namespace otor.msixhero.lib.Ipc
                                     }
 
                                     await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                                    stream.WaitForPipeDrain();
                                 }
                                 finally
                                 {
@@ -153,26 +161,30 @@ namespace otor.msixhero.lib.Ipc
                                 try
                                 {
                                     this.autoResetEvent.WaitOne();
-                                    Console.WriteLine("Write " + (int)ResponseType.Progress);
-                                    await binaryWriter.Write((int)ResponseType.Exception, cancellationToken); 
-                                    Console.WriteLine("Write exception");
+                                    Console.WriteLine("Return " + ResponseType.Exception + ": " + e.GetType().Name);
+                                    await binaryWriter.Write((int) ResponseType.Exception, cancellationToken);
+                                    Console.WriteLine(e);
                                     await binaryWriter.Write(e.Message, cancellationToken);
                                     await binaryWriter.Write(e.ToString(), cancellationToken);
                                     await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                                    stream.WaitForPipeDrain();
                                 }
                                 finally
                                 {
                                     this.autoResetEvent.Set();
                                 }
                             }
-
-                            // end of protocol
-                            await binaryReader.ReadBoolean(cancellationToken).ConfigureAwait(false);
-                            
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
                         }
                         finally
                         {
-                            stream.Disconnect();
+                            if (stream.IsConnected)
+                            {
+                                stream.Disconnect();
+                            }
                         }
                     }
                 }

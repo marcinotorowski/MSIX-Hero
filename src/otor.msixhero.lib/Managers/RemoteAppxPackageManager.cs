@@ -40,9 +40,9 @@ namespace otor.msixhero.lib.Managers
             return this.client.Execute(new InstallCertificate(certificateFilePath), cancellationToken, progress);
         }
 
-        public Task Run(string packageManifestLocation, string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(string packageManifestLocation, string packageFamilyName, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.client.Execute(new RunPackage(packageFamilyName, packageManifestLocation), cancellationToken, progress);
+            return this.client.Execute(new RunPackage(packageFamilyName, packageManifestLocation, appId), cancellationToken, progress);
         }
 
         public Task MountRegistry(Package package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -75,9 +75,9 @@ namespace otor.msixhero.lib.Managers
             return this.client.Execute(new RunToolInPackage(packageFamilyName, appId, toolPath, arguments), cancellationToken, progress);
         }
 
-        public Task Run(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(Package package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.client.Execute(new RunPackage(package.PackageFamilyName, package.ManifestLocation), cancellationToken, progress);
+            return this.client.Execute(new RunPackage(package, appId), cancellationToken, progress);
         }
 
         public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

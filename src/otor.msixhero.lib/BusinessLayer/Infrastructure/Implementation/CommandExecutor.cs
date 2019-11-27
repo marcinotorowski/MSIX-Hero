@@ -62,78 +62,103 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 
         public async Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default)
         {
-            if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
+            try
             {
-                return;
-            }
+                if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
+                {
+                    return;
+                }
 
-            var lazyReducer = reducerFactory(action);
+                var lazyReducer = reducerFactory(action);
 
 
-            bool elevate;
-            if (action is ISelfElevatedCommand selfElevateCommand)
-            {
-                elevate = selfElevateCommand.RequiresElevation;
+                bool elevate;
+                if (action is ISelfElevatedCommand selfElevateCommand)
+                {
+                    elevate = selfElevateCommand.RequiresElevation;
 
-                if (this.stateManager.CurrentState.IsElevated)
+                    if (this.stateManager.CurrentState.IsElevated)
+                    {
+                        elevate = false;
+                    }
+                }
+                else
                 {
                     elevate = false;
                 }
-            }
-            else
-            {
-                elevate = false;
-            }
 
-            var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
-            await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
+                await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
 
-            if (elevate && !this.stateManager.CurrentState.IsSelfElevated)
+                if (elevate && !this.stateManager.CurrentState.IsSelfElevated)
+                {
+                    this.stateManager.CurrentState.IsSelfElevated = true;
+                }
+            }
+            catch (Exception e)
             {
-                this.stateManager.CurrentState.IsSelfElevated = true;
+                if (this.interactionService.ShowError(e.Message, extendedInfo: e.ToString()) == InteractionResult.Retry)
+                {
+                    await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                    return;
+                }
+
+                throw;
             }
         }
 
         public async Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default)
         {
-            if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
+            try
             {
-                return default;
-            }
+                if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
+                {
+                    return default;
+                }
 
-            var lazyReducer = reducerFactory(action);
-            var lazyReducerOutput = lazyReducer as IReducer<ApplicationState, T>;
-            if (lazyReducerOutput == null)
-            {
-                throw new NotSupportedException("This reducer does not support output.");
-            }
+                var lazyReducer = reducerFactory(action);
+                var lazyReducerOutput = lazyReducer as IReducer<ApplicationState, T>;
+                if (lazyReducerOutput == null)
+                {
+                    throw new NotSupportedException("This reducer does not support output.");
+                }
 
-            bool elevate;
-            
-            if (action is ISelfElevatedCommand selfElevateCommand)
-            {
-                elevate = selfElevateCommand.RequiresElevation;
+                bool elevate;
+                
+                if (action is ISelfElevatedCommand selfElevateCommand)
+                {
+                    elevate = selfElevateCommand.RequiresElevation;
 
-                if (this.stateManager.CurrentState.IsElevated)
+                    if (this.stateManager.CurrentState.IsElevated)
+                    {
+                        elevate = false;
+                    }
+                }
+                else
                 {
                     elevate = false;
                 }
+
+                var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
+
+                var result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+
+                if (elevate && !this.stateManager.CurrentState.IsSelfElevated)
+                {
+                    this.stateManager.CurrentState.IsSelfElevated = true;
+                }
+
+                return result;
             }
-            else
+            catch (Exception e)
             {
-                elevate = false;
+                if (this.interactionService.ShowError(e.Message, extendedInfo: e.ToString()) == InteractionResult.Retry)
+                {
+                    return await this.GetExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                }
+
+                throw;
             }
-
-            var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
-
-            var result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
-
-            if (elevate && !this.stateManager.CurrentState.IsSelfElevated)
-            {
-                this.stateManager.CurrentState.IsSelfElevated = true;
-            }
-
-            return result;
         }
 
         private void ConfigureReducers()
@@ -149,7 +174,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
             this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.stateManager);
             this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.stateManager);
-            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.stateManager, this.busyManager);
+            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.stateManager);
             this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.stateManager, this.busyManager);
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.stateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.stateManager);

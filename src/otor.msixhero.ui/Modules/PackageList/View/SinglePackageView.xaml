@@ -8,6 +8,7 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:psf="clr-namespace:otor.msixhero.lib.BusinessLayer.Models.Psf;assembly=otor.msixhero.lib"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel1:SinglePackageViewModel}"
@@ -72,18 +73,19 @@
                                         <VisualState x:Name="MouseOver" />
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Margin="0 0 0 0">
+                                <DockPanel>
+                                    
+                                    <Border DockPanel.Dock="Right" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Width="15" />
+                                    <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Margin="0 0 0 0" Background="Transparent">
                                         <ContentPresenter x:Name="ContentSite"
-                                              VerticalAlignment="Center"
-                                              HorizontalAlignment="Center"
-                                              ContentSource="Header"
-                                              Margin="0 0 0 8"
-                                              TextBlock.FontSize="13"
-                                              RecognizesAccessKey="True" />
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Left"
+                                                          ContentSource="Header"
+                                                          Margin="0 11 0 8"
+                                                          TextBlock.FontSize="13"
+                                                          RecognizesAccessKey="True" />
                                     </Border>
-                                    <Border VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Width="15" />
-                                </StackPanel>
+                                </DockPanel>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
@@ -108,7 +110,7 @@
                 </Setter>
             </Style>
         </DockPanel.Resources>
-        <Border Height="31" DockPanel.Dock="Top">
+        <Border Height="31" Margin="0 0 0 -11" DockPanel.Dock="Top">
             <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackage.DisplayName}" />
         </Border>
 
@@ -157,32 +159,107 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="PSF">
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run FontSize="13" Text="Applications" />
+                        <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />
+                    </TextBlock>
+                </TabItem.Header>
                 <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading manifest...">
-                    <StackPanel Margin="0">
+                    <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type viewModel1:AppxApplicationViewModel}">
+                                <StackPanel>
+                                    <DockPanel>
 
-                    </StackPanel>
-                </xctk:BusyIndicator>
-            </TabItem>
-            <TabItem Header="Installed by">
-                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageUsersInfo.IsLoading}">
-                    <Grid>
-                        <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                                        <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                            </Border>
+                                        </Border>
 
-                            <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
-                            <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
-                                    <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />
+                                        <StackPanel VerticalAlignment="Center" Margin="10 0 0 0">
+                                            <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
+                                            <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" Opacity="0.7" />
+                                            <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Psf.Executable, Mode=OneTime}" Opacity="0.7" />
+                                        </StackPanel>
+                                    </DockPanel>
+
+                                    <StackPanel Margin="0 10 0 0" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+                                        <Border Background="AliceBlue">
+                                            <TextBlock Margin="10">
+                                                <Run Text="This application is executed via" />
+                                                <Run Text="{Binding Start, Mode=OneWay}" FontWeight="SemiBold" />
+                                            </TextBlock>
+                                        </Border>
+
+                                        <!--<TextBlock Visibility="{Binding Psf.IsAdvanced, Converter={StaticResource BooleanToVisibilityConverter}}" Text="PSF Launcher fix-ups and adjustments:" Margin="0 10 0 0" />-->
+
+                                        <StackPanel Visibility="{Binding Psf.HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                            <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
+                                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <StackPanel Visibility="{Binding Psf.HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                            <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
+                                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <StackPanel Margin="0 10 0 0">
+                                            <TextBlock Style="{StaticResource DataHeader}" Text="Tracing" />
+                                            <TextBlock Visibility="{Binding Psf.HasTracing, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="{Binding Psf.DisplayTracing}" TextWrapping="Wrap" />
+                                            <TextBlock Visibility="{Binding Psf.HasTracing, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <StackPanel Margin="0 10 0 0">
+                                            <TextBlock Style="{StaticResource DataHeader}" Text="File redirections" />
+                                            <TextBlock Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
+
+                                            <ItemsControl Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type psf:PsfFileRedirection}">
+                                                        <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                                            <Run Text="&#x2022;" Foreground="#777" />
+                                                            <Run Text="{Binding RegularExpression, Mode=OneTime}" />
+                                                            <Run Text="in" Foreground="#777" />
+                                                            <Run Text="{Binding Directory, Mode=OneTime}" />
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+
+                                        <StackPanel Margin="0 10 0 0">
+                                            <TextBlock Style="{StaticResource DataHeader}" Text="Other fix-ups" />
+                                            <TextBlock Visibility="{Binding Psf.HasOtherFixups, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
+
+                                            <ItemsControl Visibility="{Binding Psf.HasOtherFixups, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.OtherFixups, Mode=OneWay}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                                            <Run Text="&#x2022;" Foreground="#777" />
+                                                            <Run Text="{Binding Mode=OneWay}" />
+                                                        </TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </StackPanel>
                                 </StackPanel>
-                            </Button>
-                        </StackPanel>
-
-                        <ListBox Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 0 0 0" ItemsSource="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy}" />
-                    </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </xctk:BusyIndicator>
             </TabItem>
-            <TabItem Header="Dependencies">
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock>
+                        <Run FontSize="13" Text="Dependencies" />
+                        <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies.Count, Mode=OneWay}"  Foreground="#777" />
+                    </TextBlock>
+                </TabItem.Header>
                 <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading dependencies...">
                     <DockPanel Margin="0">
                         <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
@@ -210,21 +287,7 @@
                         <ListBox ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type viewModel1:PackageDependencyViewModel}">
-                                    <!--<DockPanel Margin="5">
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding Name}" />
-                                            <TextBlock Text="{Binding DisplayPublisherName}" ToolTip="{Binding Publisher}" />
-                                        </StackPanel>
-
-                                        <TextBlock Text="{Binding Version}" HorizontalAlignment="Right" VerticalAlignment="Center" />
-                                    </DockPanel>-->
                                     <DockPanel>
-                                        <!--<Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
-                                            </Border>
-                                        </Border>-->
-
                                         <TextBlock Text="{Binding Version}" Margin="10 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
 
                                         <StackPanel Margin="0 0">
@@ -239,6 +302,35 @@
 
                     </DockPanel>
 
+                </xctk:BusyIndicator>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Run FontSize="13" Text="Installed by" />
+                            <Run Text="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy.Count, Mode=OneWay, FallbackValue=''}" Foreground="#777" />
+                        </TextBlock>
+                        <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                            <Run FontSize="13" Text="Installed by" />
+                        </TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageUsersInfo.IsLoading}">
+                    <Grid>
+                        <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+
+                            <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
+                            <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                                    <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <ListBox Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 0 0 0" ItemsSource="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy}" />
+                    </Grid>
                 </xctk:BusyIndicator>
             </TabItem>
         </TabControl>

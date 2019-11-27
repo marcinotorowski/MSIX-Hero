@@ -8,6 +8,7 @@ namespace otor.msixhero.lib.BusinessLayer.State.Enums
     {
         Name,
         Publisher,
+        PackageType,
         InstallDate,
         Type,
         Version

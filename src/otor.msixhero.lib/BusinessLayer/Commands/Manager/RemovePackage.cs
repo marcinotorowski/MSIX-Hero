@@ -6,7 +6,7 @@ using otor.msixhero.lib.BusinessLayer.State.Enums;
 namespace otor.msixhero.lib.BusinessLayer.Commands.Manager
 {
     [Serializable]
-    public class RemovePackages : SelfElevatedCommand<bool>
+    public class RemovePackages : SelfElevatedCommand
     {
         public RemovePackages()
         {

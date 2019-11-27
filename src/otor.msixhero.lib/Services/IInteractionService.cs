@@ -6,7 +6,9 @@
         No = 7,
         None = 0,
         OK = 1,
-        Yes = 6	
+        Yes = 6	,
+        Retry = 4,
+        Close = 8
     }
 
     public enum InteractionButton
@@ -44,5 +46,7 @@
         bool SelectFolder(string initialFile, out string selectedFolder);
 
         bool SelectFolder(out string selectedFolder);
+
+        InteractionResult ShowError(string body, string title = null, string extendedInfo = null);
     }
 }

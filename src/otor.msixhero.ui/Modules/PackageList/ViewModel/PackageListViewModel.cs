@@ -125,6 +125,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     case PackageSort.Version:
                         sortProperty = nameof(PackageViewModel.Version);
                         break;
+                    case PackageSort.PackageType:
+                        sortProperty = nameof(PackageViewModel.DisplayPackageType);
+                        break;
                     default:
                         sortProperty = null;
                         break;

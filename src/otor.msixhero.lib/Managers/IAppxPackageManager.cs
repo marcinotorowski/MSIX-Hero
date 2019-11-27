@@ -35,9 +35,9 @@ namespace otor.msixhero.lib.Managers
 
         Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
         
-        Task Run(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Run(Package package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task Run(string packageManifestLocation, string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Run(string packageManifestLocation, string packageFamilyName, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

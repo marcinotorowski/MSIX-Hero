@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Domain;
@@ -20,13 +21,27 @@ namespace otor.msixhero.lib.Managers
         public async Task<bool> InstallCertificate(string certificateFile, CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            var scriptPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "install-certificate.ps1");
+            try
+            {
+                var scriptPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "install-certificate.ps1");
 
-            using var ps = await PowerShellInterop.PowerShellSession.CreateForModule("PKI", true).ConfigureAwait(false);
-            using var cmd = ps.AddCommand(scriptPath, false);
-            using var paramCerOutputFileName = cmd.AddParameter("CerFileName", certificateFile);
-            using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
-            return true;
+                using var ps = await PowerShellInterop.PowerShellSession.CreateForModule("PKI", true).ConfigureAwait(false);
+                using var cmd = ps.AddCommand(scriptPath, false);
+                using var paramCerOutputFileName = cmd.AddParameter("CerFileName", certificateFile);
+                using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
+                return true;
+            }
+            catch (COMException e)
+            {
+                Console.WriteLine("COM Exception " + e.HResult);
+                if (e.HResult == -2146885623)
+                {
+                    // This is to catch COMException 0x80092009 file not found which may be thrown for invalid or missing cert files.
+                    throw new Exception("Could not install certificate " + certificateFile + ". The file may be invalid, corrupted or missing. System error code: 0x" + e.HResult.ToString("X2"), e);
+                }
+
+                throw;
+            }
         }
 
         public Task<bool> ImportCertificateFromMsix(

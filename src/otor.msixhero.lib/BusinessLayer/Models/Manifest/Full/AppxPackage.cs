@@ -37,7 +37,9 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
         public AppxPackageArchitecture ProcessorArchitecture { get; set; }
         
         public List<AppxPackageDependency> PackageDependencies { get; set; }
-
+        
         public List<AppxOperatingSystemDependency> OperatingSystemDependencies { get; set; }
+
+        public List<AppxApplication> Applications { get; set; }
     }
 }

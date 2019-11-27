@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Namotion.Reflection;
 using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.Managers;
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable MemberCanBePrivate.Global
@@ -30,7 +34,33 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
 
             return GetBoolValue(properties, name);
         }
-        
+
+        private static string ConvertRelativeLogoPathToAbsoluteExisting(string manifestRoot, string logoPath)
+        {
+            if (string.IsNullOrEmpty(logoPath))
+            {
+                return null;
+            }
+
+            logoPath = logoPath.Replace("/", "\\");
+            var p = Path.Combine(manifestRoot, logoPath);
+            if (File.Exists(p))
+            {
+                return p;
+            }
+
+            var extension = Path.GetExtension(logoPath);
+            logoPath = logoPath.Substring(0, logoPath.Length - extension.Length) + ".scale-100" + extension;
+
+            p = Path.Combine(manifestRoot, logoPath);
+            if (File.Exists(p))
+            {
+                return p;
+            }
+
+            return null;
+        }
+
         internal static IEnumerable<AppxPackage> QueryPackageInfo(string fullName, PackageConstants flags)
         {
             var disposables = new Stack<object>();
@@ -102,9 +132,27 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                             package.PublisherDisplayName = GetPropertyStringValue("PublisherDisplayName", properties);
                             package.IsFramework = GetPropertyBoolValue("Framework", properties);
 
+                            if (package.PackageDependencies == null)
+                            {
+                                package.PackageDependencies = new List<AppxPackageDependency>();
+                            }
+
+                            if (package.OperatingSystemDependencies == null)
+                            {
+                                package.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
+                            }
+
+                            if (package.Applications == null)
+                            {
+                                package.Applications = new List<AppxApplication>();
+                            }
+
                             var nativeApplications = reader.GetApplications();
                             disposables.Push(nativeApplications);
 
+                            var manifestRoot = Path.GetDirectoryName(manifestPath);
+
+                            var psfReader = new PsfReader();
                             while (nativeApplications.GetHasCurrent())
                             {
                                 var nativeApplication = nativeApplications.GetCurrent();
@@ -118,19 +166,26 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                                     appx.EntryPoint = GetStringValue(nativeApplication, "EntryPoint");
                                     appx.Executable = GetStringValue(nativeApplication, "Executable");
                                     appx.Id = GetStringValue(nativeApplication, "Id");
-                                    appx.Logo = GetStringValue(nativeApplication, "Logo");
-                                    appx.SmallLogo = GetStringValue(nativeApplication, "SmallLogo");
+                                    appx.Logo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "Logo"));
+                                    appx.SmallLogo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "SmallLogo"));
                                     appx.StartPage = GetStringValue(nativeApplication, "StartPage");
-                                    appx.Square150x150Logo = GetStringValue(nativeApplication, "Square150x150Logo");
-                                    appx.Square30x30Logo = GetStringValue(nativeApplication, "Square30x30Logo");
+                                    appx.Square150x150Logo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "Square150x150Logo"));
+                                    appx.Square30x30Logo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "Square30x30Logo"));
                                     appx.BackgroundColor = GetStringValue(nativeApplication, "BackgroundColor");
                                     appx.ForegroundText = GetStringValue(nativeApplication, "ForegroundText");
-                                    appx.WideLogo = GetStringValue(nativeApplication, "WideLogo");
-                                    appx.Wide310x310Logo = GetStringValue(nativeApplication, "Wide310x310Logo");
+                                    appx.WideLogo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "WideLogo"));
+                                    appx.Wide310x310Logo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "Wide310x310Logo"));
                                     appx.ShortName = GetStringValue(nativeApplication, "ShortName");
-                                    appx.Square310x310Logo = GetStringValue(nativeApplication, "Square310x310Logo");
-                                    appx.Square70x70Logo = GetStringValue(nativeApplication, "Square70x70Logo");
+                                    appx.Square310x310Logo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "Square310x310Logo"));
+                                    appx.Square70x70Logo = ConvertRelativeLogoPathToAbsoluteExisting(manifestRoot, GetStringValue(nativeApplication, "Square70x70Logo"));
                                     appx.MinWidth = GetStringValue(nativeApplication, "MinWidth");
+
+                                    if (PackageTypeConverter.GetPackageTypeFrom(appx.EntryPoint, appx.Executable, appx.StartPage) == PackageType.BridgePsf)
+                                    {
+                                        appx.Psf = psfReader.Read(appx.Id, manifestRoot);
+                                    }
+
+                                    package.Applications.Add(appx);
                                 }
                                 finally
                                 {
@@ -138,16 +193,6 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                                 }
 
                                 nativeApplications.MoveNext();
-                            }
-
-                            if (package.PackageDependencies == null)
-                            {
-                                package.PackageDependencies = new List<AppxPackageDependency>();
-                            }
-
-                            if (package.OperatingSystemDependencies == null)
-                            {
-                                package.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
                             }
 
                             var nativeTargetPlatformDependencies = reader.GetTargetDeviceFamilies();

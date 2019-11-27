@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Windows.Data.Xml.Dom;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Commands.Manager
 {
@@ -11,16 +11,24 @@ namespace otor.msixhero.lib.BusinessLayer.Commands.Manager
         {
         }
 
-        public RunPackage(string packageFamilyName, string manifestPath)
+        public RunPackage(string packageFamilyName, string manifestPath, string applicationId = null)
         {
             this.PackageFamilyName = packageFamilyName;
             this.ManifestPath = manifestPath;
+            this.ApplicationId = applicationId;
         }
 
+        public RunPackage(Package package, string applicationId = null) : this(package.PackageFamilyName, package.ManifestLocation, applicationId)
+        {
+        }
+        
         [XmlElement]
         public string PackageFamilyName { get; set; }
 
         [XmlElement]
         public string ManifestPath { get; set; }
+
+        [XmlElement]
+        public string ApplicationId { get; set; }
     }
 }

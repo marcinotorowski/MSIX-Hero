@@ -85,14 +85,20 @@ namespace otor.msixhero.lib.Managers
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
-            var pkgManager = new PackageManager();
-            await AsyncOperationHelper.ConvertToTask(
-                pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown), 
-                "Installing " + reader.DisplayName + "...", 
-                cancellationToken, 
-                progress).ConfigureAwait(false);
-
+            try
+            {
+                var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
+                var pkgManager = new PackageManager();
+                await AsyncOperationHelper.ConvertToTask(
+                    pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown),
+                    "Installing " + reader.DisplayName + "...",
+                    cancellationToken,
+                    progress).ConfigureAwait(false);
+            }
+            catch (InvalidDataException e)
+            {
+                throw new InvalidOperationException("File " + filePath + " does not seem to be a valid MSIX package." + e, e);
+            }
         }
 
         public Task RunToolInContext(Package package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -228,6 +234,18 @@ namespace otor.msixhero.lib.Managers
         public Task MountRegistry(string packageName, string installLocation, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return Task.Run(() => {
+                if (startRegedit)
+                {
+                    try
+                    {
+                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + packageName + @"\REGISTRY");
+                    }
+                    catch (Exception)
+                    {
+                        // whatever...
+                    }
+                }
+
                 Console.WriteLine(@"/c REG LOAD HKLM\MSIX-Hero-" + packageName);
                 var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + packageName + " \"" + Path.Combine(installLocation, "Registry.dat") + "\"")
                 {
@@ -253,55 +271,23 @@ namespace otor.msixhero.lib.Managers
                     return;
                 }
 
-                RegistryKey registry = null;
-                try
+                proc = new ProcessStartInfo("regedit.exe")
                 {
-                    registry = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit");
+                    Verb = "runas", 
+                    UseShellExecute = true
+                };
 
-                    if (registry == null)
-                    {
-                        registry = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Applets\Regedit");
-                    }
-
-                    if (registry == null)
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    try
-                    {
-                        SetRegistryValue(@"HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit", "LastKey", @"Computer\HKEY_LOCAL_MACHINE\MSIX-Hero-" + packageName + @"\REGISTRY");
-                    }
-                    catch (Exception)
-                    {
-                        // todo: logging
-                    }
-
-                    proc = new ProcessStartInfo("regedit.exe")
-                    {
-                        Verb = "runas", 
-                        UseShellExecute = true
-                    };
-
-                    Process.Start(proc);
-                }
-                finally
-                {
-                    if (registry != null)
-                    {
-                        registry.Dispose();
-                    }
-                }
+                Process.Start(proc);
             },
             cancellationToken);
         }
 
-        public Task Run(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(Package package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.Run(package.ManifestLocation, package.PackageFamilyName, cancellationToken, progress);
+            return this.Run(package.ManifestLocation, package.PackageFamilyName, appId, cancellationToken, progress);
         }
 
-        public Task Run(string packageManifestLocation, string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(string packageManifestLocation, string packageFamilyName, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (packageManifestLocation == null || !File.Exists(packageManifestLocation))
             {
@@ -313,16 +299,22 @@ namespace otor.msixhero.lib.Managers
                 throw new ArgumentNullException(nameof(packageFamilyName));
             }
 
-            var entryPoint = GetEntryPoints(packageManifestLocation, packageFamilyName).FirstOrDefault();
+            var entryPoint = GetEntryPoints(packageManifestLocation, packageFamilyName).FirstOrDefault(e => appId == null || e == appId);
             if (entryPoint == null)
             {
-                throw new InvalidOperationException("This package has no entry points.");
+                if (appId == null)
+                {
+                    throw new InvalidOperationException("This package has no entry points.");
+                }
+
+                throw new InvalidOperationException($"Entry point '{appId}' was not found.");
             }
 
             var p = new Process();
             var startInfo = new ProcessStartInfo
             {
                 UseShellExecute = true,
+                Verb = "runas",
                 FileName = entryPoint
             };
 
@@ -497,6 +489,7 @@ namespace otor.msixhero.lib.Managers
                 DisplayPublisherName = details.DisplayPublisherName,
                 Publisher = item.Id.Publisher,
                 TileColor = details.Color,
+                PackageType = details.PackageType,
                 Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
                 SignatureKind = Convert(item.SignatureKind),
                 HasRegistry = hasRegistry,
@@ -554,10 +547,16 @@ namespace otor.msixhero.lib.Managers
                 cancellationToken.ThrowIfCancellationRequested();
                 var reader = await AppxManifestSummaryBuilder.FromInstallLocation(installLocation);
                 var logo = Path.Combine(installLocation, reader.Logo);
-
+                
                 if (File.Exists(Path.Combine(installLocation, logo)))
                 {
-                    return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor);
+                    return new PkgDetails(
+                        reader.DisplayName, 
+                        reader.DisplayPublisher, 
+                        logo, 
+                        reader.Description, 
+                        reader.AccentColor,
+                        reader.PackageType);
                 }
 
                 var extension = Path.GetExtension(logo);
@@ -577,7 +576,7 @@ namespace otor.msixhero.lib.Managers
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-                return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor);
+                return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor, reader.PackageType);
             }
             catch (OperationCanceledException)
             {
@@ -645,13 +644,14 @@ namespace otor.msixhero.lib.Managers
 
         private struct PkgDetails
         {
-            public PkgDetails(string displayName, string displayPublisherName, string logo, string description, string color)
+            public PkgDetails(string displayName, string displayPublisherName, string logo, string description, string color, PackageType packageType)
             {
                 this.DisplayName = displayName;
                 this.DisplayPublisherName = displayPublisherName;
                 this.Logo = logo;
                 this.Description = description;
                 this.Color = color;
+                this.PackageType = packageType;
             }
 
             public string Description;
@@ -659,6 +659,7 @@ namespace otor.msixhero.lib.Managers
             public string DisplayPublisherName;
             public string Logo;
             public string Color;
+            public PackageType PackageType;
         }
     }
 }

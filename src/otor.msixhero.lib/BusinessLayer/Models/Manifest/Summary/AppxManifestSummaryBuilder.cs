@@ -1,7 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using otor.msixhero.lib.BusinessLayer.Helpers;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 {
@@ -16,16 +20,23 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
                 throw new FileNotFoundException("MSIX file does not exist.", fullMsixFilePath);
             }
 
-            using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
-            var entry = zipFile.GetEntry(AppxManifestName);
-            if (entry == null)
+            try
             {
-                throw new FileNotFoundException("Manifest file not found.");
+                using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
+                var entry = zipFile.GetEntry(AppxManifestName);
+                if (entry == null)
+                {
+                    throw new FileNotFoundException("Manifest file not found.");
+                }
+
+                await using (var stream = entry.Open())
+                {
+                    return await FromManifest(stream, null).ConfigureAwait(false);
+                }
             }
-            
-            await using (var stream = entry.Open())
+            catch (InvalidDataException e)
             {
-                return await FromManifest(stream, null).ConfigureAwait(false);
+                throw new InvalidOperationException("File " + fullMsixFilePath + " does not seem to be a valid MSIX package.", e);
             }
         }
 
@@ -73,9 +84,20 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
             // result.OperatingSystemDependencies = new List<OperatingSystemDependency>();
             // result.PackageDependencies = new List<PackageDependency>();
 
+            result.PackageType = 0;
+
+            var applications = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
+            foreach (var subNode in applications.OfType<XmlNode>())
+            {
+                var entryPoint = subNode.Attributes["EntryPoint"]?.Value;
+                var executable = subNode.Attributes["Executable"]?.Value;
+                var startPage = subNode.Attributes["StartPage"]?.Value;
+                result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage);
+            }
+            
             var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
 
-            foreach (XmlNode subNode in node.ChildNodes)
+            foreach (var subNode in node.ChildNodes.OfType<XmlNode>())
             {
                 switch (subNode.LocalName)
                 {

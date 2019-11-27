@@ -12,6 +12,7 @@ namespace otor.msixhero.lib.BusinessLayer.Commands
     [XmlInclude(typeof(GetPackages))]
     [XmlInclude(typeof(SelectPackages))]
     [XmlInclude(typeof(SetPackageFilter))]
+    [XmlInclude(typeof(RunPackage))]
     [XmlInclude(typeof(SetPackageContext))]
     [XmlInclude(typeof(SetPackageSidebarVisibility))]
     [XmlInclude(typeof(MountRegistry))]

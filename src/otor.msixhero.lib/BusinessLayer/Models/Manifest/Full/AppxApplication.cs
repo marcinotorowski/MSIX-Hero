@@ -1,4 +1,5 @@
 ﻿using System;
+using otor.msixhero.lib.BusinessLayer.Models.Psf;
 
 namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
 {
@@ -44,5 +45,7 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Full
         public string MinWidth { get; set; }
 
         public string Publisher { get; set; }
+
+        public PsfApplicationDefinition Psf { get; set; }
     }
 }

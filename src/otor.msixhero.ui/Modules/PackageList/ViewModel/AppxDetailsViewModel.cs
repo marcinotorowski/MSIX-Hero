@@ -11,14 +11,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
     {
         public AppxDetailsViewModel(AppxPackage model)
         {
-            this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
-            this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
             this.DisplayName = model.DisplayName;
             this.Version = model.Version.ToString();
             this.Logo = model.Logo;
             this.FamilyName = model.FamilyName;
 
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
+            this.Applications = new ObservableCollection<AppxApplicationViewModel>();
             this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
 
             if (model.OperatingSystemDependencies != null)
@@ -36,6 +35,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     this.PackageDependencies.Add(new PackageDependencyViewModel(item));
                 }
             }
+
+            if (model.Applications != null)
+            {
+                foreach (var item in model.Applications)
+                {
+                    this.Applications.Add(new AppxApplicationViewModel(item));
+                }
+            }
         }
 
         public string DisplayName { get; }
@@ -45,9 +52,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public string FamilyName { get; }
 
         public string Version { get; }
-
+        
         public ObservableCollection<OperatingSystemDependencyViewModel> OperatingSystemDependencies { get; }
 
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
+        
+        public ObservableCollection<AppxApplicationViewModel> Applications { get; }
     }
 }

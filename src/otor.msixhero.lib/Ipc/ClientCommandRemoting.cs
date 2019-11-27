@@ -36,6 +36,7 @@ namespace otor.msixhero.lib.Ipc
             server.AddHandler<FindUsers>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             server.AddHandler<GetLogs>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             server.AddHandler<InstallCertificate>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
+            server.AddHandler<RunPackage>((action, cancellation, progress) => this.Handle(action, packageManager, cancellation));
             return server;
         }
         
@@ -44,7 +45,15 @@ namespace otor.msixhero.lib.Ipc
             return new Client(this.processManager);
         }
 
-        public async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task Handle(RunPackage command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            Console.WriteLine("Handling " + command.GetType().Name);
+            await packageManager.Run(command.ManifestPath, command.PackageFamilyName, command.ApplicationId, cancellationToken, progress).ConfigureAwait(false);
+            Console.WriteLine("Package started.");
+
+        }
+
+        private async Task<byte[]> Handle(GetPackages command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var packages = new List<Package>(await packageManager.Get(command.Context == PackageContext.AllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser, cancellationToken, progress).ConfigureAwait(false));
@@ -52,15 +61,14 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(packages);
         }
 
-        public async Task<byte[]> Handle(InstallCertificate command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task Handle(InstallCertificate command, IAppxPackageManager packageManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             await packageManager.InstallCertificate(command.FilePath, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Certificate installed.");
-            return ReturnAsBytes(true);
         }
 
-        public async Task Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task Handle(MountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name + " on " + pkgManager.GetType().Name);
             await pkgManager.MountRegistry(command.PackageName, command.InstallLocation, command.StartRegedit, cancellationToken, progress).ConfigureAwait(false);
@@ -75,17 +83,17 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(logs);
         }
 
-        public async Task Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task Handle(UnmountRegistry command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name + " on " + pkgManager.GetType().Name);
             await pkgManager.UnmountRegistry(command.PackageName, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Registry unmounted.");
         }
 
-        public async Task<byte[]> Handle(FindUsers command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task<byte[]> Handle(FindUsers command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-            var users = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
+            var users = await pkgManager.GetUsersForPackage(command.FullProductId, cancellationToken, progress).ConfigureAwait(false);
             Console.WriteLine("Got " + users.Count + " users.");
             return ReturnAsBytes(
                 new FoundUsers
@@ -95,7 +103,7 @@ namespace otor.msixhero.lib.Ipc
                 });
         }
 
-        public async Task<byte[]> Handle(GetUsersOfPackage command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task<byte[]> Handle(GetUsersOfPackage command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
             var list = await pkgManager.GetUsersForPackage(command.FullProductId).ConfigureAwait(false);
@@ -103,13 +111,11 @@ namespace otor.msixhero.lib.Ipc
             return ReturnAsBytes(list);
         }
 
-        public async Task<byte[]> Handle(RemovePackages command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private async Task Handle(RemovePackages command, IAppxPackageManager pkgManager, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Console.WriteLine("Handling " + command.GetType().Name);
-
-            await pkgManager.Remove(command.Packages).ConfigureAwait(false);
+            await pkgManager.Remove(command.Packages, cancellationToken: cancellationToken, progress: progress).ConfigureAwait(false);
             Console.WriteLine("Package uninstalled.");
-            return ReturnAsBytes(true);
         }
 
         private static byte[] ReturnAsBytes<T>(T input)
@@ -119,21 +125,6 @@ namespace otor.msixhero.lib.Ipc
             xmlSerializer.Serialize(memory, input);
             memory.Seek(0, SeekOrigin.Begin);
             return memory.ToArray();
-        }
-
-        private static byte[] ReturnAsBytes(bool input)
-        {
-            return BitConverter.GetBytes(input);
-        }
-
-        private static byte[] ReturnAsBytes(int input)
-        {
-            return BitConverter.GetBytes(input);
-        }
-
-        private static byte[] ReturnAsBytes(long input)
-        {
-            return BitConverter.GetBytes(input);
         }
     }
 }

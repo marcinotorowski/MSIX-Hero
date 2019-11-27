@@ -19,7 +19,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public override Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            return packageManager.Run(this.action.ManifestPath, this.action.PackageFamilyName, cancellationToken);
+            return packageManager.Run(this.action.ManifestPath, this.action.PackageFamilyName, this.action.ApplicationId, cancellationToken);
         }
     }
 }

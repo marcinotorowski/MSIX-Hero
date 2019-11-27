@@ -219,6 +219,16 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Content="Package type" Tag="{x:Static enums:PackageSort.PackageType}" Click="ColumnClicked" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                        <TextBlock Opacity="0.7" Text="{Binding DisplayPackageType}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView.Columns>
                     </GridView>
                 </ListView.View>
@@ -245,16 +255,23 @@
                     <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
                         <DockPanel>
                             <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                 </Border>
                             </Border>
 
-                            <TextBlock Text="{Binding Version}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
+                            <StackPanel DockPanel.Dock="Right">
+                                <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                <TextBlock Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                            </StackPanel>
 
                             <StackPanel Margin="10 0">
-                                <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding DisplayPublisherName}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                <TextBlock TextTrimming="CharacterEllipsis">
+                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
+                                </TextBlock>
+                                <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
+                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
+                                </TextBlock>
                             </StackPanel>
 
                         </DockPanel>

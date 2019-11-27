@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using otor.msixhero.lib;
+using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
@@ -28,6 +29,10 @@ namespace otor.msixhero.ui.ViewModel
         public string InstallLocation => this.Model.InstallLocation;
 
         public string ManifestLocation => this.Model.ManifestLocation;
+
+        public PackageType PackageType => this.Model.PackageType;
+
+        public string DisplayPackageType => PackageTypeConverter.GetPackageTypeStringFrom(this.Model.PackageType);
 
         public string Image => this.Model.Image;
 

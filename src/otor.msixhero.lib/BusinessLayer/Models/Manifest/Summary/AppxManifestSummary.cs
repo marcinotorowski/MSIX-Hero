@@ -1,4 +1,5 @@
 ﻿using System;
+using otor.msixhero.lib.BusinessLayer.Models.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 {
@@ -17,7 +18,7 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 
         public string DisplayName { get; set; }
         
-        public bool IsPsfLauncher { get; set; }
+        public PackageType PackageType { get; set; }
 
         public string DisplayPublisher { get; set; }
 
