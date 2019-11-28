@@ -4,6 +4,7 @@ using CommonServiceLocator;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Infrastructure;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
@@ -30,6 +31,13 @@ namespace otor.msixhero.ui
     /// </summary>
     public partial class App : PrismApplication, IDisposable
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
+
+        static App()
+        {
+            LogManager.Initialize();
+        }
+
         private readonly IProcessManager processManager = new ProcessManager();
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

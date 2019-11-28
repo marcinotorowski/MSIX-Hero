@@ -18,13 +18,17 @@ using otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary;
 using otor.msixhero.lib.BusinessLayer.Models.Packages;
 using otor.msixhero.lib.BusinessLayer.Models.Users;
 using otor.msixhero.lib.Domain;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.PowerShellInterop;
+using LogFactory = otor.msixhero.lib.BusinessLayer.Helpers.LogFactory;
 
 namespace otor.msixhero.lib.Managers
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class CurrentUserAppxPackageManager : IAppxPackageManager 
+    public class CurrentUserAppxPackageManager : IAppxPackageManager
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
+
         private readonly IAppxSigningManager signingManager;
 
         public CurrentUserAppxPackageManager(IAppxSigningManager signingManager)
@@ -39,19 +43,24 @@ namespace otor.msixhero.lib.Managers
 
         public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
+            Logger.Info("Getting users who installed package {0}...", packageName);
             if (!UserHelper.IsAdministrator())
             {
+                Logger.Info("The user is not administrator. Returning an empty list.");
                 return new List<User>();
             }
 
             var pkgManager = new PackageManager();
-            return await Task.Run(
+            var result = await Task.Run(
                 () =>
                 {
                     var list = pkgManager.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
                     return list;
                 },
                 cancellationToken).ConfigureAwait(false);
+
+            Logger.Info("Returning {0} users...", result.Count);
+            return result;
         }
 
         public Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -59,17 +68,24 @@ namespace otor.msixhero.lib.Managers
             return this.signingManager.InstallCertificate(certificateFilePath, cancellationToken, progress);
         }
 
-        public async Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Remove(IReadOnlyCollection<Package> packages, bool forAllUsers = false,
+            bool preserveAppData = false, CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null)
         {
-            if (packages == null)
+            if (!packages.Any())
             {
+                Logger.Warn("Removing 0 packages, the list from the user is empty.");
                 return;
             }
-            
+
+            Logger.Info("Removing {0} packages...", packages.Count);
+
             var mmm = new PackageManager();
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
+                Logger.Info("Removing {0}", item.ProductId);
+
                 var task = AsyncOperationHelper.ConvertToTask(
                     mmm.RemovePackageAsync(item.ProductId,
                         forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None),
@@ -80,6 +96,7 @@ namespace otor.msixhero.lib.Managers
 
         public async Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
+            Logger.Info("Installing package {0}", filePath);
             if (filePath == null)
             {
                 throw new ArgumentNullException(nameof(filePath));
@@ -118,6 +135,7 @@ namespace otor.msixhero.lib.Managers
 
         public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
+            Logger.Info("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')...", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)
             {
                 throw new ArgumentNullException(nameof(packageFamilyName));
@@ -140,6 +158,7 @@ namespace otor.msixhero.lib.Managers
                 cmd.AddParameter("Args", arguments);
             }
 
+            Logger.Debug("Executing Invoke-CommandInDesktopPackage");
             try
             {
                 // ReSharper disable once UnusedVariable
@@ -163,6 +182,8 @@ namespace otor.msixhero.lib.Managers
 
         public async Task<IList<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
+            Logger.Info("Getting last {0} log files...", maxCount);
+
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var script = ps.AddScript("Get-AppxLog -All | Select -f " + maxCount);
             using var logs = await ps.InvokeAsync().ConfigureAwait(false);
@@ -405,6 +426,7 @@ namespace otor.msixhero.lib.Managers
 
             if (string.IsNullOrEmpty(packageName))
             {
+                Logger.Info("Getting all packages by find mode = '{0}'", mode);
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
@@ -419,6 +441,7 @@ namespace otor.msixhero.lib.Managers
             }
             else
             {
+                Logger.Info("Getting package name '{0}' by find mode = '{1}'", packageName, mode);
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
@@ -449,19 +472,22 @@ namespace otor.msixhero.lib.Managers
                 }
             }
 
+            Logger.Info("Returning {0} packages...", list.Count);
             return list;
         }
 
         private async Task<Package> ConvertFrom(Windows.ApplicationModel.Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
+            Logger.Debug("Getting details about package {0}...", item.Id.Name);
             string installLocation;
             DateTime installDate;
             try
             {
                 installLocation = item.InstalledLocation?.Path;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Warn(e, "Installed location for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
                 return null;
             }
 
@@ -469,8 +495,9 @@ namespace otor.msixhero.lib.Managers
             {
                 installDate = item.InstalledDate.LocalDateTime;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Logger.Warn(e, "Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
                 installDate = DateTime.MinValue;
             }
 

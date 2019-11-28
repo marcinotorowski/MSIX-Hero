@@ -47,7 +47,7 @@ CancellationToken cancellationToken = default)
             var eventData = new PackagesCollectionChangedPayLoad(this.action.Context, CollectionChangeType.Simple);
             try
             {
-                await packageManager.Remove(this.action.Packages, progress: myProgress, cancellationToken: cancellationToken).ConfigureAwait(false);
+                await packageManager.Remove(this.action.Packages, cancellationToken: cancellationToken, progress: myProgress).ConfigureAwait(false);
                 foreach (var item in this.action.Packages)
                 {
                     eventData.OldPackages.Add(item);

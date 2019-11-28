@@ -100,7 +100,7 @@ namespace otor.msixhero.lib.Managers
             return this.client.GetExecuted(new GetPackageDetails(packageName), cancellationToken, progress);
         }
 
-        public Task Remove(IEnumerable<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task Remove(IReadOnlyCollection<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             return this.client.Execute(new RemovePackages(forAllUsers ? PackageContext.AllUsers : PackageContext.CurrentUser, packages), cancellationToken, progress);
         }

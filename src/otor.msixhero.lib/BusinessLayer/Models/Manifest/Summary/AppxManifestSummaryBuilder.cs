@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using otor.msixhero.lib.BusinessLayer.Helpers;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 {
@@ -13,8 +13,12 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
     {
         private const string AppxManifestName = "AppxManifest.xml";
 
+        private static readonly ILog Logger = LogManager.GetLogger();
+
         public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, bool basicInformation = true)
         {
+            Logger.Info("Reading application manifest {0}...", fullMsixFilePath);
+
             if (!System.IO.File.Exists(fullMsixFilePath))
             {
                 throw new FileNotFoundException("MSIX file does not exist.", fullMsixFilePath);
@@ -22,7 +26,10 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 
             try
             {
+                Logger.Debug("Opening file as ZIP...");
                 using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
+
+                Logger.Debug("Getting entry {0}...", AppxManifestName);
                 var entry = zipFile.GetEntry(AppxManifestName);
                 if (entry == null)
                 {
@@ -42,6 +49,7 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 
         public static Task<AppxManifestSummary> FromInstallLocation(string installLocation)
         {
+            Logger.Debug("Reading application manifest from install location {0}...", installLocation);
             if (!System.IO.Directory.Exists(installLocation))
             {
                 throw new DirectoryNotFoundException("Install location " + installLocation + " not found.");
@@ -73,10 +81,13 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
             var result = new AppxManifestSummary();
             var xmlDocument = new XmlDocument();
             var streamReader = new StreamReader(manifestStream);
+
+            Logger.Debug("Loading XML file...");
             xmlDocument.LoadXml(await streamReader.ReadToEndAsync().ConfigureAwait(false));
 
+            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Identity'] for a single node...");
             var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
-
+            
             result.Name = identity.Attributes["Name"]?.Value;
             result.Version = identity.Attributes["Version"]?.Value;
             result.Publisher = identity.Attributes["Publisher"]?.Value;
@@ -86,6 +97,7 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
 
             result.PackageType = 0;
 
+            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']...");
             var applications = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
             foreach (var subNode in applications.OfType<XmlNode>())
             {
@@ -94,7 +106,8 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
                 var startPage = subNode.Attributes["StartPage"]?.Value;
                 result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage);
             }
-            
+
+            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Properties'] for a single node...");
             var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
 
             foreach (var subNode in node.ChildNodes.OfType<XmlNode>())
@@ -116,86 +129,15 @@ namespace otor.msixhero.lib.BusinessLayer.Models.Manifest.Summary
                 }
             }
 
+            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements'] for a single node...");
             node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
             result.AccentColor = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
 
             //SetDependencies(xmlDocument, result);
             //SetPsf(xmlDocument, result);
+
+            Logger.Debug("Manifest information parsed.");
             return result;
         }
-
-        // private static void SetPsf(XmlDocument xmlDocument, AppxManifestSummary result)
-        // {
-        //    var nodes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
-        //    foreach (var xmlNode in nodes.OfType<XmlNode>())
-        //    {
-        //        var exe = xmlNode.Attributes["Executable"]?.Value;
-        //        if (string.Equals(exe, "PsfLauncher32.exe", StringComparison.OrdinalIgnoreCase) || string.Equals(exe, "PsfLauncher64.exe", StringComparison.OrdinalIgnoreCase) || string.Equals(exe, "PsfLauncher.exe", StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            result.IsPsfLauncher = true;
-        //        }
-        //    }
-        //}
-
-        //private static void SetPackageDependency(XmlNode node, AppxManifestSummary result)
-        //{
-        //    var minVersion = node.Attributes["MinVersion"]?.Value;
-        //    var name = node.Attributes["Name"]?.Value;
-        //    var publisher = node.Attributes["Publisher"]?.Value;
-
-        //    var packageDependency = new PackageDependency
-        //    {
-        //        Name = name,
-        //        Version = minVersion,
-        //        Publisher = publisher
-        //    };
-
-        //    result.PackageDependencies.Add(packageDependency);
-        //}
-
-        //private static void SetDeviceFamilyDependency(XmlNode node, AppxManifestSummary result)
-        //{
-        //    var minVersion = node.Attributes["MinVersion"]?.Value;
-        //    var testedVersion = node.Attributes["MaxVersionTested"]?.Value;
-        //    var operatingSystem = node.Attributes["Name"]?.Value;
-
-        //    var dep = new OperatingSystemDependency();
-        //    var actual = Windows10Parser.GetOperatingSystemFromNameAndVersion(operatingSystem, minVersion);
-        //    if (actual != null)
-        //    {
-        //        dep.Minimum = actual;
-        //    }
-
-        //    actual = Windows10Parser.GetOperatingSystemFromNameAndVersion(operatingSystem, testedVersion);
-        //    if (actual != null)
-        //    {
-        //        dep.Tested = actual;
-        //    }
-
-        //    if (dep.Tested == null && dep.Minimum == null)
-        //    {
-        //        return;
-        //    }
-
-        //    result.OperatingSystemDependencies.Add(dep);
-        //}
-
-        //private static void SetDependencies(XmlDocument manifest, AppxManifestSummary result)
-        //{
-        //    var nodes = manifest.SelectNodes("/*[local-name()='Package']/*[local-name()='Dependencies']/*");
-
-        //    foreach (var n in nodes.OfType<XmlNode>())
-        //    {
-        //        switch (n.LocalName)
-        //        {
-        //            case "TargetDeviceFamily":
-        //                SetDeviceFamilyDependency(n, result);
-        //                break;
-        //            case "PackageDependency":
-        //                SetPackageDependency(n, result);
-        //                break;
-        //        }
-        //    }
-        //}
     }
 }

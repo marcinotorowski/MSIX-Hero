@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
 using otor.msixhero.lib.Services;
@@ -10,6 +11,8 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 {
     public class ApplicationStateManager : IApplicationStateManager<ApplicationState>
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
+
         private readonly IConfigurationService configurationService;
 
         public ApplicationStateManager(
@@ -37,6 +40,7 @@ namespace otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation
 
         public async Task Initialize()
         {
+            Logger.Debug("Initialize state manager configuration...");
             this.CurrentState.Configuration = await this.configurationService.GetConfiguration(CancellationToken.None).ConfigureAwait(false);
         }
     }

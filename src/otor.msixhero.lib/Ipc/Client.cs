@@ -63,7 +63,7 @@ namespace otor.msixhero.lib.Ipc
 
             // ReSharper disable once StringLiteralTypo
             await using var pipeClient = new NamedPipeClientStream("msixhero");
-            await pipeClient.ConnectAsync(90000, cancellationToken).ConfigureAwait(false);
+            await pipeClient.ConnectAsync(4000, cancellationToken).ConfigureAwait(false);
             var stream = pipeClient;
 
             var binaryProcessor = new BinaryStreamProcessor(stream);
@@ -131,7 +131,7 @@ namespace otor.msixhero.lib.Ipc
 
             // ReSharper disable once StringLiteralTypo
             await using var pipeClient = new NamedPipeClientStream("msixhero");
-            await pipeClient.ConnectAsync(90000, cancellationToken).ConfigureAwait(false);
+            await pipeClient.ConnectAsync(4000, cancellationToken).ConfigureAwait(false);
             var stream = pipeClient;
 
             var binaryProcessor = new BinaryStreamProcessor(stream);

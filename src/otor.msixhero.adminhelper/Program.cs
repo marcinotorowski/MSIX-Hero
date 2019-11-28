@@ -8,6 +8,7 @@ using otor.msixhero.lib.BusinessLayer.Commands;
 using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
 using otor.msixhero.lib.BusinessLayer.Models;
 using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Ipc;
 using otor.msixhero.lib.Managers;
 
@@ -15,38 +16,39 @@ namespace otor.msixhero.adminhelper
 {
     public class Program
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
+
+        static Program()
+        {
+            LogManager.Initialize();
+        }
+
         public static void Main(string[] args)
         {
-            Console.WriteLine(string.Join(" ", args));
             try
             {
                 if (args.Length > 0 && args[0] == "--selfElevate")
                 {
-                    StartPipe().GetAwaiter().GetResult();
+                    Logger.Debug("Preparing to start the pipe server...");
+                    var server = new ClientCommandRemoting(new ProcessManager()).GetServerInstance(new CurrentUserAppxPackageManager(new AppxSigningManager()));
+                    server.Start().GetAwaiter().GetResult();
                 }
                 else
                 {
+                    Logger.Fatal("Unsupported command line arguments, terminating...");
                     Environment.ExitCode = 1;
                 }
             }
-            catch (Exception e)
+            catch (AggregateException e)
             {
-                Console.WriteLine(e);
-            }
-        }
-
-        private static async Task StartPipe()
-        {
-            try
-            {
-                var server = new ClientCommandRemoting(new ProcessManager()).GetServerInstance(new CurrentUserAppxPackageManager(new AppxSigningManager()));
-                await server.Start();
+                Logger.Fatal(e.GetBaseException(), "Fatal exception, the program will be closed.");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Fatal(e, "Fatal exception, the program will be closed.");
             }
 
+            Logger.Info("Waiting for the user to press a key...");
             Console.ReadKey();
         }
     }
