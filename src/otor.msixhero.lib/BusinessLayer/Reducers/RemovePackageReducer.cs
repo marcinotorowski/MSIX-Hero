@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Commands.Grid;
-using otor.msixhero.lib.BusinessLayer.Commands.Manager;
-using otor.msixhero.lib.BusinessLayer.Events;
-using otor.msixhero.lib.BusinessLayer.Infrastructure;
-using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
-using otor.msixhero.lib.Domain;
-using otor.msixhero.lib.Managers;
-using otor.msixhero.lib.Services;
+using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.Commands.Manager;
+using otor.msixhero.lib.Domain.Events;
+using otor.msixhero.lib.Domain.State;
+using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {

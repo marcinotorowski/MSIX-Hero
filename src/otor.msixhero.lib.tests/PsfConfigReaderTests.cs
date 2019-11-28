@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using otor.msixhero.lib.BusinessLayer.Models.Psf;
-using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.Domain.Appx.Psf;
 
 namespace otor.msixhero.lib.tests
 {

@@ -7,11 +7,11 @@
                      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
                      xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
                      xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
                      xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Main.ViewModel"
                      xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                     xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=otor.msixhero.lib"
                      d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -30,6 +30,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenResign}" Command="{Binding CommandHandler.OpenResign}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
@@ -207,12 +208,17 @@
                 </Fluent:RibbonTabItem>
                 <Fluent:RibbonTabItem Header="Tools">
                     <Fluent:RibbonGroupBox Header="Certificates and signing">
-                        <Fluent:Button Header="New self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                        <Fluent:Button Header="Create self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
                             </Fluent:Button.LargeIcon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Extract certificate from MSIX..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                        <Fluent:Button Header="Sign package..." Command="{x:Static commands:MsixHeroCommands.OpenResign}">
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
+                            </Fluent:Button.LargeIcon>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Extract certificate from MSIX..." IsEnabled="False">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                             </Fluent:Button.LargeIcon>

@@ -4,13 +4,13 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using otor.msixhero.lib;
-using otor.msixhero.lib.BusinessLayer.Commands;
-using otor.msixhero.lib.BusinessLayer.Infrastructure.Implementation;
-using otor.msixhero.lib.BusinessLayer.Models;
-using otor.msixhero.lib.BusinessLayer.State.Enums;
+using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Commanding;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Ipc;
-using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.Infrastructure.Interop;
+using otor.msixhero.lib.Infrastructure.Ipc;
+using otor.msixhero.lib.Infrastructure.Logging;
 
 namespace otor.msixhero.adminhelper
 {

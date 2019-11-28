@@ -1,5 +1,5 @@
 ﻿using System;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Helpers
 {

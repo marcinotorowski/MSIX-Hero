@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Helpers;
-using otor.msixhero.lib.BusinessLayer.Models;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.ui.ViewModel
 {

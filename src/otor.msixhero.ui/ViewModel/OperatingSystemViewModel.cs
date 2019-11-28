@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using otor.msixhero.lib.BusinessLayer.Models.Manifest;
-using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
+﻿using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 
 namespace otor.msixhero.ui.ViewModel
 {

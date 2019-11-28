@@ -9,9 +9,9 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
-             xmlns:enums="clr-namespace:otor.msixhero.lib.BusinessLayer.State.Enums;assembly=otor.msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
+             xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=otor.msixhero.lib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <Grid Margin="5" x:Name="Grid">

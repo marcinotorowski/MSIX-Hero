@@ -3,14 +3,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Commands.Developer;
-using otor.msixhero.lib.BusinessLayer.Commands.Grid;
-using otor.msixhero.lib.BusinessLayer.Commands.Manager;
-using otor.msixhero.lib.BusinessLayer.Commands.Signing;
-using otor.msixhero.lib.BusinessLayer.Infrastructure;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
-using otor.msixhero.lib.BusinessLayer.State.Enums;
-using otor.msixhero.lib.Services;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Domain.Commands.Developer;
+using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.Commands.Manager;
+using otor.msixhero.lib.Domain.Commands.Signing;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
 using Prism.Services.Dialogs;
@@ -50,6 +49,7 @@ namespace otor.msixhero.ui.ViewModel
             this.OpenAppsFeatures = new DelegateCommand(param => this.OpenAppsFeaturesExecute());
             this.OpenDevSettings = new DelegateCommand(param => this.OpenDevSettingsExecute());
             this.InstallCertificate = new DelegateCommand(param => this.InstallCertificateExecute());
+            this.OpenResign = new DelegateCommand(param => this.OpenResignExecute());
         }
 
         public ICommand Refresh { get; }
@@ -65,6 +65,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand InstallCertificate { get; }
 
         public ICommand OpenLogs { get; }
+
+        public ICommand OpenResign { get; }
 
         public ICommand MountRegistry { get; }
 
@@ -317,15 +319,20 @@ namespace otor.msixhero.ui.ViewModel
 
         private void NewSelfSignedCertExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.NewSelfSignedPath, new DialogParameters(), this.OnSelfSignedDialogClosed);
+            this.dialogService.ShowDialog(DialogsModule.NewSelfSignedPath, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OpenLogsExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.EventViewerPath, new DialogParameters(), this.OnSelfSignedDialogClosed);
+            this.dialogService.ShowDialog(DialogsModule.EventViewerPath, new DialogParameters(), this.OnDialogClosed);
         }
 
-        private void OnSelfSignedDialogClosed(IDialogResult obj)
+        private void OpenResignExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.PackageSigningPath, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void OnDialogClosed(IDialogResult obj)
         {
         }
     }

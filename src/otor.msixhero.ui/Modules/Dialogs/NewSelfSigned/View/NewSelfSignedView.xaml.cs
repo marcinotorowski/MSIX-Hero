@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
 
 namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
@@ -12,8 +13,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
     /// </summary>
     public partial class NewSelfSignedView
     {
-        public NewSelfSignedView()
+        private readonly IInteractionService interactionService;
+
+        public NewSelfSignedView(IInteractionService interactionService)
         {
+            this.interactionService = interactionService;
             this.InitializeComponent();
         }
 
@@ -21,10 +25,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
         {
             ((NewSelfSignedViewModel)this.DataContext).Save().ContinueWith(t =>
             {
-                if (t.Exception == null && !t.IsCanceled && t.IsCompleted)
+                if (t.Exception == null && !t.IsCanceled && !t.IsFaulted && t.IsCompleted)
                 {
                     // ReSharper disable once PossibleNullReferenceException
                     Window.GetWindow(this).Close();
+                }
+                else if (t.IsFaulted && t.Exception != null)
+                {
+                    var exception = t.Exception.GetBaseException();
+                    var result = this.interactionService.ShowError(exception.Message, extendedInfo: exception.ToString());
+                    if (result == InteractionResult.Retry)
+                    {
+                        this.SaveExecuted(sender, e);
+                    }
                 }
             },
             CancellationToken.None, 

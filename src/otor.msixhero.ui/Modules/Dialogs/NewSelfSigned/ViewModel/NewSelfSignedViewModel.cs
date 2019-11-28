@@ -4,8 +4,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib;
-using otor.msixhero.lib.Domain;
-using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 

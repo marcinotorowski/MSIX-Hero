@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.ui.ViewModel;
 using Prism.Regions;
 

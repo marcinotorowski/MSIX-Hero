@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Namotion.Reflection;
-using otor.msixhero.lib.BusinessLayer.Models.Manifest.Full;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
-using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.Domain.Appx.Manifest.Full;
+using otor.msixhero.lib.Domain.Appx.Packages;
 
 // ReSharper disable UnusedMember.Global
 // ReSharper disable InconsistentNaming

@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Commands.Grid;
-using otor.msixhero.lib.BusinessLayer.Infrastructure;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;

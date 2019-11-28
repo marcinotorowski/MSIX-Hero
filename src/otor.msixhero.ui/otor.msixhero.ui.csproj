@@ -30,6 +30,9 @@
     <Compile Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\Dialogs\PackageSigning\View\PackageSigningView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\PackageList\View\MultiSelectionView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -39,13 +42,19 @@
     <Page Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Modules\Dialogs\PackageSigning\View\PackageSigningView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Modules\PackageList\View\MultiSelectionView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Vectors.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;" />
+    <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;" />
   </Target>
   
   <Target Name="WorkaroundForXAMLIntellisenseBuildIssue" AfterTargets="_CheckCompileDesignTimePrerequisite">

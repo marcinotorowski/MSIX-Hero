@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.State.Enums;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
 

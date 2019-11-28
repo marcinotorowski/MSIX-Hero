@@ -1,0 +1,176 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.PackageSigning.View.PackageSigningView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel"
+             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.View"
+             xmlns:signing="clr-namespace:otor.msixhero.lib.Domain.Appx.Signing;assembly=otor.msixhero.lib"
+             mc:Ignorable="d" 
+             MinWidth="500"
+             MinHeight="500"
+             Background="#ffffff"
+             d:DataContext="{d:DesignInstance viewModel1:PackageSigningViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Colors.xaml" />
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Tabs.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
+        <CommandBinding Command="Close" Executed="CloseExecuted" />
+        <CommandBinding Command="Open" Executed="OpenExecuted" CanExecute="CanOpenExecute"/>
+        <CommandBinding Command="New" Executed="CommandBinding_OnExecuted" CanExecute="CommandBinding_OnCanExecute" />
+        <CommandBinding Command="Delete" Executed="CommandBinding_OnExecuted" CanExecute="CommandBinding_OnCanExecute" />
+    </UserControl.CommandBindings>
+
+    <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar">
+                <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>
+        <DockPanel>
+            <Border Background="#2B579A" DockPanel.Dock="Top">
+                <DockPanel Margin="16">
+                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorSign}" />
+                    <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Package Signing</Label>
+                </DockPanel>
+            </Border>
+            <Border Background="#eee" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                        <Button Padding="8 4" Margin="4" Command="Save" Content="Update selected packages" />
+                        <Button Padding="8 4" Margin="4" Command="Close" Content="Discard" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <ContentControl DockPanel.Dock="Bottom" Content="{Binding Error}">
+                <ContentControl.Style>
+                    <Style TargetType="ContentControl">
+                        <Style.Triggers>
+                            <Trigger Property="Content" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentControl.Style>
+                <ContentControl.ContentTemplate>
+                    <DataTemplate>
+                        <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
+                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
+                        </Border>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+
+            <TabControl Margin="16 0" SelectedIndex="1">
+                <TabItem>
+                    <TabItem.Header>
+                        <TextBlock>
+                            <Run FontSize="13" Text="Packages" />
+                            <Run Text="{Binding Files.Count, Mode=OneWay}" Foreground="#777" />
+                        </TextBlock>
+                    </TabItem.Header>
+                    <Border>
+                        <DockPanel Margin="0 0 0 16">
+                            <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Package(s) to update" Margin="0 0 0 6" />
+                            <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="New" Content="Add more packages..." />
+                                <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="Delete" Content="Remove selected package(s)" />
+                            </WrapPanel>
+                            <Grid DockPanel.Dock="Top" VerticalAlignment="Stretch">
+                                <ListBox
+                                x:Name="ListBox"
+                                AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DragLeave="OnDragLeave" ItemsSource="{Binding Files}">
+                                    <ListBox.InputBindings>
+                                        <KeyBinding Key="Delete" Command="Delete"></KeyBinding>
+                                    </ListBox.InputBindings>
+                                    <ListBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Remove selected package(s)" Command="Delete">
+                                                <MenuItem.Icon>
+                                                    <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListBox.ContextMenu>
+                                    <ListBox.Style>
+                                        <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                                            <Setter Property="Background" Value="#eee" />
+                                            <Style.Triggers>
+                                                <Trigger Property="view:DropFileObject.IsDragging" Value="True">
+                                                    <Setter Property="Background" Value="#ddd" />
+                                                    <Setter Property="Opacity" Value="0.3" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.Style>
+                                </ListBox>
+                                <TextBlock 
+                            Text="Release Left Mouse Button to drop the files here" 
+                            VerticalAlignment="Center" HorizontalAlignment="Center" 
+                            Visibility="{Binding ElementName=ListBox, Path=(view:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            IsHitTestVisible="False" />
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </TabItem>
+                <TabItem Header="Certificate">
+                    <DockPanel Margin="0 0 0 16">
+
+                        <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Certificate to sign the package" Margin="0 0 0 6" />
+
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                            <RadioButton GroupName="r1" IsChecked="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Pfx}}" Content="Certificate from PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
+                            <RadioButton GroupName="r2" IsChecked="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Personal}}" Content="Certificate from store" Margin="0 0 16 8" x:Name="CertStore" />
+                        </StackPanel>
+
+                        <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Padding="10 0" Command="Open" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
+                            <TextBox Text="{Binding PfxPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        </DockPanel>
+
+                        <ComboBox SelectedValue="{Binding SelectedPersonalCertificate, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" Visibility="{Binding ElementName=CertStore, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ComboBox.ItemTemplateSelector>
+                                <helpers:ComboBoxTemplateSelector>
+                                    <helpers:ComboBoxTemplateSelector.ListTemplate>
+                                        <DataTemplate DataType="{x:Type viewModel1:CertificateViewModel}">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding Subject}" Opacity="0.6" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </helpers:ComboBoxTemplateSelector.ListTemplate>
+                                    <helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                                        <DataTemplate DataType="{x:Type viewModel1:CertificateViewModel}">
+                                            <TextBlock Text="{Binding DisplayName}" />
+                                        </DataTemplate>
+                                    </helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                                </helpers:ComboBoxTemplateSelector>
+                            </ComboBox.ItemTemplateSelector>
+                        </ComboBox>
+                        
+                        <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
+                        <PasswordBox IsEnabled="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Pfx}}" Tag="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
+                        
+                        <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
+                        <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                        <Border />
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+    </xctk:BusyIndicator>
+</UserControl>

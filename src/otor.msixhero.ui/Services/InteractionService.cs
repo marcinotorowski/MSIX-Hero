@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ookii.Dialogs.Wpf;
-using otor.msixhero.lib.Services;
+using otor.msixhero.lib.Infrastructure;
 using Application = System.Windows.Application;
 
 namespace otor.msixhero.ui.Services
@@ -57,19 +56,14 @@ namespace otor.msixhero.ui.Services
 
         public bool SelectFile(string initialFile, string filterString, out string selectedFile)
         {
-            var dlg = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
-
-            dlg.Filter = filterString;
-
-            if (initialFile != null && File.Exists(initialFile))
+            if (!this.SelectFile(initialFile, filterString, false, out var selection))
             {
-                dlg.InitialDirectory = System.IO.Path.GetDirectoryName(initialFile);
-                dlg.FileName = System.IO.Path.GetFileName(initialFile);
+                selectedFile = null;
+                return false;
             }
 
-            var result = dlg.ShowDialog() == true;
-            selectedFile = dlg.FileName;
-            return result;
+            selectedFile = selection.FirstOrDefault();
+            return true;
         }
 
         public bool SelectFile(string filterString, out string selectedFile)
@@ -82,10 +76,23 @@ namespace otor.msixhero.ui.Services
             return this.SelectFile(null, "*.*|All files (*.*)", out selectedFile);
         }
 
+        public bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles)
+        {
+            return this.SelectFile(initialFile, filterString, true, out selectedFiles);
+        }
+
+        public bool SelectFiles(string filterString, out string[] selectedFiles)
+        {
+            return this.SelectFile(null, filterString, true, out selectedFiles);
+        }
+
         public bool SelectFolder(string initialFolder, out string selectedFolder)
         {
-            var dlg = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-            dlg.SelectedPath = initialFolder;
+            var dlg = new VistaFolderBrowserDialog
+            {
+                SelectedPath = initialFolder
+            };
+
             var result = dlg.ShowDialog() == true;
             selectedFolder = dlg.SelectedPath;
             return result;
@@ -94,6 +101,28 @@ namespace otor.msixhero.ui.Services
         public bool SelectFolder(out string selectedFolder)
         {
             return this.SelectFolder(null, out selectedFolder);
+        }
+
+        private bool SelectFile(string initialFile, string filterString, bool withMultiSelection, out string[] selectedFiles)
+        {
+            var dlg = new VistaOpenFileDialog();
+
+            if (!string.IsNullOrEmpty(filterString))
+            {
+                dlg.Filter = filterString;
+            }
+
+            if (initialFile != null && File.Exists(initialFile))
+            {
+                dlg.InitialDirectory = Path.GetDirectoryName(initialFile);
+                dlg.FileName = Path.GetFileName(initialFile);
+            }
+
+            dlg.Multiselect = withMultiSelection;
+
+            var result = dlg.ShowDialog() == true;
+            selectedFiles = dlg.FileNames;
+            return result;
         }
     }
 }

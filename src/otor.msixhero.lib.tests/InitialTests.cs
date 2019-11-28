@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using otor.msixhero.lib.Managers;
+using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 
 namespace otor.msixhero.lib.tests
 {

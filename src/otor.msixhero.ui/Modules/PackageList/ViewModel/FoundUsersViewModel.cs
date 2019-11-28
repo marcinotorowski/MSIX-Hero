@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.BusinessLayer.Models;
-using otor.msixhero.lib.BusinessLayer.Models.Packages;
-using otor.msixhero.lib.BusinessLayer.Models.Users;
+using otor.msixhero.lib.Domain.Appx.Users;
+using otor.msixhero.lib.Domain.State;
 using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel

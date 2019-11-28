@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
-using otor.msixhero.lib.BusinessLayer.Events;
-using otor.msixhero.lib.BusinessLayer.Infrastructure;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.PackageList.View;
 using Prism.Events;

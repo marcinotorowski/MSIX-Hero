@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.BusinessLayer.Models.Psf;
+using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
