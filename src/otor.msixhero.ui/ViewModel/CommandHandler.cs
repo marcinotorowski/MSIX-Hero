@@ -55,6 +55,7 @@ namespace otor.msixhero.ui.ViewModel
             this.ExtractCert = new DelegateCommand(param => this.ExtractCertExecute(), param => true);
             this.InstallCertificate = new DelegateCommand(param => this.InstallCertificateExecute());
             this.OpenResign = new DelegateCommand(param => this.OpenResignExecute());
+            this.CertManager = new DelegateCommand(param => this.CertManagerExecute(param is bool ? (bool)param : false));
             
             // Links
             this.OpenAppsFeatures = new DelegateCommand(param => this.OpenAppsFeaturesExecute());
@@ -82,6 +83,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand OpenLogs { get; }
 
         public ICommand OpenResign { get; }
+
+        public ICommand CertManager { get; }
 
         public ICommand MountRegistry { get; }
 
@@ -372,6 +375,31 @@ namespace otor.msixhero.ui.ViewModel
         private void OpenResignExecute()
         {
             this.dialogService.ShowDialog(DialogsModule.PackageSigningPath, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void CertManagerExecute(bool perMachine)
+        {
+            try
+            {
+                ProcessStartInfo psi;
+                if (perMachine)
+                {
+                    psi = new ProcessStartInfo("mmc.exe", "certlm.msc");
+                }
+                else
+                {
+                    psi = new ProcessStartInfo("mmc.exe", "certmgr.msc");
+
+                }
+
+                psi.Verb = "runas";
+                psi.UseShellExecute = true;
+                Process.Start(psi);
+            }
+            catch (Exception e)
+            {
+                this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+            }
         }
 
         private void CopyExecute(PackageProperty param)

@@ -33,6 +33,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}" Command="{Binding CommandHandler.ExtractCert}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenResign}" Command="{Binding CommandHandler.OpenResign}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CertManager}" Command="{Binding CommandHandler.CertManager}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
@@ -230,6 +231,27 @@
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorImport}" />
                             </Fluent:Button.LargeIcon>
+                        </Fluent:Button>
+                        <Separator />
+                        <Fluent:Button Header="User certificates" Command="{x:Static commands:MsixHeroCommands.CertManager}">
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSign}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Small" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Computer certificates" Command="{x:Static commands:MsixHeroCommands.CertManager}">
+                            <Fluent:Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Fluent:Button.CommandParameter>
+
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSign}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Small" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
