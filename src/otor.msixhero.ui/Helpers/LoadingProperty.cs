@@ -71,8 +71,14 @@ namespace otor.msixhero.ui.Helpers
         public T CurrentValue
         {
             get => this.currentValue;
-            private set => this.SetField(ref this.currentValue, value);
+            private set
+            {
+                this.SetField(ref this.currentValue, value);
+                this.OnPropertyChanged(nameof(HasValue));
+            }
         }
+
+        public bool HasValue => this.currentValue != null;
 
         public bool IsLoading
         {

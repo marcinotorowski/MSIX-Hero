@@ -21,6 +21,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
 
         public string Subject => this.personalCertificate.Subject;
 
+        public string DigestAlgorithm => this.personalCertificate.DigestAlgorithm;
+
         public CertificateStoreType StoreType => this.personalCertificate.StoreType;
 
         public PersonalCertificate Model => this.personalCertificate;

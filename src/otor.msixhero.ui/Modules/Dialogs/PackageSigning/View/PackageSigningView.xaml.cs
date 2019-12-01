@@ -30,7 +30,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
                 if (t.Exception == null && !t.IsCanceled && !t.IsFaulted && t.IsCompleted)
                 {
                     // ReSharper disable once PossibleNullReferenceException
-                    Window.GetWindow(this).Close();
+                    // Window.GetWindow(this).Close();
                 }
                 else if (t.IsFaulted && t.Exception != null)
                 {

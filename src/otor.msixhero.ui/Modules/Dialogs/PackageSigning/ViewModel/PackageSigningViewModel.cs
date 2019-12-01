@@ -28,6 +28,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
         private CertificateViewModel selectedPersonalCertificate;
         private CertificateSource store;
         private SecureString password;
+        private bool isSuccess;
 
         public PackageSigningViewModel(IAppxSigningManager signingManager, IInteractionService interactionService)
         {
@@ -102,7 +103,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
 
         private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(CancellationToken cancellationToken = default)
         {
-            var certs = await this.signingManager.GetCertificatesFromStore(CertificateStoreType.Both, cancellationToken).ConfigureAwait(false);
+            var certs = await this.signingManager.GetCertificatesFromStore(CertificateStoreType.MachineUser, cancellationToken).ConfigureAwait(false);
             var result = new ObservableCollection<CertificateViewModel>(certs.Select(c => new CertificateViewModel(c)));
             this.selectedPersonalCertificate = result.FirstOrDefault();
             return result;
@@ -170,6 +171,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
                         await this.signingManager.SignPackage(file, true, this.SelectedPersonalCertificate.Model, this.TimeStamp, CancellationToken.None, token);
                     }
                 }
+
+                this.IsSuccess = true;
             }
             finally
             {
@@ -181,6 +184,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
         }
 
         public ObservableCollection<string> Files { get; }
+
+        public bool IsSuccess
+        {
+            get => this.isSuccess;
+            set => this.SetField(ref this.isSuccess, value);
+        }
 
         public string Error => this[nameof(SelectedPersonalCertificate)] ?? this[nameof(PfxPath)] ?? this[nameof(Files)] ?? this[nameof(TimeStamp)];
 

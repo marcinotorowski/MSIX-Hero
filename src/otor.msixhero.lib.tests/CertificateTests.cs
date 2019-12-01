@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.tests
         public void TestReader()
         {
             IAppxSigningManager signManager = new AppxSigningManager();
-            var certs = signManager.GetCertificatesFromStore(CertificateStoreType.Both).GetAwaiter().GetResult();
+            var certs = signManager.GetCertificatesFromStore(CertificateStoreType.MachineUser).GetAwaiter().GetResult();
         }
     }
 }

@@ -8,6 +8,7 @@ namespace otor.msixhero.lib.Domain.Appx.Signing
     {
         User,
         Machine,
-        Both,
+        MachineUser,
+        File
     }
 }

@@ -23,6 +23,7 @@ namespace otor.msixhero.ui.Commands
             OpenDevSettings = new RoutedUICommand { Text = "Open Developer Settings" };
             OpenResign = new RoutedUICommand { Text = "Sign MSIX package(s)" };
             InstallCertificate = new RoutedUICommand { Text = "Install certificate from a .CER file" };
+            ExtractCertifiacte = new RoutedUICommand { Text = "Extract certificate from an .MSIX file" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -32,6 +33,8 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand OpenExplorerUser { get; }
 
         public static RoutedUICommand CreateSelfSign { get; }
+
+        public static RoutedUICommand ExtractCertifiacte { get; }
 
         public static RoutedUICommand InstallCertificate { get; }
         

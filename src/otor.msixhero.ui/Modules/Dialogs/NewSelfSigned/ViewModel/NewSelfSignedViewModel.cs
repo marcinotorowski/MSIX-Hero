@@ -1,11 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Commands.Signing;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 
@@ -14,6 +20,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
     public class NewSelfSignedViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
     {
         private readonly IAppxSigningManager signingManager;
+        private readonly IInteractionService interactionService;
+        private readonly IApplicationStateManager stateManager;
         private string publisherName;
         private string publisherFriendlyName;
         private string password;
@@ -22,10 +30,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
         private string progressMessage;
         private bool isLoading;
         private bool isSubjectTouched;
+        private bool isSuccess;
+        private ICommand importNewCertificate;
 
-        public NewSelfSignedViewModel(IAppxSigningManager signingManager)
+        public NewSelfSignedViewModel(IAppxSigningManager signingManager, IInteractionService interactionService, IApplicationStateManager stateManager)
         {
             this.signingManager = signingManager;
+            this.interactionService = interactionService;
+            this.stateManager = stateManager;
             this.publisherName = "CN=";
             this.outputPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
@@ -39,6 +51,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 this.OnPropertyChanged(nameof(Error));
                 this.isSubjectTouched = true;
             }
+        }
+
+        public bool IsSuccess
+        {
+            get => this.isSuccess;
+            set => this.SetField(ref this.isSuccess, value);
         }
 
         public string PublisherFriendlyName
@@ -95,6 +113,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             }
         }
 
+        public ICommand ImportNewCertificate
+        {
+            get => this.importNewCertificate ??= new DelegateCommand(param => this.ImportNewCertificateExecute());
+        }
+
         public bool CanCloseDialog()
         {
             return true;
@@ -123,6 +146,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             {
                 token.ProgressChanged += handler;
                 await this.signingManager.CreateSelfSignedCertificate(new DirectoryInfo(this.OutputPath), this.PublisherName, this.PublisherFriendlyName, this.Password, CancellationToken.None).ConfigureAwait(true);
+
+                this.IsSuccess = true;
             }
             finally
             {
@@ -177,6 +202,17 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
         public string Title
         {
             get => "New self signed certificate";
+        }
+
+        private void ImportNewCertificateExecute()
+        {
+            var file = Directory.EnumerateFiles(this.OutputPath, "*.cer").OrderByDescending(d => new FileInfo(d).LastWriteTimeUtc).FirstOrDefault();
+            if (file == null)
+            {
+                return;
+            }
+
+            this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(file));
         }
 
         public event Action<IDialogResult> RequestClose;

@@ -30,6 +30,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}" Command="{Binding CommandHandler.ExtractCert}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenResign}" Command="{Binding CommandHandler.OpenResign}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
@@ -220,7 +221,7 @@
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
                             </Fluent:Button.LargeIcon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Extract certificate from MSIX..." IsEnabled="False">
+                        <Fluent:Button Header="Extract certificate from MSIX..." Command="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                             </Fluent:Button.LargeIcon>

@@ -19,6 +19,6 @@ namespace otor.msixhero.lib.Domain.Appx.Signing
 
         public CertificateStoreType StoreType { get; set; }
 
-        public string SignatureAlgorithm { get; set; }
+        public string DigestAlgorithm { get; set; }
     }
 }

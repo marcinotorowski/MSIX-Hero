@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
+using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
@@ -19,12 +21,14 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string NewSelfSignedPath = "NewSelfSigned";
         public static string EventViewerPath = "EventViewer";
         public static string PackageSigningPath = "PackageSigning";
+        public static string CertificateExportPath = "CertificateExport";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<NewSelfSignedView, NewSelfSignedViewModel>(NewSelfSignedPath);
             containerRegistry.RegisterDialog<EventViewerView, EventViewerViewModel>(EventViewerPath);
             containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(PackageSigningPath);
+            containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(CertificateExportPath);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

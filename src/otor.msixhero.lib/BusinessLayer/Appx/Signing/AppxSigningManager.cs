@@ -10,10 +10,12 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Org.BouncyCastle.X509;
 using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
+using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 {
@@ -22,12 +24,43 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
         private static readonly ILog Logger = LogManager.GetLogger();
 
         public Task<bool> ExtractCertificateFromMsix(
-            string msixFile, 
+            string msixFile,
             string outputFile,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
             return this.ExtractCertificateFromMsix(msixFile, false, outputFile, cancellationToken, progress);
+        }
+
+        public Task<bool> ExtractCertificateFromMsix(
+            string msixFile,
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null)
+        {
+            return this.ExtractCertificateFromMsix(msixFile, true, null, cancellationToken, progress);
+        }
+
+        public Task<PersonalCertificate> GetCertificateFromMsix(string msixFile, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            if (string.IsNullOrEmpty(msixFile))
+            {
+                throw new ArgumentNullException(nameof(msixFile));
+            }
+
+            return Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        var x509 = X509Certificate.CreateFromSignedFile(msixFile);
+                        return CreateFromX509(x509, CertificateStoreType.File);
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                }, 
+                cancellationToken);
         }
 
         public async Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certStoreType, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -42,7 +75,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 case CertificateStoreType.Machine:
                     loc = StoreLocation.LocalMachine;
                     break;
-                case CertificateStoreType.Both:
+                case CertificateStoreType.MachineUser:
                     var list1 = await this.GetCertificatesFromStore(CertificateStoreType.User, cancellationToken, progress).ConfigureAwait(false);
                     var list2 = await this.GetCertificatesFromStore(CertificateStoreType.Machine, cancellationToken, progress).ConfigureAwait(false);
                     return list1.Concat(list2).ToList();
@@ -80,18 +113,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                     continue;
                 }
 
-                var cert = new PersonalCertificate
-                {
-                    DisplayName = certificate.FriendlyName,
-                    Date = certificate.NotAfter,
-                    Issuer = certificate.Issuer,
-                    Subject = certificate.Subject,
-                    Thumbprint = certificate.Thumbprint,
-                    SignatureAlgorithm = certificate.SignatureAlgorithm.FriendlyName,
-                    StoreType = certStoreType
-                };
-
-                list.Add(cert);
+                list.Add(CreateFromX509(certificate, certStoreType));
             }
 
             store.Close();
@@ -295,16 +317,63 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 
             if (outputFile != null)
             {
-                using var paramCerOutputFileName = cmd.AddParameter("CerOutputFileName", outputFile);
+                cmd.AddParameter("CerOutputFileName", outputFile);
             }
 
             if (importToStore)
             {
-                using var paramImportToStore = cmd.AddParameter("ImportToStore");
+                cmd.AddParameter("ImportToStore");
             }
 
             using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
             return true;
+        }
+
+        private static PersonalCertificate CreateFromX509(X509Certificate2 certificate, CertificateStoreType certStoreType)
+        {
+            var cert = new PersonalCertificate
+            {
+                DisplayName = certificate.FriendlyName,
+                Date = certificate.NotAfter,
+                Issuer = certificate.Issuer,
+                Subject = certificate.Subject,
+                Thumbprint = certificate.Thumbprint,
+                DigestAlgorithm = certificate.SignatureAlgorithm.FriendlyName,
+                StoreType = certStoreType
+            };
+
+            return cert;
+        }
+
+        private static PersonalCertificate CreateFromX509(X509Certificate certificate, CertificateStoreType certStoreType)
+        {
+            var parser = new X509CertificateParser();
+            var read = parser.ReadCertificate(certificate.GetRawCertData());
+            
+            var cert = new PersonalCertificate
+            {
+                Issuer = certificate.Issuer,
+                Subject = certificate.Subject,
+                DigestAlgorithm = (read.SigAlgName.EndsWith("withRSA", StringComparison.OrdinalIgnoreCase) ? read.SigAlgName.Substring(0, read.SigAlgName.Length - "withRSA".Length) : read.SigAlgName).Replace("-", string.Empty),
+                StoreType = certStoreType
+            };
+
+            var list = read.SubjectDN.GetValueList();
+            if (list?.Count > 0)
+            {
+                cert.DisplayName = list[^1].ToString();
+            }
+
+            // var indexOf = cert.Subject.IndexOf("CN=", StringComparison.OrdinalIgnoreCase);
+            // if (indexOf != -1)
+            // {
+            //     indexOf += "CN=".Length;
+            //     var nextIndexOf = cert.Subject.IndexOf(',', indexOf);
+               
+            //     cert.DisplayName = nextIndexOf == -1 ? cert.Subject.Substring(indexOf, cert.Subject.Length - indexOf) : cert.Subject.Substring(indexOf, nextIndexOf - indexOf);
+            // }
+            
+            return cert;
         }
 
         private async Task<string> PreparePackageForSigning(string package, bool updatePublisher, X509Certificate certificate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

@@ -1,22 +1,23 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
+namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.View
 {
     /// <summary>
-    /// Interaction logic for NewSelfSignedView.
+    /// Interaction logic for CertificateExport.
     /// </summary>
-    public partial class NewSelfSignedView
+    public partial class CertificateExportView
     {
         private readonly IInteractionService interactionService;
 
-        public NewSelfSignedView(IInteractionService interactionService)
+        public CertificateExportView(IInteractionService interactionService)
         {
             this.interactionService = interactionService;
             this.InitializeComponent();
@@ -24,7 +25,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
 
         private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ((NewSelfSignedViewModel)this.DataContext).Save().ContinueWith(t =>
+            ((CertificateExportViewModel)this.DataContext).Save().ContinueWith(t =>
             {
                 if (t.Exception == null && !t.IsCanceled && !t.IsFaulted && t.IsCompleted)
                 {
@@ -48,7 +49,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
 
         private void CanSave(object sender, CanExecuteRoutedEventArgs e)
         {
-            var dataContext = ((NewSelfSignedViewModel) this.DataContext);
+            var dataContext = ((CertificateExportViewModel) this.DataContext);
             e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
             e.ContinueRouting = !e.CanExecute;
         }
@@ -59,31 +60,39 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
             Window.GetWindow(this).Close();
         }
 
-        private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var dlg = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-            if (dlg.ShowDialog() == true)
+            if (e.Command == ApplicationCommands.Open)
             {
-                ((NewSelfSignedViewModel) this.DataContext).OutputPath = dlg.SelectedPath;
+                if (e.Parameter as TextBox == this.PathInput)
+                {
+                    ((CertificateExportViewModel) this.DataContext).BrowseForInput.Execute(e.Parameter);
+                }
+                else if (e.Parameter as TextBox == this.PathOutput)
+                {
+                    ((CertificateExportViewModel)this.DataContext).BrowseForOutput.Execute(e.Parameter);
+                }
             }
         }
 
-        private void OnPasswordChanged(object sender, RoutedEventArgs e)
+        private void CommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            ((NewSelfSignedViewModel) this.DataContext).Password = ((PasswordBox)sender).Password;
+            if (e.Command == ApplicationCommands.Open)
+            {
+                if (e.Parameter as TextBox == this.PathInput)
+                {
+                    e.CanExecute = ((CertificateExportViewModel)this.DataContext).BrowseForInput.CanExecute(e.Parameter);
+                }
+                else if (e.Parameter as TextBox == this.PathOutput)
+                {
+                    e.CanExecute = ((CertificateExportViewModel)this.DataContext).BrowseForOutput.CanExecute(e.Parameter);
+                }
+            }
         }
 
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {
-            Process.Start("explorer.exe", this.OutputPath.Text);
-        }
-
-        private void HyperlinkImportWizard_OnClick(object sender, RoutedEventArgs e)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            Window.GetWindow(this).Close();
-
-            ((NewSelfSignedViewModel)this.DataContext).ImportNewCertificate.Execute(null);
+            Process.Start("explorer.exe", "/select," + this.PathOutput.Text);
         }
     }
 }

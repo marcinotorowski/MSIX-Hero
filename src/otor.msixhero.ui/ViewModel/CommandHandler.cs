@@ -34,6 +34,7 @@ namespace otor.msixhero.ui.ViewModel
             this.stateManager = stateManager;
             this.dialogService = dialogService;
 
+            // Package-specific
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanOpenExplorer());
             this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(), param => this.CanOpenExplorerUser());
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanOpenManifest());
@@ -42,19 +43,26 @@ namespace otor.msixhero.ui.ViewModel
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as string), param => this.CanRunTool(param as string));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanRemovePackage());
-
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanMountRegistry());
             this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());
 
-            this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
-            this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
-            this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
+            // General APPX
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
-            this.OpenAppsFeatures = new DelegateCommand(param => this.OpenAppsFeaturesExecute());
-            this.OpenDevSettings = new DelegateCommand(param => this.OpenDevSettingsExecute());
+            this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
+
+            // Certificates
+            this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
+            this.ExtractCert = new DelegateCommand(param => this.ExtractCertExecute(), param => true);
             this.InstallCertificate = new DelegateCommand(param => this.InstallCertificateExecute());
             this.OpenResign = new DelegateCommand(param => this.OpenResignExecute());
+            
+            // Links
+            this.OpenAppsFeatures = new DelegateCommand(param => this.OpenAppsFeaturesExecute());
+            this.OpenDevSettings = new DelegateCommand(param => this.OpenDevSettingsExecute());
+
+            // Miscellaneous
             this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
+            this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
         }
 
         public ICommand Refresh { get; }
@@ -66,6 +74,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand RemovePackage { get; }
 
         public ICommand NewSelfSignedCert { get; }
+
+        public ICommand ExtractCert { get; }
 
         public ICommand InstallCertificate { get; }
 
@@ -347,6 +357,11 @@ namespace otor.msixhero.ui.ViewModel
         private void NewSelfSignedCertExecute()
         {
             this.dialogService.ShowDialog(DialogsModule.NewSelfSignedPath, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void ExtractCertExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.CertificateExportPath, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OpenLogsExecute()

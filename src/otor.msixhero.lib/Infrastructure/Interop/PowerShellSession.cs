@@ -82,7 +82,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
         {
             var session = new PowerShellSession();
             var cmd = session.AddCommand("Set-ExecutionPolicy");
-            cmd.AddParameter("ExecutionPolicy", "ByPass");
+            cmd.AddParameter("ExecutionPolicy", "Bypass");
             cmd.AddParameter("Scope", "Process");
             await session.InvokeAsync().ConfigureAwait(false);
             session.powerShell.Commands.Clear();

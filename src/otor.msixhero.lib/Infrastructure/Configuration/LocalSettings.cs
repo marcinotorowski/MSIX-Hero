@@ -8,5 +8,7 @@
         }
 
         public bool ShowSidebar { get; set; }
+
+        public bool SigningLastPfx { get; }
     }
 }

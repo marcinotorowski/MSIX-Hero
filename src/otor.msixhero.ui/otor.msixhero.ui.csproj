@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Modules\Dialogs\CertificateExport\View\CertificateExportView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -39,6 +42,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Modules\Dialogs\CertificateExport\View\CertificateExportView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -46,6 +52,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\PackageList\View\MultiSelectionView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Extras.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Themes\Vectors.xaml">

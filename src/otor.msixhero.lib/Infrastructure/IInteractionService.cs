@@ -41,12 +41,16 @@
 
         bool SelectFile(string filterString, out string selectedFile);
 
+        bool SaveFile(string filterString, out string selectedFile);
+
         bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles);
 
         bool SelectFiles(string filterString, out string[] selectedFiles);
 
         bool SelectFile(out string selectedFile);
-        
+
+        bool SaveFile(out string selectedFile);
+
         bool SelectFolder(string initialFile, out string selectedFolder);
 
         bool SelectFolder(out string selectedFolder);

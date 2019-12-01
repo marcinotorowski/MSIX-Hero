@@ -66,6 +66,38 @@ namespace otor.msixhero.ui.Services
             return true;
         }
 
+        public bool SaveFile(string initialFile, string filterString, out string selectedFile)
+        {
+            var dlg = new VistaOpenFileDialog();
+
+            if (!string.IsNullOrEmpty(filterString))
+            {
+                dlg.Filter = filterString;
+            }
+
+            if (initialFile != null && File.Exists(initialFile))
+            {
+                dlg.InitialDirectory = Path.GetDirectoryName(initialFile);
+                dlg.FileName = Path.GetFileName(initialFile);
+            }
+
+            dlg.Multiselect = false;
+            dlg.CheckFileExists = false;
+            var result = dlg.ShowDialog() == true;
+            selectedFile = dlg.FileName;
+            return result;
+        }
+
+        public bool SaveFile(string filterString, out string selectedFile)
+        {
+            return this.SaveFile(null, filterString, out selectedFile);
+        }
+
+        public bool SaveFile(out string selectedFile)
+        {
+            return this.SaveFile(null, null, out selectedFile);
+        }
+
         public bool SelectFile(string filterString, out string selectedFile)
         {
             return this.SelectFile(null, filterString, out selectedFile);
@@ -118,6 +150,7 @@ namespace otor.msixhero.ui.Services
                 dlg.FileName = Path.GetFileName(initialFile);
             }
 
+            dlg.CheckFileExists = true;
             dlg.Multiselect = withMultiSelection;
 
             var result = dlg.ShowDialog() == true;
