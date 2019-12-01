@@ -38,7 +38,11 @@ namespace otor.msixhero.ui
 
         static App()
         {
+#if DEBUG
             LogManager.Initialize();
+#else
+            LogManager.Initialize(MsixHeroLogLevel.Info);
+#endif
         }
 
         private readonly IProcessManager processManager = new ProcessManager();

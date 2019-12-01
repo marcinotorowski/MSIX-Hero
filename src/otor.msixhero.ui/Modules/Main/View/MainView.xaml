@@ -18,6 +18,7 @@
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Command="{Binding CommandHandler.OpenConfigJson}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorer}" Command="{Binding CommandHandler.OpenExplorer}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunApp}" />
@@ -34,6 +35,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
     </routedCommand:RoutedCommandHandlers.Commands>
     <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding LoadingMessage}">
         <xctk:BusyIndicator.ProgressBarStyle>
@@ -236,15 +238,16 @@
                       RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
                     x:Name="TabMaintenance" Header="Management" Group="{Binding Source={x:Reference ToolsGroup}}">
                     <Fluent:RibbonGroupBox Visibility="Collapsed" IsEnabled="{Binding HasSingleSelection}">
-                        <Fluent:SplitButton Header="Copy" Size="Middle">
+                        <Fluent:SplitButton Header="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" Size="Middle">
                             <Fluent:SplitButton.Icon>
                                 <Path Data="{StaticResource VectorCopy}" Style="{StaticResource MediumIcon}" />
                             </Fluent:SplitButton.Icon>
-                            <Fluent:Button Header="Package name" />
-                            <Fluent:Button Header="Publisher (display name)" />
-                            <Fluent:Button Header="Publisher (raw)" />
-                            <Fluent:Button Header="Install path" />
-                            <Fluent:Button Header="Version" />
+                            <Fluent:Button Header="Name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" />
+                            <Fluent:Button Header="Full name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.FullName}" />
+                            <Fluent:Button Header="Version" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Version}"/>
+                            <Fluent:Button Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Publisher}" />
+                            <Fluent:Button Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Subject}" />
+                            <Fluent:Button Header="Install path" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.InstallPath}" />
                         </Fluent:SplitButton>
                     </Fluent:RibbonGroupBox>
                     <Fluent:RibbonGroupBox IsEnabled="{Binding HasSelection}" x:Name="RibbonManagementNavi" Header="Navigation">
@@ -278,6 +281,14 @@
                             </Fluent:Button.SizeDefinition>
                             <Fluent:Button.Icon>
                                 <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
+                            </Fluent:Button.Icon>
+                        </Fluent:Button>
+                        <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open config.json" Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}" CommandParameter="{Binding SelectedPackage}">
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
+                            </Fluent:Button.SizeDefinition>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                             </Fluent:Button.Icon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>

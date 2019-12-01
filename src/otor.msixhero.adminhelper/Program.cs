@@ -20,7 +20,11 @@ namespace otor.msixhero.adminhelper
 
         static Program()
         {
+#if DEBUG
             LogManager.Initialize();
+#else
+            LogManager.Initialize(MsixHeroLogLevel.Info);
+#endif
         }
 
         public static void Main(string[] args)

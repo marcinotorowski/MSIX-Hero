@@ -40,12 +40,14 @@
             </Style>
 
             <ContextMenu x:Key="PackageContextMenu">
-                <MenuItem Header="Copy">
-                    <MenuItem Header="Package name" />
-                    <MenuItem Header="Publisher (display name)" />
-                    <MenuItem Header="Publisher (raw)" />
-                    <MenuItem Header="Install path" />
-                    <MenuItem Header="Version" />
+                <MenuItem Header="Copy...">
+                    <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" InputGestureText=" " />
+                    <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.DisplayName}" InputGestureText=" " />
+                    <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.FullName}" />
+                    <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Version}" InputGestureText=" " />
+                    <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Publisher}" InputGestureText=" " />
+                    <MenuItem Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Subject}" InputGestureText=" " />
+                    <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.InstallPath}" InputGestureText=" " />
                 </MenuItem>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder">
                     <MenuItem.Icon>
@@ -55,6 +57,11 @@
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Open manifest">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Header="Open config.json">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />

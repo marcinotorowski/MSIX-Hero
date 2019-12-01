@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
@@ -34,6 +37,7 @@ namespace otor.msixhero.ui.ViewModel
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanOpenExplorer());
             this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(), param => this.CanOpenExplorerUser());
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanOpenManifest());
+            this.OpenConfigJson = new DelegateCommand(param => this.OpenConfigJsonExecute(), param => this.CanOpenConfigJson());
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanRunApp());
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as string), param => this.CanRunTool(param as string));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
@@ -50,6 +54,7 @@ namespace otor.msixhero.ui.ViewModel
             this.OpenDevSettings = new DelegateCommand(param => this.OpenDevSettingsExecute());
             this.InstallCertificate = new DelegateCommand(param => this.InstallCertificateExecute());
             this.OpenResign = new DelegateCommand(param => this.OpenResignExecute());
+            this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
         }
 
         public ICommand Refresh { get; }
@@ -76,6 +81,8 @@ namespace otor.msixhero.ui.ViewModel
 
         public ICommand OpenManifest { get; }
 
+        public ICommand OpenConfigJson { get; }
+
         public ICommand RunApp { get; }
 
         public ICommand RunTool { get; }
@@ -85,6 +92,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand OpenAppsFeatures { get; }
 
         public ICommand OpenDevSettings { get; }
+
+        public ICommand Copy { get; }
 
         private void RefreshExecute()
         {
@@ -252,10 +261,28 @@ namespace otor.msixhero.ui.ViewModel
             Process.Start(spi);
         }
 
+        private void OpenConfigJsonExecute()
+        {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            if (package == null)
+            {
+                return;
+            }
+
+            var spi = new ProcessStartInfo(package.PsfConfig) { UseShellExecute = true };
+            Process.Start(spi);
+        }
+
         private bool CanOpenManifest()
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             return package != null;
+        }
+
+        private bool CanOpenConfigJson()
+        {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            return package != null && File.Exists(package.PsfConfig);
         }
 
         private void RunAppExecute()
@@ -330,6 +357,51 @@ namespace otor.msixhero.ui.ViewModel
         private void OpenResignExecute()
         {
             this.dialogService.ShowDialog(DialogsModule.PackageSigningPath, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void CopyExecute(PackageProperty param)
+        {
+            if (!this.stateManager.CurrentState.Packages.SelectedItems.Any())
+            {
+                return;
+            }
+
+            var sb = new StringBuilder();
+
+            foreach (var item in this.stateManager.CurrentState.Packages.SelectedItems)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(Environment.NewLine);
+                }
+
+                switch (param)
+                {
+                    case PackageProperty.Name:
+                        sb.Append(item.Name);
+                        break;
+                    case PackageProperty.DisplayName:
+                        sb.Append(item.DisplayName);
+                        break;
+                    case PackageProperty.FullName:
+                        sb.Append(item.ProductId);
+                        break;
+                    case PackageProperty.Version:
+                        sb.Append(item.Version);
+                        break;
+                    case PackageProperty.Publisher:
+                        sb.Append(item.DisplayPublisherName);
+                        break;
+                    case PackageProperty.Subject:
+                        sb.Append(item.Publisher);
+                        break;
+                    case PackageProperty.InstallPath:
+                        sb.Append(item.InstallLocation);
+                        break;
+                }
+            }
+
+            Clipboard.SetText(sb.ToString(), TextDataFormat.UnicodeText);
         }
 
         private void OnDialogClosed(IDialogResult obj)

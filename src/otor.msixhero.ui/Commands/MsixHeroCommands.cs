@@ -9,15 +9,16 @@ namespace otor.msixhero.ui.Commands
             OpenExplorer = new RoutedUICommand { Text = "Open install location", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
             OpenExplorerUser = new RoutedUICommand { Text = "Open user data folder", InputGestures = { new KeyGesture(Key.U, ModifierKeys.Control) } };
             OpenManifest = new RoutedUICommand { Text = "Open manifest", InputGestures = { new KeyGesture(Key.M, ModifierKeys.Control )}};
+            OpenConfigJson = new RoutedUICommand { Text = "Open config.json", InputGestures = { new KeyGesture(Key.J, ModifierKeys.Control )}};
             RunPackage = new RoutedUICommand { Text = "Run app", InputGestures = { new KeyGesture(Key.Enter, ModifierKeys.Control) } };
             RunTool = new RoutedUICommand { Text = "Run tool in package context" };
             OpenPowerShell = new RoutedUICommand { Text = "Open PowerShell console" };
             MountRegistry = new RoutedUICommand { Text = "Mount registry" };
             UnmountRegistry = new RoutedUICommand { Text = "Unmount registry" };
             CreateSelfSign = new RoutedUICommand { Text = "Create new self-signed certificate "};
-            OpenLogs = new RoutedUICommand { Text = "Show event viewer"};
+            OpenLogs = new RoutedUICommand { Text = "Show event viewer", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
             RemovePackage = new RoutedUICommand { Text = "Remove package" };
-            AddPackage = new RoutedUICommand { Text = "Add package" };
+            AddPackage = new RoutedUICommand { Text = "Add package", InputGestures = { new KeyGesture(Key.Insert)}};
             OpenAppsFeatures = new RoutedUICommand { Text = "Open Apps and Features" };
             OpenDevSettings = new RoutedUICommand { Text = "Open Developer Settings" };
             OpenResign = new RoutedUICommand { Text = "Sign MSIX package(s)" };
@@ -33,8 +34,10 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand CreateSelfSign { get; }
 
         public static RoutedUICommand InstallCertificate { get; }
-
+        
         public static RoutedUICommand OpenManifest { get; }
+
+        public static RoutedUICommand OpenConfigJson { get; }
 
         public static RoutedUICommand RunTool { get; }
 

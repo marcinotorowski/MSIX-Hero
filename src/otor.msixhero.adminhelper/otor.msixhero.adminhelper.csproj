@@ -14,4 +14,10 @@
     <ProjectReference Include="..\otor.msixhero.lib\otor.msixhero.lib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="otor.msixhero.adminhelper.runtimeconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
