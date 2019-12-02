@@ -11,7 +11,7 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class FindUsersReducer : SelfElevationReducer<ApplicationState, FoundUsers>
+    internal class FindUsersReducer : SelfElevationReducer<ApplicationState, List<User>>
     {
         private readonly FindUsers action;
 
@@ -22,20 +22,15 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
         
-        public override async Task<FoundUsers> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override async Task<List<User>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            var elevation = this.action.ForceElevation || this.StateManager.CurrentState.IsElevated || this.StateManager.CurrentState.IsSelfElevated
-                ? ElevationStatus.OK
-                : ElevationStatus.ElevationRequired;
-
-            var users = await packageManager.GetUsersForPackage(this.action.FullProductId, cancellationToken).ConfigureAwait(false);
-            
-            var foundUsers = new FoundUsers
+            if (!this.action.ForceElevation && !this.StateManager.CurrentState.IsElevated && !this.StateManager.CurrentState.IsSelfElevated)
             {
-                Status = elevation,
-                Users = new List<User>(users)
-            };
-            return foundUsers;
+                // if there is no indication that we can run in UAC don't even try
+                return null;
+            }
+
+            return await packageManager.GetUsersForPackage(this.action.FullProductId, cancellationToken).ConfigureAwait(false);
         }
     }
 }

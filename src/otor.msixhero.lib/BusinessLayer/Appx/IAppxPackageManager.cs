@@ -43,7 +43,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         Task<RegistryMountState> GetRegistryMountState(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<List<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
@@ -51,7 +51,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         Task Remove(IReadOnlyCollection<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
 
-        Task<IList<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }

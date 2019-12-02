@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.State;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
@@ -94,8 +97,20 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private async Task<FoundUsersViewModel> GetSelectionDetails(Package package, bool forceElevation)
         {
-            var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(package, forceElevation)).ConfigureAwait(false);
-            return new FoundUsersViewModel(stateDetails);
+            try
+            {
+                var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(package, forceElevation)).ConfigureAwait(false);
+                if (stateDetails == null)
+                {
+                    return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
+                }
+
+                return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
+            }
+            catch (Exception e)
+            {
+                return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
+            }
         }
 
         private async Task<AppxDetailsViewModel> GetManifestDetails(Package package)

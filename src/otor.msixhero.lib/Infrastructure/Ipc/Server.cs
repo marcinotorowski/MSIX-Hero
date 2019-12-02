@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Infrastructure.Ipc.Helpers;
 using otor.msixhero.lib.Infrastructure.Ipc.Streams;
@@ -20,17 +21,22 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
         private readonly object lockObject = new object();
         private readonly AutoResetEvent autoResetEvent = new AutoResetEvent(true);
 
-        private readonly Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task<byte[]>>> handlersWithOutput = new Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task<byte[]>>>();
+        private readonly Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task<string>>> handlersWithOutput = new Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task<string>>>();
         private readonly Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task>> handlersWithoutOutput = new Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task>>();
 
         private readonly HashSet<Type> inputOutputTypes = new HashSet<Type>();
 
-        public void AddHandler<T>(Func<T, CancellationToken, Progress.Progress, Task<byte[]>> handler) where T : BaseCommand
+        public void AddHandler<TInput, TOutput>(Func<TInput, CancellationToken, Progress.Progress, Task<TOutput>> handler) where TInput : BaseCommand<TOutput>
         {
-            Logger.Debug("Adding handler for {0} that returns the data.", typeof(T).Name);
+            Logger.Debug("Adding handler for {0} that returns the data {1}.", typeof(TInput).Name, typeof(TOutput).Name);
             // ReSharper disable once AssignNullToNotNullAttribute
-            this.handlersWithOutput.Add(typeof(T), (command, cancellationToken, progress) => handler((T)command, cancellationToken, progress));
-            this.inputOutputTypes.Add(typeof(T));
+            this.handlersWithOutput.Add(typeof(TInput), async (command, cancellationToken, progress) =>
+            {
+                var result = await handler((TInput) command, cancellationToken, progress).ConfigureAwait(false);
+                return JsonConvert.SerializeObject(result, typeof(TOutput), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            });
+
+            this.inputOutputTypes.Add(typeof(TInput));
         }
         public void AddHandler<T>(Func<T, CancellationToken, Progress.Progress, Task> handler) where T : BaseCommand
         {
@@ -116,14 +122,13 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     progress.ProgressChanged += progressHandler;
                                 }
 
-                                byte[] result;
+                                string result;
                                 try
                                 {
                                     if (handlerWithOutput != null)
                                     {
                                         Logger.Debug("Waiting for {0} to return results...", command.GetType().Name);
                                         result = await handlerWithOutput(command, cancellationToken, progress);
-                                        Logger.Debug("Returning {0} bytes...", result.Length);
                                     }
                                     else if (handlerWithoutOutput != null)
                                     {

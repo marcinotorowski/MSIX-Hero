@@ -182,7 +182,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.GetRegistryMountState(package.InstallLocation, package.Name);
         }
 
-        public async Task<IList<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Logger.Info("Getting last {0} log files...", maxCount);
 
@@ -191,7 +191,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             using var logs = await ps.InvokeAsync().ConfigureAwait(false);
             
             var factory = new LogFactory();
-            return new List<Log>(logs.Select(log => factory.CreateFromPowerShellObject(log)));
+            return logs.Select(log => factory.CreateFromPowerShellObject(log)).ToList();
         }
 
         public Task<RegistryMountState> GetRegistryMountState(string installLocation, string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -346,7 +346,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return Task.FromResult(true);
         }
 
-        public Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<List<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.Get(null, mode, cancellationToken, progress);
         }
@@ -414,7 +414,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }, cancellationToken);
         }
 
-        private async Task<IList<Package>> Get(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        private async Task<List<Package>> Get(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             var list = new List<Package>();
 
@@ -432,10 +432,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        allPackages = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty).ToList()).ConfigureAwait(false);
+                        allPackages = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty).ToList(), cancellationToken).ConfigureAwait(false);
                         break;
                     case PackageFindMode.AllUsers:
-                        allPackages = await Task.Run(() => pkgMan.FindPackages().ToList()).ConfigureAwait(false);
+                        allPackages = await Task.Run(() => pkgMan.FindPackages().ToList(), cancellationToken).ConfigureAwait(false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -569,7 +569,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        private static async Task<PkgDetails> GetManifestDetails(string installLocation, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        private static async Task<PkgDetails> GetManifestDetails(string installLocation, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             try
             {

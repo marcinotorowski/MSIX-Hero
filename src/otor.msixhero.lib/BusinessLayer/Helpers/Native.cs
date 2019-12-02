@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing.Printing;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -110,7 +111,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
 
                         if (strm != null)
                         {
-                            var reader = factory.CreateManifestReader(strm); 
+                            var reader = (IAppxManifestReader4)factory.CreateManifestReader(strm); 
                             disposables.Push(reader);
                                     
                             var properties = reader.GetProperties();
@@ -362,7 +363,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
         private interface IAppxFactory
         {
             void _VtblGap0_2(); // skip 2 methods
-            IAppxManifestReader3 CreateManifestReader(IStream inputStream);
+            IAppxManifestReader4 CreateManifestReader(IStream inputStream);
         }
 
         [Guid("C43825AB-69B7-400A-9709-CC37F5A72D24"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -381,6 +382,40 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             void _VtblGap1_3(); // skip 3 methods
 
             IAppxManifestTargetDeviceFamiliesEnumerator GetTargetDeviceFamilies();
+        }
+        
+        // Note: The AppxPackaging.idl definition of this interface implements IAppxManifestReader3.
+        // Therefore the functions in IAppxManifestReader, IAppxManifestReader2, and IAppxManifestReader3 should be re-declared here.
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "*", Justification = "Interop")]
+        [Guid("4579BB7C-741D-4161-B5A1-47BD3B78AD9B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        private interface IAppxManifestReader4 : IDisposable
+        {
+            // IAppxManifestReader functions
+            IAppxManifestPackageId GetPackageId();
+
+            IAppxManifestProperties GetProperties();
+
+            IAppxManifestPackageDependenciesEnumerator GetPackageDependencies();
+            void _VtblGap1_4(); // skip 4 methods
+
+            IAppxManifestApplicationsEnumerator GetApplications();
+            void _VtblGap1_3(); // skip 3 methods
+
+            IAppxManifestTargetDeviceFamiliesEnumerator GetTargetDeviceFamilies();
+
+            // IAppxManifestReader4 functions
+            IAppxManifestOptionalPackageInfo GetOptionalPackageInfo();
+        }
+
+
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "*", Justification = "Interop")]
+        [Guid("2634847D-5B5D-4FE5-A243-002FF95EDC7E"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        internal interface IAppxManifestOptionalPackageInfo : IDisposable
+        {
+            bool GetIsOptionalPackage();
+
+            [return: MarshalAs(UnmanagedType.LPWStr)]
+            string GetMainPackageName();
         }
 
         [Guid("9EB8A55A-F04B-4D0D-808D-686185D4847A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

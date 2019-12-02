@@ -7,18 +7,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
     public class FoundUsersViewModel : NotifyPropertyChanged
     {
-        private readonly FoundUsers model;
-
-        public FoundUsersViewModel(FoundUsers model)
+        public FoundUsersViewModel(List<User> listOfInstalls, ElevationStatus status)
         {
-            this.model = model;
+            this.InstalledBy = listOfInstalls;
+            this.IsElevated = status == ElevationStatus.OK;
         }
 
-        public bool IsElevated => this.model.Status == ElevationStatus.OK;
+        public bool IsElevated { get; }
 
-        public List<User> InstalledBy
-        {
-            get => this.model.Users;
-        }
+        public List<User> InstalledBy { get; }
     }
 }

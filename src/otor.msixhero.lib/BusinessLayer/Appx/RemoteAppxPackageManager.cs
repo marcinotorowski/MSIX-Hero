@@ -90,7 +90,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.GetExecuted(new GetRegistryMountState(package.InstallLocation, package.Name), cancellationToken, progress);
         }
 
-        public async Task<IList<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<List<Package>> Get(PackageFindMode mode = PackageFindMode.Auto,
+            CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return await this.client.GetExecuted(new GetPackages(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers), cancellationToken, progress).ConfigureAwait(false);
         }
@@ -105,7 +106,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.Execute(new RemovePackages(forAllUsers ? PackageContext.AllUsers : PackageContext.CurrentUser, packages), cancellationToken, progress);
         }
 
-        public async Task<IList<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return await this.client.GetExecuted(new GetLogs(maxCount), cancellationToken, progress).ConfigureAwait(false);
         }

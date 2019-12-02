@@ -1,10 +1,11 @@
-﻿using System.Xml.Serialization;
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Users;
 
 namespace otor.msixhero.lib.Domain.Commands.Grid
 {
-    public class FindUsers : SelfElevatedCommand<FoundUsers>
+    public class FindUsers : SelfElevatedCommand<List<User>>
     {
         public FindUsers()
         {

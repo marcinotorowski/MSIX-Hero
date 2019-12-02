@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace otor.msixhero.lib.Infrastructure.Ipc.Streams
 {
@@ -77,13 +79,8 @@ namespace otor.msixhero.lib.Infrastructure.Ipc.Streams
                     return default(T);
                 }
 
-                var bytes = await binaryReader.ReadBytesAsync(msgLength, cancellationToken).ConfigureAwait(false);
-
-                var xmlSerializer = new XmlSerializer(typeof(T));
-                using (var reader = new MemoryStream(bytes))
-                {
-                    return (T)xmlSerializer.Deserialize(reader);
-                }
+                var jsonString = await binaryReader.ReadStringAsync(msgLength, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<T>(jsonString, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
             }
         }
 
@@ -155,19 +152,12 @@ namespace otor.msixhero.lib.Infrastructure.Ipc.Streams
 
         public async Task Write<T>(T value, CancellationToken cancellationToken = default)
         {
-            using (var binaryWriter = new AsyncBinaryWriter(this.stream, true))
-            {
-                using (var memoryArray = new MemoryStream())
-                {
-                    var serializer = new XmlSerializer(typeof(T));
-                    serializer.Serialize(memoryArray, value);
-                    memoryArray.Seek(0, SeekOrigin.Begin);
-                    
-                    var bytes = memoryArray.ToArray();
-                    await binaryWriter.WriteIntAsync(bytes.Length, cancellationToken).ConfigureAwait(false);
-                    await binaryWriter.WriteBytesAsync(bytes, cancellationToken).ConfigureAwait(false);
-                }
-            }
+            using var binaryWriter = new AsyncBinaryWriter(this.stream, true);
+            var jsonString = JsonConvert.SerializeObject(value, typeof(T), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+            var jsonBytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
+
+            await binaryWriter.WriteIntAsync(jsonBytes.Length, cancellationToken).ConfigureAwait(false);
+            await binaryWriter.WriteBytesAsync(jsonBytes, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
@@ -12,11 +13,14 @@ using otor.msixhero.lib.Domain.Commands.Manager;
 using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Domain.Commands.UI;
 using otor.msixhero.lib.Domain.State;
+using otor.msixhero.lib.Infrastructure.Logging;
 
 namespace otor.msixhero.lib.Infrastructure.Commanding
 {
     public class CommandExecutor : ICommandExecutor
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
+
         private readonly IDictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer<ApplicationState>>>();
         private readonly ApplicationStateManager stateManager;
         private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
@@ -96,15 +100,32 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     this.stateManager.CurrentState.IsSelfElevated = true;
                 }
             }
+            catch (OperationCanceledException)
+            {
+                Logger.Warn("Operation cancelled by the user.");
+                throw;
+            }
+            catch (Win32Exception e)
+            {
+                Logger.Error(e, "Win32 error during command execution.");
+                // If error code is 1223 it means that the user did not press YES in UAC.
+                var message = e.NativeErrorCode == 1223 ? "This operation requires administrative rights." : e.Message;
+                var result = this.interactionService.ShowError(message, extendedInfo: e.ToString());
+                if (result == InteractionResult.Retry)
+                {
+                    Logger.Info("Retrying...");
+                    await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                }
+            }
             catch (Exception e)
             {
-                if (this.interactionService.ShowError(e.Message, extendedInfo: e.ToString()) == InteractionResult.Retry)
+                Logger.Error(e, "General error during command execution.");
+                var result = this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+                if (result == InteractionResult.Retry)
                 {
+                    Logger.Info("Retrying...");
                     await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
-                    return;
                 }
-
-                throw;
             }
         }
 
@@ -125,7 +146,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
 
                 bool elevate;
-                
+
                 if (action is ISelfElevatedCommand selfElevateCommand)
                 {
                     elevate = selfElevateCommand.RequiresElevation;
@@ -140,7 +161,9 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     elevate = false;
                 }
 
-                var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
+                var packageManager = elevate
+                    ? this.appxPackageManagerFactory.GetRemote()
+                    : this.appxPackageManagerFactory.GetLocal();
 
                 var result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
 
@@ -151,14 +174,37 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
 
                 return result;
             }
-            catch (Exception e)
+            catch (OperationCanceledException)
             {
-                if (this.interactionService.ShowError(e.Message, extendedInfo: e.ToString()) == InteractionResult.Retry)
+                Logger.Warn("Operation cancelled by the user.");
+                throw;
+            }
+            catch (Win32Exception e)
+            {
+                Logger.Error(e, "Win32 error during command execution.");
+                // If error code is 1223 it means that the user did not press YES in UAC.
+                var message = e.NativeErrorCode == 1223 ? "This operation requires administrative rights." : e.Message;
+                var result = this.interactionService.ShowError(message, extendedInfo: e.ToString());
+
+                if (result == InteractionResult.Retry)
                 {
+                    Logger.Info("Retrying..");
                     return await this.GetExecuteAsync(action, cancellationToken).ConfigureAwait(false);
                 }
 
-                throw;
+                return default;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Generic error during command execution.");
+                var result = this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+                if (result == InteractionResult.Retry)
+                {
+                    Logger.Info("Retrying..");
+                    return await this.GetExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                }
+
+                return default;
             }
         }
 
