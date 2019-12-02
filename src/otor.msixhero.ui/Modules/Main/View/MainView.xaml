@@ -15,6 +15,13 @@
                      d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
@@ -79,6 +86,41 @@
                 <!--Backstage-->
                 <Fluent:Ribbon.Menu>
                     <Fluent:Backstage>
+                        <Fluent:BackstageTabControl ItemsPanelBackground="#2B579A">
+                            <Fluent:BackstageTabItem Header="Test 1">
+                                <Fluent:BackstageTabItem.Icon>
+                                    <Path Fill="White" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                                </Fluent:BackstageTabItem.Icon>
+                                <WrapPanel Orientation="Horizontal">
+                                    <WrapPanel Orientation="Vertical">
+                                        <Fluent:Button Header="Button 1" Foreground="Black" />
+                                        <Fluent:Button Header="Button 2" Foreground="Black" />
+                                        <Fluent:Button Header="Button 3" Foreground="Black" />
+                                    </WrapPanel>
+                                </WrapPanel>
+                            </Fluent:BackstageTabItem>
+                            <Fluent:BackstageTabItem Header="Test 2">
+                                <Fluent:BackstageTabItem.Icon>
+                                    <Path Fill="White" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                                </Fluent:BackstageTabItem.Icon>
+                            </Fluent:BackstageTabItem>
+                            <Fluent:BackstageTabItem Header="Test 3">
+                                <Fluent:BackstageTabItem.Icon>
+                                    <Path Fill="White" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                                </Fluent:BackstageTabItem.Icon>
+                            </Fluent:BackstageTabItem>
+                            <Fluent:BackstageTabItem Header="Test 4">
+                                <Fluent:BackstageTabItem.Icon>
+                                    <Path Fill="White" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                                </Fluent:BackstageTabItem.Icon>
+                            </Fluent:BackstageTabItem>
+                            <Separator />
+                            <Fluent:BackstageTabItem Header="Exit">
+                                <Fluent:BackstageTabItem.Icon>
+                                    <Path Fill="White" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                                </Fluent:BackstageTabItem.Icon>
+                            </Fluent:BackstageTabItem>
+                        </Fluent:BackstageTabControl>
                     </Fluent:Backstage>
                 </Fluent:Ribbon.Menu>
 
