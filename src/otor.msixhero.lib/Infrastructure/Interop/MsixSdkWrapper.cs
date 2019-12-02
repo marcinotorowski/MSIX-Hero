@@ -107,7 +107,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
         public async Task UnpackPackage(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default)
         {
             var makeAppx = GetSdkPath("makeappx.exe");
-            var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\"";
+            var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\" /o";
 
             Logger.Info("Executing {0} {1}", makeAppx, arguments);
 
@@ -139,7 +139,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
         public Task PackPackage(string unpackedDirectory, string packageFilePath, CancellationToken cancellationToken)
         {
             var makeAppx = GetSdkPath("makeappx.exe");
-            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\"";
+            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\"  /o";
             Logger.Info("Executing {0} {1}", makeAppx, arguments);
             return RunAsync(makeAppx, arguments, cancellationToken, 0);
         }
