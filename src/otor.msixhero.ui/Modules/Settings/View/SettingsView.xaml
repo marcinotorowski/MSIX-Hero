@@ -5,9 +5,85 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
+             MinWidth="500"
+             MinHeight="500"
+             Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            <TextBlock Text="test" />
-    </Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <Border Background="#2B579A" DockPanel.Dock="Top">
+            <DockPanel Margin="16">
+                <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorBulb}" />
+                <Grid Width="200" DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <TextBox Text="{Binding ElementName=MainContent, UpdateSourceTrigger=PropertyChanged, Path=(view:SearchHelper.SearchString), Delay=300, Mode=TwoWay}"  Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" />
+                    <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+                        <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                            </Path.LayoutTransform>
+                        </Path>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in application list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
+                                                <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                    <Condition.Value>
+                                                        <system:Int32>0</system:Int32>
+                                                    </Condition.Value>
+                                                </Condition>
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </DockPanel>
+                </Grid>
+                <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Settings</Label>
+            </DockPanel>
+        </Border>
+
+        <Border Background="#eee" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+                <Button Padding="8 4" Margin="4" Command="Close" Content="OK" />
+                <Button Padding="8 4" Margin="4" Command="Save" Content="Apply" />
+                <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
+            </StackPanel>
+        </Border>
+
+        <TabControl Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
+            <TabItem Header="General">
+
+            </TabItem>
+            <TabItem Header="Signing">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" />
+                        <TextBox Text="C:\Program Files\Test" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Other">
+
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using otor.msixhero.ui.Modules.Main;
 using otor.msixhero.ui.Modules.Main.View;
+using otor.msixhero.ui.Modules.Settings;
 using Prism.Regions;
 
 namespace otor.msixhero.ui

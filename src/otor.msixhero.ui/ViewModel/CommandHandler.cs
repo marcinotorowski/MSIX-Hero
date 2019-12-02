@@ -15,6 +15,7 @@ using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
+using otor.msixhero.ui.Modules.Settings;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.ViewModel
@@ -364,6 +365,7 @@ namespace otor.msixhero.ui.ViewModel
 
         private void ExtractCertExecute()
         {
+            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters(), this.OnDialogClosed);
             this.dialogService.ShowDialog(DialogsModule.CertificateExportPath, new DialogParameters(), this.OnDialogClosed);
         }
 
