@@ -15,6 +15,16 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
 
         private static readonly ILog Logger = LogManager.GetLogger();
 
+        public static Task<AppxManifestSummary> FromFile(string filePath, bool basicInformation = true)
+        {
+            if (string.Equals(AppxManifestName, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
+            {
+                return FromManifest(filePath);
+            }
+
+            return FromMsix(filePath);
+        }
+
         public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, bool basicInformation = true)
         {
             Logger.Info("Reading application manifest {0}...", fullMsixFilePath);

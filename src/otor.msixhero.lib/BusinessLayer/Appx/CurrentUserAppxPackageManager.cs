@@ -104,19 +104,44 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            try
+            if (string.Equals(Path.GetFileName(filePath), "AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
             {
-                var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
-                var pkgManager = new PackageManager();
-                await AsyncOperationHelper.ConvertToTask(
-                    pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown),
-                    "Installing " + reader.DisplayName + "...",
-                    cancellationToken,
-                    progress).ConfigureAwait(false);
+                try
+                {
+
+                    var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
+                    var pkgManager = new PackageManager();
+
+                    using (var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
+                    {
+                        var cmd = powerShell.AddCommand("Add-AppxPackage");
+                        cmd.AddParameter("-Path", filePath);
+                        cmd.AddParameter("-Register");
+
+                        await powerShell.InvokeAsync().ConfigureAwait(false);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new DeveloperModeInstallException();
+                }
             }
-            catch (InvalidDataException e)
+            else
             {
-                throw new InvalidOperationException("File " + filePath + " does not seem to be a valid MSIX package." + e, e);
+                try
+                {
+                    var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
+                    var pkgManager = new PackageManager();
+                    await AsyncOperationHelper.ConvertToTask(
+                        pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown),
+                        "Installing " + reader.DisplayName + "...",
+                        cancellationToken,
+                        progress).ConfigureAwait(false);
+                }
+                catch (InvalidDataException e)
+                {
+                    throw new InvalidOperationException("File " + filePath + " does not seem to be a valid MSIX package." + e, e);
+                }
             }
         }
 

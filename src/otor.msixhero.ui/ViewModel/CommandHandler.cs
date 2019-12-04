@@ -127,7 +127,7 @@ namespace otor.msixhero.ui.ViewModel
 
         private void AddPackageExecute()
         {
-            if (!this.interactionService.SelectFile("MSIX packages (*.msix)|*.msix", out var selection))
+            if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx;*.appxbundle;AppxManifest.xml|MSIX/APPX packages|*.msix;*.appx;*.appxbundle|Manifest files|AppxManifest.xml", out var selection))
             {
                 return;
             }
