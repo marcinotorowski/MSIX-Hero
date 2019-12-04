@@ -8,17 +8,21 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel"
              mc:Ignorable="d" 
-             MinWidth="500"
-             MinHeight="500"
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:CertificateExportViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="550" />
+            <Setter Property="Height" Value="550" />
+            <Setter Property="MinWidth" Value="500" />
+            <Setter Property="MinHeight" Value="350" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Colors.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Converters.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Tabs.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -71,40 +75,42 @@
             </ContentControl>
 
             <Grid Margin="16">
-                <StackPanel Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <ScrollViewer Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
 
-                    <TextBlock Foreground="#666" Text="Full path to an MSIX package" Margin="0 0 0 6" />
-                    <DockPanel>
-                        <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="4 0 0 0" CommandParameter="{Binding ElementName=PathInput}" />
-                        <TextBox x:Name="PathInput" TabIndex="4" Text="{Binding InputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                    </DockPanel>
+                        <TextBlock Foreground="#666" Text="Full path to an MSIX package" Margin="0 0 0 6" />
+                        <DockPanel>
+                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="4 0 0 0" CommandParameter="{Binding ElementName=PathInput}" />
+                            <TextBox x:Name="PathInput" TabIndex="4" Text="{Binding InputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                        </DockPanel>
 
-                    <Border Visibility="{Binding CertificateDetails.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#eee" Margin="0 16 0 0">
-                        <StackPanel Margin="8">
-                            <TextBlock Opacity="0.7" Text="This file is digitally signed by the following ceritficate:" />
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Issued for" />
-                                <TextBlock  Style="{StaticResource DataValue}" Text="{Binding CertificateDetails.CurrentValue.DisplayName, FallbackValue='n/a', TargetNullValue='n/a'}" TextWrapping="Wrap" ToolTip="{Binding CertificateDetails.CurrentValue.Subject}" />
+                        <Border Visibility="{Binding CertificateDetails.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#eee" Margin="0 16 0 0">
+                            <StackPanel Margin="8">
+                                <TextBlock Opacity="0.7" Text="This file is digitally signed by the following ceritficate:" />
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Issued for" />
+                                    <TextBlock  Style="{StaticResource DataValue}" Text="{Binding CertificateDetails.CurrentValue.DisplayName, FallbackValue='n/a', TargetNullValue='n/a'}" TextWrapping="Wrap" ToolTip="{Binding CertificateDetails.CurrentValue.Subject}" />
+                                </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Issuer" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding CertificateDetails.CurrentValue.Issuer, FallbackValue='n/a', TargetNullValue='n/a'}" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Digest algorithm" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding CertificateDetails.CurrentValue.DigestAlgorithm, FallbackValue='n/a', TargetNullValue='n/a'}" TextWrapping="Wrap" />
+                                </StackPanel>
                             </StackPanel>
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Issuer" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding CertificateDetails.CurrentValue.Issuer, FallbackValue='n/a', TargetNullValue='n/a'}" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Digest algorithm" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding CertificateDetails.CurrentValue.DigestAlgorithm, FallbackValue='n/a', TargetNullValue='n/a'}" TextWrapping="Wrap" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
+                        </Border>
 
-                    <CheckBox IsChecked="{Binding SaveToFile}" Content="Save as .CER file" Margin="0 16 0 6" />
-                    <DockPanel IsEnabled="{Binding SaveToFile}" Margin="22 0 0 0">
-                        <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" CommandParameter="{Binding ElementName=PathOutput}" Margin="4 0 0 0" />
-                        <TextBox x:Name="PathOutput"  TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                    </DockPanel>
+                        <CheckBox IsChecked="{Binding SaveToFile}" Content="Save as .CER file" Margin="0 16 0 6" />
+                        <DockPanel IsEnabled="{Binding SaveToFile}" Margin="22 0 0 0">
+                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" CommandParameter="{Binding ElementName=PathOutput}" Margin="4 0 0 0" />
+                            <TextBox x:Name="PathOutput"  TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                        </DockPanel>
 
-                    <CheckBox IsChecked="{Binding SaveToStore}" Content="Import to Trusted People store" Margin="0 10 0 6" />
-                </StackPanel>
+                        <CheckBox IsChecked="{Binding SaveToStore}" Content="Import to Trusted People store" Margin="0 10 0 6" />
+                    </StackPanel>
+                </ScrollViewer>
                 <Border Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel VerticalAlignment="Center">
                         <Path Style="{StaticResource AnimatedSuccess}" />

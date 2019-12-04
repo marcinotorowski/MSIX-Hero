@@ -5,13 +5,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.Settings.ViewModel;
+using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Settings.View
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml
     /// </summary>
-    public partial class SettingsView : UserControl
+    public partial class SettingsView
     {
         private readonly IInteractionService interactionService;
 

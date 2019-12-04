@@ -12,10 +12,17 @@
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.View"
              xmlns:signing="clr-namespace:otor.msixhero.lib.Domain.Appx.Signing;assembly=otor.msixhero.lib"
              mc:Ignorable="d" 
-             MinWidth="500"
-             MinHeight="500"
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:PackageSigningViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="650" />
+            <Setter Property="Height" Value="600" />
+            <Setter Property="MinWidth" Value="500" />
+            <Setter Property="MinHeight" Value="450" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -85,8 +92,8 @@
                             <Run Text="{Binding Files.Count, Mode=OneWay}" Foreground="#777" />
                             </TextBlock>
                         </TabItem.Header>
-                        <Border>
-                            <DockPanel Margin="0 0 0 16">
+                        <ScrollViewer Margin="0 0 0 16">
+                            <DockPanel>
                                 <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Package(s) to update" Margin="0 0 0 6" />
                                 <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
                                     <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="New" Content="Add more packages..." />
@@ -127,51 +134,54 @@
                             IsHitTestVisible="False" />
                                 </Grid>
                             </DockPanel>
-                        </Border>
+                        </ScrollViewer>
                     </TabItem>
                     <TabItem Header="Certificate">
-                        <DockPanel Margin="0 0 0 16">
+                        <ScrollViewer Margin="0 0 0 16">
 
-                            <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Certificate to sign the package" Margin="0 0 0 6" />
+                            <DockPanel>
 
-                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                <RadioButton GroupName="r1" IsChecked="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Pfx}}" Content="Certificate from PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
-                                <RadioButton GroupName="r2" IsChecked="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Personal}}" Content="Certificate from store" Margin="0 0 16 8" x:Name="CertStore" />
-                            </StackPanel>
+                                <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Certificate to sign the package" Margin="0 0 0 6" />
 
-                            <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Button Padding="10 0" Command="Open" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
-                                <TextBox Text="{Binding PfxPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                                    <RadioButton GroupName="r1" IsChecked="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Pfx}}" Content="Certificate from PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
+                                    <RadioButton GroupName="r2" IsChecked="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Personal}}" Content="Certificate from store" Margin="0 0 16 8" x:Name="CertStore" />
+                                </StackPanel>
+
+                                <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Button Padding="10 0" Command="Open" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
+                                    <TextBox Text="{Binding PfxPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                                </DockPanel>
+
+                                <ComboBox SelectedValue="{Binding SelectedPersonalCertificate, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" Visibility="{Binding ElementName=CertStore, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <ComboBox.ItemTemplateSelector>
+                                        <helpers:ComboBoxTemplateSelector>
+                                            <helpers:ComboBoxTemplateSelector.ListTemplate>
+                                                <DataTemplate DataType="{x:Type viewModel1:CertificateViewModel}">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding Subject}" Opacity="0.6" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </helpers:ComboBoxTemplateSelector.ListTemplate>
+                                            <helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                                                <DataTemplate DataType="{x:Type viewModel1:CertificateViewModel}">
+                                                    <TextBlock Text="{Binding DisplayName}" />
+                                                </DataTemplate>
+                                            </helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                                        </helpers:ComboBoxTemplateSelector>
+                                    </ComboBox.ItemTemplateSelector>
+                                </ComboBox>
+
+                                <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
+                                <PasswordBox IsEnabled="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Pfx}}" Tag="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
+
+                                <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
+                                <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                                <Border />
                             </DockPanel>
-
-                            <ComboBox SelectedValue="{Binding SelectedPersonalCertificate, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" Visibility="{Binding ElementName=CertStore, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <ComboBox.ItemTemplateSelector>
-                                    <helpers:ComboBoxTemplateSelector>
-                                        <helpers:ComboBoxTemplateSelector.ListTemplate>
-                                            <DataTemplate DataType="{x:Type viewModel1:CertificateViewModel}">
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
-                                                    <TextBlock Text="{Binding Subject}" Opacity="0.6" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </helpers:ComboBoxTemplateSelector.ListTemplate>
-                                        <helpers:ComboBoxTemplateSelector.SelectedTemplate>
-                                            <DataTemplate DataType="{x:Type viewModel1:CertificateViewModel}">
-                                                <TextBlock Text="{Binding DisplayName}" />
-                                            </DataTemplate>
-                                        </helpers:ComboBoxTemplateSelector.SelectedTemplate>
-                                    </helpers:ComboBoxTemplateSelector>
-                                </ComboBox.ItemTemplateSelector>
-                            </ComboBox>
-
-                            <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
-                            <PasswordBox IsEnabled="{Binding Store, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel1:CertificateSource.Pfx}}" Tag="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
-
-                            <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
-                            <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-
-                            <Border />
-                        </DockPanel>
+                        </ScrollViewer>
                     </TabItem>
                 </TabControl>
                 <StackPanel DockPanel.Dock="Top" Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">

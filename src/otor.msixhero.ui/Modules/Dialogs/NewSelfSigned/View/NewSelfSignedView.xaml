@@ -8,10 +8,17 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             MinWidth="500"
-             MinHeight="500"
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="600" />
+            <Setter Property="Height" Value="550" />
+            <Setter Property="MinWidth" Value="450" />
+            <Setter Property="MinHeight" Value="350" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,7 +28,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-   
+
     <UserControl.CommandBindings>
         <CommandBinding 
             Command="Save"
@@ -78,22 +85,24 @@
             </ContentControl>
 
             <Grid Margin="16">
-                <StackPanel Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                    <TextBlock Foreground="#666" Text="Publisher friendly name" Margin="0 0 0 6" />
-                    <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                        <TextBlock Foreground="#666" Text="Publisher friendly name" Margin="0 0 0 6" />
+                        <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                    <TextBlock Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
-                    <TextBox TabIndex="2" Text="{Binding PublisherName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        <TextBlock Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
+                        <TextBox TabIndex="2" Text="{Binding PublisherName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                    <TextBlock Foreground="#666" Text="Password" Margin="0 16 0 6" />
-                    <PasswordBox TabIndex="3" PasswordChanged="OnPasswordChanged" />
+                        <TextBlock Foreground="#666" Text="Password" Margin="0 16 0 6" />
+                        <PasswordBox TabIndex="3" PasswordChanged="OnPasswordChanged" />
 
-                    <TextBlock  Foreground="#666" Text="Output path" Margin="0 16 0 6" />
-                    <DockPanel>
-                        <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="4 0 0 0" />
-                        <TextBox x:Name="OutputPath" TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                    </DockPanel>
-                </StackPanel>
+                        <TextBlock  Foreground="#666" Text="Output path" Margin="0 16 0 6" />
+                        <DockPanel>
+                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="4 0 0 0" />
+                            <TextBox x:Name="OutputPath" TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                        </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
 
                 <Border MaxWidth="460" Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel VerticalAlignment="Center">

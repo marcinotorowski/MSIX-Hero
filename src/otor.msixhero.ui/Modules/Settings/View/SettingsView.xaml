@@ -8,13 +8,21 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel"
-             MinWidth="500"
-             MinHeight="500"
+             xmlns:prism="http://prismlibrary.com/"
              Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="450" 
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="550" />
+            <Setter Property="Height" Value="550" />
+            <Setter Property="MinWidth" Value="350" />
+            <Setter Property="MinHeight" Value="350" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
