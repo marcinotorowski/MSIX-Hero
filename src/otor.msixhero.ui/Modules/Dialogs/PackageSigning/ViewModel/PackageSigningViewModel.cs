@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
@@ -20,6 +21,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
     {
         private readonly IAppxSigningManager signingManager;
         private readonly IInteractionService interactionService;
+        private readonly IConfigurationService configurationService;
         private int progress;
         private string progressMessage;
         private bool isLoading;
@@ -30,13 +32,17 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
         private SecureString password;
         private bool isSuccess;
 
-        public PackageSigningViewModel(IAppxSigningManager signingManager, IInteractionService interactionService)
+        public PackageSigningViewModel(IAppxSigningManager signingManager, IInteractionService interactionService, IConfigurationService configurationService)
         {
             this.signingManager = signingManager;
             this.interactionService = interactionService;
+            this.configurationService = configurationService;
             this.Files = new ObservableCollection<string>();
             this.Files.CollectionChanged += FilesOnCollectionChanged;
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates());
+
+            // Default values
+            this.timestamp = this.configurationService.GetCurrentConfiguration().Signing.TimeStampServer;
         }
 
         public AsyncProperty<ObservableCollection<CertificateViewModel>> PersonalCertificates { get; }

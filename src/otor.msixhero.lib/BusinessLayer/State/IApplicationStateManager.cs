@@ -12,8 +12,6 @@ namespace otor.msixhero.lib.BusinessLayer.State
         ICommandExecutor CommandExecutor { get; }
 
         IEventAggregator EventAggregator { get; }
-
-        Task Initialize();
     }
 
     public interface IApplicationStateManager<out T> : IApplicationStateManager where T : IApplicationState

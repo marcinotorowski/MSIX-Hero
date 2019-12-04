@@ -38,7 +38,7 @@ namespace otor.msixhero.lib.Infrastructure.Logging
             return GetLogger(cls);
         }
         
-        public static void Initialize(MsixHeroLogLevel minLogLevel = MsixHeroLogLevel.Debug, MsixHeroLogLevel maxLogLevel = MsixHeroLogLevel.Fatal)
+        public static void Initialize(MsixHeroLogLevel minLogLevel = MsixHeroLogLevel.Info, MsixHeroLogLevel maxLogLevel = MsixHeroLogLevel.Fatal)
         {
             var assembly = Path.GetFileNameWithoutExtension((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location);
             var fileName = $"{DateTime.Now:yyyyMMdd-hhmmss}_{assembly}.log";

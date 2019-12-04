@@ -7,9 +7,7 @@ namespace otor.msixhero.lib.Domain.State
         IPackageListState Packages { get; }    
 
         ILocalSettings LocalSettings { get; }
-
-        Configuration Configuration { get; }
-
+        
         bool IsElevated { get; }
 
         bool IsSelfElevated { get; }

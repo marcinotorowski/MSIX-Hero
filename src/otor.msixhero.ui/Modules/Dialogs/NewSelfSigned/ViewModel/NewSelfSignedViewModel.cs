@@ -10,6 +10,7 @@ using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.ViewModel;
@@ -33,13 +34,17 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
         private bool isSuccess;
         private ICommand importNewCertificate;
 
-        public NewSelfSignedViewModel(IAppxSigningManager signingManager, IInteractionService interactionService, IApplicationStateManager stateManager)
+        public NewSelfSignedViewModel(
+            IAppxSigningManager signingManager, 
+            IInteractionService interactionService, 
+            IApplicationStateManager stateManager,
+            IConfigurationService configurationService)
         {
             this.signingManager = signingManager;
             this.interactionService = interactionService;
             this.stateManager = stateManager;
             this.publisherName = "CN=";
-            this.outputPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            this.outputPath = configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder;
         }
 
         public string PublisherName

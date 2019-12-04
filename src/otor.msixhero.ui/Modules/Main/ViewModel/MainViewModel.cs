@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
-using System.Windows.Shapes;
-using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
@@ -12,7 +10,6 @@ using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Services;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Regions;
@@ -26,6 +23,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
         private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
+        private readonly IConfigurationService configurationService;
         private readonly IRegionManager regionManager;
         private readonly IDialogService dialogService;
         private bool isLoading;
@@ -36,6 +34,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             IInteractionService interactionService,
             IApplicationStateManager stateManager,
             IAppxPackageManagerFactory appxPackageManagerFactory, 
+            IConfigurationService configurationService,
             IRegionManager regionManager, 
             IDialogService dialogService, 
             IBusyManager busyManager)
@@ -43,6 +42,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.interactionService = interactionService;
             this.stateManager = stateManager;
             this.appxPackageManagerFactory = appxPackageManagerFactory;
+            this.configurationService = configurationService;
             this.regionManager = regionManager;
             this.dialogService = dialogService;
             this.Tools = new ObservableCollection<ToolViewModel>();
@@ -61,7 +61,9 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         {
             this.Tools.Clear();
 
-            foreach (var item in this.stateManager.CurrentState.Configuration?.List?.Tools ?? Enumerable.Empty<ToolListConfiguration>())
+            var config = this.configurationService.GetCurrentConfiguration();
+
+            foreach (var item in config?.List?.Tools ?? Enumerable.Empty<ToolListConfiguration>())
             {
                 var itemName = item.Name;
                 if (string.IsNullOrEmpty(itemName) && !string.IsNullOrEmpty(item.Path))

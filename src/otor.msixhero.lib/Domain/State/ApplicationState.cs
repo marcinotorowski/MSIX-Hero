@@ -22,7 +22,5 @@ namespace otor.msixhero.lib.Domain.State
         public bool IsElevated { get; } = UserHelper.IsAdministrator();
 
         public bool IsSelfElevated { get; set; }
-
-        public Configuration Configuration { get; set; }
     }
 }

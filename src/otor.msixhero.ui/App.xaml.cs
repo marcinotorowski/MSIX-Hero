@@ -39,7 +39,7 @@ namespace otor.msixhero.ui
         static App()
         {
 #if DEBUG
-            LogManager.Initialize();
+            LogManager.Initialize(MsixHeroLogLevel.Debug);
 #else
             LogManager.Initialize(MsixHeroLogLevel.Info);
 #endif
@@ -54,16 +54,13 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IAppxPackageManagerFactory, AppxPackageManagerFactory>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
             containerRegistry.RegisterSingleton<IClientCommandRemoting, ClientCommandRemoting>();
-            containerRegistry.RegisterSingleton<IConfigurationService, ConfigurationService>();
+            containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IApplicationStateManager, ApplicationStateManager>();
             containerRegistry.RegisterInstance<IProcessManager>(this.processManager);
         }
         
         protected override Window CreateShell()
         {
-            var appStateManager = ServiceLocator.Current.GetInstance<IApplicationStateManager>();
-            appStateManager.Initialize().GetAwaiter().GetResult();
-
             var shell = ServiceLocator.Current.GetInstance<MainWindow>();
             return shell;
         }

@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Modules\Settings\View\Images\no-sidebar.png" />
+    <None Remove="Modules\Settings\View\Images\sidebar.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.6.0" />
     <PackageReference Include="Fluent.Ribbon" Version="7.0.0" />
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.0.0" />
@@ -23,7 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\" />
+    <Resource Include="Modules\Settings\View\Images\no-sidebar.png" />
+    <Resource Include="Modules\Settings\View\Images\sidebar.png" />
   </ItemGroup>
 
   <ItemGroup>

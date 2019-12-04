@@ -7,11 +7,14 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel"
              MinWidth="500"
              MinHeight="500"
              Background="White"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" 
+             d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,6 +22,11 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
+        <CommandBinding Command="Close" Executed="CloseExecuted" />
+    </UserControl.CommandBindings>
 
     <DockPanel>
         <Border Background="#2B579A" DockPanel.Dock="Top">
@@ -62,21 +70,52 @@
 
         <Border Background="#eee" DockPanel.Dock="Bottom">
             <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-                <Button Padding="8 4" Margin="4" Command="Close" Content="OK" />
+                <Button Padding="8 4" Margin="4" Command="Save" Content="OK">
+                    <Button.CommandParameter>
+                        <system:Boolean>True</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
                 <Button Padding="8 4" Margin="4" Command="Save" Content="Apply" />
                 <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
             </StackPanel>
         </Border>
 
+        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"  Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
+            <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
+        </Border>
+
         <TabControl Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
             <TabItem Header="General">
-
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <UniformGrid HorizontalAlignment="Left" Rows="1" Columns="2">
+                        <Border Margin="0 0 8 8">
+                            <StackPanel>
+                                <Image Source="Images/sidebar.png" Stretch="None" />
+                                <RadioButton IsChecked="{Binding SidebarDefaultState.CurrentValue}" GroupName="g1" Content="With sidebar" Margin="0 8 0 0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Margin="0 0 8 8">
+                            <StackPanel>
+                                <Image Source="Images/no-sidebar.png" Stretch="None" />
+                                <RadioButton IsChecked="{Binding SidebarDefaultState.CurrentValue, Converter={StaticResource NegativeConverter}}" Content="Without sidebar" Margin="0 8 0 0" />
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Signing">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" />
-                        <TextBox Text="C:\Program Files\Test" />
+                        <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding CertificateOutputPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Default time stamp authority" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <DockPanel>
+                            <TextBox Text="{Binding TimeStampServer.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
