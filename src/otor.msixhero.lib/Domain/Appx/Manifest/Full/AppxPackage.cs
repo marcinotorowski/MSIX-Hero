@@ -31,6 +31,14 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public string DisplayName { get; set; }
 
         public bool IsFramework { get; set; }
+        
+        public bool IsDevelopment { get; set; }
+        
+        public bool IsBundle { get; set; }
+
+        public bool IsOptional { get; set; }
+
+        public bool IsResource { get; set; }
 
         public string Version { get; set; }
 

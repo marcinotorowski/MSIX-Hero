@@ -4,9 +4,7 @@ namespace otor.msixhero.lib.Domain.State
 {
     public interface IApplicationState
     {
-        IPackageListState Packages { get; }    
-
-        ILocalSettings LocalSettings { get; }
+        IPackageListState Packages { get; }  
         
         bool IsElevated { get; }
 

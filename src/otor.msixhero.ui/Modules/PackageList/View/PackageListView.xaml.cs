@@ -84,10 +84,10 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void UpdateSidebarVisibility()
         {
-            this.PackageDetails.Visibility = this.applicationStateManager.CurrentState.LocalSettings.ShowSidebar ? Visibility.Visible : Visibility.Collapsed;
+            this.PackageDetails.Visibility = this.applicationStateManager.CurrentState.Packages.ShowSidebar ? Visibility.Visible : Visibility.Collapsed;
             this.GridSplitter.Visibility = this.PackageDetails.Visibility;
 
-            if (this.applicationStateManager.CurrentState.LocalSettings.ShowSidebar)
+            if (this.applicationStateManager.CurrentState.Packages.ShowSidebar)
             {
                 this.Grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
                 this.Grid.ColumnDefinitions[1].Width = GridLength.Auto;

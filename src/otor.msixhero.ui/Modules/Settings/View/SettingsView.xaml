@@ -93,7 +93,7 @@
         </Border>
 
         <TabControl Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
-            <TabItem Header="General">
+            <TabItem Visibility="Collapsed" Header="General">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <UniformGrid HorizontalAlignment="Left" Rows="1" Columns="2">
                         <Border Margin="0 0 8 8">
@@ -127,7 +127,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Other">
+            <TabItem Header="Other" Visibility="Collapsed">
 
             </TabItem>
         </TabControl>

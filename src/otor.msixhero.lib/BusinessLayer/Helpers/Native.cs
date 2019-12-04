@@ -20,6 +20,12 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
 {
     internal class Native
     {
+        public const int PACKAGE_PROPERTY_DEVELOPMENT_MODE = 0x00010000;
+        public const int PACKAGE_PROPERTY_RESOURCE = 0x00000002;
+        public const int PACKAGE_PROPERTY_BUNDLE = 0x00000004;
+        public const int PACKAGE_PROPERTY_OPTIONAL = 0x00000008;
+        public const int PACKAGE_PROPERTY_FRAMEWORK = 0x00000001;
+
         internal static string GetPropertyStringValue(string name, IAppxManifestProperties properties)
         {
             if (name == null)
@@ -101,6 +107,11 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                         package.ResourceId = Marshal.PtrToStringUni(info.packageId.resourceId);
                         package.ProcessorArchitecture = info.packageId.processorArchitecture;
                         package.Version = new Version(info.packageId.VersionMajor, info.packageId.VersionMinor, info.packageId.VersionBuild, info.packageId.VersionRevision).ToString(4);
+                        package.IsDevelopment = PACKAGE_PROPERTY_DEVELOPMENT_MODE == (info.flags & PACKAGE_PROPERTY_DEVELOPMENT_MODE);
+                        package.IsBundle = PACKAGE_PROPERTY_BUNDLE == (info.flags & PACKAGE_PROPERTY_BUNDLE);
+                        package.IsResource = PACKAGE_PROPERTY_RESOURCE == (info.flags & PACKAGE_PROPERTY_RESOURCE);
+                        package.IsOptional = PACKAGE_PROPERTY_OPTIONAL == (info.flags & PACKAGE_PROPERTY_OPTIONAL);
+                        package.IsFramework = PACKAGE_PROPERTY_FRAMEWORK == (info.flags & PACKAGE_PROPERTY_FRAMEWORK);
 
                         // read manifest
                         string manifestPath = System.IO.Path.Combine(package.Path, "AppXManifest.xml");
@@ -131,7 +142,8 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                             package.DisplayName = GetPropertyStringValue("DisplayName", properties);
                             package.Logo = GetPropertyStringValue("Logo", properties);
                             package.PublisherDisplayName = GetPropertyStringValue("PublisherDisplayName", properties);
-                            package.IsFramework = GetPropertyBoolValue("Framework", properties);
+                            // we already know the framework and so from package info
+                            // package.IsFramework = GetPropertyBoolValue("Framework", properties); 
 
                             if (package.PackageDependencies == null)
                             {

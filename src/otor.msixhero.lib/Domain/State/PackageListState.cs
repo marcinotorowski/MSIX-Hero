@@ -6,11 +6,12 @@ namespace otor.msixhero.lib.Domain.State
 {
     public class PackageListState : IPackageListState
     {
-        public PackageListState(ApplicationState parentState)
+        public PackageListState()
         {
             this.Context = UserHelper.IsAdministrator() ? PackageContext.AllUsers : PackageContext.CurrentUser;
             this.Filter = PackageFilter.Developer;
             this.Group = PackageGroup.Publisher;
+            this.ShowSidebar = true;
 
             this.VisibleItems = new List<Package>();
             this.HiddenItems = new List<Package>();
@@ -24,6 +25,8 @@ namespace otor.msixhero.lib.Domain.State
         public PackageGroup Group { get; set; }
 
         public PackageSort Sort { get; set; }
+
+        public bool ShowSidebar { get; set; }
 
         public string SearchKey { get; set; }
 

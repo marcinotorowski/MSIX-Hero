@@ -110,7 +110,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
         public bool ShowSidebar
         {
-            get => this.stateManager.CurrentState.LocalSettings.ShowSidebar;
+            get => this.stateManager.CurrentState.Packages.ShowSidebar;
             set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageSidebarVisibility(value), CancellationToken.None);
         }
 

@@ -657,7 +657,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             switch (signatureKind)
             {
                 case Windows.ApplicationModel.PackageSignatureKind.None:
-                    return SignatureKind.None;
+                    return SignatureKind.Unsigned;
                 case Windows.ApplicationModel.PackageSignatureKind.Developer:
                     return SignatureKind.Developer;
                 case Windows.ApplicationModel.PackageSignatureKind.Enterprise:

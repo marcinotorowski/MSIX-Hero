@@ -20,12 +20,12 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public override Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            if (this.action.IsVisible == this.StateManager.CurrentState.LocalSettings.ShowSidebar)
+            if (this.action.IsVisible == this.StateManager.CurrentState.Packages.ShowSidebar)
             {
                 return Task.FromResult(false);
             }
 
-            this.StateManager.CurrentState.LocalSettings.ShowSidebar = action.IsVisible;
+            this.StateManager.CurrentState.Packages.ShowSidebar = action.IsVisible;
             this.StateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Publish(action.IsVisible);
             return Task.FromResult(true);
         }

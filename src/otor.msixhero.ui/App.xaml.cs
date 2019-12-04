@@ -67,6 +67,11 @@ namespace otor.msixhero.ui
 
         protected override void OnExit(ExitEventArgs e)
         {
+            if (this.Container.Resolve<IApplicationStateManager>() is IDisposable appStateManager)
+            {
+                appStateManager.Dispose();
+            }
+
             this.processManager.Dispose();
             base.OnExit(e);
         }

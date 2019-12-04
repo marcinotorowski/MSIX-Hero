@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using otor.msixhero.lib.Infrastructure.Configuration.ResolvableFolder;
 using otor.msixhero.lib.Infrastructure.Logging;
 
@@ -74,7 +75,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
                 DefaultValueHandling = DefaultValueHandling.Include,
                 DateParseHandling = DateParseHandling.DateTime,
                 TypeNameHandling = TypeNameHandling.None,
-                Formatting = Formatting.Indented
+                Formatting = Formatting.Indented,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
 
             var dirInfo = new FileInfo(file).Directory;
@@ -132,6 +134,11 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             if (result.List.Sidebar == null)
             {
                 result.List.Sidebar = defaults.List.Sidebar;
+            }
+
+            if (result.List.Filter == null)
+            {
+                result.List.Filter = defaults.List.Filter;
             }
 
             return result;

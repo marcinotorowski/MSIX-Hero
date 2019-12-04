@@ -61,8 +61,11 @@ namespace otor.msixhero.ui.ViewModel
                     case SignatureKind.Store:
                         return "Store app";
                     case SignatureKind.Enterprise:
+                        return "Sideloaded (Enterprise)";
                     case SignatureKind.Developer:
-                        return "Sideloaded app";
+                        return "Sideloaded (Developer)";
+                    case SignatureKind.Unsigned:
+                        return "Sideloaded (unsigned)";
                     default:
                         return "Unknown";
                 }

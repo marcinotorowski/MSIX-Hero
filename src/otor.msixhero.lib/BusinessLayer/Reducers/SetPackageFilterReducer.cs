@@ -105,12 +105,13 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 switch (item.SignatureKind)
                 {
                     case SignatureKind.Developer:
+                    case SignatureKind.Unsigned:
                     case SignatureKind.Enterprise:
                         if ((action.Filter & PackageFilter.Developer) == PackageFilter.Developer)
                         {
                             toShow.Add(item);
                         }
-
+                        
                         break;
                     case SignatureKind.Store:
                         if ((action.Filter & PackageFilter.Store) == PackageFilter.Store)

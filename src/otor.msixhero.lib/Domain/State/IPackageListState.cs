@@ -5,6 +5,8 @@ namespace otor.msixhero.lib.Domain.State
 {
     public interface IPackageListState
     {
+        bool ShowSidebar { get; }
+
         PackageFilter Filter { get; }
 
         PackageGroup Group { get; }
