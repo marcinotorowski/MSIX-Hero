@@ -122,11 +122,10 @@
 
                 <!--Tabs-->
                 <Fluent:RibbonTabItem Header="Home" ReduceOrder="
-                                      RibbonHomeContext,RibbonHomeContext,RibbonHomeContext,
                                       RibbonHomeActions,RibbonHomeActions,RibbonHomeActions,
                                       RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
 
-                    <Fluent:RibbonGroupBox x:Name="RibbonHomeContext" Header="Context">
+                    <Fluent:RibbonGroupBox x:Name="RibbonHomeActions" Header="Actions">
                         <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Small">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
@@ -135,28 +134,6 @@
                                 <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
                             </Fluent:Button.Icon>
                         </Fluent:Button>
-
-                        <Separator />
-
-                        <Fluent:RadioButton GroupName="Users1" Header="Current user" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.CurrentUser}}">
-                            <Fluent:RadioButton.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
-                            </Fluent:RadioButton.SizeDefinition>
-                            <Fluent:RadioButton.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
-                            </Fluent:RadioButton.Icon>
-                        </Fluent:RadioButton>
-                        <Fluent:RadioButton GroupName="Users2" Header="All users" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.AllUsers}}">
-                            <Fluent:RadioButton.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
-                            </Fluent:RadioButton.SizeDefinition>
-                            <Fluent:RadioButton.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUsers}" />
-                            </Fluent:RadioButton.Icon>
-                        </Fluent:RadioButton>
-                    </Fluent:RibbonGroupBox>
-
-                    <Fluent:RibbonGroupBox x:Name="RibbonHomeActions" Header="Actions">
                         <Fluent:Button Header="Install package from file..." Command="{x:Static commands:MsixHeroCommands.AddPackage}">
                             <Fluent:Button.LargeIcon>
                                 <Path Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 Z" Style="{StaticResource LargeIcon}" />
@@ -206,22 +183,46 @@
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
-                <Fluent:RibbonTabItem Header="View">
-                    <Fluent:RibbonGroupBox Header="Panel">
-                        <Fluent:ToggleButton Header="Show information panel" Size="Large" IsChecked="{Binding ShowSidebar}">
-                            <Fluent:ToggleButton.LargeIcon>
-                                <Path Data="{StaticResource VectorSidebarRight}" Style="{StaticResource LargeIcon}" />
-                            </Fluent:ToggleButton.LargeIcon>
-                        </Fluent:ToggleButton>
-                    </Fluent:RibbonGroupBox>
+                <Fluent:RibbonTabItem Header="View"
+                                      ReduceOrder="RibbonViewGroupBy,RibbonViewGroupBy,RibbonViewGroupBy">
 
+                    <Fluent:RibbonGroupBox x:Name="RibbonHomeContext" Header="Context">
+                        <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Small">
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                            </Fluent:Button.Icon>
+                        </Fluent:Button>
+
+                        <Separator />
+
+                        <Fluent:RadioButton GroupName="Users1" Header="Current user" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.CurrentUser}}">
+                            <Fluent:RadioButton.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
+                            </Fluent:RadioButton.SizeDefinition>
+                            <Fluent:RadioButton.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:RadioButton.Icon>
+                        </Fluent:RadioButton>
+                        <Fluent:RadioButton GroupName="Users2" Header="All users" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.AllUsers}}">
+                            <Fluent:RadioButton.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
+                            </Fluent:RadioButton.SizeDefinition>
+                            <Fluent:RadioButton.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUsers}" />
+                            </Fluent:RadioButton.Icon>
+                        </Fluent:RadioButton>
+                    </Fluent:RibbonGroupBox>
+                    
                     <Fluent:RibbonGroupBox Header="App types">
                         <Fluent:CheckBox IsChecked="{Binding ShowStoreApps, Converter={StaticResource NegativeConverter}}" Header="Hide Store apps" />
                         <Fluent:CheckBox IsChecked="{Binding ShowSideLoadedApps, Converter={StaticResource NegativeConverter}}" Header="Hide Side-loaded apps" />
                         <Fluent:CheckBox IsChecked="{Binding ShowSystemApps, Converter={StaticResource NegativeConverter}}" Header="Hide System apps" />
                     </Fluent:RibbonGroupBox>
 
-                    <Fluent:RibbonGroupBox Header="Group by">
+                    <Fluent:RibbonGroupBox Header="Group by" x:Name="RibbonViewGroupBy">
                         <Fluent:InRibbonGallery Orientation="Horizontal" ItemWidth="64" ItemHeight="58" 
                                                 SelectedValue="{Binding Group}" SelectedValuePath="Tag" Size="Large">
                             <Fluent:InRibbonGallery.SizeDefinition>
@@ -247,36 +248,136 @@
                             </Fluent:GalleryItem>
                         </Fluent:InRibbonGallery>
                     </Fluent:RibbonGroupBox>
+
+                    <Fluent:RibbonGroupBox Header="Panel">
+                        <Fluent:ToggleButton Header="Show information panel" Size="Large" IsChecked="{Binding ShowSidebar}">
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Data="{StaticResource VectorSidebarRight}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:ToggleButton.LargeIcon>
+                        </Fluent:ToggleButton>
+                    </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
-                <Fluent:RibbonTabItem Header="Tools">
-                    <Fluent:RibbonGroupBox Header="Certificates and signing">
+
+                <Fluent:RibbonTabItem Header="Generate" ReduceOrder="
+                            RibbonToolsCreate,RibbonToolsCreate,RibbonToolsCreate,">
+                    <Fluent:RibbonGroupBox Header="Create" x:Name="RibbonToolsCreate">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
+                        <Fluent:Button Header="Generate modification package stub...">
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Generate appinstaller definition...">
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Generate bundle...">
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorBundle}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorBundle}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Generate MSIX Core...">
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorBulb}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorBulb}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Inject PSF...">
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorImport}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorImport}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                    </Fluent:RibbonGroupBox>
+                </Fluent:RibbonTabItem>
+                <Fluent:RibbonTabItem Header="Tools"
+                    ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1,
+                            RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
+                            RibbonToolsCerts2,RibbonToolsCerts2,RibbonToolsCerts2">
+                    <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonToolsCerts1">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorSelfSign}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
                         <Fluent:Button Header="Create self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
                         <Fluent:Button Header="Sign package..." Command="{x:Static commands:MsixHeroCommands.OpenResign}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
                         <Fluent:Button Header="Extract certificate from MSIX..." Command="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
+                    </Fluent:RibbonGroupBox>
+                    <Fluent:RibbonGroupBox Header="Certificate management" x:Name="RibbonToolsCerts2">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorSign}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
                         <Fluent:Button Header="Install certificate..." Command="{x:Static commands:MsixHeroCommands.InstallCertificate}">
                             <Fluent:Button.LargeIcon>
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorImport}" />
                             </Fluent:Button.LargeIcon>
-                        </Fluent:Button>
-                        <Separator />
-                        <Fluent:Button Header="User certificates" Command="{x:Static commands:MsixHeroCommands.CertManager}">
                             <Fluent:Button.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSign}" />
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorImport}" />
                             </Fluent:Button.Icon>
                             <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Small" Middle="Middle" />
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Large" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                        <Fluent:Button Header="User certificates" Command="{x:Static commands:MsixHeroCommands.CertManager}">
+                            <Fluent:Button.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
                             </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
                         <Fluent:Button Header="Computer certificates" Command="{x:Static commands:MsixHeroCommands.CertManager}">
@@ -285,11 +386,41 @@
                             </Fluent:Button.CommandParameter>
 
                             <Fluent:Button.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSign}" />
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSystem}" />
                             </Fluent:Button.Icon>
+                            <Fluent:Button.LargeIcon>
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSystem}" />
+                            </Fluent:Button.LargeIcon>
                             <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Small" Middle="Middle" />
+                                <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
                             </Fluent:Button.SizeDefinition>
+                        </Fluent:Button>
+                    </Fluent:RibbonGroupBox>
+                    <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
+                        <Fluent:Button Header="Unpack to folder...">
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Pack from folder...">
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
@@ -387,6 +518,16 @@
                       RibbonDevRun,RibbonDevRun,RibbonDevRun,
                       RibbonDevReg,RibbonDevReg,RibbonDevReg"
                       Header="Developer" Group="{Binding Source={x:Reference ToolsGroup}}">
+                    <Fluent:RibbonGroupBox Header="Create derived content">
+                        <Fluent:Button Header="Create modification package...">
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                        </Fluent:Button>
+                    </Fluent:RibbonGroupBox>
                     <Fluent:RibbonGroupBox x:Name="RibbonDevRun" IsEnabled="{Binding HasSingleSelection}" Header="Run in package context">
                         <Fluent:RibbonGroupBox.Icon>
                             <Path Data="{StaticResource VectorWindow}" Style="{StaticResource MediumIcon}" />
