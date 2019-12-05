@@ -45,6 +45,8 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding CommandHandler.Pack}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
     </routedCommand:RoutedCommandHandlers.Commands>
     <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding LoadingMessage}">
@@ -400,7 +402,7 @@
                         <Fluent:RibbonGroupBox.Icon>
                             <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
                         </Fluent:RibbonGroupBox.Icon>
-                        <Fluent:Button Header="Unpack to folder...">
+                        <Fluent:Button Header="Unpack to folder..." Command="{x:Static commands:MsixHeroCommands.Unpack}">
                             <Fluent:Button.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
                             </Fluent:Button.SizeDefinition>
@@ -411,7 +413,7 @@
                                 <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource MediumIcon}" />
                             </Fluent:Button.Icon>
                         </Fluent:Button>
-                        <Fluent:Button Header="Pack from folder...">
+                        <Fluent:Button Header="Pack from folder..." Command="{x:Static commands:MsixHeroCommands.Pack}">
                             <Fluent:Button.SizeDefinition>
                                 <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
                             </Fluent:Button.SizeDefinition>

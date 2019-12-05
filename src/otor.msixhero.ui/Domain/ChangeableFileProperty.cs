@@ -6,7 +6,7 @@ using otor.msixhero.ui.Commands.RoutedCommand;
 
 namespace otor.msixhero.ui.Domain
 {
-    public class ChangeableFileProperty : ChangeableProperty<string>
+    public class ChangeableFileProperty : ValidatedChangeableProperty<string>
     {
         private static Func<string, string> validatePath;
         private static Func<string, string> validatePathAndPresence;

@@ -10,6 +10,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         {
             this.List = new ListConfiguration();
             this.Signing = new SigningConfiguration();
+            this.Packer = new PackerConfiguration();
         }
 
         [DataMember(Name = "list")]
@@ -17,5 +18,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name = "signing")]
         public SigningConfiguration Signing { get; set; }
+
+        [DataMember(Name = "packer")]
+        public PackerConfiguration Packer { get; set; }
     }
 }

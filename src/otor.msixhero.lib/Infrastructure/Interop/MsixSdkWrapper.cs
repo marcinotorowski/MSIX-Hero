@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Infrastructure.Logging;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.Infrastructure.Interop
 {
@@ -104,44 +105,16 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             }
         }
 
-        public async Task UnpackPackage(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default)
+        public Task UnpackPackage(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var makeAppx = GetSdkPath("makeappx.exe");
             var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\" /o";
-
-            Logger.Info("Executing {0} {1}", makeAppx, arguments);
-
-            try
-            {
-                await RunAsync(makeAppx, arguments, cancellationToken, 0).ConfigureAwait(false);
-            }
-            catch (ProcessWrapperException e)
-            {
-                var findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
-                if (findSimilar == null)
-                {
-                    throw;
-                }
-
-                findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
-
-                var error = Regex.Match(findSimilar, "([0-9a-z]+) \\- ");
-                if (error.Success)
-                {
-                    findSimilar = findSimilar.Substring(error.Length).Trim();
-                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error 0x{error.Groups[1].Value}. {findSimilar}");
-                }
-
-                throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
-            }
+            return this.RunMakeAppx(arguments, cancellationToken, progress);
         }
 
-        public Task PackPackage(string unpackedDirectory, string packageFilePath, CancellationToken cancellationToken)
+        public Task PackPackage(string unpackedDirectory, string packageFilePath, CancellationToken cancellationToken, IProgress<ProgressData> progress = null)
         {
-            var makeAppx = GetSdkPath("makeappx.exe");
             var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\"  /o";
-            Logger.Info("Executing {0} {1}", makeAppx, arguments);
-            return RunAsync(makeAppx, arguments, cancellationToken, 0);
+            return this.RunMakeAppx(arguments, cancellationToken, progress);
         }
 
         private static string GetSdkPath(string localName)
@@ -154,7 +127,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
 
             return path;
         }
-        
+
         private static async Task<int> RunAsync(string path, string arguments, CancellationToken cancellationToken, params int[] properExitCodes)
         {
             var processStartInfo = new ProcessStartInfo(path, arguments);
@@ -242,6 +215,36 @@ namespace otor.msixhero.lib.Infrastructure.Interop
                 }
 
                 return result;
+            }
+        }
+
+        private async Task RunMakeAppx(string arguments, CancellationToken cancellationToken, IProgress<ProgressData> progress = null)
+        {
+            var makeAppx = GetSdkPath("makeappx.exe");
+            Logger.Info("Executing {0} {1}", makeAppx, arguments);
+
+            try
+            {
+                await RunAsync(makeAppx, arguments, cancellationToken, 0).ConfigureAwait(false);
+            }
+            catch (ProcessWrapperException e)
+            {
+                var findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
+                if (findSimilar == null)
+                {
+                    throw;
+                }
+
+                findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
+
+                var error = Regex.Match(findSimilar, "([0-9a-z]+) \\- ");
+                if (error.Success)
+                {
+                    findSimilar = findSimilar.Substring(error.Length).Trim();
+                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error 0x{error.Groups[1].Value}. {findSimilar}");
+                }
+
+                throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
             }
         }
     }

@@ -136,7 +136,7 @@ namespace otor.msixhero.ui.Domain
             this.IsTouched = true;
         }
 
-        public void Reset(ValueResetType resetType = ValueResetType.Hard)
+        public virtual void Reset(ValueResetType resetType = ValueResetType.Hard)
         {
             var currentIsTouched = this.IsTouched;
             this.CurrentValue = this.OriginalValue;

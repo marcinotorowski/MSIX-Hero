@@ -19,16 +19,20 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
 
             this.AllSettings.AddChildren(
                 this.CertificateOutputPath = new ChangeableFolderProperty(interactionService, config.Signing?.DefaultOutFolder?.Resolved),
+                this.PackerOutputPath = new ChangeableFolderProperty(interactionService, config.Packer?.DefaultOutFolder?.Resolved),
                 this.TimeStampServer = new ChangeableProperty<string>(config.Signing?.TimeStampServer),
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible)
             );
 
             this.CertificateOutputPath.Validator = ChangeableFolderProperty.ValidatePath;
+            this.PackerOutputPath.Validator = ChangeableFolderProperty.ValidatePath;
         }
 
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
 
         public ChangeableFolderProperty CertificateOutputPath { get; }
+
+        public ChangeableFolderProperty PackerOutputPath { get; }
 
         public ChangeableProperty<string> TimeStampServer { get; }
         
@@ -71,6 +75,11 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             if (this.CertificateOutputPath.IsTouched)
             {
                 newConfiguration.Signing.DefaultOutFolder = this.CertificateOutputPath.CurrentValue;
+            }
+
+            if (this.PackerOutputPath.IsTouched)
+            {
+                newConfiguration.Packer.DefaultOutFolder = this.PackerOutputPath.CurrentValue;
             }
 
             if (this.TimeStampServer.IsTouched)

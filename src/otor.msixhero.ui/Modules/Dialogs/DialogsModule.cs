@@ -7,8 +7,12 @@ using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.Pack.View;
+using otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.View;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.Unpack.View;
+using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using Prism.Ioc;
@@ -22,6 +26,8 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string EventViewerPath = "EventViewer";
         public static string PackageSigningPath = "PackageSigning";
         public static string CertificateExportPath = "CertificateExport";
+        public static string UnpackPath = "Unpack";
+        public static string PackPath = "Pack";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -29,6 +35,8 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<EventViewerView, EventViewerViewModel>(EventViewerPath);
             containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(PackageSigningPath);
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(CertificateExportPath);
+            containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
+            containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

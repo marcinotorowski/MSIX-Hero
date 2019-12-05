@@ -50,6 +50,8 @@ namespace otor.msixhero.ui.ViewModel
             // General APPX
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
+            this.Pack = new DelegateCommand(param => this.PackExecute());
+            this.Unpack = new DelegateCommand(param => this.UnpackExecute());
 
             // Certificates
             this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
@@ -82,6 +84,10 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand InstallCertificate { get; }
 
         public ICommand OpenLogs { get; }
+        
+        public ICommand Pack { get; }
+
+        public ICommand Unpack { get; }
 
         public ICommand OpenResign { get; }
 
@@ -372,6 +378,16 @@ namespace otor.msixhero.ui.ViewModel
         private void OpenLogsExecute()
         {
             this.dialogService.ShowDialog(DialogsModule.EventViewerPath, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void UnpackExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.UnpackPath, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void PackExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.PackPath, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OpenResignExecute()

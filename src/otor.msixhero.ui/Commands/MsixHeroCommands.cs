@@ -25,6 +25,8 @@ namespace otor.msixhero.ui.Commands
             InstallCertificate = new RoutedUICommand { Text = "Install certificate from a .CER file" };
             ExtractCertifiacte = new RoutedUICommand { Text = "Extract certificate from an .MSIX file" };
             CertManager = new RoutedUICommand { Text = "Open certificate manager" };
+            Pack = new RoutedUICommand { Text = "Packs a package to a directory" };
+            Unpack = new RoutedUICommand { Text = "Unpacks a package to a directory" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -64,5 +66,9 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand OpenLogs { get; }
 
         public static RoutedUICommand RemovePackage { get; }
+        
+        public static RoutedUICommand Pack { get; }
+        
+        public static RoutedUICommand Unpack { get; }
     }
 }

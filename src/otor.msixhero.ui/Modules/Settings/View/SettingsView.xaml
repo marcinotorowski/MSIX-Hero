@@ -127,6 +127,17 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="Packer">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="Default folder where packages are extracted/compressed" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding PackerOutputPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox Text="{Binding PackerOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
             <TabItem Header="Other" Visibility="Collapsed">
 
             </TabItem>

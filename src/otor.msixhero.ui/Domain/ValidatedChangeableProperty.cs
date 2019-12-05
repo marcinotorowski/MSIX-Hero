@@ -41,8 +41,9 @@ namespace otor.msixhero.ui.Domain
                 if (oldIsValid != newIsValid)
                 {
                     this.OnPropertyChanged(nameof(this.IsValid));
-                    this.OnPropertyChanged(nameof(Error));
                 }
+
+                this.OnPropertyChanged(nameof(Error));
             }
         }
 
