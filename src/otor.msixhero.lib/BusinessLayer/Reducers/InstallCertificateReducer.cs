@@ -3,18 +3,17 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Signing;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class InstallCertificateReducer : SelfElevationReducer<ApplicationState>
+    public class InstallCertificateReducer : SelfElevationReducer
     {
         private readonly InstallCertificate command;
         private readonly IBusyManager busyManager;
 
-        public InstallCertificateReducer(InstallCertificate command, IApplicationStateManager<ApplicationState> stateManager, IBusyManager busyManager) : base(command, stateManager)
+        public InstallCertificateReducer(InstallCertificate command, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(command, stateManager)
         {
             this.command = command;
             this.busyManager = busyManager;

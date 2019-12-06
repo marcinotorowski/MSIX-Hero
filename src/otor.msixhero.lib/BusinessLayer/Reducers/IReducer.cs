@@ -7,13 +7,13 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal interface IReducer<in T> where T : IApplicationState
+    internal interface IReducer
     {
         Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default);
     }
 
-    internal interface IReducer<in T, TOutput> : IReducer<T> where T : IApplicationState
+    internal interface IReducer<T> : IReducer
     {
-        Task<TOutput> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default);
+        Task<T> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default);
     }
 }

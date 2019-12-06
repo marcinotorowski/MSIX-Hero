@@ -4,16 +4,15 @@ using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.UI;
 using otor.msixhero.lib.Domain.Events;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class SetPackageSidebarVisibilityReducer : BaseReducer<ApplicationState>
+    public class SetPackageSidebarVisibilityReducer : BaseReducer
     {
         private readonly SetPackageSidebarVisibility action;
 
-        public SetPackageSidebarVisibilityReducer(SetPackageSidebarVisibility action, IApplicationStateManager<ApplicationState> stateManager) : base(action, stateManager)
+        public SetPackageSidebarVisibilityReducer(SetPackageSidebarVisibility action, IWritableApplicationStateManager stateManager) : base(action, stateManager)
         {
             this.action = action;
         }

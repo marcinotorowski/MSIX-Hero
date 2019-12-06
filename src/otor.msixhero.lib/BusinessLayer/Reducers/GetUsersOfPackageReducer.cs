@@ -5,16 +5,15 @@ using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Grid;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class GetUsersOfPackageReducer : SelfElevationReducer<ApplicationState, List<User>>
+    public class GetUsersOfPackageReducer : SelfElevationReducer<List<User>>
     {
         private readonly GetUsersOfPackage action;
 
-        public GetUsersOfPackageReducer(GetUsersOfPackage action, IApplicationStateManager<ApplicationState> applicationStateManager) : base(action, applicationStateManager)
+        public GetUsersOfPackageReducer(GetUsersOfPackage action, IWritableApplicationStateManager applicationStateManager) : base(action, applicationStateManager)
         {
             this.action = action;
         }

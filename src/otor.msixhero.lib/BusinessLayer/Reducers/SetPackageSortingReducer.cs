@@ -4,16 +4,15 @@ using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Events;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class SetPackageSortingReducer : BaseReducer<ApplicationState>
+    public class SetPackageSortingReducer : BaseReducer
     {
         private readonly SetPackageSorting command;
 
-        public SetPackageSortingReducer(SetPackageSorting command, IApplicationStateManager<ApplicationState> state) : base(command, state)
+        public SetPackageSortingReducer(SetPackageSorting command, IWritableApplicationStateManager state) : base(command, state)
         {
             this.command = command;
         }

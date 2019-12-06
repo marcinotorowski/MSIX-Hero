@@ -2,15 +2,59 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using otor.msixhero.lib.Infrastructure.Ipc;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace otor.msixhero.lib.Infrastructure.Interop
 {
     public sealed class ProcessManager : IProcessManager
     {
+        private static readonly AutoResetEvent SafeHandle = new AutoResetEvent(true);
+
         private readonly HashSet<Process> processes = new HashSet<Process>();
 
-        public Process Start(ProcessStartInfo info)
+        public async Task Connect(CancellationToken cancellationToken = default)
+        {
+            var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
+
+            if (process == null || process.HasExited)
+            {
+                // make double checking with help of mutex
+                if (!SafeHandle.WaitOne(TimeSpan.FromSeconds(30)))
+                {
+                    throw new InvalidOperationException("Could not get exclusive access.");
+                }
+
+                try
+                {
+                    process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
+                    if (process == null || process.HasExited)
+                    {
+                        var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper.exe"), "--selfElevate")
+                        {
+                            Verb = "runas",
+                            UseShellExecute = true,
+                            // WindowStyle = ProcessWindowStyle.Hidden,
+                            // CreateNoWindow = true
+                        };
+
+                        var p = this.Start(psi);
+                        if (p == null)
+                        {
+                            throw new InvalidOperationException("Could not start the helper.");
+                        }
+
+                        await Task.Delay(400, cancellationToken).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    SafeHandle.Set();
+                }
+            }
+        }
+
+        private Process Start(ProcessStartInfo info)
         {
             var newProcess = Process.Start(info);
             if (newProcess == null)

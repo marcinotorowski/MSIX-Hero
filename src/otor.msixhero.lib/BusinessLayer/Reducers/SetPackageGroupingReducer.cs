@@ -9,11 +9,11 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class SetPackageGroupingReducer : BaseReducer<ApplicationState>
+    public class SetPackageGroupingReducer : BaseReducer
     {
         private readonly SetPackageGrouping command;
 
-        public SetPackageGroupingReducer(SetPackageGrouping command, IApplicationStateManager<ApplicationState> state) : base(command, state)
+        public SetPackageGroupingReducer(SetPackageGrouping command, IWritableApplicationStateManager stateManager) : base(command, stateManager)
         {
             this.command = command;
         }

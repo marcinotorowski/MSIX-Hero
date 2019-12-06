@@ -6,17 +6,16 @@ using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Commands.Manager;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class AddPackageReducer : BaseReducer<ApplicationState>
+    public class AddPackageReducer : BaseReducer
     {
         private readonly AddPackage command;
         private readonly IBusyManager busyManager;
 
-        public AddPackageReducer(AddPackage command, IApplicationStateManager<ApplicationState> state, IBusyManager busyManager) : base(command, state)
+        public AddPackageReducer(AddPackage command, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(command, stateManager)
         {
             this.command = command;
             this.busyManager = busyManager;

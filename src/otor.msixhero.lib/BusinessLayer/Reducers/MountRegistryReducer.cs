@@ -1,23 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Developer;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class MountRegistryReducer : SelfElevationReducer<ApplicationState>
+    internal class MountRegistryReducer : SelfElevationReducer
     {
         private readonly MountRegistry action;
 
-        public MountRegistryReducer(
-            MountRegistry action,
-            IApplicationStateManager<ApplicationState> stateManager) : base(action, stateManager)
+        public MountRegistryReducer(MountRegistry action, IWritableApplicationStateManager stateManager) : base(action, stateManager)
         {
             this.action = action;
         }

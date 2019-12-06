@@ -7,18 +7,17 @@ using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Commands.Manager;
 using otor.msixhero.lib.Domain.Events;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class RemovePackageReducer : SelfElevationReducer<ApplicationState>
+    public class RemovePackageReducer : SelfElevationReducer
     {
         private readonly RemovePackages action;
         private readonly IBusyManager busyManager;
 
-        public RemovePackageReducer(RemovePackages action, IApplicationStateManager<ApplicationState> stateManager, IBusyManager busyManager) : base(action, stateManager)
+        public RemovePackageReducer(RemovePackages action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
         {
             this.action = action;
             this.busyManager = busyManager;

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
-using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands;
+using otor.msixhero.lib.Infrastructure.Configuration.ResolvableFolder;
+using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Ipc.Helpers;
 using otor.msixhero.lib.Infrastructure.Ipc.Streams;
 using otor.msixhero.lib.Infrastructure.Logging;
@@ -16,37 +18,25 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
 {
     public class Server
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-
-        private readonly object lockObject = new object();
-        private readonly AutoResetEvent autoResetEvent = new AutoResetEvent(true);
-
-        private readonly Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task<string>>> handlersWithOutput = new Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task<string>>>();
-        private readonly Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task>> handlersWithoutOutput = new Dictionary<Type, Func<BaseCommand, CancellationToken, Progress.Progress, Task>>();
-
-        private readonly HashSet<Type> inputOutputTypes = new HashSet<Type>();
-
-        public void AddHandler<TInput, TOutput>(Func<TInput, CancellationToken, Progress.Progress, Task<TOutput>> handler) where TInput : BaseCommand<TOutput>
+        private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
-            Logger.Debug("Adding handler for {0} that returns the data {1}.", typeof(TInput).Name, typeof(TOutput).Name);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            this.handlersWithOutput.Add(typeof(TInput), async (command, cancellationToken, progress) =>
+            TypeNameHandling = TypeNameHandling.Auto,
+            Converters = new List<JsonConverter>
             {
-                var result = await handler((TInput) command, cancellationToken, progress).ConfigureAwait(false);
-                return JsonConvert.SerializeObject(result, typeof(TOutput), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
-            });
+                new ResolvableFolderConverter()
+            }
+        };
 
-            this.inputOutputTypes.Add(typeof(TInput));
-        }
-        public void AddHandler<T>(Func<T, CancellationToken, Progress.Progress, Task> handler) where T : BaseCommand
+        private readonly IApplicationStateManager applicationStateManager;
+        private static readonly ILog Logger = LogManager.GetLogger();
+        private readonly AutoResetEvent autoResetEvent = new AutoResetEvent(true);
+        
+        public Server(IApplicationStateManager applicationStateManager)
         {
-            Logger.Debug("Adding void handler for {0}.", typeof(T).Name);
-            // ReSharper disable once AssignNullToNotNullAttribute
-            this.handlersWithoutOutput.Add(typeof(T), (command, cancellationToken, progress) => handler((T)command, cancellationToken, progress));
-            this.inputOutputTypes.Add(typeof(T));
+            this.applicationStateManager = applicationStateManager;
         }
 
-        public async Task Start(CancellationToken cancellationToken = default, Progress.Progress progress = default)
+        public async Task Start(int maxRequests = 0, CancellationToken cancellationToken = default, Progress.Progress progress = default)
         {
             try
             {
@@ -56,8 +46,14 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                 Logger.Debug("Security SID is {0}", sid.Value);
                 ps.SetAccessRule(new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
 
-                while (true)
+                var cnt = 0;
+                while (maxRequests <= 0 || cnt < maxRequests)
                 {
+                    if (maxRequests > 0)
+                    {
+                        cnt++;
+                    }
+
                     Logger.Debug("Creating named pipe {0}", "msixhero");
                     // ReSharper disable once StringLiteralTypo
                     using (var stream = NamedPipeNative.CreateNamedPipe("msixhero", ps))
@@ -79,24 +75,13 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                             var isDone = false;
                             try
                             {
-                                Func<BaseCommand, CancellationToken, Progress.Progress, Task> handlerWithoutOutput = null;
-
-                                // ReSharper disable once AssignNullToNotNullAttribute
-                                if (!this.handlersWithOutput.TryGetValue(command.GetType(), out var handlerWithOutput))
-                                {
-                                    if (!this.handlersWithoutOutput.TryGetValue(command.GetType(), out handlerWithoutOutput))
-                                    {
-                                        throw new NotSupportedException($"The command {command.GetType().FullName} is not supported. Only supported are:\r\n * {string.Join("\r\n * ", this.handlersWithOutput.Keys.Select(k => k))}");
-                                    }
-                                }
-
-
                                 EventHandler<ProgressData> progressHandler = (sender, data) =>
                                 {
                                     try
                                     {
                                         Logger.Trace("Beginning atomic scope with AutoResetEvent");
                                         this.autoResetEvent.WaitOne();
+                                        // ReSharper disable once AccessToModifiedClosure
                                         if (!isDone)
                                         {
                                             Logger.Debug("Write progress data");
@@ -106,6 +91,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                             binaryWriter.Write(data, cancellationToken).GetAwaiter().GetResult();
 
                                             Logger.Trace("Flushing the stream...");
+                                            // ReSharper disable once AccessToDisposedClosure
                                             stream.Flush();
                                         }
                                     }
@@ -123,22 +109,25 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                 }
 
                                 string result;
+                                bool returnsValue;
+
                                 try
                                 {
-                                    if (handlerWithOutput != null)
+                                    var commandType = command.GetType();
+                                    Console.WriteLine($"Requested: {commandType.Name}...");
+                                    var returnedType = GenericArgumentResolver.GetResultType(commandType, typeof(BaseCommand<>));
+
+                                    returnsValue = returnedType != null;
+                                    
+                                    if (!returnsValue)
                                     {
-                                        Logger.Debug("Waiting for {0} to return results...", command.GetType().Name);
-                                        result = await handlerWithOutput(command, cancellationToken, progress);
-                                    }
-                                    else if (handlerWithoutOutput != null)
-                                    {
-                                        Logger.Debug("Waiting for {0} to finish...", command.GetType().Name);
-                                        await handlerWithoutOutput(command, cancellationToken, progress);
+                                        await this.applicationStateManager.CommandExecutor.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                                         result = null;
                                     }
                                     else
                                     {
-                                        throw new InvalidOperationException();
+                                        var executionResult = await this.applicationStateManager.CommandExecutor.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+                                        result = JsonConvert.SerializeObject(executionResult, Formatting.None, SerializerSettings);
                                     }
                                 }
                                 finally
@@ -160,8 +149,9 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     Logger.Debug("Returning results via named pipe...");
                                     await binaryWriter.Write((int) ResponseType.Result, cancellationToken).ConfigureAwait(false);
 
-                                    if (handlerWithOutput != null)
+                                    if (returnsValue)
                                     {
+                                        Console.WriteLine("Sending the results...");
                                         Logger.Debug("Returning actual results via named pipe...");
                                         await binaryWriter.Write(result, cancellationToken).ConfigureAwait(false);
                                     }
@@ -194,7 +184,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     await binaryWriter.Write((int)ResponseType.Exception, cancellationToken);
                                     Logger.Trace("Notifying about the message {0}...", e.Message);
                                     await binaryWriter.Write(e.Message, cancellationToken);
-                                    Logger.Trace("Notifying about the callstack (0)...", e.ToString());
+                                    Logger.Trace("Notifying about the callstack (0)...", e);
                                     await binaryWriter.Write(e.ToString(), cancellationToken);
                                     Logger.Trace("Flushing....");
                                     await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
@@ -229,8 +219,6 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
             {
                 Logger.Fatal(e);
             }
-
-            Console.ReadKey();
         }
     }
 }

@@ -4,16 +4,15 @@ using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Commands.Grid;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class GetPackageDetailsReducer : BaseReducer<ApplicationState, AppxPackage>
+    internal class GetPackageDetailsReducer : BaseReducer<AppxPackage>
     {
         private readonly GetPackageDetails command;
 
-        public GetPackageDetailsReducer(GetPackageDetails command, IApplicationStateManager<ApplicationState> state) : base(command, state)
+        public GetPackageDetailsReducer(GetPackageDetails command, IWritableApplicationStateManager stateManager) : base(command, stateManager)
         {
             this.command = command;
         }

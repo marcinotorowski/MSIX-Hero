@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Windows;
 using CommonServiceLocator;
-using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
-using otor.msixhero.lib.BusinessLayer.Commanding;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
-using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
@@ -54,9 +52,10 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
             containerRegistry.RegisterSingleton<IAppxPackageManagerFactory, AppxPackageManagerFactory>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
-            containerRegistry.RegisterSingleton<IClientCommandRemoting, ClientCommandRemoting>();
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
+            containerRegistry.RegisterSingleton<IWritableApplicationStateManager, ApplicationStateManager>();
             containerRegistry.RegisterSingleton<IApplicationStateManager, ApplicationStateManager>();
+            containerRegistry.RegisterSingleton<ICommandExecutor, CommandExecutor>();
             containerRegistry.RegisterInstance<IProcessManager>(this.processManager);
         }
         

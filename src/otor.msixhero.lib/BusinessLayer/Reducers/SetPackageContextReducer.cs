@@ -3,16 +3,15 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Grid;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class SetPackageContextReducer : BaseReducer<ApplicationState>
+    internal class SetPackageContextReducer : BaseReducer
     {
         private readonly SetPackageContext action;
 
-        public SetPackageContextReducer(SetPackageContext action, IApplicationStateManager<ApplicationState> stateManager) : base(action, stateManager)
+        public SetPackageContextReducer(SetPackageContext action, IWritableApplicationStateManager stateManager) : base(action, stateManager)
         {
             this.action = action;
         }

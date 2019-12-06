@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace otor.msixhero.lib.Infrastructure.Interop
 {
     public interface  IProcessManager : IDisposable
     {
-        Process Start(ProcessStartInfo info);
+        Task Connect(CancellationToken cancellationToken = default);
     }
 }

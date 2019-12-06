@@ -111,8 +111,8 @@ namespace otor.msixhero.lib.tests
             Assert.Null(read.Arguments);
             Assert.Null(read.WorkingDirectory);
             Assert.AreEqual(PsfBitness.x64, read.Tracing);
-            Assert.AreEqual(9, read.FileRedirections);
-            Assert.AreEqual(0, read.OtherFixups);
+            Assert.AreEqual(9, read.FileRedirections.Count);
+            Assert.AreEqual(0, read.OtherFixups.Count);
 
 
         }

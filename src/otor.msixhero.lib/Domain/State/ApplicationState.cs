@@ -2,7 +2,7 @@
 
 namespace otor.msixhero.lib.Domain.State
 {
-    public class ApplicationState : IApplicationState
+    public class ApplicationState : IApplicationState, IWritableApplicationState
     {
         public ApplicationState()
         {
@@ -10,6 +10,8 @@ namespace otor.msixhero.lib.Domain.State
         }
         
         public PackageListState Packages { get; }
+
+        IWritablePackageListState IWritableApplicationState.Packages => this.Packages;
 
         IPackageListState IApplicationState.Packages => this.Packages;
         

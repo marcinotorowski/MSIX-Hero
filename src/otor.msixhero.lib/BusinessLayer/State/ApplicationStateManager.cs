@@ -1,7 +1,5 @@
 ﻿using System;
-using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.Domain.State;
-using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Logging;
@@ -9,7 +7,7 @@ using Prism.Events;
 
 namespace otor.msixhero.lib.BusinessLayer.State
 {
-    public class ApplicationStateManager : IDisposable, IApplicationStateManager<ApplicationState>
+    public class ApplicationStateManager : IDisposable, IWritableApplicationStateManager
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
@@ -17,16 +15,16 @@ namespace otor.msixhero.lib.BusinessLayer.State
 
         public ApplicationStateManager(
             IEventAggregator eventAggregator,
-            IAppxPackageManagerFactory packageManagerFactory,
-            IBusyManager busyManager,
-            IInteractionService interactionService,
+            ICommandExecutor commandExecutor,
             IConfigurationService configurationService)
         {
             this.configurationService = configurationService;
             this.CurrentState = new ApplicationState();
-            this.CommandExecutor = new CommandExecutor(this, packageManagerFactory, interactionService, busyManager);
+            this.CommandExecutor = commandExecutor;
             this.EventAggregator = eventAggregator;
             this.RestoreSettings();
+
+            commandExecutor.SetStateManager(this);
         }
 
         public ApplicationState CurrentState { get; }
@@ -36,6 +34,8 @@ namespace otor.msixhero.lib.BusinessLayer.State
         public ICommandExecutor CommandExecutor { get; }
 
         public IEventAggregator EventAggregator { get; }
+
+        IWritableApplicationState IWritableApplicationStateManager.CurrentState => this.CurrentState;
 
         private void RestoreSettings()
         {

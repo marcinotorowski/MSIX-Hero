@@ -8,16 +8,15 @@ using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Events;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class SelectPackagesReducer : BaseReducer<ApplicationState, List<Package>>
+    internal class SelectPackagesReducer : BaseReducer<List<Package>>
     {
         private readonly SelectPackages action;
 
-        public SelectPackagesReducer(SelectPackages action, IApplicationStateManager<ApplicationState> stateManager) : base(action, stateManager)
+        public SelectPackagesReducer(SelectPackages action, IWritableApplicationStateManager stateManager) : base(action, stateManager)
         {
             this.action = action;
         }

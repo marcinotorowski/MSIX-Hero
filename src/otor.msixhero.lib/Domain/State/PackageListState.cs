@@ -4,7 +4,7 @@ using otor.msixhero.lib.Infrastructure.Helpers;
 
 namespace otor.msixhero.lib.Domain.State
 {
-    public class PackageListState : IPackageListState
+    public class PackageListState : IPackageListState, IWritablePackageListState
     {
         public PackageListState()
         {
@@ -37,7 +37,7 @@ namespace otor.msixhero.lib.Domain.State
         public List<Package> SelectedItems { get; }
 
         public bool SortDescending { get; set; }
-
+        
         IReadOnlyCollection<Package> IPackageListState.VisibleItems => this.VisibleItems;
 
         IReadOnlyCollection<Package> IPackageListState.HiddenItems => this.HiddenItems;

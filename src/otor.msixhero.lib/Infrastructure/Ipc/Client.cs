@@ -24,43 +24,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
 
         public async Task Execute(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
-
-            if (process == null || process.HasExited)
-            {
-                // make double checking with help of mutex
-                if (!SafeHandle.WaitOne(TimeSpan.FromSeconds(30)))
-                {
-                    throw new InvalidOperationException("Could not get exclusive access.");
-                }
-
-                try
-                {
-                    process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
-                    if (process == null || process.HasExited)
-                    {
-                        var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper.exe"), "--selfElevate")
-                        {
-                            Verb = "runas",
-                            UseShellExecute = true,
-                            // WindowStyle = ProcessWindowStyle.Hidden,
-                            // CreateNoWindow = true
-                        };
-
-                        var p = processManager.Start(psi);
-                        if (p == null)
-                        {
-                            throw new InvalidOperationException("Could not start the helper.");
-                        }
-
-                        await Task.Delay(400, cancellationToken).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    SafeHandle.Set();
-                }
-            }
+            await this.processManager.Connect(cancellationToken).ConfigureAwait(false);
 
             // ReSharper disable once StringLiteralTypo
             await using var pipeClient = new NamedPipeClientStream("msixhero");
@@ -105,30 +69,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
         // ReSharper disable once MemberCanBeMadeStatic.Global
         public async Task<TOutput> GetExecuted<TOutput>(BaseCommand<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
-            
-            if (process == null || process.HasExited)
-            {
-                process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
-                if (process == null || process.HasExited)
-                {
-                    var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper.exe"), "--selfElevate")
-                    {
-                        Verb = "runas",
-                        UseShellExecute = true,
-#if !DEBUG
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true
-#endif
-                    };
-
-                    var p = processManager.Start(psi);
-                    if (p == null)
-                    {
-                        throw new InvalidOperationException("Could not start the helper.");
-                    }
-                }
-            }
+            await this.processManager.Connect(cancellationToken).ConfigureAwait(false);
 
             // ReSharper disable once StringLiteralTypo
             await using var pipeClient = new NamedPipeClientStream("msixhero");

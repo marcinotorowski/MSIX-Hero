@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
-using otor.msixhero.lib.BusinessLayer.Commanding;
+using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Interop;
+using otor.msixhero.lib.Infrastructure.Commanding;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
+using Prism.Events;
 
 namespace otor.msixhero.adminhelper
 {
@@ -34,8 +31,20 @@ namespace otor.msixhero.adminhelper
                 if (args.Length > 0 && args[0] == "--selfElevate")
                 {
                     Logger.Debug("Preparing to start the pipe server...");
-                    var server = new ClientCommandRemoting(new ProcessManager()).GetServerInstance(new CurrentUserAppxPackageManager(new AppxSigningManager()));
+
+                    IConfigurationService configurationService = new LocalConfigurationService();
+                    IInteractionService interactionService = new SilentInteractionService();
+                    IAppxPackageManagerFactory packageManagerFactory = new AppxPackageFactory(new AppxSigningManager());
+                    IBusyManager busyManager = new BusyManager();
+                    IEventAggregator eventAggregator = new EventAggregator();
+
+                    var commandExecutor = new CommandExecutor(packageManagerFactory, interactionService, busyManager);
+                    var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
+                    var server = new Server(applicationStateManager);
+
                     server.Start().GetAwaiter().GetResult();
+
+                    Console.ReadKey();
                 }
                 else
                 {
@@ -54,6 +63,93 @@ namespace otor.msixhero.adminhelper
 
             Logger.Info("Waiting for the user to press a key...");
             Console.ReadKey();
+        }
+
+        private class AppxPackageFactory : IAppxPackageManagerFactory
+        {
+            private CurrentUserAppxPackageManager factory;
+
+            public AppxPackageFactory(IAppxSigningManager signingManager)
+            {
+                this.factory = new CurrentUserAppxPackageManager(signingManager);
+            }
+
+            public IAppxPackageManager GetLocal()
+            {
+                return this.factory;
+            }
+
+            public IAppxPackageManager GetRemote()
+            {
+                return this.GetLocal();
+            }
+        }
+
+        private class SilentInteractionService : IInteractionService
+        {
+            public InteractionResult Confirm(string body, string title = null, InteractionType type = InteractionType.Asterisk, InteractionButton buttons = InteractionButton.OK)
+            {
+                return InteractionResult.OK;
+            }
+
+            public bool SelectFile(string initialFile, string filterString, out string selectedFile)
+            {
+                selectedFile = null;
+                return false;
+            }
+
+            public bool SelectFile(string filterString, out string selectedFile)
+            {
+                selectedFile = null;
+                return false;
+            }
+
+            public bool SaveFile(string filterString, out string selectedFile)
+            {
+                selectedFile = null;
+                return false;
+            }
+
+            public bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles)
+            {
+                selectedFiles = null;
+                return false;
+            }
+
+            public bool SelectFiles(string filterString, out string[] selectedFiles)
+            {
+                selectedFiles = null;
+                return false;
+            }
+
+            public bool SelectFile(out string selectedFile)
+            {
+                selectedFile = null;
+                return false;
+            }
+
+            public bool SaveFile(out string selectedFile)
+            {
+                selectedFile = null;
+                return false;
+            }
+
+            public bool SelectFolder(string initialFile, out string selectedFolder)
+            {
+                selectedFolder = null;
+                return false;
+            }
+
+            public bool SelectFolder(out string selectedFolder)
+            {
+                selectedFolder = null;
+                return false;
+            }
+
+            public InteractionResult ShowError(string body, string title = null, string extendedInfo = null)
+            {
+                return InteractionResult.OK;
+            }
         }
     }
 }

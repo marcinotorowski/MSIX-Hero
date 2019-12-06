@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Developer;
-using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
     // ReSharper disable once IdentifierTypo
-    internal class UnmountRegistryReducer : SelfElevationReducer<ApplicationState>
+    internal class UnmountRegistryReducer : SelfElevationReducer
     {
         private readonly UnmountRegistry action;
         private readonly IBusyManager busyManager;
@@ -17,7 +16,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         // ReSharper disable once IdentifierTypo
         public UnmountRegistryReducer(
             UnmountRegistry action,
-            IApplicationStateManager<ApplicationState> stateManager,
+            IWritableApplicationStateManager stateManager,
             IBusyManager busyManager) : base(action, stateManager)
         {
             this.action = action;
