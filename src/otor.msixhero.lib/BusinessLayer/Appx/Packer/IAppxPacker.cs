@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Infrastructure.Progress;
 
-namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
+namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
 {
     public interface IAppxPacker
     {

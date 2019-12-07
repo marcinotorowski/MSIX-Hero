@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Progress;
 
-namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
+namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
 {
     public class AppxPacker : IAppxPacker
     {

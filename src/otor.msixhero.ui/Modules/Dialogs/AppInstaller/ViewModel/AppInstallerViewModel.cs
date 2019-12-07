@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Packer;
+using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
@@ -13,11 +13,11 @@ using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
+namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 {
-    public class PackViewModel : NotifyPropertyChanged, IDialogAware
+    public class AppInstallerViewModel : NotifyPropertyChanged, IDialogAware
     {
-        private readonly IAppxPacker appxPacker;
+        private readonly IAppInstallerCreator appInstallerCreator;
         private readonly IInteractionService interactionService;
         private int progress;
         private string progressMessage;
@@ -26,20 +26,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
         private ICommand openSuccessLink;
         private ICommand reset;
 
-        public PackViewModel(IAppxPacker appxPacker, IInteractionService interactionService, IConfigurationService configurationService)
+        public AppInstallerViewModel(IAppInstallerCreator appInstallerCreator, IInteractionService interactionService, IConfigurationService configurationService)
         {
-            this.appxPacker = appxPacker;
+            this.appInstallerCreator = appInstallerCreator;
             this.interactionService = interactionService;
 
-            var initialOut = configurationService.GetCurrentConfiguration().Packer?.DefaultOutFolder;
-            this.InputPath = new ChangeableFolderProperty(interactionService)
+            this.OutputPath = new ChangeableFileProperty(interactionService)
             {
-                Validator = ChangeableFolderProperty.ValidatePath,
-                CurrentValue = initialOut,
+                Validator = ChangeableFileProperty.ValidatePath,
+                Filter = "App-Installer files|*.appinstaller|All files|*.*",
                 IsValidated = true
             };
 
-            this.OutputPath = new ChangeableFileProperty(interactionService)
+            this.InputPath = new ChangeableFileProperty(interactionService)
             {
                 Validator = ChangeableFileProperty.ValidatePath,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*",
@@ -58,7 +57,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
 
         public ChangeableFileProperty OutputPath { get; }
 
-        public ChangeableFolderProperty InputPath { get; }
+        public ChangeableFileProperty InputPath { get; }
         
         public bool IsLoading
         {
@@ -133,7 +132,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             {
                 token.ProgressChanged += handler;
 
-                await this.appxPacker.Pack(this.InputPath.CurrentValue, this.OutputPath.CurrentValue).ConfigureAwait(false);
+                await this.appInstallerCreator.Create(null, this.OutputPath.CurrentValue).ConfigureAwait(false);
                 this.IsSuccess = true;
             }
             finally
@@ -165,7 +164,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             }
 
             var newFilePath = new DirectoryInfo((string)e.NewValue);
-            this.OutputPath.CurrentValue = Path.Join(newFilePath.FullName.TrimEnd('\\') + "_packed");
+            this.OutputPath.CurrentValue = Path.Join(newFilePath.FullName.TrimEnd('\\') + ".appinstaller");
         }
     }
 }

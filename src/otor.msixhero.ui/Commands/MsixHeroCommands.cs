@@ -27,6 +27,7 @@ namespace otor.msixhero.ui.Commands
             CertManager = new RoutedUICommand { Text = "Open certificate manager" };
             Pack = new RoutedUICommand { Text = "Packs a package to a directory" };
             Unpack = new RoutedUICommand { Text = "Unpacks a package to a directory" };
+            AppInstaller = new RoutedUICommand { Text = "Opens a wizard for .appinstaller generation" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -70,5 +71,7 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand Pack { get; }
         
         public static RoutedUICommand Unpack { get; }
+
+        public static RoutedUICommand AppInstaller { get; }
     }
 }

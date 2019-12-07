@@ -37,11 +37,6 @@ namespace otor.msixhero.ui.Domain
                         return "The file path is invalid.";
                     }
 
-                    if (!File.Exists(value))
-                    {
-                        return "The file does not exist.";
-                    }
-
                     return null;
                 };
             }

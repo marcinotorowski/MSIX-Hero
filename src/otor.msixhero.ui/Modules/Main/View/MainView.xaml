@@ -46,6 +46,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding CommandHandler.Pack}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding CommandHandler.AppInstaller}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
     </routedCommand:RoutedCommandHandlers.Commands>
@@ -277,7 +278,7 @@
                                 <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
                             </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
-                        <Fluent:Button Header="Generate appinstaller definition...">
+                        <Fluent:Button Header="Generate appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
                             <Fluent:Button.LargeIcon>
                                 <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                             </Fluent:Button.LargeIcon>

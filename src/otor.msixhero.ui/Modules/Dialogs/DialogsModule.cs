@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using otor.msixhero.ui.Modules.Dialogs.AppInstaller.View;
+using otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
@@ -27,6 +29,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string PackageSigningPath = "PackageSigning";
         public static string CertificateExportPath = "CertificateExport";
         public static string UnpackPath = "Unpack";
+        public static string AppInstallerPath = "AppInstaller";
         public static string PackPath = "Pack";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
@@ -37,6 +40,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(CertificateExportPath);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
+            containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(AppInstallerPath);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
