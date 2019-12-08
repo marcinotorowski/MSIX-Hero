@@ -51,7 +51,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
 
             this.ChangeableContainer = new ChangeableContainer(this.InputPath, this.OutputPath)
             {
-                IsValidated = true
+                IsValidated = false
             };
         }
 
@@ -121,6 +121,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
         }
         public async Task Save()
         {
+            this.ChangeableContainer.IsValidated = true;
+            if (!this.ChangeableContainer.IsValid)
+            {
+                return;
+            }
+
             var token = new Progress();
 
             EventHandler<ProgressData> handler = (sender, data) =>
