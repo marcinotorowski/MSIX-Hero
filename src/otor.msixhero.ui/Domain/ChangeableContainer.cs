@@ -279,6 +279,17 @@ namespace otor.msixhero.ui.Domain
                 }
 
                 this.invalidChildren.Clear();
+
+                foreach (var item in this.children.OfType<IValidatedChangeable>())
+                {
+                    if (item.IsValidated == value)
+                    {
+                        continue;
+                    }
+
+                    item.IsValidated = value;
+                }
+
                 if (value)
                 {
                     foreach (var item in this.children.OfType<IValidatedChangeable>().Where(item => !item.IsValid))

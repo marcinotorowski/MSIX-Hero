@@ -104,6 +104,12 @@ namespace otor.msixhero.adminhelper
                 return false;
             }
 
+            public bool SaveFile(string initialFile, string filterString, out string selectedFile)
+            {
+                selectedFile = null;
+                return false;
+            }
+
             public bool SaveFile(string filterString, out string selectedFile)
             {
                 selectedFile = null;

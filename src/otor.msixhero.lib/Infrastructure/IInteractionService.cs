@@ -39,6 +39,8 @@
 
         bool SelectFile(string initialFile, string filterString, out string selectedFile);
 
+        bool SaveFile(string initialFile, string filterString, out string selectedFile);
+
         bool SelectFile(string filterString, out string selectedFile);
 
         bool SaveFile(string filterString, out string selectedFile);

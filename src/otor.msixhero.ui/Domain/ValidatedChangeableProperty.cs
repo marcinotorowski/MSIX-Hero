@@ -117,6 +117,8 @@ namespace otor.msixhero.ui.Domain
                 {
                     validationChanged(this, new ValueChangedEventArgs<string>(this.ValidationMessage));
                 }
+
+                this.OnPropertyChanged(nameof(this.CurrentValue));
             }
         }
     }

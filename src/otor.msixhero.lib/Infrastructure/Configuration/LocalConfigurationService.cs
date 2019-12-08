@@ -151,6 +151,11 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
                 result.List.Filter = defaults.List.Filter;
             }
 
+            if (result.AppInstaller == null)
+            {
+                result.AppInstaller = defaults.AppInstaller;
+            }
+
             return result;
         }
     }

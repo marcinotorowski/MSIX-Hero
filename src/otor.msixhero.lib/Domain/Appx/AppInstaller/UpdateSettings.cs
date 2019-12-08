@@ -12,7 +12,10 @@ namespace otor.msixhero.lib.Domain.Appx.AppInstaller
         [XmlElement("OnLaunch")]
         public OnLaunchSettings OnLaunch { get; set; }
 
-        [XmlElement]
+        [XmlElement("ForceUpdateFromAnyVersion")]
         public bool ForceUpdateFromAnyVersion { get; set; }
+
+        [XmlElement("AutomaticBackgroundTask")]
+        public AutomaticBackgroundTaskSettings AutomaticBackgroundTask { get; set; }
     }
 }

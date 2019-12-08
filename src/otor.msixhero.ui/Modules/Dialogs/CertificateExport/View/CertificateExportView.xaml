@@ -31,7 +31,6 @@
     <UserControl.CommandBindings>
         <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
         <CommandBinding Command="Close" Executed="CloseExecuted" />
-        <CommandBinding Command="Open" Executed="CommandBinding_OnExecuted" CanExecute="CommandBinding_OnCanExecute" />
     </UserControl.CommandBindings>
 
     <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
@@ -56,24 +55,9 @@
                 </DockPanel>
             </Border>
 
-            <ContentControl DockPanel.Dock="Bottom" Content="{Binding Error}">
-                <ContentControl.Style>
-                    <Style TargetType="ContentControl">
-                        <Style.Triggers>
-                            <Trigger Property="Content" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
-                <ContentControl.ContentTemplate>
-                    <DataTemplate>
-                        <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
+            <Border DockPanel.Dock="Bottom" Background="#22FF0000" Padding="8" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding ChangeableContainer.ValidationMessage}" VerticalAlignment="Center" />
+            </Border>
 
             <Grid Margin="16">
                 <ScrollViewer Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -81,8 +65,8 @@
 
                         <TextBlock Foreground="#666" Text="Full path to an MSIX package" Margin="0 0 0 6" />
                         <DockPanel>
-                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="4 0 0 0" CommandParameter="{Binding ElementName=PathInput}" />
-                            <TextBox x:Name="PathInput" TabIndex="4" Text="{Binding InputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox x:Name="PathInput" TabIndex="4" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                         </DockPanel>
 
                         <Border Visibility="{Binding CertificateDetails.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#eee" Margin="0 16 0 0">
@@ -105,8 +89,8 @@
 
                         <CheckBox IsChecked="{Binding SaveToFile}" Content="Save as .CER file" Margin="0 16 0 6" />
                         <DockPanel IsEnabled="{Binding SaveToFile}" Margin="22 0 0 0">
-                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" CommandParameter="{Binding ElementName=PathOutput}" Margin="4 0 0 0" />
-                            <TextBox x:Name="PathOutput"  TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox x:Name="PathOutput"  TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                         </DockPanel>
 
                         <CheckBox IsChecked="{Binding SaveToStore}" Content="Import to Trusted People store" Margin="0 10 0 6" />

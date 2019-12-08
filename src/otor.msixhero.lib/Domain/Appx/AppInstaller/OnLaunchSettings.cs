@@ -7,7 +7,7 @@ namespace otor.msixhero.lib.Domain.Appx.AppInstaller
 {
     public class OnLaunchSettings : IXmlSerializable
     {
-        public int HoursBetweenUpdateChecks { get; set; }
+        public int? HoursBetweenUpdateChecks { get; set; }
 
         public bool ShowPrompt { get; set; }
 
@@ -21,20 +21,31 @@ namespace otor.msixhero.lib.Domain.Appx.AppInstaller
         public void ReadXml(XmlReader reader)
         {
             reader.MoveToContent();
-            int.TryParse(reader.GetAttribute("HoursBetweenUpdateChecks") ?? "0", out var parsedHours);
+            var hoursAttribute = reader.GetAttribute("HoursBetweenUpdateChecks");
+            if (hoursAttribute != null)
+            {
+                if (int.TryParse(hoursAttribute ?? "24", out var parsedHours) && parsedHours != 24)
+                {
+                    this.HoursBetweenUpdateChecks = parsedHours;
+                }
+            }
+
             bool.TryParse(reader.GetAttribute("ShowPrompt") ?? "False", out var parsedPrompt);
-            bool.TryParse(reader.GetAttribute("UpdateBlocksActivation") ?? "False", out var parsedBlock);
-
             this.ShowPrompt = parsedPrompt;
-            this.UpdateBlocksActivation = parsedBlock;
-            this.HoursBetweenUpdateChecks = parsedHours;
 
+            bool.TryParse(reader.GetAttribute("UpdateBlocksActivation") ?? "False", out var parsedBlock);
+            this.UpdateBlocksActivation = parsedBlock;
+            
             reader.ReadStartElement();
         }
 
         public void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("HoursBetweenUpdateChecks", this.HoursBetweenUpdateChecks.ToString("0"));
+            if (this.HoursBetweenUpdateChecks.HasValue && this.HoursBetweenUpdateChecks.Value != 24)
+            {
+                writer.WriteAttributeString("HoursBetweenUpdateChecks", this.HoursBetweenUpdateChecks.Value.ToString("0"));
+            }
+
             writer.WriteAttributeString("ShowPrompt", this.ShowPrompt.ToString().ToLower());
             writer.WriteAttributeString("UpdateBlocksActivation", this.ShowPrompt.ToString().ToLower());
         }

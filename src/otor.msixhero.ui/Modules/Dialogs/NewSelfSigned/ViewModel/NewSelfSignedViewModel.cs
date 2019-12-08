@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Signing;
@@ -13,20 +11,16 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
 {
-    public class NewSelfSignedViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
+    public class NewSelfSignedViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IAppxSigningManager signingManager;
-        private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
-        private string publisherName;
-        private string publisherFriendlyName;
-        private string password;
-        private string outputPath;
         private int progress;
         private string progressMessage;
         private bool isLoading;
@@ -41,44 +35,38 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             IConfigurationService configurationService)
         {
             this.signingManager = signingManager;
-            this.interactionService = interactionService;
             this.stateManager = stateManager;
-            this.publisherName = "CN=";
-            this.outputPath = configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder;
-        }
+            
+            this.OutputPath = new ChangeableFolderProperty(interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
+            
+            this.PublisherName = new ValidatedChangeableProperty<string>("CN=");
+            this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
+            this.PublisherName.Validator = ValidatePublisherName;
+            
+            this.PublisherFriendlyName = new ValidatedChangeableProperty<string>();
+            this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
+            this.PublisherFriendlyName.Validator = ValidatePublisherFriendlyName;
 
-        public string PublisherName
-        {
-            get => this.publisherName;
-            set
+            this.Password = new ValidatedChangeableProperty<string>();
+            this.Password.Validator = ValidatePassword;
+            
+            this.ChangeableContainer = new ChangeableContainer(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName)
             {
-                this.SetField(ref this.publisherName, value);
-                this.OnPropertyChanged(nameof(Error));
-                this.isSubjectTouched = true;
-            }
+                IsValidated = false
+            };
         }
 
+        public ChangeableContainer ChangeableContainer { get; }
+
+        public ValidatedChangeableProperty<string> PublisherName { get; }
+        
         public bool IsSuccess
         {
             get => this.isSuccess;
             set => this.SetField(ref this.isSuccess, value);
         }
 
-        public string PublisherFriendlyName
-        {
-            get => this.publisherFriendlyName;
-            set
-            {
-                this.SetField(ref this.publisherFriendlyName, value);
-                this.OnPropertyChanged(nameof(Error));
-                if (this.isSubjectTouched)
-                {
-                    return;
-                }
-
-                this.SetField(ref this.publisherName, "CN=" + this.PublisherName);
-            }
-        }
+        public ValidatedChangeableProperty<string> PublisherFriendlyName { get; }
 
         public bool IsLoading
         {
@@ -98,25 +86,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             private set => this.SetField(ref this.progressMessage, value);
         }
 
-        public string Password
-        {
-            get => this.password;
-            set
-            {
-                this.SetField(ref this.password, value);
-                this.OnPropertyChanged(nameof(Error));
-            }
-        }
+        public ValidatedChangeableProperty<string> Password { get; }
 
-        public string OutputPath
-        {
-            get => this.outputPath;
-            set
-            {
-                this.SetField(ref this.outputPath, value);
-                this.OnPropertyChanged(nameof(Error));
-            }
-        }
+        public ChangeableFolderProperty OutputPath { get; }
 
         public ICommand ImportNewCertificate
         {
@@ -138,6 +110,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
 
         public async Task Save()
         {
+            this.ChangeableContainer.IsValidated = true;
+            if (!this.ChangeableContainer.IsValid)
+            {
+                return;
+            }
+
             var token = new Progress();
 
             EventHandler<ProgressData> handler = (sender, data) =>
@@ -150,7 +128,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             try
             {
                 token.ProgressChanged += handler;
-                await this.signingManager.CreateSelfSignedCertificate(new DirectoryInfo(this.OutputPath), this.PublisherName, this.PublisherFriendlyName, this.Password, CancellationToken.None).ConfigureAwait(true);
+                await this.signingManager.CreateSelfSignedCertificate(
+                    new DirectoryInfo(this.OutputPath.CurrentValue), 
+                    this.PublisherName.CurrentValue, 
+                    this.PublisherFriendlyName.CurrentValue, 
+                    this.Password.CurrentValue, 
+                    CancellationToken.None).ConfigureAwait(true);
 
                 this.IsSuccess = true;
             }
@@ -163,45 +146,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             }
         }
 
-        public string Error =>
-            this[nameof(PublisherName)] ??
-            this[nameof(PublisherFriendlyName)] ??
-            this[nameof(OutputPath)] ??
-            this[nameof(Password)];
-
-        public string this[string columnName]
-        {
-            get
-            {
-                switch (columnName)
-                {
-                    case nameof(PublisherName):
-                        return string.IsNullOrEmpty(this.PublisherName) ? "The display name of the publisher may not be empty." : null;
-                    case nameof(PublisherFriendlyName):
-                        if (string.IsNullOrEmpty(this.PublisherFriendlyName))
-                        {
-                            return "The name of the publisher may not be empty.";
-                        }
-
-                        if (!this.PublisherName.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
-                        {
-                            return "Publisher name must start with CN=";
-                        }
-
-                        return null;
-                    case nameof(OutputPath):
-                        return string.IsNullOrEmpty(this.OutputPath) ? "The output path may not be empty." : null;
-                    case nameof(Password):
-                        return string.IsNullOrEmpty(this.Password) ? "The password may not be empty." : null;
-                }
-
-                return null;
-            }
-        }
-
         public bool CanSave()
         {
-            return this.Error == null;
+            return this.ChangeableContainer.IsValid;
         }
 
         public string Title
@@ -209,9 +156,36 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             get => "New self signed certificate";
         }
 
+        public event Action<IDialogResult> RequestClose;
+
+        private static string ValidatePublisherName(string newValue)
+        {
+            if (string.IsNullOrEmpty(newValue))
+            {
+                return "The display name of the publisher may not be empty.";
+            }
+            
+            if (!newValue.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Publisher name must start with CN=";
+            }
+
+            return null;
+        }
+
+        private static string ValidatePublisherFriendlyName(string newValue)
+        {
+            return string.IsNullOrEmpty(newValue) ? "The name of the publisher may not be empty." : null;
+        }
+
+        private static string ValidatePassword(string currentValue)
+        {
+            return string.IsNullOrEmpty(currentValue) ? "The password may not be empty." : null;
+        }
+
         private void ImportNewCertificateExecute()
         {
-            var file = Directory.EnumerateFiles(this.OutputPath, "*.cer").OrderByDescending(d => new FileInfo(d).LastWriteTimeUtc).FirstOrDefault();
+            var file = Directory.EnumerateFiles(this.OutputPath.CurrentValue, "*.cer").OrderByDescending(d => new FileInfo(d).LastWriteTimeUtc).FirstOrDefault();
             if (file == null)
             {
                 return;
@@ -219,8 +193,29 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
 
             this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(file));
         }
+        
+        private void PublisherNameOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            this.isSubjectTouched = true;
+        }
 
-        public event Action<IDialogResult> RequestClose;
+        private void PublisherFriendlyNameOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (this.isSubjectTouched)
+            {
+                return;
+            }
+
+            var touch = this.isSubjectTouched;
+            try
+            {
+                this.PublisherName.CurrentValue = "CN=" + (string) e.NewValue;
+            }
+            finally
+            {
+                this.isSubjectTouched = touch;
+            }
+        }
     }
 }
 

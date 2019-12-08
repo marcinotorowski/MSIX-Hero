@@ -21,6 +21,8 @@ namespace otor.msixhero.ui.Domain
 
         public string Filter { get; set; }
 
+        public bool OpenForSaving { get; set; }
+
         public static Func<string, string> ValidatePath
         {
             get
@@ -75,18 +77,38 @@ namespace otor.msixhero.ui.Domain
             {
                 return this.browse ??= new DelegateCommand(param =>
                 {
-                    if (string.IsNullOrEmpty(this.CurrentValue))
+                    if (this.OpenForSaving)
                     {
-                        if (this.interactionService.SelectFile(this.Filter, out var newValue))
+                        if (string.IsNullOrEmpty(this.CurrentValue))
                         {
-                            this.CurrentValue = newValue;
+                            if (this.interactionService.SaveFile(this.Filter, out var newValue))
+                            {
+                                this.CurrentValue = newValue;
+                            }
+                        }
+                        else
+                        {
+                            if (this.interactionService.SaveFile(this.CurrentValue, this.Filter, out var newValue))
+                            {
+                                this.CurrentValue = newValue;
+                            }
                         }
                     }
                     else
                     {
-                        if (this.interactionService.SelectFile(this.CurrentValue, this.Filter, out var newValue))
+                        if (string.IsNullOrEmpty(this.CurrentValue))
                         {
-                            this.CurrentValue = newValue;
+                            if (this.interactionService.SelectFile(this.Filter, out var newValue))
+                            {
+                                this.CurrentValue = newValue;
+                            }
+                        }
+                        else
+                        {
+                            if (this.interactionService.SelectFile(this.CurrentValue, this.Filter, out var newValue))
+                            {
+                                this.CurrentValue = newValue;
+                            }
                         }
                     }
                 });

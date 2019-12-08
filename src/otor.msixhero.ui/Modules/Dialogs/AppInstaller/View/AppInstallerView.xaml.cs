@@ -1,9 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel;
+using Xceed.Wpf.Toolkit;
 
 namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.View
 {
@@ -54,6 +57,24 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.View
         {
             // ReSharper disable once PossibleNullReferenceException
             Window.GetWindow(this).Close();
+        }
+
+        private void Spinner_OnSpinnerSpin(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void Spinner_OnSpin(object sender, SpinEventArgs e)
+        {
+            var spinner = (ButtonSpinner)sender;
+            var content = spinner.Content as string;
+
+            int.TryParse(content ?? "0", out var value);
+            if (e.Direction == SpinDirection.Increase)
+                value++;
+            else
+                value--;
+
+            spinner.Content = value.ToString();
         }
     }
 }

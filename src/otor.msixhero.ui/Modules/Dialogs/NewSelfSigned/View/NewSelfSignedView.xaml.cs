@@ -59,18 +59,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
             Window.GetWindow(this).Close();
         }
 
-        private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            var dlg = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();
-            if (dlg.ShowDialog() == true)
-            {
-                ((NewSelfSignedViewModel) this.DataContext).OutputPath = dlg.SelectedPath;
-            }
-        }
-
         private void OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            ((NewSelfSignedViewModel) this.DataContext).Password = ((PasswordBox)sender).Password;
+            ((NewSelfSignedViewModel) this.DataContext).Password.CurrentValue = ((PasswordBox)sender).Password;
         }
 
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)

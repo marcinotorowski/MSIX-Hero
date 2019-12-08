@@ -7,14 +7,17 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel"
+             xmlns:appInstaller="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;assembly=otor.msixhero.lib"
+             xmlns:appInstaller1="clr-namespace:otor.msixhero.lib.Domain.Appx.AppInstaller;assembly=otor.msixhero.lib"
              mc:Ignorable="d" 
+             d:DesignHeight="600"
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:AppInstallerViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="550" />
-            <Setter Property="Height" Value="550" />
+            <Setter Property="Height" Value="590" />
             <Setter Property="MinWidth" Value="500" />
             <Setter Property="MinHeight" Value="350" />
         </Style>
@@ -56,33 +59,11 @@
                 </DockPanel>
             </Border>
 
-            <ContentControl DockPanel.Dock="Bottom" Content="{Binding ChangeableContainer.ValidationMessage}" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <ContentControl.ContentTemplate>
-                    <DataTemplate>
-                        <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
+            <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding ChangeableContainer.ValidationMessage}" VerticalAlignment="Center" />
+            </Border>
 
-            <Grid Margin="16">
-                <ScrollViewer Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
-
-                        <TextBlock Foreground="#666" Text="Full path to the main package or bundle." Margin="0 0 0 6" />
-                        <DockPanel>
-                            <Button TabIndex="3" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox TabIndex="2" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                        </DockPanel>
-
-                        <TextBlock Foreground="#666" Text="Full path to the output .appinstaller file" Margin="0 16 0 6" />
-                        <DockPanel>
-                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                        </DockPanel>
-                    </StackPanel>
-                </ScrollViewer>
+            <Grid Margin="16 0 16 16">
                 <Border Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel VerticalAlignment="Center">
                         <Path Style="{StaticResource AnimatedSuccess}" />
@@ -96,6 +77,129 @@
                         </TextBlock>
                     </StackPanel>
                 </Border>
+
+                <TabControl Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" >
+                    <TabItem Header="Main">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <Button TabIndex="3" Padding="10 0" Margin="0 0 0 0"  Content="Load from .msix/.appxbundle..." HorizontalAlignment="Left" Command="{Binding InputPath.Browse}" />
+
+                                <TextBlock Foreground="#666" Text="What will be targeted by this .appinstaller?" Margin="0 16 0 6" />
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Margin="0 0 16 0" GroupName="p1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appInstaller:PackageType.Package}}" Content="Package (.msix/.appx)" />
+                                    <RadioButton Margin="0 0 0 0" GroupName="p2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appInstaller:PackageType.Bundle}}" Content="Bundle (.appxbundle)" />
+                                </StackPanel>
+
+                                <TextBlock Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="Package name" Margin="0 16 0 6" />
+                                <TextBlock Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Bundle name" Margin="0 16 0 6" />
+                                <TextBox Text="{Binding MainName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+                                <TextBlock Foreground="#666" Text="Publisher" Margin="0 6 0 6" />
+                                <TextBox Text="{Binding MainPublisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="32" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Column="0" Grid.Row="0" Foreground="#666" Text="Version" Margin="0 6 0 6" />
+                                    <TextBox Grid.Row="1" Text="{Binding MainVersion.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+                                    <TextBlock
+                                        Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                                        Grid.Column="2" Grid.Row="0" Foreground="#666" Text="Architecture" Margin="0 6 0 6" />
+                                    <ComboBox
+                                        Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                                        Grid.Row="1" Grid.Column="2" SelectedValue="{Binding MainArchitecture.CurrentValue}" SelectedValuePath="Tag">
+                                        <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.arm64}">ARM 64-bit</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.arm}">ARM</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.neutral}">Neutral</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.x64}">64-bit</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.x86}">32-bit</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+
+                                <TextBlock Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main package is available" Margin="0 16 0 6" />
+                                <TextBlock Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main bundle is available" Margin="0 16 0 6" />
+                                <TextBox TabIndex="2" Text="{Binding MainPackageUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Options">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <TextBlock Foreground="#666" Text="When to check for updates?" Margin="0 0 0 6" />
+                                <ComboBox SelectedValue="{Binding AppInstallerUpdateCheckingMethod.CurrentValue}" SelectedValuePath="Tag" Margin="0 0 0 0">
+                                    <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On lauch</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}">Every 8 hours</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and very 8 hours</ComboBoxItem>
+                                </ComboBox>
+
+                                <StackPanel Visibility="{Binding ElementName=UpdateNever, Path=IsSelected, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                                    <TextBlock Foreground="#666" Text="Update options" Margin="0 16 0 6" />
+                                    <CheckBox IsChecked="{Binding AllowDowngrades.CurrentValue}" Margin="0 0 0 6">
+                                        <TextBlock Text="Allow downgrades (installing older version of an app over the newer one)" TextWrapping="Wrap" />
+                                    </CheckBox>
+                                </StackPanel>
+
+                                <StackPanel Visibility="{Binding ShowLaunchOptions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Foreground="#666" Text="When launching the app check for a new version and..." Margin="0 16 0 6" />
+                                    <CheckBox IsChecked="{Binding ShowPrompt.CurrentValue}" Margin="0 0 0 6">
+                                        <TextBlock Text="Show a prompt if a new version is available" TextWrapping="Wrap" />
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding BlockLaunching.CurrentValue}" Margin="0 0 0 6">
+                                        <TextBlock Text="Stop the user from launching the application until the available update has been applied." TextWrapping="Wrap" />
+                                    </CheckBox>
+                                    <TextBlock Foreground="#666" Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <xctk:ButtonSpinner Content="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="80">
+                                        
+                                        </xctk:ButtonSpinner>
+                                        <TextBlock Text="hours" VerticalAlignment="Center" Margin="5 0 0 0" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Border Height="1" Background="#999" Margin="0 16 0 0" />
+
+                                <DockPanel Margin="0 6 0 0">
+                                    <Path 
+                                        Margin="0 0 6 0"
+                                        VerticalAlignment="Center"
+                                        Fill="#444"
+                                        Width="32"
+                                        Height="32"
+                                        Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 12 L 17 12 L 17 10 Z M 15 14 L 15 22 L 17 22 L 17 14 Z">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleY="0.5" ScaleX="0.5" />
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                    <TextBlock Margin="0 0 0 0" TextWrapping="Wrap" VerticalAlignment="Center">
+                                        <Run Text="This combination of settings requires" />
+                                        <Run Text="{Binding CompatibleWindows, Mode=OneWay, FallbackValue='Windows 10'}" FontWeight="SemiBold" />
+                                        <Run Text="or newer." />
+                                    </TextBlock>
+                                </DockPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <!--<TabItem Header="Output">
+                        <StackPanel>
+                            <TextBlock Foreground="#666" Text="Full path to the output .appinstaller file" Margin="0 0 0 6" />
+                            <DockPanel>
+                                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                                <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            </DockPanel>
+                        </StackPanel>
+                    </TabItem>-->
+                </TabControl>
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>

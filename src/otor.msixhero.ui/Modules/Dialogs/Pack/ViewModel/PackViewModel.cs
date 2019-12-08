@@ -42,6 +42,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
                 Validator = ChangeableFileProperty.ValidatePath,
+                OpenForSaving = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*",
                 IsValidated = true
             };

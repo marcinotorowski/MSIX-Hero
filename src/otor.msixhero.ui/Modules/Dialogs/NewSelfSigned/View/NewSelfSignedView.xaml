@@ -37,9 +37,6 @@
         <CommandBinding 
             Command="Close"
             Executed="CloseExecuted" />
-        <CommandBinding 
-            Command="Open"
-            Executed="OpenExecuted" />
     </UserControl.CommandBindings>
 
 
@@ -65,41 +62,26 @@
                 </DockPanel>
             </Border>
 
-            <ContentControl DockPanel.Dock="Bottom" Content="{Binding Error}">
-                <ContentControl.Style>
-                    <Style TargetType="ContentControl">
-                        <Style.Triggers>
-                            <Trigger Property="Content" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentControl.Style>
-                <ContentControl.ContentTemplate>
-                    <DataTemplate>
-                        <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
+            <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding ChangeableContainer.ValidationMessage}" VerticalAlignment="Center" />
+            </Border>
 
             <Grid Margin="16">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                         <TextBlock Foreground="#666" Text="Publisher friendly name" Margin="0 0 0 6" />
-                        <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                         <TextBlock Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
-                        <TextBox TabIndex="2" Text="{Binding PublisherName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        <TextBox TabIndex="2" Text="{Binding PublisherName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                         <TextBlock Foreground="#666" Text="Password" Margin="0 16 0 6" />
                         <PasswordBox TabIndex="3" PasswordChanged="OnPasswordChanged" />
 
                         <TextBlock  Foreground="#666" Text="Output path" Margin="0 16 0 6" />
                         <DockPanel>
-                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="Open" Margin="4 0 0 0" />
-                            <TextBox x:Name="OutputPath" TabIndex="4" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox x:Name="OutputPath" TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                         </DockPanel>
                     </StackPanel>
                 </ScrollViewer>

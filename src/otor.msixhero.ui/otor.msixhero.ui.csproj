@@ -86,6 +86,10 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\Dialogs\AppInstaller\Enums\" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;" />
   </Target>

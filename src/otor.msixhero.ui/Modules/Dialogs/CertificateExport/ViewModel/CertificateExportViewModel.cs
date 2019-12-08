@@ -1,12 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using otor.msixhero.ui.ViewModel;
@@ -14,58 +12,45 @@ using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 {
-    public class CertificateExportViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
+    public class CertificateExportViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IAppxSigningManager signingManager;
-        private readonly IInteractionService interactionService;
         private int progress;
         private string progressMessage;
         private bool isLoading;
-        private string inputPath;
-        private string outputPath;
         private bool saveToFile = true;
         private bool saveToStore;
         private bool isSuccess;
-        private ICommand browseForInput;
-        private ICommand browseForOutput;
 
         public CertificateExportViewModel(IAppxSigningManager signingManager, IInteractionService interactionService)
         {
             this.signingManager = signingManager;
-            this.interactionService = interactionService;
+
+            this.InputPath = new ChangeableFileProperty(interactionService)
+            {
+                Filter = "MSIX files|*.msix"
+            };
+
+            this.InputPath.ValueChanged += this.InputPathOnValueChanged;
+            this.InputPath.Validator = ChangeableFileProperty.ValidatePathAndPresence;
+
+            this.OutputPath = new ChangeableFileProperty(interactionService)
+            {
+                Filter = "Certificate files|*.cer",
+                OpenForSaving = true,
+                Validator = ChangeableFileProperty.ValidatePath
+            };
+
+            this.ChangeableContainer = new ChangeableContainer(this.InputPath, this.OutputPath) { IsValidated = false };
         }
+
+        public ChangeableContainer ChangeableContainer { get; }
 
         public AsyncProperty<CertificateViewModel> CertificateDetails { get; } = new AsyncProperty<CertificateViewModel>();
 
-        public string InputPath
-        {
-            get => this.inputPath;
-            set
-            {
-                this.SetField(ref this.inputPath, value);
+        public ChangeableFileProperty InputPath { get; }
 
-                if (string.IsNullOrEmpty(this.outputPath))
-                {
-                    this.OutputPath = value + ".cer";
-                }
-
-                this.OnPropertyChanged(nameof(Error));
-                
-#pragma warning disable 4014
-                this.CertificateDetails.Load(this.GetCertificateDetails(value, CancellationToken.None));
-#pragma warning restore 4014
-            }
-        }
-
-        public string OutputPath
-        {
-            get => this.outputPath;
-            set
-            {
-                this.SetField(ref this.outputPath, value);
-                this.OnPropertyChanged(nameof(Error));
-            }
-        }
+        public ChangeableFileProperty OutputPath { get; }
 
         public bool SaveToFile
         {
@@ -73,7 +58,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
             set
             {
                 this.SetField(ref this.saveToFile, value);
-                this.OnPropertyChanged(nameof(Error));
+                this.OutputPath.IsValidated = value;
             }
         }
 
@@ -83,7 +68,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
             set
             {
                 this.SetField(ref this.saveToStore, value);
-                this.OnPropertyChanged(nameof(Error));
             }
         }
 
@@ -119,6 +103,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
         }
         public async Task Save()
         {
+            this.InputPath.IsValidated = true;
+            this.OutputPath.IsValidated = this.saveToFile;
+
+            if (!this.ChangeableContainer.IsValid)
+            {
+                return;
+            }
+
             var token = new Progress();
 
             EventHandler<ProgressData> handler = (sender, data) =>
@@ -134,12 +126,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 
                 if (this.saveToFile)
                 {
-                    await this.signingManager.ExtractCertificateFromMsix(this.inputPath, this.outputPath).ConfigureAwait(false);
+                    await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue).ConfigureAwait(false);
                 }
 
                 if (this.saveToStore)
                 {
-                    await this.signingManager.ExtractCertificateFromMsix(this.inputPath).ConfigureAwait(false);
+                    await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue).ConfigureAwait(false);
                 }
 
                 this.IsSuccess = true;
@@ -159,73 +151,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
             set => this.SetField(ref this.isSuccess, value);
         }
 
-        public string Error => this[nameof(this.InputPath)] ?? this[nameof(this.OutputPath)];
-
-        public string this[string columnName]
-        {
-            get
-            {
-                switch (columnName)
-                {
-                    case nameof(this.InputPath):
-                        if (string.IsNullOrEmpty(this.InputPath))
-                        {
-                            return "The path to the MSIX package may not be empty.";
-                        }
-
-                        break;
-
-                    case nameof(this.OutputPath):
-                        if (this.SaveToFile && string.IsNullOrEmpty(this.OutputPath))
-                        {
-                            return "The path to the output .CER file may not be empty.";
-                        }
-
-                        break;
-                }
-
-                return null;
-            }
-        }
-
         public bool CanSave()
         {
-            return this.Error == null && (this.saveToFile || this.saveToStore);
+            return this.ChangeableContainer.ValidationMessage == null;
         }
 
         public string Title
         {
             get => "Extract certificate";
-        }
-
-        public ICommand BrowseForInput
-        {
-            get => this.browseForInput ?? (this.browseForInput = new DelegateCommand(param => this.BrowseForInputExecute(), param => true));
-        }
-
-        public ICommand BrowseForOutput
-        {
-            get => this.browseForOutput ?? (this.browseForOutput = new DelegateCommand(param => this.BrowseForOutputExecute(), param => true));
-        }
-
-        private void BrowseForInputExecute()
-        {
-            if (!this.interactionService.SelectFile(filterString: "MSIX files (*.msix)|*.msix", out var selectedFile))
-            {
-                return;
-            }
-
-            this.InputPath = selectedFile;
-        }
-
-        private void BrowseForOutputExecute()
-        {
-            if (!this.interactionService.SaveFile(filterString: "CER files (*.cer)|*.cer", out var selectedFile))
-            {
-                return;
-            }
-
-            this.OutputPath = selectedFile;
         }
 
         public event Action<IDialogResult> RequestClose;
@@ -234,6 +167,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
         {
             var result = await this.signingManager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
             return new CertificateViewModel(result);
+        }
+
+        private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            var value = (string)e.NewValue;
+            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue))
+            {
+                this.OutputPath.CurrentValue = value + ".cer";
+            }
+
+#pragma warning disable 4014
+            this.CertificateDetails.Load(this.GetCertificateDetails(value, CancellationToken.None));
         }
     }
 }

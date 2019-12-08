@@ -9,5 +9,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppInstaller
     public interface IAppInstallerCreator
     {
         Task Create(AppInstallerConfig config, string file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
+        int GetMinimumSupportedWindowsVersion(AppInstallerConfig config);
     }
 }

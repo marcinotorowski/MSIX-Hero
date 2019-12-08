@@ -11,6 +11,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             this.List = new ListConfiguration();
             this.Signing = new SigningConfiguration();
             this.Packer = new PackerConfiguration();
+            this.AppInstaller = new AppInstallerConfiguration();
         }
 
         [DataMember(Name = "list")]
@@ -21,5 +22,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name = "packer")]
         public PackerConfiguration Packer { get; set; }
+
+        [DataMember(Name ="appinstaller")]
+        public AppInstallerConfiguration AppInstaller { get; set; }
     }
 }

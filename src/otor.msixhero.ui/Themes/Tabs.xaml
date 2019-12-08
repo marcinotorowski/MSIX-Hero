@@ -59,13 +59,15 @@
 
                             <Border DockPanel.Dock="Right" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Width="15" />
                             <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Margin="0 0 0 0" Background="Transparent">
-                                <ContentPresenter x:Name="ContentSite"
-                                                          VerticalAlignment="Center"
-                                                          HorizontalAlignment="Left"
-                                                          ContentSource="Header"
-                                                          Margin="0 11 0 8"
-                                                          TextBlock.FontSize="13"
-                                                          RecognizesAccessKey="True" />
+                                <ContentPresenter 
+                                    IsHitTestVisible="False"
+                                    x:Name="ContentSite"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    ContentSource="Header"
+                                    Margin="0 11 0 8"
+                                    TextBlock.FontSize="13"
+                                    RecognizesAccessKey="True" />
                             </Border>
                         </DockPanel>
                     </Grid>

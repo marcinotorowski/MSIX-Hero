@@ -28,9 +28,12 @@ namespace otor.msixhero.ui.Services
 
         public InteractionResult ShowError(string body, string title = null, string extendedInfo = null)
         {
-            var taskDialog = new TaskDialog();
-            taskDialog.MainIcon = TaskDialogIcon.Error;
-            taskDialog.ButtonStyle = TaskDialogButtonStyle.Standard;
+            var taskDialog = new TaskDialog
+            {
+                MainIcon = TaskDialogIcon.Error, 
+                ButtonStyle = TaskDialogButtonStyle.Standard
+            };
+
             taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Retry)); 
             taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Close));
 
@@ -56,7 +59,7 @@ namespace otor.msixhero.ui.Services
 
         public bool SelectFile(string initialFile, string filterString, out string selectedFile)
         {
-            if (!this.SelectFile(initialFile, filterString, false, out var selection))
+            if (!SelectFile(initialFile, filterString, false, out var selection))
             {
                 selectedFile = null;
                 return false;
@@ -68,20 +71,24 @@ namespace otor.msixhero.ui.Services
 
         public bool SaveFile(string initialFile, string filterString, out string selectedFile)
         {
-            var dlg = new VistaOpenFileDialog();
+            var dlg = new VistaSaveFileDialog();
 
             if (!string.IsNullOrEmpty(filterString))
             {
                 dlg.Filter = filterString;
             }
 
-            if (initialFile != null && File.Exists(initialFile))
+            if (initialFile != null)
             {
-                dlg.InitialDirectory = Path.GetDirectoryName(initialFile);
-                dlg.FileName = Path.GetFileName(initialFile);
+                var fileInfo = new FileInfo(initialFile);
+                if (fileInfo.Directory != null && fileInfo.Directory.Exists)
+                {
+                    dlg.InitialDirectory = fileInfo.Directory.FullName;
+                }
+
+                dlg.FileName = fileInfo.Name;
             }
 
-            dlg.Multiselect = false;
             dlg.CheckFileExists = false;
             var result = dlg.ShowDialog() == true;
             selectedFile = dlg.FileName;
@@ -110,12 +117,12 @@ namespace otor.msixhero.ui.Services
 
         public bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles)
         {
-            return this.SelectFile(initialFile, filterString, true, out selectedFiles);
+            return SelectFile(initialFile, filterString, true, out selectedFiles);
         }
 
         public bool SelectFiles(string filterString, out string[] selectedFiles)
         {
-            return this.SelectFile(null, filterString, true, out selectedFiles);
+            return SelectFile(null, filterString, true, out selectedFiles);
         }
 
         public bool SelectFolder(string initialFolder, out string selectedFolder)
@@ -135,7 +142,7 @@ namespace otor.msixhero.ui.Services
             return this.SelectFolder(null, out selectedFolder);
         }
 
-        private bool SelectFile(string initialFile, string filterString, bool withMultiSelection, out string[] selectedFiles)
+        private static bool SelectFile(string initialFile, string filterString, bool withMultiSelection, out string[] selectedFiles)
         {
             var dlg = new VistaOpenFileDialog();
 
@@ -144,10 +151,15 @@ namespace otor.msixhero.ui.Services
                 dlg.Filter = filterString;
             }
 
-            if (initialFile != null && File.Exists(initialFile))
+            if (initialFile != null)
             {
-                dlg.InitialDirectory = Path.GetDirectoryName(initialFile);
-                dlg.FileName = Path.GetFileName(initialFile);
+                var fileInfo = new FileInfo(initialFile);
+                if (fileInfo.Directory != null && fileInfo.Directory.Exists)
+                {
+                    dlg.InitialDirectory = fileInfo.Directory.FullName;
+                }
+
+                dlg.FileName = fileInfo.Name;
             }
 
             dlg.CheckFileExists = true;
