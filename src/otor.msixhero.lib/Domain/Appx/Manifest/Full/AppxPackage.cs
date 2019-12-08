@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using otor.msixhero.lib.Domain.Appx.Manifest.Build;
 
 namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 {
@@ -49,5 +50,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public List<AppxOperatingSystemDependency> OperatingSystemDependencies { get; set; }
 
         public List<AppxApplication> Applications { get; set; }
+
+        public BuildInfo BuildInfo { get; set; }
     }
 }

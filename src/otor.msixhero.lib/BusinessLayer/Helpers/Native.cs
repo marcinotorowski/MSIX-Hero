@@ -8,7 +8,9 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Namotion.Reflection;
 using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.Detection;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
+using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Appx.Packages;
 
 // ReSharper disable UnusedMember.Global
@@ -286,6 +288,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                             }
                         }
 
+                        package.BuildInfo = new BuildDetection().Detect(AppxManifestSummaryBuilder.FromInstallLocation(package.Path, AppxManifestSummaryBuilderMode.MetaData).GetAwaiter().GetResult());
                         yield return package;
                     }
                 }

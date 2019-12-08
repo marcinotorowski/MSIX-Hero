@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
+using otor.msixhero.lib.BusinessLayer.Appx.Details;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Logs;
@@ -30,6 +31,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
     public class CurrentUserAppxPackageManager : IAppxPackageManager
     {
         private static readonly ILog Logger = LogManager.GetLogger();
+
+        protected readonly PackageDetailsProvider PackageDetailsProvider = new PackageDetailsProvider();
 
         private readonly IAppxSigningManager signingManager;
 
@@ -403,40 +406,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         public Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return Task.Run(() =>
-            {
-                var nativePkg = Native.QueryPackageInfo(packageName, Native.PackageConstants.PACKAGE_INFORMATION_FULL);
-
-                AppxPackage mainApp = null;
-                IList<AppxPackage> dependencies = new List<AppxPackage>();
-
-                foreach (var item in nativePkg)
-                {
-                    if (mainApp == null)
-                    {
-                        mainApp = item;
-                    }
-                    else
-                    {
-                        dependencies.Add(item);
-                    }
-                }
-
-                if (mainApp == null)
-                {
-                    return null;
-                }
-
-                foreach (var dependency in mainApp.PackageDependencies)
-                {
-                    dependency.Dependency = dependencies.FirstOrDefault(d =>
-                        d.Publisher == dependency.Publisher &&
-                        d.Name == dependency.Name &&
-                        Version.Parse(d.Version) >= Version.Parse(dependency.Version));
-                }
-
-                return mainApp;
-            }, cancellationToken);
+            return this.PackageDetailsProvider.GetPackage(packageName, cancellationToken, progress);
         }
 
         private async Task<List<Package>> Get(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)

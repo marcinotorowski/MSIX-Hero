@@ -17,7 +17,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Colors.xaml" />
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Converters.xaml" />
                 <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Tabs.xaml" />
+                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -27,46 +29,56 @@
         </Border>
 
         <TabControl DockPanel.Dock="Top" Margin="0 0 0 0">
-            <TabItem Header="Properties" DataContext="{Binding SelectedPackage}">
+            <TabItem Header="Properties">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="0">
+                    <StackPanel>
+                        <StackPanel DataContext="{Binding SelectedPackage}" >
 
-                        <DockPanel DockPanel.Dock="Top" >
-                            <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                            <DockPanel DockPanel.Dock="Top" >
+                                <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                    </Border>
                                 </Border>
-                            </Border>
-                            <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
-                        </DockPanel>
+                                <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
+                            </DockPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
-                        </StackPanel>
+                            <StackPanel Margin="0 10 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
+                            </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
-                        </StackPanel>
+                            <StackPanel Margin="0 10 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
+                            </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
-                        </StackPanel>
-                        <StackPanel Margin="0 0 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
-                        </StackPanel>
+                            <StackPanel Margin="0 10 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel Margin="0 0 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
+                            </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
-                        </StackPanel>
+                            <StackPanel Margin="0 10 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
+                            </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                            <StackPanel Margin="0 10 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Margin="0 10 0 0" Visibility="{Binding SelectedPackageManifestInfo.CurrentValue.HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
+                            <TextBlock Style="{StaticResource DataValue}" Margin="0">
+                                <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductName, Mode=OneWay, TargetNullValue='Unknown product'}" />
+                                <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductVersion, Mode=OneWay}" />
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -180,14 +192,14 @@
                                     <StackPanel>
                                         <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
-                                        <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                            <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
+                                            <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                         </TextBlock>
 
                                         <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
-                                        <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                            <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
+                                            <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                         </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -9,23 +10,33 @@ using otor.msixhero.lib.Infrastructure.Logging;
 
 namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
 {
+    [Flags]
+    public enum AppxManifestSummaryBuilderMode
+    {
+        Identity = 1,
+        Applications = 2,
+        Properties = 4,
+        MetaData = 16,
+        Minimal = Identity | Applications | Properties
+    }
+
     public class AppxManifestSummaryBuilder
     {
         private const string AppxManifestName = "AppxManifest.xml";
 
         private static readonly ILog Logger = LogManager.GetLogger();
 
-        public static Task<AppxManifestSummary> FromFile(string filePath, bool basicInformation = true)
+        public static Task<AppxManifestSummary> FromFile(string filePath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
         {
             if (string.Equals(AppxManifestName, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
             {
                 return FromManifest(filePath);
             }
 
-            return FromMsix(filePath);
+            return FromMsix(filePath, mode);
         }
 
-        public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, bool basicInformation = true)
+        public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
         {
             Logger.Info("Reading application manifest {0}...", fullMsixFilePath);
 
@@ -48,7 +59,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
 
                 await using (var stream = entry.Open())
                 {
-                    return await FromManifest(stream, null).ConfigureAwait(false);
+                    return await FromManifest(stream, mode).ConfigureAwait(false);
                 }
             }
             catch (InvalidDataException e)
@@ -57,7 +68,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
             }
         }
 
-        public static Task<AppxManifestSummary> FromInstallLocation(string installLocation)
+        public static Task<AppxManifestSummary> FromInstallLocation(string installLocation, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
         {
             Logger.Debug("Reading application manifest from install location {0}...", installLocation);
             if (!System.IO.Directory.Exists(installLocation))
@@ -65,28 +76,23 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
                 throw new DirectoryNotFoundException("Install location " + installLocation + " not found.");
             }
 
-            return FromManifest(System.IO.Path.Join(installLocation, AppxManifestName));
+            return FromManifest(System.IO.Path.Join(installLocation, AppxManifestName), mode);
         }
 
-        public static async Task<AppxManifestSummary> FromManifest(Stream manifestStream)
+        public static async Task<AppxManifestSummary> FromManifest(string fullManifestPath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
         {
-            return await FromManifest(manifestStream, null).ConfigureAwait(false);
-        }
-
-        public static async Task<AppxManifestSummary> FromManifest(string fullManifestPath)
-        {
-            if (!System.IO.File.Exists(fullManifestPath))
+            if (!File.Exists(fullManifestPath))
             {
                 throw new FileNotFoundException("Manifest file does not exist.", fullManifestPath);
             }
 
             using (var fs = File.OpenRead(fullManifestPath))
             {
-                return await FromManifest(fs, null).ConfigureAwait(false);
+                return await FromManifest(fs, mode).ConfigureAwait(false);
             }
         }
 
-        private static async Task<AppxManifestSummary> FromManifest(Stream manifestStream, Stream configJsonStream)
+        private static async Task<AppxManifestSummary> FromManifest(Stream manifestStream, AppxManifestSummaryBuilderMode mode)
         {
             var result = new AppxManifestSummary();
             var xmlDocument = new XmlDocument();
@@ -95,56 +101,90 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
             Logger.Debug("Loading XML file...");
             xmlDocument.LoadXml(await streamReader.ReadToEndAsync().ConfigureAwait(false));
 
-            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Identity'] for a single node...");
-            var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
+            if ((mode & AppxManifestSummaryBuilderMode.Identity) == AppxManifestSummaryBuilderMode.Identity)
+            {
+                Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Identity'] for a single node...");
+                var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
             
-            result.Name = identity.Attributes["Name"]?.Value;
-            result.Version = identity.Attributes["Version"]?.Value;
-            result.Publisher = identity.Attributes["Publisher"]?.Value;
-            result.ProcessorArchitecture = identity.Attributes["ProcessorArchitecture"]?.Value;
-            // result.OperatingSystemDependencies = new List<OperatingSystemDependency>();
-            // result.PackageDependencies = new List<PackageDependency>();
-
-            result.PackageType = 0;
-
-            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']...");
-            var applications = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
-            foreach (var subNode in applications.OfType<XmlNode>())
-            {
-                var entryPoint = subNode.Attributes["EntryPoint"]?.Value;
-                var executable = subNode.Attributes["Executable"]?.Value;
-                var startPage = subNode.Attributes["StartPage"]?.Value;
-                result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage);
+                result.Name = identity.Attributes["Name"]?.Value;
+                result.Version = identity.Attributes["Version"]?.Value;
+                result.Publisher = identity.Attributes["Publisher"]?.Value;
+                result.ProcessorArchitecture = identity.Attributes["ProcessorArchitecture"]?.Value;
             }
-
-            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Properties'] for a single node...");
-            var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
-
-            foreach (var subNode in node.ChildNodes.OfType<XmlNode>())
+            
+            if ((mode & AppxManifestSummaryBuilderMode.Applications) == AppxManifestSummaryBuilderMode.Applications)
             {
-                switch (subNode.LocalName)
+                result.PackageType = 0;
+                Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']...");
+                var applications = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
+                foreach (var subNode in applications.OfType<XmlNode>())
                 {
-                    case "DisplayName":
-                        result.DisplayName = subNode.InnerText;
-                        break;
-                    case "PublisherDisplayName":
-                        result.DisplayPublisher = subNode.InnerText;
-                        break;
-                    case "Description":
-                        result.Description = subNode.InnerText;
-                        break;
-                    case "Logo":
-                        result.Logo = subNode.InnerText;
-                        break;
+                    var entryPoint = subNode.Attributes["EntryPoint"]?.Value;
+                    var executable = subNode.Attributes["Executable"]?.Value;
+                    var startPage = subNode.Attributes["StartPage"]?.Value;
+                    result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage);
                 }
             }
 
-            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements'] for a single node...");
-            node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
-            result.AccentColor = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
+            if ((mode & AppxManifestSummaryBuilderMode.Properties) == AppxManifestSummaryBuilderMode.Properties)
+            {
+                Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Properties'] for a single node...");
+                var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
+
+                foreach (var subNode in node.ChildNodes.OfType<XmlNode>())
+                {
+                    switch (subNode.LocalName)
+                    {
+                        case "DisplayName":
+                            result.DisplayName = subNode.InnerText;
+                            break;
+                        case "PublisherDisplayName":
+                            result.DisplayPublisher = subNode.InnerText;
+                            break;
+                        case "Description":
+                            result.Description = subNode.InnerText;
+                            break;
+                        case "Logo":
+                            result.Logo = subNode.InnerText;
+                            break;
+                    }
+                }
+
+                Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements'] for a single node...");
+                node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
+                result.AccentColor = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
+            }
 
             //SetDependencies(xmlDocument, result);
             //SetPsf(xmlDocument, result);
+
+            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Metadata']/*[local-name()='Item'] for a single node...");
+            var buildNotes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Metadata']/*[local-name()='Item']");
+
+            if ((mode & AppxManifestSummaryBuilderMode.MetaData) == AppxManifestSummaryBuilderMode.MetaData)
+            {
+                result.BuildMetaData = new Dictionary<string, string>();
+                foreach (var buildNode in buildNotes.OfType<XmlNode>())
+                {
+                    var attrName = buildNode.Attributes["Name"]?.Value;
+                    if (attrName == null)
+                    {
+                        continue;
+                    }
+
+                    var attrVersion = buildNode.Attributes["Version"]?.Value;
+                    if (attrVersion == null)
+                    {
+                        attrVersion = buildNode.Attributes["Value"]?.Value;
+                        if (attrVersion == null)
+                        {
+                            continue;
+                        }
+                    }
+
+                    result.BuildMetaData[attrName] = attrVersion;
+                }
+            }
 
             Logger.Debug("Manifest information parsed.");
             return result;

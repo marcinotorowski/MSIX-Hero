@@ -18,13 +18,17 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                     return null;
             }
         }
+        public static AppxTargetOperatingSystem GetOperatingSystemFromNameAndVersion(string version)
+        {
+            return GetOperatingSystemFromNameAndVersion("Windows.Desktop", version);
+        }
 
         private static AppxTargetOperatingSystem GetWindowsDesktop(string version)
         {
             var result = new AppxTargetOperatingSystem();
             result.TechnicalVersion = version;
 
-            if (Version.TryParse(version, out var parsedVersion))
+            if (version != null && Version.TryParse(version, out var parsedVersion))
             {
                 version = parsedVersion.ToString(3);
                 switch (version)

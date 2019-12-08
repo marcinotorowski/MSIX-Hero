@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
@@ -29,5 +30,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
         // public List<OperatingSystemDependency> OperatingSystemDependencies { get; set; }
 
         // public List<PackageDependency> PackageDependencies { get; set; }
+
+        public Dictionary<string, string> BuildMetaData { get; set; }
     }
 }

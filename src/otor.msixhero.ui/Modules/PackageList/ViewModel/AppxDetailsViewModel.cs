@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using otor.msixhero.lib.Domain.Appx.Manifest.Build;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.ui.ViewModel;
 
@@ -40,6 +41,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     this.Applications.Add(new AppxApplicationViewModel(item));
                 }
             }
+
+            this.BuildInfo = model.BuildInfo;
         }
 
         public string DisplayName { get; }
@@ -55,5 +58,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
         
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
+
+        public BuildInfo BuildInfo { get; }
+
+        public bool HasBuildInfo => this.BuildInfo != null;
     }
 }
