@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace otor.msixhero.ui.Domain
 {
@@ -76,6 +77,6 @@ namespace otor.msixhero.ui.Domain
 
     public interface IValidatedChangeable<T> : IChangeable<T>, IValidatedChangeable
     {
-        Func<T, string> Validator { get; set; }
+        IReadOnlyCollection<Func<T, string>> Validators { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.ShowPrompt.ValueChanged += this.OnBooleanChanged;
 
             this.MainPackageUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUriOrEmpty, true);
 
             this.MainPublisher = new ValidatedChangeableProperty<string>(this.ValidateMainPublisher, true);
             this.MainName = new ValidatedChangeableProperty<string>(this.ValidateMainName, true);
@@ -62,15 +62,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
-                Validator = ChangeableFileProperty.ValidatePath,
+                Validators = new[] { ChangeableFileProperty.ValidatePath },
                 OpenForSaving = true,
                 Filter = "App-Installer files|*.appinstaller|All files|*.*"
             };
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
-                Validator = ChangeableFileProperty.ValidatePath,
-                Filter = "MSIX/APPX packages|*.msix;*.appx|MSIX/APPX bundles|*.appxbundle|All files|*.*"
+                Validators = new[] { ChangeableFileProperty.ValidatePath },
+                Filter = "All supported files|*.msix;*.appx;*.appxbundle;appxmanifest.xml|Packages|*.msix;*.appx|Bundles|*.appxbundle|Manifest files|appxmanifest.xml|All files|*.*"
             };
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
@@ -100,6 +100,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.AppInstallerUpdateCheckingMethod.CurrentValue == lib.BusinessLayer.Appx.AppInstaller.AppInstallerUpdateCheckingMethod.Launch;
 
         public ChangeableProperty<AppInstallerUpdateCheckingMethod> AppInstallerUpdateCheckingMethod { get; }
+
+        public bool AllowChangingSourcePackage { get; private set; } = true;
 
         public ValidatedChangeableProperty<string> Hours { get; }
 
@@ -205,6 +207,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            if (!parameters.TryGetValue("file", out string sourceFile))
+            {
+                return;
+            }
+
+            this.InputPath.CurrentValue = sourceFile;
+            this.AllowChangingSourcePackage = false;
+            this.OnPropertyChanged(nameof(this.AllowChangingSourcePackage));
         }
 
         public async Task Save()
@@ -279,11 +289,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         {
             Process.Start("explorer.exe", "/select," + this.OutputPath.CurrentValue);
         }
+
         private string ValidateUri(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
                 return "The value may not be empty.";
+            }
+
+            if (!Uri.TryCreate(value, UriKind.Absolute, out _))
+            {
+                return $"The value '{value}' is not a valid URI.";
+            }
+
+            return null;
+        }
+
+        private string ValidateUriOrEmpty(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
             }
 
             if (!Uri.TryCreate(value, UriKind.Absolute, out _))
@@ -306,6 +332,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             else
             {
                 var extension = Path.GetExtension((string)e.NewValue);
+                var isManifest = false;
                 if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase))
                 {
                     this.PackageType.CurrentValue = lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle;
@@ -313,6 +340,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 else if (string.Equals(extension, ".appx", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msix", StringComparison.OrdinalIgnoreCase))
                 {
                     this.PackageType.CurrentValue = lib.BusinessLayer.Appx.AppInstaller.PackageType.Package;
+                }
+                else if (string.Equals(Path.GetFileName((string)e.NewValue), "appxmanifest.xml", StringComparison.OrdinalIgnoreCase))
+                {
+                    isManifest = true;
                 }
 
                 try
@@ -330,14 +361,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 {
                     Logger.Warn($"Could not read value from MSIX manifest {e.NewValue}");
                 }
+
+                if (isManifest)
+                {
+                    return;
+                }
             }
 
-            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue))
+            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue) && !string.IsNullOrEmpty(this.InputPath.CurrentValue))
             {
                 this.OutputPath.CurrentValue = this.InputPath.CurrentValue + ".appinstaller";
             }
 
-            if (string.IsNullOrEmpty(this.MainPackageUri.CurrentValue))
+            if (string.IsNullOrEmpty(this.MainPackageUri.CurrentValue) && !string.IsNullOrEmpty(e.NewValue as string))
             {
                 var newFilePath = new FileInfo((string)e.NewValue);
                 var configValue = this.configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationPackages;
@@ -347,18 +383,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 }
 
                 this.MainPackageUri.CurrentValue = $"{configValue.TrimEnd('/')}/{newFilePath.Name}";
-            }
-
-            if (string.IsNullOrEmpty(this.AppInstallerUri.CurrentValue))
-            {
-                var newFilePath = new FileInfo((string)e.NewValue);
-                var configValue = this.configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationAppInstaller;
-                if (string.IsNullOrEmpty(configValue))
-                {
-                    configValue = "http://server-name/";
-                }
-
-                this.AppInstallerUri.CurrentValue = $"{configValue.TrimEnd('/')}/{newFilePath.Name}";
             }
         }
 

@@ -33,14 +33,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
             var initialOut = configurationService.GetCurrentConfiguration().Packer?.DefaultOutFolder;
             this.OutputPath = new ChangeableFolderProperty(interactionService)
             {
-                Validator = ChangeableFolderProperty.ValidatePath,
+                Validators = new[] { ChangeableFolderProperty.ValidatePath },
                 CurrentValue = initialOut,
                 IsValidated = true
             };
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
-                Validator = ChangeableFileProperty.ValidatePath,
+                Validators = new[] { ChangeableFileProperty.ValidatePath },
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*",
                 IsValidated = true
             };

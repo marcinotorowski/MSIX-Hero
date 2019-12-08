@@ -80,7 +80,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppInstaller
 
             if (this.MainPackageSource != null)
             {
-                var manifest = AppxManifestSummaryBuilder.FromMsix(this.MainPackageSource.FullName, AppxManifestSummaryBuilderMode.Identity).GetAwaiter().GetResult();
+                AppxManifestSummary manifest;
+                if (string.Equals("appxmanifest.xml", Path.GetFileName(this.MainPackageSource.FullName), StringComparison.OrdinalIgnoreCase))
+                {
+                    manifest = AppxManifestSummaryBuilder.FromManifest(this.MainPackageSource.FullName, AppxManifestSummaryBuilderMode.Identity).GetAwaiter().GetResult();
+                }
+                else
+                {
+                    manifest = AppxManifestSummaryBuilder.FromMsix(this.MainPackageSource.FullName, AppxManifestSummaryBuilderMode.Identity).GetAwaiter().GetResult();
+                }
 
                 if (packageType == PackageType.Bundle)
                 {

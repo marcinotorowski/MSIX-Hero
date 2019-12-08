@@ -4,9 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Domain;
@@ -18,7 +16,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
     public class PackViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IAppxPacker appxPacker;
-        private readonly IInteractionService interactionService;
         private int progress;
         private string progressMessage;
         private bool isLoading;
@@ -26,22 +23,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
         private ICommand openSuccessLink;
         private ICommand reset;
 
-        public PackViewModel(IAppxPacker appxPacker, IInteractionService interactionService, IConfigurationService configurationService)
+        public PackViewModel(IAppxPacker appxPacker, IInteractionService interactionService)
         {
             this.appxPacker = appxPacker;
-            this.interactionService = interactionService;
 
-            var initialOut = configurationService.GetCurrentConfiguration().Packer?.DefaultOutFolder;
             this.InputPath = new ChangeableFolderProperty(interactionService)
             {
-                Validator = ChangeableFolderProperty.ValidatePath,
-                CurrentValue = initialOut,
+                Validators = new[] { ChangeableFolderProperty.ValidatePath },
                 IsValidated = true
             };
 
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
-                Validator = ChangeableFileProperty.ValidatePath,
+                Validators = new[] { ChangeableFileProperty.ValidatePath },
                 OpenForSaving = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*",
                 IsValidated = true
@@ -171,8 +165,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
                 return;
             }
 
-            var newFilePath = new DirectoryInfo((string)e.NewValue);
-            this.OutputPath.CurrentValue = Path.Join(newFilePath.FullName.TrimEnd('\\') + "_packed");
+            var newValue = (string) e.NewValue;
+            this.OutputPath.CurrentValue = Path.Join(newValue, "_packed", Path.GetFileName(newValue.TrimEnd('\\'))) + ".msix";
         }
     }
 }

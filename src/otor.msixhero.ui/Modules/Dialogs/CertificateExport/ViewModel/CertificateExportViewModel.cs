@@ -32,13 +32,13 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
             };
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
-            this.InputPath.Validator = ChangeableFileProperty.ValidatePathAndPresence;
+            this.InputPath.Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence };
 
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
                 Filter = "Certificate files|*.cer",
                 OpenForSaving = true,
-                Validator = ChangeableFileProperty.ValidatePath
+                Validators = new [] { ChangeableFileProperty.ValidatePath }
             };
 
             this.ChangeableContainer = new ChangeableContainer(this.InputPath, this.OutputPath) { IsValidated = false };

@@ -328,6 +328,33 @@
                     ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1,
                             RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
                             RibbonToolsCerts2,RibbonToolsCerts2,RibbonToolsCerts2">
+                    <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
+                        <Fluent:RibbonGroupBox.Icon>
+                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:RibbonGroupBox.Icon>
+                        <Fluent:Button Header="Unpack MSIX package..." Command="{x:Static commands:MsixHeroCommands.Unpack}">
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Pack folder to MSIX..." Command="{x:Static commands:MsixHeroCommands.Pack}">
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                        </Fluent:Button>
+                    </Fluent:RibbonGroupBox>
                     <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonToolsCerts1">
                         <Fluent:RibbonGroupBox.Icon>
                             <Path Data="{StaticResource VectorSelfSign}" Style="{StaticResource MediumIcon}" />
@@ -399,38 +426,11 @@
                             </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
-                    <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
-                        <Fluent:RibbonGroupBox.Icon>
-                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
-                        </Fluent:RibbonGroupBox.Icon>
-                        <Fluent:Button Header="Unpack to folder..." Command="{x:Static commands:MsixHeroCommands.Unpack}">
-                            <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
-                            </Fluent:Button.SizeDefinition>
-                            <Fluent:Button.LargeIcon>
-                                <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource LargeIcon}" />
-                            </Fluent:Button.LargeIcon>
-                            <Fluent:Button.Icon>
-                                <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource MediumIcon}" />
-                            </Fluent:Button.Icon>
-                        </Fluent:Button>
-                        <Fluent:Button Header="Pack from folder..." Command="{x:Static commands:MsixHeroCommands.Pack}">
-                            <Fluent:Button.SizeDefinition>
-                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
-                            </Fluent:Button.SizeDefinition>
-                            <Fluent:Button.LargeIcon>
-                                <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" />
-                            </Fluent:Button.LargeIcon>
-                            <Fluent:Button.Icon>
-                                <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
-                            </Fluent:Button.Icon>
-                        </Fluent:Button>
-                    </Fluent:RibbonGroupBox>
                 </Fluent:RibbonTabItem>
                 <Fluent:RibbonTabItem 
                     ReduceOrder="
-                      RibbonManagementNavi,RibbonManagementNavi,RibbonManagementNavi,
-                      RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
+                        RibbonManagementNavi,RibbonManagementNavi,RibbonManagementNavi,
+                        RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
                     x:Name="TabMaintenance" Header="Management" Group="{Binding Source={x:Reference ToolsGroup}}">
                     <Fluent:RibbonGroupBox Visibility="Collapsed" IsEnabled="{Binding HasSingleSelection}">
                         <Fluent:SplitButton Header="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" Size="Middle">
@@ -519,16 +519,31 @@
                 <Fluent:RibbonTabItem x:Name="TabDeveloper" 
                     ReduceOrder="
                       RibbonDevRun,RibbonDevRun,RibbonDevRun,
-                      RibbonDevReg,RibbonDevReg,RibbonDevReg"
+                      RibbonDevReg,RibbonDevReg,RibbonDevReg
+                      RibbonDevCreate,RibbonDevCreate,RibbonDevCreate"
                       Header="Developer" Group="{Binding Source={x:Reference ToolsGroup}}">
-                    <Fluent:RibbonGroupBox Header="Create derived content">
-                        <Fluent:Button Header="Create modification package...">
+                    <Fluent:RibbonGroupBox x:Name="RibbonDevCreate" Header="Create...">
+                        <Fluent:Button Header="Modification package stub...">
                             <Fluent:Button.LargeIcon>
                                 <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
                             </Fluent:Button.LargeIcon>
                             <Fluent:Button.Icon>
                                 <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                             </Fluent:Button.Icon>
+                        </Fluent:Button>
+                        <Fluent:Button Header="Appinstaller definition..." IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
+                            <Fluent:Button.CommandParameter>
+                                <system:Boolean>True</system:Boolean>
+                            </Fluent:Button.CommandParameter>
+                            <Fluent:Button.LargeIcon>
+                                <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
+                            </Fluent:Button.LargeIcon>
+                            <Fluent:Button.Icon>
+                                <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
+                            </Fluent:Button.Icon>
+                            <Fluent:Button.SizeDefinition>
+                                <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            </Fluent:Button.SizeDefinition>
                         </Fluent:Button>
                     </Fluent:RibbonGroupBox>
                     <Fluent:RibbonGroupBox x:Name="RibbonDevRun" IsEnabled="{Binding HasSingleSelection}" Header="Run in package context">

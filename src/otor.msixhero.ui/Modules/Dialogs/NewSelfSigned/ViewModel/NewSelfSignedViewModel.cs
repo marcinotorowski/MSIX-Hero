@@ -41,14 +41,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             
             this.PublisherName = new ValidatedChangeableProperty<string>("CN=");
             this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
-            this.PublisherName.Validator = ValidatePublisherName;
+            this.PublisherName.Validators = new Func<string, string>[] { ValidatePublisherName };
             
             this.PublisherFriendlyName = new ValidatedChangeableProperty<string>();
             this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
-            this.PublisherFriendlyName.Validator = ValidatePublisherFriendlyName;
+            this.PublisherFriendlyName.Validators = new Func<string, string>[] { ValidatePublisherFriendlyName };
 
             this.Password = new ValidatedChangeableProperty<string>();
-            this.Password.Validator = ValidatePassword;
+            this.Password.Validators = new Func<string, string>[] { ValidatePassword };
             
             this.ChangeableContainer = new ChangeableContainer(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName)
             {

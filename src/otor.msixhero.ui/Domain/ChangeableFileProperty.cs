@@ -8,7 +8,10 @@ namespace otor.msixhero.ui.Domain
 {
     public class ChangeableFileProperty : ValidatedChangeableProperty<string>
     {
+        // ReSharper disable once InconsistentNaming
         private static Func<string, string> validatePath;
+        
+        // ReSharper disable once InconsistentNaming
         private static Func<string, string> validatePathAndPresence;
 
         private readonly IInteractionService interactionService;

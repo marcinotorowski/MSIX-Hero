@@ -24,8 +24,8 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible)
             );
 
-            this.CertificateOutputPath.Validator = ChangeableFolderProperty.ValidatePath;
-            this.PackerOutputPath.Validator = ChangeableFolderProperty.ValidatePath;
+            this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
+            this.PackerOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
         }
 
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();

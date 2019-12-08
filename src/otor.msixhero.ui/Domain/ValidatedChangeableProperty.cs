@@ -1,29 +1,68 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace otor.msixhero.ui.Domain
 {
     public class ValidatedChangeableProperty<T> : ChangeableProperty<T>, IValidatedChangeable<T>, IDataErrorInfo
     {
+        // ReSharper disable once InconsistentNaming
+        private static Func<T, string> validateNotNull;
         private string validationMessage;
         private bool isValidated;
-        private Func<T, string> validator;
+        private IReadOnlyCollection<Func<T, string>> validators;
 
-        public ValidatedChangeableProperty(T initialValue = default) : this(null, initialValue)
+        public ValidatedChangeableProperty(T initialValue = default) : base(initialValue)
         {
+            this.isValidated = false;
+            this.validators = new Func<T, string>[0];
+            this.Validate();
         }
 
         public ValidatedChangeableProperty(Func<T, string> validator, T initialValue = default) : this(validator, true, initialValue)
         {
-            this.validator = validator;
-            this.Validate();
         }
 
         public ValidatedChangeableProperty(Func<T, string> validator, bool isValidated, T initialValue = default) : base(initialValue)
         {
             this.isValidated = isValidated;
-            this.validator = validator;
+            this.validators = validator == null ? new Func<T, string>[0] :  new[] { validator };
             this.Validate();
+        }
+
+        public ValidatedChangeableProperty(IReadOnlyCollection<Func<T, string>> validators, T initialValue = default) : this(validators, true, initialValue)
+        {
+        }
+
+        public ValidatedChangeableProperty(IReadOnlyCollection<Func<T, string>> validators, bool isValidated, T initialValue = default) : base(initialValue)
+        {
+            this.isValidated = isValidated;
+            this.validators = validators;
+            this.Validate();
+        }
+
+        public static Func<T, string> ValidateNotNull
+        {
+            get => validateNotNull ??= value =>
+            {
+                if (typeof(T) == typeof(string))
+                {
+                    if (string.IsNullOrEmpty(value as string))
+                    {
+                        return "This value may not be empty.";
+                    }
+                }
+                else if (!typeof(T).IsValueType)
+                {
+                    if (value == null)
+                    {
+                        return "This value is required.";
+                    }
+                }
+
+                return null;
+            };
         }
 
         public string ValidationMessage
@@ -63,12 +102,12 @@ namespace otor.msixhero.ui.Domain
 
         public bool IsValid => string.IsNullOrEmpty(this.validationMessage);
 
-        public Func<T, string> Validator
+        public IReadOnlyCollection<Func<T, string>> Validators
         {
-            get => this.validator;
+            get => this.validators;
             set
             {
-                this.validator = value;
+                this.validators = value;
                 this.Validate();
             }
         }
@@ -100,13 +139,23 @@ namespace otor.msixhero.ui.Domain
         private void Validate()
         {
             var oldValidationMessage = this.ValidationMessage;
-            if (!this.IsValidated || this.Validator == null)
+            if (!this.IsValidated || this.Validators == null || !this.Validators.Any())
             {
                 this.ValidationMessage = null;
             }
             else
             {
-                this.ValidationMessage = this.Validator(this.CurrentValue);
+                string msg = null;
+                foreach (var validator in this.Validators)
+                {
+                    msg = validator(this.CurrentValue);
+                    if (!string.IsNullOrEmpty(msg))
+                    {
+                        break;
+                    }
+                }
+
+                this.ValidationMessage = msg;
             }
             
             // ReSharper disable once InvertIf
