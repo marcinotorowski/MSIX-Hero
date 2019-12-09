@@ -42,6 +42,9 @@
     <Compile Update="Modules\Dialogs\AppInstaller\View\AppInstallerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\Dialogs\ModificationPackage\View\ModificationPackageView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Dialogs\PackageSigning\View\PackageSigningView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -64,6 +67,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\AppInstaller\View\AppInstallerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\ModificationPackage\View\ModificationPackageView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\PackageSigning\View\PackageSigningView.xaml">
@@ -91,7 +97,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;" />
+    <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
   </Target>
   
   <Target Name="WorkaroundForXAMLIntellisenseBuildIssue" AfterTargets="_CheckCompileDesignTimePrerequisite">

@@ -2,7 +2,6 @@
 using otor.msixhero.lib.Domain.Appx.AppInstaller;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Domain;
@@ -14,14 +13,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using otor.msixhero.lib.BusinessLayer.Appx.Builder;
+using otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
 
 namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 {
     public class AppInstallerViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-
-        private readonly IAppInstallerCreator appInstallerCreator;
+        private readonly IAppxContentBuilder appxContentBuilder;
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
         private int progress;
@@ -32,11 +31,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         private ICommand reset;
 
         public AppInstallerViewModel(
-            IAppInstallerCreator appInstallerCreator,
+            IAppxContentBuilder appxContentBuilder,
             IInteractionService interactionService,
             IConfigurationService configurationService)
         {
-            this.appInstallerCreator = appInstallerCreator;
+            this.appxContentBuilder = appxContentBuilder;
             this.interactionService = interactionService;
             this.configurationService = configurationService;
 
@@ -52,14 +51,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.MainPackageUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
             this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUriOrEmpty, true);
 
-            this.MainPublisher = new ValidatedChangeableProperty<string>(this.ValidateMainPublisher, true);
-            this.MainName = new ValidatedChangeableProperty<string>(this.ValidateMainName, true);
-            this.MainVersion = new ValidatedChangeableProperty<string>(this.ValidateMainVersion, true);
-            this.MainArchitecture = new ChangeableProperty<AppInstallerPackageArchitecture>(AppInstallerPackageArchitecture.neutral);
-
-            this.PackageType = new ChangeableProperty<PackageType>();
-            this.PackageType.ValueChanged += PackageTypeOnValueChanged;
-
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
                 Validators = new[] { ChangeableFileProperty.ValidatePath },
@@ -67,29 +58,28 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 Filter = "App-Installer files|*.appinstaller|All files|*.*"
             };
 
-            this.InputPath = new ChangeableFileProperty(interactionService)
-            {
-                Validators = new[] { ChangeableFileProperty.ValidatePath },
-                Filter = "All supported files|*.msix;*.appx;*.appxbundle;appxmanifest.xml|Packages|*.msix;*.appx|Bundles|*.appxbundle|Manifest files|appxmanifest.xml|All files|*.*"
-            };
-
-            this.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
             this.Hours = new ValidatedChangeableProperty<string>(this.ValidateHours, "24");
+
+            this.PackageSelection = new PackageSelectorViewModel(interactionService)
+            {
+                AllowBundles = true,
+                AllowManifests = true,
+                ShowPackageTypeSelector = true,
+                CustomPrompt = "What will be targeted by this .appinstaller?"
+            };
+
+            this.PackageSelection.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
             this.ChangeableContainer = new ChangeableContainer(
                 this.MainPackageUri,
                 this.AppInstallerUri,
                 this.AppInstallerUpdateCheckingMethod,
-                this.MainName,
-                this.MainPublisher,
-                this.MainVersion,
-                this.MainArchitecture,
                 this.AllowDowngrades,
-                this.PackageType,
                 this.BlockLaunching,
                 this.ShowPrompt,
-                this.Hours)
+                this.Hours,
+                this.PackageSelection)
             {
                 IsValidated = false
             };
@@ -101,13 +91,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public ChangeableProperty<AppInstallerUpdateCheckingMethod> AppInstallerUpdateCheckingMethod { get; }
 
-        public bool AllowChangingSourcePackage { get; private set; } = true;
-
         public ValidatedChangeableProperty<string> Hours { get; }
-
-        public bool IsBundle => this.PackageType.CurrentValue == lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle;
-
-        public ChangeableProperty<PackageType> PackageType { get; }
 
         public ChangeableProperty<bool> BlockLaunching { get; }
 
@@ -119,25 +103,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public ChangeableFileProperty OutputPath { get; }
 
-        public ChangeableFileProperty InputPath { get; }
-
         public ChangeableProperty<string> MainPackageUri { get; }
 
         public ChangeableProperty<string> AppInstallerUri { get; }
-
-        public ChangeableProperty<string> MainName { get; }
-
-        public ChangeableProperty<string> MainPublisher { get; }
-
-        public ChangeableProperty<string> MainVersion { get; }
-
-        public ChangeableProperty<AppInstallerPackageArchitecture> MainArchitecture { get; }
 
         public string CompatibleWindows
         {
             get
             {
-                var minWin10 = this.appInstallerCreator.GetMinimumSupportedWindowsVersion(this.GetCurrentAppInstallerConfig());
+                var minWin10 = this.appxContentBuilder.GetMinimumSupportedWindowsVersion(this.GetCurrentAppInstallerConfig());
                 return $"Windows 10 {minWin10}";
             }
         }
@@ -194,6 +168,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             get => "Create .appinstaller";
         }
 
+        public PackageSelectorViewModel PackageSelection { get; }
+
         public event Action<IDialogResult> RequestClose;
 
         public bool CanCloseDialog()
@@ -212,9 +188,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 return;
             }
 
-            this.InputPath.CurrentValue = sourceFile;
-            this.AllowChangingSourcePackage = false;
-            this.OnPropertyChanged(nameof(this.AllowChangingSourcePackage));
+            this.PackageSelection.InputPath.CurrentValue = sourceFile;
+            this.PackageSelection.AllowChangingSourcePackage = false;
         }
 
         public async Task Save()
@@ -244,7 +219,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 }
 
                 var appInstaller = this.GetCurrentAppInstallerConfig();
-                await this.appInstallerCreator.Create(appInstaller, selected).ConfigureAwait(false);
+                await this.appxContentBuilder.Create(appInstaller, selected).ConfigureAwait(false);
                 this.IsSuccess = true;
             }
             finally
@@ -260,11 +235,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         {
             var builder = new AppInstallerBuilder
             {
-                MainPackageType = this.PackageType.CurrentValue,
-                MainPackageName = this.MainName.CurrentValue,
-                MainPackageArchitecture = this.MainArchitecture.CurrentValue,
-                MainPackagePublisher = this.MainPublisher.CurrentValue,
-                MainPackageVersion = this.MainVersion.CurrentValue,
+                MainPackageType = this.PackageSelection.PackageType.CurrentValue,
+                MainPackageName = this.PackageSelection.Name.CurrentValue,
+                MainPackageArchitecture = this.PackageSelection.Architecture.CurrentValue,
+                MainPackagePublisher = this.PackageSelection.Publisher.CurrentValue,
+                MainPackageVersion = this.PackageSelection.Version.CurrentValue,
                 HoursBetweenUpdateChecks = int.Parse(this.Hours.CurrentValue),
                 CheckForUpdates = this.AppInstallerUpdateCheckingMethod.CurrentValue,
                 ShowPrompt = this.ShowPrompt.CurrentValue,
@@ -280,7 +255,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         private void ResetExecuted(object parameter)
         {
-            this.InputPath.Reset();
+            this.PackageSelection.Reset();
             this.OutputPath.Reset();
             this.IsSuccess = false;
         }
@@ -322,55 +297,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty((string)e.NewValue))
+            if (!string.IsNullOrEmpty((string)e.NewValue))
             {
-                this.MainName.CurrentValue = null;
-                this.MainVersion.CurrentValue = null;
-                this.MainPublisher.CurrentValue = null;
-                this.MainArchitecture.CurrentValue = AppInstallerPackageArchitecture.neutral;
-            }
-            else
-            {
-                var extension = Path.GetExtension((string)e.NewValue);
-                var isManifest = false;
-                if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase))
-                {
-                    this.PackageType.CurrentValue = lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle;
-                }
-                else if (string.Equals(extension, ".appx", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msix", StringComparison.OrdinalIgnoreCase))
-                {
-                    this.PackageType.CurrentValue = lib.BusinessLayer.Appx.AppInstaller.PackageType.Package;
-                }
-                else if (string.Equals(Path.GetFileName((string)e.NewValue), "appxmanifest.xml", StringComparison.OrdinalIgnoreCase))
-                {
-                    isManifest = true;
-                }
-
-                try
-                {
-                    var builder = new AppInstallerBuilder();
-                    builder.MainPackageSource = new FileInfo((string)e.NewValue);
-                    var config = builder.Build();
-
-                    this.MainName.CurrentValue = config.MainPackage.Name;
-                    this.MainVersion.CurrentValue = config.MainPackage.Version;
-                    this.MainPublisher.CurrentValue = config.MainPackage.Publisher;
-                    this.MainArchitecture.CurrentValue = config.MainPackage.Architecture;
-                }
-                catch (Exception)
-                {
-                    Logger.Warn($"Could not read value from MSIX manifest {e.NewValue}");
-                }
-
+                var isManifest = string.Equals(Path.GetFileName((string)e.NewValue), "appxmanifest.xml", StringComparison.OrdinalIgnoreCase);
+                
                 if (isManifest)
                 {
                     return;
                 }
             }
 
-            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue) && !string.IsNullOrEmpty(this.InputPath.CurrentValue))
+            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue) && !string.IsNullOrEmpty(this.PackageSelection.InputPath.CurrentValue))
             {
-                this.OutputPath.CurrentValue = this.InputPath.CurrentValue + ".appinstaller";
+                this.OutputPath.CurrentValue = this.PackageSelection.InputPath.CurrentValue + ".appinstaller";
             }
 
             if (string.IsNullOrEmpty(this.MainPackageUri.CurrentValue) && !string.IsNullOrEmpty(e.NewValue as string))
@@ -391,42 +330,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.OnPropertyChanged(nameof(ShowLaunchOptions));
             this.OnPropertyChanged(nameof(CompatibleWindows));
         }
-
-        private string ValidateMainPublisher(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "Main package publisher may not be empty.";
-            }
-
-            return null;
-        }
-
-        private string ValidateMainVersion(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "Main package version may not be empty.";
-            }
-
-            if (!Version.TryParse(newValue, out _))
-            {
-                return $"Value '{newValue}' is not a valid version.";
-            }
-
-            return null;
-        }
-
-        private string ValidateMainName(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "Main package name may not be empty.";
-            }
-
-            return null;
-        }
-
+        
         private string ValidateHours(string newValue)
         {
             if (string.IsNullOrEmpty(newValue))
@@ -445,11 +349,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             }
 
             return null;
-        }
-
-        private void PackageTypeOnValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            this.OnPropertyChanged(nameof(this.IsBundle));
         }
 
         private void OnBooleanChanged(object sender, ValueChangedEventArgs e)

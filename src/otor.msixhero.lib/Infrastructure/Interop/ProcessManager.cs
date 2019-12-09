@@ -34,8 +34,10 @@ namespace otor.msixhero.lib.Infrastructure.Interop
                         {
                             Verb = "runas",
                             UseShellExecute = true,
-                            // WindowStyle = ProcessWindowStyle.Hidden,
-                            // CreateNoWindow = true
+#if RELEASE
+                            WindowStyle = ProcessWindowStyle.Hidden,
+                            CreateNoWindow = true
+#endif
                         };
 
                         var p = this.Start(psi);

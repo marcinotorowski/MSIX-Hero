@@ -28,6 +28,7 @@ namespace otor.msixhero.ui.Commands
             Pack = new RoutedUICommand { Text = "Packs a package to a directory" };
             Unpack = new RoutedUICommand { Text = "Unpacks a package to a directory" };
             AppInstaller = new RoutedUICommand { Text = "Opens a wizard for .appinstaller generation" };
+            ModificationPackage = new RoutedUICommand { Text = "Opens a wizard for modification package generation" };
         }
 
         public static RoutedUICommand OpenExplorer { get; }
@@ -73,5 +74,7 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand Unpack { get; }
 
         public static RoutedUICommand AppInstaller { get; }
+
+        public static RoutedUICommand ModificationPackage { get; }
     }
 }

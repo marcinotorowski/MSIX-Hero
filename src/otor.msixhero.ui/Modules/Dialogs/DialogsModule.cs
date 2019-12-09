@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using otor.msixhero.ui.Modules.Dialogs.AppInstaller.View;
+﻿using otor.msixhero.ui.Modules.Dialogs.AppInstaller.View;
 using otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Pack.View;
@@ -15,8 +13,7 @@ using otor.msixhero.ui.Modules.Dialogs.PackageSigning.View;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.View;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.View;
-using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
@@ -31,6 +28,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string UnpackPath = "Unpack";
         public static string AppInstallerPath = "AppInstaller";
         public static string PackPath = "Pack";
+        public static string ModificationPackagePath = "ModificationPackage";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -40,6 +38,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(CertificateExportPath);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
+            containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(ModificationPackagePath);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(AppInstallerPath);
         }
 

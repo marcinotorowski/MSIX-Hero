@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
             if (!File.Exists(file))
             {
-                return GetDefault();
+                return FixConfiguration(new Configuration());
             }
 
             var fileContent = await File.ReadAllTextAsync(file, token).ConfigureAwait(false);
@@ -38,7 +39,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             }
             catch (Exception e)
             {
-                this.currentConfiguration = GetDefault();
+                this.currentConfiguration = FixConfiguration(new Configuration());
                 Logger.Warn(e, "Could not read the settings. Default settings will be used.");
             }
 
@@ -103,7 +104,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         private static Configuration GetDefault()
         {
-            var result = FixConfiguration(new Configuration());
+            var result = new Configuration();
             result.List.Sidebar.Visible = true;
             result.List.Tools.Add(new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe" });
             result.List.Tools.Add(new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" });
@@ -114,7 +115,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         private static Configuration FixConfiguration(Configuration result)
         {
-            var defaults = new Configuration();
+            var defaults = GetDefault();
 
             if (result.Signing == null)
             {
@@ -139,6 +140,11 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             if (result.List == null)
             {
                 result.List = defaults.List;
+            }
+
+            if (result.List.Tools == null || !result.List.Tools.Any())
+            {
+                result.List.Tools = defaults.List.Tools;
             }
 
             if (result.List.Sidebar == null)
