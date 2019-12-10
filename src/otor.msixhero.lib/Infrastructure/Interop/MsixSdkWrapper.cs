@@ -229,22 +229,37 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             }
             catch (ProcessWrapperException e)
             {
-                var findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
-                if (findSimilar == null)
+                var findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: Error info: error ", StringComparison.OrdinalIgnoreCase));
+                if (findSimilar != null)
                 {
-                    throw;
+                    findSimilar = findSimilar.Substring("MakeAppx : error: Error info: error ".Length);
+
+                    var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+): ");
+                    if (error.Success)
+                    {
+                        findSimilar = findSimilar.Substring(error.Length).Trim();
+                        throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}");
+                    }
+
+                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
                 }
 
-                findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
-
-                var error = Regex.Match(findSimilar, "([0-9a-z]+) \\- ");
-                if (error.Success)
+                findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
+                if (findSimilar != null)
                 {
-                    findSimilar = findSimilar.Substring(error.Length).Trim();
-                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error 0x{error.Groups[1].Value}. {findSimilar}");
+                    findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
+
+                    var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+) \\- ");
+                    if (error.Success)
+                    {
+                        findSimilar = findSimilar.Substring(error.Length).Trim();
+                        throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error 0x{error.Groups[1].Value}. {findSimilar}");
+                    }
+
+                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
                 }
 
-                throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
+                throw;
             }
         }
     }

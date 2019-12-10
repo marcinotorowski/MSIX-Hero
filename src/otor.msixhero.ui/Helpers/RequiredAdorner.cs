@@ -61,6 +61,11 @@ namespace otor.msixhero.ui.Helpers
             const int padding = 2;
             const int radius = 2;
 
+            if (!this.AdornedElement.IsVisible)
+            {
+                return;
+            }
+
             var adornedElementRect = new Rect(this.AdornedElement.RenderSize);
             var pointCenter = new Point(adornedElementRect.TopRight.X + padding + radius, adornedElementRect.TopLeft.Y + borderWidth + radius + padding);
             drawingContext.DrawEllipse(Brushes.Gray, new Pen(Brushes.Transparent, 0.0), pointCenter, radius, radius);

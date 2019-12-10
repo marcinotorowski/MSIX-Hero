@@ -71,7 +71,7 @@ namespace otor.msixhero.ui.Services
 
         public bool SaveFile(string initialFile, string filterString, out string selectedFile)
         {
-            var dlg = new VistaSaveFileDialog();
+            var dlg = new SaveFileDialog();
 
             if (!string.IsNullOrEmpty(filterString))
             {
@@ -90,7 +90,7 @@ namespace otor.msixhero.ui.Services
             }
 
             dlg.CheckFileExists = false;
-            var result = dlg.ShowDialog() == true;
+            var result = dlg.ShowDialog() == DialogResult.OK;
             selectedFile = dlg.FileName;
             return result;
         }
@@ -144,7 +144,7 @@ namespace otor.msixhero.ui.Services
 
         private static bool SelectFile(string initialFile, string filterString, bool withMultiSelection, out string[] selectedFiles)
         {
-            var dlg = new VistaOpenFileDialog();
+            var dlg = new OpenFileDialog();
 
             if (!string.IsNullOrEmpty(filterString))
             {
@@ -165,7 +165,7 @@ namespace otor.msixhero.ui.Services
             dlg.CheckFileExists = true;
             dlg.Multiselect = withMultiSelection;
 
-            var result = dlg.ShowDialog() == true;
+            var result = dlg.ShowDialog() == DialogResult.OK;
             selectedFiles = dlg.FileNames;
             return result;
         }

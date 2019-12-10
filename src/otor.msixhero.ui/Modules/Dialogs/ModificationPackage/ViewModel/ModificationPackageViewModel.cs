@@ -15,6 +15,9 @@ using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
 {
+    using System.Diagnostics;
+    using System.Text.RegularExpressions;
+
     public class ModificationPackageViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IAppxContentBuilder contentBuilder;
@@ -31,25 +34,21 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             this.contentBuilder = contentBuilder;
             this.interactionService = interactionService;
 
-            this.PackageSelection = new PackageSelectorViewModel(interactionService)
+            this.PackageSelection = new PackageSelectorViewModel(
+                interactionService,
+                PackageSelectorDisplayMode.AllowChanging | PackageSelectorDisplayMode.AllowBundles | PackageSelectorDisplayMode.ShowTypeSelector | PackageSelectorDisplayMode.AllowBrowsing | PackageSelectorDisplayMode.AllowChanging | PackageSelectorDisplayMode.RequireFullIdentity | PackageSelectorDisplayMode.ShowActualName)
             {
-                AllowBundles = false,
-                ShowPackageTypeSelector = false,
-                RequireFullIdentity = false,
                 IsValidated = false
             };
 
-            this.ModificationPackageDetails = new PackageSelectorViewModel(interactionService)
+            this.ModificationPackageDetails = new PackageSelectorViewModel(
+                interactionService,
+                PackageSelectorDisplayMode.AllowChanging | PackageSelectorDisplayMode.AllowPackages | PackageSelectorDisplayMode.RequireFullIdentity | PackageSelectorDisplayMode.ShowDisplayName)
             {
-                AllowBundles = false,
-                ShowPackageTypeSelector = false,
-                AllowBrowsing = false,
-                AllowManifests = false,
-                RequireFullIdentity = true,
                 IsValidated = false
             };
 
-            this.ModificationPackageDetails.Version.CurrentValue = "1.0.0";
+            this.ModificationPackageDetails.Version.CurrentValue = "1.0.0.0";
             this.ModificationPackageDetails.Architecture.CurrentValue = AppInstallerPackageArchitecture.neutral;
             this.ModificationPackageDetails.Commit();
             
@@ -97,6 +96,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
+        public string Result { get; private set; }
+
         public bool IsSuccess
         {
             get => this.isSuccess;
@@ -133,6 +134,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
 
             this.PackageSelection.InputPath.CurrentValue = sourceFile;
             this.PackageSelection.AllowChangingSourcePackage = false;
+            this.PackageSelection.ShowPackageTypeSelector = false;
 
             this.ModificationPackageDetails.Architecture.CurrentValue = this.PackageSelection.Architecture.CurrentValue;
             this.ModificationPackageDetails.Name.CurrentValue = this.PackageSelection.Name.CurrentValue + "-Modification";
@@ -188,16 +190,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
 
                 var modificationPkgCreationRequest = new ModificationPackageConfig
                 {
-                    Name = this.ModificationPackageDetails.Name.CurrentValue,
-                    Publisher = this.ModificationPackageDetails.Publisher.CurrentValue,
+                    Name = Regex.Replace(this.ModificationPackageDetails.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
+                    Publisher = "CN=" + Regex.Replace(this.ModificationPackageDetails.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
                     Architecture = this.ModificationPackageDetails.Architecture.CurrentValue,
                     Version = this.ModificationPackageDetails.Version.CurrentValue,
-                    ParentName = this.ModificationPackageDetails.Name.CurrentValue,
-                    ParentPublisher = this.ModificationPackageDetails.Publisher.CurrentValue
+                    ParentName = this.PackageSelection.Name.CurrentValue,
+                    ParentPublisher = this.PackageSelection.Publisher.CurrentValue
                 };
 
                 await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue).ConfigureAwait(false);
-                
+
+                switch (this.Create.CurrentValue)
+                {
+                    case ModificationPackageBuilderAction.Manifest:
+                        this.Result = Path.Combine(selectedPath, "AppxManifest.xml");
+                        break;
+                    case ModificationPackageBuilderAction.Msix:
+                    case ModificationPackageBuilderAction.SignedMsix:
+                        this.Result = selectedPath;
+                        break;
+                }
+
                 this.IsSuccess = true;
             }
             finally
@@ -217,6 +230,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         private void OpenSuccessLinkExecuted(object parameter)
         {
+            Process.Start("explorer.exe", "/select," + this.Result);
         }
     }
 }

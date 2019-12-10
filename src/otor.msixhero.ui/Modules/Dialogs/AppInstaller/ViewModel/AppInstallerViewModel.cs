@@ -61,11 +61,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
             this.Hours = new ValidatedChangeableProperty<string>(this.ValidateHours, "24");
 
-            this.PackageSelection = new PackageSelectorViewModel(interactionService)
+            this.PackageSelection = new PackageSelectorViewModel(
+                interactionService,
+                PackageSelectorDisplayMode.AllowAllPackageTypes | PackageSelectorDisplayMode.ShowTypeSelector | PackageSelectorDisplayMode.AllowManifests | PackageSelectorDisplayMode.ShowActualName | PackageSelectorDisplayMode.AllowBrowsing | PackageSelectorDisplayMode.AllowChanging)
             {
-                AllowBundles = true,
-                AllowManifests = true,
-                ShowPackageTypeSelector = true,
                 CustomPrompt = "What will be targeted by this .appinstaller?"
             };
 
@@ -190,6 +189,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
             this.PackageSelection.InputPath.CurrentValue = sourceFile;
             this.PackageSelection.AllowChangingSourcePackage = false;
+            this.PackageSelection.ShowPackageTypeSelector = false;
         }
 
         public async Task Save()

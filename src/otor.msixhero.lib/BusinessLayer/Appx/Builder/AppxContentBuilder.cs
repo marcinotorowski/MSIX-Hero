@@ -34,10 +34,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
 
             var xmlSerializer = new XmlSerializer(typeof(AppInstallerConfig));
             
-            var sb = new StringBuilder();
-            await using var textWriter = new StringWriter();
-            xmlSerializer.Serialize(textWriter, config);
-            await File.WriteAllTextAsync(file, textWriter.ToString(), cancellationToken).ConfigureAwait(false);
+            using (var textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, config);
+                await File.WriteAllTextAsync(file, textWriter.ToString(), cancellationToken).ConfigureAwait(false);
+            }
         }
 
         public int GetMinimumSupportedWindowsVersion(AppInstallerConfig config)
@@ -78,21 +79,50 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
             }
 
             var modPackageTemplate = GetBundledResourcePath("ModificationPackage.AppxManifest.xml");
+            var logoPath = GetBundledResourcePath("Logo.png");
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(modPackageTemplate);
             this.PrepareModificationPackage(xmlDoc, config);
 
             var manifestContent = xmlDoc.OuterXml;
+
             if (action == ModificationPackageBuilderAction.Manifest)
             {
+                using (var sourceStream = File.OpenRead(logoPath))
+                {
+                    var assetsDirectory = Path.Combine(Path.GetDirectoryName(filePath), "Assets");
+                    if (!Directory.Exists(assetsDirectory))
+                    {
+                        Directory.CreateDirectory(assetsDirectory);
+                    }
+                    
+                    using (var targetStream = File.OpenWrite(Path.Combine(assetsDirectory, "Logo.png")))
+                    {
+                        await sourceStream.CopyToAsync(targetStream, cancellation).ConfigureAwait(false);
+                    }
+                }
+
                 await File.WriteAllTextAsync(filePath, manifestContent, Encoding.UTF8, cancellation).ConfigureAwait(false);
                 return;
             }
 
             var tempFolder = Environment.ExpandEnvironmentVariables(@"%temp%\msix-hero-" + Guid.NewGuid().ToString("N").Substring(10));
             try
-            {
-                Directory.CreateDirectory(tempFolder);
+            {   
+                using (var sourceStream = File.OpenRead(logoPath))
+                {
+                    var assetsFolder = Path.Combine(tempFolder, "Assets");
+                    if (!Directory.Exists(assetsFolder))
+                    {
+                        Directory.CreateDirectory(assetsFolder);
+                    }
+
+                    using (var targetStream = File.OpenWrite(Path.Combine(assetsFolder, "Logo.png")))
+                    {
+                        await sourceStream.CopyToAsync(targetStream, cancellation).ConfigureAwait(false);
+                    }
+                }
+
                 await File.WriteAllTextAsync(Path.Join(tempFolder, "AppxManifest.xml"), manifestContent, Encoding.UTF8, cancellation).ConfigureAwait(false);
                 await this.packer.Pack(tempFolder, filePath, cancellation, progress).ConfigureAwait(false);
 
@@ -130,38 +160,73 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
 
         private void PrepareModificationPackage(XmlDocument template, ModificationPackageConfig config)
         {
-            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Dependencies'] for a single node...");
-            var package = template.SelectSingleNode("/*[local-name()='Package']");
-            if (package == null)
+            var namespaceManager = new XmlNamespaceManager(template.NameTable);
+            if (!namespaceManager.HasNamespace("uap4"))
             {
-                package = template.CreateElement(null, "Package", null);
-                template.AppendChild(package);
+                namespaceManager.AddNamespace("uap4", "http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
             }
 
-            var dependencies = package.SelectSingleNode("/*[local-name()='Dependencies']");
-            if (dependencies == null)
-            {
-                dependencies = template.CreateElement(null, "Dependencies", null);
-                package.AppendChild(dependencies);
-            }
-
+            const string DefaultNamespacePrefix = "msixHero";
+            namespaceManager.AddNamespace(DefaultNamespacePrefix, template.DocumentElement.NamespaceURI);
+            
+            var package = GetOrCreateNode(template, template, "Package", DefaultNamespacePrefix, namespaceManager);
+            var dependencies = GetOrCreateNode(template, package, "Dependencies", DefaultNamespacePrefix, namespaceManager);
             var dependency = template.CreateElement("uap4", "MainPackageDependency", "http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
             dependencies.AppendChild(dependency);
-
             dependency.SetAttribute("Name", config.ParentName);
             dependency.SetAttribute("Publisher", config.ParentPublisher);
 
-            var identity = package.SelectSingleNode("/*[local-name()='Identity']") as XmlElement;
-            if (identity == null)
-            {
-                identity = template.CreateElement(null, "Identity", null);
-                package.AppendChild(identity);
-            }
-
+            var identity = GetOrCreateNode(template, package, "Identity", DefaultNamespacePrefix, namespaceManager);
             identity.SetAttribute("Name", config.Name);
             identity.SetAttribute("ProcessorArchitecture", config.Architecture.ToString());
             identity.SetAttribute("Publisher", config.Publisher);
-            identity.SetAttribute("Version", config.Version);
+
+            var fixVersion = Version.Parse(config.Version);
+
+            var major = fixVersion.Major;
+            var minor = fixVersion.Minor;
+            var build = fixVersion.Build;
+            var revision = fixVersion.Revision;
+            
+            if (major < 0)
+            {
+                throw new FormatException("Invalid version format, major version is required.");
+            }
+
+            if (minor < 0)
+            {
+                throw new FormatException("Invalid version format, major version is required.");
+            }
+
+            if (revision < 0)
+            {
+                revision = 0;
+            }
+
+            if (build < 0)
+            {
+                build = 0;
+            }
+
+            identity.SetAttribute("Version", new Version(major, minor, build, revision).ToString(4));
+
+            var properties = GetOrCreateNode(template, package, "Properties", DefaultNamespacePrefix, namespaceManager);
+            GetOrCreateNode(template, properties, "DisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Name";
+            GetOrCreateNode(template, properties, "PublisherDisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Publisher Name";
+            GetOrCreateNode(template, properties, "Description", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Description";
+            GetOrCreateNode(template, properties, "Logo", DefaultNamespacePrefix, namespaceManager).InnerText = "Assets\\Logo.png";
+        }
+
+        private static XmlElement GetOrCreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string name, string prefix, XmlNamespaceManager namespaceManager)
+        {
+            var node = xmlNode.SelectSingleNode($"{prefix}:{name}", namespaceManager);
+            if (node == null)
+            {
+                node = xmlDocument.CreateElement(name, xmlDocument.DocumentElement.NamespaceURI);
+                xmlNode.AppendChild(node);
+            }
+
+            return (XmlElement)node;
         }
 
         private static string GetBundledResourcePath(string localName)

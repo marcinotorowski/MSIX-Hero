@@ -8,13 +8,14 @@ IgnorableNamespaces="build uap rescap"
     xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
     <Resources>
         <Resource Language="en-US" />
-        <Resource uap:Scale="100" />
-        <Resource uap:Scale="125" />
-        <Resource uap:Scale="150" />
-        <Resource uap:Scale="200" />
-        <Resource uap:Scale="400" />
     </Resources>
     <Dependencies>
         <TargetDeviceFamily MaxVersionTested="10.0.17763.0" MinVersion="10.0.17763.0" Name="Windows.Desktop" />
     </Dependencies>
+    <Properties>
+        <DisplayName></DisplayName>
+        <PublisherDisplayName></PublisherDisplayName>
+        <Description></Description>
+        <Logo></Logo>
+    </Properties>  
 </Package>

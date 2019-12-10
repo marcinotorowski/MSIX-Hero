@@ -93,9 +93,7 @@
                     </TabItem>
                     <TabItem Header="Parent package">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <AdornerDecorator>
-                                <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
-                            </AdornerDecorator>
+                            <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
                         </ScrollViewer>
                     </TabItem>
                 </TabControl>

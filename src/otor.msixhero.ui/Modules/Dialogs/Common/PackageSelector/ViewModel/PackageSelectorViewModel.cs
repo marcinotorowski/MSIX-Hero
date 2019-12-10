@@ -11,69 +11,95 @@ using otor.msixhero.ui.Domain;
 
 namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 {
+    [Flags]
+    public enum PackageSelectorDisplayMode
+    {
+        ShowDisplayName = 1,
+        ShowActualName = 2,
+        AllowPackages = 4,
+        AllowBundles = 8,
+        AllowManifests = 16,
+        AllowAllPackageTypes = AllowPackages | AllowBundles | AllowManifests,
+        ShowTypeSelector = 32,
+        AllowChanging = 64,
+        AllowBrowsing = 128,
+        RequireFullIdentity = 256
+    }
+
     public class PackageSelectorViewModel : ChangeableContainer
     {
         private static readonly ILog Logger = LogManager.GetLogger();
-        private bool allowChangingSourcePackage = true;
-        private bool allowBrowsing = true;
-        private bool allowBundles;
-        private bool allowManifests = true;
-        private bool showPackageTypeSelector;
         private string customPrompt;
         private bool requireFullIdentity = true;
 
-        public PackageSelectorViewModel(IInteractionService interactionService)
+        private bool allowChangingSourcePackage;
+
+        private bool showPackageTypeSelector;
+
+        public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
-            this.Publisher = new ValidatedChangeableProperty<string>(this.ValidateMainPublisher, false);
-            this.Name = new ValidatedChangeableProperty<string>(this.ValidateMainName, false);
-            this.Version = new ValidatedChangeableProperty<string>(this.ValidateMainVersion, false);
+            this.Publisher = new ValidatedChangeableProperty<string>(this.ValidateSubject, false);
+            this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull, false);
+            this.Name = new ValidatedChangeableProperty<string>(this.ValidateName, false);
+            this.DisplayName = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull, false);
+            this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion, false);
             this.Architecture = new ChangeableProperty<AppInstallerPackageArchitecture>(AppInstallerPackageArchitecture.neutral);
 
             this.PackageType = new ChangeableProperty<PackageType>();
-            this.PackageType.ValueChanged += PackageTypeOnValueChanged;
+            this.PackageType.ValueChanged += this.PackageTypeOnValueChanged;
+
+            this.showPackageTypeSelector = displayMode.HasFlag(PackageSelectorDisplayMode.ShowTypeSelector);
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
                 Validators = new[] { ChangeableFileProperty.ValidatePath },
-                Filter = this.GetFilterString()
+                Filter = this.GetFilterString(
+                    displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages),
+                    displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles),
+                    displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests))
             };
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
-            this.AddChildren(this.Name, this.Publisher, this.Version, this.Architecture, this.PackageType);
+            if (displayMode.HasFlag(PackageSelectorDisplayMode.ShowActualName))
+            {
+                this.ShowActualNames = true;
+                this.AddChildren(this.Name, this.Publisher);
+            }
+
+            if (displayMode.HasFlag(PackageSelectorDisplayMode.ShowDisplayName))
+            {
+                this.ShowDisplayNames = true;
+                this.AddChildren(this.DisplayName, this.DisplayPublisher);
+            }
+
+            this.allowChangingSourcePackage = displayMode.HasFlag(PackageSelectorDisplayMode.AllowChanging);
+            this.AllowBrowsing = displayMode.HasFlag(PackageSelectorDisplayMode.AllowBrowsing);
+
             this.IsValidated = false;
+            if (displayMode.HasFlag(PackageSelectorDisplayMode.RequireFullIdentity))
+            {
+                this.RequireFullIdentity = true;
+                this.AddChildren(this.Version, this.Architecture);
+            }
+
+            this.AddChildren(this.PackageType);
         }
+
+        public bool ShowDisplayNames { get; private set; }
+
+        public bool ShowActualNames { get; private set; }
 
         public string CustomPrompt { get => this.customPrompt; set => this.SetField(ref this.customPrompt, value); }
 
-        public bool AllowBundles
-        {
-            get => this.allowBundles;
-            set
-            {
-                this.SetField(ref this.allowBundles, value);
-                this.InputPath.Filter = this.GetFilterString();
+        public bool AllowBundles { get; private set; }
 
-                if (!value)
-                {
-                    this.ShowPackageTypeSelector = false;
-                }
-            }
-        }
-
-        public bool AllowManifests
-        {
-            get => this.allowManifests;
-            set
-            {
-                this.SetField(ref this.allowManifests, value);
-                this.InputPath.Filter = this.GetFilterString();
-            }
-        }
+        public bool AllowManifests { get; private set; }
 
         public bool ShowPackageTypeSelector
         {
             get => this.showPackageTypeSelector;
+
             set => this.SetField(ref this.showPackageTypeSelector, value);
         }
 
@@ -83,12 +109,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             set => this.SetField(ref this.allowChangingSourcePackage, value);
         }
 
-        public bool AllowBrowsing
-        {
-            get => this.allowBrowsing;
-            set => this.SetField(ref this.allowBrowsing, value);
-        }
-
+        public bool AllowBrowsing { get; private set; }
+        
         public bool IsBundle => this.PackageType.CurrentValue == lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle;
 
         public ChangeableProperty<PackageType> PackageType { get; }
@@ -109,30 +131,20 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 }
             }
         }
-        
+
         public ValidatedChangeableProperty<string> Name { get; }
 
+        public ValidatedChangeableProperty<string> DisplayName { get; }
+
         public ValidatedChangeableProperty<string> Publisher { get; }
+
+        public ValidatedChangeableProperty<string> DisplayPublisher { get; }
 
         public ValidatedChangeableProperty<string> Version { get; }
 
         public ChangeableProperty<AppInstallerPackageArchitecture> Architecture { get; }
 
-        public bool RequireFullIdentity
-        {
-            get => requireFullIdentity;
-            set
-            {
-                this.SetField(ref this.requireFullIdentity, value);
-
-                if (!this.IsValidated)
-                {
-                    return;
-                }
-
-                this.Version.IsValidated = value;
-            }
-        }
+        public bool RequireFullIdentity { get; private set; }
 
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
@@ -173,32 +185,42 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             }
         }
 
-        private string ValidateMainPublisher(string newValue)
+        private string ValidateSubject(string newValue)
         {
             if (string.IsNullOrEmpty(newValue))
             {
                 return "The publisher may not be empty.";
             }
 
+            if (!newValue.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Publisher name must start with CN=";
+            }
+
             return null;
         }
 
-        private string ValidateMainVersion(string newValue)
+        private string ValidateVersion(string newValue)
         {
             if (string.IsNullOrEmpty(newValue))
             {
                 return "The version may not be empty.";
             }
 
-            if (!System.Version.TryParse(newValue, out _))
+            if (!System.Version.TryParse(newValue, out var version))
             {
                 return $"'{newValue}' is not a valid version.";
+            }
+
+            if (newValue.Split('.').Length != 4)
+            {
+                return "The version must have 4 units (for example 1.2.3.4).";
             }
 
             return null;
         }
 
-        private string ValidateMainName(string newValue)
+        private string ValidateName(string newValue)
         {
             if (string.IsNullOrEmpty(newValue))
             {
@@ -208,22 +230,25 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             return null;
         }
 
-        private string GetFilterString()
+        private string GetFilterString(bool allowPackages, bool allowBundles, bool allowManifests)
         {
             var extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var names = new StringBuilder();
 
-            extensions.Add("*.msix");
-            extensions.Add("*.appx");
-            names.Append("Packages|*.msix;*.appx|");
+            if (allowPackages)
+            {
+                extensions.Add("*.msix");
+                extensions.Add("*.appx");
+                names.Append("Packages|*.msix;*.appx|");
+            }
 
-            if (this.AllowBundles)
+            if (allowBundles)
             {
                 extensions.Add("*.appxbundle");
                 names.Append("Bundles|*.appxbundle|");
             }
 
-            if (this.AllowManifests)
+            if (allowManifests)
             {
                 extensions.Add("appxmanifest.xml");
                 names.Append("Manifest files|appxmanifest.xml|");

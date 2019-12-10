@@ -17,59 +17,73 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
-        <Border Visibility="{Binding AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Button 
+    <AdornerDecorator>
+        <StackPanel>
+            <Border Visibility="{Binding AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button 
                 Visibility="{Binding AllowBrowsing, Converter={StaticResource BooleanToVisibilityConverter}}" 
                 TabIndex="3" 
                 Padding="10 0" 
                 Margin="0 0 0 16"  
                 Content="{Binding LoadButtonCaption, FallbackValue='Load from package or manifest...'}" HorizontalAlignment="Left" Command="{Binding InputPath.Browse}" />
-        </Border>
+            </Border>
 
-        <TextBlock Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="{Binding CustomPrompt, TargetNullValue='Package type', FallbackValue='Package type'}" />
-        <StackPanel Margin="0 6 0 16" Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding AllowChangingSourcePackage}" Orientation="Horizontal">
-            <RadioButton Margin="0 0 16 0" GroupName="p1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appInstaller:PackageType.Package}}" Content="Package (.msix/.appx)" />
-            <RadioButton Margin="0 0 0 0" GroupName="p2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appInstaller:PackageType.Bundle}}" Content="Bundle (.appxbundle)" />
+            <TextBlock Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="{Binding CustomPrompt, TargetNullValue='Package type', FallbackValue='Package type'}" />
+            <StackPanel Margin="0 6 0 16" Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding AllowChangingSourcePackage}" Orientation="Horizontal">
+                <RadioButton Margin="0 0 16 0" GroupName="p1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appInstaller:PackageType.Package}}" Content="Package (.msix/.appx)" />
+                <RadioButton Margin="0 0 0 0" GroupName="p2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appInstaller:PackageType.Bundle}}" Content="Bundle (.appxbundle)" />
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding ShowActualNames, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
+                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Bundle name" Margin="0 16 0 6" />
+                <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding ShowDisplayNames, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="Displayed package name" Margin="0 0 0 6" />
+                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Displayed bundle name" Margin="0 16 0 6" />
+                <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding DisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+            </StackPanel>
+
+            <TextBlock Visibility="{Binding ShowActualNames, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Publisher" HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Margin="0 16 0 6" />
+            <TextBox Visibility="{Binding ShowActualNames, Converter={StaticResource BooleanToVisibilityConverter}}" IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding Publisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+            <TextBlock Visibility="{Binding ShowDisplayNames, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Displayed publisher name" HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Margin="0 16 0 6" />
+            <TextBox Visibility="{Binding ShowDisplayNames, Converter={StaticResource BooleanToVisibilityConverter}}" IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding DisplayPublisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+            <Grid Visibility="{Binding RequireFullIdentity, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Version" Margin="0 16 0 6" />
+
+                <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Grid.Row="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+                <TextBlock
+                        Grid.Column="2" Grid.Row="0"
+                    helpers:RequiredAdorner.IsRequired="True"
+                    HorizontalAlignment="Left"
+                    Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Foreground="#666" Text="Architecture" Margin="0 16 0 6" />
+                <ComboBox
+                    IsEnabled="{Binding AllowChangingSourcePackage}" 
+                    Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Grid.Row="1" Grid.Column="2" SelectedValue="{Binding Architecture.CurrentValue}" SelectedValuePath="Tag">
+                    <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.arm64}">ARM 64-bit</ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.arm}">ARM</ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.neutral}">Neutral</ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.x64}">64-bit</ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.x86}">32-bit</ComboBoxItem>
+                </ComboBox>
+            </Grid>
         </StackPanel>
-
-        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
-        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Bundle name" Margin="0 16 0 6" />
-
-        <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
-
-        <TextBlock Foreground="#666" Text="Publisher" HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Margin="0 6 0 6" />
-        <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding Publisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
-
-        <Grid Visibility="{Binding RequireFullIdentity, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="32" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Foreground="#666" Text="Version" Margin="0 6 0 6" />
-            <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Grid.Row="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
-
-            <TextBlock
-                                                helpers:RequiredAdorner.IsRequired="True"
-                                                HorizontalAlignment="Left"
-                                                Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                                                Grid.Column="2" Grid.Row="0" Foreground="#666" Text="Architecture" Margin="0 6 0 6" />
-            <ComboBox
-                                                IsEnabled="{Binding AllowChangingSourcePackage}" 
-                                                Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                                                Grid.Row="1" Grid.Column="2" SelectedValue="{Binding Architecture.CurrentValue}" SelectedValuePath="Tag">
-                <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.arm64}">ARM 64-bit</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.arm}">ARM</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.neutral}">Neutral</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.x64}">64-bit</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static appInstaller1:AppInstallerPackageArchitecture.x86}">32-bit</ComboBoxItem>
-            </ComboBox>
-        </Grid>
-    </StackPanel>
+    </AdornerDecorator>
 </UserControl>
