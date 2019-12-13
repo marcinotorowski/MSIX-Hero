@@ -65,30 +65,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
                 this.SelectedPackages.Add(vm);
             }
-
-            switch (this.stateManager.CurrentState.Packages.SelectedItems.Count)
-            {
-                case 0:
-                {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative));
-                    break;
-                }
-
-                case 1:
-                {
-                    var selected = this.SelectedPackages.LastOrDefault();
-                    var fullName = selected?.ProductId;
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), fullName } });
-                    break;
-                }
-
-                default:
-                {
-                    var selected = this.SelectedPackages.Select(p => p.ProductId);
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), selected } });
-                    break;
-                }
-            }
         }
 
         private void OnGroupAndSortChanged(PackageGroupAndSortChangedPayload payload)
@@ -175,6 +151,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     {
                         this.AllPackagesView.SortDescriptions.Clear();
                         this.AllPackagesView.SortDescriptions.Add(new SortDescription(sortProperty, currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+                    }
+                }
+
+                if (this.AllPackagesView.GroupDescriptions.Any())
+                {
+                    var gpn = ((PropertyGroupDescription)this.AllPackagesView.GroupDescriptions[0]).PropertyName;
+                    if (this.AllPackagesView.GroupDescriptions.Any() && this.AllPackagesView.SortDescriptions.All(sd => sd.PropertyName != gpn))
+                    {
+                        this.AllPackagesView.SortDescriptions.Insert(0, new SortDescription(gpn, ListSortDirection.Ascending));
                     }
                 }
             }

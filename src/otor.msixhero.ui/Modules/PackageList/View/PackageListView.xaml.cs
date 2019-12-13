@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -23,12 +24,16 @@ namespace otor.msixhero.ui.Modules.PackageList.View
     public partial class PackageListView
     {
         private readonly IApplicationStateManager applicationStateManager;
+        private readonly IRegionManager regionManager;
+        private bool disableSelectionNotification;
 
         private SortAdorner sortAdorner;
+
 
         public PackageListView(IApplicationStateManager applicationStateManager = null, IRegionManager regionManager = null)
         {
             this.applicationStateManager = applicationStateManager;
+            this.regionManager = regionManager;
             InitializeComponent();
             Debug.Assert(applicationStateManager != null);
             Debug.Assert(regionManager != null);
@@ -101,8 +106,6 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             }
         }
 
-        private bool disableSelectionNotification = false;
-
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionChanged)
         {
             try
@@ -112,10 +115,35 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                 this.ListView.SelectedItems.Clear();
                 this.ListBox.SelectedItems.Clear();
 
-                foreach (var item in ((PackageListViewModel) this.DataContext).SelectedPackages)
+                var selectedPackages = ((PackageListViewModel) this.DataContext).SelectedPackages;
+                foreach (var item in selectedPackages)
                 {
                     this.ListView.SelectedItems.Add(item);
                     this.ListBox.SelectedItems.Add(item);
+                }
+
+                switch (this.applicationStateManager.CurrentState.Packages.SelectedItems.Count)
+                {
+                    case 0:
+                    {
+                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative));
+                        break;
+                    }
+
+                    case 1:
+                    {
+                        var selected = selectedPackages.LastOrDefault();
+                        var fullName = selected?.ProductId;
+                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), fullName } });
+                        break;
+                    }
+
+                    default:
+                    {
+                        var selected = selectedPackages.Select(p => p.ProductId);
+                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), selected } });
+                        break;
+                    }
                 }
 
                 return;
