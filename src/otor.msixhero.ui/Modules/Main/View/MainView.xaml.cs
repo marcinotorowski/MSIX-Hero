@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.ui.Modules.PackageList;
@@ -32,6 +33,11 @@ namespace otor.msixhero.ui.Modules.Main.View
             regionManager.RequestNavigate("ContentRegion", PackageListModule.PackagesPath);
             this.appStateManager = appStateManager;
             appStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
+        }
+
+        private void Close_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Application.Current.MainWindow.Close();
         }
     }
 }

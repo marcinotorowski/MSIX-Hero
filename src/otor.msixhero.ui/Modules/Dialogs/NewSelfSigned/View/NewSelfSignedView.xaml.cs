@@ -34,7 +34,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
                 else if (t.IsFaulted && t.Exception != null)
                 {
                     var exception = t.Exception.GetBaseException();
-                    var result = this.interactionService.ShowError(exception.Message, extendedInfo: exception.ToString());
+                    var result = this.interactionService.ShowError(exception.Message, exception);
                     if (result == InteractionResult.Retry)
                     {
                         this.SaveExecuted(sender, e);

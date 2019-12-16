@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -26,7 +27,26 @@ namespace otor.msixhero.ui.Services
             return (InteractionResult)(int)result;
         }
 
-        public InteractionResult ShowError(string body, string title = null, string extendedInfo = null)
+        public InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close)
+        {
+#if DEBUG
+            var extended = exception.ToString();
+#else
+            string extended = body != exception.Message ? exception.Message : null;
+            if (exception.InnerException != null)
+            {
+                if (!string.IsNullOrEmpty(extended))
+                {
+                    extended += System.Environment.NewLine;
+                    extended += exception.GetBaseException().Message;
+                }
+            }
+#endif
+
+            return this.ShowError(body, buttons, extendedInfo: extended);
+        }
+
+        public InteractionResult ShowError(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null)
         {
             var taskDialog = new TaskDialog
             {
@@ -34,8 +54,35 @@ namespace otor.msixhero.ui.Services
                 ButtonStyle = TaskDialogButtonStyle.Standard
             };
 
-            taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Retry)); 
-            taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Close));
+            if (buttons.HasFlag(InteractionResult.Retry))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Retry));
+            }
+
+            if (buttons.HasFlag(InteractionResult.OK))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Ok));
+            }
+
+            if (buttons.HasFlag(InteractionResult.Yes))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
+            }
+
+            if (buttons.HasFlag(InteractionResult.No))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
+            }
+
+            if (buttons.HasFlag(InteractionResult.Cancel))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
+            }
+
+            if (buttons.HasFlag(InteractionResult.Close))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Close));
+            }
 
             taskDialog.CenterParent = true;
             taskDialog.Content = body;

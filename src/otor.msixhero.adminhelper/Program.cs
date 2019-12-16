@@ -152,7 +152,12 @@ namespace otor.msixhero.adminhelper
                 return false;
             }
 
-            public InteractionResult ShowError(string body, string title = null, string extendedInfo = null)
+            public InteractionResult ShowError(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null)
+            {
+                return InteractionResult.OK;
+            }
+
+            public InteractionResult ShowError(string body, Exception exception,  InteractionResult buttons = InteractionResult.Close)
             {
                 return InteractionResult.OK;
             }

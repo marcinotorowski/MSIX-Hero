@@ -14,6 +14,7 @@ using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Commands.Manager;
 using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Domain.Commands.UI;
+using otor.msixhero.lib.Domain.Exceptions;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Logging;
 
@@ -98,7 +99,16 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
 
                 var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
-                await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                }
+                catch (AdminRightsRequiredException)
+                {
+                    elevate = true;
+                    packageManager = this.appxPackageManagerFactory.GetRemote();
+                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
                 {
@@ -115,7 +125,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 Logger.Error(e, "Win32 error during command execution.");
                 // If error code is 1223 it means that the user did not press YES in UAC.
                 var message = e.NativeErrorCode == 1223 ? "This operation requires administrative rights." : e.Message;
-                var result = this.interactionService.ShowError(message, extendedInfo: e.ToString());
+                var result = this.interactionService.ShowError(message, e, buttons: InteractionResult.Close | InteractionResult.Retry);
                 if (result == InteractionResult.Retry)
                 {
                     Logger.Info("Retrying...");
@@ -124,8 +134,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             }
             catch (Exception e)
             {
-                Logger.Error(e, "General error during command execution.");
-                var result = this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+                Logger.Error(e, "Error during command execution.");
+
+                var result = this.interactionService.ShowError(e.Message, e, buttons: InteractionResult.Close | InteractionResult.Retry);
+
                 if (result == InteractionResult.Retry)
                 {
                     Logger.Info("Retrying...");
@@ -184,26 +196,45 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     ? this.appxPackageManagerFactory.GetRemote()
                     : this.appxPackageManagerFactory.GetLocal();
 
-                
-                return await Task.Run(() =>
+                Func<IAppxPackageManager, object> executor = (pkgMgr) =>
+                {
+                    var methodName = nameof(IReducer<object>.GetReduced);
+                    // ReSharper disable once PossibleNullReferenceException
+                    try
                     {
-                        var methodName = nameof(IReducer<object>.GetReduced);
+                        var invocationResult = reducerGenericType.GetMethod(methodName).Invoke(lazyReducer,
+                            new object[] {this.interactionService, pkgMgr, cancellationToken});
+
+                        var taskType = typeof(Task<>).MakeGenericType(resultType);
+
                         // ReSharper disable once PossibleNullReferenceException
-                        try
-                        {
-                            var invocationResult = reducerGenericType.GetMethod(methodName).Invoke(lazyReducer, new object[] { this.interactionService, packageManager, cancellationToken });
+                        return taskType.GetProperty(nameof(Task<bool>.Result)).GetValue(invocationResult);
+                    }
+                    catch (AggregateException e)
+                    {
+                        throw e.GetBaseException();
+                    }
+                };
 
-                            var taskType = typeof(Task<>).MakeGenericType(resultType);
+                object result;
+                try
+                {
+                    var packMgr = packageManager;
+                    result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
+                }
+                catch (AdminRightsRequiredException)
+                {
+                    elevate = true;
+                    var packMgr = this.appxPackageManagerFactory.GetRemote();
+                    result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
+                }
+                
+                if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
+                {
+                    this.writableApplicationStateManager.CurrentState.IsSelfElevated = true;
+                }
 
-                            // ReSharper disable once PossibleNullReferenceException
-                            return taskType.GetProperty(nameof(Task<bool>.Result)).GetValue(invocationResult);
-                        }
-                        catch (AggregateException e)
-                        {
-                            throw e.GetBaseException();
-                        }
-                    }, 
-                    cancellationToken).ConfigureAwait(false);
+                return result;
             }
             catch (OperationCanceledException)
             {
@@ -215,7 +246,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 Logger.Error(e, "Win32 error during command execution.");
                 // If error code is 1223 it means that the user did not press YES in UAC.
                 var message = e.NativeErrorCode == 1223 ? "This operation requires administrative rights." : e.Message;
-                var result = this.interactionService.ShowError(message, extendedInfo: e.ToString());
+                var result = this.interactionService.ShowError(message, e, buttons: InteractionResult.Close | InteractionResult.Retry);
 
                 if (result == InteractionResult.Retry)
                 {
@@ -228,7 +259,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             catch (Exception e)
             {
                 Logger.Error(e, "Generic error during command execution.");
-                var result = this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+                var result = this.interactionService.ShowError(e.Message, e, buttons: InteractionResult.Close | InteractionResult.Retry);
                 if (result == InteractionResult.Retry)
                 {
                     Logger.Info("Retrying..");
@@ -271,11 +302,22 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     elevate = false;
                 }
 
+                
                 var packageManager = elevate
                     ? this.appxPackageManagerFactory.GetRemote()
                     : this.appxPackageManagerFactory.GetLocal();
 
-                var result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                T result;
+                try
+                {
+                    result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                }
+                catch (AdminRightsRequiredException)
+                {
+                    elevate = true;
+                    packageManager = this.appxPackageManagerFactory.GetRemote();
+                    result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
                 {
@@ -294,7 +336,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 Logger.Error(e, "Win32 error during command execution.");
                 // If error code is 1223 it means that the user did not press YES in UAC.
                 var message = e.NativeErrorCode == 1223 ? "This operation requires administrative rights." : e.Message;
-                var result = this.interactionService.ShowError(message, extendedInfo: e.ToString());
+                var result = this.interactionService.ShowError(message, e, buttons: InteractionResult.Close | InteractionResult.Retry);
 
                 if (result == InteractionResult.Retry)
                 {
@@ -307,7 +349,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             catch (Exception e)
             {
                 Logger.Error(e, "Generic error during command execution.");
-                var result = this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+                var result = this.interactionService.ShowError(e.Message, e, buttons: InteractionResult.Close | InteractionResult.Retry);
                 if (result == InteractionResult.Retry)
                 {
                     Logger.Info("Retrying..");

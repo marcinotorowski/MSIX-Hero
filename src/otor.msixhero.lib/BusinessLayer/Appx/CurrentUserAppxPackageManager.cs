@@ -201,6 +201,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     throw new DeveloperModeException("Developer mode must be enabled to use this feature.", e);
                 }
 
+                if (e.HResult == -2146233087)
+                {
+                    throw new AdminRightsRequiredException("This tool requires admin rights.", e);
+                }
+
                 throw;
             }
         }

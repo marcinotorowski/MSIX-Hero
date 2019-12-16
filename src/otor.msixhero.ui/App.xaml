@@ -11,38 +11,9 @@
                 <ResourceDictionary Source="Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Color x:Key="Fluent.Ribbon.Colors.AccentBaseColor">#0173C7</Color>
-            <!--<Color x:Key="Fluent.Ribbon.Colors.AccentBaseColor">#2B579A</Color>-->
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.AccentBaseColorBrush" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" />
-
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonWindow.TitleBackground" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" />
             <Style TargetType="{x:Type Fluent:RibbonTabItem}" BasedOn="{StaticResource {x:Type Fluent:RibbonTabItem}}">
                 <Setter Property="HeaderPadding" Value="14 7" />
             </Style>
-            <LinearGradientBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.Background.OpacityMask" StartPoint="0 0" EndPoint="0 1">
-                <GradientStop Color="#66ffffff" Offset="0" />
-                <GradientStop Color="#14ffffff" Offset="1" />
-            </LinearGradientBrush>
-
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.MouseOver.Background" Color="#E6F2FA" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.Pressed.BorderBrush" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.Button.Pressed.Background" Color="#B1D6F0" />
-
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.MouseOver.BorderBrush" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.MouseOver.Background" Color="#E6F2FA" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Pressed.BorderBrush" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Pressed.Background" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.Background" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.Checked.BorderBrush" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.Background" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.ToggleButton.CheckedMouseOver.BorderBrush" Color="#B1D6F0" />
-
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.MouseOver" Color="#E6F2FA" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.Selected" Color="#B1D6F0" />
-            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.GalleryItem.Pressed" Color="#33B1D6F0" />
-
 
             <Style TargetType="Fluent:Button" BasedOn="{StaticResource {x:Type Fluent:Button}}">
                 <Style.Triggers>

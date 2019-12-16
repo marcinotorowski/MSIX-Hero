@@ -69,6 +69,7 @@ namespace otor.msixhero.ui.ViewModel
             // Miscellaneous
             this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
+            this.Settings = new DelegateCommand(param => this.SettingsExecute(), param => true);
         }
 
         public ICommand Refresh { get; }
@@ -94,6 +95,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand ModificationPackage { get; }
 
         public ICommand Unpack { get; }
+
+        public ICommand Settings { get; }
 
         public ICommand OpenResign { get; }
 
@@ -365,7 +368,6 @@ namespace otor.msixhero.ui.ViewModel
 
         private void ExtractCertExecute()
         {
-            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters(), this.OnDialogClosed);
             this.dialogService.ShowDialog(DialogsModule.CertificateExportPath, new DialogParameters(), this.OnDialogClosed);
         }
 
@@ -449,7 +451,7 @@ namespace otor.msixhero.ui.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(e.Message, extendedInfo: e.ToString());
+                this.interactionService.ShowError(e.Message, e);
             }
         }
 
@@ -500,6 +502,11 @@ namespace otor.msixhero.ui.ViewModel
 
         private void OnDialogClosed(IDialogResult obj)
         {
+        }
+
+        private void SettingsExecute()
+        {
+            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters(), this.OnDialogClosed);
         }
     }
 }

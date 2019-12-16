@@ -1,5 +1,8 @@
-﻿namespace otor.msixhero.lib.Infrastructure
+﻿using System;
+
+namespace otor.msixhero.lib.Infrastructure
 {
+    [Flags]
     public enum InteractionResult
     {
         Cancel	= 2,
@@ -57,6 +60,8 @@
 
         bool SelectFolder(out string selectedFolder);
 
-        InteractionResult ShowError(string body, string title = null, string extendedInfo = null);
+        InteractionResult ShowError(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null);
+
+        InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close);
     }
 }
