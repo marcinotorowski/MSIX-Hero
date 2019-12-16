@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
 
         public async Task Connect(CancellationToken cancellationToken = default)
         {
-            var process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
+            var process = Process.GetProcessesByName("msixhero-uac").FirstOrDefault();
 
             if (process == null || process.HasExited)
             {
@@ -27,10 +27,10 @@ namespace otor.msixhero.lib.Infrastructure.Interop
 
                 try
                 {
-                    process = Process.GetProcessesByName("otor.msixhero.adminhelper").FirstOrDefault();
+                    process = Process.GetProcessesByName("msixhero-uac").FirstOrDefault();
                     if (process == null || process.HasExited)
                     {
-                        var psi = new ProcessStartInfo(string.Join(AppDomain.CurrentDomain.BaseDirectory, "otor.msixhero.adminhelper.exe"), "--selfElevate")
+                        var psi = new ProcessStartInfo(System.IO.Path.Join(AppDomain.CurrentDomain.BaseDirectory, "msixhero-uac.exe"), "--selfElevate")
                         {
                             Verb = "runas",
                             UseShellExecute = true,

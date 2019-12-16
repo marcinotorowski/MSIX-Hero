@@ -105,9 +105,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    elevate = true;
+                    /*elevate = true;
                     packageManager = this.appxPackageManagerFactory.GetRemote();
-                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);*/
+                    throw;
                 }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
@@ -224,9 +225,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    elevate = true;
-                    var packMgr = this.appxPackageManagerFactory.GetRemote();
-                    result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
+                    // elevate = true;
+                    // var packMgr = this.appxPackageManagerFactory.GetRemote();
+                    // result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
+                    throw;
                 }
                 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
@@ -314,9 +316,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    elevate = true;
-                    packageManager = this.appxPackageManagerFactory.GetRemote();
-                    result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    // elevate = true;
+                    // packageManager = this.appxPackageManagerFactory.GetRemote();
+                    // result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    throw;
                 }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)

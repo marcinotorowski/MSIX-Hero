@@ -26,7 +26,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -92,7 +92,7 @@
             <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
         </Border>
 
-        <TabControl Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
+        <TabControl SelectedIndex="1" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
             <TabItem Visibility="Collapsed" Header="General">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <UniformGrid HorizontalAlignment="Left" Rows="1" Columns="2">

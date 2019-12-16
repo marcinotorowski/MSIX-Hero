@@ -9,7 +9,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel"
              xmlns:common="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel"
-             xmlns:builder="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Builder;assembly=otor.msixhero.lib"
+             xmlns:builder="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Builder;assembly=msixhero.lib"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:ModificationPackageViewModel}">
@@ -25,9 +25,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Extras.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -86,7 +86,7 @@
                                     <TextBlock Foreground="#666" Text="What should be created?" Margin="0 16 0 6" />
                                     <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create only manifest" />
                                     <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create unsigned MSIX modification package" Margin="0 6" />
-                                    <RadioButton GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create MSIX package and sign it" />
+                                    <RadioButton Visibility="Collapsed" GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create MSIX package and sign it" />
                                 </StackPanel>
                             </AdornerDecorator>
                         </ScrollViewer>

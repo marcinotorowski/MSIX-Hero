@@ -7,6 +7,12 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <AssemblyName>msixhero</AssemblyName>
+    <Product>MSIX Hero</Product>
+    <Copyright>Copyright (c) 2019-2020 by Marcin Otorowski</Copyright>
+    <Authors>Marcin Otorowski</Authors>
+    <Company />
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +27,7 @@
     <PackageReference Include="Prism.Core" Version="7.2.0.1422" />
     <PackageReference Include="Prism.Unity" Version="7.2.0.1422" />
     <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.0-preview.6" />
   </ItemGroup>
 
   <ItemGroup>

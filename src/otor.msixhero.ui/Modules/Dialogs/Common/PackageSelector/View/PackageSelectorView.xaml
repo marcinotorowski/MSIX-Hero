@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common"
-             xmlns:appInstaller="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;assembly=otor.msixhero.lib"
+             xmlns:appInstaller="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;assembly=msixhero.lib"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
-             xmlns:appInstaller1="clr-namespace:otor.msixhero.lib.Domain.Appx.AppInstaller;assembly=otor.msixhero.lib"
+             xmlns:appInstaller1="clr-namespace:otor.msixhero.lib.Domain.Appx.AppInstaller;assembly=msixhero.lib"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackageSelectorViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

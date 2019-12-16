@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Colors.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style  TargetType="{x:Type TabControl}">

@@ -11,7 +11,7 @@
                      xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
                      xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Main.ViewModel"
                      xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                     xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=otor.msixhero.lib"
+                     xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
                      xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Main.View"
                      d:DesignWidth="600"
                      mc:Ignorable="d"
@@ -19,8 +19,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>

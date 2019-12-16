@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
 using System.Xml;
 using System.Xml.Serialization;
+using ControlzEx.Standard;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
 using otor.msixhero.lib.Domain.Appx.AppInstaller;
 using otor.msixhero.lib.Domain.Appx.ModificationPackage;
+using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
 
@@ -16,6 +21,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
     public class AppxContentBuilder : IAppxContentBuilder
     {
         private static readonly ILog Logger = LogManager.GetLogger();
+        private const string DefaultNamespacePrefix = "msixHero";
+
         private readonly IAppxPacker packer;
 
         public AppxContentBuilder(IAppxPacker packer)
@@ -166,9 +173,13 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
                 namespaceManager.AddNamespace("uap4", "http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
             }
 
-            const string DefaultNamespacePrefix = "msixHero";
+            if (!namespaceManager.HasNamespace("build"))
+            {
+                namespaceManager.AddNamespace("build", "http://schemas.microsoft.com/developer/appx/2015/build");
+            }
+
             namespaceManager.AddNamespace(DefaultNamespacePrefix, template.DocumentElement.NamespaceURI);
-            
+
             var package = GetOrCreateNode(template, template, "Package", DefaultNamespacePrefix, namespaceManager);
             var dependencies = GetOrCreateNode(template, package, "Dependencies", DefaultNamespacePrefix, namespaceManager);
             var dependency = template.CreateElement("uap4", "MainPackageDependency", "http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
@@ -215,17 +226,130 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
             GetOrCreateNode(template, properties, "PublisherDisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Publisher Name";
             GetOrCreateNode(template, properties, "Description", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Description";
             GetOrCreateNode(template, properties, "Logo", DefaultNamespacePrefix, namespaceManager).InnerText = "Assets\\Logo.png";
+            
+            var metaData = GetNode(template, package, "build:Metadata", namespaceManager);
+            if (metaData != null)
+            {
+                package.RemoveChild(metaData);
+            }
+
+            metaData = CreateNode(template, package, "build:Metadata", namespaceManager);
+
+            var version = NtDll.RtlGetVersion();
+
+            var operatingSystem = CreateNode(template, metaData, "build:Item", namespaceManager);
+            operatingSystem.SetAttribute("Name", "OperatingSystem");
+            operatingSystem.SetAttribute("Version", $"{version.ToString(4)}");
+
+            var msixHero = CreateNode(template, metaData, "build:Item", namespaceManager);
+            msixHero.SetAttribute("Name", "MsixHero");
+            msixHero.SetAttribute("Version", (Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly()).GetName().Version.ToString());
+
+            var signTool = CreateNode(template, metaData, "build:Item", namespaceManager);
+            signTool.SetAttribute("Name", "SignTool.exe");
+            signTool.SetAttribute("Version", GetVersion("SignTool.exe"));
+
+            var makepri = CreateNode(template, metaData, "build:Item", namespaceManager);
+            makepri.SetAttribute("Name", "MakePri.exe");
+            makepri.SetAttribute("Version", GetVersion("MakePri.exe"));
+
+            var makeappx = CreateNode(template, metaData, "build:Item", namespaceManager);
+            makeappx.SetAttribute("Name", "MakeAppx.exe");
+            makeappx.SetAttribute("Version", GetVersion("MakeAppx.exe"));
+        }
+
+        private static string GetVersion(string sdkFile)
+        {
+            var path = MsixSdkWrapper.GetSdkPath(sdkFile);
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            return FileVersionInfo.GetVersionInfo(path).ProductVersion;
+        }
+
+        private static XmlElement GetNode(XmlDocument xmlDocument, XmlNode xmlNode, string qualifiedName, XmlNamespaceManager namespaceManager)
+        {
+            if (string.IsNullOrEmpty(qualifiedName))
+            {
+                throw new ArgumentNullException(nameof(qualifiedName));
+            }
+
+            var indexOf = qualifiedName.IndexOf(':');
+            if (indexOf == -1)
+            {
+                return GetNode(xmlDocument, xmlNode, qualifiedName, DefaultNamespacePrefix, namespaceManager);
+            }
+
+            return GetNode(xmlDocument, xmlNode, qualifiedName.Substring(indexOf + 1), qualifiedName.Substring(0, indexOf), namespaceManager);
+        }
+
+        private static XmlElement GetOrCreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string qualifiedName, XmlNamespaceManager namespaceManager)
+        {
+            if (string.IsNullOrEmpty(qualifiedName))
+            {
+                throw new ArgumentNullException(nameof(qualifiedName));
+            }
+
+            var indexOf = qualifiedName.IndexOf(':');
+            if (indexOf == -1)
+            {
+                return GetOrCreateNode(xmlDocument, xmlNode, qualifiedName, DefaultNamespacePrefix, namespaceManager);
+            }
+
+            return GetOrCreateNode(xmlDocument, xmlNode, qualifiedName.Substring(indexOf + 1), qualifiedName.Substring(0, indexOf), namespaceManager);
+        }
+
+        private static XmlElement CreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string qualifiedName, XmlNamespaceManager namespaceManager)
+        {
+            if (string.IsNullOrEmpty(qualifiedName))
+            {
+                throw new ArgumentNullException(nameof(qualifiedName));
+            }
+
+            var indexOf = qualifiedName.IndexOf(':');
+            if (indexOf == -1)
+            {
+                return CreateNode(xmlDocument, xmlNode, qualifiedName, DefaultNamespacePrefix, namespaceManager);
+            }
+
+            return CreateNode(xmlDocument, xmlNode, qualifiedName.Substring(indexOf + 1), qualifiedName.Substring(0, indexOf), namespaceManager);
+        }
+
+        private static XmlElement GetNode(XmlDocument xmlDocument, XmlNode xmlNode, string name, string prefix, XmlNamespaceManager namespaceManager)
+        {
+            var node = xmlNode.SelectSingleNode($"{prefix}:{name}", namespaceManager);
+            return (XmlElement)node;
         }
 
         private static XmlElement GetOrCreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string name, string prefix, XmlNamespaceManager namespaceManager)
         {
             var node = xmlNode.SelectSingleNode($"{prefix}:{name}", namespaceManager);
+            // ReSharper disable once InvertIf
             if (node == null)
             {
-                node = xmlDocument.CreateElement(name, xmlDocument.DocumentElement.NamespaceURI);
-                xmlNode.AppendChild(node);
+                return CreateNode(xmlDocument, xmlNode, name, prefix, namespaceManager);
             }
 
+            return (XmlElement)node;
+        }
+
+        private static XmlElement CreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string name, string prefix, XmlNamespaceManager namespaceManager)
+        {
+            var ns = namespaceManager.LookupNamespace(prefix);
+            if (string.IsNullOrEmpty(ns))
+            {
+                ns = xmlDocument.DocumentElement.NamespaceURI;
+            }
+
+            if (ns != xmlDocument.DocumentElement.NamespaceURI && !string.IsNullOrEmpty(prefix))
+            {
+                name = $"{prefix}:{name}";
+            }
+
+            var node = xmlDocument.CreateElement(name, ns);
+            xmlNode.AppendChild(node);
             return (XmlElement)node;
         }
 

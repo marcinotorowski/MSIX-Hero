@@ -4,10 +4,16 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>msixhero-uac</AssemblyName>
+    <Product>MSIX Hero</Product>
+    <Authors>Marcin Otorowski</Authors>
+    <Description>A helper for self-elevation of the main MSIX Hero App.</Description>
+    <Copyright>Copyright (c) 2019-2020 by Marcin Otorowski</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NLog" Version="4.6.8" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.0-preview.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="otor.msixhero.adminhelper.runtimeconfig.json">
+    <None Update="msixhero-uac.runtimeconfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

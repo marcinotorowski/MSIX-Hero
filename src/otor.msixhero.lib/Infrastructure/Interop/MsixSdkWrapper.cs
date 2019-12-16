@@ -117,7 +117,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             return this.RunMakeAppx(arguments, cancellationToken, progress);
         }
 
-        private static string GetSdkPath(string localName)
+        public static string GetSdkPath(string localName)
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "sdk", IntPtr.Size == 4 ? "x86" : "x64", localName);
             if (!File.Exists(path))

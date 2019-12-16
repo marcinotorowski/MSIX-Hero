@@ -19,6 +19,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
                 return buildInfo;
             }
 
+            if (this.DetectMsixHero(appxManifest, out buildInfo))
+            {
+                return buildInfo;
+            }
+            
             return null;
         }
         
@@ -67,6 +72,37 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
             buildInfo = new BuildInfo
             {
                 ProductLicense = GetValue(manifest.BuildMetaData, "ProjectLicenseType"),
+                ProductName = "Advanced Installer",
+                ProductVersion = advInst
+            };
+
+            var os = GetValue(manifest.BuildMetaData, "OperatingSystem");
+            if (os != null)
+            {
+                var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
+                buildInfo.OperatingSystem = win10Version.ToString();
+            }
+
+            return true;
+        }
+
+        private bool DetectMsixHero(AppxManifestSummary manifest, out BuildInfo buildInfo)
+        {
+            buildInfo = null;
+
+            if (manifest.BuildMetaData == null)
+            {
+                return false;
+            }
+
+            var advInst = GetValue(manifest.BuildMetaData, "MsixHero");
+            if (advInst == null) 
+            {
+                return false;
+            }
+
+            buildInfo = new BuildInfo
+            {
                 ProductName = "Advanced Installer",
                 ProductVersion = advInst
             };

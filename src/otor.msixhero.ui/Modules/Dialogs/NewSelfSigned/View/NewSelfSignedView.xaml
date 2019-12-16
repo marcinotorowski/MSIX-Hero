@@ -22,9 +22,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Colors.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Converters.xaml" />
-                <ResourceDictionary Source="/otor.msixhero.ui;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
