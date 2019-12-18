@@ -41,27 +41,35 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
 
             var xmlSerializer = new XmlSerializer(typeof(AppInstallerConfig));
             
-            using (var textWriter = new StringWriter())
+            using (var textWriter = new Utf8StringWriter())
             {
                 xmlSerializer.Serialize(textWriter, config);
-                await File.WriteAllTextAsync(file, textWriter.ToString(), cancellationToken).ConfigureAwait(false);
+
+                var ns = this.GetMinimumSupportedWindowsVersion(config).Item2;
+
+                var content = textWriter.ToString().Replace("http://schemas.microsoft.com/appx/appinstaller/2017", ns);
+                
+                await File.WriteAllTextAsync(file, content, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
             }
         }
 
-        public int GetMinimumSupportedWindowsVersion(AppInstallerConfig config)
+        public Tuple<int, string> GetMinimumSupportedWindowsVersion(AppInstallerConfig config)
         {
             var maximum = 1709;
+            var maximumNamespace = 20170;
 
             if (config.UpdateSettings != null)
             {
                 if (config.UpdateSettings.ForceUpdateFromAnyVersion)
                 {
                     maximum = Math.Max(maximum, 1809);
+                    maximumNamespace = Math.Max(maximumNamespace, 20172);
                 }
 
                 if (config.UpdateSettings.AutomaticBackgroundTask != null)
                 {
                     maximum = Math.Max(maximum, 1803);
+                    maximumNamespace = Math.Max(maximumNamespace, 20172);
                 }
 
                 if (config.UpdateSettings.OnLaunch != null)
@@ -69,11 +77,28 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
                     if (config.UpdateSettings.OnLaunch.UpdateBlocksActivation || config.UpdateSettings.OnLaunch.ShowPrompt)
                     {
                         maximum = Math.Max(maximum, 1903);
+                        maximumNamespace = Math.Max(maximumNamespace, 20180);
                     }
                 }
             }
 
-            return maximum;
+            var ns = "http://schemas.microsoft.com/appx/appinstaller/";
+            if (maximumNamespace % 10 == 0)
+            {
+                ns += (maximumNamespace / 10);
+            }
+            else
+            {
+                var minor = maximumNamespace % 10;
+                var major = (maximumNamespace - minor) / 10;
+
+                ns += major;
+                if (minor != 0)
+                {
+                    ns += "/" + minor;
+                }
+            }
+            return new Tuple<int, string>(maximum, ns);
         }
 
         public async Task Create(ModificationPackageConfig config, string filePath, ModificationPackageBuilderAction action, CancellationToken cancellation = default, IProgress<ProgressData> progress = default)
@@ -362,6 +387,23 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
             }
 
             return path;
+        }
+
+        private sealed class Utf8StringWriter : StringWriter
+        {
+            public Utf8StringWriter()
+            {
+            }
+
+            public Utf8StringWriter(IFormatProvider formatProvider) : base(formatProvider)
+            {
+            }
+
+            public Utf8StringWriter(StringBuilder sb, IFormatProvider formatProvider) : base(sb, formatProvider)
+            {
+            }
+
+            public override Encoding Encoding => Encoding.UTF8;
         }
     }
 }

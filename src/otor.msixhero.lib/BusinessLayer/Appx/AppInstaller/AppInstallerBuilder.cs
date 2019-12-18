@@ -29,6 +29,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppInstaller
 
         public string MainPackageVersion { get; set; }
 
+        public string Version { get; set; }
+
         public PackageType MainPackageType { get; set; }
 
         public AppInstallerPackageArchitecture MainPackageArchitecture { get; set; }
@@ -154,6 +156,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppInstaller
             {
                 appIns.Uri = this.RedirectUri.ToString();
             }
+
+            appIns.Version = this.Version ?? "1.0.0.0";
 
             return appIns;
         }

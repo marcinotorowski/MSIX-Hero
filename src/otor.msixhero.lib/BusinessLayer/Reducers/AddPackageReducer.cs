@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,15 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            var appxReader = await AppxManifestSummaryBuilder.FromFile(this.command.FilePath);
+            AppxManifestSummary appxReader;
+            if (!string.Equals(".appinstaller", Path.GetExtension(this.command.FilePath),  StringComparison.OrdinalIgnoreCase))
+            {
+                appxReader = await AppxManifestSummaryBuilder.FromFile(this.command.FilePath);
+            }
+            else
+            {
+                appxReader = null;
+            }
 
             var context = this.busyManager.Begin();
             try
@@ -32,9 +41,12 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 await this.busyManager.Execute(progress => packageManager.Add(this.command.FilePath, cancellationToken, progress));
 
                 var allPackages = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
-                var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
 
-                await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected), cancellationToken).ConfigureAwait(false);
+                if (appxReader != null)
+                {
+                    var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
+                    await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected), cancellationToken).ConfigureAwait(false);
+                }
             }
             finally
             {

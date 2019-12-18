@@ -105,7 +105,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(SolutionDir)artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
+    <Exec Command="XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
   </Target>
   
   <Target Name="WorkaroundForXAMLIntellisenseBuildIssue" AfterTargets="_CheckCompileDesignTimePrerequisite">

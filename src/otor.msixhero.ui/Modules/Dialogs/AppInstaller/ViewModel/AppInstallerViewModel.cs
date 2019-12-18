@@ -42,6 +42,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(lib.BusinessLayer.Appx.AppInstaller.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.BlockLaunching = new ChangeableProperty<bool>();
+            this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion, "1.0.0.0");
             this.ShowPrompt = new ChangeableProperty<bool>();
 
             this.AllowDowngrades.ValueChanged += this.OnBooleanChanged;
@@ -49,7 +50,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.ShowPrompt.ValueChanged += this.OnBooleanChanged;
 
             this.MainPackageUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUriOrEmpty, true);
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
 
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
@@ -63,7 +64,13 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
             this.PackageSelection = new PackageSelectorViewModel(
                 interactionService,
-                PackageSelectorDisplayMode.AllowAllPackageTypes | PackageSelectorDisplayMode.ShowTypeSelector | PackageSelectorDisplayMode.AllowManifests | PackageSelectorDisplayMode.ShowActualName | PackageSelectorDisplayMode.AllowBrowsing | PackageSelectorDisplayMode.AllowChanging)
+                PackageSelectorDisplayMode.AllowAllPackageTypes | 
+                PackageSelectorDisplayMode.ShowTypeSelector | 
+                PackageSelectorDisplayMode.AllowManifests | 
+                PackageSelectorDisplayMode.ShowActualName | 
+                PackageSelectorDisplayMode.RequireFullIdentity |
+                PackageSelectorDisplayMode.AllowBrowsing | 
+                PackageSelectorDisplayMode.AllowChanging)
             {
                 CustomPrompt = "What will be targeted by this .appinstaller?"
             };
@@ -78,7 +85,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 this.BlockLaunching,
                 this.ShowPrompt,
                 this.Hours,
-                this.PackageSelection)
+                this.PackageSelection,
+                this.Version)
             {
                 IsValidated = false
             };
@@ -96,6 +104,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public ChangeableProperty<bool> ShowPrompt { get; }
 
+        public ValidatedChangeableProperty<string> Version { get; }
+
         public ChangeableProperty<bool> AllowDowngrades { get; }
 
         public ChangeableContainer ChangeableContainer { get; }
@@ -111,7 +121,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             get
             {
                 var minWin10 = this.appxContentBuilder.GetMinimumSupportedWindowsVersion(this.GetCurrentAppInstallerConfig());
-                return $"Windows 10 {minWin10}";
+                return $"Windows 10 {minWin10.Item1}";
             }
         }
 
@@ -235,6 +245,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         {
             var builder = new AppInstallerBuilder
             {
+                Version = this.Version.CurrentValue,
                 MainPackageType = this.PackageSelection.PackageType.CurrentValue,
                 MainPackageName = this.PackageSelection.Name.CurrentValue,
                 MainPackageArchitecture = this.PackageSelection.Architecture.CurrentValue,
@@ -354,6 +365,20 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         private void OnBooleanChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(CompatibleWindows));
+        }
+        private string ValidateVersion(string newValue)
+        {
+            if (string.IsNullOrEmpty(newValue))
+            {
+                return "The version may not be empty.";
+            }
+
+            if (!System.Version.TryParse(newValue, out var version))
+            {
+                return $"'{newValue}' is not a valid version.";
+            }
+
+            return null;
         }
     }
 }

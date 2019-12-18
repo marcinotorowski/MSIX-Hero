@@ -36,7 +36,7 @@
 
             <StackPanel Visibility="{Binding ShowActualNames, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
-                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Bundle name" Margin="0 16 0 6" />
+                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Visibility="{Binding IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="Bundle name" Margin="0 0 0 6" />
                 <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
             </StackPanel>
 

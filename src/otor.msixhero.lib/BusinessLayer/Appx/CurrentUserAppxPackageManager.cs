@@ -109,25 +109,28 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
             if (string.Equals(Path.GetFileName(filePath), "AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
             {
-                try
+                var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
+                var pkgManager = new PackageManager();
+
+                using (var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
                 {
+                    var cmd = powerShell.AddCommand("Add-AppxPackage");
+                    cmd.AddParameter("-Path", filePath);
+                    cmd.AddParameter("-Register");
 
-                    var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
-                    var pkgManager = new PackageManager();
-
-                    using (var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
-                    {
-                        var cmd = powerShell.AddCommand("Add-AppxPackage");
-                        cmd.AddParameter("-Path", filePath);
-                        cmd.AddParameter("-Register");
-
-                        await powerShell.InvokeAsync().ConfigureAwait(false);
-                    }
+                    await powerShell.InvokeAsync().ConfigureAwait(false);
                 }
-                catch (Exception e)
-                {
-                    throw new DeveloperModeInstallException();
-                }
+            }
+            else if (string.Equals(".appinstaller", Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
+            {
+                var pkgManager = new PackageManager();
+
+                var volume = pkgManager.GetDefaultPackageVolume();
+                await AsyncOperationHelper.ConvertToTask(
+                    pkgManager.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), AddPackageByAppInstallerOptions.ForceTargetAppShutdown, volume),
+                    "Installing from " + Path.GetFileName(filePath) + "...",
+                    cancellationToken,
+                    progress).ConfigureAwait(false);
             }
             else
             {
@@ -135,6 +138,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 {
                     var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
                     var pkgManager = new PackageManager();
+
                     await AsyncOperationHelper.ConvertToTask(
                         pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown),
                         "Installing " + reader.DisplayName + "...",

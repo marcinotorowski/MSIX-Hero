@@ -6,7 +6,7 @@ using NLog.Layouts;
 namespace otor.msixhero.lib.Domain.Appx.AppInstaller
 {
     [Serializable]
-    [XmlRoot("AppInstaller", Namespace = "http://schemas.microsoft.com/appx/appinstaller/2017/2")]
+    [XmlRoot("AppInstaller", Namespace = "http://schemas.microsoft.com/appx/appinstaller/2017")]
     public class AppInstallerConfig
     {
         [XmlElement("MainPackage")]

@@ -11,7 +11,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
     {
         Task Create(AppInstallerConfig config, string file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        int GetMinimumSupportedWindowsVersion(AppInstallerConfig config);
+        Tuple<int, string> GetMinimumSupportedWindowsVersion(AppInstallerConfig config);
 
         Task Create(ModificationPackageConfig config, string file, ModificationPackageBuilderAction action, CancellationToken cancellation = default, IProgress<ProgressData> progress = default);
     }
