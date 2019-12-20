@@ -9,6 +9,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
     {
         public SigningConfiguration()
         {
+            this.Source = CertificateSource.Pfx;
             this.DefaultOutFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.DoNotVerify), "Certificates");
             this.TimeStampServer = "http://timestamp.globalsign.com/scripts/timstamp.dll";
         }
@@ -18,5 +19,14 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name="timeStampServer")]
         public string TimeStampServer { get; set; }
+
+        [DataMember(Name = "source")]
+        public CertificateSource Source { get; set; }
+
+        [DataMember(Name = "thumbprint")]
+        public string Thumbprint { get; set; }
+
+        [DataMember(Name = "pfx")]
+        public ResolvableFolder.ResolvableFolder PfxPath { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
+﻿namespace otor.msixhero.lib.Infrastructure.Configuration
 {
     public enum CertificateSource
     {

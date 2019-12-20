@@ -13,6 +13,7 @@ using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Commands.Manager;
 using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Settings;
@@ -24,14 +25,17 @@ namespace otor.msixhero.ui.ViewModel
     {
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
+        private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
 
         public CommandHandler(
             IInteractionService interactionService,
+            IConfigurationService configurationService,
             IApplicationStateManager stateManager, 
             IDialogService dialogService)
         {
             this.interactionService = interactionService;
+            this.configurationService = configurationService;
             this.stateManager = stateManager;
             this.dialogService = dialogService;
 
@@ -280,8 +284,17 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            var spi = new ProcessStartInfo(package.ManifestLocation) { UseShellExecute = true };
-            Process.Start(spi);
+            var config = this.configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
+            if (config.ManifestEditorType == EditorType.Default)
+            {
+                var spi = new ProcessStartInfo(package.ManifestLocation) { UseShellExecute = true };
+                Process.Start(spi);
+            }
+            else
+            {
+                var spi = new ProcessStartInfo(config.ManifestEditor.Resolved, "\"" + package.ManifestLocation + "\"") { UseShellExecute = true };
+                Process.Start(spi);
+            }
         }
 
         private void OpenConfigJsonExecute()
@@ -292,8 +305,17 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            var spi = new ProcessStartInfo(package.PsfConfig) { UseShellExecute = true };
-            Process.Start(spi);
+            var config = this.configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
+            if (config.PsfEditorType == EditorType.Default)
+            {
+                var spi = new ProcessStartInfo(package.PsfConfig) { UseShellExecute = true };
+                Process.Start(spi);
+            }
+            else
+            {
+                var spi = new ProcessStartInfo(config.PsfEditor.Resolved, "\"" + package.PsfConfig + "\"") { UseShellExecute = true };
+                Process.Start(spi);
+            }
         }
 
         private bool CanOpenManifest()

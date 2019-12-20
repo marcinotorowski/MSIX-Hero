@@ -6,6 +6,7 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
+using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;

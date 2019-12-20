@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
@@ -59,22 +58,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
             // ReSharper disable once PossibleNullReferenceException
             Window.GetWindow(this).Close();
         }
-
-        private void CanOpenExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = this.PfxFile.IsChecked == true;
-        }
-
-        private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (!this.interactionService.SelectFile("PFX files (*.pfx)|*.pfx", out string selectedFile))
-            {
-                return;
-            }
-
-            ((PackageSigningViewModel)this.DataContext).PfxPath = selectedFile;
-        }
-
+        
         private void OnDrop(object sender, DragEventArgs e)
         {
             DropFileObject.SetIsDragging((DependencyObject)sender, false);
@@ -158,11 +142,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
             {
                 e.CanExecute = true;
             }
-        }
-
-        private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            ((PackageSigningViewModel)this.DataContext).Password = ((PasswordBox)sender).SecurePassword;
         }
     }
 }

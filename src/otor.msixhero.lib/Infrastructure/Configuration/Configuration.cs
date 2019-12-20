@@ -12,7 +12,11 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             this.Signing = new SigningConfiguration();
             this.Packer = new PackerConfiguration();
             this.AppInstaller = new AppInstallerConfiguration();
+            this.Editing = new EditingConfiguration();
         }
+
+        [DataMember(Name = "editing")]
+        public EditingConfiguration Editing { get; set; }
 
         [DataMember(Name = "list")]
         public ListConfiguration List { get; set; }

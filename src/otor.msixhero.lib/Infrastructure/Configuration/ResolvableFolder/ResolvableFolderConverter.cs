@@ -10,10 +10,12 @@ namespace otor.msixhero.lib.Infrastructure.Configuration.ResolvableFolder
             var date = value as ResolvableFolder;
             if (date == null || string.IsNullOrEmpty(date.Compacted))
             {
-                return;
+                writer.WriteValue(string.Empty);
             }
-
-            writer.WriteValue(date.Compacted);
+            else
+            {
+                writer.WriteValue(date.Compacted);
+            }
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

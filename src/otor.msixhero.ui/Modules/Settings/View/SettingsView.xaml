@@ -9,16 +9,18 @@
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:configuration="clr-namespace:otor.msixhero.lib.Infrastructure.Configuration;assembly=msixhero.lib"
              Background="White"
              mc:Ignorable="d" 
-             d:DesignHeight="450" 
+             d:DesignHeight="650" 
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance viewModel:SettingsViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
-            <Setter Property="Width" Value="550" />
-            <Setter Property="Height" Value="550" />
+            <Setter Property="Width" Value="650" />
+            <Setter Property="Height" Value="650" />
             <Setter Property="MinWidth" Value="350" />
             <Setter Property="MinHeight" Value="350" />
         </Style>
@@ -41,7 +43,7 @@
             <DockPanel Margin="16">
                 <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorBulb}" />
                 <Grid Width="200" DockPanel.Dock="Right" VerticalAlignment="Center">
-                    <TextBox Text="{Binding ElementName=MainContent, UpdateSourceTrigger=PropertyChanged, Path=(view:SearchHelper.SearchString), Delay=300, Mode=TwoWay}"  Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" />
+                    <TextBox Visibility="Collapsed" Text="{Binding ElementName=MainContent, UpdateSourceTrigger=PropertyChanged, Path=(view:SearchHelper.SearchString), Delay=300, Mode=TwoWay}"  Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" />
                     <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
                         <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
                             <Path.LayoutTransform>
@@ -120,10 +122,7 @@
                             <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <TextBlock Text="Default time stamp authority" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                        <DockPanel>
-                            <TextBox Text="{Binding TimeStampServer.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-                        </DockPanel>
+                        <view1:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 16 0 0" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
@@ -140,6 +139,52 @@
             </TabItem>
             <TabItem Header="Other" Visibility="Collapsed">
 
+            </TabItem>
+
+            <TabItem Header="Editing">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="Default editor for manifest files (AppxManifest.xml)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="a1" IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" Content="Default XML editor" Margin="0 0 16 6" />
+                            <RadioButton GroupName="a2" IsChecked="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Content="Custom application" Margin="0 0 6 6" />
+                        </StackPanel>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding ManifestEditorPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox IsEnabled="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding ManifestEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Default editor for App installer files (*.appinstaller)" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="b1" IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" Content="Default text editor" Margin="0 0 16 6" />
+                            <RadioButton GroupName="b2" IsChecked="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Content="Custom application" Margin="0 0 6 6" />
+                        </StackPanel>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding AppinstallerEditorPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox IsEnabled="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding AppinstallerEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Default editor for APPX/MSIX files" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="c1" IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" Content="Windows Explorer" Margin="0 0 16 6" />
+                            <RadioButton GroupName="c2" IsChecked="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Content="Custom application" Margin="0 0 6 6" />
+                        </StackPanel>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding MsixEditorPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox IsEnabled="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding MsixEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
+
+                        <TextBlock Text="Default editor for Package Support Framework configuration files" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="d1" IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Default}}" Content="Default .config editor" Margin="0 0 16 6" />
+                            <RadioButton GroupName="d2" IsChecked="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Content="Custom application" Margin="0 0 6 6" />
+                        </StackPanel>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding PsfEditorPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox IsEnabled="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PsfEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </DockPanel>

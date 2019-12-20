@@ -17,7 +17,7 @@ namespace otor.msixhero.lib.tests
         {
             var stringXml = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <AppInstaller
-    xmlns=""http://schemas.microsoft.com/appx/appinstaller/2017/2""
+    xmlns=""http://schemas.microsoft.com/appx/appinstaller/2017""
     Version=""1.0.0.0""
     Uri=""http://mywebservice.azurewebsites.net/appset.appinstaller"" >
 

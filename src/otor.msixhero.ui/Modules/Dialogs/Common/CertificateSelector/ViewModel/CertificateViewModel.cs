@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using otor.msixhero.lib.Domain.Appx.Signing;
+﻿using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
+namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 {
     public class CertificateViewModel : NotifyPropertyChanged
     {

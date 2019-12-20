@@ -171,7 +171,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             using var store = new X509Store(StoreName.My, loc);
             store.Open(OpenFlags.ReadOnly);
 
-            var x509 = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, true);
+            var x509 = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (x509.Count < 1)
             {
                 throw new ArgumentException("Certificate could not be located in the store.");
