@@ -5,7 +5,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
     public enum EditorType
     {
         Default = 0,
-        Custom = 1
+        Custom = 1,
+        Ask = 2
     }
 
     public class EditingConfiguration

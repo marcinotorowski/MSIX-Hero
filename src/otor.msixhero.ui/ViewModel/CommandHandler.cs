@@ -285,15 +285,37 @@ namespace otor.msixhero.ui.ViewModel
             }
 
             var config = this.configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            if (config.ManifestEditorType == EditorType.Default)
+            switch (config.ManifestEditorType)
             {
-                var spi = new ProcessStartInfo(package.ManifestLocation) { UseShellExecute = true };
-                Process.Start(spi);
-            }
-            else
-            {
-                var spi = new ProcessStartInfo(config.ManifestEditor.Resolved, "\"" + package.ManifestLocation + "\"") { UseShellExecute = true };
-                Process.Start(spi);
+                case EditorType.Default:
+                {
+                    var spi = new ProcessStartInfo(package.ManifestLocation) { UseShellExecute = true };
+                    Process.Start(spi);
+                    break;
+                }
+
+                case EditorType.Ask:
+                {
+                    Process.Start("rundll32.exe", "shell32.dll, OpenAs_RunDLL " + package.ManifestLocation);
+                    break;
+                    var spi = new ProcessStartInfo()
+                    {
+                        WindowStyle = ProcessWindowStyle.Normal,
+                        FileName = package.ManifestLocation,
+                        Verb = "openas",
+                        UseShellExecute = true,
+                        ErrorDialog = true
+                    };
+                    Process.Start(spi);
+                    break;
+                }
+
+                default:
+                {
+                    var spi = new ProcessStartInfo(config.ManifestEditor.Resolved, "\"" + package.ManifestLocation + "\"") { UseShellExecute = true };
+                    Process.Start(spi);
+                    break;
+                }
             }
         }
 
@@ -306,15 +328,38 @@ namespace otor.msixhero.ui.ViewModel
             }
 
             var config = this.configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            if (config.PsfEditorType == EditorType.Default)
+            switch (config.PsfEditorType)
             {
-                var spi = new ProcessStartInfo(package.PsfConfig) { UseShellExecute = true };
-                Process.Start(spi);
-            }
-            else
-            {
-                var spi = new ProcessStartInfo(config.PsfEditor.Resolved, "\"" + package.PsfConfig + "\"") { UseShellExecute = true };
-                Process.Start(spi);
+                case EditorType.Default:
+                {
+                    var spi = new ProcessStartInfo(package.PsfConfig) { UseShellExecute = true };
+                    Process.Start(spi);
+                    break;
+                }
+
+                case EditorType.Ask:
+                {
+                    Process.Start("rundll32.exe", "shell32.dll, OpenAs_RunDLL " + package.PsfConfig);
+                    break;
+
+                    var spi = new ProcessStartInfo()
+                    {
+                        WindowStyle = ProcessWindowStyle.Normal,
+                        FileName = package.PsfConfig,
+                        Verb = "openas",
+                        UseShellExecute = true,
+                        ErrorDialog = true
+                    };
+                    Process.Start(spi);
+                    break;
+                }
+
+                default:
+                {
+                    var spi = new ProcessStartInfo(config.PsfEditor.Resolved, "\"" + package.PsfConfig + "\"") { UseShellExecute = true };
+                    Process.Start(spi);
+                    break;
+                }
             }
         }
 
