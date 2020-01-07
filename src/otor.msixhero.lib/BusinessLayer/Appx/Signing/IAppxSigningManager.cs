@@ -27,6 +27,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 
         Task<bool> CreateSelfSignedCertificate(DirectoryInfo outputDirectory, string publisherName, string publisherDisplayName, string password, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
 
-        Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certificateStoreType, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
+        Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certificateStoreType, bool onlyValid = true, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
     }
 }

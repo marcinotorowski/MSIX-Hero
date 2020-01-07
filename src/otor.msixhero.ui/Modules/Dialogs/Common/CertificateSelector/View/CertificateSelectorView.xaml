@@ -24,8 +24,8 @@
         <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Certificate to sign the package" Margin="0 0 0 6" />
 
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <RadioButton GroupName="r1" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Pfx}}" Content="Certificate from PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
-            <RadioButton GroupName="r2" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Personal}}" Content="Certificate from store" Margin="0 0 16 8" x:Name="CertStore" />
+            <RadioButton GroupName="r1" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Pfx}}" Content="PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
+            <RadioButton GroupName="r2" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Personal}, FallbackValue=True}" Content="Installed certificate" Margin="0 0 16 8" x:Name="CertStore" />
         </StackPanel>
 
         <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -33,7 +33,14 @@
             <TextBox Text="{Binding PfxPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
         </DockPanel>
 
-        <ComboBox SelectedValue="{Binding SelectedPersonalCertificate.CurrentValue, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" Visibility="{Binding ElementName=CertStore, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <CheckBox 
+            Margin="0 0 0 6"
+            IsChecked="{Binding ShowAllCertificates.CurrentValue, Converter={StaticResource NegativeConverter}}"
+            Visibility="{Binding ElementName=CertStore, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Content="Show only valid certificates for signing" DockPanel.Dock="Top" />
+        <ComboBox SelectedValue="{Binding SelectedPersonalCertificate.CurrentValue, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" 
+                  ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" 
+                  Visibility="{Binding ElementName=CertStore, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ComboBox.ItemTemplateSelector>
                 <helpers:ComboBoxTemplateSelector>
                     <helpers:ComboBoxTemplateSelector.ListTemplate>

@@ -32,11 +32,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};
             this.Password = new ChangeableProperty<SecureString>();
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(this.ValidateSelectedCertificate);
-            this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint));
+            this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
+            this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
 
-            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.Store);
+            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.Store, this.ShowAllCertificates);
             this.IsValidated = false;
             this.ShowPassword = showPassword;
+
+            this.ShowAllCertificates.ValueChanged += async (sender, args) =>
+            {
+                await this.PersonalCertificates.Load(this.LoadPersonalCertificates(this.SelectedPersonalCertificate.CurrentValue?.Model.Thumbprint, !(bool)args.NewValue)).ConfigureAwait(false);
+                this.OnPropertyChanged(nameof(this.SelectedPersonalCertificate));
+            };
         }
 
         public bool ShowPassword { get; }
@@ -49,18 +56,26 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         public ChangeableProperty<CertificateSource> Store { get; }
 
-        private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(string thumbprint = null, CancellationToken cancellationToken = default)
+        private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(string thumbprint = null, bool onlyValid = true, CancellationToken cancellationToken = default)
         {
-            var certs = await this.signingManager.GetCertificatesFromStore(CertificateStoreType.MachineUser, cancellationToken).ConfigureAwait(false);
+            var needsCommit = this.SelectedPersonalCertificate.CurrentValue == null;
+            var certs = await this.signingManager.GetCertificatesFromStore(CertificateStoreType.MachineUser, onlyValid, cancellationToken).ConfigureAwait(false);
             var result = new ObservableCollection<CertificateViewModel>(certs.Select(c => new CertificateViewModel(c)));
-            this.SelectedPersonalCertificate.CurrentValue = string.IsNullOrEmpty(thumbprint) ? result.FirstOrDefault() : result.FirstOrDefault(c => c.Model.Thumbprint == thumbprint);
-            this.SelectedPersonalCertificate.Commit();
+            this.SelectedPersonalCertificate.CurrentValue = result.FirstOrDefault(c => thumbprint == null || c.Model.Thumbprint == thumbprint) ?? result.FirstOrDefault();
+
+            if (needsCommit)
+            {
+                this.SelectedPersonalCertificate.Commit();
+            }
+
             return result;
         }
         
         public ChangeableFileProperty PfxPath { get; }
 
         public ChangeableProperty<string> TimeStamp { get; }
+
+        public ChangeableProperty<bool> ShowAllCertificates { get; }
 
         private string ValidateSelectedCertificate(CertificateViewModel arg)
         {

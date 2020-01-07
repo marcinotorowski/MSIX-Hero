@@ -63,7 +63,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 cancellationToken);
         }
 
-        public async Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certStoreType, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certStoreType, bool onlyValid = true, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             StoreLocation loc;
 
@@ -76,8 +76,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                     loc = StoreLocation.LocalMachine;
                     break;
                 case CertificateStoreType.MachineUser:
-                    var list1 = await this.GetCertificatesFromStore(CertificateStoreType.User, cancellationToken, progress).ConfigureAwait(false);
-                    var list2 = await this.GetCertificatesFromStore(CertificateStoreType.Machine, cancellationToken, progress).ConfigureAwait(false);
+                    var list1 = await this.GetCertificatesFromStore(CertificateStoreType.User, onlyValid, cancellationToken, progress).ConfigureAwait(false);
+                    var list2 = await this.GetCertificatesFromStore(CertificateStoreType.Machine, onlyValid, cancellationToken, progress).ConfigureAwait(false);
+
+                    // Remove duplicated certificates
+                    for (var index = list2.Count - 1; index >= 0; index--)
+                    {
+                        var item = list2[index];
+                        if (list1.Any(otherItem => item.Thumbprint == otherItem.Thumbprint))
+                        {
+                            list2.RemoveAt(index);
+                        }
+                    }
+
                     return list1.Concat(list2).ToList();
 
                 default:
@@ -87,32 +98,24 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             Logger.Info($"Getting the list of certificates from {loc} containing a private key and in a valid time range.");
 
             using var store = new X509Store(StoreName.My, loc);
-            store.Open(OpenFlags.ReadOnly);
-
+            store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+            
             var list = new List<PersonalCertificate>();
-            foreach (var certificate in store.Certificates)
+            X509Certificate2Collection col;
+
+            if (onlyValid)
+            {
+                col = store.Certificates.Find(X509FindType.FindByKeyUsage, X509KeyUsageFlags.DigitalSignature, true);
+            }
+            else
+            {
+                col = store.Certificates;
+            }
+
+            foreach (var certificate in  col)
             {
                 Logger.Debug("Processing certificate {0}...", certificate);
                 cancellationToken.ThrowIfCancellationRequested();
-
-                if (!certificate.HasPrivateKey)
-                {
-                    Logger.Debug("Skipping certificate because it has no private key.");
-                    continue;
-                }
-
-                if (certificate.NotBefore > DateTime.UtcNow.ToLocalTime())
-                {
-                    Logger.Debug("Skipping certificate because it is inactive before {0}.", certificate.NotBefore);
-                    continue;
-                }
-
-                if (certificate.NotAfter < DateTime.UtcNow.ToLocalTime())
-                {
-                    Logger.Debug("Skipping certificate because it has expired on {0}.", certificate.NotAfter);
-                    continue;
-                }
-
                 list.Add(CreateFromX509(certificate, certStoreType));
             }
 
@@ -169,7 +172,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             }
 
             using var store = new X509Store(StoreName.My, loc);
-            store.Open(OpenFlags.ReadOnly);
+            store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
 
             var x509 = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false);
             if (x509.Count < 1)
@@ -177,6 +180,18 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 throw new ArgumentException("Certificate could not be located in the store.");
             }
 
+            var isForCodeSigning = x509[0].Extensions.OfType<X509KeyUsageExtension>().Any(ke => ke.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature));
+
+            if (!isForCodeSigning)
+            {
+                throw new ArgumentException("Selected certificate is not for code-signing.");
+            }
+
+            if (!x509[0].HasPrivateKey)
+            {
+                throw new ArgumentException("Selected certificate does not contain a private key.");
+            }
+            
             var localCopy = await this.PreparePackageForSigning(package, updatePublisher, x509[0], cancellationToken, progress).ConfigureAwait(false);
 
             try

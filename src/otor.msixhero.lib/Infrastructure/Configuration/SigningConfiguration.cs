@@ -26,6 +26,9 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         [DataMember(Name = "thumbprint")]
         public string Thumbprint { get; set; }
 
+        [DataMember(Name = "showAllCertificates")]
+        public bool ShowAllCertificates { get; set; }
+
         [DataMember(Name = "pfx")]
         public ResolvableFolder.ResolvableFolder PfxPath { get; set; }
     }
