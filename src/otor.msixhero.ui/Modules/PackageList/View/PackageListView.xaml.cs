@@ -146,34 +146,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                     }
                 }
 
-                return;
 
-                var added = new List<PackageViewModel>();
-                var removed = new List<PackageViewModel>();
-
-                foreach (var item in ((PackageListViewModel) this.DataContext).AllPackages)
-                {
-                    if (selectionChanged.Selected.Contains(item.Model))
-                    {
-                        added.Add(item);
-                    }
-                    else if (selectionChanged.Unselected.Contains(item.Model))
-                    {
-                        removed.Add(item);
-                    }
-                }
-
-                foreach (var item in removed)
-                {
-                    this.ListView.SelectedItems.Remove(item);
-                    this.ListBox.SelectedItems.Remove(item);
-                }
-
-                foreach (var item in added)
-                {
-                    this.ListView.SelectedItems.Add(item);
-                    this.ListBox.SelectedItems.Add(item);
-                }
             }
             finally
             {
@@ -196,7 +169,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             try
             {
                 this.disableSelectionNotification = true;
-                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
+                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model)));
                 
                 if (this.PanelListBox.Visibility == Visibility.Collapsed)
                 {
@@ -238,7 +211,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             try
             {
                 this.disableSelectionNotification = true;
-                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<PackageViewModel>().Select(s => s.Model)));
+                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model)));
 
                 if (this.PanelListView.Visibility == Visibility.Collapsed)
                 {

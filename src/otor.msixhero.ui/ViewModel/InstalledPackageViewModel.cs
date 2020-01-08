@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.ui.ViewModel
 {
-    public class PackageViewModel : NotifyPropertyChanged
+    public class InstalledPackageViewModel : NotifyPropertyChanged
     {
-        public PackageViewModel(InstalledPackage package)
+        public InstalledPackageViewModel(InstalledPackage package)
         {
             this.Model = package;
-            // this.TargetOperatingSystems = new ObservableCollection<OperatingSystemViewModel>(package.);
         }
 
         public string Description => this.Model.Description;
@@ -82,9 +79,9 @@ namespace otor.msixhero.ui.ViewModel
         public ObservableCollection<OperatingSystemViewModel> TargetOperatingSystems { get; }
 
         
-        public static explicit operator InstalledPackage(PackageViewModel packageViewModel)
+        public static explicit operator InstalledPackage(InstalledPackageViewModel installedPackageViewModel)
         {
-            return packageViewModel.Model;
+            return installedPackageViewModel.Model;
         }
     }
 }

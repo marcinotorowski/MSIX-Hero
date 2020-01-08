@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Remove="Modules\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Settings\View\Images\sidebar.png" />
+    <None Remove="Resources\Images\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,7 @@
   <ItemGroup>
     <Resource Include="Modules\Settings\View\Images\no-sidebar.png" />
     <Resource Include="Modules\Settings\View\Images\sidebar.png" />
+    <Resource Include="Resources\Images\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>

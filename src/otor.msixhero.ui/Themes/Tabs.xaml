@@ -17,22 +17,22 @@
                         </Grid.RowDefinitions>
 
                         <TabPanel 
-                                    x:Name="HeaderPanel"
-                                    Grid.Row="0"
-                                    Panel.ZIndex="1"
-                                    IsItemsHost="True"
-                                    KeyboardNavigation.TabIndex="1"
-                                    Background="Transparent" />
+                            x:Name="HeaderPanel"
+                            Grid.Row="0"
+                            Panel.ZIndex="1"
+                            IsItemsHost="True"
+                            KeyboardNavigation.TabIndex="1"
+                            Background="Transparent" />
                         <Border x:Name="Border"
-                                    Grid.Row="1"
-                                    BorderThickness="1"
-                                    CornerRadius="2"
-                                    KeyboardNavigation.TabNavigation="Local"
-                                    KeyboardNavigation.DirectionalNavigation="Contained"
-                                    KeyboardNavigation.TabIndex="2">
+                                Grid.Row="1"
+                                BorderThickness="1"
+                                CornerRadius="2"
+                                KeyboardNavigation.TabNavigation="Local"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                KeyboardNavigation.TabIndex="2">
                             <ContentPresenter x:Name="PART_SelectedContentHost"
-                                        Margin="0 8 0 0"
-                                        ContentSource="SelectedContent" />
+                                              Margin="0 8 0 0"
+                                              ContentSource="SelectedContent" />
                         </Border>
                     </Grid>
                 </ControlTemplate>
@@ -67,6 +67,60 @@
                                     ContentSource="Header"
                                     Margin="0 11 0 8"
                                     TextBlock.FontSize="13"
+                                    RecognizesAccessKey="True" />
+                            </Border>
+                        </DockPanel>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="#E2E7EF" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type TabItem}" x:Key="Compact">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid x:Name="Root">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="SelectionStates">
+                                <VisualState x:Name="Unselected" />
+                                <VisualState x:Name="Selected" />
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <DockPanel>
+
+                            <Border DockPanel.Dock="Right" VerticalAlignment="Bottom" BorderThickness="0 0 0 2" BorderBrush="#E2E7EF" Width="15" />
+                            <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 2" BorderBrush="#E2E7EF" Margin="0 0 0 0" Background="Transparent">
+                                <ContentPresenter 
+                                    IsHitTestVisible="False"
+                                    x:Name="ContentSite"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    ContentSource="Header"
+                                    Margin="0 8 0 6"
+                                    TextBlock.FontSize="11"
                                     RecognizesAccessKey="True" />
                             </Border>
                         </DockPanel>

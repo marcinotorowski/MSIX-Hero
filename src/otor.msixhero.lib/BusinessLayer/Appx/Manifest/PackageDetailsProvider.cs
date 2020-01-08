@@ -95,7 +95,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Details
 
             if (managedPackage != null)
             {
-                foreach (var managedDependency in managedPackage.Dependencies)
+                foreach (var managedDependency in managedPackage.Dependencies.Where(p => p.IsOptional))
                 {
                     if (result.PackageDependencies.Any(mpd => mpd.Dependency.FullName == managedDependency.Id.FullName))
                     {
@@ -240,7 +240,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Details
 
                                 package.Description = GetPropertyStringValue("Description", properties);
                                 package.DisplayName = GetPropertyStringValue("DisplayName", properties);
-                                package.Logo = GetPropertyStringValue("Logo", properties);
+                                package.Logo = Path.Combine(package.Path, GetPropertyStringValue("Logo", properties));
                                 package.PublisherDisplayName = GetPropertyStringValue("PublisherDisplayName", properties);
                                 // we already know the framework and so from package info
                                 // package.IsFramework = GetPropertyBoolValue("Framework", properties); 

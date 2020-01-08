@@ -12,6 +12,7 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
+             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <Grid Margin="5" x:Name="Grid">
@@ -192,7 +193,7 @@
                                     <GridViewColumnHeader IsHitTestVisible="False" Content="Icon" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
                                         <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
@@ -211,7 +212,7 @@
                                     <GridViewColumnHeader Content="Version" Tag="{x:Static enums:PackageSort.Version}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
                                         <TextBlock Opacity="0.7" Text="{Binding Version}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -221,7 +222,7 @@
                                     <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
                                         <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -231,7 +232,7 @@
                                     <GridViewColumnHeader Content="Package type" Tag="{x:Static enums:PackageSort.PackageType}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
                                         <TextBlock Opacity="0.7" Text="{Binding DisplayPackageType}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -259,7 +260,7 @@
                     <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
                 </ListBox.GroupStyle>
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModel:PackageViewModel}">
+                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
                         <DockPanel>
                             <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -292,7 +293,6 @@
         <!--<ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />-->
         <Border x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2">
             <ContentControl mvvm:RegionManager.RegionName="PackageSidebar" />
-            <!--<view:SinglePackageDetails Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
         </Border>
     </Grid>
 </UserControl>

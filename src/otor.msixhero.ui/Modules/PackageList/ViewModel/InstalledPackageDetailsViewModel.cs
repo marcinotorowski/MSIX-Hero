@@ -5,11 +5,12 @@ using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
-    public class AppxDetailsViewModel : NotifyPropertyChanged
+    public class InstalledPackageDetailsViewModel : NotifyPropertyChanged
     {
-        public AppxDetailsViewModel(AppxPackage model)
+        public InstalledPackageDetailsViewModel(AppxPackage model)
         {
             this.DisplayName = model.DisplayName;
+            this.PublisherDisplayName = model.PublisherDisplayName;
             this.Version = model.Version.ToString();
             this.Logo = model.Logo;
             this.FamilyName = model.FamilyName;
@@ -17,7 +18,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
             this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
-            this.Addons = new ObservableCollection<AppxDetailsViewModel>();
+            this.Addons = new ObservableCollection<InstalledPackageDetailsViewModel>();
 
             if (model.OperatingSystemDependencies != null)
             {
@@ -39,6 +40,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 foreach (var item in model.Applications)
                 {
+                    if (string.IsNullOrEmpty(this.TileColor))
+                    {
+                        this.TileColor = item.BackgroundColor;
+                    }
+
                     this.Applications.Add(new AppxApplicationViewModel(item));
                 }
             }
@@ -47,12 +53,21 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 foreach (var item in model.Addons)
                 {
-                    this.Addons.Add(new AppxDetailsViewModel(item));
+                    this.Addons.Add(new InstalledPackageDetailsViewModel(item));
                 }
             }
 
             this.BuildInfo = model.BuildInfo;
+
+            if (string.IsNullOrEmpty(this.TileColor))
+            {
+                this.TileColor = "#666666";
+            }
         }
+
+        public string PublisherDisplayName { get; }
+
+        public string TileColor { get; }
 
         public string DisplayName { get; }
 
@@ -66,7 +81,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
         
-        public ObservableCollection<AppxDetailsViewModel> Addons { get; }
+        public ObservableCollection<InstalledPackageDetailsViewModel> Addons { get; }
         
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
 

@@ -26,7 +26,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.stateManager = stateManager;
             this.regionManager = regionManager;
 
-            this.AllPackages = new ObservableCollection<PackageViewModel>();
+            this.AllPackages = new ObservableCollection<InstalledPackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
             this.SetSortingAndGrouping();
 
@@ -86,22 +86,22 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 switch (currentSort)
                 {
                     case PackageSort.Name:
-                        sortProperty = nameof(PackageViewModel.Name);
+                        sortProperty = nameof(InstalledPackageViewModel.Name);
                         break;
                     case PackageSort.Publisher:
-                        sortProperty = nameof(PackageViewModel.DisplayPublisherName);
+                        sortProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
                         break;
                     case PackageSort.InstallDate:
-                        sortProperty = nameof(PackageViewModel.InstallDate);
+                        sortProperty = nameof(InstalledPackageViewModel.InstallDate);
                         break;
                     case PackageSort.Type:
-                        sortProperty = nameof(PackageViewModel.Type);
+                        sortProperty = nameof(InstalledPackageViewModel.Type);
                         break;
                     case PackageSort.Version:
-                        sortProperty = nameof(PackageViewModel.Version);
+                        sortProperty = nameof(InstalledPackageViewModel.Version);
                         break;
                     case PackageSort.PackageType:
-                        sortProperty = nameof(PackageViewModel.DisplayPackageType);
+                        sortProperty = nameof(InstalledPackageViewModel.DisplayPackageType);
                         break;
                     default:
                         sortProperty = null;
@@ -114,10 +114,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                         groupProperty = null;
                         break;
                     case PackageGroup.Publisher:
-                        groupProperty = nameof(PackageViewModel.DisplayPublisherName);
+                        groupProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
                         break;
                     case PackageGroup.Type:
-                        groupProperty = nameof(PackageViewModel.Type);
+                        groupProperty = nameof(InstalledPackageViewModel.Type);
                         break;
                     default:
                         groupProperty = null;
@@ -178,7 +178,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             foreach (var item in visibilityInfo.NewVisible)
             {
-                this.AllPackages.Add(new PackageViewModel(item));
+                this.AllPackages.Add(new InstalledPackageViewModel(item));
             }
         }
 
@@ -190,7 +190,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     this.AllPackages.Clear();
                     foreach (var item in this.stateManager.CurrentState.Packages.VisibleItems)
                     {
-                        this.AllPackages.Add(new PackageViewModel(item));
+                        this.AllPackages.Add(new InstalledPackageViewModel(item));
                     }
 
                     break;
@@ -207,7 +207,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
                     foreach (var item in payload.NewPackages)
                     {
-                        this.AllPackages.Add(new PackageViewModel(item));
+                        this.AllPackages.Add(new InstalledPackageViewModel(item));
                     }
 
                     break;
@@ -245,11 +245,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(value));
         }
 
-        public ObservableCollection<PackageViewModel> AllPackages { get; }
+        public ObservableCollection<InstalledPackageViewModel> AllPackages { get; }
 
         public ICollectionView AllPackagesView { get; }
         
-        public ObservableCollection<PackageViewModel> SelectedPackages { get; } = new ObservableCollection<PackageViewModel>();
+        public ObservableCollection<InstalledPackageViewModel> SelectedPackages { get; } = new ObservableCollection<InstalledPackageViewModel>();
         
         public Task RefreshPackages(CancellationToken cancellationToken = default(CancellationToken))
         {
