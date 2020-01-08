@@ -14,12 +14,12 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.packageFullNames = ((IEnumerable<string>)navigationContext.Parameters[nameof(Package.ProductId)]).ToList();
+            this.packageFullNames = ((IEnumerable<string>)navigationContext.Parameters[nameof(InstalledPackage.PackageId)]).ToList();
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            return ((IEnumerable<string>)navigationContext.Parameters[nameof(Package.ProductId)]).SequenceEqual(this.packageFullNames);
+            return ((IEnumerable<string>)navigationContext.Parameters[nameof(InstalledPackage.PackageId)]).SequenceEqual(this.packageFullNames);
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)

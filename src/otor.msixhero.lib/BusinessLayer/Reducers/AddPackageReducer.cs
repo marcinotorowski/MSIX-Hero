@@ -28,7 +28,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             AppxManifestSummary appxReader;
             if (!string.Equals(".appinstaller", Path.GetExtension(this.command.FilePath),  StringComparison.OrdinalIgnoreCase))
             {
-                appxReader = await AppxManifestSummaryBuilder.FromFile(this.command.FilePath);
+                appxReader = await AppxManifestSummaryBuilder.FromFile(this.command.FilePath, AppxManifestSummaryBuilderMode.Identity);
             }
             else
             {

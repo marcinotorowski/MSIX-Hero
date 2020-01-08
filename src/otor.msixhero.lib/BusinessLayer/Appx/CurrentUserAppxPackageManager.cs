@@ -41,7 +41,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             this.signingManager = signingManager;
         }
 
-        public Task<List<User>> GetUsersForPackage(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.GetUsersForPackage(package.Name, cancellationToken, progress);
         }
@@ -73,7 +73,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.signingManager.InstallCertificate(certificateFilePath, cancellationToken, progress);
         }
 
-        public async Task Remove(IReadOnlyCollection<Package> packages, bool forAllUsers = false,
+        public async Task Remove(IReadOnlyCollection<InstalledPackage> packages, bool forAllUsers = false,
             bool preserveAppData = false, CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
@@ -89,10 +89,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
-                Logger.Info("Removing {0}", item.ProductId);
+                Logger.Info("Removing {0}", item.PackageId);
 
                 var task = AsyncOperationHelper.ConvertToTask(
-                    mmm.RemovePackageAsync(item.ProductId,
+                    mmm.RemovePackageAsync(item.PackageId,
                         forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None),
                     "Removing " + item.DisplayName, CancellationToken.None, progress);
                 await task.ConfigureAwait(false);
@@ -152,7 +152,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        public Task RunToolInContext(Package package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task RunToolInContext(InstalledPackage package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (package == null)
             {
@@ -214,7 +214,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        public Task<RegistryMountState> GetRegistryMountState(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<RegistryMountState> GetRegistryMountState(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.GetRegistryMountState(package.InstallLocation, package.Name);
         }
@@ -257,7 +257,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return Task.FromResult(hasRegistry);
         }
 
-        public Task UnmountRegistry(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task UnmountRegistry(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.UnmountRegistry(package.Name, cancellationToken, progress);
         }
@@ -286,7 +286,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             cancellationToken);
         }
 
-        public Task MountRegistry(Package package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task MountRegistry(InstalledPackage package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.MountRegistry(package.Name, package.InstallLocation, startRegedit);
         }
@@ -342,7 +342,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             cancellationToken);
         }
 
-        public Task Run(Package package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(InstalledPackage package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.Run(package.ManifestLocation, package.PackageFamilyName, appId, cancellationToken, progress);
         }
@@ -383,12 +383,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return Task.FromResult(true);
         }
 
-        public Task<List<Package>> Get(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.Get(null, mode, cancellationToken, progress);
+            return this.GetInstalledPackages(null, mode, cancellationToken, progress);
         }
 
-        public async Task<Package> Get(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<InstalledPackage> GetInstalledPackages(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var pkgMan = new PackageManager();
 
@@ -413,14 +413,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return await ConvertFrom(pkg, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<AppxPackage> Get(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.PackageDetailsProvider.GetPackage(packageName, cancellationToken, progress);
+            return this.PackageDetailsProvider.GetPackage(packageName, mode, cancellationToken, progress);
         }
 
-        private async Task<List<Package>> Get(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        private async Task<List<InstalledPackage>> GetInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
-            var list = new List<Package>();
+            var list = new List<InstalledPackage>();
 
             if (mode == PackageFindMode.Auto)
             {
@@ -453,14 +453,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     case PackageFindMode.CurrentUser:
                         allPackages = new List<Windows.ApplicationModel.Package>
                         {
-                            await Task.Run(() => pkgMan.FindPackageForUser(string.Empty, packageName)).ConfigureAwait(false)
+                            await Task.Run(() => pkgMan.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false)
                         };
 
                         break;
                     case PackageFindMode.AllUsers:
                         allPackages = new List<Windows.ApplicationModel.Package>
                         {
-                            await Task.Run(() => pkgMan.FindPackage(packageName)).ConfigureAwait(false)
+                            await Task.Run(() => pkgMan.FindPackage(packageName), cancellationToken).ConfigureAwait(false)
                         };
 
                         break;
@@ -482,7 +482,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return list;
         }
 
-        private async Task<Package> ConvertFrom(Windows.ApplicationModel.Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        private async Task<InstalledPackage> ConvertFrom(Windows.ApplicationModel.Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             Logger.Debug("Getting details about package {0}...", item.Id.Name);
             string installLocation;
@@ -507,15 +507,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 installDate = DateTime.MinValue;
             }
 
-            var details = await GetManifestDetails(installLocation, cancellationToken, progress).ConfigureAwait(false);
+            var details = await GetVisualsFromManifest(installLocation, cancellationToken, progress).ConfigureAwait(false);
             var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
 
-            var pkg = new Package()
+            var pkg = new InstalledPackage()
             {
                 DisplayName = details.DisplayName,
                 Name = item.Id.Name,
                 Image = details.Logo,
-                ProductId = item.Id.FullName,
+                PackageId = item.Id.FullName,
                 InstallLocation = installLocation,
                 PackageFamilyName = item.Id.FamilyName,
                 Description = details.Description,
@@ -573,7 +573,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        private static async Task<PkgDetails> GetManifestDetails(string installLocation, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private static async Task<MsixPackageVisuals> GetVisualsFromManifest(string installLocation, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             try
             {
@@ -583,7 +583,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 
                 if (File.Exists(Path.Combine(installLocation, logo)))
                 {
-                    return new PkgDetails(
+                    return new MsixPackageVisuals(
                         reader.DisplayName, 
                         reader.DisplayPublisher, 
                         logo, 
@@ -609,7 +609,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-                return new PkgDetails(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor, reader.PackageType);
+                return new MsixPackageVisuals(reader.DisplayName, reader.DisplayPublisher, logo, reader.Description, reader.AccentColor, reader.PackageType);
             }
             catch (OperationCanceledException)
             {
@@ -617,7 +617,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
             catch (Exception)
             {
-                return new PkgDetails();
+                return new MsixPackageVisuals();
             }
         }
 
@@ -675,9 +675,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        private struct PkgDetails
+        public struct MsixPackageVisuals
         {
-            public PkgDetails(string displayName, string displayPublisherName, string logo, string description, string color, PackageType packageType)
+            public MsixPackageVisuals(string displayName, string displayPublisherName, string logo, string description, string color, MsixPackageType packageType)
             {
                 this.DisplayName = displayName;
                 this.DisplayPublisherName = displayPublisherName;
@@ -692,7 +692,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             public string DisplayPublisherName;
             public string Logo;
             public string Color;
-            public PackageType PackageType;
+            public MsixPackageType PackageType;
         }
     }
 }

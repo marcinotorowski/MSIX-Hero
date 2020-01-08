@@ -9,7 +9,7 @@ namespace otor.msixhero.ui.ViewModel
 {
     public class PackageViewModel : NotifyPropertyChanged
     {
-        public PackageViewModel(Package package)
+        public PackageViewModel(InstalledPackage package)
         {
             this.Model = package;
             // this.TargetOperatingSystems = new ObservableCollection<OperatingSystemViewModel>(package.);
@@ -29,7 +29,7 @@ namespace otor.msixhero.ui.ViewModel
 
         public string ManifestLocation => this.Model.ManifestLocation;
 
-        public PackageType PackageType => this.Model.PackageType;
+        public MsixPackageType PackageType => this.Model.PackageType;
 
         public string DisplayPackageType => PackageTypeConverter.GetPackageTypeStringFrom(this.Model.PackageType);
 
@@ -41,7 +41,7 @@ namespace otor.msixhero.ui.ViewModel
 
         public string Publisher => this.Model.Publisher;
 
-        public string ProductId => this.Model.ProductId;
+        public string ProductId => this.Model.PackageId;
 
         public string PackageFamilyName => this.Model.PackageFamilyName;
         
@@ -77,12 +77,12 @@ namespace otor.msixhero.ui.ViewModel
             get => this.Model.UserDataPath;
         }
 
-        public Package Model { get; }
+        public InstalledPackage Model { get; }
 
         public ObservableCollection<OperatingSystemViewModel> TargetOperatingSystems { get; }
 
         
-        public static explicit operator Package(PackageViewModel packageViewModel)
+        public static explicit operator InstalledPackage(PackageViewModel packageViewModel)
         {
             return packageViewModel.Model;
         }

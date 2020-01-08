@@ -53,8 +53,8 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 this.StateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Publish(eventToSend);
             }
 
-            var toHide = new List<Package>();
-            var toShow = new List<Package>();
+            var toHide = new List<InstalledPackage>();
+            var toShow = new List<InstalledPackage>();
 
             foreach (var item in state.Packages.VisibleItems)
             {

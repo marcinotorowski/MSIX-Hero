@@ -17,7 +17,7 @@ namespace otor.msixhero.lib.Domain.Commands.Grid
         {
         }
 
-        public GetUsersOfPackage(Package package) : this(package.ProductId)
+        public GetUsersOfPackage(InstalledPackage package) : this(package.PackageId)
         {
         }
 

@@ -18,7 +18,7 @@ namespace otor.msixhero.lib.Domain.Commands.Manager
             this.ApplicationId = applicationId;
         }
 
-        public RunPackage(Package package, string applicationId = null) : this(package.PackageFamilyName, package.ManifestLocation, applicationId)
+        public RunPackage(InstalledPackage package, string applicationId = null) : this(package.PackageFamilyName, package.ManifestLocation, applicationId)
         {
         }
         

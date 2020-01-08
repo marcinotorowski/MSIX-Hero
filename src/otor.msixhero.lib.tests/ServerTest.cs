@@ -27,7 +27,7 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void TestCommunication()
         {
-            var result = new List<Package> {new Package() { Name = "ABC" }};
+            var result = new List<InstalledPackage> {new InstalledPackage() { Name = "ABC" }};
 
             var server = new Server(
                 new ApplicationStateManager(

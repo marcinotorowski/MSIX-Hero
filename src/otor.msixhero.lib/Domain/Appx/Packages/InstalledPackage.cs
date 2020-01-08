@@ -3,19 +3,10 @@ using System.IO;
 
 namespace otor.msixhero.lib.Domain.Appx.Packages
 {
-    [Flags]
-    public enum PackageType
-    {
-        Uwp = 1,
-        BridgeDirect = 2,
-        BridgePsf = 4,
-        Web = 8,
-    }
-
     [Serializable]
-    public class Package
+    public class InstalledPackage
     {
-        public string ProductId { get; set; }
+        public string PackageId { get; set; }
 
         public string DisplayName { get; set; }
 
@@ -31,7 +22,7 @@ namespace otor.msixhero.lib.Domain.Appx.Packages
 
         public Version Version { get; set; }
 
-        public PackageType PackageType { get; set; }
+        public MsixPackageType PackageType { get; set; }
 
         public string InstallLocation { get; set; }
 

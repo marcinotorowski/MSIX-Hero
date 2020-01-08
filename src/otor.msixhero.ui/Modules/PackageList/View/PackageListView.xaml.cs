@@ -134,14 +134,14 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                     {
                         var selected = selectedPackages.LastOrDefault();
                         var fullName = selected?.ProductId;
-                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), fullName } });
+                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { nameof(InstalledPackage.PackageId), fullName } });
                         break;
                     }
 
                     default:
                     {
                         var selected = selectedPackages.Select(p => p.ProductId);
-                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { nameof(Package.ProductId), selected } });
+                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { nameof(InstalledPackage.PackageId), selected } });
                         break;
                     }
                 }

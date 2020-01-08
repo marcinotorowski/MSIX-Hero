@@ -17,6 +17,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
             this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
+            this.Addons = new ObservableCollection<AppxDetailsViewModel>();
 
             if (model.OperatingSystemDependencies != null)
             {
@@ -42,6 +43,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 }
             }
 
+            if (model.Addons != null)
+            {
+                foreach (var item in model.Addons)
+                {
+                    this.Addons.Add(new AppxDetailsViewModel(item));
+                }
+            }
+
             this.BuildInfo = model.BuildInfo;
         }
 
@@ -56,6 +65,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ObservableCollection<OperatingSystemDependencyViewModel> OperatingSystemDependencies { get; }
 
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
+        
+        public ObservableCollection<AppxDetailsViewModel> Addons { get; }
         
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
 

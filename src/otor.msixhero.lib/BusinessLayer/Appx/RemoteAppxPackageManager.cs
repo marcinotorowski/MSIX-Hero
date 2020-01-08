@@ -25,7 +25,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             this.client = new Client(processManager);
         }
 
-        public Task<List<User>> GetUsersForPackage(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.GetExecuted(new GetUsersOfPackage(package), cancellationToken, progress);
         }
@@ -34,7 +34,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
         {
             return this.client.GetExecuted(new GetUsersOfPackage(packageName), cancellationToken, progress);
         }
-
+        
         public Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.Execute(new InstallCertificate(certificateFilePath), cancellationToken, progress);
@@ -45,7 +45,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.Execute(new RunPackage(packageFamilyName, packageManifestLocation, appId), cancellationToken, progress);
         }
 
-        public Task MountRegistry(Package package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task MountRegistry(InstalledPackage package, bool startRegedit = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return client.Execute(new MountRegistry(package, startRegedit), cancellationToken, progress);
         }
@@ -55,7 +55,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.Execute(new MountRegistry(packageName, installLocation, startRegedit), cancellationToken, progress);
         }
 
-        public Task UnmountRegistry(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task UnmountRegistry(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.Execute(new UnmountRegistry(package), cancellationToken, progress);
         }
@@ -65,7 +65,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.Execute(new UnmountRegistry(packageName), cancellationToken, progress);
         }
 
-        public Task RunToolInContext(Package package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task RunToolInContext(InstalledPackage package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.Execute(new RunToolInPackage(package.PackageFamilyName, package.Name, toolPath, arguments), cancellationToken, progress);
         }
@@ -75,7 +75,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.Execute(new RunToolInPackage(packageFamilyName, appId, toolPath, arguments), cancellationToken, progress);
         }
 
-        public Task Run(Package package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(InstalledPackage package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.Execute(new RunPackage(package, appId), cancellationToken, progress);
         }
@@ -85,23 +85,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.GetExecuted(new GetRegistryMountState(installLocation, packageName), cancellationToken, progress);
         }
 
-        public Task<RegistryMountState> GetRegistryMountState(Package package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<RegistryMountState> GetRegistryMountState(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.GetExecuted(new GetRegistryMountState(package.InstallLocation, package.Name), cancellationToken, progress);
         }
 
-        public async Task<List<Package>> Get(PackageFindMode mode = PackageFindMode.Auto,
-            CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return await this.client.GetExecuted(new GetPackages(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers), cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public Task<AppxPackage> Get(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<AppxPackage> Get(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.GetExecuted(new GetPackageDetails(packageName), cancellationToken, progress);
         }
 
-        public Task Remove(IReadOnlyCollection<Package> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task Remove(IReadOnlyCollection<InstalledPackage> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             return this.client.Execute(new RemovePackages(forAllUsers ? PackageContext.AllUsers : PackageContext.CurrentUser, packages), cancellationToken, progress);
         }

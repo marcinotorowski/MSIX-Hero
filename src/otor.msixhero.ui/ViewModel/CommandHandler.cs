@@ -547,7 +547,7 @@ namespace otor.msixhero.ui.ViewModel
                         sb.Append(item.DisplayName);
                         break;
                     case PackageProperty.FullName:
-                        sb.Append(item.ProductId);
+                        sb.Append(item.PackageId);
                         break;
                     case PackageProperty.Version:
                         sb.Append(item.Version);

@@ -1,25 +1,63 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Build;
-using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
+using otor.msixhero.lib.Infrastructure.Logging;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
 {
     public class BuildDetection
     {
-        public BuildInfo Detect(AppxManifestSummary appxManifest)
+        private static readonly ILog Logger = LogManager.GetLogger();
+
+        public BuildInfo Detect(string appxManifestPath)
         {
-            if (this.DetectAdvancedInstaller(appxManifest, out var buildInfo))
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(appxManifestPath);
+
+            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Metadata']/*[local-name()='Item'] for a single node...");
+            var buildNotes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Metadata']/*[local-name()='Item']");
+            var buildKeyValues = new Dictionary<string, string>();
+
+            foreach (var buildNode in buildNotes.OfType<XmlNode>())
+            {
+                var attrName = buildNode.Attributes["Name"]?.Value;
+                if (attrName == null)
+                {
+                    continue;
+                }
+
+                var attrVersion = buildNode.Attributes["Version"]?.Value;
+                if (attrVersion == null)
+                {
+                    attrVersion = buildNode.Attributes["Value"]?.Value;
+                    if (attrVersion == null)
+                    {
+                        continue;
+                    }
+                }
+
+                buildKeyValues[attrName] = attrVersion;
+            }
+
+            return this.Detect(buildKeyValues, Path.GetDirectoryName(appxManifestPath));
+        }
+
+        public BuildInfo Detect(Dictionary<string, string> buildValues, string manifestDirectory = null)
+        {
+            if (this.DetectAdvancedInstaller(buildValues, out var buildInfo))
             {
                 return buildInfo;
             }
 
-            if (this.DetectVisualStudio(appxManifest, out buildInfo))
+            if (this.DetectVisualStudio(buildValues, out buildInfo))
             {
                 return buildInfo;
             }
 
-            if (this.DetectMsixHero(appxManifest, out buildInfo))
+            if (this.DetectMsixHero(buildValues, out buildInfo))
             {
                 return buildInfo;
             }
@@ -27,10 +65,16 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
             return null;
         }
         
-        private bool DetectVisualStudio(AppxManifestSummary appxManifest, out BuildInfo buildInfo)
+        private bool DetectVisualStudio(Dictionary<string, string> buildValues, out BuildInfo buildInfo)
         {
             buildInfo = null;
-            var visualStudio = GetValue(appxManifest.BuildMetaData, "VisualStudio");
+
+            if (buildValues == null || !buildValues.Any())
+            {
+                return false;
+            }
+
+            var visualStudio = GetValue(buildValues, "VisualStudio");
             if (visualStudio == null)
             {
                 return false;
@@ -43,27 +87,27 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
                 
             };
 
-            var win10 = GetValue(appxManifest.BuildMetaData, "OperatingSystem");
+            var win10 = GetValue(buildValues, "OperatingSystem");
             if (win10 != null)
             {
                 var firstUnit = win10.Split(' ')[0];
                 buildInfo.OperatingSystem = Windows10Parser.GetOperatingSystemFromNameAndVersion(firstUnit).ToString();
             }
 
-            buildInfo.Components = appxManifest.BuildMetaData;
+            buildInfo.Components = buildValues;
             return true;
         }
 
-        private bool DetectAdvancedInstaller(AppxManifestSummary manifest, out BuildInfo buildInfo)
+        private bool DetectAdvancedInstaller(Dictionary<string, string> buildValues, out BuildInfo buildInfo)
         {
             buildInfo = null;
 
-            if (manifest.BuildMetaData == null)
+            if (buildValues == null || !buildValues.Any())
             {
                 return false;
             }
 
-            var advInst = GetValue(manifest.BuildMetaData, "AdvancedInstaller");
+            var advInst = GetValue(buildValues, "AdvancedInstaller");
             if (advInst == null) 
             {
                 return false;
@@ -71,12 +115,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
 
             buildInfo = new BuildInfo
             {
-                ProductLicense = GetValue(manifest.BuildMetaData, "ProjectLicenseType"),
+                ProductLicense = GetValue(buildValues, "ProjectLicenseType"),
                 ProductName = "Advanced Installer",
                 ProductVersion = advInst
             };
 
-            var os = GetValue(manifest.BuildMetaData, "OperatingSystem");
+            var os = GetValue(buildValues, "OperatingSystem");
             if (os != null)
             {
                 var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
@@ -86,28 +130,28 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
             return true;
         }
 
-        private bool DetectMsixHero(AppxManifestSummary manifest, out BuildInfo buildInfo)
+        private bool DetectMsixHero(Dictionary<string, string> buildValues, out BuildInfo buildInfo)
         {
             buildInfo = null;
 
-            if (manifest.BuildMetaData == null)
+            if (buildValues == null || !buildValues.Any())
             {
                 return false;
             }
 
-            var advInst = GetValue(manifest.BuildMetaData, "MsixHero");
-            if (advInst == null) 
+            var msixHero = GetValue(buildValues, "MsixHero");
+            if (msixHero == null) 
             {
                 return false;
             }
 
             buildInfo = new BuildInfo
             {
-                ProductName = "Advanced Installer",
-                ProductVersion = advInst
+                ProductName = "MSIX Hero",
+                ProductVersion = msixHero
             };
 
-            var os = GetValue(manifest.BuildMetaData, "OperatingSystem");
+            var os = GetValue(buildValues, "OperatingSystem");
             if (os != null)
             {
                 var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);

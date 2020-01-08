@@ -18,7 +18,7 @@ namespace otor.msixhero.lib.Domain.Commands.Developer
             this.StartRegedit = startRegedit;
         }
 
-        public MountRegistry(Package package, bool startRegedit = false)
+        public MountRegistry(InstalledPackage package, bool startRegedit = false)
         {
             this.PackageName = package.Name;
             this.InstallLocation = package.InstallLocation;

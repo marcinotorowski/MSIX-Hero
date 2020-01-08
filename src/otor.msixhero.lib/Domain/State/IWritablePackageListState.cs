@@ -19,10 +19,10 @@ namespace otor.msixhero.lib.Domain.State
 
         string SearchKey { get; set; }
 
-        List<Package> HiddenItems { get; }
+        List<InstalledPackage> HiddenItems { get; }
 
-        List<Package> VisibleItems { get; }
+        List<InstalledPackage> VisibleItems { get; }
 
-        List<Package> SelectedItems { get; }
+        List<InstalledPackage> SelectedItems { get; }
     }
 }

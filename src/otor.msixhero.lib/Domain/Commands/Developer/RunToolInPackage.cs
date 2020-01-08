@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.Domain.Commands.Developer
             this.Arguments = arguments;
         }
 
-        public RunToolInPackage(Package package, string toolPath, string arguments = null) : this(package.PackageFamilyName, package.Name, toolPath, arguments)
+        public RunToolInPackage(InstalledPackage package, string toolPath, string arguments = null) : this(package.PackageFamilyName, package.Name, toolPath, arguments)
         {
         }
 

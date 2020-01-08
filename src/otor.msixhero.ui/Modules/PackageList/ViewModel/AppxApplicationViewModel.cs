@@ -54,17 +54,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 switch (PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage))
                 {
-                    case PackageType.Uwp:
+                    case MsixPackageType.Uwp:
                         if (string.IsNullOrEmpty(this.model.EntryPoint))
                         {
                             return this.model.Executable;
                         }
 
                         return this.model.Executable + " > " + this.model.EntryPoint;
-                    case PackageType.BridgeDirect:
-                    case PackageType.BridgePsf:
+                    case MsixPackageType.BridgeDirect:
+                    case MsixPackageType.BridgePsf:
                         return this.model.Executable;
-                    case PackageType.Web:
+                    case MsixPackageType.Web:
                         return this.model.StartPage;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -72,7 +72,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
         
-        public PackageType Type => PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage);
+        public MsixPackageType Type => PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage);
 
         public string DisplayType => PackageTypeConverter.GetPackageTypeStringFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage);
     }

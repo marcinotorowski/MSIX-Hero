@@ -16,7 +16,6 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
         Identity = 1,
         Applications = 2,
         Properties = 4,
-        MetaData = 16,
         Minimal = Identity | Applications | Properties
     }
 
@@ -153,37 +152,6 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
                 Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements'] for a single node...");
                 node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
                 result.AccentColor = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
-            }
-
-            //SetDependencies(xmlDocument, result);
-            //SetPsf(xmlDocument, result);
-
-            Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Metadata']/*[local-name()='Item'] for a single node...");
-            var buildNotes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Metadata']/*[local-name()='Item']");
-
-            if ((mode & AppxManifestSummaryBuilderMode.MetaData) == AppxManifestSummaryBuilderMode.MetaData)
-            {
-                result.BuildMetaData = new Dictionary<string, string>();
-                foreach (var buildNode in buildNotes.OfType<XmlNode>())
-                {
-                    var attrName = buildNode.Attributes["Name"]?.Value;
-                    if (attrName == null)
-                    {
-                        continue;
-                    }
-
-                    var attrVersion = buildNode.Attributes["Version"]?.Value;
-                    if (attrVersion == null)
-                    {
-                        attrVersion = buildNode.Attributes["Value"]?.Value;
-                        if (attrVersion == null)
-                        {
-                            continue;
-                        }
-                    }
-
-                    result.BuildMetaData[attrName] = attrVersion;
-                }
             }
 
             Logger.Debug("Manifest information parsed.");

@@ -33,7 +33,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var param = navigationContext.Parameters[nameof(Package.ProductId)] as string;
+            var param = navigationContext.Parameters[nameof(InstalledPackage.PackageId)] as string;
             this.currentPackageId = param;
 
             var lastSelected = this.stateManager.CurrentState.Packages.SelectedItems.LastOrDefault();
@@ -87,7 +87,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            var param = navigationContext.Parameters[nameof(Package.ProductId)] as string;
+            var param = navigationContext.Parameters[nameof(InstalledPackage.PackageId)] as string;
             return param == this.currentPackageId;
         }
 
@@ -95,7 +95,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         {
         }
 
-        private async Task<FoundUsersViewModel> GetSelectionDetails(Package package, bool forceElevation)
+        private async Task<FoundUsersViewModel> GetSelectionDetails(InstalledPackage package, bool forceElevation)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
-        private async Task<AppxDetailsViewModel> GetManifestDetails(Package package)
+        private async Task<AppxDetailsViewModel> GetManifestDetails(InstalledPackage package)
         {
             var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackageDetails(package)).ConfigureAwait(false);
             return new AppxDetailsViewModel(manifestDetails);

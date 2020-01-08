@@ -11,9 +11,9 @@ namespace otor.msixhero.lib.Domain.Commands.Grid
         {
         }
 
-        public FindUsers(Package package, bool forceElevation)
+        public FindUsers(InstalledPackage package, bool forceElevation)
         {
-            this.FullProductId = package.ProductId;
+            this.FullProductId = package.PackageId;
             this.ForceElevation = forceElevation;
         }
 

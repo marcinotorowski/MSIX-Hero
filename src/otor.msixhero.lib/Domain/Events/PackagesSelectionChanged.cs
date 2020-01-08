@@ -6,15 +6,15 @@ namespace otor.msixhero.lib.Domain.Events
 {
     public class PackagesSelectionChangedPayLoad
     {
-        public PackagesSelectionChangedPayLoad(IReadOnlyCollection<Package> selected, IReadOnlyCollection<Package> unselected)
+        public PackagesSelectionChangedPayLoad(IReadOnlyCollection<InstalledPackage> selected, IReadOnlyCollection<InstalledPackage> unselected)
         {
             Selected = selected;
             Unselected = unselected;
         }
 
-        public IReadOnlyCollection<Package> Selected { get; }
+        public IReadOnlyCollection<InstalledPackage> Selected { get; }
 
-        public IReadOnlyCollection<Package> Unselected { get; }
+        public IReadOnlyCollection<InstalledPackage> Unselected { get; }
     }
 
     public class PackagesSelectionChanged : PubSubEvent<PackagesSelectionChangedPayLoad>

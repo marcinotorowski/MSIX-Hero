@@ -19,7 +19,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
 
         public string DisplayName { get; set; }
         
-        public PackageType PackageType { get; set; }
+        public MsixPackageType PackageType { get; set; }
 
         public string DisplayPublisher { get; set; }
 

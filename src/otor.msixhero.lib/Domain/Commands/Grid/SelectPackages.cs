@@ -15,73 +15,73 @@ namespace otor.msixhero.lib.Domain.Commands.Grid
     }
 
     [Serializable]
-    public class SelectPackages : BaseCommand<List<Package>>
+    public class SelectPackages : BaseCommand<List<InstalledPackage>>
     {
         public SelectPackages()
         {
-            this.Selection = new List<Package>();
+            this.Selection = new List<InstalledPackage>();
             this.SelectionMode = SelectionMode.ReplaceSelection;
         }
 
-        public SelectPackages(List<Package> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        public SelectPackages(List<InstalledPackage> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
         {
             this.Selection = selection;
             this.SelectionMode = selectionMode;
         }
 
-        public SelectPackages(Package selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        public SelectPackages(InstalledPackage selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
         {
-            this.Selection = new List<Package> { selection };
+            this.Selection = new List<InstalledPackage> { selection };
             this.SelectionMode = selectionMode;
         }
 
-        public SelectPackages(IEnumerable<Package> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
+        public SelectPackages(IEnumerable<InstalledPackage> selection, SelectionMode selectionMode = SelectionMode.ReplaceSelection)
         {
-            this.Selection = new List<Package>(selection);
+            this.Selection = new List<InstalledPackage>(selection);
             this.SelectionMode = selectionMode;
         }
 
-        public SelectPackages(params Package[] selection) : this(selection.ToList())
+        public SelectPackages(params InstalledPackage[] selection) : this(selection.ToList())
         {
         }
 
-        public List<Package> Selection { get; set; }
+        public List<InstalledPackage> Selection { get; set; }
 
         public SelectionMode SelectionMode { get; set; }
 
-        public static SelectPackages CreateSingle(Package singleSelection)
+        public static SelectPackages CreateSingle(InstalledPackage singleSelection)
         {
             return new SelectPackages(singleSelection);
         }
 
-        public static SelectPackages CreateAddition(Package addition)
+        public static SelectPackages CreateAddition(InstalledPackage addition)
         {
             return new SelectPackages(new[] { addition }, SelectionMode.AddToSelection);
         }
 
-        public static SelectPackages CreateAddition(params Package[] addition)
+        public static SelectPackages CreateAddition(params InstalledPackage[] addition)
         {
             return new SelectPackages(addition, SelectionMode.AddToSelection);
         }
 
-        public static SelectPackages CreateSubtraction(Package addition)
+        public static SelectPackages CreateSubtraction(InstalledPackage addition)
         {
             return new SelectPackages(new[] { addition }, SelectionMode.RemoveFromSelection);
         }
 
-        public static SelectPackages CreateSubtraction(params Package[] addition)
+        public static SelectPackages CreateSubtraction(params InstalledPackage[] addition)
         {
             return new SelectPackages(addition, SelectionMode.RemoveFromSelection);
         }
 
         public static SelectPackages CreateEmpty()
         {
-            return new SelectPackages(new Package[0], SelectionMode.UnselectAll);
+            return new SelectPackages(new InstalledPackage[0], SelectionMode.UnselectAll);
         }
 
         public static SelectPackages CreateAll()
         {
-            return new SelectPackages(new Package[0], SelectionMode.SelectAll);
+            return new SelectPackages(new InstalledPackage[0], SelectionMode.SelectAll);
         }
     }
 }

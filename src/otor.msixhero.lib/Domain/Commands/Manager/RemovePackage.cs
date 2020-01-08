@@ -9,28 +9,28 @@ namespace otor.msixhero.lib.Domain.Commands.Manager
     {
         public RemovePackages()
         {
-            this.Packages = new List<Package>();
+            this.Packages = new List<InstalledPackage>();
         }
 
-        public RemovePackages(PackageContext context, IEnumerable<Package> packages) : this()
+        public RemovePackages(PackageContext context, IEnumerable<InstalledPackage> packages) : this()
         {
             this.Context = context;
             this.Packages.AddRange(packages);
         }
 
-        public RemovePackages(IEnumerable<Package> packages) : this(PackageContext.CurrentUser, packages)
+        public RemovePackages(IEnumerable<InstalledPackage> packages) : this(PackageContext.CurrentUser, packages)
         {
         }
 
-        public RemovePackages(PackageContext context, params Package[] packages) : this(context, (IEnumerable<Package>)packages)
+        public RemovePackages(PackageContext context, params InstalledPackage[] packages) : this(context, (IEnumerable<InstalledPackage>)packages)
         {
         }
 
-        public RemovePackages(params Package[] packages) : this(PackageContext.CurrentUser, (IEnumerable<Package>)packages)
+        public RemovePackages(params InstalledPackage[] packages) : this(PackageContext.CurrentUser, (IEnumerable<InstalledPackage>)packages)
         {
         }
 
-        public List<Package> Packages { get; set; }
+        public List<InstalledPackage> Packages { get; set; }
 
         public PackageContext Context { get; set;  }
 

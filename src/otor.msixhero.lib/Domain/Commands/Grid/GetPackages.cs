@@ -7,7 +7,7 @@ namespace otor.msixhero.lib.Domain.Commands.Grid
 {
 
     [Serializable]
-    public class GetPackages : SelfElevatedCommand<List<Package>>
+    public class GetPackages : SelfElevatedCommand<List<InstalledPackage>>
     {
         public GetPackages()
         {

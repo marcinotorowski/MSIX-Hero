@@ -12,7 +12,7 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class GetPackagesReducer : SelfElevationReducer<List<Package>>
+    internal class GetPackagesReducer : SelfElevationReducer<List<InstalledPackage>>
     {
         private readonly GetPackages action;
         private readonly IBusyManager busyManager;
@@ -26,23 +26,23 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.busyManager = busyManager;
         }
 
-        public override async Task<List<Package>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override async Task<List<InstalledPackage>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
             var context = this.busyManager.Begin();
             try
             {
-                List<Package> packageSource;
+                List<InstalledPackage> packageSource;
 
                 context.Message = "Getting the list of packages...";
                 
                 switch (action.Context)
                 {
                     case PackageContext.AllUsers:
-                        packageSource = new List<Package>(await packageManager.Get(PackageFindMode.AllUsers, cancellationToken));
+                        packageSource = new List<InstalledPackage>(await packageManager.GetInstalledPackages(PackageFindMode.AllUsers, cancellationToken));
                         break;
 
                     case PackageContext.CurrentUser:
-                        packageSource = new List<Package>(await packageManager.Get(PackageFindMode.CurrentUser, cancellationToken));
+                        packageSource = new List<InstalledPackage>(await packageManager.GetInstalledPackages(PackageFindMode.CurrentUser, cancellationToken));
                         break;
 
                     default:

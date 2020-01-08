@@ -6,15 +6,15 @@ namespace otor.msixhero.lib.Domain.Events
 {
     public class PackagesVisibilityChangedPayLoad
     {
-        public PackagesVisibilityChangedPayLoad(IReadOnlyCollection<Package> newVisible, IReadOnlyCollection<Package> newHidden)
+        public PackagesVisibilityChangedPayLoad(IReadOnlyCollection<InstalledPackage> newVisible, IReadOnlyCollection<InstalledPackage> newHidden)
         {
             NewVisible = newVisible;
             NewHidden = newHidden;
         }
 
-        public IReadOnlyCollection<Package> NewVisible { get; }
+        public IReadOnlyCollection<InstalledPackage> NewVisible { get; }
 
-        public IReadOnlyCollection<Package> NewHidden { get; }
+        public IReadOnlyCollection<InstalledPackage> NewHidden { get; }
     }
 
     public class PackagesVisibilityChanged : PubSubEvent<PackagesVisibilityChangedPayLoad>

@@ -5,12 +5,12 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
 {
     public static class PackageTypeConverter
     {
-        public static string GetPackageTypeStringFrom(PackageType packageType)
+        public static string GetPackageTypeStringFrom(MsixPackageType packageType)
         {
-            var isUwp = (packageType & PackageType.Uwp) == PackageType.Uwp;
-            var isPsf = (packageType & PackageType.BridgePsf) == PackageType.BridgePsf;
-            var isBridge = (packageType & PackageType.BridgeDirect) == PackageType.BridgeDirect;
-            var isWeb = (packageType & PackageType.Web) == PackageType.Web;
+            var isUwp = (packageType & MsixPackageType.Uwp) == MsixPackageType.Uwp;
+            var isPsf = (packageType & MsixPackageType.BridgePsf) == MsixPackageType.BridgePsf;
+            var isBridge = (packageType & MsixPackageType.BridgeDirect) == MsixPackageType.BridgeDirect;
+            var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web;
 
             if (isWeb)
             {
@@ -40,7 +40,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage));
         }
 
-        public static PackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage)
+        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage)
         {
             if (string.IsNullOrEmpty(entryPoint))
             {
@@ -61,10 +61,10 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                             string.Equals("psfrundll.exe", executable, StringComparison.OrdinalIgnoreCase) || 
                             string.Equals("psfmonitor.exe", executable, StringComparison.OrdinalIgnoreCase))
                         {
-                            return PackageType.BridgePsf;
+                            return MsixPackageType.BridgePsf;
                         }
 
-                        return PackageType.BridgeDirect;
+                        return MsixPackageType.BridgeDirect;
                     }
 
                     return 0;
@@ -72,10 +72,10 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
 
             if (string.IsNullOrEmpty(startPage))
             {
-                return PackageType.Uwp;
+                return MsixPackageType.Uwp;
             }
 
-            return PackageType.Web;
+            return MsixPackageType.Web;
         }
     }
 }

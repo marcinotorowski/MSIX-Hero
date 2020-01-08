@@ -12,7 +12,7 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class SelectPackagesReducer : BaseReducer<List<Package>>
+    internal class SelectPackagesReducer : BaseReducer<List<InstalledPackage>>
     {
         private readonly SelectPackages action;
 
@@ -21,10 +21,10 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override Task<List<Package>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override Task<List<InstalledPackage>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            IReadOnlyCollection<Package> select;
-            IReadOnlyCollection<Package> deselect;
+            IReadOnlyCollection<InstalledPackage> select;
+            IReadOnlyCollection<InstalledPackage> deselect;
 
             var state = this.StateManager.CurrentState;
 
@@ -33,25 +33,25 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 case SelectionMode.SelectAll:
                 {
                     select = state.Packages.VisibleItems.Except(this.StateManager.CurrentState.Packages.SelectedItems).ToList();
-                    deselect = new Package[0];
+                    deselect = new InstalledPackage[0];
                     break;
                 }
 
                 case SelectionMode.UnselectAll:
                 {
-                    select = new Package[0];
+                    select = new InstalledPackage[0];
                     deselect = state.Packages.SelectedItems.ToList();
                     break;
                 }
 
                 case SelectionMode.AddToSelection:
                     select = this.action.Selection.Except(state.Packages.SelectedItems).ToList();
-                    deselect = new Package[0];
+                    deselect = new InstalledPackage[0];
                     break;
 
                 case SelectionMode.RemoveFromSelection:
                 {
-                    select = new Package[0];
+                    select = new InstalledPackage[0];
                     deselect = this.action.Selection.Intersect(state.Packages.SelectedItems).ToList();
                     break;
                 }

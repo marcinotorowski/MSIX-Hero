@@ -46,6 +46,8 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public AppxPackageArchitecture ProcessorArchitecture { get; set; }
         
         public List<AppxPackageDependency> PackageDependencies { get; set; }
+
+        public List<AppxPackage> Addons { get; set; }
         
         public List<AppxOperatingSystemDependency> OperatingSystemDependencies { get; set; }
 

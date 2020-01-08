@@ -16,7 +16,7 @@ namespace otor.msixhero.lib.Domain.Commands.Developer
             this.PackageName = packageName;
         }
 
-        public UnmountRegistry(Package package)
+        public UnmountRegistry(InstalledPackage package)
         {
             this.PackageName = package.Name;
         }

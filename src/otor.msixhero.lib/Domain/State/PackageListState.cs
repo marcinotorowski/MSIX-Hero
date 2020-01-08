@@ -13,9 +13,9 @@ namespace otor.msixhero.lib.Domain.State
             this.Group = PackageGroup.Publisher;
             this.ShowSidebar = true;
 
-            this.VisibleItems = new List<Package>();
-            this.HiddenItems = new List<Package>();
-            this.SelectedItems = new List<Package>();
+            this.VisibleItems = new List<InstalledPackage>();
+            this.HiddenItems = new List<InstalledPackage>();
+            this.SelectedItems = new List<InstalledPackage>();
         }
 
         public PackageFilter Filter { get; set; }
@@ -30,18 +30,18 @@ namespace otor.msixhero.lib.Domain.State
 
         public string SearchKey { get; set; }
 
-        public List<Package> VisibleItems { get; }
+        public List<InstalledPackage> VisibleItems { get; }
 
-        public List<Package> HiddenItems { get; }
+        public List<InstalledPackage> HiddenItems { get; }
 
-        public List<Package> SelectedItems { get; }
+        public List<InstalledPackage> SelectedItems { get; }
 
         public bool SortDescending { get; set; }
         
-        IReadOnlyCollection<Package> IPackageListState.VisibleItems => this.VisibleItems;
+        IReadOnlyCollection<InstalledPackage> IPackageListState.VisibleItems => this.VisibleItems;
 
-        IReadOnlyCollection<Package> IPackageListState.HiddenItems => this.HiddenItems;
+        IReadOnlyCollection<InstalledPackage> IPackageListState.HiddenItems => this.HiddenItems;
 
-        IReadOnlyCollection<Package> IPackageListState.SelectedItems => this.SelectedItems;
+        IReadOnlyCollection<InstalledPackage> IPackageListState.SelectedItems => this.SelectedItems;
     }
 }

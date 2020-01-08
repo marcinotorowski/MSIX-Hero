@@ -17,17 +17,17 @@ namespace otor.msixhero.lib.Domain.Events
             this.PackageContext = packageContext;
             this.Type = type;
 
-            this.NewPackages = new List<Package>();
-            this.OldPackages = new List<Package>();
+            this.NewPackages = new List<InstalledPackage>();
+            this.OldPackages = new List<InstalledPackage>();
         }
 
         public PackageContext PackageContext { get; private set; }
 
         public CollectionChangeType Type { get; private set; }
 
-        public IList<Package> NewPackages { get; private set; }
+        public IList<InstalledPackage> NewPackages { get; private set; }
 
-        public IList<Package> OldPackages { get; private set; }
+        public IList<InstalledPackage> OldPackages { get; private set; }
     }
 
 
