@@ -7,6 +7,7 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:PackViewModel}">
@@ -66,23 +67,39 @@
                 </ContentControl.ContentTemplate>
             </ContentControl>
 
-            <Grid Margin="16">
-                <ScrollViewer Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
+            <Grid Margin="16 0 16 16">
+                <TabControl Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                    <TabItem Header="Source + target">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <TextBlock Foreground="#666" Text="Full path to an folder where extracted files are" Margin="0 0 0 6" />
+                                <DockPanel>
+                                    <Button TabIndex="3" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
+                                    <TextBox TabIndex="2" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                </DockPanel>
 
-                        <TextBlock Foreground="#666" Text="Full path to an folder where extracted files are" Margin="0 0 0 6" />
-                        <DockPanel>
-                            <Button TabIndex="3" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox TabIndex="2" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                        </DockPanel>
+                                <TextBlock Foreground="#666" Text="Full path to the output MSIX package" Margin="0 16 0 6" />
+                                <DockPanel>
+                                    <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                                    <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                </DockPanel>
 
-                        <TextBlock Foreground="#666" Text="Full path to the output MSIX package" Margin="0 16 0 6" />
-                        <DockPanel>
-                            <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                        </DockPanel>
-                    </StackPanel>
-                </ScrollViewer>
+                                <CheckBox Margin="0 10 0 0" Content="Compress files" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Signature">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding Sign.CurrentValue}" Content="Sign this package" />
+                                <Border Visibility="{Binding Sign.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                    <view:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+                
                 <Border Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel VerticalAlignment="Center">
                         <Path Style="{StaticResource AnimatedSuccess}" />

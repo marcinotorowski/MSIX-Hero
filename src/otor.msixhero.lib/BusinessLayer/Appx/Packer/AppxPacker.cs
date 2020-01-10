@@ -9,7 +9,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
 {
     public class AppxPacker : IAppxPacker
     {
-        public Task Pack(string directory, string packagePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task Pack(string directory, string packagePath, bool compress = true, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!Directory.Exists(directory))
             {
@@ -27,7 +27,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
                 fileInfo.Directory.Create();
             }
 
-            return new MsixSdkWrapper().PackPackage(directory, packagePath, cancellationToken, progress);
+            return new MsixSdkWrapper().PackPackage(directory, packagePath, compress, cancellationToken, progress);
         }
 
         public Task Unpack(string packagePath, string directory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

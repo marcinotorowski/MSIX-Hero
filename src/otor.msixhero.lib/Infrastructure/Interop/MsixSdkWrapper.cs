@@ -111,9 +111,14 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             return this.RunMakeAppx(arguments, cancellationToken, progress);
         }
 
-        public Task PackPackage(string unpackedDirectory, string packageFilePath, CancellationToken cancellationToken, IProgress<ProgressData> progress = null)
+        public Task PackPackage(string unpackedDirectory, string packageFilePath, bool compress, CancellationToken cancellationToken, IProgress<ProgressData> progress = null)
         {
-            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\"  /o";
+            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\" /o";
+            if (!compress)
+            {
+                arguments += " /nc";
+            }
+
             return this.RunMakeAppx(arguments, cancellationToken, progress);
         }
 
