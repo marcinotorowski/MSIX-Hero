@@ -1,5 +1,4 @@
 ﻿using otor.msixhero.lib.Domain.Appx.AppInstaller;
-using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 
 namespace otor.msixhero.lib.Domain.Appx.ModificationPackage
 {

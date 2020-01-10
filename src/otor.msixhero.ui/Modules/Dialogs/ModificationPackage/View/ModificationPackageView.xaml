@@ -10,6 +10,7 @@
              xmlns:common="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel"
              xmlns:builder="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Builder;assembly=msixhero.lib"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:ModificationPackageViewModel}">
@@ -86,7 +87,7 @@
                                     <TextBlock Foreground="#666" Text="What should be created?" Margin="0 16 0 6" />
                                     <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create only manifest" />
                                     <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create unsigned MSIX modification package" Margin="0 6" />
-                                    <RadioButton Visibility="Collapsed" GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create MSIX package and sign it" />
+                                    <RadioButton x:Name="Radio3"  GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create MSIX package and sign it" />
                                 </StackPanel>
                             </AdornerDecorator>
                         </ScrollViewer>
@@ -95,6 +96,9 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
                         </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Signature" Visibility="{Binding ElementName=Radio3, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <view:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
                     </TabItem>
                 </TabControl>
             </Grid>

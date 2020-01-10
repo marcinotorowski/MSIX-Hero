@@ -3,12 +3,15 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
+using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Domain.Appx.AppInstaller;
 using otor.msixhero.lib.Domain.Appx.ModificationPackage;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Domain;
+using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
 using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
@@ -21,6 +24,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
     public class ModificationPackageViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IAppxContentBuilder contentBuilder;
+        private readonly IAppxSigningManager signingManager;
         private readonly IInteractionService interactionService;
         private int progress;
         private string progressMessage;
@@ -29,9 +33,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
         private ICommand openSuccessLink;
         private ICommand reset;
 
-        public ModificationPackageViewModel(IAppxContentBuilder contentBuilder, IInteractionService interactionService)
+        public ModificationPackageViewModel(
+            IAppxContentBuilder contentBuilder, 
+            IAppxSigningManager signingManager,
+            IConfigurationService configurationService,
+            IInteractionService interactionService)
         {
             this.contentBuilder = contentBuilder;
+            this.signingManager = signingManager;
             this.interactionService = interactionService;
 
             this.PackageSelection = new PackageSelectorViewModel(
@@ -54,10 +63,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             
             this.Create = new ChangeableProperty<ModificationPackageBuilderAction>();
 
-            this.ChangeableContainer = new ChangeableContainer(this.PackageSelection, this.ModificationPackageDetails, this.Create)
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, configurationService.GetCurrentConfiguration()?.Signing, true);
+
+            this.ChangeableContainer = new ChangeableContainer(this.PackageSelection, this.ModificationPackageDetails, this.Create, this.SelectedCertificate)
             {
                 IsValidated = false
             };
+
+            this.Create.ValueChanged += this.CreateOnValueChanged;
         }
 
         public ChangeableContainer ChangeableContainer { get; }
@@ -113,6 +126,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
         {
             get => "Create modification package stub";
         }
+
+        public CertificateSelectorViewModel SelectedCertificate { get; }
 
         public event Action<IDialogResult> RequestClose;
 
@@ -199,14 +214,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                 };
 
                 await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue).ConfigureAwait(false);
-
+                
                 switch (this.Create.CurrentValue)
                 {
                     case ModificationPackageBuilderAction.Manifest:
                         this.Result = Path.Combine(selectedPath, "AppxManifest.xml");
                         break;
                     case ModificationPackageBuilderAction.Msix:
+                        this.Result = selectedPath;
+                        break;
                     case ModificationPackageBuilderAction.SignedMsix:
+
+                        switch (this.SelectedCertificate.Store.CurrentValue)
+                        {
+                            case CertificateSource.Pfx:
+                                await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                                break;
+                            case CertificateSource.Personal:
+                                await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                                break;
+                        }
+
                         this.Result = selectedPath;
                         break;
                 }
@@ -226,6 +254,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
         {
             this.PackageSelection.Reset();
             this.IsSuccess = false;
+        }
+
+        private void CreateOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            this.SelectedCertificate.IsValidated = this.Create.CurrentValue == ModificationPackageBuilderAction.SignedMsix;
         }
 
         private void OpenSuccessLinkExecuted(object parameter)
