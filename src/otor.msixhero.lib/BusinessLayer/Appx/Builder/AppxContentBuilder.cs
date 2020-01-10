@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Animation;
 using System.Xml;
 using System.Xml.Serialization;
 using ControlzEx.Standard;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
+using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Domain.Appx.AppInstaller;
 using otor.msixhero.lib.Domain.Appx.ModificationPackage;
 using otor.msixhero.lib.Infrastructure.Interop;
@@ -24,10 +24,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
         private const string DefaultNamespacePrefix = "msixHero";
 
         private readonly IAppxPacker packer;
+        private readonly IAppxSigningManager signingManager;
 
-        public AppxContentBuilder(IAppxPacker packer)
+        public AppxContentBuilder(IAppxPacker packer, IAppxSigningManager signingManager)
         {
             this.packer = packer;
+            this.signingManager = signingManager;
         }
 
         public async Task Create(AppInstallerConfig config, string file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -156,12 +158,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
                 }
 
                 await File.WriteAllTextAsync(Path.Join(tempFolder, "AppxManifest.xml"), manifestContent, Encoding.UTF8, cancellation).ConfigureAwait(false);
-                await this.packer.Pack(tempFolder, filePath, cancellation, progress).ConfigureAwait(false);
-
-                if (action == ModificationPackageBuilderAction.SignedMsix)
-                {
-                    // todo: signing
-                }
+                await this.packer.Pack(tempFolder, filePath, true, cancellation, progress).ConfigureAwait(false);
             }
             finally
             {

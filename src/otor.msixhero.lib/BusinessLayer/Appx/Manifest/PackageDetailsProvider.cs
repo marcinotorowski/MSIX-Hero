@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -13,9 +12,8 @@ using Windows.Management.Deployment;
 using otor.msixhero.lib.BusinessLayer.Appx.Detection;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
-using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Infrastructure.Interop;
+using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
 using Package = Windows.ApplicationModel.Package;
 
@@ -23,6 +21,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Details
 {
     public class PackageDetailsProvider
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
+
         public Task<AppxPackage> GetPackage(string packageName,
             PackageFindMode mode = PackageFindMode.CurrentUser, 
             CancellationToken cancellationToken = default,
@@ -386,7 +386,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Details
                                 }
                             }
 
-                            package.BuildInfo = new BuildDetection().Detect(manifestPath);
+                            if (File.Exists(manifestPath))
+                            {
+                                package.BuildInfo = new BuildDetection().Detect(manifestPath);
+                            }
+                            else
+                            {
+                                Logger.Warn("Package manifest {0} doest not exist.", manifestPath);
+                            }
+
                             yield return package;
                         }
                     }

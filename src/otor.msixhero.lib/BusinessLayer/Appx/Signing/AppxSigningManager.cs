@@ -452,7 +452,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 
                     Logger.Debug("Packing {0} to {1}.", tempDirectory, localCopy);
                     cancellationToken.ThrowIfCancellationRequested();
-                    await sdk.PackPackage(tempDirectory, localCopy, cancellationToken).ConfigureAwait(false);
+                    await sdk.PackPackage(tempDirectory, localCopy, true, cancellationToken).ConfigureAwait(false);
                 }
                 finally
                 {

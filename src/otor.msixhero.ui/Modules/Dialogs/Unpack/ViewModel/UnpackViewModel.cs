@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
@@ -175,8 +176,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
         }
 
         private void OpenSuccessLinkExecuted(object parameter)
-        {
-            Process.Start("explorer.exe", "/select," + this.GetOutputPath());
+        { 
+            Process.Start("explorer.exe", this.GetOutputPath());
         }
 
         private string GetOutputPath()

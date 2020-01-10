@@ -29,7 +29,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.TimeStamp = new ValidatedChangeableProperty<string>(this.ValidateTimestamp, signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll");
             this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source );
             this.Store.ValueChanged += StoreOnValueChanged;
-            this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};
+            this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};
             this.Password = new ChangeableProperty<SecureString>();
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
