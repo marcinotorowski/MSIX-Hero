@@ -13,7 +13,7 @@ if (-not ($version -match "v(\d+\.\d+)\-(\d+)\-g([a-z0-9]+)"))
 
 $version = $Matches[1] + "." + $Matches[2] + ".0";
 
-dotnet publish "$PSScriptRoot\..\otor.msixhero.sln" /p:AssemblyVersion=$version /p:ProductVersion=$version --output "$PSScriptRoot\dist" --configuration Release --nologo --force
+dotnet publish "$PSScriptRoot\..\otor.msixhero.sln" -p:AssemblyVersion=$version -p:Version=$version --output "$PSScriptRoot\dist" --configuration Release --nologo --force
 
 Copy-Item "$PSScriptRoot\..\artifacts\*" "$PSScriptRoot\dist" -Recurse | Out-Null;
 
@@ -75,4 +75,4 @@ $toDelete = @(
         $listOfFiles += " `"" + $item.FullName + "`"";
     }
 
-    & "$PSScriptRoot\dist\redistr\sdk\x64\signtool.exe" sign /n "Marcin Otorowski" /t http://time.certum.pl/ /fd sha256 /v $allFiles.FullName
+    & "$PSScriptRoot\dist\redistr\sdk\x64\signtool.exe" sign /n "Marcin Otorowski" /t http://time.certum.pl/ /fd sha256 /d "MSIX Hero" /v $allFiles.FullName
