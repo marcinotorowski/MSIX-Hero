@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:otor.msixhero.ui.Controls"
              mc:Ignorable="d" >
     <StackPanel Margin="10">
-        <Image Source="../Resources/Images/msix-hero-64.png" Width="48" Height="48" HorizontalAlignment="Center" />
-        <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=Tag}" Margin="0 10 0 0" TextAlignment="Center" />
+        <Image Source="../Resources/Images/msix-hero-64-dark.png" Width="128" UseLayoutRounding="True" SnapsToDevicePixels="True" Stretch="None" Opacity="0.2" Height="128" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=Tag}" Margin="0 0 0 0" TextAlignment="Center" />
     </StackPanel>
 </UserControl>

@@ -189,7 +189,7 @@
                                 </controls:ZeroOrAny.AnyItemTemplate>
                                 <controls:ZeroOrAny.NoItemsTemplate>
                                     <DataTemplate>
-                                        <controls:MsixHeroText Tag="This package does not define applications." />
+                                        <controls:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
                                     </DataTemplate>
                                 </controls:ZeroOrAny.NoItemsTemplate>
                             </controls:ZeroOrAny>
@@ -213,7 +213,7 @@
                                 <controls:ZeroOrAny.AnyItemTemplate>
                                     <DataTemplate>
                                         <ListBox 
-                                    ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
+                                            ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type viewModel1:InstalledPackageDetailsViewModel}">
                                                     <DockPanel>
@@ -229,10 +229,10 @@
 
                                                         <StackPanel Margin="10 0">
                                                             <TextBlock TextTrimming="CharacterEllipsis">
-                                                <Run Text="{Binding DisplayName, Mode=OneTime}" />
+                                                                <Run Text="{Binding DisplayName, Mode=OneTime}" />
                                                             </TextBlock>
                                                             <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
-                                                <Run Text="{Binding PublisherDisplayName, Mode=OneTime}" />
+                                                                <Run Text="{Binding PublisherDisplayName, Mode=OneTime}" />
                                                             </TextBlock>
                                                         </StackPanel>
 
@@ -244,7 +244,7 @@
                                 </controls:ZeroOrAny.AnyItemTemplate>
                                 <controls:ZeroOrAny.NoItemsTemplate>
                                     <DataTemplate>
-                                        <controls:MsixHeroText Tag="This package has no installed add-ons or modification packages." />
+                                        <controls:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
                                     </DataTemplate>
                                 </controls:ZeroOrAny.NoItemsTemplate>
                             </controls:ZeroOrAny>
