@@ -45,14 +45,24 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
 
             this.PackageSelection = new PackageSelectorViewModel(
                 interactionService,
-                PackageSelectorDisplayMode.AllowChanging | PackageSelectorDisplayMode.AllowBundles | PackageSelectorDisplayMode.ShowTypeSelector | PackageSelectorDisplayMode.AllowBrowsing | PackageSelectorDisplayMode.AllowChanging | PackageSelectorDisplayMode.RequireFullIdentity | PackageSelectorDisplayMode.ShowActualName)
+                PackageSelectorDisplayMode.AllowChanging | 
+                PackageSelectorDisplayMode.AllowBundles | 
+                PackageSelectorDisplayMode.ShowTypeSelector | 
+                PackageSelectorDisplayMode.AllowPackages |
+                PackageSelectorDisplayMode.AllowBrowsing | 
+                PackageSelectorDisplayMode.AllowChanging | 
+                PackageSelectorDisplayMode.RequireFullIdentity | 
+                PackageSelectorDisplayMode.ShowActualName)
             {
                 IsValidated = false
             };
 
             this.ModificationPackageDetails = new PackageSelectorViewModel(
                 interactionService,
-                PackageSelectorDisplayMode.AllowChanging | PackageSelectorDisplayMode.AllowPackages | PackageSelectorDisplayMode.RequireFullIdentity | PackageSelectorDisplayMode.ShowDisplayName)
+                PackageSelectorDisplayMode.AllowChanging | 
+                PackageSelectorDisplayMode.AllowPackages | 
+                PackageSelectorDisplayMode.RequireFullIdentity | 
+                PackageSelectorDisplayMode.ShowDisplayName)
             {
                 IsValidated = false
             };

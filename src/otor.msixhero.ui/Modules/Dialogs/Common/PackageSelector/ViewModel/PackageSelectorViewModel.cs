@@ -28,6 +28,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
     public class PackageSelectorViewModel : ChangeableContainer
     {
+        private readonly PackageSelectorDisplayMode displayMode;
         private static readonly ILog Logger = LogManager.GetLogger();
         private string customPrompt;
         private bool requireFullIdentity = true;
@@ -38,6 +39,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
         public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
+            this.displayMode = displayMode;
             this.Publisher = new ValidatedChangeableProperty<string>(this.ValidateSubject, false);
             this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull, false);
             this.Name = new ValidatedChangeableProperty<string>(this.ValidateName, false);
@@ -52,12 +54,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
-                Validators = new[] { ChangeableFileProperty.ValidatePath },
-                Filter = this.GetFilterString(
-                    displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages),
-                    displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles),
-                    displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests))
+                Validators = new[] { ChangeableFileProperty.ValidatePath }
             };
+
+            this.displayMode = displayMode;
+            this.SetInputFilter();
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
@@ -234,32 +235,56 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         {
             var extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var names = new StringBuilder();
+            var supportedExtensionsCount = 0;
 
             if (allowPackages)
             {
-                extensions.Add("*.msix");
-                extensions.Add("*.appx");
-                names.Append("Packages|*.msix;*.appx|");
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue ==  lib.BusinessLayer.Appx.AppInstaller.PackageType.Package)
+                {
+                    extensions.Add("*.msix");
+                    extensions.Add("*.appx");
+                    names.Append("Packages|*.msix;*.appx|");
+                    supportedExtensionsCount++;
+                }
             }
 
             if (allowBundles)
             {
-                extensions.Add("*.appxbundle");
-                names.Append("Bundles|*.appxbundle|");
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue ==  lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle)
+                {
+                    extensions.Add("*.appxbundle");
+                    names.Append("Bundles|*.appxbundle|");
+                    supportedExtensionsCount++;
+                }
             }
 
             if (allowManifests)
             {
                 extensions.Add("appxmanifest.xml");
                 names.Append("Manifest files|appxmanifest.xml|");
+                supportedExtensionsCount++;
             }
 
-            return string.Format("All supported files|{0}|{1}All files|*.*", string.Join(";", extensions.Select(s => s)), names);
+            if (supportedExtensionsCount > 1)
+            {
+                return $"All supported files|{string.Join(";", extensions)}|{names}All files|*.*";
+            }
+
+            return $"{names}All files|*.*";
         }
 
         private void PackageTypeOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(this.IsBundle));
+            this.SetInputFilter();
+        }
+
+        private void SetInputFilter()
+        {
+            this.InputPath.Filter = this.GetFilterString(
+                this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages),
+                this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles),
+                this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests));
         }
     }
 }
