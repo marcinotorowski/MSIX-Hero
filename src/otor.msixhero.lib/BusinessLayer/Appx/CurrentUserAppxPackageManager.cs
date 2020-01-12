@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
-using otor.msixhero.lib.BusinessLayer.Appx.Details;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Logs;
@@ -32,13 +32,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
-        protected readonly PackageDetailsProvider PackageDetailsProvider = new PackageDetailsProvider();
+        protected readonly PackageDetailsProvider PackageDetailsProvider;
 
         private readonly IAppxSigningManager signingManager;
 
         public CurrentUserAppxPackageManager(IAppxSigningManager signingManager)
         {
             this.signingManager = signingManager;
+            this.PackageDetailsProvider = new PackageDetailsProvider(this);
         }
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

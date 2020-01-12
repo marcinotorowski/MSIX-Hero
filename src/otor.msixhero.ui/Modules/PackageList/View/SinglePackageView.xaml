@@ -218,7 +218,7 @@
                                                 <DataTemplate DataType="{x:Type viewModel1:InstalledPackageDetailsViewModel}">
                                                     <DockPanel>
                                                         <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                            <Border Background="Red" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                                 <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                             </Border>
                                                         </Border>

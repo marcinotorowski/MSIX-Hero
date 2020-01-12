@@ -22,29 +22,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public string DisplayName => this.model.DisplayName;
 
-        public string Image
-        {
-            get
-            {
-
-                if (this.model.Square30x30Logo != null)
-                {
-                    return this.model.Square30x30Logo;
-                }
-
-                if (this.model.SmallLogo != null)
-                {
-                    return this.model.SmallLogo;
-                }
-
-                if (this.model.Logo != null)
-                {
-                    return this.model.Logo;
-                }
-
-                return null;
-            }
-        }
+        public byte[] Image => this.model.Logo;
 
         public string TileColor => this.model.BackgroundColor;
 

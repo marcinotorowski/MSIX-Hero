@@ -23,7 +23,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 
         public string ApplicationUserModelId { get; set; }
 
-        public string Logo { get; set; }
+        public byte[] Logo { get; set; }
 
         public string PublisherDisplayName { get; set; }
 

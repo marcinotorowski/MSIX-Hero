@@ -71,7 +71,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public string DisplayName { get; }
 
-        public string Logo { get; }
+        public byte[] Logo { get; }
 
         public string FamilyName { get; }
 
