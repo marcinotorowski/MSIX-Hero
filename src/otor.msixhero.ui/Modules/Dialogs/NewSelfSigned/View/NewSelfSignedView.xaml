@@ -7,6 +7,7 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
@@ -25,50 +26,20 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding 
-            Command="Save"
-            CanExecute="CanSave"
-            Executed="SaveExecuted" />
-        <CommandBinding 
-            Command="Close"
-            Executed="CloseExecuted" />
-    </UserControl.CommandBindings>
+    <changeableDialog:ChangeableDialog
+        Dialog="{Binding}"
+        Icon="{StaticResource VectorSelfSign}"
+        OkButtonLabel="Generate certificate">
 
-
-    <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
-        <xctk:BusyIndicator.ProgressBarStyle>
-            <Style TargetType="ProgressBar">
-                <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
-            </Style>
-        </xctk:BusyIndicator.ProgressBarStyle>
-        <DockPanel>
-            <Border Background="#2B579A" DockPanel.Dock="Top">
-                <DockPanel Margin="16">
-                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorSelfSign}" />
-                    <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">New self-signed certificate</Label>
-                </DockPanel>
-            </Border>
-            <Border Background="#eee" DockPanel.Dock="Bottom">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                        <Button Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="Save" Content="Generate certificate" />
-                        <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-
-            <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <TextBlock Text="{Binding ChangeableContainer.ValidationMessage}" VerticalAlignment="Center" />
-            </Border>
-
-            <Grid Margin="16">
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <ScrollViewer Margin="0 16 0 0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
                         <TextBlock Foreground="#666" Text="Publisher friendly name" Margin="0 0 0 6" />
                         <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
@@ -85,23 +56,23 @@
                         </DockPanel>
                     </StackPanel>
                 </ScrollViewer>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
 
-                <Border MaxWidth="460" Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel VerticalAlignment="Center">
-                        <Path Style="{StaticResource AnimatedSuccess}" />
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Your certificate has been successfully created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    
+                    <TextBlock TextAlignment="Center">
+                        <Hyperlink Click="Hyperlink_OnClick">Open the folder with your certificate and its private key.</Hyperlink>
+                    </TextBlock>
 
-                        <TextBlock Text="Your certificate has been successfully created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                        <TextBlock TextAlignment="Center">
-                            <Hyperlink Click="Hyperlink_OnClick">Open the folder with your certificate and its private key.</Hyperlink>
-                        </TextBlock>
-
-                        <TextBlock TextAlignment="Center">
-                            <Hyperlink Click="HyperlinkImportWizard_OnClick">Import this certificate to your Personal certificate store</Hyperlink>
-                        </TextBlock>
-
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </DockPanel>
-    </xctk:BusyIndicator>
+                    <TextBlock TextAlignment="Center">
+                        <Hyperlink Click="HyperlinkImportWizard_OnClick">Import this certificate to your Personal certificate store</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+    </changeableDialog:ChangeableDialog>
 </UserControl>

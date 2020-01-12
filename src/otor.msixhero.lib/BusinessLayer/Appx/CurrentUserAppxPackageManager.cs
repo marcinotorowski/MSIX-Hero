@@ -530,6 +530,18 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 InstallDate = installDate
             };
 
+            if (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
+                pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
+                pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true)
+            {
+                var priFile = Path.Combine(installLocation, "resources.pri");
+                
+                var appId = pkg.Name;
+                pkg.DisplayName = StringLocalizer.Localize(priFile, appId, pkg.DisplayName);
+                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, appId, pkg.DisplayPublisherName);
+                pkg.Description = StringLocalizer.Localize(priFile, appId, pkg.Description);
+            }
+
             return pkg;
         }
 

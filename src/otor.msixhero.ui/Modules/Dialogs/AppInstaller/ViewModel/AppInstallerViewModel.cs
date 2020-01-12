@@ -5,35 +5,31 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
+using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
 
 namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 {
-    public class AppInstallerViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
+    public class AppInstallerViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly IAppxContentBuilder appxContentBuilder;
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
-        private int progress;
-        private string progressMessage;
-        private bool isLoading;
-        private bool isSuccess;
         private ICommand openSuccessLink;
         private ICommand reset;
 
         public AppInstallerViewModel(
             IAppxContentBuilder appxContentBuilder,
             IInteractionService interactionService,
-            IConfigurationService configurationService)
+            IConfigurationService configurationService) : base("Create .appinstaller", interactionService)
         {
             this.appxContentBuilder = appxContentBuilder;
             this.interactionService = interactionService;
@@ -77,7 +73,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
             this.PackageSelection.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
-            this.ChangeableContainer = new ChangeableContainer(
+            this.AddChildren(
                 this.MainPackageUri,
                 this.AppInstallerUri,
                 this.AppInstallerUpdateCheckingMethod,
@@ -86,10 +82,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 this.ShowPrompt,
                 this.Hours,
                 this.PackageSelection,
-                this.Version)
-            {
-                IsValidated = false
-            };
+                this.Version);
+
+            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
         public bool ShowLaunchOptions =>
@@ -107,9 +102,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         public ValidatedChangeableProperty<string> Version { get; }
 
         public ChangeableProperty<bool> AllowDowngrades { get; }
-
-        public ChangeableContainer ChangeableContainer { get; }
-
+        
         public ChangeableFileProperty OutputPath { get; }
 
         public ChangeableProperty<string> MainPackageUri { get; }
@@ -124,71 +117,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 return $"Windows 10 {minWin10.Item1}";
             }
         }
-
-
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
-        }
-
-        public int Progress
-        {
-            get => this.progress;
-            private set => this.SetField(ref this.progress, value);
-        }
-
-        public string ProgressMessage
-        {
-            get => this.progressMessage;
-            private set => this.SetField(ref this.progressMessage, value);
-        }
-
-        public ICommand OpenSuccessLink
+        
+        public ICommand OpenSuccessLinkCommand
         {
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
-        public ICommand Reset
+        public ICommand ResetCommand
         {
             get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
-        public bool IsSuccess
-        {
-            get => this.isSuccess;
-            set => this.SetField(ref this.isSuccess, value);
-        }
-
-        public string Error
-        {
-            get => this.ChangeableContainer.IsValid ? null : this.ChangeableContainer.ValidationMessage;
-        }
-
-        public string this[string columnName] => null;
-
-        public bool CanSave()
-        {
-            return this.ChangeableContainer.IsValid;
-        }
-
-        public string Title
-        {
-            get => "Create .appinstaller";
-        }
-
         public PackageSelectorViewModel PackageSelection { get; }
-
-        public event Action<IDialogResult> RequestClose;
-
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public void OnDialogClosed()
-        {
-        }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
@@ -202,43 +142,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.PackageSelection.ShowPackageTypeSelector = false;
         }
 
-        public async Task Save()
+        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            this.ChangeableContainer.IsValidated = true;
-            if (!this.ChangeableContainer.IsValid)
+            if (!this.interactionService.SaveFile(this.OutputPath.CurrentValue, this.OutputPath.Filter, out var selected))
             {
                 return;
             }
 
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
-            };
-
-            this.IsLoading = true;
-            try
-            {
-                token.ProgressChanged += handler;
-
-                if (!this.interactionService.SaveFile(this.OutputPath.CurrentValue, this.OutputPath.Filter, out var selected))
-                {
-                    return;
-                }
-
-                var appInstaller = this.GetCurrentAppInstallerConfig();
-                await this.appxContentBuilder.Create(appInstaller, selected).ConfigureAwait(false);
-                this.IsSuccess = true;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
-            }
+            var appInstaller = this.GetCurrentAppInstallerConfig();
+            await this.appxContentBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
         }
 
         private AppInstallerConfig GetCurrentAppInstallerConfig()
@@ -268,7 +180,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         {
             this.PackageSelection.Reset();
             this.OutputPath.Reset();
-            this.IsSuccess = false;
+            this.State.IsSaved = false;
         }
 
         private void OpenSuccessLinkExecuted(object parameter)
@@ -281,21 +193,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             if (string.IsNullOrEmpty(value))
             {
                 return "The value may not be empty.";
-            }
-
-            if (!Uri.TryCreate(value, UriKind.Absolute, out _))
-            {
-                return $"The value '{value}' is not a valid URI.";
-            }
-
-            return null;
-        }
-
-        private string ValidateUriOrEmpty(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
             }
 
             if (!Uri.TryCreate(value, UriKind.Absolute, out _))
@@ -373,7 +270,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 return "The version may not be empty.";
             }
 
-            if (!System.Version.TryParse(newValue, out var version))
+            if (!System.Version.TryParse(newValue, out _))
             {
                 return $"'{newValue}' is not a valid version.";
             }

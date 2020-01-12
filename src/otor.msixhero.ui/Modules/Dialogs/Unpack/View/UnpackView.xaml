@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel"
+             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:UnpackViewModel}">
@@ -25,49 +25,18 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
-        <CommandBinding Command="Close" Executed="CloseExecuted" />
-    </UserControl.CommandBindings>
-
-    <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
-        <xctk:BusyIndicator.ProgressBarStyle>
-            <Style TargetType="ProgressBar">
-                <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
-            </Style>
-        </xctk:BusyIndicator.ProgressBarStyle>
-        <DockPanel>
-            <Border Background="#2B579A" DockPanel.Dock="Top">
-                <DockPanel Margin="16">
-                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorUnpack}" />
-                    <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Unpack MSIX package</Label>
-                </DockPanel>
-            </Border>
-            <Border Background="#eee" DockPanel.Dock="Bottom">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                        <Button Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="Save" Content="Unpack package" />
-                        <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-
-            <ContentControl DockPanel.Dock="Bottom" Content="{Binding ChangeableContainer.ValidationMessage}" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <ContentControl.ContentTemplate>
-                    <DataTemplate>
-                        <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
-                            <TextBlock Text="{Binding}" VerticalAlignment="Center" />
-                        </Border>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
-
-            <Grid Margin="16">
-                <ScrollViewer Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <changeableDialog:ChangeableDialog 
+        Dialog="{Binding}"
+        OkButtonLabel="Unpack package"
+        Icon="{StaticResource VectorUnpack}">
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <ScrollViewer Margin="0 16 0 0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
 
                         <TextBlock Foreground="#666" Text="Full path to an MSIX package" Margin="0 0 0 6" />
@@ -79,26 +48,26 @@
                         <TextBlock Foreground="#666" Text="Full path to an folder where files will be extracted" Margin="0 16 0 6" />
                         <DockPanel>
                             <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox x:Name="OutputPath"  TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                         </DockPanel>
 
-                        <CheckBox IsChecked="{Binding CreateFolder}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
+                        <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
                     </StackPanel>
                 </ScrollViewer>
-                <Border Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel VerticalAlignment="Center">
-                        <Path Style="{StaticResource AnimatedSuccess}" />
-
-                        <TextBlock Text="Your package has been successfully unpacked." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                        <TextBlock TextAlignment="Center">
-                            <Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing unpacked files</Hyperlink>
-                        </TextBlock>
-                        <TextBlock TextAlignment="Center">
-                            <Hyperlink Command="{Binding Reset}">Unpack another package</Hyperlink>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </DockPanel>
-    </xctk:BusyIndicator>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="Your package has been successfully unpacked." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock TextAlignment="Center">
+                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing unpacked files</Hyperlink>
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center">
+                    <Hyperlink Command="{Binding ResetCommand}">Unpack another package</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+    </changeableDialog:ChangeableDialog>
 </UserControl>

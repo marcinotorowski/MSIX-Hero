@@ -1,17 +1,17 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Controls.ChangeableDialog
 {
-    /// <summary>
-    /// Interaction logic for ChangeableDialog.xaml
-    /// </summary>
-    public partial class ChangeableDialog
+    public class ChangeableDialog : Control
     {
+        static ChangeableDialog()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ChangeableDialog),  new FrameworkPropertyMetadata(typeof(ChangeableDialog)));
+        }
+
         public static readonly DependencyProperty SuccessContentTemplateProperty = DependencyProperty.Register("SuccessContentTemplate", typeof(DataTemplate), typeof(ChangeableDialog), new PropertyMetadata(null));
 
         public static readonly DependencyProperty SuccessContentTemplateSelectorProperty = DependencyProperty.Register("SuccessContentTemplateSelector", typeof(DataTemplateSelector), typeof(ChangeableDialog), new PropertyMetadata(null));
@@ -25,32 +25,28 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
         public static readonly DependencyProperty DialogContentProperty = DependencyProperty.Register("DialogContent", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
 
         public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(Geometry), typeof(ChangeableDialog), new PropertyMetadata(Geometry.Empty));
-        
+
         public static readonly DependencyProperty OkButtonLabelProperty = DependencyProperty.Register("OkButtonLabel", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
 
-        public ChangeableDialog()
+        public static readonly DependencyProperty DialogProperty = DependencyProperty.Register("Dialog", typeof(ChangeableDialogViewModel), typeof(ChangeableDialog), new PropertyMetadata(null));
+        
+        public ChangeableDialogViewModel Dialog
         {
-            InitializeComponent();
+            get => (ChangeableDialogViewModel)this.GetValue(DialogProperty);
+            set => this.SetValue(DialogProperty, value);
         }
-
+        
         public Geometry Icon
         {
             get => (Geometry)this.GetValue(IconProperty);
             set => this.SetValue(IconProperty, value);
         }
-        
+
         public object OkButtonLabel
         {
             get => this.GetValue(OkButtonLabelProperty);
             set => this.SetValue(OkButtonLabelProperty, value);
         }
-        
-        public object SuccessContent
-        {
-            get => this.GetValue(SuccessContentProperty);
-            set => this.SetValue(SuccessContentProperty, value);
-        }
-
 
         public DataTemplate SuccessContentTemplate
         {
@@ -58,19 +54,11 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
             set => this.SetValue(SuccessContentTemplateProperty, value);
         }
 
-
         public DataTemplateSelector SuccessContentTemplateSelector
         {
             get => (DataTemplateSelector)this.GetValue(SuccessContentTemplateSelectorProperty);
             set => this.SetValue(SuccessContentTemplateSelectorProperty, value);
         }
-
-        public object DialogContent
-        {
-            get => this.GetValue(DialogContentProperty);
-            set => this.SetValue(DialogContentProperty, value);
-        }
-
 
         public DataTemplate DialogContentTemplate
         {
@@ -78,32 +66,10 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
             set => this.SetValue(DialogContentTemplateProperty, value);
         }
 
-
         public DataTemplateSelector DialogContentTemplateSelector
         {
             get => (DataTemplateSelector)this.GetValue(DialogContentTemplateSelectorProperty);
             set => this.SetValue(DialogContentTemplateSelectorProperty, value);
-        }
-
-        private void CanSave(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = !(this.DataContext is ChangeableDialogViewModel dataContext) || dataContext.CanSave();
-        }
-
-        private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is ChangeableDialogViewModel dataContext)
-            {
-                dataContext.Save(e.Parameter is bool boolParam && boolParam);
-            }
-        }
-
-        private void CloseExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (this.DataContext is ChangeableDialogViewModel dataContext)
-            {
-                dataContext.Close(dataContext.State.IsSaved ? ButtonResult.OK : ButtonResult.Cancel);
-            }
         }
     }
 }

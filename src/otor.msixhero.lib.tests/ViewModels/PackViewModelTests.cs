@@ -43,7 +43,7 @@ namespace otor.msixhero.lib.tests.ViewModels
             Assert.IsFalse(viewModel.HasError);
             Assert.IsFalse(viewModel.IsValid);
 
-            viewModel.Save(false);
+            viewModel.OkCommand.Execute(null);
             Assert.AreEqual(ValidationMode.Default, viewModel.ValidationMode);
             Assert.IsTrue(viewModel.HasError);
 

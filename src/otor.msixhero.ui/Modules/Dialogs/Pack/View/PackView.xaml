@@ -10,6 +10,16 @@
              xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
@@ -20,60 +30,57 @@
         </Style>
     </mvvm:Dialog.WindowStyle>
     <changeableDialog:ChangeableDialog
+        Dialog="{Binding}"
         OkButtonLabel="Pack folder to MSIX package"
         Icon="{StaticResource VectorPack}">
-        <changeableDialog:ChangeableDialog.Resources>
-            <ResourceDictionary>
-                <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
-                    <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
-                    <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
-                </ResourceDictionary.MergedDictionaries>
-            </ResourceDictionary>
-        </changeableDialog:ChangeableDialog.Resources>
-        <changeableDialog:ChangeableDialog.SuccessContent>
-            <StackPanel>
-                <TextBlock Text="Your folder has been successfully packed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                <TextBlock TextAlignment="Center">
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="Your folder has been successfully packed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock TextAlignment="Center">
                     <Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing packed files</Hyperlink>
-                </TextBlock>
-                <TextBlock TextAlignment="Center">
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center">
                     <Hyperlink Command="{Binding Reset}">Pack another package</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-        </changeableDialog:ChangeableDialog.SuccessContent>
-        <changeableDialog:ChangeableDialog.DialogContent>
-            <TabControl>
-                <TabItem Header="Source + target">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel>
-                            <TextBlock Foreground="#666" Text="Full path to an folder where extracted files are" Margin="0 0 0 6" />
-                            <DockPanel>
-                                <Button TabIndex="3" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
-                                <TextBox TabIndex="2" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                            </DockPanel>
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <TabControl>
+                    <TabItem Header="Source + target">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <TextBlock Foreground="#666" Text="Full path to an folder where extracted files are" Margin="0 0 0 6" />
+                                <DockPanel>
+                                    <Button TabIndex="3" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
+                                    <TextBox TabIndex="2" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                </DockPanel>
 
-                            <TextBlock Foreground="#666" Text="Full path to the output MSIX package" Margin="0 16 0 6" />
-                            <DockPanel>
-                                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
-                                <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                            </DockPanel>
+                                <TextBlock Foreground="#666" Text="Full path to the output MSIX package" Margin="0 16 0 6" />
+                                <DockPanel>
+                                    <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                                    <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                </DockPanel>
 
-                            <CheckBox Margin="0 10 0 0" Content="Compress files" />
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-                <TabItem Header="Signature">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel>
-                            <CheckBox IsChecked="{Binding Sign.CurrentValue}" Content="Sign this package" />
-                            <Border Visibility="{Binding Sign.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
-                                <view:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
-                            </Border>
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
-            </TabControl>
-        </changeableDialog:ChangeableDialog.DialogContent>
+                                <CheckBox Margin="0 10 0 0" Content="Do not compress files" IsChecked="{Binding Compress.CurrentValue, ConverterParameter={StaticResource NegativeConverter}}" />
+                                <CheckBox Margin="0 10 0 0" Content="Skip integrity checks" IsChecked="{Binding Validate.CurrentValue, ConverterParameter={StaticResource NegativeConverter}}" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Signature">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding Sign.CurrentValue}" Content="Sign this package" />
+                                <Border Visibility="{Binding Sign.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                    <view:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
     </changeableDialog:ChangeableDialog>
 </UserControl>

@@ -11,28 +11,24 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
 {
-    public class NewSelfSignedViewModel : NotifyPropertyChanged, IDialogAware
+    public class NewSelfSignedViewModel : ChangeableDialogViewModel
     {
         private readonly IAppxSigningManager signingManager;
         private readonly IApplicationStateManager stateManager;
-        private int progress;
-        private string progressMessage;
-        private bool isLoading;
         private bool isSubjectTouched;
-        private bool isSuccess;
         private ICommand importNewCertificate;
 
         public NewSelfSignedViewModel(
             IAppxSigningManager signingManager, 
             IInteractionService interactionService, 
             IApplicationStateManager stateManager,
-            IConfigurationService configurationService)
+            IConfigurationService configurationService) : base("New self signed certificate", interactionService)
         {
             this.signingManager = signingManager;
             this.stateManager = stateManager;
@@ -50,41 +46,13 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             this.Password = new ValidatedChangeableProperty<string>();
             this.Password.Validators = new Func<string, string>[] { ValidatePassword };
             
-            this.ChangeableContainer = new ChangeableContainer(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName)
-            {
-                IsValidated = false
-            };
+            this.AddChildren(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName);
+            this.SetValidationMode(ValidationMode.Silent, true);
         }
-
-        public ChangeableContainer ChangeableContainer { get; }
-
+        
         public ValidatedChangeableProperty<string> PublisherName { get; }
         
-        public bool IsSuccess
-        {
-            get => this.isSuccess;
-            set => this.SetField(ref this.isSuccess, value);
-        }
-
         public ValidatedChangeableProperty<string> PublisherFriendlyName { get; }
-
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
-        }
-
-        public int Progress
-        {
-            get => this.progress;
-            private set => this.SetField(ref this.progress, value);
-        }
-
-        public string ProgressMessage
-        {
-            get => this.progressMessage;
-            private set => this.SetField(ref this.progressMessage, value);
-        }
 
         public ValidatedChangeableProperty<string> Password { get; }
 
@@ -95,68 +63,16 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             get => this.importNewCertificate ??= new DelegateCommand(param => this.ImportNewCertificateExecute());
         }
 
-        public bool CanCloseDialog()
+        protected override Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            return true;
+            return this.signingManager.CreateSelfSignedCertificate(
+                new DirectoryInfo(this.OutputPath.CurrentValue),
+                this.PublisherName.CurrentValue,
+                this.PublisherFriendlyName.CurrentValue,
+                this.Password.CurrentValue,
+                cancellationToken,
+                progress);
         }
-
-        public void OnDialogClosed()
-        {
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-        }
-
-        public async Task Save()
-        {
-            this.ChangeableContainer.IsValidated = true;
-            if (!this.ChangeableContainer.IsValid)
-            {
-                return;
-            }
-
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
-            };
-
-            this.IsLoading = true;
-            try
-            {
-                token.ProgressChanged += handler;
-                await this.signingManager.CreateSelfSignedCertificate(
-                    new DirectoryInfo(this.OutputPath.CurrentValue), 
-                    this.PublisherName.CurrentValue, 
-                    this.PublisherFriendlyName.CurrentValue, 
-                    this.Password.CurrentValue, 
-                    CancellationToken.None).ConfigureAwait(true);
-
-                this.IsSuccess = true;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
-            }
-        }
-
-        public bool CanSave()
-        {
-            return this.ChangeableContainer.IsValid;
-        }
-
-        public string Title
-        {
-            get => "New self signed certificate";
-        }
-
-        public event Action<IDialogResult> RequestClose;
 
         private static string ValidatePublisherName(string newValue)
         {
@@ -192,6 +108,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             }
 
             this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(file));
+            this.CloseCommand.Execute(ButtonResult.OK);
         }
         
         private void PublisherNameOnValueChanged(object sender, ValueChangedEventArgs e)

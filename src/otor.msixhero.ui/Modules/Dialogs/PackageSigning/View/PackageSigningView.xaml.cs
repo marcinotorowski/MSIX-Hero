@@ -1,9 +1,7 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using Prism.Services.Dialogs;
 
@@ -14,51 +12,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
     /// </summary>
     public partial class PackageSigningView
     {
-        private readonly IInteractionService interactionService;
-
-        public PackageSigningView(IInteractionService interactionService)
+        public PackageSigningView()
         {
-            this.interactionService = interactionService;
             this.InitializeComponent();
         }
-
-        private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            ((PackageSigningViewModel)this.DataContext).Save().ContinueWith(t =>
-            {
-                if (t.Exception == null && !t.IsCanceled && !t.IsFaulted && t.IsCompleted)
-                {
-                    // ReSharper disable once PossibleNullReferenceException
-                    // Window.GetWindow(this).Close();
-                }
-                else if (t.IsFaulted && t.Exception != null)
-                {
-                    var exception = t.Exception.GetBaseException();
-                    var result = this.interactionService.ShowError(exception.Message, exception);
-                    if (result == InteractionResult.Retry)
-                    {
-                        this.SaveExecuted(sender, e);
-                    }
-                }
-            },
-            CancellationToken.None, 
-            TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.AttachedToParent, 
-            TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        private void CanSave(object sender, CanExecuteRoutedEventArgs e)
-        {
-            var dataContext = ((PackageSigningViewModel) this.DataContext);
-            e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
-            e.ContinueRouting = !e.CanExecute;
-        }
-
-        private void CloseExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            Window.GetWindow(this).Close();
-        }
-        
         private void OnDrop(object sender, DragEventArgs e)
         {
             DropFileObject.SetIsDragging((DependencyObject)sender, false);
@@ -115,18 +72,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
         {
             if (e.Command == ApplicationCommands.Delete)
             {
-                var selectedItems = this.ListBox.SelectedItems;
+                var selectedItems = ((PackageSigningViewModel)this.DataContext).SelectedPackages;
                 var list = ((PackageSigningViewModel)this.DataContext).Files;
 
                 for (var i = selectedItems.Count - 1; i >= 0; i--)
                 {
-                    var item = (string)selectedItems[i];
+                    var item = selectedItems[i];
                     list.Remove(item);
                 }
             }
             else if (e.Command == ApplicationCommands.New)
             {
-                ((PackageSigningViewModel)this.DataContext).OnDialogOpened(new DialogParameters());
+                ((IDialogAware)this.DataContext).OnDialogOpened(new DialogParameters());
             }
         }
 
@@ -134,7 +91,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
         {
             if (e.Command == ApplicationCommands.Delete)
             {
-                var selectedItems = this.ListBox == null ? null : this.ListBox.SelectedItems;
+                var selectedItems = ((PackageSigningViewModel)this.DataContext).SelectedPackages;
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 e.CanExecute = selectedItems != null && selectedItems.Count != 0;
             }
@@ -142,6 +99,13 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
             {
                 e.CanExecute = true;
             }
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var sp = ((PackageSigningViewModel) this.DataContext).SelectedPackages;
+            sp.Clear();
+            sp.AddRange(((ListBox)sender).SelectedItems.OfType<string>());
         }
     }
 }

@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
 {
-    public class PackageSigningViewModel : ChangeableContainer, IDialogAware
+    public class PackageSigningViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly IAppxSigningManager signingManager;
         private readonly IInteractionService interactionService;
-        private int progress;
-        private string progressMessage;
-        private bool isLoading;
-        private bool isSuccess;
+        private ICommand openSuccessLink, reset;
 
-        public PackageSigningViewModel(IAppxSigningManager signingManager, IInteractionService interactionService, IConfigurationService configurationService)
+        public PackageSigningViewModel(IAppxSigningManager signingManager, IInteractionService interactionService, IConfigurationService configurationService) : base("Package Signing", interactionService)
         {
             this.signingManager = signingManager;
             this.interactionService = interactionService;
@@ -30,39 +31,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, configurationService?.GetCurrentConfiguration()?.Signing, true);
 
             this.AddChildren(this.Files, this.SelectedCertificate);
-            this.IsValidated = false;
+            this.SetValidationMode(ValidationMode.Silent, true);
+            this.Files.CollectionChanged += (sender, args) => { this.OnPropertyChanged(nameof(IsOnePackage)); };
         }
         
         public CertificateSelectorViewModel SelectedCertificate { get; }
 
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
-        }
+        public List<string> SelectedPackages { get; } = new List<string>();
 
-        public int Progress
-        {
-            get => this.progress;
-            private set => this.SetField(ref this.progress, value);
-        }
-
-        public string ProgressMessage
-        {
-            get => this.progressMessage;
-            private set => this.SetField(ref this.progressMessage, value);
-        }
-
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-        
-        public void OnDialogClosed()
-        {
-        }
-        
-        public void OnDialogOpened(IDialogParameters parameters)
+        void IDialogAware.OnDialogOpened(IDialogParameters parameters)
         {
             if (parameters.TryGetValue<string>("Path", out var file))
             {
@@ -90,59 +67,38 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             this.Files.Commit();
         }
 
-        public async Task Save()
+        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            this.IsValidated = true;
-            if (!this.IsValid)
+            foreach (var file in this.Files)
             {
-                return;
-            }
-
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
-            };
-
-            this.IsLoading = true;
-            try
-            {
-                token.ProgressChanged += handler;
-                // TODO
-
-                foreach (var file in this.Files)
+                if (this.SelectedCertificate.Store.CurrentValue == CertificateSource.Pfx)
                 {
-                    if (this.SelectedCertificate.Store.CurrentValue == CertificateSource.Pfx)
-                    {
-                        await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, CancellationToken.None, token);
-                    }
-                    else
-                    {
-                        await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, CancellationToken.None, token);
-                    }
+                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress);
                 }
-
-                this.IsSuccess = true;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
+                else
+                {
+                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress);
+                }
             }
         }
 
         public ValidatedChangeableCollection<string> Files { get; }
 
-        public bool IsSuccess
+        public ICommand OpenSuccessLinkCommand
         {
-            get => this.isSuccess;
-            set => this.SetField(ref this.isSuccess, value);
+            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted, this.CanOpenSuccessLinkExecute); }
         }
-        
+
+        public bool IsOnePackage
+        {
+            get => this.Files.Count == 1;
+        }
+
+        public ICommand ResetCommand
+        {
+            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+        }
+
         private string ValidateFiles(IEnumerable<string> files)
         {
             if (!files.Any())
@@ -153,17 +109,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             return null;
         }
 
-        public bool CanSave()
+        private void ResetExecuted(object parameter)
         {
-            return this.IsTouched && this.IsValid;
+            this.Files.Clear();
+            this.Commit();
+            this.State.IsSaved = false;
         }
 
-        public string Title
+        private void OpenSuccessLinkExecuted(object parameter)
         {
-            get => "Package Signing";
+            if (!this.IsOnePackage)
+            {
+                return;
+            }
+
+            Process.Start("explorer.exe", "/select," + this.Files[0]);
         }
 
-        public event Action<IDialogResult> RequestClose;
+        private bool CanOpenSuccessLinkExecute(object parameter)
+        {
+            return this.IsOnePackage;
+        }
     }
 }
 

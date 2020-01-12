@@ -5,12 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel"
              xmlns:common="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel"
              xmlns:builder="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Builder;assembly=msixhero.lib"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:ModificationPackageViewModel}">
@@ -29,56 +28,18 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
-        <CommandBinding Command="Close" Executed="CloseExecuted" />
-    </UserControl.CommandBindings>
-
-    <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
-        <xctk:BusyIndicator.ProgressBarStyle>
-            <Style TargetType="ProgressBar">
-                <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
-            </Style>
-        </xctk:BusyIndicator.ProgressBarStyle>
-        <DockPanel>
-            <Border Background="#2B579A" DockPanel.Dock="Top">
-                <DockPanel Margin="16">
-                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorPack}" />
-                    <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Create modification package stub</Label>
-                </DockPanel>
-            </Border>
-            <Border Background="#eee" DockPanel.Dock="Bottom">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                        <Button Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="Save" Content="Create modification package..." />
-                        <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-
-            <Border Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" DockPanel.Dock="Bottom" Background="#22FF0000" Padding="8">
-                <TextBlock Text="{Binding ChangeableContainer.ValidationMessage}" VerticalAlignment="Center" />
-            </Border>
-
-            <Grid>
-                <Border Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel VerticalAlignment="Center">
-                        <Path Style="{StaticResource AnimatedSuccess}" />
-
-                        <TextBlock Text="Your modification package stub has been created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                        <TextBlock TextAlignment="Center">
-                            <Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing the new file</Hyperlink>
-                        </TextBlock>
-                        <TextBlock TextAlignment="Center" Visibility="{Binding PackageSelection.AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Hyperlink Command="{Binding Reset}">Create another modification package</Hyperlink>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-                <TabControl Margin="16 0 16 16" Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+    <changeableDialog:ChangeableDialog
+        Dialog="{Binding}"
+        OkButtonLabel="Create modification package..."
+        Icon="{StaticResource VectorPack}">
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <TabControl>
                     <TabItem Header="Properties">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <AdornerDecorator>
@@ -101,7 +62,19 @@
                         <view:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
                     </TabItem>
                 </TabControl>
-            </Grid>
-        </DockPanel>
-    </xctk:BusyIndicator>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock TextAlignment="Center">
+                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the new file</Hyperlink>
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center" Visibility="{Binding PackageSelection.AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Hyperlink Command="{Binding ResetCommand}">Create another modification package</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+    </changeableDialog:ChangeableDialog>
 </UserControl>

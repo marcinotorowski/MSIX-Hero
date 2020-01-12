@@ -49,14 +49,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
 
             this.Sign = new ChangeableProperty<bool>();
             this.Compress = new ChangeableProperty<bool>(true);
+            this.Validate = new ChangeableProperty<bool>(true);
+
             this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, signConfig, true);
             
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.Sign.ValueChanged += this.SignOnValueChanged;
 
             this.AddChildren(this.InputPath, this.OutputPath, this.Sign, this.SelectedCertificate);
-
-            this.IsValidated = true;
+            this.SetValidationMode(ValidationMode.Silent, true);
         }
         
         public ChangeableFileProperty OutputPath { get; }
@@ -79,19 +80,32 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
 
         public ChangeableProperty<bool> Compress { get; }
 
+        public ChangeableProperty<bool> Validate { get; }
+
         protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            await this.appxPacker.Pack(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, this.Compress.CurrentValue).ConfigureAwait(false);
+            AppxPackerOptions opts = 0;
+            if (!this.Validate.CurrentValue)
+            {
+                opts |= AppxPackerOptions.NoValidation;
+            }
+
+            if (!this.Compress.CurrentValue)
+            {
+                opts |= AppxPackerOptions.NoCompress;
+            }
+
+            await this.appxPacker.Pack(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, opts, cancellationToken, progress).ConfigureAwait(false);
 
             if (this.Sign.CurrentValue)
             {
                 switch (this.SelectedCertificate.Store.CurrentValue)
                 {
                     case CertificateSource.Personal:
-                        await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                        await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                         break;
                     case CertificateSource.Pfx:
-                        await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                        await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                         break;
                 }
             }

@@ -1,61 +1,49 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.ViewModel;
-using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
 {
-    public class UnpackViewModel : NotifyPropertyChanged, IDialogAware
+    public class UnpackViewModel : ChangeableDialogViewModel
     {
         private readonly IAppxPacker appxPacker;
-        private int progress;
-        private string progressMessage;
-        private bool isLoading;
-        private bool createFolder;
-        private bool isSuccess;
         private ICommand openSuccessLink;
         private ICommand reset;
 
-        public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService, IConfigurationService configurationService)
+        public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService, IConfigurationService configurationService) : base("Unpack MSIX package", interactionService)
         {
             this.appxPacker = appxPacker;
 
             var initialOut = configurationService.GetCurrentConfiguration().Packer?.DefaultOutFolder;
-            this.OutputPath = new ChangeableFolderProperty(interactionService)
+            this.OutputPath = new ChangeableFolderProperty(interactionService, initialOut)
             {
-                Validators = new[] { ChangeableFolderProperty.ValidatePath },
-                CurrentValue = initialOut,
-                IsValidated = true
+                Validators = new[] { ChangeableFolderProperty.ValidatePath }
             };
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
                 Validators = new[] { ChangeableFileProperty.ValidatePath },
-                Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*",
-                IsValidated = true
+                Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
             };
+            
+            this.CreateFolder = new ChangeableProperty<bool>(true);
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
-            this.ChangeableContainer = new ChangeableContainer(this.InputPath, this.OutputPath)
-            {
-                IsValidated = true
-            };
+            this.AddChildren(this.InputPath, this.OutputPath, this.CreateFolder);
+            this.SetValidationMode(ValidationMode.Silent, true);
         }
-
-        public ChangeableContainer ChangeableContainer { get; }
-
+        
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty(this.OutputPath.CurrentValue))
@@ -76,103 +64,28 @@ namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
         public ChangeableFolderProperty OutputPath { get; }
 
         public ChangeableFileProperty InputPath { get; }
-        
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
-        }
-
-        public int Progress
-        {
-            get => this.progress;
-            private set => this.SetField(ref this.progress, value);
-        }
-
-        public string ProgressMessage
-        {
-            get => this.progressMessage;
-            private set => this.SetField(ref this.progressMessage, value);
-        }
-
-        public ICommand OpenSuccessLink
+        public ICommand OpenSuccessLinkCommand
         {
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
-        public ICommand Reset
+        public ICommand ResetCommand
         {
             get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
-        public bool CreateFolder
+        public ChangeableProperty<bool> CreateFolder { get; }
+
+        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            get => this.createFolder;
-            set => this.SetField(ref this.createFolder, value);
-        }
-
-        public bool IsSuccess
-        {
-            get => this.isSuccess;
-            set => this.SetField(ref this.isSuccess, value);
-        }
-        
-        public bool CanSave()
-        {
-            return this.ChangeableContainer.IsValid;
-        }
-
-        public string Title
-        {
-            get => "Unpack MSIX package";
-        }
-
-        public event Action<IDialogResult> RequestClose;
-
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public void OnDialogClosed()
-        {
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-        }
-        public async Task Save()
-        {
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
-            };
-
-            this.IsLoading = true;
-            try
-            {
-                token.ProgressChanged += handler;
-
-                await this.appxPacker.Unpack(this.InputPath.CurrentValue, this.GetOutputPath(), default, token).ConfigureAwait(false);
-                this.IsSuccess = true;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
-            }
+            await this.appxPacker.Unpack(this.InputPath.CurrentValue, this.GetOutputPath(), default, progress).ConfigureAwait(false);
         }
 
         private void ResetExecuted(object parameter)
         {
             this.InputPath.Reset();
             this.OutputPath.Reset();
-            this.IsSuccess = false;
+            this.State.IsSaved = false;
         }
 
         private void OpenSuccessLinkExecuted(object parameter)
@@ -184,7 +97,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
         {
             if (!string.IsNullOrEmpty(this.InputPath.CurrentValue))
             {
-                return this.CreateFolder ? Path.Combine(this.OutputPath.CurrentValue, Path.GetFileNameWithoutExtension(this.InputPath.CurrentValue)) : this.OutputPath.CurrentValue;
+                return this.CreateFolder.CurrentValue ? Path.Combine(this.OutputPath.CurrentValue, Path.GetFileNameWithoutExtension(this.InputPath.CurrentValue)) : this.OutputPath.CurrentValue;
             }
 
             return null;

@@ -10,6 +10,7 @@
              xmlns:appInstaller="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;assembly=msixhero.lib"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:common="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common"
+             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
              d:DesignWidth="800"
              d:DesignHeight="800"
@@ -30,141 +31,113 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
-        <CommandBinding Command="Close" Executed="CloseExecuted" />
-    </UserControl.CommandBindings>
-
-    <AdornerDecorator>
-        <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
-            <xctk:BusyIndicator.ProgressBarStyle>
-                <Style TargetType="ProgressBar">
-                    <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
-                </Style>
-            </xctk:BusyIndicator.ProgressBarStyle>
-            <DockPanel>
-                <Border Background="#2B579A" DockPanel.Dock="Top">
-                    <DockPanel Margin="16">
-                        <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorSetup}" />
-                        <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Create .appinstaller</Label>
-                    </DockPanel>
-                </Border>
-                <Border Background="#eee" DockPanel.Dock="Bottom">
-                    <DockPanel>
-                        <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                            <Button Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="Save" Content="Create appinstaller..." />
-                            <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
-                        </StackPanel>
-                    </DockPanel>
-                </Border>
-
-                <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom" Visibility="{Binding ChangeableContainer.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                    <TextBlock Text="{Binding ChangeableContainer.ValidationMessage}" VerticalAlignment="Center" />
-                </Border>
-
-                <Grid Margin="16 0 16 16">
-                    <Border Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel VerticalAlignment="Center">
-                            <Path Style="{StaticResource AnimatedSuccess}" />
-
-                            <TextBlock Text="Your .appinstaller file has been successfully packed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                            <TextBlock TextAlignment="Center">
-                            <Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing the .appinstaller file</Hyperlink>
-                            </TextBlock>
-                            <TextBlock TextAlignment="Center">
-                            <Hyperlink Command="{Binding Reset}">Create for another package</Hyperlink>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-
-                    <TabControl Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" >
-                        <TabItem Header="Package">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <AdornerDecorator>
-                                    <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
-                                </AdornerDecorator>
-                            </ScrollViewer>
-                        </TabItem>
-                        <TabItem Header="Properties">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <AdornerDecorator>
-                                    <StackPanel>
-                                        <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="App installer version" Margin="0 0 0 6" />
-                                        <TextBox TabIndex="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-
-                                        <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Visibility="{Binding PackageSelection.IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main package is available" Margin="0 16 0 6" />
-                                        <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Visibility="{Binding PackageSelection.IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main bundle is available" Margin="0 16 0 6" />
-                                        <TextBox TabIndex="2" Text="{Binding MainPackageUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-
-                                        <TextBlock HorizontalAlignment="Left" Foreground="#666" helpers:RequiredAdorner.IsRequired="True" Text="URI to a remote location where the .appinstaller file will be available" Margin="0 16 0 6" />
-                                        <TextBox TabIndex="2" Text="{Binding AppInstallerUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-                                    </StackPanel>
-                                </AdornerDecorator>
-                            </ScrollViewer>
-                        </TabItem>
-                        <TabItem Header="Options">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <changeableDialog:ChangeableDialog
+        Dialog="{Binding}"
+        OkButtonLabel="Create appinstaller..."
+        Icon="{StaticResource VectorSetup}">
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <TabControl>
+                    <TabItem Header="Package">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <AdornerDecorator>
+                                <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
+                            </AdornerDecorator>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Properties">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <AdornerDecorator>
                                 <StackPanel>
-                                    <TextBlock Foreground="#666" Text="When to check for updates?" Margin="0 0 0 6" />
-                                    <ComboBox SelectedValue="{Binding AppInstallerUpdateCheckingMethod.CurrentValue}" SelectedValuePath="Tag" Margin="0 0 0 0">
-                                        <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On lauch</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}">Every 8 hours</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and very 8 hours</ComboBoxItem>
-                                    </ComboBox>
+                                    <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="App installer version" Margin="0 0 0 6" />
+                                    <TextBox TabIndex="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                    <StackPanel Visibility="{Binding ElementName=UpdateNever, Path=IsSelected, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                                        <TextBlock Foreground="#666" Text="Update options" Margin="0 16 0 6" />
-                                        <CheckBox IsChecked="{Binding AllowDowngrades.CurrentValue}" Margin="0 0 0 6">
-                                            <TextBlock Text="Allow downgrades (installing older version of an app over the newer one)" TextWrapping="Wrap" />
-                                        </CheckBox>
+                                    <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Visibility="{Binding PackageSelection.IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main package is available" Margin="0 16 0 6" />
+                                    <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Visibility="{Binding PackageSelection.IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main bundle is available" Margin="0 16 0 6" />
+                                    <TextBox TabIndex="2" Text="{Binding MainPackageUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                                    <TextBlock HorizontalAlignment="Left" Foreground="#666" helpers:RequiredAdorner.IsRequired="True" Text="URI to a remote location where the .appinstaller file will be available" Margin="0 16 0 6" />
+                                    <TextBox TabIndex="2" Text="{Binding AppInstallerUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                                </StackPanel>
+                            </AdornerDecorator>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Options">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <TextBlock Foreground="#666" Text="When to check for updates?" Margin="0 0 0 6" />
+                                <ComboBox SelectedValue="{Binding AppInstallerUpdateCheckingMethod.CurrentValue}" SelectedValuePath="Tag" Margin="0 0 0 0">
+                                    <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On lauch</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}">Every 8 hours</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and very 8 hours</ComboBoxItem>
+                                </ComboBox>
+
+                                <StackPanel Visibility="{Binding ElementName=UpdateNever, Path=IsSelected, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                                    <TextBlock Foreground="#666" Text="Update options" Margin="0 16 0 6" />
+                                    <CheckBox IsChecked="{Binding AllowDowngrades.CurrentValue}" Margin="0 0 0 6">
+                                        <TextBlock Text="Allow downgrades (installing older version of an app over the newer one)" TextWrapping="Wrap" />
+                                    </CheckBox>
+                                </StackPanel>
+
+                                <StackPanel Visibility="{Binding ShowLaunchOptions, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Foreground="#666" Text="When launching the app check for a new version and..." Margin="0 16 0 6" />
+                                    <CheckBox IsChecked="{Binding ShowPrompt.CurrentValue}" Margin="0 0 0 6">
+                                        <TextBlock Text="Show a prompt if a new version is available" TextWrapping="Wrap" />
+                                    </CheckBox>
+                                    <CheckBox IsChecked="{Binding BlockLaunching.CurrentValue}" Margin="0 0 0 6">
+                                        <TextBlock Text="Stop the user from launching the application until the available update has been applied." TextWrapping="Wrap" />
+                                    </CheckBox>
+                                    <TextBlock Foreground="#666" Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <xctk:ButtonSpinner Content="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="80" />
+                                        <TextBlock Text="hours" VerticalAlignment="Center" Margin="5 0 0 0" />
                                     </StackPanel>
+                                </StackPanel>
 
-                                    <StackPanel Visibility="{Binding ShowLaunchOptions, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <TextBlock Foreground="#666" Text="When launching the app check for a new version and..." Margin="0 16 0 6" />
-                                        <CheckBox IsChecked="{Binding ShowPrompt.CurrentValue}" Margin="0 0 0 6">
-                                            <TextBlock Text="Show a prompt if a new version is available" TextWrapping="Wrap" />
-                                        </CheckBox>
-                                        <CheckBox IsChecked="{Binding BlockLaunching.CurrentValue}" Margin="0 0 0 6">
-                                            <TextBlock Text="Stop the user from launching the application until the available update has been applied." TextWrapping="Wrap" />
-                                        </CheckBox>
-                                        <TextBlock Foreground="#666" Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />
-                                        <StackPanel Orientation="Horizontal">
-                                            <xctk:ButtonSpinner Content="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="80" />
-                                            <TextBlock Text="hours" VerticalAlignment="Center" Margin="5 0 0 0" />
-                                        </StackPanel>
-                                    </StackPanel>
+                                <Border Height="1" Background="#999" Margin="0 16 0 0" />
 
-                                    <Border Height="1" Background="#999" Margin="0 16 0 0" />
-
-                                    <DockPanel Margin="0 6 0 0">
-                                        <Path 
+                                <DockPanel Margin="0 6 0 0">
+                                    <Path 
                                         Margin="0 0 6 0"
                                         VerticalAlignment="Center"
                                         Fill="#444"
                                         Width="32"
                                         Height="32"
                                         Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 12 L 17 12 L 17 10 Z M 15 14 L 15 22 L 17 22 L 17 14 Z">
-                                            <Path.LayoutTransform>
-                                                <ScaleTransform ScaleY="0.5" ScaleX="0.5" />
-                                            </Path.LayoutTransform>
-                                        </Path>
-                                        <TextBlock Margin="0 0 0 0" TextWrapping="Wrap" VerticalAlignment="Center">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleY="0.5" ScaleX="0.5" />
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                    <TextBlock Margin="0 0 0 0" TextWrapping="Wrap" VerticalAlignment="Center">
                                         <Run Text="This combination of settings requires" />
                                         <Run Text="{Binding CompatibleWindows, Mode=OneWay, FallbackValue='Windows 10'}" FontWeight="SemiBold" />
                                         <Run Text="or newer." />
-                                        </TextBlock>
-                                    </DockPanel>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </TabItem>
-                    </TabControl>
-                </Grid>
-            </DockPanel>
-        </xctk:BusyIndicator>
-    </AdornerDecorator>
+                                    </TextBlock>
+                                </DockPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Your .appinstaller file has been successfully packed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock TextAlignment="Center">
+                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the .appinstaller file</Hyperlink>
+                    </TextBlock>
+                    <!--<TextBlock TextAlignment="Center">
+                    <Hyperlink Command="{Binding ResetCommand}">Create for another package</Hyperlink>
+                    </TextBlock>-->
+                </StackPanel>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+    </changeableDialog:ChangeableDialog>
 </UserControl>

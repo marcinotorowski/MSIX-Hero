@@ -9,6 +9,10 @@ namespace otor.msixhero.lib.Domain.Appx.ModificationPackage
         public string ParentPublisher { get; set; }
 
         public string Name { get; set; }
+        
+        public string DisplayName { get; set; }
+
+        public string DisplayPublisher { get; set; }
 
         public string Publisher { get; set; }
 

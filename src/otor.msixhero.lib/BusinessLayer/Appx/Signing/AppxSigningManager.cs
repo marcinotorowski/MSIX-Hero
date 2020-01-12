@@ -7,10 +7,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.X509;
+using otor.msixhero.lib.BusinessLayer.Appx.Detection;
 using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
@@ -437,7 +439,21 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 
                         Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.InnerText, certificate.Subject);
                         publisher.InnerText = certificate.Subject;
-                        newXmlContent = xmlDocument.OuterXml;
+
+                        var brandingInjector = new MsixHeroBrandingInjector();
+                        brandingInjector.Inject(xmlDocument);
+
+                        var sb = new StringBuilder();
+                        using (TextWriter tw = new StringWriter(sb))
+                        {
+                            using (var xmlWriter = new XmlTextWriter(tw))
+                            {
+                                xmlWriter.Formatting = Formatting.Indented;
+                                xmlDocument.WriteTo(xmlWriter);
+                            }
+                        }
+
+                        newXmlContent = sb.ToString();
                     }
 
                     File.Delete(manifestFilePath);
@@ -452,7 +468,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 
                     Logger.Debug("Packing {0} to {1}.", tempDirectory, localCopy);
                     cancellationToken.ThrowIfCancellationRequested();
-                    await sdk.PackPackage(tempDirectory, localCopy, true, cancellationToken).ConfigureAwait(false);
+                    await sdk.PackPackageDirectory(tempDirectory, localCopy, true, true, cancellationToken).ConfigureAwait(false);
                 }
                 finally
                 {

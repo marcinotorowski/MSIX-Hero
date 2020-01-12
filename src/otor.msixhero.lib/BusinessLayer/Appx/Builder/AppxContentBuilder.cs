@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-using ControlzEx.Standard;
+using otor.msixhero.lib.BusinessLayer.Appx.Detection;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Domain.Appx.AppInstaller;
 using otor.msixhero.lib.Domain.Appx.ModificationPackage;
-using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
 
@@ -24,12 +20,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
         private const string DefaultNamespacePrefix = "msixHero";
 
         private readonly IAppxPacker packer;
-        private readonly IAppxSigningManager signingManager;
 
-        public AppxContentBuilder(IAppxPacker packer, IAppxSigningManager signingManager)
+        public AppxContentBuilder(IAppxPacker packer)
         {
             this.packer = packer;
-            this.signingManager = signingManager;
         }
 
         public async Task Create(AppInstallerConfig config, string file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -46,11 +40,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
             using (var textWriter = new Utf8StringWriter())
             {
                 xmlSerializer.Serialize(textWriter, config);
-
                 var ns = this.GetMinimumSupportedWindowsVersion(config).Item2;
-
                 var content = textWriter.ToString().Replace("http://schemas.microsoft.com/appx/appinstaller/2017", ns);
-                
                 await File.WriteAllTextAsync(file, content, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
             }
         }
@@ -118,7 +109,20 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
             xmlDoc.Load(modPackageTemplate);
             this.PrepareModificationPackage(xmlDoc, config);
 
-            var manifestContent = xmlDoc.OuterXml;
+            string manifestContent;
+            {
+                var sb = new StringBuilder();
+                using (TextWriter tw = new StringWriter(sb))
+                {
+                    using (var xmlWriter = new XmlTextWriter(tw))
+                    {
+                        xmlWriter.Formatting = Formatting.Indented;
+                        xmlDoc.WriteTo(xmlWriter);
+                    }
+                }
+
+                manifestContent = sb.ToString();
+            }
 
             if (action == ModificationPackageBuilderAction.Manifest)
             {
@@ -158,7 +162,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
                 }
 
                 await File.WriteAllTextAsync(Path.Join(tempFolder, "AppxManifest.xml"), manifestContent, Encoding.UTF8, cancellation).ConfigureAwait(false);
-                await this.packer.Pack(tempFolder, filePath, true, cancellation, progress).ConfigureAwait(false);
+                await this.packer.Pack(tempFolder, filePath, 0, cancellation, progress).ConfigureAwait(false);
             }
             finally
             {
@@ -244,105 +248,13 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
             identity.SetAttribute("Version", new Version(major, minor, build, revision).ToString(4));
 
             var properties = GetOrCreateNode(template, package, "Properties", DefaultNamespacePrefix, namespaceManager);
-            GetOrCreateNode(template, properties, "DisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Name";
-            GetOrCreateNode(template, properties, "PublisherDisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Publisher Name";
-            GetOrCreateNode(template, properties, "Description", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package Description";
+            GetOrCreateNode(template, properties, "DisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = config.DisplayName ?? "Modification Package Name";
+            GetOrCreateNode(template, properties, "PublisherDisplayName", DefaultNamespacePrefix, namespaceManager).InnerText = config.DisplayPublisher ?? "Modification Package Publisher Name";
+            GetOrCreateNode(template, properties, "Description", DefaultNamespacePrefix, namespaceManager).InnerText = "Modification Package for " + config.ParentName;
             GetOrCreateNode(template, properties, "Logo", DefaultNamespacePrefix, namespaceManager).InnerText = "Assets\\Logo.png";
-            
-            var metaData = GetNode(template, package, "build:Metadata", namespaceManager);
-            if (metaData != null)
-            {
-                package.RemoveChild(metaData);
-            }
 
-            metaData = CreateNode(template, package, "build:Metadata", namespaceManager);
-
-            var version = NtDll.RtlGetVersion();
-
-            var operatingSystem = CreateNode(template, metaData, "build:Item", namespaceManager);
-            operatingSystem.SetAttribute("Name", "OperatingSystem");
-            operatingSystem.SetAttribute("Version", $"{version.ToString(4)}");
-
-            var msixHero = CreateNode(template, metaData, "build:Item", namespaceManager);
-            msixHero.SetAttribute("Name", "MsixHero");
-            msixHero.SetAttribute("Version", (Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly()).GetName().Version.ToString());
-
-            var signTool = CreateNode(template, metaData, "build:Item", namespaceManager);
-            signTool.SetAttribute("Name", "SignTool.exe");
-            signTool.SetAttribute("Version", GetVersion("SignTool.exe"));
-
-            var makepri = CreateNode(template, metaData, "build:Item", namespaceManager);
-            makepri.SetAttribute("Name", "MakePri.exe");
-            makepri.SetAttribute("Version", GetVersion("MakePri.exe"));
-
-            var makeappx = CreateNode(template, metaData, "build:Item", namespaceManager);
-            makeappx.SetAttribute("Name", "MakeAppx.exe");
-            makeappx.SetAttribute("Version", GetVersion("MakeAppx.exe"));
-        }
-
-        private static string GetVersion(string sdkFile)
-        {
-            var path = MsixSdkWrapper.GetSdkPath(sdkFile);
-            if (!File.Exists(path))
-            {
-                return null;
-            }
-
-            return FileVersionInfo.GetVersionInfo(path).ProductVersion;
-        }
-
-        private static XmlElement GetNode(XmlDocument xmlDocument, XmlNode xmlNode, string qualifiedName, XmlNamespaceManager namespaceManager)
-        {
-            if (string.IsNullOrEmpty(qualifiedName))
-            {
-                throw new ArgumentNullException(nameof(qualifiedName));
-            }
-
-            var indexOf = qualifiedName.IndexOf(':');
-            if (indexOf == -1)
-            {
-                return GetNode(xmlDocument, xmlNode, qualifiedName, DefaultNamespacePrefix, namespaceManager);
-            }
-
-            return GetNode(xmlDocument, xmlNode, qualifiedName.Substring(indexOf + 1), qualifiedName.Substring(0, indexOf), namespaceManager);
-        }
-
-        private static XmlElement GetOrCreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string qualifiedName, XmlNamespaceManager namespaceManager)
-        {
-            if (string.IsNullOrEmpty(qualifiedName))
-            {
-                throw new ArgumentNullException(nameof(qualifiedName));
-            }
-
-            var indexOf = qualifiedName.IndexOf(':');
-            if (indexOf == -1)
-            {
-                return GetOrCreateNode(xmlDocument, xmlNode, qualifiedName, DefaultNamespacePrefix, namespaceManager);
-            }
-
-            return GetOrCreateNode(xmlDocument, xmlNode, qualifiedName.Substring(indexOf + 1), qualifiedName.Substring(0, indexOf), namespaceManager);
-        }
-
-        private static XmlElement CreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string qualifiedName, XmlNamespaceManager namespaceManager)
-        {
-            if (string.IsNullOrEmpty(qualifiedName))
-            {
-                throw new ArgumentNullException(nameof(qualifiedName));
-            }
-
-            var indexOf = qualifiedName.IndexOf(':');
-            if (indexOf == -1)
-            {
-                return CreateNode(xmlDocument, xmlNode, qualifiedName, DefaultNamespacePrefix, namespaceManager);
-            }
-
-            return CreateNode(xmlDocument, xmlNode, qualifiedName.Substring(indexOf + 1), qualifiedName.Substring(0, indexOf), namespaceManager);
-        }
-
-        private static XmlElement GetNode(XmlDocument xmlDocument, XmlNode xmlNode, string name, string prefix, XmlNamespaceManager namespaceManager)
-        {
-            var node = xmlNode.SelectSingleNode($"{prefix}:{name}", namespaceManager);
-            return (XmlElement)node;
+            var branding = new MsixHeroBrandingInjector();
+            branding.Inject(template);
         }
 
         private static XmlElement GetOrCreateNode(XmlDocument xmlDocument, XmlNode xmlNode, string name, string prefix, XmlNamespaceManager namespaceManager)
@@ -372,7 +284,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
 
             var node = xmlDocument.CreateElement(name, ns);
             xmlNode.AppendChild(node);
-            return (XmlElement)node;
+            return node;
         }
 
         private static string GetBundledResourcePath(string localName)
@@ -388,18 +300,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
 
         private sealed class Utf8StringWriter : StringWriter
         {
-            public Utf8StringWriter()
-            {
-            }
-
-            public Utf8StringWriter(IFormatProvider formatProvider) : base(formatProvider)
-            {
-            }
-
-            public Utf8StringWriter(StringBuilder sb, IFormatProvider formatProvider) : base(sb, formatProvider)
-            {
-            }
-
             public override Encoding Encoding => Encoding.UTF8;
         }
     }

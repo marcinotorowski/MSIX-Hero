@@ -5,14 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel"
-             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.View"
-             xmlns:signing="clr-namespace:otor.msixhero.lib.Domain.Appx.Signing;assembly=msixhero.lib"
-             xmlns:viewModel11="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:PackageSigningViewModel}">
@@ -32,45 +28,23 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/EXtras.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.CommandBindings>
-        <CommandBinding Command="Save" CanExecute="CanSave" Executed="SaveExecuted" />
-        <CommandBinding Command="Close" Executed="CloseExecuted" />
         <CommandBinding Command="New" Executed="CommandBinding_OnExecuted" CanExecute="CommandBinding_OnCanExecute" />
         <CommandBinding Command="Delete" Executed="CommandBinding_OnExecuted" CanExecute="CommandBinding_OnCanExecute" />
     </UserControl.CommandBindings>
 
-    <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding ProgressMessage}">
-        <xctk:BusyIndicator.ProgressBarStyle>
-            <Style TargetType="ProgressBar">
-                <Setter Property="Value" Value="{Binding Progress, Mode=OneWay}" />
-            </Style>
-        </xctk:BusyIndicator.ProgressBarStyle>
-        <DockPanel>
-            <Border Background="#2B579A" DockPanel.Dock="Top">
-                <DockPanel Margin="16">
-                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorSign}" />
-                    <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Package Signing</Label>
-                </DockPanel>
-            </Border>
-            <Border Background="#eee" DockPanel.Dock="Bottom">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                        <Button Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="Save" Content="Update selected packages" />
-                        <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-
-            <Border Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom" Visibility="{Binding IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <TextBlock Text="{Binding ValidationMessage}" VerticalAlignment="Center" />
-            </Border>
-
-            <Grid DockPanel.Dock="Top">
-                <TabControl Visibility="{Binding IsSuccess, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Margin="16 0" SelectedIndex="1">
+    <changeableDialog:ChangeableDialog
+        Dialog="{Binding}"
+        OkButtonLabel="Update selected packages"
+        Icon="{StaticResource VectorSign}">
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <TabControl SelectedIndex="1">
                     <TabItem>
                         <TabItem.Header>
                             <TextBlock>
@@ -87,8 +61,9 @@
                                 </WrapPanel>
                                 <Grid DockPanel.Dock="Top" VerticalAlignment="Stretch">
                                     <ListBox
-                                x:Name="ListBox"
-                                AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DragLeave="OnDragLeave" ItemsSource="{Binding Files}">
+                                        x:Name="ListBox"
+                                        SelectionChanged="OnSelectionChanged"
+                                        AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DragLeave="OnDragLeave" ItemsSource="{Binding Files}">
                                         <ListBox.InputBindings>
                                             <KeyBinding Key="Delete" Command="Delete"></KeyBinding>
                                         </ListBox.InputBindings>
@@ -128,11 +103,20 @@
                         </ScrollViewer>
                     </TabItem>
                 </TabControl>
-                <StackPanel DockPanel.Dock="Top" Visibility="{Binding IsSuccess, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">
-                    <Path Style="{StaticResource AnimatedSuccess}" />
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel>
                     <TextBlock Text="Your package(s) have been successfully signed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock TextAlignment="Center" Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the signed package</Hyperlink>
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center">
+                        <Hyperlink x:Name="Hyperlink" Command="{Binding ResetCommand}">Sign some more packages</Hyperlink>
+                    </TextBlock>
                 </StackPanel>
-            </Grid>
-        </DockPanel>
-    </xctk:BusyIndicator>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+    </changeableDialog:ChangeableDialog>
 </UserControl>

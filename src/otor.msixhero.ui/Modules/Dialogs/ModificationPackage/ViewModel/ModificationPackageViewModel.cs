@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
@@ -10,10 +11,10 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
-using otor.msixhero.ui.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
@@ -21,15 +22,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
     using System.Diagnostics;
     using System.Text.RegularExpressions;
 
-    public class ModificationPackageViewModel : NotifyPropertyChanged, IDialogAware
+    public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly IAppxContentBuilder contentBuilder;
         private readonly IAppxSigningManager signingManager;
         private readonly IInteractionService interactionService;
-        private int progress;
-        private string progressMessage;
-        private bool isLoading;
-        private bool isSuccess;
         private ICommand openSuccessLink;
         private ICommand reset;
 
@@ -37,7 +34,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             IAppxContentBuilder contentBuilder, 
             IAppxSigningManager signingManager,
             IConfigurationService configurationService,
-            IInteractionService interactionService)
+            IInteractionService interactionService) : base("Create modification package stub", interactionService)
         {
             this.contentBuilder = contentBuilder;
             this.signingManager = signingManager;
@@ -52,104 +49,48 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                 PackageSelectorDisplayMode.AllowBrowsing | 
                 PackageSelectorDisplayMode.AllowChanging | 
                 PackageSelectorDisplayMode.RequireFullIdentity | 
-                PackageSelectorDisplayMode.ShowActualName)
-            {
-                IsValidated = false
-            };
+                PackageSelectorDisplayMode.ShowActualName);
 
             this.ModificationPackageDetails = new PackageSelectorViewModel(
                 interactionService,
                 PackageSelectorDisplayMode.AllowChanging | 
                 PackageSelectorDisplayMode.AllowPackages | 
                 PackageSelectorDisplayMode.RequireFullIdentity | 
-                PackageSelectorDisplayMode.ShowDisplayName)
-            {
-                IsValidated = false
-            };
+                PackageSelectorDisplayMode.ShowDisplayName);
 
             this.ModificationPackageDetails.Version.CurrentValue = "1.0.0.0";
             this.ModificationPackageDetails.Architecture.CurrentValue = AppInstallerPackageArchitecture.neutral;
             this.ModificationPackageDetails.Commit();
             
             this.Create = new ChangeableProperty<ModificationPackageBuilderAction>();
+            this.Create.ValueChanged += this.CreateOnValueChanged;
 
             this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, configurationService.GetCurrentConfiguration()?.Signing, true);
-
-            this.ChangeableContainer = new ChangeableContainer(this.PackageSelection, this.ModificationPackageDetails, this.Create, this.SelectedCertificate)
-            {
-                IsValidated = false
-            };
-
-            this.Create.ValueChanged += this.CreateOnValueChanged;
+            
+            this.AddChildren(this.PackageSelection, this.ModificationPackageDetails, this.Create, this.SelectedCertificate);
+            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
-        public ChangeableContainer ChangeableContainer { get; }
-        
         public PackageSelectorViewModel PackageSelection { get; }
 
         public PackageSelectorViewModel ModificationPackageDetails { get; }
 
         public ChangeableProperty<ModificationPackageBuilderAction> Create { get; }
-
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
-        }
-
-        public int Progress
-        {
-            get => this.progress;
-            private set => this.SetField(ref this.progress, value);
-        }
-
-        public string ProgressMessage
-        {
-            get => this.progressMessage;
-            private set => this.SetField(ref this.progressMessage, value);
-        }
-
-        public ICommand OpenSuccessLink
+        
+        public ICommand OpenSuccessLinkCommand
         {
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
-        public ICommand Reset
+        public ICommand ResetCommand
         {
             get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public string Result { get; private set; }
-
-        public bool IsSuccess
-        {
-            get => this.isSuccess;
-            set => this.SetField(ref this.isSuccess, value);
-        }
         
-        public bool CanSave()
-        {
-            return this.ChangeableContainer.IsValid;
-        }
-
-        public string Title
-        {
-            get => "Create modification package stub";
-        }
-
         public CertificateSelectorViewModel SelectedCertificate { get; }
-
-        public event Action<IDialogResult> RequestClose;
-
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public void OnDialogClosed()
-        {
-        }
-
+        
         public void OnDialogOpened(IDialogParameters parameters)
         {
             if (!parameters.TryGetValue("file", out string sourceFile))
@@ -166,14 +107,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             this.ModificationPackageDetails.Commit();
         }
 
-        public async Task Save()
+        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            this.ChangeableContainer.IsValidated = true;
-            if (!this.ChangeableContainer.IsValid)
-            {
-                return;
-            }
-
             // ReSharper disable once NotAccessedVariable
             string selectedPath;
 
@@ -200,70 +135,49 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                     throw new ArgumentOutOfRangeException();
             }
 
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
+            var modificationPkgCreationRequest = new ModificationPackageConfig
             {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
+                DisplayName = this.ModificationPackageDetails.DisplayName.CurrentValue,
+                Name = Regex.Replace(this.ModificationPackageDetails.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
+                Publisher = "CN=" + Regex.Replace(this.ModificationPackageDetails.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
+                DisplayPublisher = this.ModificationPackageDetails.DisplayPublisher.CurrentValue,
+                Architecture = this.ModificationPackageDetails.Architecture.CurrentValue,
+                Version = this.ModificationPackageDetails.Version.CurrentValue,
+                ParentName = this.PackageSelection.Name.CurrentValue,
+                ParentPublisher = this.PackageSelection.Publisher.CurrentValue
             };
 
-            this.IsLoading = true;
-            try
+            await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+
+            switch (this.Create.CurrentValue)
             {
-                token.ProgressChanged += handler;
+                case ModificationPackageBuilderAction.Manifest:
+                    this.Result = Path.Combine(selectedPath, "AppxManifest.xml");
+                    break;
+                case ModificationPackageBuilderAction.Msix:
+                    this.Result = selectedPath;
+                    break;
+                case ModificationPackageBuilderAction.SignedMsix:
 
-                var modificationPkgCreationRequest = new ModificationPackageConfig
-                {
-                    Name = Regex.Replace(this.ModificationPackageDetails.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
-                    Publisher = "CN=" + Regex.Replace(this.ModificationPackageDetails.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
-                    Architecture = this.ModificationPackageDetails.Architecture.CurrentValue,
-                    Version = this.ModificationPackageDetails.Version.CurrentValue,
-                    ParentName = this.PackageSelection.Name.CurrentValue,
-                    ParentPublisher = this.PackageSelection.Publisher.CurrentValue
-                };
+                    switch (this.SelectedCertificate.Store.CurrentValue)
+                    {
+                        case CertificateSource.Pfx:
+                            await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                            break;
+                        case CertificateSource.Personal:
+                            await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                            break;
+                    }
 
-                await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue).ConfigureAwait(false);
-                
-                switch (this.Create.CurrentValue)
-                {
-                    case ModificationPackageBuilderAction.Manifest:
-                        this.Result = Path.Combine(selectedPath, "AppxManifest.xml");
-                        break;
-                    case ModificationPackageBuilderAction.Msix:
-                        this.Result = selectedPath;
-                        break;
-                    case ModificationPackageBuilderAction.SignedMsix:
-
-                        switch (this.SelectedCertificate.Store.CurrentValue)
-                        {
-                            case CertificateSource.Pfx:
-                                await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
-                                break;
-                            case CertificateSource.Personal:
-                                await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
-                                break;
-                        }
-
-                        this.Result = selectedPath;
-                        break;
-                }
-
-                this.IsSuccess = true;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
+                    this.Result = selectedPath;
+                    break;
             }
         }
 
         private void ResetExecuted(object parameter)
         {
             this.PackageSelection.Reset();
-            this.IsSuccess = false;
+            this.State.IsSaved = false;
         }
 
         private void CreateOnValueChanged(object sender, ValueChangedEventArgs e)

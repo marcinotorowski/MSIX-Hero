@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Xml;
 using Microsoft.CodeAnalysis;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
@@ -49,260 +51,297 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
         private AppxPackage ReadMsix(IAppxFileReader fileReader)
         {
             var xmlDocument = new XmlDocument();
-            using (var file = fileReader.GetFile("AppxManifest.xml"))
-            {
-                xmlDocument.Load(file);
 
-                var nodePackage = xmlDocument.SelectSingleNode("/*[local-name()='Package']");
-                if (nodePackage == null)
+            string priFullPath = null;
+            var cleanUp = false;
+            try
+            {
+                if (fileReader.FileExists("resources.pri"))
                 {
-                    throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
+                    using (var stream = fileReader.GetFile("resources.pri"))
+                    {
+                        if (stream is FileStream fileStream)
+                        {
+                            priFullPath = fileStream.Name;
+                        }
+                        else
+                        {
+                            priFullPath = Path.GetTempFileName();
+
+                            using (var fs = File.OpenWrite(priFullPath))
+                            {
+                                stream.CopyTo(fs);
+                                fs.Flush();
+                            }
+
+                            cleanUp = true;
+                        }
+                    }
                 }
 
-                var nodeIdentity = GetNode(nodePackage, "Identity");
-                var nodeProperties = GetNode(nodePackage, "Properties");
-                var nodeApplicationsRoot = GetNode(nodePackage, "Applications");
-                var nodeDependenciesRoot = GetNode(nodePackage, "Dependencies");
-                var nodeBuild = GetNode(nodePackage, "Metadata", true);
 
-                var appxPackage = new AppxPackage();
-                if (nodeIdentity != null)
+                using (var file = fileReader.GetFile("AppxManifest.xml"))
                 {
-                    appxPackage.Name = GetNodeAttribute(nodeIdentity, "Name");
+                    xmlDocument.Load(file);
 
-                    if (Enum.TryParse(typeof(AppxPackageArchitecture), GetNodeAttribute(nodeIdentity, "ProcessorArchitecture"), true, out object parsedArchitecture))
+                    var nodePackage = xmlDocument.SelectSingleNode("/*[local-name()='Package']");
+                    if (nodePackage == null)
                     {
-                        appxPackage.ProcessorArchitecture = (AppxPackageArchitecture)parsedArchitecture;
+                        throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
                     }
 
-                    appxPackage.Publisher = GetNodeAttribute(nodeIdentity, "Publisher");
-                    appxPackage.Version = GetNodeAttribute(nodeIdentity, "Version");
-                }
+                    var nodeIdentity = GetNode(nodePackage, "Identity");
+                    var nodeProperties = GetNode(nodePackage, "Properties");
+                    var nodeApplicationsRoot = GetNode(nodePackage, "Applications");
+                    var nodeDependenciesRoot = GetNode(nodePackage, "Dependencies");
+                    var nodeBuild = GetNode(nodePackage, "Metadata", true);
 
-                if (nodeProperties != null)
-                {
-                    appxPackage.PublisherDisplayName = GetNodeValue(nodeProperties, "PublisherDisplayName");
-                    appxPackage.DisplayName = GetNodeValue(nodeProperties, "DisplayName");
-                    var logo = GetNodeValue(nodeProperties, "Logo");
-                    if (!string.IsNullOrEmpty(logo))
+                    var appxPackage = new AppxPackage();
+                    if (nodeIdentity != null)
                     {
-                        using (var resourceStream = fileReader.GetResource(logo))
+                        appxPackage.Name = GetNodeAttribute(nodeIdentity, "Name");
+
+                        if (Enum.TryParse(typeof(AppxPackageArchitecture), GetNodeAttribute(nodeIdentity, "ProcessorArchitecture"), true, out object parsedArchitecture))
                         {
-                            if (resourceStream != null)
+                            appxPackage.ProcessorArchitecture = (AppxPackageArchitecture)parsedArchitecture;
+                        }
+
+                        appxPackage.Publisher = GetNodeAttribute(nodeIdentity, "Publisher");
+                        appxPackage.Version = GetNodeAttribute(nodeIdentity, "Version");
+                    }
+
+                    if (nodeProperties != null)
+                    {
+                        appxPackage.PublisherDisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "PublisherDisplayName"));
+                        appxPackage.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "DisplayName"));
+                        var logo = GetNodeValue(nodeProperties, "Logo");
+                        if (!string.IsNullOrEmpty(logo))
+                        {
+                            using (var resourceStream = fileReader.GetResource(logo))
                             {
-                                using (var memoryStream = new MemoryStream())
+                                if (resourceStream != null)
                                 {
-                                    resourceStream.CopyTo(memoryStream);
-                                    memoryStream.Flush();
-                                    appxPackage.Logo = memoryStream.ToArray();
+                                    using (var memoryStream = new MemoryStream())
+                                    {
+                                        resourceStream.CopyTo(memoryStream);
+                                        memoryStream.Flush();
+                                        appxPackage.Logo = memoryStream.ToArray();
+                                    }
                                 }
                             }
                         }
+                        appxPackage.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "Description"));
+                        appxPackage.IsFramework = string.Equals(GetNodeValue(nodeProperties, "Framework") ?? "false", "true", StringComparison.OrdinalIgnoreCase);
                     }
-                    appxPackage.Description = GetNodeValue(nodeProperties, "Description");
-                    appxPackage.IsFramework = string.Equals(GetNodeValue(nodeProperties, "Framework") ?? "false", "true", StringComparison.OrdinalIgnoreCase);
-                }
 
-                appxPackage.PackageDependencies = new List<AppxPackageDependency>();
-                appxPackage.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
-                appxPackage.Applications = new List<AppxApplication>();
+                    appxPackage.PackageDependencies = new List<AppxPackageDependency>();
+                    appxPackage.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
+                    appxPackage.Applications = new List<AppxApplication>();
 
-                if (nodeApplicationsRoot != null)
-                {
-                    foreach (var node in GetNodes(nodeApplicationsRoot, "Application"))
+                    if (nodeApplicationsRoot != null)
                     {
-                        /*
-                         *<Application EntryPoint="SparklerApp.App" Executable="XD.exe" Id="App">
-                            <uap:VisualElements BackgroundColor="#2D001E" Description="Adobe XD" DisplayName="Adobe XD" Square150x150Logo="Assets\xd_med_tile.png" Square44x44Logo="Assets\xd_app_list_icon.png">
-                              <uap:DefaultTile Square310x310Logo="Assets\xd_large_tile.png" Square71x71Logo="Assets\xd_small_tile.png" Wide310x150Logo="Assets\xd_wide_tile.png">
-                                <uap:ShowNameOnTiles>
-                                  <uap:ShowOn Tile="square150x150Logo" />
-                                  <uap:ShowOn Tile="wide310x150Logo" />
-                                  <uap:ShowOn Tile="square310x310Logo" />
-                                </uap:ShowNameOnTiles>
-                              </uap:DefaultTile>
-                              <uap:SplashScreen BackgroundColor="#FFFFFF" Image="Assets\xd_splash.png" />
-                            </uap:VisualElements>
-
-                         <Application Id="RayEval" Executable="PsfLauncher32.exe" EntryPoint="Windows.FullTrustApplication">
-                            <uap:VisualElements DisplayName="RayEval" Description="RayEval Raynet GmbH" BackgroundColor="transparent" 
-                                Square150x150Logo="Assets\Square150x150Logo.scale-100.png" Square44x44Logo="Assets\Square44x44Logo.scale-100.png">
-                                <uap:DefaultTile Wide310x150Logo="Assets\Square310x150Logo.scale-100.png" Square310x310Logo="Assets\Square310x310Logo.scale-100.png" Square71x71Logo="Assets\Square71x71Logo.scale-100.png" />
-                            </uap:VisualElements>
-                            <Extensions />
-                        </Application>
-                         *
-                         */
-
-                        var appxApplication = new AppxApplication();
-
-                        appxApplication.EntryPoint = GetNodeAttribute(node, "EntryPoint");
-                        appxApplication.StartPage = GetNodeAttribute(node, "StartPage");
-                        appxApplication.Executable = GetNodeAttribute(node, "Executable");
-                        appxApplication.Id = GetNodeAttribute(node, "Id");
-
-                        var visualElements = GetNode(node, "VisualElements", true);
-                        if (visualElements != null)
+                        foreach (var node in GetNodes(nodeApplicationsRoot, "Application"))
                         {
-                            appxApplication.Description = GetNodeAttribute(visualElements, "Description");
-                            appxApplication.DisplayName = GetNodeAttribute(visualElements, "DisplayName");
-                            appxApplication.BackgroundColor = GetNodeAttribute(visualElements, "BackgroundColor");
-                            appxApplication.Square150x150Logo = GetNodeAttribute(visualElements, "Square150x150Logo");
-                            appxApplication.Square44x44Logo = GetNodeAttribute(visualElements, "Square44x44Logo");
+                            /*
+                             *<Application EntryPoint="SparklerApp.App" Executable="XD.exe" Id="App">
+                                <uap:VisualElements BackgroundColor="#2D001E" Description="Adobe XD" DisplayName="Adobe XD" Square150x150Logo="Assets\xd_med_tile.png" Square44x44Logo="Assets\xd_app_list_icon.png">
+                                  <uap:DefaultTile Square310x310Logo="Assets\xd_large_tile.png" Square71x71Logo="Assets\xd_small_tile.png" Wide310x150Logo="Assets\xd_wide_tile.png">
+                                    <uap:ShowNameOnTiles>
+                                      <uap:ShowOn Tile="square150x150Logo" />
+                                      <uap:ShowOn Tile="wide310x150Logo" />
+                                      <uap:ShowOn Tile="square310x310Logo" />
+                                    </uap:ShowNameOnTiles>
+                                  </uap:DefaultTile>
+                                  <uap:SplashScreen BackgroundColor="#FFFFFF" Image="Assets\xd_splash.png" />
+                                </uap:VisualElements>
 
-                            var defaultTile = GetNode(visualElements, "DefaultTile", true);
-                            if (defaultTile != null)
-                            {
-                                appxApplication.Wide310x150Logo = GetNodeAttribute(defaultTile, "Wide310x150Logo");
-                                appxApplication.Square310x310Logo = GetNodeAttribute(defaultTile, "Square310x310Logo");
-                                appxApplication.Square71x71Logo = GetNodeAttribute(defaultTile, "Square71x71Logo");
-                                appxApplication.ShortName = GetNodeAttribute(defaultTile, "ShortName");
-                            }
+                             <Application Id="RayEval" Executable="PsfLauncher32.exe" EntryPoint="Windows.FullTrustApplication">
+                                <uap:VisualElements DisplayName="RayEval" Description="RayEval Raynet GmbH" BackgroundColor="transparent" 
+                                    Square150x150Logo="Assets\Square150x150Logo.scale-100.png" Square44x44Logo="Assets\Square44x44Logo.scale-100.png">
+                                    <uap:DefaultTile Wide310x150Logo="Assets\Square310x150Logo.scale-100.png" Square310x310Logo="Assets\Square310x310Logo.scale-100.png" Square71x71Logo="Assets\Square71x71Logo.scale-100.png" />
+                                </uap:VisualElements>
+                                <Extensions />
+                            </Application>
+                             *
+                             */
 
-                            var logo = appxApplication.Square44x44Logo ?? appxApplication.Square30x30Logo ?? appxApplication.Square71x71Logo ?? appxApplication.Square150x150Logo;
-                            if (logo == null)
+                            var appxApplication = new AppxApplication();
+
+                            appxApplication.EntryPoint = GetNodeAttribute(node, "EntryPoint");
+                            appxApplication.StartPage = GetNodeAttribute(node, "StartPage");
+                            appxApplication.Executable = GetNodeAttribute(node, "Executable");
+                            appxApplication.Id = GetNodeAttribute(node, "Id");
+
+                            var visualElements = GetNode(node, "VisualElements", true);
+                            if (visualElements != null)
                             {
-                                appxApplication.Logo = appxPackage.Logo;
-                            }
-                            else
-                            {
-                                Stream stream = null;
-                                try
+                                appxApplication.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeAttribute(visualElements, "Description"));
+                                appxApplication.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeAttribute(visualElements, "DisplayName"));
+                                appxApplication.BackgroundColor = GetNodeAttribute(visualElements, "BackgroundColor");
+                                appxApplication.Square150x150Logo = GetNodeAttribute(visualElements, "Square150x150Logo");
+                                appxApplication.Square44x44Logo = GetNodeAttribute(visualElements, "Square44x44Logo");
+
+                                var defaultTile = GetNode(visualElements, "DefaultTile", true);
+                                if (defaultTile != null)
                                 {
-                                    stream =
-                                        fileReader.GetResource(appxApplication.Square44x44Logo) ??
-                                        fileReader.GetResource(appxApplication.Square30x30Logo) ??
-                                        fileReader.GetResource(appxApplication.Square71x71Logo) ??
-                                        fileReader.GetResource(appxApplication.Square150x150Logo);
+                                    appxApplication.Wide310x150Logo = GetNodeAttribute(defaultTile, "Wide310x150Logo");
+                                    appxApplication.Square310x310Logo = GetNodeAttribute(defaultTile, "Square310x310Logo");
+                                    appxApplication.Square71x71Logo = GetNodeAttribute(defaultTile, "Square71x71Logo");
+                                    appxApplication.ShortName = GetNodeAttribute(defaultTile, "ShortName");
+                                }
 
-                                    if (stream != null)
+                                var logo = appxApplication.Square44x44Logo ?? appxApplication.Square30x30Logo ?? appxApplication.Square71x71Logo ?? appxApplication.Square150x150Logo;
+                                if (logo == null)
+                                {
+                                    appxApplication.Logo = appxPackage.Logo;
+                                }
+                                else
+                                {
+                                    Stream stream = null;
+                                    try
                                     {
-                                        using (var memoryStream = new MemoryStream())
+                                        stream =
+                                            fileReader.GetResource(appxApplication.Square44x44Logo) ??
+                                            fileReader.GetResource(appxApplication.Square30x30Logo) ??
+                                            fileReader.GetResource(appxApplication.Square71x71Logo) ??
+                                            fileReader.GetResource(appxApplication.Square150x150Logo);
+
+                                        if (stream != null)
                                         {
-                                            stream.CopyTo(memoryStream);
-                                            memoryStream.Flush();
-                                            appxApplication.Logo = memoryStream.ToArray();
+                                            using (var memoryStream = new MemoryStream())
+                                            {
+                                                stream.CopyTo(memoryStream);
+                                                memoryStream.Flush();
+                                                appxApplication.Logo = memoryStream.ToArray();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            appxApplication.Logo = appxPackage.Logo;
                                         }
                                     }
-                                    else
+                                    finally
                                     {
-                                        appxApplication.Logo = appxPackage.Logo;
-                                    }
-                                }
-                                finally
-                                {
-                                    if (stream != null)
-                                    {
-                                        stream.Dispose();
+                                        if (stream != null)
+                                        {
+                                            stream.Dispose();
+                                        }
                                     }
                                 }
                             }
+
+                            appxPackage.Applications.Add(appxApplication);
                         }
 
-                        appxPackage.Applications.Add(appxApplication);
-                    }
-
-                    var psfApps = appxPackage.Applications.Where(a =>
-                        PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage) ==
-                        MsixPackageType.BridgePsf).ToArray();
-                    if (psfApps.Any())
-                    {
-                        foreach (var psfApp in psfApps)
+                        var psfApps = appxPackage.Applications.Where(a =>
+                            PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage) ==
+                            MsixPackageType.BridgePsf).ToArray();
+                        if (psfApps.Any())
                         {
-                            psfApp.Psf = this.PsfReader.Read(psfApp.Id, fileReader);
-                        }
-                    }
-                }
-
-                if (nodeDependenciesRoot != null)
-                {
-                    var dependencies = nodeDependenciesRoot.ChildNodes;
-
-                    if (dependencies != null)
-                    {
-                        foreach (var node in dependencies.OfType<XmlNode>())
-                        {
-                            switch (node.LocalName)
+                            foreach (var psfApp in psfApps)
                             {
-                                case "TargetDeviceFamily":
+                                psfApp.Psf = this.PsfReader.Read(psfApp.Id, fileReader);
+                            }
+                        }
+                    }
+
+                    if (nodeDependenciesRoot != null)
+                    {
+                        var dependencies = nodeDependenciesRoot.ChildNodes;
+
+                        if (dependencies != null)
+                        {
+                            foreach (var node in dependencies.OfType<XmlNode>())
+                            {
+                                switch (node.LocalName)
                                 {
-                                    /*
-                                     * <TargetDeviceFamily MaxVersionTested="10.0.15063.0" MinVersion="10.0.15063.0" Name="Windows.Universal" />
-                                     */
-
-                                    var minVersion = GetNodeAttribute(node, "MinVersion");
-                                    var maxVersion = GetNodeAttribute(node, "MaxVersionTested");
-                                    var name = GetNodeAttribute(node, "Name");
-
-                                    appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
+                                    case "TargetDeviceFamily":
                                     {
-                                        Minimum = Windows10Parser.GetOperatingSystemFromNameAndVersion(name, minVersion),
-                                        Tested = Windows10Parser.GetOperatingSystemFromNameAndVersion(name, maxVersion),
-                                    });
+                                        /*
+                                         * <TargetDeviceFamily MaxVersionTested="10.0.15063.0" MinVersion="10.0.15063.0" Name="Windows.Universal" />
+                                         */
 
-                                    break;
-                                }
+                                        var minVersion = GetNodeAttribute(node, "MinVersion");
+                                        var maxVersion = GetNodeAttribute(node, "MaxVersionTested");
+                                        var name = GetNodeAttribute(node, "Name");
 
-                                case "PackageDependency":
-                                {
-                                    /*
-                                     * <PackageDependency MinVersion="1.4.24201.0" Name="Microsoft.NET.Native.Runtime.1.4" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
-                                     */
+                                        appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
+                                        {
+                                            Minimum = Windows10Parser.GetOperatingSystemFromNameAndVersion(name, minVersion),
+                                            Tested = Windows10Parser.GetOperatingSystemFromNameAndVersion(name, maxVersion),
+                                        });
 
-                                    var minVersion = GetNodeAttribute(node, "MinVersion");
-                                    var name = GetNodeAttribute(node, "Name");
-                                    var publisher = GetNodeAttribute(node, "Publisher");
+                                        break;
+                                    }
 
-                                    var appxDepdendency = new AppxPackageDependency
+                                    case "PackageDependency":
                                     {
-                                        Publisher = publisher,
-                                        Name = name,
-                                        Version = minVersion
-                                    };
+                                        /*
+                                         * <PackageDependency MinVersion="1.4.24201.0" Name="Microsoft.NET.Native.Runtime.1.4" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+                                         */
 
-                                    appxPackage.PackageDependencies.Add(appxDepdendency);
-                                    break;
+                                        var minVersion = GetNodeAttribute(node, "MinVersion");
+                                        var name = GetNodeAttribute(node, "Name");
+                                        var publisher = GetNodeAttribute(node, "Publisher");
+
+                                        var appxDepdendency = new AppxPackageDependency
+                                        {
+                                            Publisher = publisher,
+                                            Name = name,
+                                            Version = minVersion
+                                        };
+
+                                        appxPackage.PackageDependencies.Add(appxDepdendency);
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                if (nodeBuild != null)
-                {
-                    var buildKeyValues = new Dictionary<string, string>();
-
-                    foreach (var buildNode in GetNodes(nodeBuild, "Item"))
+                    if (nodeBuild != null)
                     {
-                        var attrName = buildNode.Attributes["Name"]?.Value;
-                        if (attrName == null)
-                        {
-                            continue;
-                        }
+                        var buildKeyValues = new Dictionary<string, string>();
 
-                        var attrVersion = buildNode.Attributes["Version"]?.Value;
-                        if (attrVersion == null)
+                        foreach (var buildNode in GetNodes(nodeBuild, "Item"))
                         {
-                            attrVersion = buildNode.Attributes["Value"]?.Value;
-                            if (attrVersion == null)
+                            var attrName = buildNode.Attributes["Name"]?.Value;
+                            if (attrName == null)
                             {
                                 continue;
                             }
+
+                            var attrVersion = buildNode.Attributes["Version"]?.Value;
+                            if (attrVersion == null)
+                            {
+                                attrVersion = buildNode.Attributes["Value"]?.Value;
+                                if (attrVersion == null)
+                                {
+                                    continue;
+                                }
+                            }
+
+                            buildKeyValues[attrName] = attrVersion;
                         }
 
-                        buildKeyValues[attrName] = attrVersion;
+                        if (this.DetectAdvancedInstaller(buildKeyValues, out var buildInfo)
+                            || this.DetectVisualStudio(buildKeyValues, out buildInfo)
+                            || this.DetectRayPack(buildKeyValues, fileReader, out buildInfo)
+                            || this.DetectMsixHero(buildKeyValues, out buildInfo))
+                        {
+                            appxPackage.BuildInfo = buildInfo;
+                        }
                     }
 
-                    if (this.DetectAdvancedInstaller(buildKeyValues, out var buildInfo)
-                        || this.DetectVisualStudio(buildKeyValues, out buildInfo)
-                        || this.DetectRayPack(buildKeyValues, fileReader, out buildInfo)
-                        || this.DetectMsixHero(buildKeyValues, out buildInfo))
-                    {
-                        appxPackage.BuildInfo = buildInfo;
-                    }
+                    return appxPackage;
                 }
-
-                return appxPackage;
+            }
+            finally
+            {
+                if (priFullPath != null && cleanUp)
+                {
+                    File.Delete(priFullPath);
+                }
             }
         }
 

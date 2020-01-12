@@ -4,10 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
+             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="Nothing selected" Style="{StaticResource DataValue}" />
-        <TextBlock Text="Select at least one package to display its properties here." Style="{StaticResource DataHeader}" />
-    </StackPanel>
+    <controls:MsixHeroText HorizontalAlignment="Center" VerticalAlignment="Center" Tag="Select at least one package to display its properties here" />
 </UserControl>

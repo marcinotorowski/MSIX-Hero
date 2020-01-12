@@ -2,8 +2,10 @@
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Domain;
 using Prism.Services.Dialogs;
 
@@ -14,6 +16,8 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
         private readonly IInteractionService interactionService;
         private string title;
         private bool showApplyButton;
+        private ICommand okCommand;
+        private DelegateCommand closeCommand;
 
         protected ChangeableDialogViewModel(string title, IInteractionService interactionService) : base(true)
         {
@@ -79,11 +83,36 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
             }
         }
 
-        public string this[string columnName] => null;
+        public ICommand OkCommand => this.okCommand ??= new DelegateCommand(param => this.OkExecute(param is bool bp && bp), param => this.CanOkExecute(param is bool bp && bp));
+
+        public DelegateCommand CloseCommand => this.closeCommand ??= new DelegateCommand(param => this.CloseExecute(param is ButtonResult result ? result : ButtonResult.Cancel), param => this.CanCloseExecute(param is ButtonResult result ? result : ButtonResult.Cancel));
         
+        string IDataErrorInfo.this[string columnName] => null;
+
         protected abstract Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress);
 
-        public virtual bool Save(bool closeOnSuccess)
+        bool IDialogAware.CanCloseDialog()
+        {
+            return true;
+        }
+
+        void IDialogAware.OnDialogClosed()
+        {
+        }
+
+        void IDialogAware.OnDialogOpened(IDialogParameters parameters)
+        {
+        }
+
+        protected virtual bool CanSave()
+        {
+            return this.IsValid || this.ValidationMode == ValidationMode.Silent;
+        }
+
+        public event Action<IDialogResult> RequestClose;
+
+
+        private void OkExecute(bool closeWindow)
         {
             if (this.ValidationMode == ValidationMode.Silent)
             {
@@ -95,7 +124,7 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
 
             if (!this.IsValid)
             {
-                return false;
+                return;
             }
 
             var progress = new Progress<ProgressData>();
@@ -111,69 +140,78 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
             var task = this.Save(CancellationToken.None, progress);
 
             task.ContinueWith(t =>
-            {
-                this.State.IsSaved = false;
-                progress.ProgressChanged -= handler;
-                this.State.IsSaving = false;
-                if (t.IsCanceled)
                 {
-                    return;
-                }
-
-                if (t.IsFaulted)
-                {
-                    var exception = t.Exception.GetBaseException();
-                    var result = this.interactionService.ShowError(exception.Message, exception);
-                    if (result == InteractionResult.Retry)
+                    this.State.IsSaved = false;
+                    progress.ProgressChanged -= handler;
+                    this.State.IsSaving = false;
+                    if (t.IsCanceled)
                     {
-                        this.Save(closeOnSuccess);
+                        return;
                     }
 
-                    return;
-                }
+                    if (t.IsFaulted)
+                    {
+                        var exception = t.Exception.GetBaseException();
+                        var result = this.interactionService.ShowError(exception.Message, exception);
+                        if (result == InteractionResult.Retry)
+                        {
+                            this.OkExecute(closeWindow);
+                        }
 
-                this.State.IsSaved = t.IsCompleted;
+                        return;
+                    }
 
-                if (closeOnSuccess)
-                {
-                    this.Close(ButtonResult.OK);
-                }
-            }, 
-            CancellationToken.None, 
-            TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, 
-            TaskScheduler.FromCurrentSynchronizationContext());
-
-            return true;
+                    this.State.IsSaved = t.IsCompleted;
+                    if (closeWindow)
+                    {
+                        this.CloseCommand.Execute(ButtonResult.OK);
+                    }
+                },
+                CancellationToken.None,
+                TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.FromCurrentSynchronizationContext());
+            /*
+             * 
+            e.CanExecute = !(this.DataContext is ChangeableDialogViewModel dataContext) || dataContext.CanSave();
         }
 
-        public virtual bool CanSave()
+        private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            return this.IsValid || this.ValidationMode == ValidationMode.Silent;
+            if (this.DataContext is ChangeableDialogViewModel dataContext)
+            {
+                dataContext.Save(e.Parameter is bool boolParam && boolParam);
+            }
         }
 
-        public void Close(ButtonResult buttonResult)
+        private void CloseExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this.DataContext is ChangeableDialogViewModel dataContext)
+            {
+                dataContext.Close(dataContext.State.IsSaved ? ButtonResult.OK : ButtonResult.Cancel);
+            }
+             */
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        private bool CanOkExecute(bool closeWindow)
+        {
+            return this.CanSave();
+        }
+
+        private void CloseExecute(ButtonResult button)
         {
             if (this.RequestClose == null)
             {
                 throw new NotSupportedException("This dialog does not support closing itself.");
             }
 
-            this.RequestClose(new DialogResult(buttonResult));
+            this.RequestClose(new DialogResult(button));
         }
 
-        public virtual bool CanCloseDialog()
+        // ReSharper disable once UnusedParameter.Local
+        private bool CanCloseExecute(ButtonResult button)
         {
             return true;
         }
-
-        public virtual void OnDialogClosed()
-        {
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-        }
-
-        public event Action<IDialogResult> RequestClose;
     }
 }
