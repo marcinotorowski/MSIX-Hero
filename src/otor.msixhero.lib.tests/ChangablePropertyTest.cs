@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 using otor.msixhero.ui.Domain;
 
@@ -7,6 +8,209 @@ namespace otor.msixhero.lib.tests
     [TestFixture()]
     public class ChangablePropertyTest
     {
+        [Test]
+        public void ValidateObservableCollectionBool()
+        {
+            var col1 = new[] { true, true, true };
+            var changeableCol = new ChangeableCollection<bool>(col1);
+
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol.Add(true);
+            Assert.IsTrue(changeableCol.IsTouched);
+            Assert.IsTrue(changeableCol.IsDirty);
+
+            changeableCol.RemoveAt(3);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(2);
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Add(true);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol[0] = false;
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol[0] = true;
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(0);
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Reset(ValueResetType.Soft);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(0);
+
+            changeableCol.Reset(ValueResetType.Hard);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol.Add(true);
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Commit();
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+        }
+
+        [Test]
+        public void ValidateObservableCollectionChangeables()
+        {
+            var col1 = new[] { "string1", "string2", "string3" };
+            var changeableCol = new ChangeableCollection<ChangeableProperty<string>>(col1.Select(c => new ChangeableProperty<string>(c)));
+
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol.Add(new ChangeableProperty<string>("string4"));
+            Assert.IsTrue(changeableCol.IsTouched);
+            Assert.IsTrue(changeableCol.IsDirty);
+
+            changeableCol.RemoveAt(3);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(2);
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Add(new ChangeableProperty<string>("string3"));
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Reset(ValueResetType.Hard);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol[0].CurrentValue = "string1a";
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Reset(ValueResetType.Hard);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol[0].CurrentValue = "string1";
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol[0].CurrentValue = "string1a";
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol[0].CurrentValue = "string1";
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol[0].Reset(ValueResetType.Hard);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched, "Resetting a single dirty item should set the dirty flag to true, but touched should remain.");
+            
+            changeableCol.Reset();
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol[0].CurrentValue = "aaa";
+            changeableCol[1].CurrentValue = "bbb";
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+            changeableCol[0].Reset();
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+            changeableCol[1].Reset();
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(0);
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Reset(ValueResetType.Soft);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(0);
+
+            changeableCol.Reset(ValueResetType.Hard);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol.Add(new ChangeableProperty<string>("string4"));
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Commit();
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+        }
+
+        [Test]
+        public void ValidateObservableCollectionString()
+        {
+            var col1 = new[] {"string1", "string2", "string3"};
+            var changeableCol = new ChangeableCollection<string>(col1);
+
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol.Add("string4");
+            Assert.IsTrue(changeableCol.IsTouched);
+            Assert.IsTrue(changeableCol.IsDirty);
+
+            changeableCol.Remove("string4");
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+            
+            changeableCol.Remove("string3");
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Add("string3");
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol[0] = "string1a";
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol[0] = "string1";
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(0);
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Reset(ValueResetType.Soft);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.RemoveAt(0);
+
+            changeableCol.Reset(ValueResetType.Hard);
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+
+            changeableCol.Add("string4");
+            Assert.IsTrue(changeableCol.IsDirty);
+            Assert.IsTrue(changeableCol.IsTouched);
+
+            changeableCol.Commit();
+            Assert.IsFalse(changeableCol.IsDirty);
+            Assert.IsFalse(changeableCol.IsTouched);
+        }
+
         [Test]
         public void ValidatorTest()
         {

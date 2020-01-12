@@ -5,7 +5,7 @@ using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Domain
 {
-    public class ChangeableContainer : NotifyPropertyChanged, IDisposable, IValidatedChangeable
+    public class ChangeableContainer : NotifyPropertyChanged, IDisposable, IValidatedContainerChangeable
     {
         private readonly HashSet<IChangeable> children = new HashSet<IChangeable>();
         private readonly HashSet<IChangeable> touchedChildren = new HashSet<IChangeable>();
@@ -16,13 +16,20 @@ namespace otor.msixhero.ui.Domain
         private bool suppressListening;
         private bool isValidated;
         private string validationMessage;
+        private ValidationMode validationMode;
 
-        public ChangeableContainer()
+        public ChangeableContainer() : this(true)
         {
         }
 
-        public ChangeableContainer(params IChangeable[] initialChildren)
+        public ChangeableContainer(params IChangeable[] initialChildren) : this(true, initialChildren)
         {
+        }
+
+        public ChangeableContainer(bool isValidated, params IChangeable[] initialChildren)
+        {
+            this.isValidated = isValidated;
+       
             foreach (var item in initialChildren)
             {
                 if (!this.children.Add(item))
@@ -61,6 +68,44 @@ namespace otor.msixhero.ui.Domain
 
             this.isDirty = this.dirtyChildren.Any();
             this.isTouched = this.touchedChildren.Any();
+
+            if (this.isValidated)
+            {
+                this.validationMessage = this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null;
+                this.OnPropertyChanged(nameof(IsValid));
+            }
+        }
+
+        public virtual ValidationMode ValidationMode
+        {
+            get => this.validationMode;
+            set
+            {
+                if (this.SetField(ref this.validationMode, value))
+                {
+                    this.OnPropertyChanged(nameof(ValidationMessage));
+                }
+            }
+        }
+
+        public void SetValidationMode(ValidationMode mode, bool setForChildren)
+        {
+            if (setForChildren)
+            {
+                foreach (var item in this.children.OfType<IValidatedChangeable>())
+                {
+                    if (item is IValidatedContainerChangeable container)
+                    {
+                        container.SetValidationMode(mode, true);
+                    }
+                    else
+                    {
+                        item.ValidationMode = mode;
+                    }
+                }
+            }
+
+            this.ValidationMode = mode;
         }
 
         public bool IsDirty
@@ -206,10 +251,10 @@ namespace otor.msixhero.ui.Domain
                     this.isValidated = true;
 
                     if (!validatedItem.IsValid)
-                    { 
+                    {
                         this.invalidChildren.Add(validatedItem);
 
-                        if (this.ValidationMessage != null)
+                        if (this.ValidationMessage == null)
                         {
                             this.ValidationMessage = validatedItem.ValidationMessage;
                         }

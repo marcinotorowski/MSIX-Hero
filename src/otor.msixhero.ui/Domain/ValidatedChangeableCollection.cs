@@ -5,11 +5,12 @@ using System.Linq;
 
 namespace otor.msixhero.ui.Domain
 {
-    public class ValidatedChangeableCollection<T> : ChangeableCollection<T>, IValidatedChangeable
+    public class ValidatedChangeableCollection<T> : ChangeableCollection<T>, IValidatedContainerChangeable
     {
         private string validationMessage;
-        private bool isValidated;
+        private bool isValidated = true;
         private IReadOnlyCollection<Func<IEnumerable<T>, string>> validators;
+        private ValidationMode validationMode;
 
         public ValidatedChangeableCollection(Func<IEnumerable<T>, string> validator = null)
         {
@@ -83,6 +84,37 @@ namespace otor.msixhero.ui.Domain
         }
 
         public bool IsValid => string.IsNullOrEmpty(this.validationMessage);
+
+        public ValidationMode GetValidationMode()
+        {
+            return this.validationMode;
+        }
+
+        public ValidationMode ValidationMode
+        {
+            get => this.validationMode;
+            set => this.SetField(ref this.validationMode, value);
+        }
+
+        public void SetValidationMode(ValidationMode mode, bool setForChildren)
+        {
+            if (setForChildren)
+            {
+                foreach (var item in this.OfType<IValidatedChangeable>())
+                {
+                    if (item is IValidatedContainerChangeable container)
+                    {
+                        container.SetValidationMode(mode, true);
+                    }
+                    else
+                    {
+                        item.ValidationMode = mode;
+                    }
+                }
+            }
+
+            this.ValidationMode = mode;
+        }
 
         public IReadOnlyCollection<Func<IEnumerable<T>, string>> Validators
         {

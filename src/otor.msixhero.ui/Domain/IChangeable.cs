@@ -62,6 +62,11 @@ namespace otor.msixhero.ui.Domain
         event EventHandler<ValueChangingEventArgs> ValueChanging;
     }
 
+    public enum ValidationMode
+    {
+        Default,
+        Silent
+    }
 
     public interface IValidatedChangeable : IChangeable
     {
@@ -71,9 +76,15 @@ namespace otor.msixhero.ui.Domain
 
         bool IsValid { get; }
 
+        ValidationMode ValidationMode { get; set; }
+
         event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
     }
 
+    public interface IValidatedContainerChangeable : IValidatedChangeable
+    {
+        void SetValidationMode(ValidationMode mode, bool setForChildren);
+    }
 
     public interface IValidatedChangeable<T> : IChangeable<T>, IValidatedChangeable
     {

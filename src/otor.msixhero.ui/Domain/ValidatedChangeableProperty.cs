@@ -12,10 +12,11 @@ namespace otor.msixhero.ui.Domain
         private string validationMessage;
         private bool isValidated;
         private IReadOnlyCollection<Func<T, string>> validators;
+        private ValidationMode validationMode;
 
         public ValidatedChangeableProperty(T initialValue = default) : base(initialValue)
         {
-            this.isValidated = false;
+            this.isValidated = true;
             this.validators = new Func<T, string>[0];
             this.Validate();
         }
@@ -40,6 +41,21 @@ namespace otor.msixhero.ui.Domain
             this.isValidated = isValidated;
             this.validators = validators;
             this.Validate();
+        }
+
+        public ValidationMode ValidationMode
+        {
+            get => this.validationMode;
+            set
+            {
+                if (!this.SetField(ref this.validationMode, value))
+                {
+                    return;
+                }
+
+                this.OnPropertyChanged(nameof(Error));
+                this.OnPropertyChanged(nameof(CurrentValue));
+            }
         }
 
         public static Func<T, string> ValidateNotNull
@@ -112,12 +128,28 @@ namespace otor.msixhero.ui.Domain
             }
         }
 
-        public string Error => this.ValidationMessage;
+        public string Error
+        {
+            get
+            {
+                if (this.validationMode == ValidationMode.Silent)
+                {
+                    return null;
+                }
+
+                return this.ValidationMessage;
+            }
+        }
 
         public string this[string columnName]
         {
             get
             {
+                if (this.validationMode == ValidationMode.Silent)
+                {
+                    return null;
+                }
+
                 switch (columnName)
                 {
                     case nameof(CurrentValue):
