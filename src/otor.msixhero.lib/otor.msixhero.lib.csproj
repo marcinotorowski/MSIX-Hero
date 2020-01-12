@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\external\EricZimmerman.Registry\EricZimmerman.Registry.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Windows">
       <HintPath>C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0\Facade\windows.winmd</HintPath>
       <IsWinMDFile>true</IsWinMDFile>

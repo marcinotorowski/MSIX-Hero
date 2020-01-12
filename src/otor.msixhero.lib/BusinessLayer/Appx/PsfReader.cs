@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.Domain.Appx.Psf;
+using Registry;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx
 {
@@ -21,6 +24,92 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             using var fs = File.OpenRead(configJson);
             using TextReader tr = new StreamReader(fs);
             return this.Read(applicationId, tr);
+        }
+
+        public PsfApplicationDefinition Read(string applicationId, IAppxFileReader fileReader)
+        {
+            if (fileReader.FileExists("config.json"))
+            {
+                using (var stream = fileReader.GetFile("config.json"))
+                {
+                    using (var streamReader = new StreamReader(stream))
+                    {
+                        return this.Read(applicationId, streamReader);
+                    }
+                }
+            }
+
+            if (fileReader.FileExists(@"AI_STUBS\AiStub.exe"))
+            {
+                // This is an old Advanced Installer stuff
+                if (fileReader.FileExists("Registry.dat"))
+                {
+                    RegistryHiveOnDemand reg;
+                    using (var stream = fileReader.GetFile("Registry.dat"))
+                    {
+                        if (stream is FileStream fileStream)
+                        {
+                            reg = new RegistryHiveOnDemand(fileStream.Name);
+                        }
+                        else
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                stream.CopyTo(memoryStream);
+                                memoryStream.Flush();
+                                reg = new RegistryHiveOnDemand(memoryStream.ToArray(), "Registry.dat");
+                            }
+                        }
+                    }
+                    
+                    var key = reg.GetKey(@"root\registry\machine\software\caphyon\advanced installer\" + applicationId);
+                    if (key?.Values != null)
+                    {
+                        var psfDef = new PsfApplicationDefinition();
+
+                        foreach (var item in key.Values.Where(item => item.ValueName != null))
+                        {
+                            switch (item.ValueName.ToLowerInvariant())
+                            {
+                                case "path":
+                                    psfDef.Executable = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                    break;
+                                case "pathai":
+                                    psfDef.Executable = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                    break;
+                                case "workingdirectory":
+                                    psfDef.WorkingDirectory = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                    break;
+                                case "workingdirectoryai":
+                                    psfDef.WorkingDirectory = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                    break;
+                                case "args":
+                                    psfDef.Arguments = item.ValueData;
+                                    break;
+                            }
+                        }
+
+                        if (string.IsNullOrWhiteSpace(psfDef.Executable))
+                        {
+                            psfDef.Executable = null;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(psfDef.WorkingDirectory))
+                        {
+                            psfDef.WorkingDirectory = null;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(psfDef.Arguments))
+                        {
+                            psfDef.Arguments = null;
+                        }
+
+                        return psfDef;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public PsfApplicationDefinition Read(string applicationId, TextReader configJson)
@@ -199,7 +288,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         {
                             var def = new PsfFileRedirection
                             {
-                                Directory = ".\\" + valueBase,
+                                Directory = valueBase,
                                 RegularExpression = patternItem.Value<string>(),
                                 IsExclusion = valueIsExclusion == true
                             };

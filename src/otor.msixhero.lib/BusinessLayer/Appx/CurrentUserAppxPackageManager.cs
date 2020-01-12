@@ -242,7 +242,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
             else
             {
-                using (var reg = Registry.LocalMachine.OpenSubKey("MSIX-Hero-" + packageName))
+                using (var reg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("MSIX-Hero-" + packageName))
                 {
                     if (reg != null)
                     {
@@ -628,10 +628,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
             try
             {
-                regKey = Registry.CurrentUser.OpenSubKey(key);
+                regKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(key);
                 if (regKey == null)
                 {
-                    regKey = Registry.CurrentUser.CreateSubKey(key);
+                    regKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(key);
                 }
 
                 if (regKey == null)

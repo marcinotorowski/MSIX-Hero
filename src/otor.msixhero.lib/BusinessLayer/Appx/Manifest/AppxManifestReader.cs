@@ -207,20 +207,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         MsixPackageType.BridgePsf).ToArray();
                     if (psfApps.Any())
                     {
-                        using (var psfConfig = fileReader.FileExists("config.json")
-                            ? fileReader.GetFile("config.json")
-                            : null)
+                        foreach (var psfApp in psfApps)
                         {
-                            if (psfConfig != null)
-                            {
-                                using (var reader = new StreamReader(psfConfig))
-                                {
-                                    foreach (var psfApp in psfApps)
-                                    {
-                                        psfApp.Psf = this.PsfReader.Read(psfApp.Id, reader);
-                                    }
-                                }
-                            }
+                            psfApp.Psf = this.PsfReader.Read(psfApp.Id, fileReader);
                         }
                     }
                 }

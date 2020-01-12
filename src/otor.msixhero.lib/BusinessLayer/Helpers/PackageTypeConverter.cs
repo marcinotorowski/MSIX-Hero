@@ -59,6 +59,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                             string.Equals("psfrundll64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
                             string.Equals("psfrundll32.exe", executable, StringComparison.OrdinalIgnoreCase) || 
                             string.Equals("psfrundll.exe", executable, StringComparison.OrdinalIgnoreCase) || 
+                            string.Equals("ai_stubs\\aistub.exe", executable, StringComparison.OrdinalIgnoreCase) || 
                             string.Equals("psfmonitor.exe", executable, StringComparison.OrdinalIgnoreCase))
                         {
                             return MsixPackageType.BridgePsf;

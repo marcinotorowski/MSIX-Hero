@@ -66,8 +66,9 @@ $toDelete = @(
         Remove-Item "$PSScriptRoot\dist\$item" -Force -Recurse;
     }
 
-    $allFiles = Get-ChildItem -Path "$PSScriptRoot\dist" -Filter *msix*.dll;
-    $allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter *msix*.exe;
+    $allFiles = Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.dll";
+    $allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.exe";
+	$allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "EricZimmerman.Registry.dll";
 
     $listOfFiles = "";
     foreach ($item in $allFiles)
