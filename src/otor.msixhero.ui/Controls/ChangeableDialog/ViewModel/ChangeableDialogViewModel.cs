@@ -63,6 +63,22 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
             }
         }
 
+        public override string ValidationMessage
+        {
+            get => base.ValidationMessage;
+            protected set
+            {
+                var oldValue = this.ValidationMessage;
+                base.ValidationMessage = value;
+
+                if (oldValue != value)
+                {
+                    this.OnPropertyChanged(nameof(Error));
+                    this.OnPropertyChanged(nameof(HasError));
+                }
+            }
+        }
+
         public string this[string columnName] => null;
         
         protected abstract Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress);

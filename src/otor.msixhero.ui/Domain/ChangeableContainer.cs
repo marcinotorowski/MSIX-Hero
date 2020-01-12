@@ -297,10 +297,10 @@ namespace otor.msixhero.ui.Domain
             this.OnPropertyChanged(nameof(isValidated));
         }
 
-        public string ValidationMessage
+        public virtual string ValidationMessage
         {
             get => this.validationMessage;
-            set
+            protected set
             {
                 if (!this.SetField(ref this.validationMessage, value))
                 {

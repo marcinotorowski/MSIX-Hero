@@ -53,8 +53,7 @@ namespace otor.msixhero.ui.Domain
                     return;
                 }
 
-                this.OnPropertyChanged(nameof(Error));
-                this.OnPropertyChanged(nameof(CurrentValue));
+                this.Validate();
             }
         }
 
@@ -198,9 +197,10 @@ namespace otor.msixhero.ui.Domain
                 {
                     validationChanged(this, new ValueChangedEventArgs<string>(this.ValidationMessage));
                 }
-
-                this.OnPropertyChanged(nameof(this.CurrentValue));
             }
+
+            this.OnPropertyChanged(nameof(this.CurrentValue));
+            this.OnPropertyChanged(nameof(this.Error));
         }
     }
 }
