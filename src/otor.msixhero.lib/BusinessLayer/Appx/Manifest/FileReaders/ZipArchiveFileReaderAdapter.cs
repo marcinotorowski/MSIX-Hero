@@ -40,8 +40,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public Stream GetResource(string resourceFilePath)
         {
-            // @".[^\.\-]+-[^\.\-]+"
-
+            if (string.IsNullOrEmpty(resourceFilePath))
+            {
+                return null;
+            }
+            
             if (this.FileExists(resourceFilePath))
             {
                 return this.GetFile(resourceFilePath);

@@ -37,16 +37,31 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public Stream GetFile(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return null;
+            }
+
             return this.adapter.GetFile(filePath);
         }
 
         public bool FileExists(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return false;
+            }
+
             return this.adapter.FileExists(filePath);
         }
 
         public Stream GetResource(string resourceFilePath)
         {
+            if (string.IsNullOrEmpty(resourceFilePath))
+            {
+                return null;
+            }
+
             return this.adapter.GetResource(resourceFilePath);
         }
 

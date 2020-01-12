@@ -41,6 +41,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public Stream GetFile(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return null;
+            }
+
             if (this.adapter == null)
             {
                 this.adapter = this.GetAdapter();
@@ -51,6 +56,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public Stream GetResource(string resourceFilePath)
         {
+            if (string.IsNullOrEmpty(resourceFilePath))
+            {
+                return null;
+            }
+
             if (this.adapter == null)
             {
                 this.adapter = this.GetAdapter();
@@ -61,6 +71,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public bool FileExists(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return false;
+            }
+
             if (this.adapter == null)
             {
                 this.adapter = this.GetAdapter();

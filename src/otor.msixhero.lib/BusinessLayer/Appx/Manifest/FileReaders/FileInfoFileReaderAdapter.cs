@@ -26,6 +26,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public Stream GetFile(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return null;
+            }
+
             // ReSharper disable once PossibleNullReferenceException
             return File.OpenRead(Path.Combine(this.appxManifestFile.Directory.FullName, filePath));
         }
@@ -75,6 +80,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public bool FileExists(string filePath)
         {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return false;
+            }
+
             // ReSharper disable once PossibleNullReferenceException
             return File.Exists(Path.Combine(this.appxManifestFile.Directory.FullName, filePath));
         }
