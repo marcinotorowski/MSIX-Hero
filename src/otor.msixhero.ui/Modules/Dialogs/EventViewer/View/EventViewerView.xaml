@@ -79,7 +79,7 @@
                                             <GridViewColumnHeader Click="GridHeaderOnClick" Tag="DateTime" Content="Created" />
                                         </GridViewColumn.Header>
                                     </GridViewColumn>
-                                    <GridViewColumn DisplayMemberBinding="{Binding ActivityId}">
+                                    <GridViewColumn DisplayMemberBinding="{Binding Level}">
                                         <GridViewColumn.Header>
                                             <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Level" Content="Level" />
                                         </GridViewColumn.Header>
