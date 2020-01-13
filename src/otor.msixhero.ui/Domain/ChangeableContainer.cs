@@ -37,13 +37,18 @@ namespace otor.msixhero.ui.Domain
                     continue;
                 }
 
-                item.IsDirtyChanged += this.OnSubItemDirtyChanged;
-                item.IsTouchedChanged += this.OnSubItemTouchedChanged;
+                if (item is IChangeableValue valueItem)
+                {
+                    valueItem.ValueChanged += this.OnSubItemValueChanged;
+                }
 
                 if (item is IValidatedChangeable changeableValue)
                 {
                     changeableValue.ValidationStatusChanged += this.OnSubItemValidationStatusChanged;
                 }
+
+                item.IsDirtyChanged += this.OnSubItemDirtyChanged;
+                item.IsTouchedChanged += this.OnSubItemTouchedChanged;
 
                 if (item.IsTouched)
                 {
@@ -71,7 +76,9 @@ namespace otor.msixhero.ui.Domain
 
             if (this.isValidated)
             {
-                this.validationMessage = this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null;
+                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                this.CustomValidation?.Invoke(this, validationArgs);
+                this.validationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
                 this.OnPropertyChanged(nameof(IsValid));
             }
         }
@@ -81,10 +88,16 @@ namespace otor.msixhero.ui.Domain
             get => this.validationMode;
             set
             {
-                if (this.SetField(ref this.validationMode, value))
+                this.SetField(ref this.validationMode, value);
+
+                if (!this.isValidated)
                 {
-                    this.OnPropertyChanged(nameof(ValidationMessage));
+                    return;
                 }
+
+                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                this.CustomValidation?.Invoke(this, validationArgs);
+                this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
             }
         }
 
@@ -113,20 +126,12 @@ namespace otor.msixhero.ui.Domain
             get => this.isDirty;
             private set
             {
-                if (this.isDirty == value)
+                if (!this.SetField(ref this.isDirty, value))
                 {
                     return;
                 }
-
-                this.SetField(ref this.isDirty, value);
-
-                var dirtyChanged = this.IsDirtyChanged;
-                if (dirtyChanged == null)
-                {
-                    return;
-                }
-
-                dirtyChanged(this, new ValueChangedEventArgs<bool>(value));
+                
+                this.IsDirtyChanged?.Invoke(this, new ValueChangedEventArgs<bool>(value));
             }
         }
 
@@ -135,20 +140,12 @@ namespace otor.msixhero.ui.Domain
             get => this.isTouched;
             private set
             {
-                if (this.isTouched == value)
+                if (!this.SetField(ref this.isTouched, value))
                 {
                     return;
                 }
-
-                this.SetField(ref this.isTouched, value);
-
-                var touchedChanged = this.IsTouchedChanged;
-                if (touchedChanged == null)
-                {
-                    return;
-                }
-
-                touchedChanged(this, new ValueChangedEventArgs<bool>(value));
+                
+                this.IsTouchedChanged?.Invoke(this, new ValueChangedEventArgs<bool>(value));
             }
         }
 
@@ -177,6 +174,17 @@ namespace otor.msixhero.ui.Domain
 
                 this.IsTouched = false;
                 this.IsDirty = false;
+                
+                if (this.isValidated)
+                {
+                    var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                    this.CustomValidation?.Invoke(this, validationArgs);
+                    this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
+                }
+                else
+                {
+                    this.ValidationMessage = null;
+                }
             }
             finally
             {
@@ -200,6 +208,17 @@ namespace otor.msixhero.ui.Domain
 
                 this.IsTouched = isAnyTouched;
                 this.IsDirty = false;
+
+                if (this.isValidated)
+                {
+                    var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                    this.CustomValidation?.Invoke(this, validationArgs);
+                    this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
+                }
+                else
+                {
+                    this.ValidationMessage = null;
+                }
             }
             finally
             {
@@ -302,6 +321,10 @@ namespace otor.msixhero.ui.Domain
             get => this.validationMessage;
             protected set
             {
+                var validationArgs = new ContainerValidationArgs(value);
+                this.CustomValidation?.Invoke(this, validationArgs);
+
+                value = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
                 if (!this.SetField(ref this.validationMessage, value))
                 {
                     return;
@@ -353,6 +376,8 @@ namespace otor.msixhero.ui.Domain
 
         public bool IsValid => string.IsNullOrEmpty(this.ValidationMessage);
 
+        public event EventHandler<ContainerValidationArgs> CustomValidation;
+
         private void OnSubItemValidationStatusChanged(object sender, ValueChangedEventArgs<string> e)
         {
             if (this.suppressListening)
@@ -370,6 +395,16 @@ namespace otor.msixhero.ui.Domain
             }
 
             this.ValidationMessage = this.invalidChildren.FirstOrDefault()?.ValidationMessage;
+        }
+
+        private void OnSubItemValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (this.isValidated)
+            {
+                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                this.CustomValidation?.Invoke(this, validationArgs);
+                this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
+            }
         }
 
         private void OnSubItemDirtyChanged(object sender, ValueChangedEventArgs<bool> e)

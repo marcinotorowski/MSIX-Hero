@@ -59,7 +59,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                     }
                     catch (Exception e)
                     {
-                        throw e;
+                        // This will be probably WindowsCryptographicException but we do not want to expose too much...
+                        Logger.Debug("Selected file {0} is not signed and no certificate could be exported from it (exception of type {1}).", msixFile, e.GetType().Name);
+                        return null;
                     }
                 }, 
                 cancellationToken);

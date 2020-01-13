@@ -4,26 +4,20 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
-using otor.msixhero.ui.ViewModel;
-using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 {
-    public class CertificateExportViewModel : NotifyPropertyChanged, IDialogAware
+    public class CertificateExportViewModel : ChangeableDialogViewModel
     {
         private readonly IAppxSigningManager signingManager;
-        private int progress;
-        private string progressMessage;
-        private bool isLoading;
-        private bool saveToFile = true;
-        private bool saveToStore;
-        private bool isSuccess;
 
-        public CertificateExportViewModel(IAppxSigningManager signingManager, IInteractionService interactionService)
+        private ChangeableContainer customValidationContainer;
+
+        public CertificateExportViewModel(IAppxSigningManager signingManager, IInteractionService interactionService) : base("Extract certificate", interactionService)
         {
             this.signingManager = signingManager;
 
@@ -42,10 +36,32 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
                 Validators = new [] { ChangeableFileProperty.ValidatePath }
             };
 
-            this.ChangeableContainer = new ChangeableContainer(this.InputPath, this.OutputPath) { IsValidated = false };
+            this.SaveToFile = new ChangeableProperty<bool>(true);
+            this.SaveToStore = new ChangeableProperty<bool>(true);
+
+            customValidationContainer = new ChangeableContainer(this.SaveToFile, this.SaveToStore);
+            customValidationContainer.CustomValidation += this.CustomCheckboxValidation;
+
+            this.AddChildren(this.InputPath, this.OutputPath, customValidationContainer);
+            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
-        public ChangeableContainer ChangeableContainer { get; }
+        private void CustomCheckboxValidation(object sender, ContainerValidationArgs e)
+        {
+            if (!e.IsValid)
+            {
+                return;
+            }
+
+            if (!this.SaveToFile.CurrentValue && !this.SaveToStore.CurrentValue)
+            {
+                e.SetError("Please select where to save the certificate (file or cert store)");
+            }
+            else if (this.CertificateDetails.HasValue && this.CertificateDetails.CurrentValue == null)
+            {
+                e.SetError("The selected file is unsigned.");
+            }
+        }
 
         public AsyncProperty<CertificateViewModel> CertificateDetails { get; } = new AsyncProperty<CertificateViewModel>();
 
@@ -53,120 +69,42 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 
         public ChangeableFileProperty OutputPath { get; }
 
-        public bool SaveToFile
+        public ChangeableProperty<bool> SaveToFile { get; }
+
+        public ChangeableProperty<bool> SaveToStore { get; }
+
+        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            get => this.saveToFile;
-            set
+            if (this.SaveToFile.CurrentValue)
             {
-                this.SetField(ref this.saveToFile, value);
-                this.OutputPath.IsValidated = value;
-            }
-        }
-
-        public bool SaveToStore
-        {
-            get => this.saveToStore;
-            set
-            {
-                this.SetField(ref this.saveToStore, value);
-            }
-        }
-
-        public bool IsLoading
-        {
-            get => this.isLoading;
-            set => this.SetField(ref this.isLoading, value);
-        }
-
-        public int Progress
-        {
-            get => this.progress;
-            private set => this.SetField(ref this.progress, value);
-        }
-
-        public string ProgressMessage
-        {
-            get => this.progressMessage;
-            private set => this.SetField(ref this.progressMessage, value);
-        }
-
-        public bool CanCloseDialog()
-        {
-            return true;
-        }
-        
-        public void OnDialogClosed()
-        {
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-        }
-        public async Task Save()
-        {
-            this.InputPath.IsValidated = true;
-            this.OutputPath.IsValidated = this.saveToFile;
-
-            if (!this.ChangeableContainer.IsValid)
-            {
-                return;
+                await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
             }
 
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
+            if (this.SaveToStore.CurrentValue)
             {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
-            };
-
-            this.IsLoading = true;
-            try
-            {
-                token.ProgressChanged += handler;
-
-                if (this.saveToFile)
-                {
-                    await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue).ConfigureAwait(false);
-                }
-
-                if (this.saveToStore)
-                {
-                    await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue).ConfigureAwait(false);
-                }
-
-                this.IsSuccess = true;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
+                await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
             }
         }
-
-        public bool IsSuccess
-        {
-            get => this.isSuccess;
-            set => this.SetField(ref this.isSuccess, value);
-        }
-
-        public bool CanSave()
-        {
-            return this.ChangeableContainer.ValidationMessage == null;
-        }
-
-        public string Title
-        {
-            get => "Extract certificate";
-        }
-
-        public event Action<IDialogResult> RequestClose;
 
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
         {
             var result = await this.signingManager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
+
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+            if (this.customValidationContainer.ValidationMode == ValidationMode.Silent)
+            {
+                this.customValidationContainer.ValidationMode = ValidationMode.Silent;
+            }
+            else
+            {
+                this.customValidationContainer.ValidationMode = ValidationMode.Default;
+            }
+
+            if (result == null)
+            {
+                return null;
+            }
+
             return new CertificateViewModel(result);
         }
 
