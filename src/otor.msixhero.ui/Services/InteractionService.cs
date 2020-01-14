@@ -206,7 +206,7 @@ namespace otor.msixhero.ui.Services
                     dlg.InitialDirectory = fileInfo.Directory.FullName;
                 }
 
-                dlg.FileName = fileInfo.Name;
+                dlg.FileName = fileInfo.FullName;
             }
 
             dlg.CheckFileExists = true;
