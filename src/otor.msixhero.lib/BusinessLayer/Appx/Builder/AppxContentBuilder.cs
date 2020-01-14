@@ -35,14 +35,33 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Builder
                 fileInfo.Directory.Create();
             }
 
-            var xmlSerializer = new XmlSerializer(typeof(AppInstallerConfig));
-            
             using (var textWriter = new Utf8StringWriter())
             {
-                xmlSerializer.Serialize(textWriter, config);
                 var ns = this.GetMinimumSupportedWindowsVersion(config).Item2;
-                var content = textWriter.ToString().Replace("http://schemas.microsoft.com/appx/appinstaller/2017", ns);
-                await File.WriteAllTextAsync(file, content, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+
+                var xmlns = new XmlSerializerNamespaces();
+                xmlns.Add("", ns);
+
+                switch (ns)
+                {
+                    case "http://schemas.microsoft.com/appx/appinstaller/2017":
+                        new XmlSerializer(typeof(AppInstallerConfig2017)).Serialize(textWriter, new AppInstallerConfig2017(config), xmlns);
+                        break;
+                    case "http://schemas.microsoft.com/appx/appinstaller/2017/2":
+                        new XmlSerializer(typeof(AppInstallerConfig20172)).Serialize(textWriter, new AppInstallerConfig20172(config), xmlns);
+                        break;
+                    case "http://schemas.microsoft.com/appx/appinstaller/2018":
+                        new XmlSerializer(typeof(AppInstallerConfig2018)).Serialize(textWriter, new AppInstallerConfig2018(config), xmlns);
+                        break;
+                }
+
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+
+                var enc = new UTF8Encoding(false, false);
+                await File.WriteAllTextAsync(file, textWriter.ToString(), enc, cancellationToken).ConfigureAwait(false);
             }
         }
 

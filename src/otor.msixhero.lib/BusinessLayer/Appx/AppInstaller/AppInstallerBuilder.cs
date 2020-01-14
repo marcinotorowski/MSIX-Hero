@@ -7,6 +7,47 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppInstaller
 {
     public class AppInstallerBuilder
     {
+        public AppInstallerBuilder()
+        {
+        }
+
+        public AppInstallerBuilder(AppInstallerConfig appInstaller)
+        {
+            this.ShowPrompt = appInstaller.UpdateSettings?.OnLaunch?.ShowPrompt == true;
+            this.HoursBetweenUpdateChecks = appInstaller.UpdateSettings?.OnLaunch?.HoursBetweenUpdateChecks ?? 0;
+            this.Version = appInstaller.Version;
+            this.AllowDowngrades = appInstaller.UpdateSettings?.ForceUpdateFromAnyVersion == true;
+            this.UpdateBlocksActivation = appInstaller.UpdateSettings?.OnLaunch?.UpdateBlocksActivation == true;
+            this.RedirectUri = Uri.TryCreate(appInstaller.Uri ?? string.Empty, UriKind.Absolute, out var parsed) ? parsed  : null;
+
+            var checkOnLaunch = appInstaller.UpdateSettings?.OnLaunch != null;
+            var checkBackground = appInstaller.UpdateSettings?.AutomaticBackgroundTask != null;
+
+            if (checkBackground && checkOnLaunch)
+            {
+                this.CheckForUpdates = AppInstallerUpdateCheckingMethod.LaunchAndBackground;
+            }
+            else if (checkBackground)
+            {
+                this.CheckForUpdates = AppInstallerUpdateCheckingMethod.Background;
+            }
+            else if (checkOnLaunch)
+            {
+                this.CheckForUpdates = AppInstallerUpdateCheckingMethod.Launch;
+            }
+            else
+            {
+                this.CheckForUpdates = AppInstallerUpdateCheckingMethod.Never;
+            }
+            
+            this.MainPackageUri = Uri.TryCreate(appInstaller.MainPackage?.Uri ?? appInstaller.MainBundle?.Uri ?? string.Empty, UriKind.Absolute, out var parsedUri) ? parsedUri : null;
+            this.MainPackageArchitecture = appInstaller.MainPackage?.Architecture ?? AppInstallerPackageArchitecture.neutral;
+            this.MainPackageVersion = appInstaller.MainPackage?.Version ?? appInstaller.MainPackage?.Version;
+            this.MainPackageType = appInstaller.MainPackage == null && appInstaller.MainBundle != null ? PackageType.Bundle  : PackageType.Package;
+            this.MainPackagePublisher = appInstaller.MainPackage?.Publisher ?? appInstaller.MainBundle?.Publisher;
+            this.MainPackageName = appInstaller.MainPackage?.Name ?? appInstaller.MainBundle?.Name;
+        } 
+
         public AppInstallerUpdateCheckingMethod CheckForUpdates { get; set; }
 
         public bool AllowDowngrades { get; set; }
