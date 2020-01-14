@@ -76,9 +76,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
 
         public ChangeableProperty<bool> CreateFolder { get; }
 
-        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             await this.appxPacker.Unpack(this.InputPath.CurrentValue, this.GetOutputPath(), default, progress).ConfigureAwait(false);
+            return true;
         }
 
         private void ResetExecuted(object parameter)

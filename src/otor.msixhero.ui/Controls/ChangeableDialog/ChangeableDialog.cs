@@ -30,12 +30,19 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
 
         public static readonly DependencyProperty DialogProperty = DependencyProperty.Register("Dialog", typeof(ChangeableDialogViewModel), typeof(ChangeableDialog), new PropertyMetadata(null));
         
+        public static readonly DependencyProperty FooterProperty =  DependencyProperty.Register("Footer", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
+
         public ChangeableDialogViewModel Dialog
         {
             get => (ChangeableDialogViewModel)this.GetValue(DialogProperty);
             set => this.SetValue(DialogProperty, value);
         }
-        
+        public object Footer
+        {
+            get => this.GetValue(FooterProperty);
+            set => this.SetValue(FooterProperty, value);
+        }
+
         public Geometry Icon
         {
             get => (Geometry)this.GetValue(IconProperty);

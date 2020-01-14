@@ -89,7 +89,7 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
         
         string IDataErrorInfo.this[string columnName] => null;
 
-        protected abstract Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress);
+        protected abstract Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress);
 
         bool IDialogAware.CanCloseDialog()
         {
@@ -158,6 +158,11 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
                             this.OkExecute(closeWindow);
                         }
 
+                        return;
+                    }
+
+                    if (!t.Result)
+                    {
                         return;
                     }
 

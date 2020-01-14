@@ -31,8 +31,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         private readonly PackageSelectorDisplayMode displayMode;
         private static readonly ILog Logger = LogManager.GetLogger();
         private string customPrompt;
-        private bool requireFullIdentity = true;
-
+        
         private bool allowChangingSourcePackage;
 
         private bool showPackageTypeSelector;
@@ -92,11 +91,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         public bool ShowActualNames { get; private set; }
 
         public string CustomPrompt { get => this.customPrompt; set => this.SetField(ref this.customPrompt, value); }
-
-        public bool AllowBundles { get; private set; }
-
-        public bool AllowManifests { get; private set; }
-
+        
         public bool ShowPackageTypeSelector
         {
             get => this.showPackageTypeSelector;
@@ -122,14 +117,28 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         {
             get
             {
-                if (this.AllowManifests)
+                var packages = this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages);
+                var bundles = this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles);
+                var manifests = this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests);
+
+                var options = new List<string>();
+                if (packages)
                 {
-                    return "Load from a package or manifest...";
+                    options.Add("a package");
                 }
-                else
+
+                if (bundles)
                 {
-                    return "Load from a package...";
+                    options.Add("a bundle");
                 }
+
+                if (manifests)
+                {
+                    options.Add("a manifest");
+                }
+
+                var part1 = string.Join(", ", options.Take(options.Count - 1));
+                return "Load from " + string.Join(" or ", new[] {part1}.Concat(options.Skip(options.Count - 1)));
             }
         }
 
@@ -208,7 +217,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 return "The version may not be empty.";
             }
 
-            if (!System.Version.TryParse(newValue, out var version))
+            if (!System.Version.TryParse(newValue, out _))
             {
                 return $"'{newValue}' is not a valid version.";
             }
@@ -276,6 +285,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         private void PackageTypeOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(this.IsBundle));
+            this.OnPropertyChanged(nameof(this.LoadButtonCaption));
             this.SetInputFilter();
         }
 

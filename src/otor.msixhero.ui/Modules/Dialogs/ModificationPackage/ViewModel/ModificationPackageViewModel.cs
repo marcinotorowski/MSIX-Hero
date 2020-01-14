@@ -107,7 +107,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             this.ModificationPackageDetails.Commit();
         }
 
-        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             // ReSharper disable once NotAccessedVariable
             string selectedPath;
@@ -117,7 +117,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                 case ModificationPackageBuilderAction.Manifest:
                     if (!this.interactionService.SelectFolder(out selectedPath))
                     {
-                        return;
+                        return false;
                     }
 
                     selectedPath = Path.Join(selectedPath, "AppxManifest.xml");
@@ -127,7 +127,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                 case ModificationPackageBuilderAction.SignedMsix:
                     if (!this.interactionService.SaveFile("MSIX Modification Packages|*.msix", out selectedPath))
                     {
-                        return;
+                        return false;
                     }
 
                     break;
@@ -162,16 +162,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                     switch (this.SelectedCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Pfx:
-                            await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                            await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.Personal:
-                            await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue).ConfigureAwait(false);
+                            await this.signingManager.SignPackage(selectedPath, true, this.SelectedCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue,cancellationToken, progress).ConfigureAwait(false);
                             break;
                     }
 
                     this.Result = selectedPath;
                     break;
             }
+
+            return true;
         }
 
         private void ResetExecuted(object parameter)

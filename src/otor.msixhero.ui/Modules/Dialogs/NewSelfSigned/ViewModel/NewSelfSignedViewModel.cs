@@ -63,7 +63,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             get => this.importNewCertificate ??= new DelegateCommand(param => this.ImportNewCertificateExecute());
         }
 
-        protected override Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             return this.signingManager.CreateSelfSignedCertificate(
                 new DirectoryInfo(this.OutputPath.CurrentValue),

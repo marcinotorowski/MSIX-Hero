@@ -82,7 +82,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
 
         public ChangeableProperty<bool> Validate { get; }
 
-        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             AppxPackerOptions opts = 0;
             if (!this.Validate.CurrentValue)
@@ -109,6 +109,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
                         break;
                 }
             }
+
+            return true;
         }
 
         private void ResetExecuted(object parameter)

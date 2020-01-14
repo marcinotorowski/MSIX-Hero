@@ -67,7 +67,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             this.Files.Commit();
         }
 
-        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             foreach (var file in this.Files)
             {
@@ -80,6 +80,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
                     await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress);
                 }
             }
+
+            return true;
         }
 
         public ValidatedChangeableCollection<string> Files { get; }

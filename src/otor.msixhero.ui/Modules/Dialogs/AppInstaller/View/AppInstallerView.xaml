@@ -40,6 +40,11 @@
         Dialog="{Binding}"
         OkButtonLabel="Create appinstaller..."
         Icon="{StaticResource VectorSetup}">
+        <changeableDialog:ChangeableDialog.Footer>
+            <StackPanel VerticalAlignment="Center">
+                <Button Padding="8 4" Margin="4" Content="Load from file..." Command="{Binding OpenCommand}" Visibility="{Binding State.IsSaved, ConverterParameter={StaticResource NegativeBooleanToVisibilityConverter}}" />
+            </StackPanel>
+        </changeableDialog:ChangeableDialog.Footer>
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
                 <TabControl>

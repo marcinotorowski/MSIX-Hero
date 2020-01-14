@@ -21,11 +21,11 @@
         <StackPanel>
             <Border Visibility="{Binding AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Button 
-                Visibility="{Binding AllowBrowsing, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                TabIndex="3" 
-                Padding="10 0" 
-                Margin="0 0 0 16"  
-                Content="{Binding LoadButtonCaption, FallbackValue='Load from package or manifest...'}" HorizontalAlignment="Left" Command="{Binding InputPath.Browse}" />
+                    Visibility="{Binding AllowBrowsing, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                    TabIndex="3" 
+                    Padding="10 0" 
+                    Margin="0 0 0 16"  
+                    Content="{Binding LoadButtonCaption, FallbackValue='Load from package or manifest...'}" HorizontalAlignment="Left" Command="{Binding InputPath.Browse}" />
             </Border>
 
             <TextBlock Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="{Binding CustomPrompt, TargetNullValue='Package type', FallbackValue='Package type'}" />

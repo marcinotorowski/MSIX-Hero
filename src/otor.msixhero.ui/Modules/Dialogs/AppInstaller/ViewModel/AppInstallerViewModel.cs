@@ -25,6 +25,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         private readonly IConfigurationService configurationService;
         private ICommand openSuccessLink;
         private ICommand reset;
+        private ICommand open;
+        private string previousPath;
 
         public AppInstallerViewModel(
             IAppxContentBuilder appxContentBuilder,
@@ -47,14 +49,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
             this.MainPackageUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
             this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
-
-            this.OutputPath = new ChangeableFileProperty(interactionService)
-            {
-                Validators = new[] { ChangeableFileProperty.ValidatePath },
-                OpenForSaving = true,
-                Filter = "App-Installer files|*.appinstaller|All files|*.*"
-            };
-
+            
             this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
             this.Hours = new ValidatedChangeableProperty<string>(this.ValidateHours, "24");
 
@@ -103,8 +98,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public ChangeableProperty<bool> AllowDowngrades { get; }
         
-        public ChangeableFileProperty OutputPath { get; }
-
         public ChangeableProperty<string> MainPackageUri { get; }
 
         public ChangeableProperty<string> AppInstallerUri { get; }
@@ -128,6 +121,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
+        public ICommand OpenCommand
+        {
+            get { return this.open ??= new DelegateCommand(this.OpenExecuted); }
+        }
+
         public PackageSelectorViewModel PackageSelection { get; }
 
         public void OnDialogOpened(IDialogParameters parameters)
@@ -142,15 +140,16 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.PackageSelection.ShowPackageTypeSelector = false;
         }
 
-        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            if (!this.interactionService.SaveFile(this.OutputPath.CurrentValue, this.OutputPath.Filter, out var selected))
+            if (!this.interactionService.SaveFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out var selected))
             {
-                return;
+                return false;
             }
 
             var appInstaller = this.GetCurrentAppInstallerConfig();
             await this.appxContentBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
+            return true;
         }
 
         private AppInstallerConfig GetCurrentAppInstallerConfig()
@@ -179,13 +178,75 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         private void ResetExecuted(object parameter)
         {
             this.PackageSelection.Reset();
-            this.OutputPath.Reset();
             this.State.IsSaved = false;
+        }
+
+        private void OpenExecuted(object obj)
+        {
+            string selected;
+            if (this.previousPath != null)
+            {
+                if (!this.interactionService.SelectFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out selected))
+                {
+                    return;
+                }
+            }
+            else if (!this.interactionService.SelectFile("Appinstaller files|*.appinstaller|All files|*.*", out selected))
+            {
+                return;
+            }
+
+            this.previousPath = selected;
+
+            AppInstallerConfig.FromFile(selected).ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    this.interactionService.ShowError("The selected file is not a valid Appinstaller.", t.Exception.GetBaseException(), InteractionResult.OK);
+                    return;
+                }
+
+                if (t.IsCanceled)
+                {
+                    return;
+                }
+
+                if (!t.IsCompleted)
+                {
+                    return;
+                }
+
+                var builder = new AppInstallerBuilder(t.Result);
+
+                this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
+                this.AppInstallerUpdateCheckingMethod.CurrentValue = builder.CheckForUpdates;
+                this.AppInstallerUri.CurrentValue = builder.RedirectUri.ToString();
+                this.BlockLaunching.CurrentValue = builder.UpdateBlocksActivation;
+                this.Hours.CurrentValue = builder.HoursBetweenUpdateChecks.ToString();
+                this.MainPackageUri.CurrentValue = builder.MainPackageUri.ToString();
+                this.Version.CurrentValue = builder.Version;
+                this.ShowPrompt.CurrentValue = builder.AllowDowngrades;
+
+                this.PackageSelection.Name.CurrentValue = builder.MainPackageName;
+                this.PackageSelection.Version.CurrentValue = builder.Version;
+                this.PackageSelection.Publisher.CurrentValue = builder.MainPackagePublisher;
+                this.PackageSelection.PackageType.CurrentValue = builder.MainPackageType;
+                this.PackageSelection.Architecture.CurrentValue = builder.MainPackageArchitecture;
+
+                this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
+                this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
+
+                this.OnPropertyChanged(nameof(ShowLaunchOptions));
+                this.OnPropertyChanged(nameof(CompatibleWindows));
+            }, 
+            CancellationToken.None, 
+            TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, 
+            TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void OpenSuccessLinkExecuted(object parameter)
         {
-            Process.Start("explorer.exe", "/select," + this.OutputPath.CurrentValue);
+            Process.Start("explorer.exe", "/select," + previousPath);
         }
 
         private string ValidateUri(string value)
@@ -214,12 +275,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                     return;
                 }
             }
-
-            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue) && !string.IsNullOrEmpty(this.PackageSelection.InputPath.CurrentValue))
-            {
-                this.OutputPath.CurrentValue = this.PackageSelection.InputPath.CurrentValue + ".appinstaller";
-            }
-
+            
             if (string.IsNullOrEmpty(this.MainPackageUri.CurrentValue) && !string.IsNullOrEmpty(e.NewValue as string))
             {
                 var newFilePath = new FileInfo((string)e.NewValue);

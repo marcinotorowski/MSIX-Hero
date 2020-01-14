@@ -73,7 +73,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 
         public ChangeableProperty<bool> SaveToStore { get; }
 
-        protected override async Task Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             if (this.SaveToFile.CurrentValue)
             {
@@ -84,6 +84,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
             {
                 await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
             }
+
+            return true;
         }
 
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
