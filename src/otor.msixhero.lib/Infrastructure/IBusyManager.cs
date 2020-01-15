@@ -6,9 +6,9 @@ namespace otor.msixhero.lib.Infrastructure
 {
     public interface IBusyManager
     {
-        void Execute(Action<IBusyContext> action);
+        void ExecuteAsync(Action<IBusyContext> action);
 
-        Task Execute(Func<IBusyContext, Task> taskFactory);
+        Task ExecuteAsync(Func<IBusyContext, Task> taskFactory);
 
         IBusyContext Begin();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace otor.msixhero.ui.ViewModel
             this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());
 
             // General APPX
-            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
+            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanAddPackage());
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.Pack = new DelegateCommand(param => this.PackExecute());
             this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
@@ -151,15 +152,32 @@ namespace otor.msixhero.ui.ViewModel
             return true;
         }
 
-        private void AddPackageExecute()
+        private void AddPackageExecute(bool forAllUsers)
         {
-            if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx;*.appxbundle;*.appinstaller;AppxManifest.xml|MSIX/APPX packages|*.msix;*.appx;*.appxbundle|App installer files|*.appinstaller|Manifest files|AppxManifest.xml", out var selection))
+            string selection;
+            if (forAllUsers)
             {
-                return;
+                if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx|Packages|*.msix;*.appx", out selection))
+                {
+                    return;
+                }
+            }
+            else
+            {
+                if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx;*.appxbundle;*.appinstaller;AppxManifest.xml|Packages and bundles|*.msix;*.appx;*.appxbundle|App installer files|*.appinstaller|Manifest files|AppxManifest.xml", out selection))
+                {
+                    return;
+                }
             }
 
+            var command = new AddPackage(selection)
+            {
+                AllUsers = forAllUsers,
+                KillRunningApps = true,
+                AllowDowngrade = false
+            };
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new AddPackage(selection), CancellationToken.None);
+            this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None);
         }
 
         private void OpenPowerShellExecute()

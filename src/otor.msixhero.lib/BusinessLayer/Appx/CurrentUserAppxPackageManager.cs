@@ -100,7 +100,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        public async Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Add(string filePath, AddPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             Logger.Info("Installing package {0}", filePath);
             if (filePath == null)
@@ -113,22 +113,51 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
                 var pkgManager = new PackageManager();
 
-                using (var powerShell = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
-                {
-                    var cmd = powerShell.AddCommand("Add-AppxPackage");
-                    cmd.AddParameter("-Path", filePath);
-                    cmd.AddParameter("-Register");
+                DeploymentOptions deploymentOptions = 0;
 
-                    await powerShell.InvokeAsync().ConfigureAwait(false);
+                if (options.HasFlag(AddPackageOptions.AllowDowngrade))
+                {
+                    deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
                 }
+
+                if (options.HasFlag(AddPackageOptions.KillRunningApps))
+                {
+                    deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
+                    deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
+                }
+
+                deploymentOptions |= DeploymentOptions.DevelopmentMode;
+
+                await AsyncOperationHelper.ConvertToTask(
+                    pkgManager.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
+                    $"Installing {reader.DisplayName} {reader.Version}...",
+                    cancellationToken,
+                    progress).ConfigureAwait(false);
             }
             else if (string.Equals(".appinstaller", Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
             {
                 var pkgManager = new PackageManager();
 
+                if (options.HasFlag(AddPackageOptions.AllUsers))
+                {
+                    throw new NotSupportedException("Cannot install a package from .appinstaller for all users.");
+                }
+
+                AddPackageByAppInstallerOptions deploymentOptions = 0;
+
+                if (options.HasFlag(AddPackageOptions.AllowDowngrade))
+                {
+                    throw new NotSupportedException("Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.");
+                }
+                
+                if (options.HasFlag(AddPackageOptions.KillRunningApps))
+                {
+                    deploymentOptions |= AddPackageByAppInstallerOptions.ForceTargetAppShutdown;
+                }
+
                 var volume = pkgManager.GetDefaultPackageVolume();
                 await AsyncOperationHelper.ConvertToTask(
-                    pkgManager.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), AddPackageByAppInstallerOptions.ForceTargetAppShutdown, volume),
+                    pkgManager.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
                     "Installing from " + Path.GetFileName(filePath) + "...",
                     cancellationToken,
                     progress).ConfigureAwait(false);
@@ -140,11 +169,59 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
                     var pkgManager = new PackageManager();
 
-                    await AsyncOperationHelper.ConvertToTask(
-                        pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), DeploymentOptions.ForceApplicationShutdown),
-                        "Installing " + reader.DisplayName + "...",
-                        cancellationToken,
-                        progress).ConfigureAwait(false);
+                    DeploymentOptions deploymentOptions = 0;
+
+                    if (options.HasFlag(AddPackageOptions.AllowDowngrade))
+                    {
+                        deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
+                    }
+
+                    if (options.HasFlag(AddPackageOptions.KillRunningApps))
+                    {
+                        deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
+                        deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
+                    }
+
+                    if (options.HasFlag(AddPackageOptions.AllUsers))
+                    {
+                        var deploymentResult = await AsyncOperationHelper.ConvertToTask(
+                            pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            $"Installing {reader.DisplayName} {reader.Version}...",
+                            cancellationToken,
+                            progress).ConfigureAwait(false);
+
+                        if (!deploymentResult.IsRegistered)
+                        {
+                            throw new InvalidOperationException("The package could not be registered.");
+                        }
+
+                        var findInstalled = pkgManager.FindPackages(reader.Name, reader.Publisher).FirstOrDefault();
+                        if (findInstalled == null)
+                        {
+                            throw new InvalidOperationException("The package could not be registered.");
+                        }
+
+                        var familyName = findInstalled.Id.FamilyName;
+
+                        await AsyncOperationHelper.ConvertToTask(
+                            pkgManager.ProvisionPackageForAllUsersAsync(familyName),
+                            $"Provisioning {reader.DisplayName} {reader.Version}...",
+                            cancellationToken,
+                            progress).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        var deploymentResult = await AsyncOperationHelper.ConvertToTask(
+                            pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            "Installing " + reader.DisplayName + "...",
+                            cancellationToken,
+                            progress).ConfigureAwait(false);
+
+                        if (!deploymentResult.IsRegistered)
+                        {
+                            throw new InvalidOperationException("The package could not be registered.");
+                        }
+                    }
                 }
                 catch (InvalidDataException e)
                 {
@@ -180,37 +257,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             {
                 throw new ArgumentNullException(nameof(toolPath));
             }
-
-            //var pscmd = string.Format("Invoke-CommandInDesktopPackage"
-            //                        + " -Command '{0}'"
-            //                        + " -PackageFamilyName '{1}'"
-            //                        + " -AppId '{2}'"
-            //                        + " -PreventBreakaway",
-            //    toolPath,
-            //    packageFamilyName,
-            //    appId);
-
-            //var taskCompletionSource = new TaskCompletionSource<int>();
-            //var proc = new ProcessStartInfo("powershell.exe", string.Format(@"-Command ""& {{ {0} }}""", pscmd));
-
-            //var p = Process.Start(proc);
-            //p.EnableRaisingEvents = true;
-            //p.Exited += (sender, args) => { taskCompletionSource.TrySetResult(p.ExitCode); };
-            //if (p.HasExited)
-            //{
-            //    taskCompletionSource.SetResult(p.ExitCode);
-            //}
-
-            //var exitCode = await taskCompletionSource.Task.ConfigureAwait(false);
-            //await Task.Delay(400, cancellationToken).ConfigureAwait(false);
-            //if (exitCode != 0)
-            //{
-            //    throw new InvalidOperationException("PowerShell returned error code " + exitCode);
-            //}
-
-            //return;
-
-            //return;
 
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");

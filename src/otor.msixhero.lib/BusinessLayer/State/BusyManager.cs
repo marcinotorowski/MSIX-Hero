@@ -32,7 +32,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
             }
         }
 
-        public void Execute(Action<IBusyContext> action)
+        public void ExecuteAsync(Action<IBusyContext> action)
         {
             var context = this.Begin();
 
@@ -46,7 +46,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
             }
         }
 
-        public async Task Execute(Func<IBusyContext, Task> taskFactory)
+        public async Task ExecuteAsync(Func<IBusyContext, Task> taskFactory)
         {
             var context = this.Begin();
 

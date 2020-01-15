@@ -110,9 +110,16 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return await this.client.GetExecuted(new GetLogs(maxCount), cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Add(string filePath, AddPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.client.Execute(new AddPackage(filePath), cancellationToken, progress);
+            var command = new AddPackage(filePath)
+            {
+                AllowDowngrade = options.HasFlag(AddPackageOptions.AllowDowngrade),
+                AllUsers = options.HasFlag(AddPackageOptions.AllUsers),
+                KillRunningApps = options.HasFlag(AddPackageOptions.KillRunningApps)
+            };
+
+            return this.client.Execute(command, cancellationToken, progress);
         }
     }
 }

@@ -53,6 +53,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task Add(string filePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Add(string filePath, AddPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

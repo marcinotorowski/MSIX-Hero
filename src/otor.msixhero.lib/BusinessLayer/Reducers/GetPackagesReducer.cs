@@ -33,7 +33,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 List<InstalledPackage> packageSource;
 
-                context.Message = "Getting the list of packages...";
+                context.Message = "Just a moment...";
                 
                 switch (action.Context)
                 {
