@@ -15,6 +15,10 @@
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>E:\Visual\Playground\MSIX-Hero\src\bin\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Modules\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Settings\View\Images\sidebar.png" />
@@ -70,6 +74,9 @@
     <Compile Update="Modules\Dialogs\Unpack\View\UnpackView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\Main\View\BackStageOpenView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\PackageList\View\MultiSelectionView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -98,6 +105,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\Unpack\View\UnpackView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Main\View\BackStageOpenView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\PackageList\View\MultiSelectionView.xaml">

@@ -21,6 +21,13 @@ using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.ViewModel
 {
+    public enum AppInstallerCommandParameter
+    {
+        Empty,
+        Selection,
+        Browse
+    }
+
     public class CommandHandler
     {
         private readonly IInteractionService interactionService;
@@ -55,7 +62,7 @@ namespace otor.msixhero.ui.ViewModel
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(), param => this.CanAddPackage());
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.Pack = new DelegateCommand(param => this.PackExecute());
-            this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
+            this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.Unpack = new DelegateCommand(param => this.UnpackExecute());
 
@@ -298,16 +305,6 @@ namespace otor.msixhero.ui.ViewModel
                 {
                     Process.Start("rundll32.exe", "shell32.dll, OpenAs_RunDLL " + package.ManifestLocation);
                     break;
-                    var spi = new ProcessStartInfo()
-                    {
-                        WindowStyle = ProcessWindowStyle.Normal,
-                        FileName = package.ManifestLocation,
-                        Verb = "openas",
-                        UseShellExecute = true,
-                        ErrorDialog = true
-                    };
-                    Process.Start(spi);
-                    break;
                 }
 
                 default:
@@ -341,17 +338,6 @@ namespace otor.msixhero.ui.ViewModel
                 {
                     Process.Start("rundll32.exe", "shell32.dll, OpenAs_RunDLL " + package.PsfConfig);
                     break;
-
-                    var spi = new ProcessStartInfo()
-                    {
-                        WindowStyle = ProcessWindowStyle.Normal,
-                        FileName = package.PsfConfig,
-                        Verb = "openas",
-                        UseShellExecute = true,
-                        ErrorDialog = true
-                    };
-                    Process.Start(spi);
-                    break;
                 }
 
                 default:
@@ -383,10 +369,10 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.Execute(new RunPackage(package.PackageFamilyName, package.ManifestLocation));
+            this.stateManager.CommandExecutor.ExecuteAsync(new RunPackage(package.PackageFamilyName, package.ManifestLocation));
         }
 
-        private void RemovePackageExecute(bool allUsersRemoval)
+        private async void RemovePackageExecute(bool allUsersRemoval)
         {
             var selection = this.stateManager.CurrentState.Packages.SelectedItems;
             if (!selection.Any())
@@ -394,10 +380,10 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection));
+            await this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection)).ConfigureAwait(false);
         }
 
-        private void RunToolExecute(string tool)
+        private async void RunToolExecute(string tool)
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null || tool == null)
@@ -418,14 +404,14 @@ namespace otor.msixhero.ui.ViewModel
             return tool != null;
         }
 
-        private void InstallCertificateExecute()
+        private async void InstallCertificateExecute()
         {
             if (!this.interactionService.SelectFile("Certificate files (*.cer)|*.cer|All files (*.*)|*.*", out var selectedFile))
             {
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(selectedFile));
+            await this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(selectedFile)).ConfigureAwait(false);
         }
 
         private void NewSelfSignedCertExecute()
@@ -458,20 +444,55 @@ namespace otor.msixhero.ui.ViewModel
             return !forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
         }
 
-        private void AppInstallerExecute(bool forSelection)
+        private bool CanExecuteAppInstaller(AppInstallerCommandParameter param)
         {
-            if (!forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            switch (param)
             {
-                this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, new DialogParameters(), this.OnDialogClosed);
+                case AppInstallerCommandParameter.Empty:
+                case AppInstallerCommandParameter.Browse:
+                    return true;
+                case AppInstallerCommandParameter.Selection:
+                    return this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
+                default:
+                    return false;
             }
-            else
-            {
-                var parameters = new DialogParameters
-                {
-                    { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
-                };
+        }
 
-                this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, parameters, this.OnDialogClosed);
+        private void AppInstallerExecute(AppInstallerCommandParameter parameter)
+        {
+            switch (parameter)
+            {
+                case AppInstallerCommandParameter.Empty:
+                    this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, new DialogParameters(), this.OnDialogClosed);
+                    break;
+                case AppInstallerCommandParameter.Selection:
+                    if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+                    {
+                        this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, new DialogParameters(), this.OnDialogClosed);
+                    }
+                    else
+                    {
+                        var parameters = new DialogParameters
+                        {
+                            { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
+                        };
+
+                        this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, parameters, this.OnDialogClosed);
+                    }
+                    break;
+                case AppInstallerCommandParameter.Browse:
+                    if (this.interactionService.SelectFile("Appinstaller files|*.appinstaller|All files|*.*", out var selected))
+                    {
+                        var parameters = new DialogParameters
+                        {
+                            { "file", selected }
+                        };
+
+                        this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, parameters, this.OnDialogClosed);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null);
             }
         }
 

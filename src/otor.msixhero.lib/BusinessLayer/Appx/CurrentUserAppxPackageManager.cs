@@ -181,6 +181,37 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 throw new ArgumentNullException(nameof(toolPath));
             }
 
+            //var pscmd = string.Format("Invoke-CommandInDesktopPackage"
+            //                        + " -Command '{0}'"
+            //                        + " -PackageFamilyName '{1}'"
+            //                        + " -AppId '{2}'"
+            //                        + " -PreventBreakaway",
+            //    toolPath,
+            //    packageFamilyName,
+            //    appId);
+
+            //var taskCompletionSource = new TaskCompletionSource<int>();
+            //var proc = new ProcessStartInfo("powershell.exe", string.Format(@"-Command ""& {{ {0} }}""", pscmd));
+
+            //var p = Process.Start(proc);
+            //p.EnableRaisingEvents = true;
+            //p.Exited += (sender, args) => { taskCompletionSource.TrySetResult(p.ExitCode); };
+            //if (p.HasExited)
+            //{
+            //    taskCompletionSource.SetResult(p.ExitCode);
+            //}
+
+            //var exitCode = await taskCompletionSource.Task.ConfigureAwait(false);
+            //await Task.Delay(400, cancellationToken).ConfigureAwait(false);
+            //if (exitCode != 0)
+            //{
+            //    throw new InvalidOperationException("PowerShell returned error code " + exitCode);
+            //}
+
+            //return;
+
+            //return;
+
             using var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var cmd = ps.AddCommand("Invoke-CommandInDesktopPackage");
             cmd.AddParameter("Command", toolPath);
@@ -591,7 +622,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var reader = await AppxManifestSummaryBuilder.FromInstallLocation(installLocation);
+                var reader = await AppxManifestSummaryBuilder.FromInstallLocation(installLocation).ConfigureAwait(false);
                 var logo = Path.Combine(installLocation, reader.Logo);
                 
                 if (File.Exists(Path.Combine(installLocation, logo)))

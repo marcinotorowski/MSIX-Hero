@@ -130,14 +130,22 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (!parameters.TryGetValue("file", out string sourceFile))
+            if (parameters.TryGetValue("file", out string sourceFile))
             {
-                return;
-            }
+                var ext = Path.GetExtension(sourceFile) ?? string.Empty;
 
-            this.PackageSelection.InputPath.CurrentValue = sourceFile;
-            this.PackageSelection.AllowChangingSourcePackage = false;
-            this.PackageSelection.ShowPackageTypeSelector = false;
+                switch (ext.ToLowerInvariant())
+                {
+                    case ".appinstaller":
+                        this.OpenCommand.Execute(sourceFile);
+                        break;
+                    default:
+                        this.PackageSelection.InputPath.CurrentValue = sourceFile;
+                        this.PackageSelection.AllowChangingSourcePackage = false;
+                        this.PackageSelection.ShowPackageTypeSelector = false;
+                        break;
+                }
+            }
         }
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
@@ -183,19 +191,35 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         private void OpenExecuted(object obj)
         {
-            string selected;
-            if (this.previousPath != null)
+            string selected = obj as string;
+
+            if (selected != null)
             {
-                if (!this.interactionService.SelectFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out selected))
+                if (!File.Exists(selected))
+                {
+                    selected = null;
+                }
+                else
+                {
+                    previousPath = selected;
+                }
+            }
+
+            if (selected == null)
+            {
+                if (this.previousPath != null)
+                {
+                    if (!this.interactionService.SelectFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out selected))
+                    {
+                        return;
+                    }
+                }
+                else if (!this.interactionService.SelectFile("Appinstaller files|*.appinstaller|All files|*.*", out selected))
                 {
                     return;
                 }
             }
-            else if (!this.interactionService.SelectFile("Appinstaller files|*.appinstaller|All files|*.*", out selected))
-            {
-                return;
-            }
-
+            
             this.previousPath = selected;
 
             AppInstallerConfig.FromFile(selected).ContinueWith(t =>

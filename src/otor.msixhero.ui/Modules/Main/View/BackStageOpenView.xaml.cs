@@ -3,11 +3,11 @@
 namespace otor.msixhero.ui.Modules.Main.View
 {
     /// <summary>
-    /// Interaction logic for BackStageNewView.xaml
+    /// Interaction logic for BackStageOpenView.xaml
     /// </summary>
-    public partial class BackStageNewView : UserControl
+    public partial class BackStageOpenView : UserControl
     {
-        public BackStageNewView()
+        public BackStageOpenView()
         {
             InitializeComponent();
         }

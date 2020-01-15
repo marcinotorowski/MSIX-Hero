@@ -13,6 +13,7 @@
                      xmlns:system="clr-namespace:System;assembly=System.Runtime"
                      xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
                      xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Main.View"
+                     xmlns:viewModel1="clr-namespace:otor.msixhero.ui.ViewModel"
                      d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -92,6 +93,12 @@
                                 <Path Fill="White" Opacity="0.7" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
                             </Fluent:BackstageTabItem.Icon>
                             <view:BackStageNewView />
+                        </Fluent:BackstageTabItem>
+                        <Fluent:BackstageTabItem Header="Open">
+                            <Fluent:BackstageTabItem.Icon>
+                                <Path Fill="White" Opacity="0.7" Style="{StaticResource MediumIcon}" Data="{StaticResource VectorOpen}" />
+                            </Fluent:BackstageTabItem.Icon>
+                            <view:BackStageOpenView />
                         </Fluent:BackstageTabItem>
                         <Fluent:Button Header="Settings" Command="{x:Static commands:MsixHeroCommands.Settings}">
                             <Fluent:Button.Icon>
@@ -263,7 +270,7 @@
                             <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
-                    <Fluent:Button Header="Generate appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
+                    <Fluent:Button Header="Generate appinstaller definition..." CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -522,10 +529,7 @@
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
-                        <Fluent:Button.CommandParameter>
-                            <system:Boolean>True</system:Boolean>
-                        </Fluent:Button.CommandParameter>
+                    <Fluent:Button Header="Appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
