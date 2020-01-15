@@ -64,8 +64,8 @@
                                     <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                                 </DockPanel>
 
-                                <CheckBox Margin="0 10 0 0" Content="Do not compress files" IsChecked="{Binding Compress.CurrentValue, ConverterParameter={StaticResource NegativeConverter}}" />
-                                <CheckBox Margin="0 10 0 0" Content="Skip integrity checks" IsChecked="{Binding Validate.CurrentValue, ConverterParameter={StaticResource NegativeConverter}}" />
+                                <CheckBox Margin="0 10 0 0" Content="Compress files according to ther type" IsChecked="{Binding Compress.CurrentValue}" />
+                                <CheckBox Margin="0 6 0 0" Content="Perform basic integrity checks" IsChecked="{Binding Validate.CurrentValue}" />
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
