@@ -73,11 +73,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             {
                 if (this.SelectedCertificate.Store.CurrentValue == CertificateSource.Pfx)
                 {
-                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress);
+                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress);
+                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
             }
 

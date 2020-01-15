@@ -18,7 +18,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            await packageManager.MountRegistry(this.action.PackageName, this.action.InstallLocation, true, cancellationToken);
+            await packageManager.MountRegistry(this.action.PackageName, this.action.InstallLocation, true, cancellationToken).ConfigureAwait(false);
         }
     }
 }

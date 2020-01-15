@@ -177,7 +177,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             }
             
             this.AllSettings.Commit();
-            await this.configurationService.SetCurrentConfigurationAsync(newConfiguration);
+            await this.configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);
             return true;
         }
 

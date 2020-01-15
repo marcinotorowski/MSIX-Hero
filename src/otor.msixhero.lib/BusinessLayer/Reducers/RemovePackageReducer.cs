@@ -52,7 +52,7 @@ CancellationToken cancellationToken = default)
                     eventData.OldPackages.Add(item);
                 }
 
-                await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.action.Packages, SelectionMode.RemoveFromSelection), cancellationToken);
+                await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.action.Packages, SelectionMode.RemoveFromSelection), cancellationToken).ConfigureAwait(false);
                 this.StateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Publish(eventData);
             }
             finally

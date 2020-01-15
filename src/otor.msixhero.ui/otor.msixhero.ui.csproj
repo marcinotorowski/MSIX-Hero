@@ -11,12 +11,9 @@
     <Product>MSIX Hero</Product>
     <Copyright>Copyright (c) 2019-2020 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
+    <OutputPath>$(SolutionDir)src\bin\</OutputPath>
     <Company />
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>E:\Visual\Playground\MSIX-Hero\src\bin\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -105,10 +105,9 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    /*elevate = true;
+                    elevate = true;
                     packageManager = this.appxPackageManagerFactory.GetRemote();
-                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);*/
-                    throw;
+                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
                 }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
@@ -143,6 +142,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 {
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    throw;
                 }
             }
         }
@@ -225,10 +228,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    // elevate = true;
-                    // var packMgr = this.appxPackageManagerFactory.GetRemote();
-                    // result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
-                    throw;
+                    elevate = true;
+                    var packMgr = this.appxPackageManagerFactory.GetRemote();
+                    result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
+                    // throw;
                 }
                 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
@@ -316,10 +319,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    // elevate = true;
-                    // packageManager = this.appxPackageManagerFactory.GetRemote();
-                    // result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
-                    throw;
+                    elevate = true;
+                    packageManager = this.appxPackageManagerFactory.GetRemote();
+                    result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    // throw;
                 }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)

@@ -181,11 +181,11 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
 
                                     Logger.Error(e, "Reporting exception");
                                     Logger.Trace("Notifying about the response type ({0})...", ResponseType.Exception);
-                                    await binaryWriter.Write((int)ResponseType.Exception, cancellationToken);
+                                    await binaryWriter.Write((int)ResponseType.Exception, cancellationToken).ConfigureAwait(false);
                                     Logger.Trace("Notifying about the message {0}...", e.Message);
-                                    await binaryWriter.Write(e.Message, cancellationToken);
+                                    await binaryWriter.Write(e.Message, cancellationToken).ConfigureAwait(false);
                                     Logger.Trace("Notifying about the callstack (0)...", e);
-                                    await binaryWriter.Write(e.ToString(), cancellationToken);
+                                    await binaryWriter.Write(e.ToString(), cancellationToken).ConfigureAwait(false);
                                     Logger.Trace("Flushing....");
                                     await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
                                     Logger.Trace("Waiting for the pipe to drain....");

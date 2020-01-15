@@ -25,7 +25,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return;
             }
 
-            await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(action.Context), cancellationToken);
+            await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(action.Context), cancellationToken).ConfigureAwait(false);
         }
     }
 }

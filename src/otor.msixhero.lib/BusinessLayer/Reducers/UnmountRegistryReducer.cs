@@ -29,7 +29,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             try
             {
                 context.Message = "Un-mounting registry...";
-                await packageManager.UnmountRegistry(this.action.PackageName, cancellationToken);
+                await packageManager.UnmountRegistry(this.action.PackageName, cancellationToken).ConfigureAwait(false);
             }
             finally
             {

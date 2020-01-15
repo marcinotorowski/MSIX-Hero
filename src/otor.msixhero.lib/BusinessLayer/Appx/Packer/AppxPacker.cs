@@ -91,7 +91,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
                 var compress = !options.HasFlag(AppxPackerOptions.NoCompress);
                 var validate = !options.HasFlag(AppxPackerOptions.NoValidation);
 
-                await (new MsixSdkWrapper().PackPackageFiles(tempFile, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false));
+                await new MsixSdkWrapper().PackPackageFiles(tempFile, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
             }
             finally
             {

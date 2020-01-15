@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Ookii.Dialogs.Wpf;
 using otor.msixhero.lib.Infrastructure;
 using Application = System.Windows.Application;
@@ -100,7 +101,19 @@ namespace otor.msixhero.ui.Services
             }
 
             var result = 0;
-            this.context.Send(state => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType, null);
+
+            var dispatcher = Application.Current.Dispatcher;
+            if (dispatcher != null)
+            {
+                dispatcher.Invoke(() =>
+                {
+                    this.context.Send(
+                        state => result = (int) taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
+                        null);
+                },
+                DispatcherPriority.SystemIdle);
+            }
+
             return (InteractionResult) result;
         }
 

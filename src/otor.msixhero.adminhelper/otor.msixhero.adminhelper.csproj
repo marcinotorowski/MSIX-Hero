@@ -9,6 +9,7 @@
     <Authors>Marcin Otorowski</Authors>
     <Description>A helper for self-elevation of the main MSIX Hero App.</Description>
     <Copyright>Copyright (c) 2019-2020 by Marcin Otorowski</Copyright>
+    <OutputPath>$(SolutionDir)src\bin\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

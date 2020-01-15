@@ -415,7 +415,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 try
                 {
                     Logger.Debug("Unpacking {0} to {1}.", package, tempDirectory);
-                    await sdk.UnpackPackage(package, tempDirectory, cancellationToken);
+                    await sdk.UnpackPackage(package, tempDirectory, cancellationToken).ConfigureAwait(false);
 
                     var manifestFilePath = Path.Combine(tempDirectory, "AppxManifest.xml");
                     if (!File.Exists(manifestFilePath))
