@@ -16,6 +16,8 @@ namespace otor.msixhero.ui.ViewModel
 
         public string DisplayName => this.Model.DisplayName;
 
+        public bool IsProvisioned => this.Model.IsProvisioned;
+
         public string Name => this.Model.Name;
 
         public string Version => this.Model.Version.ToString();

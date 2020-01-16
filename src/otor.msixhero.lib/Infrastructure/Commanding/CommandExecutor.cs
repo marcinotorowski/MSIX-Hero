@@ -370,7 +370,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         {
             this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetPackages)] = action => new GetPackagesReducer((GetPackages)action, this.writableApplicationStateManager, this.busyManager);
+            this.reducerFactories[typeof(GetPackages)] = action => new GetInstalledPackagesReducer((GetPackages)action, this.writableApplicationStateManager, this.busyManager);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateReducer((GetRegistryMountState)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RunPackage)] = action => new RunPackageReducer((RunPackage)action, this.writableApplicationStateManager);

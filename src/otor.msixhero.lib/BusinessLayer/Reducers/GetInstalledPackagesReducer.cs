@@ -12,12 +12,12 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class GetPackagesReducer : SelfElevationReducer<List<InstalledPackage>>
+    internal class GetInstalledPackagesReducer : SelfElevationReducer<List<InstalledPackage>>
     {
         private readonly GetPackages action;
         private readonly IBusyManager busyManager;
 
-        public GetPackagesReducer(
+        public GetInstalledPackagesReducer(
             GetPackages action,
             IWritableApplicationStateManager applicationStateManager,
             IBusyManager busyManager) : base(action, applicationStateManager)

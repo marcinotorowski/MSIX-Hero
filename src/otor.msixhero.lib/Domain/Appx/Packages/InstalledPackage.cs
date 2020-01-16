@@ -74,5 +74,7 @@ namespace otor.msixhero.lib.Domain.Appx.Packages
                 return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Packages", this.PackageFamilyName);
             }
         }
+
+        public bool IsProvisioned { get; set; }
     }
 }

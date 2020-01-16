@@ -499,13 +499,37 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
         private async Task<List<InstalledPackage>> GetInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             var list = new List<InstalledPackage>();
+            var provisioned = new HashSet<string>();
 
+            var isAdmin = UserHelper.IsAdministrator();
             if (mode == PackageFindMode.Auto)
             {
-                mode = UserHelper.IsAdministrator() ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+                mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
             }
 
             var pkgMan = new PackageManager();
+
+            if (isAdmin)
+            {
+                using (var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
+                {
+                    var cmd = ps.AddCommand("Get-AppxProvisionedPackage");
+                    cmd.AddParameter("Online");
+
+                    var provisionedPackages = await ps.InvokeAsync(progress).ConfigureAwait(false);
+                    foreach (var pp in provisionedPackages.ReadAll())
+                    {
+                        var props1 = pp.Properties["PackageName"];
+                        if (props1?.Value == null)
+                        {
+                            continue;
+                        }
+
+                        provisioned.Add(props1.Value.ToString());
+                    }
+                }
+            }
+
             IList<Windows.ApplicationModel.Package> allPackages;
 
             if (string.IsNullOrEmpty(packageName))
@@ -552,6 +576,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
                 if (converted != null)
                 {
+                    if (provisioned.Contains(item.Id.FullName))
+                    {
+                        converted.IsProvisioned = true;
+                    }
+
                     list.Add(converted);
                 }
             }
