@@ -41,7 +41,7 @@
         OkButtonLabel="Create appinstaller..."
         Icon="{StaticResource VectorSetup}">
         <changeableDialog:ChangeableDialog.Footer>
-            <StackPanel VerticalAlignment="Center">
+            <StackPanel VerticalAlignment="Center" Visibility="{Binding PackageSelection.AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Button Padding="8 4" Margin="4" Content="Load from file..." Command="{Binding OpenCommand}" Visibility="{Binding State.IsSaved, ConverterParameter={StaticResource NegativeBooleanToVisibilityConverter}}" />
             </StackPanel>
         </changeableDialog:ChangeableDialog.Footer>
