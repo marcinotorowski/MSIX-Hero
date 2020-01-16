@@ -78,7 +78,8 @@
                     </MenuItem>
                     <MenuItem Header="All users"  Command="{x:Static commands:MsixHeroCommands.RemovePackage}">
                         <MenuItem.Icon>
-                            <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                            <!-- Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" -->
+                            <Image Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="0 0 0 0" />
                         </MenuItem.Icon>
                         <MenuItem.CommandParameter>
                             <system:Boolean>True</system:Boolean>
