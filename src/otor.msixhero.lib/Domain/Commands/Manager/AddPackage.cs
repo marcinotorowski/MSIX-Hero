@@ -4,11 +4,13 @@
     {
         public AddPackage()
         {
+            this.KillRunningApps = true;
         }
 
         public AddPackage(string filePath)
         {
-            FilePath = filePath;
+            this.KillRunningApps = true;
+            this.FilePath = filePath;
         }
 
         public string FilePath { get; set; }

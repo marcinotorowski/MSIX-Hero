@@ -38,7 +38,24 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             var context = this.busyManager.Begin();
             try
             {
-                await this.busyManager.ExecuteAsync(progress => packageManager.Add(this.command.FilePath, 0, cancellationToken, progress)).ConfigureAwait(false);
+                AddPackageOptions opts = 0;
+
+                if (this.command.AllUsers)
+                {
+                    opts |= AddPackageOptions.AllUsers;
+                }
+
+                if (this.command.KillRunningApps)
+                {
+                    opts |= AddPackageOptions.KillRunningApps;
+                }
+
+                if (this.command.AllowDowngrade)
+                {
+                    opts |= AddPackageOptions.AllowDowngrade;
+                }
+
+                await this.busyManager.ExecuteAsync(progress => packageManager.Add(this.command.FilePath, opts, cancellationToken, progress)).ConfigureAwait(false);
 
                 var allPackages = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
 
