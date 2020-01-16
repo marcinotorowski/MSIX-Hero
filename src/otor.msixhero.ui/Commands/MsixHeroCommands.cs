@@ -6,6 +6,7 @@ namespace otor.msixhero.ui.Commands
     {
         static MsixHeroCommands()
         {
+            Deprovision = new RoutedUICommand { Text = "Deprovision for all users" };
             OpenExplorer = new RoutedUICommand { Text = "Open install location", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
             OpenExplorerUser = new RoutedUICommand { Text = "Open user data folder", InputGestures = { new KeyGesture(Key.U, ModifierKeys.Control) } };
             OpenManifest = new RoutedUICommand { Text = "Open manifest", InputGestures = { new KeyGesture(Key.M, ModifierKeys.Control )}};
@@ -31,6 +32,8 @@ namespace otor.msixhero.ui.Commands
             ModificationPackage = new RoutedUICommand { Text = "Opens a wizard for modification package generation" };
             Settings = new RoutedUICommand { Text = "Opens settings" };
         }
+
+        public static RoutedUICommand Deprovision { get; }
 
         public static RoutedUICommand OpenExplorer { get; }
         

@@ -18,7 +18,7 @@ namespace otor.msixhero.lib.Domain.Commands.Grid
             this.PackageFullName = fullName;
         }
 
-        public GetPackageDetails(InstalledPackage package, PackageContext context = PackageContext.CurrentUser) : this(package.PackageId, context)
+        public GetPackageDetails(InstalledPackage package) : this(package.PackageId, package.Context)
         {
         }
 

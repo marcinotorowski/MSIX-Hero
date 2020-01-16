@@ -41,9 +41,9 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             regionManager.RegisterViewWithRegion("PackageSidebar", typeof(EmptySelectionView));
 
             // Subscribe to events
-            applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged, ThreadOption.UIThread);
+            applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged);
             applicationStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(OnPackagesSelectionChanged, ThreadOption.UIThread);
-            applicationStateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(OnPackageGroupAndSortChanged, ThreadOption.UIThread);
+            applicationStateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(OnPackageGroupAndSortChanged);
 
             // Set up defaults
             this.UpdateSidebarVisibility();
@@ -108,49 +108,48 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionChanged)
         {
-            try
+            var selectedPackages = ((PackageListViewModel)this.DataContext).SelectedPackages;
+            if (!this.disableSelectionNotification)
             {
-                this.disableSelectionNotification = true;
-
-                this.ListView.SelectedItems.Clear();
-                this.ListBox.SelectedItems.Clear();
-
-                var selectedPackages = ((PackageListViewModel) this.DataContext).SelectedPackages;
-                foreach (var item in selectedPackages)
+                try
                 {
-                    this.ListView.SelectedItems.Add(item);
-                    this.ListBox.SelectedItems.Add(item);
-                }
+                    this.disableSelectionNotification = true;
 
-                switch (this.applicationStateManager.CurrentState.Packages.SelectedItems.Count)
-                {
-                    case 0:
-                    {
-                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative));
-                        break;
-                    }
+                    this.ListView.SelectedItems.Clear();
+                    this.ListBox.SelectedItems.Clear();
 
-                    case 1:
+                    foreach (var item in selectedPackages)
                     {
-                        var selected = selectedPackages.LastOrDefault();
-                        var fullName = selected?.ProductId;
-                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { nameof(InstalledPackage.PackageId), fullName } });
-                        break;
-                    }
-
-                    default:
-                    {
-                        var selected = selectedPackages.Select(p => p.ProductId);
-                        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { nameof(InstalledPackage.PackageId), selected } });
-                        break;
+                        this.ListView.SelectedItems.Add(item);
+                        this.ListBox.SelectedItems.Add(item);
                     }
                 }
-
-
+                finally
+                {
+                    this.disableSelectionNotification = false;
+                }
             }
-            finally
+
+            var selected = selectedPackages.Select(p => p.ProductId).ToArray();
+            switch (selected.Length)
             {
-                this.disableSelectionNotification = false;
+                case 0:
+                {
+                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
+                    break;
+                }
+
+                case 1:
+                {
+                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
+                    break;
+                }
+
+                default:
+                {
+                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
+                    break;
+                }
             }
         }
 
@@ -159,7 +158,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             this.UpdateSidebarVisibility();
         }
 
-        private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.disableSelectionNotification)
             {
@@ -169,7 +168,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             try
             {
                 this.disableSelectionNotification = true;
-                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListView.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model)));
+                await this.applicationStateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.ListView.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model))).ConfigureAwait(true);
                 
                 if (this.PanelListBox.Visibility == Visibility.Collapsed)
                 {
@@ -201,7 +200,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             }
         }
 
-        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.disableSelectionNotification)
             {
@@ -211,7 +210,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             try
             {
                 this.disableSelectionNotification = true;
-                this.applicationStateManager.CommandExecutor.Execute(new SelectPackages(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model)));
+                await this.applicationStateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model))).ConfigureAwait(false);
 
                 if (this.PanelListView.Visibility == Visibility.Collapsed)
                 {

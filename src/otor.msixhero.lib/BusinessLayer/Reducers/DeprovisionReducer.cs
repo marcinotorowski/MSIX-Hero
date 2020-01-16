@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
@@ -13,12 +12,12 @@ using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class RemovePackageReducer : SelfElevationReducer
+    public class DeprovisionReducer : SelfElevationReducer
     {
-        private readonly RemovePackages action;
+        private readonly Deprovision action;
         private readonly IBusyManager busyManager;
 
-        public RemovePackageReducer(RemovePackages action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
+        public DeprovisionReducer(Deprovision action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
         {
             this.action = action;
             this.busyManager = busyManager;
@@ -27,7 +26,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager,
 CancellationToken cancellationToken = default)
         {
-            if (this.action.Packages == null || !this.action.Packages.Any())
+            if (this.action.PackageFamilyName == null)
             {
                 return;
             }
@@ -44,28 +43,10 @@ CancellationToken cancellationToken = default)
 
             myProgress.ProgressChanged += handler;
 
-            var eventData = new PackagesCollectionChangedPayLoad(this.action.Context, CollectionChangeType.Simple);
             try
             {
-                await packageManager.Remove(this.action.Packages, cancellationToken: cancellationToken, progress: myProgress).ConfigureAwait(false);
-                
-                foreach (var item in this.action.Packages)
-                {
-                    if (item.IsProvisioned)
-                    {
-                        continue;
-                    }
-
-                    eventData.OldPackages.Add(item);
-                }
-
-                if (!eventData.OldPackages.Any())
-                {
-                    return;
-                }
-
-                await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.action.Packages, SelectionMode.RemoveFromSelection), cancellationToken).ConfigureAwait(false);
-                this.StateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Publish(eventData);
+                await packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: myProgress).ConfigureAwait(false);
+                await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
             }
             finally
             {

@@ -70,6 +70,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.client.Execute(new RunToolInPackage(package.PackageFamilyName, package.Name, toolPath, arguments), cancellationToken, progress);
         }
 
+        public Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            return this.client.Execute(new Deprovision(packageFamilyName), cancellationToken, progress);
+        }
+
         public Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return this.client.Execute(new RunToolInPackage(packageFamilyName, appId, toolPath, arguments), cancellationToken, progress);

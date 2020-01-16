@@ -48,10 +48,10 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.Tools = new ObservableCollection<ToolViewModel>();
 
             busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
-            stateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Subscribe(this.OnPackageLoaded, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Subscribe(this.OnPackageLoaded);
             stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged);
-            stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged, ThreadOption.UIThread);
+            stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged);
+            stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged);
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
 
             this.SetTools();
@@ -154,7 +154,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.System;
                 }
 
-                this.stateManager.CommandExecutor.Execute(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
             }
         }
 

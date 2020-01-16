@@ -6,6 +6,8 @@ namespace otor.msixhero.lib.Domain.Appx.Packages
     [Serializable]
     public class InstalledPackage
     {
+        public PackageContext Context { get; set; }
+
         public string PackageId { get; set; }
 
         public string DisplayName { get; set; }

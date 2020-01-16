@@ -8,28 +8,27 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
         public static string GetPackageTypeStringFrom(MsixPackageType packageType)
         {
             var isUwp = (packageType & MsixPackageType.Uwp) == MsixPackageType.Uwp;
-            var isPsf = (packageType & MsixPackageType.BridgePsf) == MsixPackageType.BridgePsf;
-            var isBridge = (packageType & MsixPackageType.BridgeDirect) == MsixPackageType.BridgeDirect;
-            var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web;
-
-            if (isWeb)
-            {
-                return "Web";
-            }
-
             if (isUwp)
             {
-                return isPsf ? "UWP + PSF" : "UWP";
+                return "UWP";
             }
 
+            var isBridge = (packageType & MsixPackageType.BridgeDirect) == MsixPackageType.BridgeDirect;
+            if (isBridge)
+            {
+                return "Desktop Bridge";
+            }
+
+            var isPsf = (packageType & MsixPackageType.BridgePsf) == MsixPackageType.BridgePsf;
             if (isPsf)
             {
                 return "Desktop Bridge + PSF";
             }
 
-            if (isBridge)
+            var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web;
+            if (isWeb)
             {
-                return "Desktop Bridge";
+                return "Web";
             }
 
             return "Unknown";

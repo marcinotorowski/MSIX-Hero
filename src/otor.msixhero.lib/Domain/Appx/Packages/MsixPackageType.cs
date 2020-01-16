@@ -8,6 +8,6 @@ namespace otor.msixhero.lib.Domain.Appx.Packages
         Uwp = 1,
         BridgeDirect = 2,
         BridgePsf = 4,
-        Web = 8,
+        Web = 8
     }
 }

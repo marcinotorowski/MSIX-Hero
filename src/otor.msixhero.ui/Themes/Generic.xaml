@@ -172,7 +172,7 @@
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="BorderBrush" Value="#B1D6F0" />
-                <Setter Property="Background" Value="#E6F2FA" />
+                <Setter Property="Background" Value="#CDE6F7" />
             </Trigger>
         </Style.Triggers>
     </Style>

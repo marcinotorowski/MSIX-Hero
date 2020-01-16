@@ -143,10 +143,6 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
                 }
-                else
-                {
-                    throw;
-                }
             }
         }
 
@@ -376,6 +372,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.reducerFactories[typeof(RunPackage)] = action => new RunPackageReducer((RunPackage)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RunToolInPackage)] = action => new RunToolInPackageReducer((RunToolInPackage)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.writableApplicationStateManager, this.busyManager);
+            this.reducerFactories[typeof(Deprovision)] = action => new DeprovisionReducer((Deprovision)action, this.writableApplicationStateManager, this.busyManager);
             this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.writableApplicationStateManager);

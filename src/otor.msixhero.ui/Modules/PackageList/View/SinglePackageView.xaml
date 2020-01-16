@@ -33,9 +33,17 @@
             <TabItem Header="Properties">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <StackPanel DataContext="{Binding SelectedInstalledPackage}" >
+                        <Border Margin="0 0 0 10" Background="Red" Padding="10" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="{Binding Error}" Foreground="White" TextWrapping="Wrap" />
+                        </Border>
 
+                        <StackPanel DataContext="{Binding SelectedInstalledPackage}">
                             <DockPanel DockPanel.Dock="Top" >
+
+                                <Border Margin="0 0 0 10" Background="#CCFFD1" DockPanel.Dock="Top" Padding="10" Visibility="{Binding IsProvisioned, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <TextBlock Text="This is a provisioned package" Foreground="DarkGreen" TextAlignment="Left" TextWrapping="Wrap" />
+                                </Border>
+
                                 <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
                                     <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
@@ -84,7 +92,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Content">
+            <TabItem Header="Content" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabControl Margin="0 -7 0 0">
                     <TabItem Style="{StaticResource Compact}">
                         <TabItem.Header>
@@ -252,7 +260,7 @@
                     </TabItem>
                 </TabControl>
             </TabItem>
-            <TabItem>
+            <TabItem Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabItem.Header>
                     <TextBlock>
                         <Run FontSize="13" Text="Dependencies" />
@@ -303,7 +311,7 @@
 
                 </xctk:BusyIndicator>
             </TabItem>
-            <TabItem>
+            <TabItem Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}">

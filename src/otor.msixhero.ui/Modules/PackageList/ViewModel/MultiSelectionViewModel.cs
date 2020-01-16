@@ -11,18 +11,30 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
     public class MultiSelectionViewModel : NotifyPropertyChanged, INavigationAware
     {
         private IList<string> packageFullNames = new List<string>();
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        
+        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.packageFullNames = ((IEnumerable<string>)navigationContext.Parameters[nameof(InstalledPackage.PackageId)]).ToList();
+            var param = navigationContext.Parameters["Packages"] as IList<string>;
+            if (param == null || param.Count < 2)
+            {
+                return;
+            }
+
+            this.packageFullNames = param;
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
         {
-            return ((IEnumerable<string>)navigationContext.Parameters[nameof(InstalledPackage.PackageId)]).SequenceEqual(this.packageFullNames);
+            var param = navigationContext.Parameters["Packages"] as IList<string>;
+            if (param == null || param.Count < 2)
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
     }

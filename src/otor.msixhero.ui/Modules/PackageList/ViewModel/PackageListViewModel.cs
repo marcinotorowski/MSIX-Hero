@@ -41,15 +41,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
-            for (var i = this.SelectedPackages.Count - 1; i >= 0; i--)
-            {
-                if (!selectionInfo.Selected.Contains(this.SelectedPackages[i].Model))
-                {
-                    this.SelectedPackages.RemoveAt(i);
-                }
-            }
-
-            foreach (var item in selectionInfo.Selected)
+            this.SelectedPackages.Clear();
+            foreach (var item in this.stateManager.CurrentState.Packages.SelectedItems)
             {
                 var vm = this.SelectedPackages.FirstOrDefault(m => m.Model == item);
                 if (vm != null)

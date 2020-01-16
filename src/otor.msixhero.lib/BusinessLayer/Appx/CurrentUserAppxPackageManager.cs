@@ -97,7 +97,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None),
                     "Removing " + item.DisplayName, CancellationToken.None, progress);
                 await task.ConfigureAwait(false);
+
+                if (item.IsProvisioned && forAllUsers)
+                {
+                    await this.Deprovision(item.PackageFamilyName, cancellationToken, progress).ConfigureAwait(false);
+                }
             }
+        }
+
+        public async Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var mmm = new PackageManager();
+            var task = AsyncOperationHelper.ConvertToTask(
+                mmm.DeprovisionPackageForAllUsersAsync(packageFamilyName),
+                "De-provisioning for all users",
+                CancellationToken.None, progress);
+            await task.ConfigureAwait(false);
         }
 
         public async Task Add(string filePath, AddPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -313,7 +328,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
         {
             RegistryMountState hasRegistry;
 
-            if (!File.Exists(Path.Combine(installLocation, "registry.dat")))
+            if (string.IsNullOrEmpty(installLocation))
+            {
+                hasRegistry = RegistryMountState.NotApplicable;
+            }
+            else if (!File.Exists(Path.Combine(installLocation, "registry.dat")))
             {
                 hasRegistry = RegistryMountState.NotApplicable;
             }
@@ -425,6 +444,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.Run(package.ManifestLocation, package.PackageFamilyName, appId, cancellationToken, progress);
         }
 
+
         public Task Run(string packageManifestLocation, string packageFamilyName, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (packageManifestLocation == null || !File.Exists(packageManifestLocation))
@@ -488,7 +508,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 return null;
             }
 
-            return await ConvertFrom(pkg, cancellationToken, progress).ConfigureAwait(false);
+            var converted = await ConvertFrom(pkg, cancellationToken, progress).ConfigureAwait(false);
+            converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
+            return converted;
         }
 
         public Task<AppxPackage> Get(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -576,6 +598,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
                 if (converted != null)
                 {
+                    converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
                     if (provisioned.Contains(item.Id.FullName))
                     {
                         converted.IsProvisioned = true;
@@ -601,21 +624,39 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             catch (Exception e)
             {
                 Logger.Warn(e, "Installed location for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
-                return null;
+                installLocation = null;
             }
 
-            try
+            if (installLocation != null)
             {
-                installDate = item.InstalledDate.LocalDateTime;
+                try
+                {
+                    installDate = item.InstalledDate.LocalDateTime;
+                }
+                catch (Exception e)
+                {
+                    Logger.Warn(e, "Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
+                    installDate = DateTime.MinValue;
+                }
             }
-            catch (Exception e)
+            else
             {
-                Logger.Warn(e, "Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
                 installDate = DateTime.MinValue;
             }
 
-            var details = await GetVisualsFromManifest(installLocation, cancellationToken, progress).ConfigureAwait(false);
-            var hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
+            MsixPackageVisuals details;
+            RegistryMountState hasRegistry;
+
+            if (installLocation == null)
+            {
+                hasRegistry = RegistryMountState.NotApplicable;
+                details = new MsixPackageVisuals(item.Id.Name, item.Id.Publisher, null, null, "#000000", 0);
+            }
+            else
+            {
+                details = await GetVisualsFromManifest(installLocation, cancellationToken, progress).ConfigureAwait(false);
+                hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
+            }
 
             var pkg = new InstalledPackage()
             {
@@ -636,9 +677,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 InstallDate = installDate
             };
 
-            if (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
+            if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
-                pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true)
+                pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))
             {
                 var priFile = Path.Combine(installLocation, "resources.pri");
                 

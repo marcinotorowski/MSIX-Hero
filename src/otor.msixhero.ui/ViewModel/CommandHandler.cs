@@ -48,19 +48,20 @@ namespace otor.msixhero.ui.ViewModel
             this.dialogService = dialogService;
 
             // Package-specific
-            this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanExecuteSingleSelection());
-            this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(), param => this.CanOpenExplorerUser());
-            this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanOpenManifest());
-            this.OpenConfigJson = new DelegateCommand(param => this.OpenConfigJsonExecute(), param => this.CanOpenConfigJson());
-            this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanExecuteSingleSelection());
+            this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanExecuteSingleSelectionOnManifest());
+            this.Deprovision = new DelegateCommand(param => this.DeprovisionExecute(), param => this.CanExecuteDeprovision());
+            this.OpenExplorerUser = new DelegateCommand(param => this.OpenExplorerUserExecute(), param => this.CanExecuteOpenExplorerUser());
+            this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanExecuteOpenManifest());
+            this.OpenConfigJson = new DelegateCommand(param => this.OpenConfigJsonExecute(), param => this.CanExecuteOpenConfigJson());
+            this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanExecuteSingleSelectionOnManifest());
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as string), param => this.CanRunTool(param as string));
-            this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanOpenPowerShell());
+            this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanExecuteOpenPowerShell());
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanExecuteSingleSelection());
-            this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanMountRegistry());
-            this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanUnmountRegistry());
+            this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanExecuteMountRegistry());
+            this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanExecuteUnmountRegistry());
 
             // General APPX
-            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanAddPackage());
+            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.Pack = new DelegateCommand(param => this.PackExecute());
             this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
@@ -118,6 +119,8 @@ namespace otor.msixhero.ui.ViewModel
 
         public ICommand OpenExplorer { get; }
 
+        public ICommand Deprovision { get; }
+
         public ICommand OpenExplorerUser { get; }
 
         public ICommand OpenManifest { get; }
@@ -147,7 +150,7 @@ namespace otor.msixhero.ui.ViewModel
             return true;
         }
 
-        private bool CanAddPackage()
+        private bool CanExecuteAddPackage()
         {
             return true;
         }
@@ -208,6 +211,22 @@ namespace otor.msixhero.ui.ViewModel
 
             this.stateManager.CommandExecutor.ExecuteAsync(new MountRegistry(selection.First(), true));
         }
+        private void DeprovisionExecute()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            var selected = selection.First();
+            if (!selected.IsProvisioned)
+            {
+                return;
+            }
+
+            this.stateManager.CommandExecutor.ExecuteAsync(new Deprovision(selection.First().PackageFamilyName));
+        }
 
         private void UnmountRegistryExecute()
         {
@@ -217,10 +236,15 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
+            if (selection.First().InstallLocation == null)
+            {
+                return;
+            }
+
             this.stateManager.CommandExecutor.ExecuteAsync(new UnmountRegistry(selection.First()));
         }
-
-        private bool CanMountRegistry()
+        
+        private bool CanExecuteMountRegistry()
         {
             var selection = this.stateManager.CurrentState.Packages.SelectedItems;
             if (selection.Count != 1)
@@ -229,6 +253,10 @@ namespace otor.msixhero.ui.ViewModel
             }
 
             var selected = selection.First();
+            if (selected.InstallLocation == null)
+            {
+                return false;
+            }
 
             try
             {
@@ -241,7 +269,7 @@ namespace otor.msixhero.ui.ViewModel
             }
         }
 
-        private bool CanUnmountRegistry()
+        private bool CanExecuteUnmountRegistry()
         {
             var selection = this.stateManager.CurrentState.Packages.SelectedItems;
             if (selection.Count != 1)
@@ -250,6 +278,10 @@ namespace otor.msixhero.ui.ViewModel
             }
 
             var selected = selection.First();
+            if (selected.InstallLocation == null)
+            {
+                return false;
+            }
 
             try
             {
@@ -262,7 +294,7 @@ namespace otor.msixhero.ui.ViewModel
             }
         }
 
-        private bool CanOpenPowerShell()
+        private bool CanExecuteOpenPowerShell()
         {
             return true;
         }
@@ -271,6 +303,18 @@ namespace otor.msixhero.ui.ViewModel
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             return package != null;
+        }
+        
+        private bool CanExecuteSingleSelectionOnManifest()
+        {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            return package?.InstallLocation != null;
+        }
+        
+        private bool CanExecuteDeprovision()
+        {
+            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            return package != null && package.IsProvisioned;
         }
 
         private void OpenExplorerExecute()
@@ -295,10 +339,10 @@ namespace otor.msixhero.ui.ViewModel
             Process.Start("explorer.exe", "/e," + package.UserDataPath);
         }
 
-        private bool CanOpenExplorerUser()
+        private bool CanExecuteOpenExplorerUser()
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
-            return package != null;
+            return package?.InstallLocation != null;
         }
 
         private void OpenManifestExecute()
@@ -367,16 +411,16 @@ namespace otor.msixhero.ui.ViewModel
             }
         }
 
-        private bool CanOpenManifest()
+        private bool CanExecuteOpenManifest()
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
-            return package != null;
+            return package?.InstallLocation != null;
         }
 
-        private bool CanOpenConfigJson()
+        private bool CanExecuteOpenConfigJson()
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
-            return package != null && File.Exists(package.PsfConfig);
+            return package?.InstallLocation != null && File.Exists(package.PsfConfig);
         }
 
         private void RunAppExecute()
@@ -409,7 +453,7 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.Execute(new RunToolInPackage(package, tool));
+            await this.stateManager.CommandExecutor.ExecuteAsync(new RunToolInPackage(package, tool)).ConfigureAwait(false);
         }
 
         private bool CanRunTool(string tool)

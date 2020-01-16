@@ -32,20 +32,19 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 switch (PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage))
                 {
+                    case MsixPackageType.BridgeDirect:
+                    case MsixPackageType.BridgePsf:
+                        return this.model.Executable;
+                    case MsixPackageType.Web:
+                        return this.model.StartPage;
                     case MsixPackageType.Uwp:
+                    default:
                         if (string.IsNullOrEmpty(this.model.EntryPoint))
                         {
                             return this.model.Executable;
                         }
 
                         return this.model.Executable + " > " + this.model.EntryPoint;
-                    case MsixPackageType.BridgeDirect:
-                    case MsixPackageType.BridgePsf:
-                        return this.model.Executable;
-                    case MsixPackageType.Web:
-                        return this.model.StartPage;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
