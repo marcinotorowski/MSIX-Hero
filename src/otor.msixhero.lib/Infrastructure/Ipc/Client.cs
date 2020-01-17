@@ -46,7 +46,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                         var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
                         var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
                         await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                        throw new Exception(msg);
+                        throw new ForwardedException(msg);
 
                     case ResponseType.Progress:
                         var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
@@ -91,7 +91,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                         // ReSharper disable once UnusedVariable
                         var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
                         await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                        throw new Exception(msg);
+                        throw new ForwardedException(msg);
 
                     case ResponseType.Result:
                         var deserializedObject = await binaryProcessor.Read<TOutput>(cancellationToken).ConfigureAwait(false);

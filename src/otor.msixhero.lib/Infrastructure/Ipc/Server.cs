@@ -36,7 +36,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
             this.applicationStateManager = applicationStateManager;
         }
 
-        public async Task Start(int maxRequests = 0, CancellationToken cancellationToken = default, Progress.Progress progress = default)
+        public async Task Start(int maxRequests = 0, CancellationToken cancellationToken = default, IBusyManager busyManager= default)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                             var isDone = false;
                             try
                             {
-                                EventHandler<ProgressData> progressHandler = (sender, data) =>
+                                EventHandler<IBusyStatusChange> progressHandler = (sender, data) =>
                                 {
                                     try
                                     {
@@ -88,7 +88,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                             binaryWriter.Write((int) ResponseType.Progress, cancellationToken).GetAwaiter().GetResult();
 
                                             Logger.Debug("{1}% {0}", data.Message, data.Progress);
-                                            binaryWriter.Write(data, cancellationToken).GetAwaiter().GetResult();
+                                            binaryWriter.Write(new ProgressData(data.Progress, data.Message), cancellationToken).GetAwaiter().GetResult();
 
                                             Logger.Trace("Flushing the stream...");
                                             // ReSharper disable once AccessToDisposedClosure
@@ -102,10 +102,10 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     }
                                 };
 
-                                if (progress != null)
+                                if (busyManager != null)
                                 {
                                     Logger.Debug("Subscribing to progress changed...");
-                                    progress.ProgressChanged += progressHandler;
+                                    busyManager.StatusChanged += progressHandler;
                                 }
 
                                 string result;
@@ -132,10 +132,10 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                 }
                                 finally
                                 {
-                                    if (progress != null)
+                                    if (busyManager != null)
                                     {
                                         Logger.Debug("Unsubscribing from progress changed...");
-                                        progress.ProgressChanged -= progressHandler;
+                                        busyManager.StatusChanged -= progressHandler;
                                     }
                                 }
 

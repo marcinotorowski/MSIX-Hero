@@ -10,6 +10,7 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:psf="clr-namespace:otor.msixhero.lib.Domain.Appx.Psf;assembly=msixhero.lib"
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
+             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel1:SinglePackageViewModel}"
@@ -101,7 +102,7 @@
                         <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />
                             </TextBlock>
                         </TabItem.Header>
-                        <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading manifest...">
+                        <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
                             <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
                                 <controls:ZeroOrAny.Template>
                                     <ControlTemplate TargetType="controls:ZeroOrAny">
@@ -201,7 +202,7 @@
                                     </DataTemplate>
                                 </controls:ZeroOrAny.NoItemsTemplate>
                             </controls:ZeroOrAny>
-                        </xctk:BusyIndicator>
+                        </progressOverlay:ProgressOverlay>
                     </TabItem>
                     <TabItem Style="{StaticResource Compact}">
                         <TabItem.Header>
@@ -210,7 +211,7 @@
                         <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count, Mode=OneWay}"  Foreground="#777" />
                             </TextBlock>
                         </TabItem.Header>
-                        <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading dependencies...">
+                        <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
 
                             <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
                                 <controls:ZeroOrAny.Template>
@@ -256,7 +257,7 @@
                                     </DataTemplate>
                                 </controls:ZeroOrAny.NoItemsTemplate>
                             </controls:ZeroOrAny>
-                        </xctk:BusyIndicator>
+                        </progressOverlay:ProgressOverlay>
                     </TabItem>
                 </TabControl>
             </TabItem>
@@ -267,7 +268,7 @@
                         <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies.Count, Mode=OneWay}"  Foreground="#777" />
                     </TextBlock>
                 </TabItem.Header>
-                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageManifestInfo.IsLoading}" BusyContent="Loading dependencies...">
+                <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
                     <DockPanel Margin="0">
                         <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
                             <ItemsControl.ItemTemplate>
@@ -306,10 +307,8 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-
                     </DockPanel>
-
-                </xctk:BusyIndicator>
+                </progressOverlay:ProgressOverlay>
             </TabItem>
             <TabItem Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabItem.Header>
@@ -323,7 +322,7 @@
                         </TextBlock>
                     </StackPanel>
                 </TabItem.Header>
-                <xctk:BusyIndicator IsBusy="{Binding SelectedPackageUsersInfo.IsLoading}">
+                <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageUsersInfo.IsLoading}">
                     <Grid>
                         <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
 
@@ -338,7 +337,7 @@
 
                         <ListBox Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 0 0 0" ItemsSource="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy}" />
                     </Grid>
-                </xctk:BusyIndicator>
+                </progressOverlay:ProgressOverlay>
             </TabItem>
         </TabControl>
 

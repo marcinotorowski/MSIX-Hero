@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
@@ -12,12 +13,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="changeableDialog:ChangeableDialog">
-                    <xctk:BusyIndicator IsBusy="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaving}" BusyContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Message}">
-                        <xctk:BusyIndicator.ProgressBarStyle>
-                            <Style TargetType="ProgressBar">
-                                <Setter Property="Value" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress, Mode=OneWay}" />
-                            </Style>
-                        </xctk:BusyIndicator.ProgressBarStyle>
+                    <progressOverlay:ProgressOverlay 
+                        IsShown="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaving}" 
+                        Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress, Mode=OneWay}"
+                        Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Message}">
                         <DockPanel>
                             <Border Background="#2B579A" DockPanel.Dock="Top">
                                 <DockPanel Margin="16">
@@ -174,7 +173,7 @@
                                 </Border>
                             </Grid>
                         </DockPanel>
-                    </xctk:BusyIndicator>
+                    </progressOverlay:ProgressOverlay>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

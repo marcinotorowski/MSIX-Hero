@@ -14,6 +14,7 @@
                      xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
                      xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Main.View"
                      xmlns:viewModel1="clr-namespace:otor.msixhero.ui.ViewModel"
+                     xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
                      d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -624,24 +625,9 @@
         </Fluent:Ribbon>
 
         <Border Background="#FFFFFF" Grid.Row="2" >
-            <xctk:BusyIndicator IsBusy="{Binding IsLoading}" BusyContent="{Binding LoadingMessage}">
-                <xctk:BusyIndicator.ProgressBarStyle>
-                    <Style TargetType="ProgressBar">
-                        <Setter Property="Value" Value="{Binding LoadingProgress, Mode=OneWay}" />
-                        <Setter Property="Margin" Value="10" />
-                        <Setter Property="Height" Value="10" />
-                        <Style.Triggers>
-                            <Trigger Property="Value">
-                                <Trigger.Value>
-                                    <system:Double>0</system:Double>
-                                </Trigger.Value>
-                                <Setter Property="IsIndeterminate" Value="True" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </xctk:BusyIndicator.ProgressBarStyle>
+            <progressOverlay:ProgressOverlay IsShown="{Binding IsLoading}" Progress="{Binding LoadingProgress}" Message="{Binding LoadingMessage}">
                 <ContentControl regions:RegionManager.RegionName="ContentRegion" />
-            </xctk:BusyIndicator>
+            </progressOverlay:ProgressOverlay>
         </Border>
         <Fluent:StatusBar Grid.Row="3">
             <Fluent:StatusBarItem 

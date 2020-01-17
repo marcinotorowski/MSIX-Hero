@@ -37,12 +37,12 @@ namespace otor.msixhero.adminhelper
                     IAppxPackageManagerFactory packageManagerFactory = new AppxPackageFactory(new AppxSigningManager());
                     IBusyManager busyManager = new BusyManager();
                     IEventAggregator eventAggregator = new EventAggregator();
-
+                    
                     var commandExecutor = new CommandExecutor(packageManagerFactory, interactionService, busyManager);
                     var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
                     var server = new Server(applicationStateManager);
 
-                    server.Start().GetAwaiter().GetResult();
+                    server.Start(busyManager: busyManager).GetAwaiter().GetResult();
 
                     Console.ReadKey();
                 }

@@ -531,6 +531,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
             var pkgMan = new PackageManager();
 
+
+            progress?.Report(new ProgressData(0, "Getting packages..."));
+
             if (isAdmin)
             {
                 using (var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
@@ -551,6 +554,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     }
                 }
             }
+
+            progress?.Report(new ProgressData(5, "Getting packages..."));
 
             IList<Windows.ApplicationModel.Package> allPackages;
 
@@ -593,8 +598,18 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
             }
 
+            progress?.Report(new ProgressData(10, "Getting packages..."));
+
+            const double weight = 0.9;
+
+            var total = (1.0 - weight) * 100.0;
+            var single = allPackages.Count == 0 ? 0.0 : 100.0 * weight / allPackages.Count;
+
             foreach (var item in allPackages)
             {
+                total += single;
+                progress?.Report(new ProgressData((int)total , "Getting packages..."));
+
                 var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
                 if (converted != null)
                 {

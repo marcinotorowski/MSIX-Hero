@@ -38,11 +38,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 switch (action.Context)
                 {
                     case PackageContext.AllUsers:
-                        packageSource = new List<InstalledPackage>(await packageManager.GetInstalledPackages(PackageFindMode.AllUsers, cancellationToken));
+                        packageSource = new List<InstalledPackage>(await packageManager.GetInstalledPackages(PackageFindMode.AllUsers, cancellationToken, context));
                         break;
 
                     case PackageContext.CurrentUser:
-                        packageSource = new List<InstalledPackage>(await packageManager.GetInstalledPackages(PackageFindMode.CurrentUser, cancellationToken));
+                        packageSource = new List<InstalledPackage>(await packageManager.GetInstalledPackages(PackageFindMode.CurrentUser, cancellationToken, context));
                         break;
 
                     default:

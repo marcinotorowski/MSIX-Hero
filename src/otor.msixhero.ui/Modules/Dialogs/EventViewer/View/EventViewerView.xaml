@@ -8,6 +8,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel"
+             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DesignWidth="600"
@@ -68,7 +69,7 @@
 
         <Border >
             <!-- Margin="8" Background="White" BorderThickness="1" BorderBrush="#bbb" -->
-            <xctk:BusyIndicator IsBusy="{Binding Logs.IsLoading}" BusyContent="{Binding ProgressMessage}">
+            <progressOverlay:ProgressOverlay IsShown="{Binding Logs.IsLoading}" Message="{Binding ProgressMessage}">
                 <AdornerDecorator>
                     <ListView Visibility="{Binding Logs.IsLoading, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Margin="10" ItemsSource="{Binding Logs.CurrentValue}">
                         <ListView.View>
@@ -114,7 +115,7 @@
                         </ListView.View>
                     </ListView>
                 </AdornerDecorator>
-            </xctk:BusyIndicator>
+            </progressOverlay:ProgressOverlay>
         </Border>
     </DockPanel>
 </UserControl>
