@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.adminhelper",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{FEA96B7F-E9D5-449F-83EE-789116B1BD9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EricZimmerman.Registry", "src\external\EricZimmerman.Registry\EricZimmerman.Registry.csproj", "{062C0676-3691-4487-B33E-B541BA6941EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EricZimmerman.Registry", "src\external\EricZimmerman.Registry\EricZimmerman.Registry.csproj", "{062C0676-3691-4487-B33E-B541BA6941EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,7 +34,6 @@ Global
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}.Release|Any CPU.ActiveCfg = Release|Any CPU

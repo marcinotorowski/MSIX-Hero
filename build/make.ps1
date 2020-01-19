@@ -18,7 +18,6 @@ dotnet publish "$PSScriptRoot\..\otor.msixhero.sln" -p:AssemblyVersion=$version 
 Copy-Item "$PSScriptRoot\..\artifacts\*" "$PSScriptRoot\dist" -Recurse | Out-Null;
 
 $toDelete = @(
-    "CodeCoverage",
     "cs",
     "de",
     "es",
@@ -53,17 +52,17 @@ $toDelete = @(
     "runtimes\win-arm",
     "runtimes\win-arm64",
     "ref",
-    "Moq.dll",
-    "*.pdb",
-    "Microsoft.TestPlatform*",
-    "Microsoft.VisualStudio*",
-    "nunit*.*",
-    "otor.msixhero.lib.tests.dll",
-    "testhost*.*");
+    "*.pdb");
 
     foreach ($item in $toDelete)
     {
-        Remove-Item "$PSScriptRoot\dist\$item" -Force -Recurse;
+        if (Test-Path "$PSScriptRoot\dist\$item")
+        {
+            Remove-Item "$PSScriptRoot\dist\$item" -Force -Recurse;
+        }
+        else {
+            Write-Warning "File $item does not exist.";
+        }
     }
 
     $allFiles = Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.dll";
