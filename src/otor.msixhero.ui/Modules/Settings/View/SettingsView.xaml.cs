@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -62,6 +63,16 @@ namespace otor.msixhero.ui.Modules.Settings.View
             var dataContext = ((SettingsViewModel)this.DataContext);
             e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
             e.ContinueRouting = !e.CanExecute;
+        }
+
+        private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
+        {
+            var p = new ProcessStartInfo("https://msixhero.net/get")
+            {
+                UseShellExecute = true
+            };
+
+            Process.Start(p);
         }
     }
 }

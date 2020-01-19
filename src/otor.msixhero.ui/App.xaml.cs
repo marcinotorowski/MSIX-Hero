@@ -12,6 +12,7 @@ using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
+using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
@@ -60,6 +61,8 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IWritableApplicationStateManager, ApplicationStateManager>();
             containerRegistry.RegisterSingleton<IApplicationStateManager, ApplicationStateManager>();
             containerRegistry.RegisterSingleton<ICommandExecutor, CommandExecutor>();
+            containerRegistry.RegisterSingleton<ICommandExecutor, CommandExecutor>();
+            containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterInstance<IProcessManager>(this.processManager);
         }
         
