@@ -109,6 +109,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            this.SetValidationMode(ValidationMode.Default, true);
+            if (!this.IsValid)
+            {
+                return false;
+            }
+
             // ReSharper disable once NotAccessedVariable
             string selectedPath;
 

@@ -39,11 +39,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
             this.displayMode = displayMode;
-            this.Publisher = new ValidatedChangeableProperty<string>(this.ValidateSubject, false);
-            this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull, false);
-            this.Name = new ValidatedChangeableProperty<string>(this.ValidateName, false);
-            this.DisplayName = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull, false);
-            this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion, false);
+            this.Publisher = new ValidatedChangeableProperty<string>(this.ValidateSubject);
+            this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull);
+            this.Name = new ValidatedChangeableProperty<string>(this.ValidateName);
+            this.DisplayName = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull);
+            this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion);
             this.Architecture = new ChangeableProperty<AppInstallerPackageArchitecture>(AppInstallerPackageArchitecture.neutral);
 
             this.PackageType = new ChangeableProperty<PackageType>();
@@ -76,7 +76,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             this.allowChangingSourcePackage = displayMode.HasFlag(PackageSelectorDisplayMode.AllowChanging);
             this.AllowBrowsing = displayMode.HasFlag(PackageSelectorDisplayMode.AllowBrowsing);
 
-            this.IsValidated = false;
             if (displayMode.HasFlag(PackageSelectorDisplayMode.RequireFullIdentity))
             {
                 this.RequireFullIdentity = true;
