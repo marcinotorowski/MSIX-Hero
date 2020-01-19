@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.ViewModel;
@@ -56,10 +55,12 @@ namespace otor.msixhero.ui.Helpers
                             ((IList) this.CurrentValue).Add(item);
                         }
 
+                        this.HasValue = true;
                         return;
                     }
                 }
-                
+
+                this.HasValue = true;
                 this.CurrentValue = newValue;
             }
             finally
@@ -78,7 +79,7 @@ namespace otor.msixhero.ui.Helpers
             }
         }
 
-        public bool HasValue => this.currentValue != null;
+        public bool HasValue { get; private set; }
 
         public bool IsLoading
         {
