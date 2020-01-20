@@ -570,7 +570,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         p.WaitForExit();
                         foreach (var line in await File.ReadAllLinesAsync(tempFile, cancellationToken).ConfigureAwait(false))
                         {
-                            provisioned.Add(line);
+                            provisioned.Add(line.Replace("~", string.Empty));
                         }
                     }
                 }
