@@ -536,23 +536,69 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
             if (isAdmin)
             {
-                using (var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
+                Logger.Info("Getting provisioned packages...");
+                string tempFile = null;
+                tempFile = Path.GetTempFileName();
+                try
                 {
-                    var cmd = ps.AddCommand("Get-AppxProvisionedPackage");
-                    cmd.AddParameter("Online");
-
-                    var provisionedPackages = await ps.InvokeAsync(progress).ConfigureAwait(false);
-                    foreach (var pp in provisionedPackages.ReadAll())
+                    var cmd = "(Get-AppxProvisionedPackage -Online).PackageName | Out-File '" + tempFile + "'";
+                    var proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
                     {
-                        var props1 = pp.Properties["PackageName"];
-                        if (props1?.Value == null)
-                        {
-                            continue;
-                        }
+                        UseShellExecute = false
+                    };
 
-                        provisioned.Add(props1.Value.ToString());
+                    Logger.Debug("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");
+                    var p = Process.Start(proc);
+                    if (p == null)
+                    {
+                        Logger.Error("Could not get the list of provisioned apps.");
+                    }
+                    else
+                    {
+                        p.WaitForExit();
+                        foreach (var line in await File.ReadAllLinesAsync(tempFile, cancellationToken).ConfigureAwait(false))
+                        {
+                            provisioned.Add(line);
+                        }
                     }
                 }
+                finally
+                {
+                    if (tempFile != null && File.Exists(tempFile))
+                    {
+                        File.Delete(tempFile);
+                    }
+                }
+
+                /*
+                pkgMan = new PackageManager();
+
+
+                try
+                {
+                    using (var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
+                    {
+                        Logger.Info("Getting provisioned packages...");
+                        var cmd = ps.AddCommand("Get-AppxProvisionedPackage");
+                        cmd.AddParameter("Online");
+
+                        var provisionedPackages = await ps.InvokeAsync(progress).ConfigureAwait(false);
+                        foreach (var pp in provisionedPackages.ReadAll())
+                        {
+                            var props1 = pp.Properties["PackageName"];
+                            if (props1?.Value == null)
+                            {
+                                continue;
+                            }
+
+                            provisioned.Add(props1.Value.ToString());
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    
+                }*/
             }
 
             progress?.Report(new ProgressData(5, "Getting packages..."));
