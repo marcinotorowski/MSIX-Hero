@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
@@ -16,6 +15,7 @@ using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Domain.Commands.UI;
 using otor.msixhero.lib.Domain.Exceptions;
 using otor.msixhero.lib.Infrastructure.Helpers;
+using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 
 namespace otor.msixhero.lib.Infrastructure.Commanding
@@ -23,7 +23,6 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
     public class CommandExecutor : ICommandExecutor
     {
         private static readonly ILog Logger = LogManager.GetLogger();
-
         private readonly IDictionary<Type, Func<BaseCommand, IReducer>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer>>();
         private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
         private readonly IInteractionService interactionService;
@@ -109,6 +108,24 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     packageManager = this.appxPackageManagerFactory.GetRemote();
                     await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
                 }
+                catch (ForwardedException e)
+                {
+                    if (e.InnerException == null)
+                    {
+                        throw;
+                    }
+
+                    if (e.InnerException is AdminRightsRequiredException)
+                    {
+                        elevate = true;
+                        packageManager = this.appxPackageManagerFactory.GetRemote();
+                        await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        throw e.InnerException;
+                    }
+                }
 
                 if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
                 {
@@ -130,6 +147,21 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 {
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (DeveloperModeException e)
+            {
+                Logger.Warn(e);
+                IReadOnlyCollection<string> buttons = new[]
+                {
+                    "Go to developer settings" + System.Environment.NewLine + "Open Developer Settings page in Modern Control Panel and ensure that side-loading and/or the developer mode is enabled.."
+                };
+
+                var result = this.interactionService.ShowMessage(e.Message, buttons);
+                if (result == 0)
+                {
+                    var process = new ProcessStartInfo("ms-settings:developers") { UseShellExecute = true };
+                    Process.Start(process);
                 }
             }
             catch (Exception e)

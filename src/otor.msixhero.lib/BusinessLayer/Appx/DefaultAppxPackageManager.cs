@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Windows.Management.Deployment;
 using Microsoft.Win32;
+using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.Helpers;
@@ -28,15 +29,17 @@ using LogFactory = otor.msixhero.lib.BusinessLayer.Helpers.LogFactory;
 namespace otor.msixhero.lib.BusinessLayer.Appx
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class CurrentUserAppxPackageManager : IAppxPackageManager
+    public class DefaultAppxPackageManager : IAppxPackageManager
     {
         private static readonly ILog Logger = LogManager.GetLogger();
+
+        protected readonly ISideloadingChecker SideloadingChecker = new RegistrySideloadingChecker();
 
         protected readonly PackageDetailsProvider PackageDetailsProvider;
 
         private readonly IAppxSigningManager signingManager;
 
-        public CurrentUserAppxPackageManager(IAppxSigningManager signingManager)
+        public DefaultAppxPackageManager(IAppxSigningManager signingManager)
         {
             this.signingManager = signingManager;
             this.PackageDetailsProvider = new PackageDetailsProvider(this);
@@ -117,6 +120,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         public async Task Add(string filePath, AddPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
+            if (this.SideloadingChecker.GetStatus() < SideloadingStatus.Sideloading)
+            {
+                throw new DeveloperModeException("Developer mode or sideloading must be enabled to install packages outside of Microsoft Store.");
+            }
+
             Logger.Info("Installing package {0}", filePath);
             if (filePath == null)
             {
@@ -262,6 +270,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
+            if (this.SideloadingChecker.GetStatus() != SideloadingStatus.DeveloperMode)
+            {
+                throw new DeveloperModeException("Developer mode must be enabled to use this feature.");
+            }
+
             Logger.Info("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')...", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)
             {
@@ -537,8 +550,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             if (isAdmin)
             {
                 Logger.Info("Getting provisioned packages...");
-                string tempFile = null;
-                tempFile = Path.GetTempFileName();
+                var tempFile = Path.GetTempFileName();
                 try
                 {
                     var cmd = "(Get-AppxProvisionedPackage -Online).PackageName | Out-File '" + tempFile + "'";

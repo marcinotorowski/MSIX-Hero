@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace otor.msixhero.lib.Infrastructure
 {
@@ -63,5 +65,7 @@ namespace otor.msixhero.lib.Infrastructure
         InteractionResult ShowError(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null);
 
         InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close);
+
+        int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null);
     }
 }

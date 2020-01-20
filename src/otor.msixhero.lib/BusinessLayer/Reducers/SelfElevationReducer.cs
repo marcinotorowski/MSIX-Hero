@@ -16,7 +16,6 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
     public abstract class SelfElevationReducer<T> : SelfElevationReducer, IReducer<T>
     {
-
         protected SelfElevationReducer(BaseCommand<T> command, IWritableApplicationStateManager stateManager) : base(command, stateManager)
         {
         }

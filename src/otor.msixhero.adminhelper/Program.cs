@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
@@ -67,11 +68,11 @@ namespace otor.msixhero.adminhelper
 
         private class AppxPackageFactory : IAppxPackageManagerFactory
         {
-            private CurrentUserAppxPackageManager factory;
+            private DefaultAppxPackageManager factory;
 
             public AppxPackageFactory(IAppxSigningManager signingManager)
             {
-                this.factory = new CurrentUserAppxPackageManager(signingManager);
+                this.factory = new DefaultAppxPackageManager(signingManager);
             }
 
             public IAppxPackageManager GetLocal()
@@ -160,6 +161,11 @@ namespace otor.msixhero.adminhelper
             public InteractionResult ShowError(string body, Exception exception,  InteractionResult buttons = InteractionResult.Close)
             {
                 return InteractionResult.OK;
+            }
+
+            public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null)
+            {
+                return -1;
             }
         }
     }

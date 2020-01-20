@@ -18,12 +18,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         public IAppxPackageManager GetLocal()
         {
-            return this.local ??= new CurrentUserAppxPackageManager(this.signingManager);
+            return this.local ??= new DefaultAppxPackageManager(this.signingManager);
         }
 
         public IAppxPackageManager GetRemote()
         {
-            return this.remote ??= new RemoteAppxPackageManager(this.processManager);
+            return this.remote ??= new DispatchedAppxPackageManager(this.processManager);
         }
     }
 }

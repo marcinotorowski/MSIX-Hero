@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -26,6 +27,73 @@ namespace otor.msixhero.ui.Services
 
             var result = MessageBox.Show(body, title, targetButtons, targetType);
             return (InteractionResult)(int)result;
+        }
+
+        public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null)
+        {
+            var taskDialog = new TaskDialog
+            {
+                MainIcon = TaskDialogIcon.Information,
+                ButtonStyle = TaskDialogButtonStyle.CommandLinks
+            };
+
+            foreach (var item in buttons)
+            {
+                var btn = new TaskDialogButton(ButtonType.Custom) { Text = item };
+                taskDialog.Buttons.Add(btn);
+            }
+
+            taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Ok));
+
+            taskDialog.CenterParent = true;
+            taskDialog.Content = body;
+
+            if (!string.IsNullOrEmpty(extendedInfo))
+            {
+                taskDialog.ExpandedInformation = extendedInfo;
+            }
+
+            taskDialog.WindowTitle = title ?? "MSIX Hero";
+
+            int clickedIndex = -1;
+            EventHandler<TaskDialogItemClickedEventArgs> handler = (sender, args) =>
+            {
+                var b = args.Item as TaskDialogButton;
+                if (b == null)
+                {
+                    return;
+                }
+
+                clickedIndex = taskDialog.Buttons.IndexOf(b);
+            };
+
+            try
+            {
+                taskDialog.ButtonClicked += handler;
+
+                if (this.context == null)
+                {
+                    taskDialog.ShowDialog(Application.Current.MainWindow);
+                }
+                
+                var dispatcher = Application.Current.Dispatcher;
+                if (dispatcher != null)
+                {
+                    dispatcher.Invoke(() =>
+                        {
+                            this.context.Send(
+                                state => taskDialog.ShowDialog(Application.Current.MainWindow),
+                                null);
+                        },
+                        DispatcherPriority.SystemIdle);
+                }
+            }
+            finally
+            {
+                taskDialog.ButtonClicked -= handler;
+            }
+
+            return clickedIndex;
         }
 
         public InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close)
