@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
 using otor.msixhero.lib.Domain.Appx.AppInstaller;
 using otor.msixhero.lib.Infrastructure;
@@ -201,9 +202,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 return "The publisher may not be empty.";
             }
 
-            if (!newValue.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
+            if (!Regex.IsMatch(newValue, "^[a-zA-Z]="))
             {
-                return "Publisher name must start with CN=";
+                // todo: Some better validation, RFC compliant
+                return "Publisher name must be a valid DN string (for example CN=Author)";
             }
 
             return null;
