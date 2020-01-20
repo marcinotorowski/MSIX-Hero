@@ -114,7 +114,7 @@
                                         <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate DataType="{x:Type viewModel1:AppxApplicationViewModel}">
-                                                    <StackPanel>
+                                                    <StackPanel Margin="0 0 0 8">
                                                         <DockPanel>
                                                             <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                                 <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
