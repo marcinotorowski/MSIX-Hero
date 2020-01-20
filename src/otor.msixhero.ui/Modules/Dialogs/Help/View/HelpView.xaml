@@ -77,7 +77,7 @@
                             </TextBlock>
 
                             <Button Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="Check for update now" HorizontalAlignment="Left" Margin="0 16 0 0" />
-                            <Button Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="Check again for updates" HorizontalAlignment="Left" />
+                            <Button Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="Check again for updates" Margin="0 16 0 0" HorizontalAlignment="Left" />
 
                         </StackPanel>
 
