@@ -1,13 +1,11 @@
-if (Test-Path "$PSScriptRoot\dist")
-{
+if (Test-Path "$PSScriptRoot\dist") {
     Remove-Item -Path "$PSScriptRoot\dist" -Force -Recurse;
 }
 
 New-Item -Path "$PSScriptRoot\dist" -Force -ItemType Directory | Out-Null;
 
 $version = git describe --long;
-if (-not ($version -match "v(\d+\.\d+)\-(\d+)\-g([a-z0-9]+)"))
-{
+if (-not ($version -match "v(\d+\.\d+)\-(\d+)\-g([a-z0-9]+)")) {
     throw "Unexpected git version $version";
 }
 
@@ -16,6 +14,7 @@ $version = $Matches[1] + "." + $Matches[2] + ".0";
 dotnet publish "$PSScriptRoot\..\otor.msixhero.sln" -p:AssemblyVersion=$version -p:Version=$version --output "$PSScriptRoot\dist" --configuration Release --nologo --force
 
 Copy-Item "$PSScriptRoot\..\artifacts\*" "$PSScriptRoot\dist" -Recurse | Out-Null;
+Copy-Item "$PSScriptRoot\msix\*" "$PSScriptRoot\dist" -Recurse | Out-Null;
 
 $toDelete = @(
     "cs",
@@ -54,25 +53,27 @@ $toDelete = @(
     "ref",
     "*.pdb");
 
-    foreach ($item in $toDelete)
-    {
-        if (Test-Path "$PSScriptRoot\dist\$item")
-        {
-            Remove-Item "$PSScriptRoot\dist\$item" -Force -Recurse;
-        }
-        else {
-            Write-Warning "File $item does not exist.";
-        }
+foreach ($item in $toDelete) {
+    if (Test-Path "$PSScriptRoot\dist\$item") {
+        Remove-Item "$PSScriptRoot\dist\$item" -Force -Recurse;
     }
-
-    $allFiles = Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.dll";
-    $allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.exe";
-	$allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "EricZimmerman.Registry.dll";
-
-    $listOfFiles = "";
-    foreach ($item in $allFiles)
-    {
-        $listOfFiles += " `"" + $item.FullName + "`"";
+    else {
+        Write-Warning "File $item does not exist.";
     }
+}
 
-    & "$PSScriptRoot\dist\redistr\sdk\x64\signtool.exe" sign /n "Marcin Otorowski" /t http://time.certum.pl/ /fd sha256 /d "MSIX Hero" /v $allFiles.FullName
+$allFiles = Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.dll";
+$allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.exe";
+$allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "EricZimmerman.Registry.dll";
+
+$listOfFiles = "";
+foreach ($item in $allFiles) {
+    $listOfFiles += " `"" + $item.FullName + "`"";
+}
+
+& "$PSScriptRoot\dist\redistr\sdk\x64\signtool.exe" sign /n "Marcin Otorowski" /t http://time.certum.pl/ /fd sha256 /d "MSIX Hero" /v $allFiles.FullName
+
+$content = Get-Content "$PSScriptRoot\dist\AppxManifest.xml" -Raw;
+$replace = '<Identity Name="MSIXHero" Version="' + $version + '"';
+$content = $content -replace '<Identity Name="MSIXHero" Version="([0-9\.]+)"',$replace;
+Set-Content -Path "$PSScriptRoot\dist\AppxManifest.xml" -Value $content;
