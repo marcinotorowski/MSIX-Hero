@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.Infrastructure.Update
 
         public bool IsCurrentVersionUpToDate
         {
-            get => this.CurrentVersion < this.AvailableVersion;
+            get => this.CurrentVersion >= this.AvailableVersion;
         }
 
         public Version CurrentVersion { get; private set; }

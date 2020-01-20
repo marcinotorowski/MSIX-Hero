@@ -83,6 +83,8 @@ namespace otor.msixhero.ui.ViewModel
             this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
             this.Settings = new DelegateCommand(param => this.SettingsExecute(), param => true);
+
+            this.Help = new DelegateCommand(param => this.HelpExecute());
         }
 
         public ICommand Refresh { get; }
@@ -98,6 +100,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand ExtractCert { get; }
 
         public ICommand InstallCertificate { get; }
+
+        public ICommand Help { get; }
 
         public ICommand OpenLogs { get; }
         
@@ -573,6 +577,11 @@ namespace otor.msixhero.ui.ViewModel
 
                 this.dialogService.ShowDialog(DialogsModule.ModificationPackagePath, parameters, this.OnDialogClosed);
             }
+        }
+
+        private void HelpExecute()
+        {
+            this.dialogService.ShowDialog(DialogsModule.HelpPath, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OpenResignExecute()

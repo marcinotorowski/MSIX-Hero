@@ -58,6 +58,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Settings}" Command="{Binding CommandHandler.Settings}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Help" Command="{Binding CommandHandler.Help}" />
     </routedCommand:RoutedCommandHandlers.Commands>
     <Grid>
         <Grid.RowDefinitions>
@@ -84,6 +85,16 @@
                     Background="GreenYellow" 
                     BorderBrush="LightGreen" />
             </Fluent:Ribbon.ContextualGroups>
+
+            <Fluent:Ribbon.ToolBarItems>
+                <Fluent:Button 
+                    Command="Help"
+                    Size="Small">
+                    <Fluent:Button.Icon>
+                        <Image Source="/Resources/Images/help.png" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" Stretch="None" />
+                    </Fluent:Button.Icon>
+                </Fluent:Button>
+            </Fluent:Ribbon.ToolBarItems>
 
             <!--Backstage-->
             <Fluent:Ribbon.Menu>

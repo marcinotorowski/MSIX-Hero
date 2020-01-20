@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Helpers;

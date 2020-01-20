@@ -4,6 +4,9 @@ using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.Help;
+using otor.msixhero.ui.Modules.Dialogs.Help.View;
+using otor.msixhero.ui.Modules.Dialogs.Help.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
@@ -29,6 +32,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string AppInstallerPath = "AppInstaller";
         public static string PackPath = "Pack";
         public static string ModificationPackagePath = "ModificationPackage";
+        public static string HelpPath = "Help";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -38,6 +42,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(CertificateExportPath);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
+            containerRegistry.RegisterDialog<HelpView, HelpViewModel>(HelpPath);
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(ModificationPackagePath);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(AppInstallerPath);
         }

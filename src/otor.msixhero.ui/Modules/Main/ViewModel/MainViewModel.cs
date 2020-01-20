@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
@@ -79,10 +80,33 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
         public ObservableCollection<ToolViewModel> Tools { get; }
 
+        private PackageContext? tempContext;
+
         public PackageContext Context
         {
-            get => this.stateManager.CurrentState.Packages.Context;
-            set => this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageContext(value));
+            get
+            {
+                if (this.tempContext.HasValue)
+                {
+                    return this.tempContext.Value;
+                }
+
+                return this.stateManager.CurrentState.Packages.Context;
+            }
+            set
+            {
+                this.tempContext = value;
+                this.OnPropertyChanged();
+
+                this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageContext(value)).ContinueWith(t =>
+                {
+                    this.tempContext = null;
+                    this.OnPropertyChanged(nameof(this.Context));
+                },
+                CancellationToken.None,
+                TaskContinuationOptions.ExecuteSynchronously,
+                TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
 
         public bool HasSelection => this.stateManager.CurrentState.Packages.SelectedItems.Any();

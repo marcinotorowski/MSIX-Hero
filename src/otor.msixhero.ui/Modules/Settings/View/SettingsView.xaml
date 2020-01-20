@@ -208,7 +208,8 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#FFFFDD" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                    <Border Background="#FFFFDD" Margin="0 8 0 0" 
+                            Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
                         <StackPanel Margin="8">
                             <TextBlock Text="New version of MSIX Hero is available." />
                             <TextBlock>
@@ -223,8 +224,9 @@
                             </TextBlock>
 
                             <TextBlock Margin="0 10 0 0" Text="Get the new version from the following URL:" />
-                            <TextBlock>
-                                <Hyperlink FontSize="20" Click="Hyperlink_OnClick">https://msixhero.net/get</Hyperlink>
+
+                            <TextBlock TextAlignment="Left">
+                                <Hyperlink FontSize="18" Click="Hyperlink_OnClick">MSIXHERO.net/get</Hyperlink>
                             </TextBlock>
                         </StackPanel>
                     </Border>
