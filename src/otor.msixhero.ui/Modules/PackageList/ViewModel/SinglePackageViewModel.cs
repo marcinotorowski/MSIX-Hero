@@ -8,6 +8,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.State;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
@@ -18,14 +19,16 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
     public class SinglePackageViewModel : NotifyPropertyChanged, INavigationAware
     {
         private readonly IApplicationStateManager stateManager;
+        private readonly IInteractionService interactionService;
         private string currentPackageId;
         private InstalledPackageViewModel selectedInstalledPackage;
         private ICommand findUsers;
         private string error;
 
-        public SinglePackageViewModel(IApplicationStateManager stateManager)
+        public SinglePackageViewModel(IApplicationStateManager stateManager, IInteractionService interactionService)
         {
             this.stateManager = stateManager;
+            this.interactionService = interactionService;
         }
 
         public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
@@ -150,15 +153,22 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private async Task<InstalledPackageDetailsViewModel> GetManifestDetails(InstalledPackage package)
         {
-            var cmd = new GetPackageDetails(package);
-            var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(cmd).ConfigureAwait(false);
-            if (manifestDetails == null)
+            try
             {
+                var cmd = new GetPackageDetails(package);
+                var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(cmd).ConfigureAwait(false);
+                if (manifestDetails == null)
+                {
+                    return null;
+                }
+
+                return new InstalledPackageDetailsViewModel(manifestDetails);
+            }
+            catch (Exception e)
+            {
+                this.interactionService.ShowError(e.Message, e, InteractionResult.OK);
                 return null;
             }
-
-            return new InstalledPackageDetailsViewModel(manifestDetails);
         }
-
     }
 }

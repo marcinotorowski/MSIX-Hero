@@ -90,10 +90,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
                     }
 
-                    var nodeIdentity = GetNode(nodePackage, "Identity");
-                    var nodeProperties = GetNode(nodePackage, "Properties");
-                    var nodeApplicationsRoot = GetNode(nodePackage, "Applications");
-                    var nodeDependenciesRoot = GetNode(nodePackage, "Dependencies");
+                    var nodeIdentity = GetNode(nodePackage, "Identity", true);
+                    var nodeProperties = GetNode(nodePackage, "Properties", true);
+                    var nodeApplicationsRoot = GetNode(nodePackage, "Applications", true);
+                    var nodeDependenciesRoot = GetNode(nodePackage, "Dependencies", true);
                     var nodeBuild = GetNode(nodePackage, "Metadata", true);
 
                     var appxPackage = new AppxPackage();
