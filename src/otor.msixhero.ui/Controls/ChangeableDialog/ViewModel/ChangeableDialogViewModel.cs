@@ -161,12 +161,13 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
                         return;
                     }
 
+                    this.State.IsSaved = t.IsCompleted;
+
                     if (!t.Result)
                     {
                         return;
                     }
 
-                    this.State.IsSaved = t.IsCompleted;
                     if (closeWindow)
                     {
                         this.CloseCommand.Execute(ButtonResult.OK);

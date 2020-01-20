@@ -155,6 +155,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 return false;
             }
 
+            this.previousPath = selected;
             var appInstaller = this.GetCurrentAppInstallerConfig();
             await this.appxContentBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
             return true;

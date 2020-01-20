@@ -6,7 +6,7 @@ namespace otor.msixhero.lib.Domain.Appx.AppInstaller
     [Serializable]
     public class AppInstallerPackageEntry : AppInstallerBaseEntry
     {
-        [XmlAttribute("PackageArchitecture")]
+        [XmlAttribute("ProcessorArchitecture")]
         public AppInstallerPackageArchitecture Architecture { get; set;  }
     }
 }
