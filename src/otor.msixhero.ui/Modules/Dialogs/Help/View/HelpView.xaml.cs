@@ -30,10 +30,6 @@ the following conditions are met:
   be used to endorse or promote products derived from or distributed
   with this software without specific prior written permission.
 
-* Decompiling, disassembling, reverse - engineering or otherwise attempting to
-  discover the source code or even altering this software in any way,
-  without specific prior written permission, is strictly prohibited.
-
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS ""AS IS""
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
