@@ -214,11 +214,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 Logger.Debug("Signing package {0} with algorithm {1}.", localCopy, x509[0].SignatureAlgorithm.FriendlyName);
 
                 var sdk = new MsixSdkWrapper();
+                progress?.Report(new ProgressData(25, "Signing..."));
                 await sdk.SignPackageWithPersonal(localCopy, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
+
+                progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                 Logger.Debug("Moving {0} to {1}.", localCopy, package);
                 File.Copy(localCopy, package, true);
+                progress?.Report(new ProgressData(95, "Signing..."));
             }
             finally
             {
@@ -268,11 +272,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 Logger.Debug("Signing package {0} with algorithm {1}.", localCopy, x509.SignatureAlgorithm.FriendlyName);
 
                 var sdk = new MsixSdkWrapper();
+                progress?.Report(new ProgressData(25, "Signing..."));
                 await sdk.SignPackageWithPfx(localCopy, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
+                progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
                 Logger.Debug("Moving {0} to {1}.", localCopy, package);
                 File.Copy(localCopy, package, true);
+                progress?.Report(new ProgressData(95, "Signing..."));
             }
             finally
             {
