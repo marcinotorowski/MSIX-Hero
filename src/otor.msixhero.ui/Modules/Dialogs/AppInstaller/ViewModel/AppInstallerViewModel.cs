@@ -250,10 +250,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 this.Hours.CurrentValue = builder.HoursBetweenUpdateChecks.ToString();
                 this.MainPackageUri.CurrentValue = builder.MainPackageUri.ToString();
                 this.Version.CurrentValue = builder.Version;
-                this.ShowPrompt.CurrentValue = builder.AllowDowngrades;
+                this.ShowPrompt.CurrentValue = builder.ShowPrompt;
 
                 this.PackageSelection.Name.CurrentValue = builder.MainPackageName;
-                this.PackageSelection.Version.CurrentValue = builder.Version;
+                this.PackageSelection.Version.CurrentValue = builder.MainPackageVersion;
                 this.PackageSelection.Publisher.CurrentValue = builder.MainPackagePublisher;
                 this.PackageSelection.PackageType.CurrentValue = builder.MainPackageType;
                 this.PackageSelection.Architecture.CurrentValue = builder.MainPackageArchitecture;
