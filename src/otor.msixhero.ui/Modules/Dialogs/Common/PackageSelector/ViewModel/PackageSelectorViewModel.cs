@@ -202,7 +202,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 return "The publisher may not be empty.";
             }
 
-            if (!Regex.IsMatch(newValue, "^[a-zA-Z]="))
+            if (!Regex.IsMatch(newValue, "^[a-zA-Z]+=.+"))
             {
                 // todo: Some better validation, RFC compliant
                 return "Publisher name must be a valid DN string (for example CN=Author)";

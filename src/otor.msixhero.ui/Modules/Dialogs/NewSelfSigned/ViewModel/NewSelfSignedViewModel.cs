@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -81,9 +82,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 return "The display name of the publisher may not be empty.";
             }
             
-            if (!newValue.StartsWith("CN=", StringComparison.OrdinalIgnoreCase))
+            if (!Regex.IsMatch(newValue, "^[a-zA-Z]+=.+"))
             {
-                return "Publisher name must start with CN=";
+                // todo: Some better validation, RFC compliant
+                return "Publisher name must be a valid DN string (for example CN=Author)";
             }
 
             return null;
