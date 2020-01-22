@@ -95,20 +95,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
                 opts |= AppxPackerOptions.NoCompress;
             }
 
-            await this.appxPacker.Pack(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, opts, cancellationToken, progress).ConfigureAwait(false);
-
-            if (this.Sign.CurrentValue)
+            using (var progressWrapper = new WrappedProgress(progress))
             {
-                switch (this.SelectedCertificate.Store.CurrentValue)
+                var progress1 = progressWrapper.GetChildProgress(50);
+                var progress2 = this.Sign.CurrentValue ? progressWrapper.GetChildProgress(30) : null;
+
+                await this.appxPacker.Pack(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, opts, cancellationToken, progress1).ConfigureAwait(false);
+
+                if (this.Sign.CurrentValue)
                 {
-                    case CertificateSource.Personal:
-                        await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                        break;
-                    case CertificateSource.Pfx:
-                        await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                        break;
+                    switch (this.SelectedCertificate.Store.CurrentValue)
+                    {
+                        case CertificateSource.Personal:
+                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress2).ConfigureAwait(false);
+                            break;
+                        case CertificateSource.Pfx:
+                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress2).ConfigureAwait(false);
+                            break;
+                    }
                 }
             }
+
 
             return true;
         }
