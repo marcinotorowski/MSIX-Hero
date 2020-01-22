@@ -67,7 +67,15 @@
 
       <!-- Masthead Subheading -->
       <p class="masthead-subheading font-weight-light mb-0">The ultimate MSIX toolkit for IT Pros</p>
-
+      <div class="text-center mt-4">
+        <a class="btn btn-xl btn-outline-light" href="ms-appinstaller:/?source=https://msixhero.net/msix-hero.appinstaller">
+          <i class="fas fa-download mr-2"></i>
+          Download now (it's free)
+        </a>
+      </div>
+      <div class="row">
+        <div class="ml-auto mr-auto mt-1"><small>Requires <strong>Windows 10 1809</strong> or newer and <strong><a style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core 3.1</a></strong> to run.</small></div>
+      </div>
     </div>
   </header>
 
@@ -107,6 +115,9 @@
         </ul>
 
       </div>
+      <div class="row">        
+        <p>This app is frequently updated with new additions and bug fixes. Report issues and suggestions via e-mail <span><span class="helloMail ltrText">ten.orehxism@olleh</span></span>.<br />A rather detailed history of changes is available <strong><a href="/changelog.txt">here</a></strong>.</p>
+      </div>
       <!-- /.row -->
 
     </div>
@@ -139,14 +150,16 @@
       <div class="text-center mt-4">
         <a class="btn btn-xl btn-outline-light" href="ms-appinstaller:/?source=https://msixhero.net/msix-hero.appinstaller">
           <i class="fas fa-download mr-2"></i>
-          Download now (Windows 10 1803+ only)
+          Download now [MSIX]
         </a>
       </div>
-      <!-- <div class="row">
-        <div class="ml-auto mr-auto">
-          <a href="https://msixhero.net/msix-hero.msix">Get direct link to MSIX instead</a>
+      <div class="row">
+        <div class="ml-auto mr-auto mt-5">Last version: <strong>0.2.33.0</strong> (see <a style="color: white !important;" href="/changelog.txt">history of changes</a>)      
         </div>
-      </div> -->
+      </div>
+      <div class="row">
+        <div class="ml-auto mr-auto mt-1">Requires <strong>Windows 10 1809</strong> or newer and <strong><a style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core 3.1</a></strong> to run.</div>
+      </div>
     </div>
   </section>
 
@@ -182,12 +195,43 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND A
     </div>
   </section>
 
+
+  <!-- Footer -->
+  <footer class="footer text-center">
+    <div class="container">
+      <div class="row">
+
+        <!-- Footer Location -->
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <h4 class="text-uppercase mb-4">Bugs and ideas?</h4>
+          <p class="lead mb-0">Get in touch
+            <style type="text/css">
+              .ltrText {unicode-bidi: bidi-override; direction: rtl}
+            </style>
+
+            <br><span class="helloMail" class="ltrText">ten.orehxism@olleh</span></p>
+        </div>
+
+        <!-- Footer Social Icons -->
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <h4 class="text-uppercase mb-4">Around the Web</h4>
+          <p class="lead mb-1">Like it? Share it!</p>
+          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-url="https://msixhero.net" data-hashtags="MSIXHero" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<br />
+          <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
+<script type="IN/Share" data-url="https://www.linkedin.com"></script>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
   
 
   <!-- Copyright Section -->
   <section class="copyright py-4 text-center text-white">
     <div class="container">
-      <small>Copyright &copy; 2020 by Marcin Otorowski</small>
+      <small>Copyright &copy; 2020 MSIX Hero</small>
     </div>
   </section>
 
@@ -207,7 +251,18 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND A
 
   <!-- Custom scripts for this template -->
   <script src="js/freelancer.min.js"></script>
-
+  <script type="text/JavaScript">
+    var helloMails = document.getElementsByClassName("helloMail");
+    for (var i = helloMails.length - 1; i >= 0 ; i--)
+    {
+      var helloMail = helloMails.item(i);
+      var helloMailLink = document.createElement("a");
+      helloMailLink.classList.add("ltrText");
+      helloMailLink.setAttribute("href", "mail" + "to:" + "hel" + "lo@" + "msix" + "her" + "o.n" + "et");
+      helloMailLink.innerHTML = helloMail.innerHTML;
+      helloMail.parentNode.replaceChild(helloMailLink, helloMail);
+    }
+  </script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ if (Test-Path "$PSScriptRoot\dist") {
 New-Item -Path "$PSScriptRoot\dist" -Force -ItemType Directory | Out-Null;
 
 $version = git describe --long;
-if (-not ($version -match "v(\d+\.\d+)\-(\d+)\-g([a-z0-9]+)")) {
+if (-not ($version -match "v(\d+\.\d+)(?:\.\d+)*\-(\d+)\-g([a-z0-9]+)")) {
     throw "Unexpected git version $version";
 }
 

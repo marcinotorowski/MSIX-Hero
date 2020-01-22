@@ -1,0 +1,14 @@
+0.2.33.0
+Released 2020/01/22
+
+* [Improvement] Smoother progress bar animations in all places
+* [Improvement] Added progress bar to pack/unpack dialogs
+* [Fixed] Wrong value for package version and "Show prompt" when opening existing .appinstaller file
+* [Fixed] Wrong validation of certain DN strings (for example CN=xyz)
+
+------
+
+0.2.28.0
+Released 2020/01/20
+
+* First public release
