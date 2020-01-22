@@ -19,73 +19,88 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="20">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Margin" Value="0 0 0 15" />
+                    <Setter Property="Padding" Value="10 15" />
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Fluent.Ribbon.Colors.Button.MouseOver.Background}" Storyboard.TargetProperty="Background.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <ColorAnimation To="{StaticResource Fluent.Ribbon.Colors.Button.MouseOver.BorderBrush}" Storyboard.TargetProperty="BorderBrush.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Storyboard.TargetProperty="Background.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <ColorAnimation To="Transparent" Storyboard.TargetProperty="BorderBrush.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Resources>
 
-    <StackPanel Margin="20">
-        <StackPanel.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Margin" Value="0 0 0 15" />
-                <Setter Property="Padding" Value="10 15" />
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Trigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation To="{StaticResource Fluent.Ribbon.Colors.Button.MouseOver.Background}" Storyboard.TargetProperty="Background.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
-                                    <ColorAnimation To="{StaticResource Fluent.Ribbon.Colors.Button.MouseOver.BorderBrush}" Storyboard.TargetProperty="BorderBrush.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.EnterActions>
-                        <Trigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation To="Transparent" Storyboard.TargetProperty="Background.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
-                                    <ColorAnimation To="Transparent" Storyboard.TargetProperty="BorderBrush.Color" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </Trigger.ExitActions>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </StackPanel.Resources>
+            <TextBlock Text="Create" FontFamily="{StaticResource SourceSansPro}" FontWeight="Light" FontSize="30" Margin="0 0 0 20" />
 
-        <TextBlock Text="Create" FontFamily="{StaticResource SourceSansPro}" FontWeight="Light" FontSize="30" Margin="0 0 0 20" />
+            <WrapPanel Visibility="Collapsed" Margin="12 17">
+                <DockPanel>
+                    <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
-        <Button Command="{x:Static commands:MsixHeroCommands.Pack}">
-            <DockPanel>
-                <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock FontWeight="Light" Text="New MSIX" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                        <TextBlock Opacity="0.66" Text="MSIX Hero has detected the following apps which can create or repackage existing apps to MSIX format:" Margin="0 0 0 0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </WrapPanel>
 
-                <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <TextBlock FontWeight="Light" Text="MSIX from folder" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
-                    <TextBlock Opacity="0.66" Text="Pack a complete folder containing the package manifest to an MSIX package." Margin="0 0 0 0" TextWrapping="Wrap" />
-                </StackPanel>
-            </DockPanel>
-        </Button>
+            <TextBlock Visibility="Collapsed" Text="Other options" FontFamily="{StaticResource SourceSansPro}" FontWeight="Light" FontSize="30" Margin="0 20 0 20" />
 
-        <Button Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
-            <DockPanel>
-                <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+            <Button Command="{x:Static commands:MsixHeroCommands.Pack}">
+                <DockPanel>
+                    <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
-                <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <TextBlock FontWeight="Light" Text="Empty modification package" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
-                    <TextBlock Opacity="0.66" Text="Creates a stub of modification packages from a selected package." Margin="0 0 0 0" TextWrapping="Wrap" />
-                </StackPanel>
-            </DockPanel>
-        </Button>
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock FontWeight="Light" Text="MSIX from folder" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                        <TextBlock Opacity="0.66" Text="Pack a complete folder containing the package manifest to an MSIX package." Margin="0 0 0 0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </Button>
 
-        <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel:AppInstallerCommandParameter.Empty}">
-            <DockPanel>
-                <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+            <Button Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+                <DockPanel>
+                    <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
-                <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <TextBlock FontWeight="Light" Text="App Installer file" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
-                    <TextBlock Opacity="0.66" Text="Creates a small meta-data file with information about updated versions and update settings." Margin="0 0 0 0" TextWrapping="Wrap" />
-                </StackPanel>
-            </DockPanel>
-        </Button>
-    </StackPanel>
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock FontWeight="Light" Text="Empty modification package" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                        <TextBlock Opacity="0.66" Text="Creates a stub of modification packages from a selected package." Margin="0 0 0 0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </Button>
+
+            <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel:AppInstallerCommandParameter.Empty}">
+                <DockPanel>
+                    <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock FontWeight="Light" Text="App Installer file" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                        <TextBlock Opacity="0.66" Text="Creates a small meta-data file with information about updated versions and update settings." Margin="0 0 0 0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </Button>
+
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
