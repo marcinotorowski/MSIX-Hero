@@ -5,11 +5,19 @@ if (Test-Path "$PSScriptRoot\dist") {
 New-Item -Path "$PSScriptRoot\dist" -Force -ItemType Directory | Out-Null;
 
 $version = git describe --long;
-if (-not ($version -match "v(\d+\.\d+)(?:\.\d+)*\-(\d+)\-g([a-z0-9]+)")) {
+
+if ($version -match "v(\d+\.\d+)\-(\d+)\-g([a-z0-9]+)")
+{
+    $version = $Matches[1] + "." + $Matches[2] + ".0";
+}
+elseif ($version -match "v(\d+\.\d+)\.(\d+)(?:\.\d+)*\-(\d+)\-g([a-z0-9]+)")
+{
+    $cnt = [System.Int32]::Parse($Matches[2]) + [System.Int32]::Parse($Matches[3]);
+    $version = $Matches[1] + "." + $cnt + ".0";
+}
+else {
     throw "Unexpected git version $version";
 }
-
-$version = $Matches[1] + "." + $Matches[2] + ".0";
 
 dotnet publish "$PSScriptRoot\..\otor.msixhero.sln" -p:AssemblyVersion=$version -p:Version=$version --output "$PSScriptRoot\dist" --configuration Release --nologo --force
 
