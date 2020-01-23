@@ -13,11 +13,24 @@
   <!-- Custom fonts for this theme -->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+    type="text/css">
 
   <!-- Theme CSS -->
   <link href="css/freelancer.css" rel="stylesheet">
+  <link href="vendor/ekko-lightbox/ekko-lightbox.css" rel="stylesheet">
 
+  <style type="text/css">
+  .modal-body{
+    padding: 1rem !important;
+  }
+
+  .modal-footer {
+    padding: 0 1rem 1rem 1rem !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  </style>
 </head>
 
 <body id="page-top">
@@ -26,12 +39,17 @@
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
     <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="#page-top">MSIX Hero</a>
-      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded"
+        type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+        aria-expanded="false" aria-label="Toggle navigation">
         Menu
         <i class="fas fa-bars"></i>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
+          <li class="nav-item mx-0 mx-lg-1">
+            <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#msix">What is MSIX?</a>
+          </li>
           <li class="nav-item mx-0 mx-lg-1">
             <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#features">Features</a>
           </li>
@@ -68,23 +86,26 @@
       <!-- Masthead Subheading -->
       <p class="masthead-subheading font-weight-light mb-0">The ultimate MSIX toolkit for IT Pros</p>
       <div class="text-center mt-4">
-        <a class="btn btn-xl btn-outline-light" href="ms-appinstaller:/?source=https://msixhero.net/msix-hero.appinstaller">
+        <a class="btn btn-xl btn-outline-light"
+          href="ms-appinstaller:/?source=https://msixhero.net/msix-hero.appinstaller">
           <i class="fas fa-download mr-2"></i>
           Download now (it's free)
         </a>
       </div>
       <div class="row">
-        <div class="ml-auto mr-auto mt-1"><small>Requires <strong>Windows 10 1809</strong> or newer and <strong><a style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core 3.1</a></strong> to run.</small></div>
+        <div class="ml-auto mr-auto mt-1"><small>Requires <strong>Windows 10 1809</strong> or newer and <strong><a
+                style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core
+                3.1</a></strong> to run.<br />Last version: <strong>0.2.33.0</strong> (see <a
+                style="color: white !important;" href="/changelog.txt">history of changes</a>)</small></div>
       </div>
     </div>
   </header>
 
-  <!-- Features Section -->
-  <section class="page-section portfolio" id="features">
+  <!-- About MSIX Section -->
+  <section class="page-section" id="msix">
     <div class="container">
 
-      <!-- Features Section Heading -->
-      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Features</h2>
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">What is MSIX?</h2>
 
       <!-- Icon Divider -->
       <div class="divider-custom">
@@ -96,27 +117,117 @@
       </div>
 
       <!-- Features Grid Items -->
-      <div class="row">        
-        <img src="img/screenshot.png" class="mb-5 ml-auto mr-auto" />
-      </div>
       <div class="row">
-
-
+        
+        <p>MSIX is a modern Windows app package format, a successor of APPX and a "spiritual successor" to some other - now legacy - formats, including but not limited to MSI, App-V and ClickOnce.</p>
+        <p>Apps deployed as MSIX packages benefit from several out-of-the-box features and properties, including:</p>
+        
         <ul>
-          <li>Viewing, installing and uninstalling MSIX/APPX/bundles</li>
-          <li>Provisioning / de-preovisioning of packages</li>
-          <li>Visualizing dependencies and Package Support Framework configuration</li>
-          <li>Creating and extracting certificates</li>
-          <li>Packing / unpacking MSIX packages</li>
-          <li>Signing and updating package identities</li>
-          <li>Troubleshooting and tools: starting commands in package context, opening folders, loading registry etc.</li>
-          <li>Detection of authoring tools (Visual Studio, MSIX Packaging Tool, Advanced Installer, RayPack, InstallShield etc.</li>
-          <li>Creating modification packages and .appinstaller files</li>
+          <li>Fast and reliable installation, clean uninstallation,</li>
+          <li>Content delivery optimizations, ensuring faster downloads with minimum impact and network bandwidth usage,</li>
+          <li>Access to various modern Windows APIS which are not available for classically deployed win32 apps,</li>
+          <li>Extensibility and shimming thanks to Package Support Framework,</li>
+          <li>Add-ons and modification packages,</li>
+          <li>Easy switch to MSIX app attach,</li>
+          <li>Distribution and monetization in Microsoft Store.</li>
         </ul>
 
+        <p>And best of all, the big part of the ecosystem is open-sourced and the core support for MSIX deployment is built-in in any computer running still supported version of Windows 10. 
+          Although the format is relatively young, there already exist several package authoring tools, both from Microsoft and ISVs, and the community is constantly growing.</p>
+        
+        <p>Going to MSIX format (either repackaging or app modernization) preserves the functionality of existing app packages and for a straightforward conversion it requires no access to the original sources.</p>
+        <p>For more information about MSIX, refer to the following links:</p>
+
+      </div>
+      <div class="row">
+        <ul>
+          <li><a href="https://docs.microsoft.com/en-us/windows/msix/overview">What is MSIX?</a></li>
+          <li><a href="https://www.advancedinstaller.com/msix-introduction.html">MSIX Tutorial: A comprehensive 24-chapter guide</a></li>
+          <li><a href="https://github.com/microsoft/msix-packaging">GitHub repository</a></li>          
+        </ul>
+      </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="page-section" id="features">
+    <div class="container">
+
+      <!-- Features Section Heading -->
+      <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">MSIX HERO Features</h2>
+
+      <!-- Icon Divider -->
+      <div class="divider-custom">
+        <div class="divider-custom-line"></div>
+        <!--<div class="divider-custom-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="divider-custom-line"></div>-->
+      </div>
+
+      <!-- Features Grid Items -->
+      <div class="row">
+        <img src="img/screenshot.png" class="mb-5 ml-auto mr-auto" />
       </div>
       <div class="row">        
-        <p>This app is frequently updated with new additions and bug fixes. Report issues and suggestions via e-mail <span><span class="helloMail ltrText">ten.orehxism@olleh</span></span>.<br />A rather detailed history of changes is available <strong><a href="/changelog.txt">here</a></strong>.</p>
+        <p>This app helps with management, testing, trobuleshooting and simply understanding your MSIX portfolio:</p>
+      </div>
+      <div class="row">
+        <ul>
+          <li>Displaying, finding and managing installed packages,</li>
+          <li>Installing packages, bundles and manifests (in developer mode).</li>
+          <li>Provisioning / de-provisioning of packages (installation for all users),</li>
+          <li>Visualizing dependencies and Package Support Framework configuration,</li>
+          <li>Displaying users who installed the package,</li>
+          <li>Creating and extracting certificates,</li>
+          <li>Packing / unpacking MSIX packages,</li>
+          <li>Signing and updating package identities,</li>
+          <li>Troubleshooting and tools: starting commands in package context, revealing actual folders, loading registry etc.,</li>
+          <li>Detection of authoring tools (Visual Studio, MSIX Packaging Tool, Advanced Installer, InstallShield, RayPack etc.</li>
+          <li>Creating modification packages and <code>.appinstaller</code> files.</li>
+        </ul>
+      </div>
+
+      <div class="row">
+        <p>This list is not comprehensive, and the app itself is frequently updated with new additions and bug fixes. Report your ideas and issues via e-mail
+          <span><span class="helloMail ltrText">ten.orehxism@olleh</span></span>.A detailed history of previous changes is available <strong><a href="/changelog.txt">here</a></strong>.</p>
+      </div>
+
+      <div class="row my-2 justify-content-center">
+        <div class="col-md-12">
+          <div class="row my-2">
+            <a href="img/screenshots/01-ribbon-management.png" data-footer="Intuitive Office-inspired user interface which exposes logically groupped functions. Small highlight: MSIX Hero recognizes the tool which was used to create a package and shows the information in the sidebar." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/01-ribbon-management.png" class="img-fluid">
+            </a>
+            <a href="img/screenshots/02-ribbon-developer.png" data-footer="Contextual actions in the Developer tab let user invoke a command in package context, create an .appinstaller definition or load and unload registry (for classic win32 apps that require it)." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/02-ribbon-developer.png" class="img-fluid">
+            </a>
+            <a href="img/screenshots/03-psf.png" data-footer="PSF (Package Support Framework) config is read and presented to the user. The information also includes the actual executable path + tracing and redirection settings. And there is always a quick link to config.json so that you can check it on your own." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/03-psf.png" class="img-fluid">
+            </a>
+          </div>
+          <div class="row my-2">
+            <a href="img/screenshots/04-installedby.png" data-footer="The sidebar can also show which users have locally installed the selected package. Als note the view options - you can choose to display apps for the current user or all users with various grouping and sorting settings." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/04-installedby.png" class="img-fluid">
+            </a>
+            <a href="img/screenshots/05-dependencies.png" data-footer="Human-friendly list of package dependencies and minimum supported version of Windows 10." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/05-dependencies.png" class="img-fluid">
+            </a>
+            <a href="img/screenshots/06-create-appinstaller.png" data-footer="Open, edit or create .appinstaller definitions for easy deployment with out-of-the-box auto-update support. MSIX Hero supports all options (as of Windows 10 1909), and even shows which minimum OS will be required based on the rquired set of features." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/06-create-appinstaller.png" class="img-fluid">
+            </a>
+          </div>
+          <div class="row my-2">
+            <a href="img/screenshots/07-signing.png" data-footer="Signing or re-signing packages is easy, just provide MSIX Hero with a pair of certificate and password or use a certificate from your local store. MSIX Hero takes care of everything, including adjustment of package identity to match the selected certificate. This also works in a bulk mode." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/07-signing.png" class="img-fluid">
+            </a>
+            <a href="img/screenshots/08-self-signed.png" data-footer="And if you happen to have no valid certificate, the tool lets you create a new self-signed one (and optionally import to the Personal store)." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/08-self-signed.png" class="img-fluid">
+            </a>
+            <a href="img/screenshots/09-packing.png" data-footer="Packing a directory or unpacking an MSIX package (with built-in support for automatic signing) is an option when you want to swap or customize package resources." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+              <img src="img/screenshots.small/09-packing.png" class="img-fluid">
+            </a>
+          </div>
+        </div>
       </div>
       <!-- /.row -->
 
@@ -148,17 +259,21 @@
 
       <!-- Download Section Button -->
       <div class="text-center mt-4">
-        <a class="btn btn-xl btn-outline-light" href="ms-appinstaller:/?source=https://msixhero.net/msix-hero.appinstaller">
+        <a class="btn btn-xl btn-outline-light"
+          href="ms-appinstaller:/?source=https://msixhero.net/msix-hero.appinstaller">
           <i class="fas fa-download mr-2"></i>
           Download now [MSIX]
         </a>
       </div>
       <div class="row">
-        <div class="ml-auto mr-auto mt-5">Last version: <strong>0.2.33.0</strong> (see <a style="color: white !important;" href="/changelog.txt">history of changes</a>)      
+        <div class="ml-auto mr-auto mt-5">Last version: <strong>0.2.33.0</strong> (see <a
+            style="color: white !important;" href="/changelog.txt">history of changes</a>)
         </div>
       </div>
       <div class="row">
-        <div class="ml-auto mr-auto mt-1">Requires <strong>Windows 10 1809</strong> or newer and <strong><a style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core 3.1</a></strong> to run.</div>
+        <div class="ml-auto mr-auto mt-1">Requires <strong>Windows 10 1809</strong> or newer and <strong><a
+              style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core
+              3.1</a></strong> to run.</div>
       </div>
     </div>
   </section>
@@ -179,18 +294,30 @@
         <div class="divider-custom-line"></div> -->
       </div>
 
+      <p>This program can be used for free, both for personal and commercial use. Below are the actual license terms.</p>
+
       <p style="font-size: 0.8em; color: #888;">
         Copyright (c) Jan 20th, 2020, Marcin Otorowski<br /><br />
 
-All rights reserved.<br /><br />
+        All rights reserved.<br /><br />
 
-Redistribution and use in bytecode or binary forms, without modification, are permitted for both commercial and non-commercial use, provided that the following conditions are met:<br /><br />
+        Redistribution and use in bytecode or binary forms, without modification, are permitted for both commercial and
+        non-commercial use, provided that the following conditions are met:<br /><br />
 
-* Redistributions in byte-code or binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.<br />
-* Neither the name of the MSIX Hero nor the names of its author may be used to endorse or promote products derived from or distributed with this software without specific prior written permission.<br />
-<br />
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-      </pre>
+        * Redistributions in byte-code or binary form must reproduce the above copyright notice, this list of conditions
+        and the following disclaimer in the documentation and/or other materials provided with the distribution.<br />
+        * Neither the name of the MSIX Hero nor the names of its author may be used to endorse or promote products
+        derived from or distributed with this software without specific prior written permission.<br />
+        <br />
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+        WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+        PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+        DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+        PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+        OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+        DAMAGE.
+        </pre>
 
     </div>
   </section>
@@ -206,7 +333,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND A
           <h4 class="text-uppercase mb-4">Bugs and ideas?</h4>
           <p class="lead mb-0">Get in touch
             <style type="text/css">
-              .ltrText {unicode-bidi: bidi-override; direction: rtl}
+              .ltrText {
+                unicode-bidi: bidi-override;
+                direction: rtl
+              }
             </style>
 
             <br><span class="helloMail" class="ltrText">ten.orehxism@olleh</span></p>
@@ -216,17 +346,21 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND A
         <div class="col-lg-6 mb-5 mb-lg-0">
           <h4 class="text-uppercase mb-4">Around the Web</h4>
           <p class="lead mb-1">Like it? Share it!</p>
-          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-url="https://msixhero.net" data-hashtags="MSIXHero" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<br />
-          <script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script>
-<script type="IN/Share" data-url="https://www.linkedin.com"></script>
+
+          <a class="btn btn-outline-light btn-social mx-1" data-url="https://msixhero.net" href="https://twitter.com/intent/tweet?hashtags=MSIX,MSIXHero&amp;url=https%3A%2F%2Fmsixhero.net" class="twitter-share-button" >
+            <i class="fab fa-fw fa-twitter"></i>
+          </a>
+          <a class="btn btn-outline-light btn-social mx-1" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fmsixhero.net&title=MSIX%20Hero">
+            <i class="fab fa-fw fa-linkedin-in"></i>
+          </a>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
 
       </div>
     </div>
   </footer>
 
-  
+
 
   <!-- Copyright Section -->
   <section class="copyright py-4 text-center text-white">
@@ -248,6 +382,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND A
 
   <!-- Plugin JavaScript -->
   <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="vendor/ekko-lightbox/ekko-lightbox.min.js"></script>
 
   <!-- Custom scripts for this template -->
   <script src="js/freelancer.min.js"></script>
@@ -262,6 +397,11 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND A
       helloMailLink.innerHTML = helloMail.innerHTML;
       helloMail.parentNode.replaceChild(helloMailLink, helloMail);
     }
+
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
   </script>
 </body>
 
