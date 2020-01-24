@@ -11,6 +11,7 @@ namespace otor.msixhero.lib.tests
     public class ManifestReaderTests
     {
         [Test]
+        [Ignore("integration")]
         public void Test()
         {
             var manifest = @"C:\Program Files\WindowsApps\11560RaynetGmbH.RayEval_6.2.3088.0_neutral__t21q0c7n9nf3e\AppxManifest.xml";

@@ -7,6 +7,7 @@ using System.Xml;
 using otor.msixhero.lib.BusinessLayer.Appx.Detection;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.Wrappers;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
 {

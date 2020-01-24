@@ -2,6 +2,7 @@
 using System.Windows;
 using CommonServiceLocator;
 using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
@@ -54,6 +55,7 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
             containerRegistry.RegisterSingleton<IAppxSigningManager, AppxSigningManager>();
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
+            containerRegistry.RegisterSingleton<IAppAttach, AppAttach>();
             containerRegistry.RegisterSingleton<IAppxContentBuilder, AppxContentBuilder>();
             containerRegistry.RegisterSingleton<IAppxPackageManagerFactory, AppxPackageManagerFactory>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();

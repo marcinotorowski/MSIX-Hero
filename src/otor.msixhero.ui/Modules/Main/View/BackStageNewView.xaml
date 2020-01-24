@@ -90,6 +90,17 @@
                 </DockPanel>
             </Button>
 
+            <Button Command="{x:Static commands:MsixHeroCommands.AppAttach}">
+                <DockPanel>
+                    <Path Data="{StaticResource VectorNetworkDrive}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock FontWeight="Light" Text="VHD image for MSIX app attach" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                        <TextBlock Opacity="0.66" Text="Creates virtual read-only volume for MSIX app attach." Margin="0 0 0 0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </Button>
+
             <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel:AppInstallerCommandParameter.Empty}">
                 <DockPanel>
                     <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />

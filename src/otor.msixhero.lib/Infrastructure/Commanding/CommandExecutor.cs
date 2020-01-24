@@ -5,9 +5,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands;
+using otor.msixhero.lib.Domain.Commands.AppAttach;
 using otor.msixhero.lib.Domain.Commands.Developer;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Commands.Manager;
@@ -26,16 +28,19 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         private readonly IDictionary<Type, Func<BaseCommand, IReducer>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer>>();
         private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
         private readonly IInteractionService interactionService;
+        private readonly IAppAttach appAttach;
         private readonly IBusyManager busyManager;
         private IWritableApplicationStateManager writableApplicationStateManager;
 
         public CommandExecutor(
             IAppxPackageManagerFactory appxPackageManagerFactory,
             IInteractionService interactionService,
+            IAppAttach appAttach,
             IBusyManager busyManager)
         {
             this.appxPackageManagerFactory = appxPackageManagerFactory;
             this.interactionService = interactionService;
+            this.appAttach = appAttach;
             this.busyManager = busyManager;
 
             this.ConfigureReducers();
@@ -154,7 +159,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 Logger.Warn(e);
                 IReadOnlyCollection<string> buttons = new[]
                 {
-                    "Go to developer settings" + System.Environment.NewLine + "Open Developer Settings page in Modern Control Panel and ensure that side-loading and/or the developer mode is enabled.."
+                    $"Go to developer settings{Environment.NewLine}Open Developer Settings page in Modern Control Panel and ensure that side-loading and/or the developer mode is enabled.."
                 };
 
                 var result = this.interactionService.ShowMessage(e.Message, buttons);
@@ -174,6 +179,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 {
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    throw;
                 }
             }
         }
@@ -403,6 +412,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.reducerFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateReducer((GetRegistryMountState)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RunPackage)] = action => new RunPackageReducer((RunPackage)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RunToolInPackage)] = action => new RunToolInPackageReducer((RunToolInPackage)action, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(ConvertToVhd)] = action => new ConvertToVhdReducer((ConvertToVhd)action, this.writableApplicationStateManager, this.appAttach, this.busyManager);
             this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.writableApplicationStateManager, this.busyManager);
             this.reducerFactories[typeof(Deprovision)] = action => new DeprovisionReducer((Deprovision)action, this.writableApplicationStateManager, this.busyManager);
             this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.writableApplicationStateManager);

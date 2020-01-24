@@ -1,4 +1,6 @@
-﻿using otor.msixhero.ui.Modules.Dialogs.AppInstaller.View;
+﻿using otor.msixhero.ui.Modules.Dialogs.AppAttach.View;
+using otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.AppInstaller.View;
 using otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
@@ -31,6 +33,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string UnpackPath = "Unpack";
         public static string AppInstallerPath = "AppInstaller";
         public static string PackPath = "Pack";
+        public static string AppAttachPath = "AppAttach";
         public static string ModificationPackagePath = "ModificationPackage";
         public static string HelpPath = "Help";
 
@@ -43,6 +46,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
             containerRegistry.RegisterDialog<HelpView, HelpViewModel>(HelpPath);
+            containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(AppAttachPath);
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(ModificationPackagePath);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(AppInstallerPath);
         }

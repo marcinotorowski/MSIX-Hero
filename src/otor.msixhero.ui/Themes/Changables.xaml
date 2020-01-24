@@ -3,13 +3,15 @@
                     xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                    xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay">
+                    xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
     <Style TargetType="changeableDialog:ChangeableDialog">
+        <Setter Property="ShowShield" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="changeableDialog:ChangeableDialog">
@@ -39,7 +41,12 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                        <Button Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}" Content="{TemplateBinding OkButtonLabel}" />
+                                        <Button Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
+                                                <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding OkButtonLabel}" />
+                                            </StackPanel>
+                                        </Button>
                                         <Button Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="Close" />
                                     </StackPanel>
                                 </DockPanel>

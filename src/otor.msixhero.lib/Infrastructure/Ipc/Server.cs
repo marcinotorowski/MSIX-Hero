@@ -72,6 +72,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                             Logger.Debug("Reading command from stream...");
                             var command = await binaryReader.Read<BaseCommand>(cancellationToken);
 
+                            var success = false;
                             var isDone = false;
                             try
                             {
@@ -123,11 +124,13 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     {
                                         await this.applicationStateManager.CommandExecutor.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                                         result = null;
+                                        success = true;
                                     }
                                     else
                                     {
                                         var executionResult = await this.applicationStateManager.CommandExecutor.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                                         result = JsonConvert.SerializeObject(executionResult, Formatting.None, SerializerSettings);
+                                        success = true;
                                     }
                                 }
                                 finally
@@ -139,33 +142,36 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     }
                                 }
 
-                                try
+                                if (success)
                                 {
-                                    Logger.Trace("Beginning atomic scope with AutoResetEvent");
-                                    this.autoResetEvent.WaitOne();
-
-                                    isDone = true;
-
-                                    Logger.Debug("Returning results via named pipe...");
-                                    await binaryWriter.Write((int) ResponseType.Result, cancellationToken).ConfigureAwait(false);
-
-                                    if (returnsValue)
+                                    try
                                     {
-                                        Console.WriteLine("Sending the results...");
-                                        Logger.Debug("Returning actual results via named pipe...");
-                                        await binaryWriter.Write(result, cancellationToken).ConfigureAwait(false);
+                                        Logger.Trace("Beginning atomic scope with AutoResetEvent");
+                                        this.autoResetEvent.WaitOne();
+
+                                        isDone = true;
+
+                                        Logger.Debug("Returning results via named pipe...");
+                                        await binaryWriter.Write((int)ResponseType.Result, cancellationToken).ConfigureAwait(false);
+
+                                        if (returnsValue)
+                                        {
+                                            Console.WriteLine("Sending the results...");
+                                            Logger.Debug("Returning actual results via named pipe...");
+                                            await binaryWriter.Write(result, cancellationToken).ConfigureAwait(false);
+                                        }
+
+                                        Logger.Debug("Flushing the stream...");
+                                        await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+
+                                        Logger.Debug("Waiting for the pipe to drain...");
+                                        stream.WaitForPipeDrain();
                                     }
-
-                                    Logger.Debug("Flushing the stream...");
-                                    await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-
-                                    Logger.Debug("Waiting for the pipe to drain...");
-                                    stream.WaitForPipeDrain();
-                                }
-                                finally
-                                {
-                                    Logger.Trace("Finishing atomic scope with AutoResetEvent");
-                                    this.autoResetEvent.Set();
+                                    finally
+                                    {
+                                        Logger.Trace("Finishing atomic scope with AutoResetEvent");
+                                        this.autoResetEvent.Set();
+                                    }
                                 }
                             }
                             catch (OperationCanceledException e)

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Infrastructure;
@@ -18,11 +20,28 @@ namespace otor.msixhero.adminhelper
 
         static Program()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+
 #if DEBUG
             LogManager.Initialize(MsixHeroLogLevel.Debug);
 #else
             LogManager.Initialize(MsixHeroLogLevel.Info);
 #endif
+        }
+
+        private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            Logger.Warn(e.Exception);
+            Console.WriteLine("TASK SCHEDULER ERROR");
+            Console.WriteLine(e);
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Logger.Error(e.ExceptionObject.ToString());
+            Console.WriteLine("UNHANDLED ERROR");
+            Console.WriteLine(e);
         }
 
         public static void Main(string[] args)
@@ -38,8 +57,9 @@ namespace otor.msixhero.adminhelper
                     IAppxPackageManagerFactory packageManagerFactory = new AppxPackageFactory(new AppxSigningManager());
                     IBusyManager busyManager = new BusyManager();
                     IEventAggregator eventAggregator = new EventAggregator();
-                    
-                    var commandExecutor = new CommandExecutor(packageManagerFactory, interactionService, busyManager);
+                    IAppAttach appAttach = new AppAttach();
+
+                    var commandExecutor = new CommandExecutor(packageManagerFactory, interactionService, appAttach, busyManager);
                     var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
                     var server = new Server(applicationStateManager);
 

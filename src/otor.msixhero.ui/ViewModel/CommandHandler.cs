@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -64,6 +63,7 @@ namespace otor.msixhero.ui.ViewModel
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.Pack = new DelegateCommand(param => this.PackExecute());
+            this.AppAttach = new DelegateCommand(param => this.AppAttachExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.Unpack = new DelegateCommand(param => this.UnpackExecute());
@@ -108,6 +108,8 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand Pack { get; }
         
         public ICommand AppInstaller { get; }
+
+        public ICommand AppAttach { get; }
 
         public ICommand ModificationPackage { get; }
 
@@ -576,6 +578,23 @@ namespace otor.msixhero.ui.ViewModel
                 };
 
                 this.dialogService.ShowDialog(DialogsModule.ModificationPackagePath, parameters, this.OnDialogClosed);
+            }
+        }
+
+        private void AppAttachExecute(bool forSelection)
+        {
+            if (!forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            {
+                this.dialogService.ShowDialog(DialogsModule.AppAttachPath, new DialogParameters(), this.OnDialogClosed);
+            }
+            else
+            {
+                var parameters = new DialogParameters
+                {
+                    { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
+                };
+
+                this.dialogService.ShowDialog(DialogsModule.AppAttachPath, parameters, this.OnDialogClosed);
             }
         }
 

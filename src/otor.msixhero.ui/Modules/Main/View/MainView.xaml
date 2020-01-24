@@ -55,6 +55,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding CommandHandler.Pack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding CommandHandler.AppInstaller}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ModificationPackage}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Settings}" Command="{Binding CommandHandler.Settings}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
@@ -293,6 +294,19 @@
                             <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
+
+                    <Fluent:Button Header="Generate VHD for app attach..." Command="{x:Static commands:MsixHeroCommands.AppAttach}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorNetworkDrive}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorNetworkDrive}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                        </Fluent:Button.SizeDefinition>
+                    </Fluent:Button>
+                    
                     <Fluent:Button Header="Generate appinstaller definition..." CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />

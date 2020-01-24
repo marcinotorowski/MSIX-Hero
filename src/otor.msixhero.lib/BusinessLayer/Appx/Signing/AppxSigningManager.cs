@@ -17,6 +17,7 @@ using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.Wrappers;
 using X509Certificate = System.Security.Cryptography.X509Certificates.X509Certificate;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Signing

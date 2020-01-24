@@ -61,11 +61,11 @@ namespace otor.msixhero.lib.tests
 </AppInstaller>
 ";
 
-            var xmlSerializer = new XmlSerializer(typeof(AppInstallerConfig));
+            var xmlSerializer = new XmlSerializer(typeof(AppInstallerConfig2017));
 
             using (var stream = new StringReader(stringXml))
             {
-                var result = (AppInstallerConfig) xmlSerializer.Deserialize(stream);
+                var result = (AppInstallerConfig2017) xmlSerializer.Deserialize(stream);
 
                 Assert.AreEqual("http://mywebservice.azurewebsites.net/appset.appinstaller", result.Uri);
                 Assert.NotNull(result.Dependencies);

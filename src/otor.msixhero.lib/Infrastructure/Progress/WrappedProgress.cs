@@ -55,7 +55,17 @@ namespace otor.msixhero.lib.Infrastructure.Progress
             var progressInstance = (Progress)sender;
             var weight = this.weights[progressInstance];
             this.lastProgress[progressInstance] = (int)(weight * e.Progress);
-            this.parent.Report(new ProgressData((int)(1.0 * this.lastProgress.Values.Sum() / this.totalWeight), e.Message));
+
+            var val = 0;
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            foreach (var key in this.weights.Keys)
+            {
+                val += this.lastProgress[key];
+            }
+
+            var p = new ProgressData((int) (1.0 * val / this.totalWeight), e.Message);
+            Console.WriteLine("Reporting progress {0}% {1}..", p.Progress, p.Message);
+            this.parent.Report(p);
         }
     }
 }

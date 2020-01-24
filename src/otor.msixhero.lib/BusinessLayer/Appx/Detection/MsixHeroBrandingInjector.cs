@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Xml;
 using ControlzEx.Standard;
 using otor.msixhero.lib.Infrastructure.Interop;
+using otor.msixhero.lib.Infrastructure.Wrappers;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
 {

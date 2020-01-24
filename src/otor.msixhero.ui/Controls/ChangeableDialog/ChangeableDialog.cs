@@ -32,11 +32,20 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
         
         public static readonly DependencyProperty FooterProperty =  DependencyProperty.Register("Footer", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
 
+        public static readonly DependencyProperty ShowShieldProperty = DependencyProperty.Register("ShowShield", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
+        
         public ChangeableDialogViewModel Dialog
         {
             get => (ChangeableDialogViewModel)this.GetValue(DialogProperty);
             set => this.SetValue(DialogProperty, value);
         }
+        
+        public bool ShowShield
+        {
+            get => (bool)this.GetValue(ShowShieldProperty);
+            set => this.SetValue(ShowShieldProperty, value);
+        }
+
         public object Footer
         {
             get => this.GetValue(FooterProperty);

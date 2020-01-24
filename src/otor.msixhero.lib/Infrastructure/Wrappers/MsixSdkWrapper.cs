@@ -7,15 +7,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
 
-namespace otor.msixhero.lib.Infrastructure.Interop
+namespace otor.msixhero.lib.Infrastructure.Wrappers
 {
     public class MsixSdkWrapper
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixSdkWrapper));
-
+        
         public async Task SignPackageWithPfx(string filePath, string algorithmType, string pfxPath, string password, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var remove = -1;
@@ -46,7 +47,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             var args = signToolArguments.ToString();
             var maskedArgs = remove < 0 ? args : args.Remove(remove, removeLength).Insert(remove, "<removed-from-log>");
 
-            var signTool = GetSdkPath("signTool.exe");
+            var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
             Logger.Info("Executing {0} {1}", signTool, maskedArgs);
 
             Action<string> callBack = data => { };
@@ -88,7 +89,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             signToolArguments.AppendFormat(" \"{0}\"", filePath);
 
             var args = signToolArguments.ToString();
-            var signTool = GetSdkPath("signTool.exe");
+            var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
             Logger.Info("Executing {0} {1}", signTool, args);
 
             Action<string> callBack = data => { };
@@ -149,13 +150,17 @@ namespace otor.msixhero.lib.Infrastructure.Interop
             var wrapper = new PackUnPackProgressWrapper(progress);
             return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
         }
-
-        public static string GetSdkPath(string localName)
+        public static string GetSdkPath(string localName, string baseDirectory = null)
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "sdk", IntPtr.Size == 4 ? "x86" : "x64", localName);
+            var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "sdk");
+            var path = Path.Combine(baseDir, IntPtr.Size == 4 ? "x86" : "x64", localName);
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException($"Could not locale SDK part {path}.", path);
+                path = Path.Combine(baseDir, localName);
+                if (!File.Exists(path))
+                {
+                    throw new FileNotFoundException($"Could not locale SDK part {path}.", path);
+                }
             }
 
             return path;
@@ -254,7 +259,7 @@ namespace otor.msixhero.lib.Infrastructure.Interop
 
         private async Task RunMakeAppx(string arguments, CancellationToken cancellationToken, Action<string> callBack = null)
         {
-            var makeAppx = GetSdkPath("makeappx.exe");
+            var makeAppx = GetSdkPath("makeappx.exe", BundleHelper.SdkPath);
             Logger.Info("Executing {0} {1}", makeAppx, arguments);
 
             try
