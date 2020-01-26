@@ -107,10 +107,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
                     switch (this.SelectedCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Personal:
-                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress2).ConfigureAwait(false);
+                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.Pfx:
-                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress2).ConfigureAwait(false);
+                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                     }
                 }

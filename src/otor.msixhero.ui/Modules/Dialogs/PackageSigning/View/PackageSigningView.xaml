@@ -9,6 +9,7 @@
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.View"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
+             xmlns:signing="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Signing;assembly=msixhero.lib"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:PackageSigningViewModel}">
@@ -101,6 +102,18 @@
                         <ScrollViewer Margin="0 0 0 16">
                             <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
                         </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Adjustments">
+                        <StackPanel>
+                            <TextBlock Text="Package version after signing:"></TextBlock>
+                            <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding IncreaseVersion.CurrentValue}" Margin="0 6 0 0">
+                                <ComboBoxItem Tag="{x:Static signing:IncreaseVersionMethod.None}" Content="Do not change the version" />
+                                <ComboBoxItem Tag="{x:Static signing:IncreaseVersionMethod.Major}" Content="Increase major ([*].B.C.D) by one" />
+                                <ComboBoxItem Tag="{x:Static signing:IncreaseVersionMethod.Minor}" Content="Increase minor (A.[*].C.D) by one" />
+                                <ComboBoxItem Tag="{x:Static signing:IncreaseVersionMethod.Build}" Content="Increase build (A.B.[*].D) by one" />
+                                <ComboBoxItem Tag="{x:Static signing:IncreaseVersionMethod.Revision}" Content="Increase revision (A.B.C.[*]) by one" />
+                            </ComboBox>
+                        </StackPanel>
                     </TabItem>
                 </TabControl>
             </DataTemplate>

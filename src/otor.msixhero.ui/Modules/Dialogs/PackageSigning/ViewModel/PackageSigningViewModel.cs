@@ -29,12 +29,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             this.interactionService = interactionService;
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, configurationService?.GetCurrentConfiguration()?.Signing, true);
+            this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
 
-            this.AddChildren(this.Files, this.SelectedCertificate);
+            this.AddChildren(this.Files, this.SelectedCertificate, this.IncreaseVersion);
             this.SetValidationMode(ValidationMode.Silent, true);
             this.Files.CollectionChanged += (sender, args) => { this.OnPropertyChanged(nameof(IsOnePackage)); };
         }
         
+        public ChangeableProperty<IncreaseVersionMethod> IncreaseVersion { get; }
+
         public CertificateSelectorViewModel SelectedCertificate { get; }
 
         public List<string> SelectedPackages { get; } = new List<string>();
@@ -73,11 +76,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
             {
                 if (this.SelectedCertificate.Store.CurrentValue == CertificateSource.Pfx)
                 {
-                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
             }
 

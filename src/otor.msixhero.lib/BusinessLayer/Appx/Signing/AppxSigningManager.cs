@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -32,7 +30,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            return this.ExtractCertificateFromMsix(msixFile, false, outputFile, cancellationToken, progress);
+            return this.ExtractCertificateFromMsix(msixFile, false, outputFile, progress);
         }
 
         public Task<bool> ExtractCertificateFromMsix(
@@ -40,7 +38,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            return this.ExtractCertificateFromMsix(msixFile, true, null, cancellationToken, progress);
+            return this.ExtractCertificateFromMsix(msixFile, true, null, progress);
         }
 
         public Task<PersonalCertificate> GetCertificateFromMsix(string msixFile, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -153,7 +151,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             }
         }
 
-        public async Task SignPackage(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task SignPackage(
+            string package, 
+            bool updatePublisher, 
+            PersonalCertificate certificate,
+            string timestampUrl = null, 
+            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = null)
         {
             if (certificate == null)
             {
@@ -197,7 +202,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
                 throw new ArgumentException("Selected certificate does not contain a private key.");
             }
             
-            var localCopy = await this.PreparePackageForSigning(package, updatePublisher, x509[0], cancellationToken, progress).ConfigureAwait(false);
+            var localCopy = await this.PreparePackageForSigning(
+                package, 
+                updatePublisher, 
+                increaseVersion,
+                x509[0], 
+                cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -241,7 +251,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             }
         }
 
-        public async Task SignPackage(string package, bool updatePublisher, string pfxPath, SecureString password, string timestampUrl = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task SignPackage(
+            string package, 
+            bool updatePublisher, 
+            string pfxPath, 
+            SecureString password, 
+            string timestampUrl = null,
+            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = null)
         {
             Logger.Info("Signing package {0} using PFX {1}.", package, pfxPath);
             
@@ -253,7 +271,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             Logger.Debug("Analyzing given certificate...");
             var x509 = new X509Certificate2(await File.ReadAllBytesAsync(pfxPath, cancellationToken).ConfigureAwait(false), password);
 
-            var localCopy = await this.PreparePackageForSigning(package, updatePublisher, x509, cancellationToken, progress).ConfigureAwait(false);
+            var localCopy = await this.PreparePackageForSigning(package, updatePublisher, increaseVersion, x509, cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -303,7 +321,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            return this.ExtractCertificateFromMsix(msixFile, true, null, cancellationToken, progress);
+            return this.ExtractCertificateFromMsix(msixFile, true, null, progress);
         }
         
         public async Task<bool> CreateSelfSignedCertificate(
@@ -314,10 +332,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            var scriptPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "create-certificate.ps1");
+            var scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "create-certificate.ps1");
 
             using var ps = await PowerShellSession.CreateForModule("PKI", true).ConfigureAwait(false);
-            using var cmd = ps.AddCommand(scriptPath, false);
+            using var cmd = ps.AddCommand(scriptPath);
             using var paramPublisherFriendlyName = cmd.AddParameter("PublisherFriendlyName", publisherDisplayName);
             using var paramPublisherName = cmd.AddParameter("PublisherName", publisherName);
             using var paramPassword = cmd.AddParameter("Password", password);
@@ -329,17 +347,17 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
             return true;
         }
+
         private async Task<bool> ExtractCertificateFromMsix(
             string msixFile,
             bool importToStore = false,
             string outputFile = null,
-            CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            var scriptPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "extract-certificate-from-msix.ps1");
+            var scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "scripts", "extract-certificate-from-msix.ps1");
 
             using var ps = await PowerShellSession.CreateForModule("PKI", true).ConfigureAwait(false);
-            using var cmd = ps.AddCommand(scriptPath, false);
+            using var cmd = ps.AddCommand(scriptPath);
             using var paramSourceMsixFile = cmd.AddParameter("SourceMsixFile", msixFile);
 
             if (outputFile != null)
@@ -403,7 +421,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
             return cert;
         }
 
-        private async Task<string> PreparePackageForSigning(string package, bool updatePublisher, X509Certificate certificate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        private async Task<string> PreparePackageForSigning(
+            string package, 
+            bool updatePublisher, 
+            IncreaseVersionMethod increaseVersion,
+            X509Certificate certificate, 
+            CancellationToken cancellationToken = default)
         {
             if (!File.Exists(package))
             {
@@ -449,6 +472,42 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Signing
 
                         Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.InnerText, certificate.Subject);
                         publisher.InnerText = certificate.Subject;
+
+                        if (increaseVersion != IncreaseVersionMethod.None)
+                        {
+                            var version = identity.Attributes["Version"];
+                            if (version == null)
+                            {
+                                throw new FormatException("The attribute Version does not exist in the package identity element. The manifest seems to be corrupted.");
+                            }
+                            else
+                            {
+                                var content = version.InnerText;
+                                if (!Version.TryParse(content, out var parsedVersion))
+                                {
+                                    throw new FormatException($"Version {content} is not a valid version string. The manifest seems to be corrupted.");
+                                }
+
+                                switch (increaseVersion)
+                                {
+                                    case IncreaseVersionMethod.Major:
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major) + 1, Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build), Math.Max(0, parsedVersion.Revision));
+                                        break;
+                                    case IncreaseVersionMethod.Minor:
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major), Math.Max(0, parsedVersion.Minor) + 1, Math.Max(0, parsedVersion.Build), Math.Max(0, parsedVersion.Revision));
+                                        break;
+                                    case IncreaseVersionMethod.Build:
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major), Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build) + 1, Math.Max(0, parsedVersion.Revision));
+                                        break;
+                                    case IncreaseVersionMethod.Revision:
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major), Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build), Math.Max(0, parsedVersion.Revision) + 1);
+                                        break;
+                                }
+
+                                Logger.Info("Replacing Version '{0}' with '{1}'", content, parsedVersion);
+                                version.InnerText = parsedVersion.ToString();
+                            }
+                        }
 
                         var brandingInjector = new MsixHeroBrandingInjector();
                         brandingInjector.Inject(xmlDocument);
