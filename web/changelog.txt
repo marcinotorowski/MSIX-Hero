@@ -1,3 +1,12 @@
+0.3.4.0
+Released 2020/01/26
+
+* [New feature] Ability to increase package versions by signing
+* [Improvement] Reordered items in the main ribbon ('Tools' and 'Generate' became 'Edit', there is now a separate tab for certificates)
+* [Fixed] Some small wording adjustments in app attach dialog
+
+------
+
 0.3.0.0
 Released 2020/01/26
 
