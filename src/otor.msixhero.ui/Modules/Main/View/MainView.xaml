@@ -277,13 +277,55 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
-            <Fluent:RibbonTabItem Header="Generate" ReduceOrder="
+            <Fluent:RibbonTabItem Header="Edit" ReduceOrder=",
+                            RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
+                            RibbonCodeSigning,RibbonCodeSigning,RibbonCodeSigning
                             RibbonToolsCreate,RibbonToolsCreate,RibbonToolsCreate,">
-                <Fluent:RibbonGroupBox Header="Create" x:Name="RibbonToolsCreate">
+                <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
+                    </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:Button Header="Unpack MSIX package..." Command="{x:Static commands:MsixHeroCommands.Unpack}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                        </Fluent:Button.SizeDefinition>
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Pack folder to MSIX..." Command="{x:Static commands:MsixHeroCommands.Pack}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                        </Fluent:Button.SizeDefinition>
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonCodeSigning">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
+                    </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:Button Header="Sign package..." Command="{x:Static commands:MsixHeroCommands.OpenResign}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                        </Fluent:Button.SizeDefinition>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Other editors and generators" x:Name="RibbonToolsCreate">
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Generate modification package stub..." Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+                    <Fluent:Button Header="Modification package stub generator" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -295,7 +337,7 @@
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
-                    <Fluent:Button Header="Generate VHD for app attach..." Command="{x:Static commands:MsixHeroCommands.AppAttach}">
+                    <Fluent:Button Header="MSIX app attach VHD generator" Command="{x:Static commands:MsixHeroCommands.AppAttach}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorNetworkDrive}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -306,8 +348,8 @@
                             <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
-                    
-                    <Fluent:Button Header="Generate appinstaller definition..." CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
+
+                    <Fluent:Button Header="App installer editor" CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -353,37 +395,9 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="Tools"
-                    ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1,
-                            RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
+            <Fluent:RibbonTabItem Header="Certificates"
+                    ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1
                             RibbonToolsCerts2,RibbonToolsCerts2,RibbonToolsCerts2">
-                <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
-                    <Fluent:RibbonGroupBox.Icon>
-                        <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
-                    </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Unpack MSIX package..." Command="{x:Static commands:MsixHeroCommands.Unpack}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.LargeIcon>
-                            <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource LargeIcon}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.Icon>
-                            <Path Data="{StaticResource VectorUnpack}" Style="{StaticResource MediumIcon}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Pack folder to MSIX..." Command="{x:Static commands:MsixHeroCommands.Pack}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.LargeIcon>
-                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.Icon>
-                            <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonToolsCerts1">
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorSelfSign}" Style="{StaticResource MediumIcon}" />
@@ -391,14 +405,6 @@
                     <Fluent:Button Header="Create self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
-                        </Fluent:Button.SizeDefinition>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Sign package..." Command="{x:Static commands:MsixHeroCommands.OpenResign}">
-                        <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.SizeDefinition>
                             <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
@@ -617,7 +623,7 @@
                             <Path Data="{StaticResource VectorWindow}" Style="{StaticResource LargeIcon}" />
                         </Fluent:InRibbonGallery.LargeIcon>
                     </Fluent:InRibbonGallery>
-                    
+
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox x:Name="RibbonDevReg" IsEnabled="{Binding HasSingleSelection}" Header="Registry">
                     <Fluent:RibbonGroupBox.Icon>

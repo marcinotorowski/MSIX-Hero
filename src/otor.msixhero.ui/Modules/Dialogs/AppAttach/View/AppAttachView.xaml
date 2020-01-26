@@ -48,8 +48,8 @@
                         </DockPanel>
 
                         <TextBlock Foreground="#666" Text="VHD size" Margin="0 16 0 6" />
-                        <RadioButton x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel1:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" Content="Let MSIX Hero select the VHD size" />
-                        <RadioButton x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel1:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" Content="Use the following fixed size (in MB):" Margin="0 6" />
+                        <RadioButton x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel1:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" Content="Let MSIX Hero select required dynamic VHD size" />
+                        <RadioButton x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel1:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" Content="Use a dynamic size but not more than:" Margin="0 6" />
                         <StackPanel Orientation="Horizontal" IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
                             <xctk:ButtonSpinner VerticalContentAlignment="Center" Content="{Binding FixedSize.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="120" />
                             <TextBlock Text="MB" Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" />
