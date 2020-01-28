@@ -47,7 +47,7 @@ namespace otor.msixhero.lib.Domain.Appx.AppInstaller
             }
 
             writer.WriteAttributeString("ShowPrompt", this.ShowPrompt.ToString().ToLower());
-            writer.WriteAttributeString("UpdateBlocksActivation", this.ShowPrompt.ToString().ToLower());
+            writer.WriteAttributeString("UpdateBlocksActivation", this.UpdateBlocksActivation.ToString().ToLower());
         }
     }
 }
