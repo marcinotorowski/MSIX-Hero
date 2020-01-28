@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
@@ -20,12 +19,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
         private ICommand openSuccessLink;
         private ICommand reset;
 
-        public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService, IConfigurationService configurationService) : base("Unpack MSIX package", interactionService)
+        public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService) : base("Unpack MSIX package", interactionService)
         {
             this.appxPacker = appxPacker;
 
-            var initialOut = configurationService.GetCurrentConfiguration().Packer?.DefaultOutFolder;
-            this.OutputPath = new ChangeableFolderProperty(interactionService, initialOut)
+            this.OutputPath = new ChangeableFolderProperty(interactionService)
             {
                 Validators = new[] { ChangeableFolderProperty.ValidatePath }
             };

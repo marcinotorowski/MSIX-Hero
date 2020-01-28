@@ -29,7 +29,6 @@ namespace otor.msixhero.lib.tests.ViewModels
             var mockSigning = new Mock<IAppxSigningManager>();
 
             var config = new Configuration();
-            config.Packer.DefaultOutFolder = @"c:\temp";
 
             mockConfiguration.Setup(dep => dep.GetCurrentConfiguration(false)).Returns(config);
             mockConfiguration.Setup(dep => dep.GetCurrentConfiguration(true)).Returns(config);
@@ -49,7 +48,7 @@ namespace otor.msixhero.lib.tests.ViewModels
 
             Assert.IsTrue(string.IsNullOrEmpty(viewModel.OutputPath.CurrentValue));
             viewModel.InputPath.CurrentValue = @"c:\myFolder\temp123";
-            Assert.AreEqual(@"c:\myFolder\temp123\_packed\temp123.msix", viewModel.OutputPath.CurrentValue);
+            Assert.AreEqual(@"c:\myFolder\temp123.msix", viewModel.OutputPath.CurrentValue);
         }
     }
 }

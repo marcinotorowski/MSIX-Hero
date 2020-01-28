@@ -150,6 +150,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            this.SetValidationMode(ValidationMode.Default, true);
+            if (!this.IsValid)
+            {
+                return false;
+            }
+
             if (!this.interactionService.SaveFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out var selected))
             {
                 return false;
@@ -311,6 +317,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 }
 
                 this.MainPackageUri.CurrentValue = $"{configValue.TrimEnd('/')}/{newFilePath.Name}";
+            }
+            
+            if (string.IsNullOrEmpty(this.AppInstallerUri.CurrentValue) && !string.IsNullOrEmpty(e.NewValue as string))
+            {
+                var newFilePath = new FileInfo((string)e.NewValue);
+                var configValue = this.configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationPackages;
+                if (string.IsNullOrEmpty(configValue))
+                {
+                    configValue = "http://server-name/";
+                }
+
+                var newName = Path.ChangeExtension(newFilePath.Name, ".appinstaller");
+                this.AppInstallerUri.CurrentValue = $"{configValue.TrimEnd('/')}/{newName}";
             }
         }
 

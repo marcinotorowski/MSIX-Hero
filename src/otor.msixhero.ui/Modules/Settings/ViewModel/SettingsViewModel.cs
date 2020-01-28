@@ -26,7 +26,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             
             this.AllSettings.AddChildren(
                 this.CertificateOutputPath = new ChangeableFolderProperty(interactionService, config.Signing?.DefaultOutFolder?.Resolved),
-                this.PackerOutputPath = new ChangeableFolderProperty(interactionService, config.Packer?.DefaultOutFolder?.Resolved),
+                this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
                 this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManager, config.Signing, false),
                 this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
@@ -36,11 +36,12 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.AppinstallerEditorType = new ChangeableProperty<EditorType>(config.Editing.AppInstallerEditorType),
                 this.AppinstallerEditorPath = new ChangeableFileProperty(interactionService, config.Editing.AppInstallerEditor.Resolved),
                 this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
-                this.PsfEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PsfEditor.Resolved)
+                this.PsfEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PsfEditor.Resolved),
+                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationPackages),
+                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationAppInstaller)
             );
 
             this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
-            this.PackerOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
             this.Update = new UpdateViewModel(updateChecker);
         }
 
@@ -51,6 +52,10 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
 
         public ChangeableFolderProperty CertificateOutputPath { get; }
+        
+        public ValidatedChangeableProperty<string> DefaultRemoteLocationPackages { get; }
+
+        public ValidatedChangeableProperty<string> DefaultRemoteLocationAppInstaller { get; }
 
         public ChangeableProperty<EditorType> ManifestEditorType { get; }
 
@@ -68,7 +73,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
 
         public ChangeableFileProperty PsfEditorPath { get; }
 
-        public ChangeableFolderProperty PackerOutputPath { get; }
+        public ChangeableProperty<bool> PackerSignByDefault { get; }
         
         public ChangeableProperty<bool> SidebarDefaultState { get; }
 
@@ -111,9 +116,9 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 newConfiguration.Signing.DefaultOutFolder = this.CertificateOutputPath.CurrentValue;
             }
 
-            if (this.PackerOutputPath.IsTouched)
+            if (this.PackerSignByDefault.IsTouched)
             {
-                newConfiguration.Packer.DefaultOutFolder = this.PackerOutputPath.CurrentValue;
+                newConfiguration.Packer.SignByDefault = this.PackerSignByDefault.CurrentValue;
             }
             
             if (this.SidebarDefaultState.IsTouched)
@@ -190,5 +195,20 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         }
 
         public event Action<IDialogResult> RequestClose;
+
+        private string ValidateUri(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            if (!Uri.TryCreate(value, UriKind.Absolute, out _))
+            {
+                return $"The value '{value}' is not a valid URI.";
+            }
+
+            return null;
+        }
     }
 }

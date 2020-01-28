@@ -32,6 +32,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             this.appxPacker = appxPacker;
             this.signingManager = signingManager;
             var signConfig = configurationService.GetCurrentConfiguration().Signing ?? new SigningConfiguration();
+            var signByDefault = configurationService.GetCurrentConfiguration().Packer?.SignByDefault == true;
 
             this.InputPath = new ChangeableFolderProperty(interactionService)
             {
@@ -47,7 +48,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
                 ValidationMode = ValidationMode.Silent
             };
 
-            this.Sign = new ChangeableProperty<bool>();
+            this.Sign = new ChangeableProperty<bool>(signByDefault);
             this.Compress = new ChangeableProperty<bool>(true);
             this.Validate = new ChangeableProperty<bool>(true);
 
@@ -145,7 +146,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             }
 
             var newValue = (string) e.NewValue;
-            this.OutputPath.CurrentValue = Path.Join(newValue, "_packed", Path.GetFileName(newValue.TrimEnd('\\'))) + ".msix";
+            this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + ".msix";
         }
     }
 }

@@ -132,11 +132,6 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
                 result.Packer = defaults.Packer;
             }
 
-            if (result.Packer.DefaultOutFolder == null)
-            {
-                result.Packer.DefaultOutFolder = defaults.Packer.DefaultOutFolder;
-            }
-
             if (result.List == null)
             {
                 result.List = defaults.List;

@@ -129,19 +129,14 @@
             <TabItem Header="Packer">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
-                        <TextBlock Text="Default folder where packages are extracted/compressed" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                        <DockPanel>
-                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding PackerOutputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox Text="{Binding PackerOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-                        </DockPanel>
+                        <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 6">
+                            <TextBlock Text="Sign packages after packing" TextWrapping="Wrap" />
+                        </CheckBox>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Other" Visibility="Collapsed">
 
-            </TabItem>
-
-            <TabItem Header="Editing">
+            <TabItem Header="Editors">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
                         <TextBlock Text="Default editor for manifest files (AppxManifest.xml)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
@@ -242,6 +237,17 @@
                         </StackPanel>
                     </Border>
                 </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Other">
+                <StackPanel>
+                    <Label Content="App installer (.appinstaller)" Style="{StaticResource Label}" />
+                    <TextBlock Text="Default base URI for hosted MSIX packages" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                    <TextBox Text="{Binding DefaultRemoteLocationPackages.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
+
+                    <TextBlock Text="Default base URI for hosted app installer files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                    <TextBox Text="{Binding DefaultRemoteLocationAppInstaller.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
+</StackPanel>
             </TabItem>
         </TabControl>
     </DockPanel>
