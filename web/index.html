@@ -21,16 +21,32 @@
   <link href="vendor/ekko-lightbox/ekko-lightbox.css" rel="stylesheet">
 
   <style type="text/css">
-  .modal-body{
-    padding: 1rem !important;
-  }
+    .modal-body {
+      padding: 1rem !important;
+    }
 
-  .modal-footer {
-    padding: 0 1rem 1rem 1rem !important;
-    justify-content: center !important;
-    text-align: center !important;
-  }
+    .modal-footer {
+      padding: 0 1rem 1rem 1rem !important;
+      justify-content: center !important;
+      text-align: center !important;
+    }
   </style>
+
+  <!-- Matomo -->
+  <script type="text/javascript">
+    var _paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function () {
+      var u = "//msixhero.net/analytics/";
+      _paq.push(['setTrackerUrl', u + 'matomo.php']);
+      _paq.push(['setSiteId', '1']);
+      var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+      g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+    })();
+  </script>
+  <!-- End Matomo Code -->
 </head>
 
 <body id="page-top">
@@ -96,7 +112,7 @@
         <div class="ml-auto mr-auto mt-1"><small>Requires <strong>Windows 10 1809</strong> or newer and <strong><a
                 style="color: white !important;" href="https://dotnet.microsoft.com/download/dotnet-core/3.1">.NET Core
                 3.1</a></strong> to run.<br />Last version: <strong>0.3.9.0</strong> (see <a
-                style="color: white !important;" href="/changelog.txt">history of changes</a>)</small></div>
+              style="color: white !important;" href="/changelog.txt">history of changes</a>)</small></div>
       </div>
     </div>
   </header>
@@ -118,13 +134,15 @@
 
       <!-- Features Grid Items -->
       <div class="row">
-        
-        <p>MSIX is a modern Windows app package format, a successor of APPX and a "spiritual successor" to some other - now legacy - formats, including but not limited to MSI, App-V and ClickOnce.</p>
+
+        <p>MSIX is a modern Windows app package format, a successor of APPX and a "spiritual successor" to some other -
+          now legacy - formats, including but not limited to MSI, App-V and ClickOnce.</p>
         <p>Apps deployed as MSIX packages benefit from several out-of-the-box features and properties, including:</p>
-        
+
         <ul>
           <li>Fast and reliable installation, clean uninstallation,</li>
-          <li>Content delivery optimizations, ensuring faster downloads with minimum impact and network bandwidth usage,</li>
+          <li>Content delivery optimizations, ensuring faster downloads with minimum impact and network bandwidth usage,
+          </li>
           <li>Access to various modern Windows APIS which are not available for classically deployed win32 apps,</li>
           <li>Extensibility and shimming thanks to Package Support Framework,</li>
           <li>Add-ons and modification packages,</li>
@@ -132,18 +150,22 @@
           <li>Distribution and monetization in Microsoft Store.</li>
         </ul>
 
-        <p>And best of all, the big part of the ecosystem is open-sourced and the core support for MSIX deployment is built-in in any computer running still supported version of Windows 10. 
-          Although the format is relatively young, there already exist several package authoring tools, both from Microsoft and ISVs, and the community is constantly growing.</p>
-        
-        <p>Going to MSIX format (either repackaging or app modernization) preserves the functionality of existing app packages and for a straightforward conversion it requires no access to the original sources.</p>
+        <p>And best of all, the big part of the ecosystem is open-sourced and the core support for MSIX deployment is
+          built-in in any computer running still supported version of Windows 10.
+          Although the format is relatively young, there already exist several package authoring tools, both from
+          Microsoft and ISVs, and the community is constantly growing.</p>
+
+        <p>Going to MSIX format (either repackaging or app modernization) preserves the functionality of existing app
+          packages and for a straightforward conversion it requires no access to the original sources.</p>
         <p>For more information about MSIX, refer to the following links:</p>
 
       </div>
       <div class="row">
         <ul>
           <li><a href="https://docs.microsoft.com/en-us/windows/msix/overview">What is MSIX?</a></li>
-          <li><a href="https://www.advancedinstaller.com/msix-introduction.html">MSIX Tutorial: A comprehensive 24-chapter guide</a></li>
-          <li><a href="https://github.com/microsoft/msix-packaging">GitHub repository</a></li>          
+          <li><a href="https://www.advancedinstaller.com/msix-introduction.html">MSIX Tutorial: A comprehensive
+              24-chapter guide</a></li>
+          <li><a href="https://github.com/microsoft/msix-packaging">GitHub repository</a></li>
         </ul>
       </div>
   </section>
@@ -168,7 +190,7 @@
       <div class="row">
         <img src="img/screenshot.png" class="mb-5 ml-auto mr-auto" />
       </div>
-      <div class="row">        
+      <div class="row">
         <p>This app helps with management, testing, trobuleshooting and simply understanding your MSIX portfolio:</p>
       </div>
       <div class="row">
@@ -181,55 +203,80 @@
           <li>Creating and extracting certificates,</li>
           <li>Packing / unpacking MSIX packages,</li>
           <li>Signing and updating package identities,</li>
-          <li>Troubleshooting and tools: starting commands in package context, revealing actual folders, loading registry etc.,</li>
-          <li>Detection of authoring tools (Visual Studio, MSIX Packaging Tool, Advanced Installer, InstallShield, RayPack etc.</li>
+          <li>Troubleshooting and tools: starting commands in package context, revealing actual folders, loading
+            registry etc.,</li>
+          <li>Detection of authoring tools (Visual Studio, MSIX Packaging Tool, Advanced Installer, InstallShield,
+            RayPack etc.</li>
           <li>Creating modification packages and <code>.appinstaller</code> files.</li>
-          <li><span class="badge badge-pill badge-primary">NEW IN 0.3.0.0</span> Creating VHD expanded MSIX for app attach scenarios (preview).</li>
+          <li><span class="badge badge-pill badge-primary">NEW IN 0.3.0.0</span> Creating VHD expanded MSIX for app
+            attach scenarios (preview).</li>
         </ul>
       </div>
 
       <div class="row">
-        <p>This list is not comprehensive, and the app itself is frequently updated with new additions and bug fixes. Report your ideas and issues via e-mail
-          <span><span class="helloMail ltrText">ten.orehxism@olleh</span></span>.A detailed history of previous changes is available <strong><a href="/changelog.txt">here</a></strong>.</p>
+        <p>This list is not comprehensive, and the app itself is frequently updated with new additions and bug fixes.
+          Report your ideas and issues via e-mail
+          <span><span class="helloMail ltrText">ten.orehxism@olleh</span></span>.A detailed history of previous changes
+          is available <strong><a href="/changelog.txt">here</a></strong>.</p>
       </div>
 
       <div class="row my-2 justify-content-center">
         <div class="col-md-12">
           <div class="row my-2">
-            <a href="img/screenshots/01-ribbon-management.png" data-footer="Intuitive Office-inspired user interface which exposes logically groupped functions. Small highlight: MSIX Hero recognizes the tool which was used to create a package and shows the information in the sidebar." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/01-ribbon-management.png"
+              data-footer="Intuitive Office-inspired user interface which exposes logically groupped functions. Small highlight: MSIX Hero recognizes the tool which was used to create a package and shows the information in the sidebar."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/01-ribbon-management.png" class="img-fluid">
             </a>
-            <a href="img/screenshots/02-ribbon-developer.png" data-footer="Contextual actions in the Developer tab let user invoke a command in package context, create an .appinstaller definition or load and unload registry (for classic win32 apps that require it)." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/02-ribbon-developer.png"
+              data-footer="Contextual actions in the Developer tab let user invoke a command in package context, create an .appinstaller definition or load and unload registry (for classic win32 apps that require it)."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/02-ribbon-developer.png" class="img-fluid">
             </a>
-            <a href="img/screenshots/03-psf.png" data-footer="PSF (Package Support Framework) config is read and presented to the user. The information also includes the actual executable path + tracing and redirection settings. And there is always a quick link to config.json so that you can check it on your own." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/03-psf.png"
+              data-footer="PSF (Package Support Framework) config is read and presented to the user. The information also includes the actual executable path + tracing and redirection settings. And there is always a quick link to config.json so that you can check it on your own."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/03-psf.png" class="img-fluid">
             </a>
           </div>
           <div class="row my-2">
-            <a href="img/screenshots/04-installedby.png" data-footer="The sidebar can also show which users have locally installed the selected package. Als note the view options - you can choose to display apps for the current user or all users with various grouping and sorting settings." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/04-installedby.png"
+              data-footer="The sidebar can also show which users have locally installed the selected package. Als note the view options - you can choose to display apps for the current user or all users with various grouping and sorting settings."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/04-installedby.png" class="img-fluid">
             </a>
-            <a href="img/screenshots/05-dependencies.png" data-footer="Human-friendly list of package dependencies and minimum supported version of Windows 10." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/05-dependencies.png"
+              data-footer="Human-friendly list of package dependencies and minimum supported version of Windows 10."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/05-dependencies.png" class="img-fluid">
             </a>
-            <a href="img/screenshots/06-create-appinstaller.png" data-footer="Open, edit or create .appinstaller definitions for easy deployment with out-of-the-box auto-update support. MSIX Hero supports all options (as of Windows 10 1909), and even shows which minimum OS will be required based on the rquired set of features." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/06-create-appinstaller.png"
+              data-footer="Open, edit or create .appinstaller definitions for easy deployment with out-of-the-box auto-update support. MSIX Hero supports all options (as of Windows 10 1909), and even shows which minimum OS will be required based on the rquired set of features."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/06-create-appinstaller.png" class="img-fluid">
             </a>
           </div>
           <div class="row my-2">
-            <a href="img/screenshots/07-signing.png" data-footer="Signing or re-signing packages is easy, just provide MSIX Hero with a pair of certificate and password or use a certificate from your local store. MSIX Hero takes care of everything, including adjustment of package identity to match the selected certificate. This also works in a bulk mode." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/07-signing.png"
+              data-footer="Signing or re-signing packages is easy, just provide MSIX Hero with a pair of certificate and password or use a certificate from your local store. MSIX Hero takes care of everything, including adjustment of package identity to match the selected certificate. This also works in a bulk mode."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/07-signing.png" class="img-fluid">
             </a>
-            <a href="img/screenshots/08-self-signed.png" data-footer="And if you happen to have no valid certificate, the tool lets you create a new self-signed one (and optionally import to the Personal store)." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/08-self-signed.png"
+              data-footer="And if you happen to have no valid certificate, the tool lets you create a new self-signed one (and optionally import to the Personal store)."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/08-self-signed.png" class="img-fluid">
             </a>
-            <a href="img/screenshots/09-packing.png" data-footer="Packing a directory or unpacking an MSIX package (with built-in support for automatic signing) is an option when you want to swap or customize package resources." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/09-packing.png"
+              data-footer="Packing a directory or unpacking an MSIX package (with built-in support for automatic signing) is an option when you want to swap or customize package resources."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/09-packing.png" class="img-fluid">
             </a>
           </div>
           <div class="row my-2">
-            <a href="img/screenshots/10-appattach.png" data-footer="Quickly create expanded MSIX in a VHD format, which can be directly used for app attach. MSIX Hero also takes care of creating sample PS1 scripts for testing." data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
+            <a href="img/screenshots/10-appattach.png"
+              data-footer="Quickly create expanded MSIX in a VHD format, which can be directly used for app attach. MSIX Hero also takes care of creating sample PS1 scripts for testing."
+              data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
               <img src="img/screenshots.small/10-appattach.png" class="img-fluid">
             </a>
           </div>
@@ -300,7 +347,8 @@
         <div class="divider-custom-line"></div> -->
       </div>
 
-      <p>This program can be used for free, both for personal and commercial use. Below are the actual license terms.</p>
+      <p>This program can be used for free, both for personal and commercial use. Below are the actual license terms.
+      </p>
 
       <p style="font-size: 0.8em; color: #888;">
         Copyright (c) Jan 20th, 2020, Marcin Otorowski<br /><br />
@@ -353,10 +401,13 @@
           <h4 class="text-uppercase mb-4">Around the Web</h4>
           <p class="lead mb-1">Like it? Share it!</p>
 
-          <a class="btn btn-outline-light btn-social mx-1" data-url="https://msixhero.net" href="https://twitter.com/intent/tweet?hashtags=MSIX,MSIXHero&amp;url=https%3A%2F%2Fmsixhero.net" class="twitter-share-button" >
+          <a class="btn btn-outline-light btn-social mx-1" data-url="https://msixhero.net"
+            href="https://twitter.com/intent/tweet?hashtags=MSIX,MSIXHero&amp;url=https%3A%2F%2Fmsixhero.net"
+            class="twitter-share-button">
             <i class="fab fa-fw fa-twitter"></i>
           </a>
-          <a class="btn btn-outline-light btn-social mx-1" target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fmsixhero.net&title=MSIX%20Hero">
+          <a class="btn btn-outline-light btn-social mx-1" target="_blank"
+            href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fmsixhero.net&title=MSIX%20Hero">
             <i class="fab fa-fw fa-linkedin-in"></i>
           </a>
           <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
