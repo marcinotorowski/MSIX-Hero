@@ -352,9 +352,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
             }
 
             var contentStage = await File.ReadAllTextAsync(templateStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            var contentRegister = await File.ReadAllTextAsync(templateStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            var contentDeregister = await File.ReadAllTextAsync(templateStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            var contentDestage = await File.ReadAllTextAsync(templateStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            var contentRegister = await File.ReadAllTextAsync(templateRegister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            var contentDeregister = await File.ReadAllTextAsync(templateDeregister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            var contentDestage = await File.ReadAllTextAsync(templateDestage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
 
             // Stage
             // "<path to vhd>"
