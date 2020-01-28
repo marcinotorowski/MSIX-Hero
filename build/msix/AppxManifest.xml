@@ -37,7 +37,7 @@
 		<rescap:Capability Name="packageQuery" />
 		<rescap:Capability Name="packageManagement" />
     </Capabilities>
-    <Identity Name="MSIXHero" Version="0.2.16.0" Publisher="CN=Marcin Otorowski" ProcessorArchitecture="neutral" />
+    <Identity Name="MSIXHero" Version="0.3.8.0" Publisher="CN=Marcin Otorowski" ProcessorArchitecture="neutral" />
     <Properties>
         <DisplayName>MSIX Hero</DisplayName>
         <PublisherDisplayName>Marcin Otorowski</PublisherDisplayName>

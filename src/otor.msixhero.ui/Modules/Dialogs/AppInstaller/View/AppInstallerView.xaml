@@ -80,7 +80,7 @@
                                     <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
                                     <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On lauch</ComboBoxItem>
                                     <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}">Every 8 hours</ComboBoxItem>
-                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and very 8 hours</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and every 8 hours</ComboBoxItem>
                                 </ComboBox>
 
                                 <StackPanel Visibility="{Binding ElementName=UpdateNever, Path=IsSelected, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
