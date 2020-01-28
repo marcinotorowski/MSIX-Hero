@@ -1,3 +1,15 @@
+0.3.9.0
+Released 2020/01/28
+
+* [Improvement] Better default choices for pack/unpack directory and file paths.
+* [Improvement] Ability to configure the default URL for hosted MSIX/appinstaller files.
+* [Improvement] Added a checkbox to the Settings screen to control whether the signature is by default enabled for packing.
+* [Fixed] Register template scripts for MSIX app attach VHD container were using wrong template files.
+* [Fixed] Typo in app installer editor settings
+
+------
+
+
 0.3.4.0
 Released 2020/01/26
 
