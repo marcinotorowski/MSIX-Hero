@@ -32,234 +32,238 @@
 
         <TabControl DockPanel.Dock="Top" Margin="0 0 0 0">
             <TabItem Header="Properties">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
-                        <Border Margin="0 0 0 10" Background="Red" Padding="10" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{Binding Error}" Foreground="White" TextWrapping="Wrap" />
-                        </Border>
+                <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <Border Margin="0 0 0 10" Background="Red" Padding="10" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="{Binding Error}" Foreground="White" TextWrapping="Wrap" />
+                            </Border>
 
-                        <StackPanel DataContext="{Binding SelectedInstalledPackage}">
-                            <DockPanel DockPanel.Dock="Top" >
+                            <StackPanel DataContext="{Binding SelectedInstalledPackage}">
+                                <DockPanel DockPanel.Dock="Top" >
 
-                                <Border Margin="0 0 0 10" Background="#CCFFD1" DockPanel.Dock="Top" Padding="10" Visibility="{Binding IsProvisioned, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <TextBlock Text="This is a provisioned package" Foreground="DarkGreen" TextAlignment="Left" TextWrapping="Wrap" />
-                                </Border>
-
-                                <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                    <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                    <Border Margin="0 0 0 10" Background="#CCFFD1" DockPanel.Dock="Top" Padding="10" Visibility="{Binding IsProvisioned, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Text="This is a provisioned package" Foreground="DarkGreen" TextAlignment="Left" TextWrapping="Wrap" />
                                     </Border>
-                                </Border>
-                                <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
-                            </DockPanel>
 
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
-                            </StackPanel>
+                                    <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                        </Border>
+                                    </Border>
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
+                                </DockPanel>
 
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
-                            </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel Margin="0 0 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
-                            </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
-                            </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <StackPanel Margin="0 0 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                            <StackPanel Margin="0 10 0 0">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                        <StackPanel Margin="0 10 0 0" Visibility="{Binding SelectedPackageManifestInfo.CurrentValue.HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
-                            <TextBlock Style="{StaticResource DataValue}" Margin="0">
+                            <StackPanel Margin="0 10 0 0" Visibility="{Binding SelectedPackageManifestInfo.CurrentValue.HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
+                                <TextBlock Style="{StaticResource DataValue}" Margin="0">
                                 <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductName, Mode=OneWay, TargetNullValue='Unknown product'}" />
                                 <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductVersion, Mode=OneWay}" />
-                            </TextBlock>
-                            <TextBlock Style="{StaticResource DataValue}" Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </ScrollViewer>
+                    </ScrollViewer>
+                </progressOverlay:ProgressOverlay>
             </TabItem>
             <TabItem Header="Content" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <TabControl Margin="0 -7 0 0">
-                    <TabItem Style="{StaticResource Compact}">
-                        <TabItem.Header>
-                            <TextBlock>
+                <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+                    <TabControl Margin="0 -7 0 0">
+                        <TabItem Style="{StaticResource Compact}">
+                            <TabItem.Header>
+                                <TextBlock>
                         <Run Text="Applications" />
                         <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />
-                            </TextBlock>
-                        </TabItem.Header>
-                        <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
-                            <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
-                                <controls:ZeroOrAny.Template>
-                                    <ControlTemplate TargetType="controls:ZeroOrAny">
-                                        <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
-                                    </ControlTemplate>
-                                </controls:ZeroOrAny.Template>
-                                <controls:ZeroOrAny.AnyItemTemplate>
-                                    <DataTemplate>
-                                        <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type viewModel1:AppxApplicationViewModel}">
-                                                    <StackPanel Margin="0 0 0 8">
-                                                        <DockPanel>
-                                                            <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                </TextBlock>
+                            </TabItem.Header>
+                            <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+                                <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
+                                    <controls:ZeroOrAny.Template>
+                                        <ControlTemplate TargetType="controls:ZeroOrAny">
+                                            <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
+                                        </ControlTemplate>
+                                    </controls:ZeroOrAny.Template>
+                                    <controls:ZeroOrAny.AnyItemTemplate>
+                                        <DataTemplate>
+                                            <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type viewModel1:AppxApplicationViewModel}">
+                                                        <StackPanel Margin="0 0 0 8">
+                                                            <DockPanel>
+                                                                <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                                    <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                                        <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                                    </Border>
                                                                 </Border>
-                                                            </Border>
 
-                                                            <StackPanel VerticalAlignment="Center" Margin="10 0 0 0">
-                                                                <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
-                                                                <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" Opacity="0.7" />
-                                                                <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Psf.Executable, Mode=OneTime}" Opacity="0.7" />
-                                                            </StackPanel>
-                                                        </DockPanel>
+                                                                <StackPanel VerticalAlignment="Center" Margin="10 0 0 0">
+                                                                    <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
+                                                                    <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" Opacity="0.7" />
+                                                                    <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Psf.Executable, Mode=OneTime}" Opacity="0.7" />
+                                                                </StackPanel>
+                                                            </DockPanel>
 
-                                                        <StackPanel Margin="0 10 0 0" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                            <StackPanel Margin="0 10 0 0" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                                                            <Border Background="AliceBlue">
-                                                                <TextBlock Margin="10">
+                                                                <Border Background="AliceBlue">
+                                                                    <TextBlock Margin="10">
                                                 <Run Text="This application is executed via" />
                                                 <Run Text="{Binding Start, Mode=OneWay}" FontWeight="SemiBold" />
-                                                                </TextBlock>
-                                                            </Border>
+                                                                    </TextBlock>
+                                                                </Border>
 
-                                                            <!--<TextBlock Visibility="{Binding Psf.IsAdvanced, Converter={StaticResource BooleanToVisibilityConverter}}" Text="PSF Launcher fix-ups and adjustments:" Margin="0 10 0 0" />-->
+                                                                <!--<TextBlock Visibility="{Binding Psf.IsAdvanced, Converter={StaticResource BooleanToVisibilityConverter}}" Text="PSF Launcher fix-ups and adjustments:" Margin="0 10 0 0" />-->
 
-                                                            <StackPanel Visibility="{Binding Psf.HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
-                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
-                                                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
-                                                            </StackPanel>
+                                                                <StackPanel Visibility="{Binding Psf.HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                                                    <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
+                                                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
+                                                                </StackPanel>
 
-                                                            <StackPanel Visibility="{Binding Psf.HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
-                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
-                                                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
-                                                            </StackPanel>
+                                                                <StackPanel Visibility="{Binding Psf.HasWorkingDirectory, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
+                                                                    <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
+                                                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
+                                                                </StackPanel>
 
-                                                            <StackPanel Margin="0 10 0 0">
-                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Tracing" />
-                                                                <TextBlock Visibility="{Binding Psf.HasTracing, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="{Binding Psf.DisplayTracing}" TextWrapping="Wrap" />
-                                                                <TextBlock Visibility="{Binding Psf.HasTracing, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
-                                                            </StackPanel>
+                                                                <StackPanel Margin="0 10 0 0">
+                                                                    <TextBlock Style="{StaticResource DataHeader}" Text="Tracing" />
+                                                                    <TextBlock Visibility="{Binding Psf.HasTracing, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="{Binding Psf.DisplayTracing}" TextWrapping="Wrap" />
+                                                                    <TextBlock Visibility="{Binding Psf.HasTracing, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
+                                                                </StackPanel>
 
-                                                            <StackPanel Margin="0 10 0 0">
-                                                                <TextBlock Style="{StaticResource DataHeader}" Text="File redirections" />
-                                                                <TextBlock Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
+                                                                <StackPanel Margin="0 10 0 0">
+                                                                    <TextBlock Style="{StaticResource DataHeader}" Text="File redirections" />
+                                                                    <TextBlock Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
 
-                                                                <ItemsControl Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate DataType="{x:Type psf:PsfFileRedirection}">
-                                                                            <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                                                    <ItemsControl Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate DataType="{x:Type psf:PsfFileRedirection}">
+                                                                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
                                                             <Run Text="&#x2022;" Foreground="#777" />
                                                             <Run Text="{Binding RegularExpression, Mode=OneTime}" />
                                                             <Run Text="in" Foreground="#777" />
                                                             <Run Text="{Binding Directory, Mode=OneTime}" />
-                                                                            </TextBlock>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                            </StackPanel>
+                                                                                </TextBlock>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </StackPanel>
 
-                                                            <StackPanel Margin="0 10 0 0">
-                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Other fix-ups" />
-                                                                <TextBlock Visibility="{Binding Psf.HasOtherFixups, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
+                                                                <StackPanel Margin="0 10 0 0">
+                                                                    <TextBlock Style="{StaticResource DataHeader}" Text="Other fix-ups" />
+                                                                    <TextBlock Visibility="{Binding Psf.HasOtherFixups, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
 
-                                                                <ItemsControl Visibility="{Binding Psf.HasOtherFixups, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.OtherFixups, Mode=OneWay}">
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                                                    <ItemsControl Visibility="{Binding Psf.HasOtherFixups, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.OtherFixups, Mode=OneWay}">
+                                                                        <ItemsControl.ItemTemplate>
+                                                                            <DataTemplate>
+                                                                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
                                                             <Run Text="&#x2022;" Foreground="#777" />
                                                             <Run Text="{Binding Mode=OneWay}" />
-                                                                            </TextBlock>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
+                                                                                </TextBlock>
+                                                                            </DataTemplate>
+                                                                        </ItemsControl.ItemTemplate>
+                                                                    </ItemsControl>
+                                                                </StackPanel>
                                                             </StackPanel>
                                                         </StackPanel>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </DataTemplate>
-                                </controls:ZeroOrAny.AnyItemTemplate>
-                                <controls:ZeroOrAny.NoItemsTemplate>
-                                    <DataTemplate>
-                                        <controls:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
-                                    </DataTemplate>
-                                </controls:ZeroOrAny.NoItemsTemplate>
-                            </controls:ZeroOrAny>
-                        </progressOverlay:ProgressOverlay>
-                    </TabItem>
-                    <TabItem Style="{StaticResource Compact}">
-                        <TabItem.Header>
-                            <TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </controls:ZeroOrAny.AnyItemTemplate>
+                                    <controls:ZeroOrAny.NoItemsTemplate>
+                                        <DataTemplate>
+                                            <controls:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
+                                        </DataTemplate>
+                                    </controls:ZeroOrAny.NoItemsTemplate>
+                                </controls:ZeroOrAny>
+                            </progressOverlay:ProgressOverlay>
+                        </TabItem>
+                        <TabItem Style="{StaticResource Compact}">
+                            <TabItem.Header>
+                                <TextBlock>
                         <Run Text="Modifications + Add-ons" />
                         <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count, Mode=OneWay}"  Foreground="#777" />
-                            </TextBlock>
-                        </TabItem.Header>
-                        <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+                                </TextBlock>
+                            </TabItem.Header>
+                            <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
 
-                            <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
-                                <controls:ZeroOrAny.Template>
-                                    <ControlTemplate TargetType="controls:ZeroOrAny">
-                                        <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
-                                    </ControlTemplate>
-                                </controls:ZeroOrAny.Template>
-                                <controls:ZeroOrAny.AnyItemTemplate>
-                                    <DataTemplate>
-                                        <ListBox 
+                                <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
+                                    <controls:ZeroOrAny.Template>
+                                        <ControlTemplate TargetType="controls:ZeroOrAny">
+                                            <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
+                                        </ControlTemplate>
+                                    </controls:ZeroOrAny.Template>
+                                    <controls:ZeroOrAny.AnyItemTemplate>
+                                        <DataTemplate>
+                                            <ListBox 
                                             ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type viewModel1:InstalledPackageDetailsViewModel}">
-                                                    <DockPanel>
-                                                        <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type viewModel1:InstalledPackageDetailsViewModel}">
+                                                        <DockPanel>
+                                                            <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                                    <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                                </Border>
                                                             </Border>
-                                                        </Border>
 
-                                                        <StackPanel DockPanel.Dock="Right">
-                                                            <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                                        </StackPanel>
+                                                            <StackPanel DockPanel.Dock="Right">
+                                                                <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                                            </StackPanel>
 
-                                                        <StackPanel Margin="10 0">
-                                                            <TextBlock TextTrimming="CharacterEllipsis">
+                                                            <StackPanel Margin="10 0">
+                                                                <TextBlock TextTrimming="CharacterEllipsis">
                                                                 <Run Text="{Binding DisplayName, Mode=OneTime}" />
-                                                            </TextBlock>
-                                                            <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
+                                                                </TextBlock>
+                                                                <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
                                                                 <Run Text="{Binding PublisherDisplayName, Mode=OneTime}" />
-                                                            </TextBlock>
-                                                        </StackPanel>
+                                                                </TextBlock>
+                                                            </StackPanel>
 
-                                                    </DockPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </DataTemplate>
-                                </controls:ZeroOrAny.AnyItemTemplate>
-                                <controls:ZeroOrAny.NoItemsTemplate>
-                                    <DataTemplate>
-                                        <controls:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
-                                    </DataTemplate>
-                                </controls:ZeroOrAny.NoItemsTemplate>
-                            </controls:ZeroOrAny>
-                        </progressOverlay:ProgressOverlay>
-                    </TabItem>
-                </TabControl>
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </DataTemplate>
+                                    </controls:ZeroOrAny.AnyItemTemplate>
+                                    <controls:ZeroOrAny.NoItemsTemplate>
+                                        <DataTemplate>
+                                            <controls:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
+                                        </DataTemplate>
+                                    </controls:ZeroOrAny.NoItemsTemplate>
+                                </controls:ZeroOrAny>
+                            </progressOverlay:ProgressOverlay>
+                        </TabItem>
+                    </TabControl>
+                </progressOverlay:ProgressOverlay>
             </TabItem>
             <TabItem Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabItem.Header>
@@ -340,6 +344,5 @@
                 </progressOverlay:ProgressOverlay>
             </TabItem>
         </TabControl>
-
     </DockPanel>
 </UserControl>
