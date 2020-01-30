@@ -1,3 +1,13 @@
+0.3.16.0
+Released 2020/01/30
+
+* [Improvement] Minor improvements and under-the-hood adjustments of PSF reading.
+* [Fixed] Fixed wrong line break in the default .ps1 for VHD MSIX staging.
+* [Fixed] Trace fixup defined as TraceFixup.dll was not showing the correct architecture (neutral instead of x86 or x64)
+* [Fixed] Applications view was respecting both (correct) "arguments" token and (incorrect) "args" token for extra app arguments.
+
+------
+
 0.3.9.0
 Released 2020/01/28
 
@@ -8,7 +18,6 @@ Released 2020/01/28
 * [Fixed] Typo in app installer editor settings
 
 ------
-
 
 0.3.4.0
 Released 2020/01/26
