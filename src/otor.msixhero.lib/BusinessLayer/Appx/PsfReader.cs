@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using Registry;
@@ -14,16 +13,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
     {
         public PsfApplicationDefinition Read(string applicationId, string packageRootFolder)
         {
-            if (!System.IO.Directory.Exists(packageRootFolder))
+            if (!Directory.Exists(packageRootFolder))
             {
                 throw new ArgumentException("Package folder does not exist.");
             }
 
-            var configJson = Path.Combine(packageRootFolder, "config.json");
-
-            using var fs = File.OpenRead(configJson);
-            using TextReader tr = new StreamReader(fs);
-            return this.Read(applicationId, tr);
+            using (IAppxFileReader fileReader = new DirectoryInfoFileReaderAdapter(new DirectoryInfo(packageRootFolder)))
+            {
+                return this.Read(applicationId, fileReader);
+            }
         }
 
         public PsfApplicationDefinition Read(string applicationId, IAppxFileReader fileReader)
@@ -34,7 +32,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 {
                     using (var streamReader = new StreamReader(stream))
                     {
-                        return this.Read(applicationId, streamReader);
+                        return this.Read(applicationId, fileReader, streamReader);
                     }
                 }
             }
@@ -112,27 +110,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return null;
         }
 
-        public PsfApplicationDefinition Read(string applicationId, TextReader configJson)
+        private PsfApplicationDefinition Read(string applicationId, IAppxFileReader fileReader, TextReader configJson)
         {
-            var jsonConvert = JObject.Parse(configJson.ReadToEnd());
-
-            var applications = jsonConvert["applications"];
-            if (applications == null)
-            {
-                return null;
-            }
+            var jsonSerializer = new PsfConfigSerializer();
+            var config = jsonSerializer.Deserialize(configJson.ReadToEnd());
 
             string executable = null;
             string workingDirectory = null;
             string arguments = null;
-            foreach (var item in applications)
+            foreach (var item in config.Applications ?? Enumerable.Empty<PsfApplication>())
             {
-                var id = item["id"];
-                if (id != null && id.Value<string>() == applicationId)
+                var id = item.Id;
+                if (id == applicationId)
                 {
-                    executable = item["executable"]?.Value<string>();
-                    workingDirectory = item["workingDirectory"]?.Value<string>();
-                    arguments = item["arguments"]?.Value<string>();
+                    executable = item.Executable;
+                    workingDirectory = item.WorkingDirectory;
+                    arguments = item.Arguments;
                     break;
                 }
             }
@@ -152,16 +145,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 Tracing = null,
             };
 
-            var processes = jsonConvert["processes"];
-            if (processes == null)
+            foreach (var p in config.Processes ?? Enumerable.Empty<PsfProcess>())
             {
-                return psfDef;
-            }
-            
-            foreach (var p in processes)
-            {
-                var exe = p["executable"];
-                if (string.IsNullOrEmpty(exe?.Value<string>()))
+                var exe = p.Executable;
+                if (string.IsNullOrEmpty(exe))
                 {
                     continue;
                 }
@@ -169,14 +156,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 Regex regex;
                 try
                 {
-                    regex = new Regex(exe?.Value<string>());
+                    regex = new Regex(exe);
                 }
                 catch (Exception)
                 {
                     continue;
                 }
 
-                var indexOf = executable.LastIndexOfAny(new char[] { '\\', '/' });
+                var indexOf = executable.LastIndexOfAny(new[] { '\\', '/' });
                 if (indexOf != -1)
                 {
                     executable = executable.Substring(indexOf + 1);
@@ -187,15 +174,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     continue;
                 }
 
-                var fixups = p["fixups"];
-                if (fixups == null)
+                foreach (var fixup in p.Fixups ?? Enumerable.Empty<PsfFixup>())
                 {
-                    continue;
-                }
-
-                foreach (var fixup in fixups.Children())
-                {
-                    var dll = fixup["dll"]?.Value<string>();
+                    var dll = fixup.Dll;
                     if (dll == null)
                     {
                         continue;
@@ -228,11 +209,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         case "tracefixup.dll":
                             if (psfDef.Tracing == null)
                             {
-                                psfDef.Tracing = PsfBitness.Neutral;
+                                psfDef.Tracing = fileReader.FileExists("tracefixup32.dll") ? PsfBitness.x86 : PsfBitness.x64;
                             }
                             else
                             {
-                                psfDef.Tracing |= PsfBitness.Neutral;
+                                psfDef.Tracing |= fileReader.FileExists("tracefixup32.dll") ? PsfBitness.x86 : PsfBitness.x64;
                             }
 
                             break;
@@ -257,40 +238,40 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return psfDef;
         }
 
-        private List<PsfFileRedirection> GetFileRedirections(JToken jsonConvert)
+        private List<PsfFileRedirection> GetFileRedirections(PsfFixup jsonConvert)
         {
             var list = new List<PsfFileRedirection>();
 
-            var config = jsonConvert["config"];
-            if (config == null)
+            if (!(jsonConvert.Config is PsfRedirectionFixupConfig config))
             {
                 return list;
             }
 
-            var redirectedPath = config["redirectedPaths"];
+            var redirectedPath = config.RedirectedPaths;
+
             if (redirectedPath == null)
             {
                 return list;
             }
 
-            var packageRelative = redirectedPath["packageRelative"];
+            var packageRelative = redirectedPath.PackageRelative;
             if (packageRelative != null)
             {
-                foreach (var packageRelativeItem in packageRelative.Children())
+                foreach (var packageRelativeItem in packageRelative)
                 {
-                    var valueBase = packageRelativeItem["base"]?.Value<string>();
-                    var patterns = packageRelativeItem["patterns"];
-                    var valueIsExclusion = packageRelativeItem["IsExclusion"]?.Value<bool>();
+                    var valueBase = packageRelativeItem.Base;
+                    var patterns = packageRelativeItem.Patterns;
+                    var valueIsExclusion = packageRelativeItem.IsExclusion;
 
                     if (patterns != null)
                     {
-                        foreach (var patternItem in patterns.Children())
+                        foreach (var patternItem in patterns)
                         {
                             var def = new PsfFileRedirection
                             {
                                 Directory = valueBase,
-                                RegularExpression = patternItem.Value<string>(),
-                                IsExclusion = valueIsExclusion == true
+                                RegularExpression = patternItem,
+                                IsExclusion = valueIsExclusion
                             };
 
                             list.Add(def);
@@ -299,22 +280,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
             }
 
-            var packageDriveRelative = redirectedPath["packageDriveRelative"];
+            var packageDriveRelative = redirectedPath.PackageDriveRelative;
             if (packageDriveRelative != null)
             {
-                foreach (var packageDriveRelativeItem in packageDriveRelative.Children())
+                foreach (var packageDriveRelativeItem in packageDriveRelative)
                 {
-                    var valueBase = packageDriveRelativeItem["base"]?.Value<string>();
-                    var patterns = packageDriveRelativeItem["patterns"];
-                    var valueIsExclusion = packageDriveRelativeItem["IsExclusion"]?.Value<bool>();
+                    var valueBase = packageDriveRelativeItem.Base;
+                    var patterns = packageDriveRelativeItem.Patterns;
+                    var valueIsExclusion = packageDriveRelativeItem.IsExclusion;
 
-                    foreach (var patternItem in patterns.Children())
+                    foreach (var patternItem in patterns ?? Enumerable.Empty<string>())
                     {
                         var def = new PsfFileRedirection
                         {
                             Directory = valueBase,
-                            RegularExpression = patternItem.Value<string>(),
-                            IsExclusion = valueIsExclusion == true
+                            RegularExpression = patternItem,
+                            IsExclusion = valueIsExclusion
                         };
 
                         list.Add(def);
@@ -322,21 +303,21 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
             }
 
-            var knownFolders = redirectedPath["knownFolders"];
+            var knownFolders = redirectedPath.KnownFolders;
             if (knownFolders != null)
             {
-                foreach (var knownFolderItem in knownFolders.Children())
+                foreach (var knownFolderItem in knownFolders)
                 {
-                    var id = knownFolderItem["id"]?.Value<string>();
-                    var relativePaths = knownFolderItem["relativePaths"];
-                    var valueIsExclusion = knownFolderItem["IsExclusion"]?.Value<bool>();
+                    var id = knownFolderItem.Id;
+                    var relativePaths = knownFolderItem.RelativePaths;
 
                     if (relativePaths != null)
                     {
-                        foreach (var relativePathItem in relativePaths.Children())
+                        foreach (var relativePathItem in relativePaths)
                         {
-                            var valueBase = relativePathItem["base"]?.Value<string>();
-                            var patterns = relativePathItem["patterns"];
+                            var valueIsExclusion = relativePathItem.IsExclusion;
+                            var valueBase = relativePathItem.Base;
+                            var patterns = relativePathItem.Patterns;
                             if (patterns != null)
                             {
                                 foreach (var paternItem in patterns)
@@ -344,8 +325,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                                     var def = new PsfFileRedirection
                                     {
                                         Directory = id + "\\" + valueBase,
-                                        IsExclusion = valueIsExclusion == true,
-                                        RegularExpression = paternItem.Value<string>()
+                                        IsExclusion = valueIsExclusion,
+                                        RegularExpression = paternItem
                                     };
 
                                     list.Add(def);

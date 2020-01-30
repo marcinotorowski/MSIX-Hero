@@ -55,6 +55,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                         if (string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
                             string.Equals("psflauncher64.exe", executable, StringComparison.OrdinalIgnoreCase) || 
                             string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals("psflauncher.exe", executable, StringComparison.OrdinalIgnoreCase) ||
                             string.Equals("psfrundll64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
                             string.Equals("psfrundll32.exe", executable, StringComparison.OrdinalIgnoreCase) || 
                             string.Equals("psfrundll.exe", executable, StringComparison.OrdinalIgnoreCase) || 

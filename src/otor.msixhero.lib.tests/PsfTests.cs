@@ -26,17 +26,49 @@ namespace otor.msixhero.lib.tests
                     {
                         ""dll"": ""FileRedirectionFixup32.dll"",
                         ""config"": {
-                            ""redirectedPaths"": {
-                                ""packageRelative"": [
-                                {
-                                    ""base"": ""ClearbyteMSIXSample/"",
-                                    ""patterns"": [
-                                    "".*\\.json""
-                                        ]
-                                }
-                                ]
-                            }
-                        }
+    ""redirectedPaths"": {
+        ""packageRelative"": [
+            {
+                ""base"": ""logs"",
+                ""patterns"": [
+                    "".*\\.log""
+                ]
+            }
+        ],
+        ""packageDriveRelative"": [
+            {
+                ""base"": ""temp"",
+                ""patterns"": [
+                    "".*""
+                ]
+            }
+        ],
+        ""knownFolders"": [
+            {
+                ""id"": ""ProgramFilesX64"",
+                ""relativePaths"": [
+                    {
+                        ""base"": ""Contoso\\config"",
+                        ""patterns"": [
+                            "".*""
+                        ]
+                    }
+                ]
+            },
+            {
+                ""id"": "" {FDD39AD0-238F-46AF-ADB4-6C85480369C7}"",
+                ""relativePaths"": [
+                    {
+                        ""base"": ""MyApplication"",
+                        ""patterns"": [
+                            "".*""
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
                     }
                     ]
                 }
