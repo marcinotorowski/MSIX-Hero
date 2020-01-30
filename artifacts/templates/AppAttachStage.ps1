@@ -58,8 +58,7 @@ cmd.exe /c mklink /j $msixJunction $msixDest
 
 #region stage
 
-[Windows.Management.Deployment.PackageManager,Windows.Management.Deployment,ContentType=WindowsRuntime]
-| Out-Null
+[Windows.Management.Deployment.PackageManager,Windows.Management.Deployment,ContentType=WindowsRuntime] | Out-Null
 
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
 
