@@ -63,8 +63,7 @@ cmd.exe /c mklink /j $msixJunction $msixDest
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
 
 $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where {
-$_.ToString() -eq 'System.Threading.Tasks.Task`1[TResult]
-AsTask[TResult,TProgress](Windows.Foundation.IAsyncOperationWithProgress`2[TResult,TProgress])'})[0]
+$_.ToString() -eq 'System.Threading.Tasks.Task`1[TResult] AsTask[TResult,TProgress](Windows.Foundation.IAsyncOperationWithProgress`2[TResult,TProgress])'})[0]
 
 $asTaskAsyncOperation =
 $asTask.MakeGenericMethod([Windows.Management.Deployment.DeploymentResult],
