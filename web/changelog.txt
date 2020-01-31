@@ -1,3 +1,10 @@
+0.3.18.0
+Released 2020/01/30
+
+* [Fixed] Adjusted wrong scripts and VHD mounted volume ID for MSIX app attach VHD creator
+
+------
+
 0.3.16.0
 Released 2020/01/30
 
