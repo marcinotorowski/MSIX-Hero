@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
@@ -32,16 +33,27 @@ namespace otor.msixhero.adminhelper
 
         private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            Logger.Warn(e.Exception);
-            Console.WriteLine("TASK SCHEDULER ERROR");
-            Console.WriteLine(e);
-        }
+            var ex = e.Exception.GetBaseException();
 
+            if (ex is OperationCanceledException)
+            {
+                e.SetObserved();
+                return;
+            }
+
+            Logger.Warn(e.Exception);
+        }
+        
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Logger.Error(e.ExceptionObject.ToString());
-            Console.WriteLine("UNHANDLED ERROR");
-            Console.WriteLine(e);
+            if (e.ExceptionObject is Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
+            else
+            {
+                Logger.Fatal($"Unhandled exception {e.ExceptionObject}");
+            }
         }
 
         public static void Main(string[] args)

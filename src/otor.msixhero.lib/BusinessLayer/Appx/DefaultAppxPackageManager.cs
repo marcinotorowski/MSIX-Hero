@@ -556,7 +556,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     var cmd = "(Get-AppxProvisionedPackage -Online).PackageName | Out-File '" + tempFile + "'";
                     var proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
                     {
-                        UseShellExecute = false
+                        UseShellExecute = false,
+                        CreateNoWindow = true
                     };
 
                     Logger.Debug("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using CommonServiceLocator;
+using NLog.Fluent;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
@@ -46,6 +49,45 @@ namespace otor.msixhero.ui
 #else
             LogManager.Initialize(MsixHeroLogLevel.Info);
 #endif
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcherOnUnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+        }
+
+        private static void CurrentDispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            if (e.Exception is OperationCanceledException)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            Logger.Warn(e.Exception);
+        }
+
+        private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            var ex = e.Exception.GetBaseException();
+
+            if (ex is OperationCanceledException)
+            {
+                e.SetObserved();
+                return;
+            }
+
+            Logger.Warn(e.Exception);
+        }
+
+        private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject is Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
+            else
+            {
+                Logger.Fatal($"Unhandled exception {e.ExceptionObject}");
+            }
         }
 
         private readonly IProcessManager processManager = new ProcessManager();
