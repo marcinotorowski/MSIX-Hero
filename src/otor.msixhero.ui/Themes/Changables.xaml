@@ -141,10 +141,10 @@
                                     <StackPanel VerticalAlignment="Center">
                                         <Path Style="{StaticResource AnimatedSuccess}" />
                                         <ContentControl 
-                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
-                            Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
-                            ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
-                            ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}">
+                                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
+                                            Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
+                                            ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
+                                            ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}">
                                             <ContentControl.LayoutTransform>
                                                 <ScaleTransform ScaleY="0" />
                                             </ContentControl.LayoutTransform>
@@ -160,13 +160,13 @@
                                                                     <Storyboard>
                                                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
                                                                             <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00" />
-                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:2.5" />
-                                                                            <SplineDoubleKeyFrame Value="1" KeyTime="00:00:3.0" />
+                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:1.7" />
+                                                                            <SplineDoubleKeyFrame Value="1" KeyTime="00:00:2.4" />
                                                                         </DoubleAnimationUsingKeyFrames>
                                                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="LayoutTransform.ScaleY">
                                                                             <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00" />
-                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:2.0" />
-                                                                            <SplineDoubleKeyFrame Value="1" KeyTime="00:00:2.5" />
+                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:1.2" />
+                                                                            <SplineDoubleKeyFrame Value="1" KeyTime="00:00:1.7" />
                                                                         </DoubleAnimationUsingKeyFrames>
                                                                     </Storyboard>
                                                                 </BeginStoryboard>

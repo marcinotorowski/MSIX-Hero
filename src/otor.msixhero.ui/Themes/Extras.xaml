@@ -28,9 +28,9 @@
             <Trigger Property="IsVisible" Value="True">
                 <Trigger.EnterActions>
                     <BeginStoryboard>
-                        <Storyboard BeginTime="00:00:00.25">
+                        <Storyboard BeginTime="00:00:00.2">
                             <DoubleAnimationUsingKeyFrames AccelerationRatio="0.5" DecelerationRatio="0.5" BeginTime="00:00:00" Storyboard.TargetProperty="(Shape.StrokeDashOffset)">
-                                <SplineDoubleKeyFrame KeyTime="00:00:01.25" Value="0"/>
+                                <SplineDoubleKeyFrame KeyTime="00:00:00.75" Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                     </BeginStoryboard>
