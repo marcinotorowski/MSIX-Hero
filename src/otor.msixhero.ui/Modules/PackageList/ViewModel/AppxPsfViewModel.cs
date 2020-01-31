@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using otor.msixhero.lib.Domain.Appx.Psf;
+using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
@@ -19,7 +20,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         public string WorkingDirectory => this.definition.WorkingDirectory;
         
-        public List<PsfFileRedirection> FileRedirections => this.definition.FileRedirections;
+        public List<PsfFolderRedirection> FileRedirections => this.definition.FileRedirections;
 
         public List<string> OtherFixups => this.definition.OtherFixups;
 

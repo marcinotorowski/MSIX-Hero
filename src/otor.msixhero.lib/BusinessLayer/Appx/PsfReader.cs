@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.Domain.Appx.Psf;
+using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 using Registry;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx
@@ -141,7 +142,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 Arguments = arguments,
                 WorkingDirectory = workingDirectory,
                 OtherFixups = new List<string>(),
-                FileRedirections = new List<PsfFileRedirection>(),
+                FileRedirections = new List<PsfFolderRedirection>(),
                 Tracing = null,
             };
 
@@ -221,7 +222,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         case "fileredirectionfixup32.dll":
                         case "fileredirectionfixup.dll":
                             
-                            var redirs = this.GetFileRedirections(fixup);
+                            var redirs = this.GetFolderRedirections(fixup);
                             if (redirs != null)
                             {
                                 psfDef.FileRedirections.AddRange(redirs);
@@ -238,9 +239,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return psfDef;
         }
 
-        private List<PsfFileRedirection> GetFileRedirections(PsfFixup jsonConvert)
+        private List<PsfFolderRedirection> GetFolderRedirections(PsfFixup jsonConvert)
         {
-            var list = new List<PsfFileRedirection>();
+            var list = new List<PsfFolderRedirection>();
 
             if (!(jsonConvert.Config is PsfRedirectionFixupConfig config))
             {
@@ -260,21 +261,41 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 foreach (var packageRelativeItem in packageRelative)
                 {
                     var valueBase = packageRelativeItem.Base;
-                    var patterns = packageRelativeItem.Patterns;
-                    var valueIsExclusion = packageRelativeItem.IsExclusion;
-
-                    if (patterns != null)
+                    if (string.IsNullOrEmpty(valueBase))
                     {
-                        foreach (var patternItem in patterns)
-                        {
-                            var def = new PsfFileRedirection
-                            {
-                                Directory = valueBase,
-                                RegularExpression = patternItem,
-                                IsExclusion = valueIsExclusion
-                            };
+                        valueBase = "<PackageDirectory>";
+                    }
+                    else
+                    {
+                        valueBase = Path.Join("<PackageDirectory>", valueBase).TrimEnd('\\');
+                    }
 
-                            list.Add(def);
+                    var def = list.FirstOrDefault(item => string.Equals(valueBase, item.Directory, StringComparison.OrdinalIgnoreCase));
+
+                    if (def == null)
+                    {
+                        def = new PsfFolderRedirection
+                        {
+                            Directory = valueBase,
+                            Inclusions = new List<PsfFileRedirection>(),
+                            Exclusions = new List<PsfFileRedirection>()
+                        };
+
+                        list.Add(def);
+                    }
+
+                    if (packageRelativeItem.IsExclusion)
+                    {
+                        foreach (var pattern in packageRelativeItem.Patterns ?? Enumerable.Empty<string>())
+                        {
+                            def.Exclusions.Add(new PsfFileRedirection { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                        }
+                    }
+                    else
+                    {
+                        foreach (var pattern in packageRelativeItem.Patterns ?? Enumerable.Empty<string>())
+                        {
+                            def.Inclusions.Add(new PsfFileRedirection { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                         }
                     }
                 }
@@ -286,19 +307,42 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 foreach (var packageDriveRelativeItem in packageDriveRelative)
                 {
                     var valueBase = packageDriveRelativeItem.Base;
-                    var patterns = packageDriveRelativeItem.Patterns;
-                    var valueIsExclusion = packageDriveRelativeItem.IsExclusion;
-
-                    foreach (var patternItem in patterns ?? Enumerable.Empty<string>())
+                    if (string.IsNullOrEmpty(valueBase))
                     {
-                        var def = new PsfFileRedirection
+                        valueBase = "<PackageDrive>";
+                    }
+                    else
+                    {
+                        valueBase = Path.Join("<PackageDrive>", valueBase).TrimEnd('\\');
+                    }
+
+                    var def = list.FirstOrDefault(item => string.Equals(valueBase, item.Directory, StringComparison.OrdinalIgnoreCase));
+                    if (def == null)
+                    {
+
+                        def = new PsfFolderRedirection
                         {
                             Directory = valueBase,
-                            RegularExpression = patternItem,
-                            IsExclusion = valueIsExclusion
+                            Inclusions = new List<PsfFileRedirection>(),
+                            Exclusions = new List<PsfFileRedirection>()
                         };
 
                         list.Add(def);
+                    }
+
+                    if (packageDriveRelativeItem.IsExclusion)
+                    {
+                        foreach (var pattern in packageDriveRelativeItem.Patterns ?? Enumerable.Empty<string>())
+                        {
+                            def.Exclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                        }
+                    }
+                    else
+                    {
+                        foreach (var pattern in packageDriveRelativeItem.Patterns ?? Enumerable.Empty<string>())
+                        {
+                            def.Inclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                        }
                     }
                 }
             }
@@ -315,21 +359,42 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     {
                         foreach (var relativePathItem in relativePaths)
                         {
-                            var valueIsExclusion = relativePathItem.IsExclusion;
                             var valueBase = relativePathItem.Base;
-                            var patterns = relativePathItem.Patterns;
-                            if (patterns != null)
+                            if (string.IsNullOrEmpty(valueBase))
                             {
-                                foreach (var paternItem in patterns)
-                                {
-                                    var def = new PsfFileRedirection
-                                    {
-                                        Directory = id + "\\" + valueBase,
-                                        IsExclusion = valueIsExclusion,
-                                        RegularExpression = paternItem
-                                    };
+                                valueBase = "{" + id + "}";
+                            }
+                            else
+                            {
+                                valueBase = Path.Join("{" + id + "}", valueBase).TrimEnd('\\');
+                            }
 
-                                    list.Add(def);
+                            var def = list.FirstOrDefault(item => string.Equals(valueBase, item.Directory, StringComparison.OrdinalIgnoreCase));
+
+                            if (def == null)
+                            {
+                                def = new PsfFolderRedirection
+                                {
+                                    Directory = valueBase,
+                                    Inclusions = new List<PsfFileRedirection>(),
+                                    Exclusions = new List<PsfFileRedirection>()
+                                };
+
+                                list.Add(def);
+                            }
+
+                            if (relativePathItem.IsExclusion)
+                            {
+                                foreach (var pattern in relativePathItem.Patterns ?? Enumerable.Empty<string>())
+                                {
+                                    def.Exclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                                }
+                            }
+                            else
+                            {
+                                foreach (var pattern in relativePathItem.Patterns ?? Enumerable.Empty<string>())
+                                {
+                                    def.Inclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                                 }
                             }
                         }
@@ -337,7 +402,47 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
             }
 
+            // make sure the list is sorted from the less to the most generic items...
+            list = list.OrderBy(x => x.Directory.Split('\\').Length).ToList();
+
             return list;
+        }
+
+        private static string GetNiceRegExpDescription(string regexp)
+        {
+            if (string.IsNullOrEmpty(regexp) || regexp == ".*")
+            {
+                return "All files";
+            }
+
+            Match match;
+
+            match = Regex.Match(regexp, @"^\^?(\w+)\\.(\w+)\$?$");
+            if (match.Success)
+            {
+                return match.Groups[1].Value + "." + match.Groups[2].Value;
+            }
+
+            match = Regex.Match(regexp, @"^\^?\.\*\\\.\[(\w{2})\]\[(\w{2})\]\[(\w{2})\]\$$");
+            if (match.Success)
+            {
+                var f1 = match.Groups[1].Value.ToLowerInvariant();
+                var f2 = match.Groups[2].Value.ToLowerInvariant();
+                var f3 = match.Groups[3].Value.ToLowerInvariant();
+
+                if (f1[0] == f1[1] && f2[0] == f2[1] && f3[0] == f3[1])
+                {
+                    return "Files with extension *." + f1[0] + f2[0] + f3[0];
+                }
+            }
+
+            match = Regex.Match(regexp, @"^\^?\.*\\.([a-z0-9]+)");
+            if (match.Success)
+            {
+                return "Files with extension *." + match.Groups[1].Value;
+            }
+
+            return null;
         }
     }
 }

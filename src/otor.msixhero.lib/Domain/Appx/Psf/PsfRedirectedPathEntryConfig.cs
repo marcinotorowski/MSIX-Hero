@@ -20,7 +20,7 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
         public bool IsExclusion { get; set; }
 
         [DataMember(Name = "redirectTargetBase")]
-        public bool RedirectTargetBase { get; set; }
+        public string RedirectTargetBase { get; set; }
 
         public override string ToString()
         {
