@@ -72,7 +72,7 @@ foreach ($item in $toDelete) {
 
 $allFiles = Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.dll";
 $allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "*msix*.exe";
-$allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "EricZimmerman.Registry.dll";
+$allFiles += Get-ChildItem -Path "$PSScriptRoot\dist" -Filter "External.EricZimmerman.Registry.dll";
 
 $listOfFiles = "";
 foreach ($item in $allFiles) {

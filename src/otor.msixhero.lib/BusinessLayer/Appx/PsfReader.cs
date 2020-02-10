@@ -6,10 +6,11 @@ using System.Text.RegularExpressions;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
-using Registry;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx
 {
+    using External.EricZimmerman.Registry;
+
     public class PsfReader
     {
         public PsfApplicationDefinition Read(string applicationId, string packageRootFolder)

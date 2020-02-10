@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\external\EricZimmerman.Registry\EricZimmerman.Registry.csproj" />
+    <ProjectReference Include="..\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj" />
   </ItemGroup>
 
   <ItemGroup>
