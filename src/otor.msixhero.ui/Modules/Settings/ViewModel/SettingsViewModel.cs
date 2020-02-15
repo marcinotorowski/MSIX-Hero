@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using Prism.Services.Dialogs;
@@ -17,8 +16,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         public SettingsViewModel(
             IConfigurationService configurationService, 
             IInteractionService interactionService, 
-            IAppxSigningManager signingManager,
-            IUpdateChecker updateChecker)
+            IAppxSigningManager signingManager)
         {
             this.configurationService = configurationService;
 
@@ -42,11 +40,8 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             );
 
             this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
-            this.Update = new UpdateViewModel(updateChecker);
         }
-
-        public UpdateViewModel Update { get; }
-
+        
         public CertificateSelectorViewModel CertificateSelector { get; }
 
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();

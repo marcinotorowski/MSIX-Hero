@@ -8,7 +8,6 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel"
-             xmlns:prism="http://prismlibrary.com/"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:configuration="clr-namespace:otor.msixhero.lib.Infrastructure.Configuration;assembly=msixhero.lib"
              Background="White"
@@ -135,7 +134,6 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-
             <TabItem Header="Editors">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
@@ -191,54 +189,6 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Update">
-                <StackPanel DataContext="{Binding Update}">
-                    <Button Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="Check for update now" HorizontalAlignment="Left" />
-                    <Button Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue=Collapsed}" Command="{Binding Check}" Content="Check again for updates" HorizontalAlignment="Left" />
-
-                    <Border Margin="0 8 0 0" Visibility="{Binding UpdateCheck.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
-                        <StackPanel>
-                            <TextBlock Text="Getting information about the new version..." />
-                            <ProgressBar Height="8" IsIndeterminate="True" Margin="0 8 0 0" />
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="#FFFFDD" Margin="0 8 0 0" 
-                            Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
-                        <StackPanel Margin="8">
-                            <TextBlock Text="New version of MSIX Hero is available." />
-                            <TextBlock>
-                                <Run Text="Your version is:" />
-                                <Run Text="{Binding UpdateCheck.CurrentValue.CurrentVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                            </TextBlock>
-                            <TextBlock>
-                                <Run Text="The new version is:" />
-                                <Run Text="{Binding UpdateCheck.CurrentValue.AvailableVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                                <Run Text="released on" />
-                                <Run Text="{Binding UpdateCheck.CurrentValue.ReleaseDate, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                            </TextBlock>
-
-                            <TextBlock Margin="0 10 0 0" Text="Get the new version from the following URL:" />
-
-                            <TextBlock TextAlignment="Left">
-                                <Hyperlink FontSize="18" Click="Hyperlink_OnClick">MSIXHERO.net/get</Hyperlink>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Background="#DDFFDD" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
-                        <StackPanel Margin="8">
-                            <TextBlock Text="You are currently using the newest version of MSIX Hero" />
-                            <TextBlock>
-                                <Run Text="Your version is:" />
-                                <Run Text="{Binding UpdateCheck.CurrentValue.CurrentVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                            </TextBlock>
-                            
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </TabItem>
-
             <TabItem Header="Other">
                 <StackPanel>
                     <Label Content="App installer (.appinstaller)" Style="{StaticResource Label}" />
