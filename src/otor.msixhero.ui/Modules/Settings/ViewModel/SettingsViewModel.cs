@@ -5,6 +5,7 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
+using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Settings.ViewModel
@@ -36,12 +37,15 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
                 this.PsfEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PsfEditor.Resolved),
                 this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationPackages),
-                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationAppInstaller)
+                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationAppInstaller),
+                this.Tools = new ToolsConfigurationViewModel(interactionService, config)
             );
 
             this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
         }
         
+        public ToolsConfigurationViewModel Tools { get; }
+
         public CertificateSelectorViewModel CertificateSelector { get; }
 
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();

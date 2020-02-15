@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:configuration="clr-namespace:otor.msixhero.lib.Infrastructure.Configuration;assembly=msixhero.lib"
+             xmlns:tools="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel.Tools"
              Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
@@ -188,6 +189,45 @@
                         </DockPanel>
                     </StackPanel>
                 </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Tools">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="100" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="2*" MinWidth="100" />
+                    </Grid.ColumnDefinitions>
+                    <ListBox x:Name="ToolsList" SelectedIndex="0" Grid.Column="0" ItemsSource="{Binding Tools.Items}" BorderBrush="#ccc" BorderThickness="2" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type tools:ToolViewModel}">
+                                <DockPanel>
+                                    <Image Source="{Binding Image}" Width="24" Height="24" Stretch="UniformToFill" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                    <TextBlock Text="{Binding Name.CurrentValue}" VerticalAlignment="Center" Margin="0" />
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <GridSplitter Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                  ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+                    <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel d:DataContext="{d:DesignInstance tools:ToolViewModel}" DataContext="{Binding ElementName=ToolsList, Path=SelectedItem}">
+                            <TextBlock Text="Tool display name" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                            <TextBox Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+
+                            <TextBlock Text="Command" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Content="..." Command="{Binding Path.Browse}" Margin="4 0 0 0" />
+                                <TextBox Text="{Binding Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                            </DockPanel>
+
+                            <TextBlock Text="Icon" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Content="..." Command="{Binding Icon.Browse}" Margin="4 0 0 0" />
+                                <TextBox Text="{Binding Icon.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                            </DockPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </TabItem>
             <TabItem Header="Other">
                 <StackPanel>
