@@ -35,7 +35,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
             try
             {
-                this.currentConfiguration = FixConfiguration(JsonConvert.DeserializeObject<Configuration>(fileContent, new ResolvableFolderConverter()));
+                this.currentConfiguration = FixConfiguration(JsonConvert.DeserializeObject<Configuration>(fileContent, new ResolvablePathConverter()));
             }
             catch (Exception e)
             {
@@ -71,7 +71,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             {
                 Converters = new List<JsonConverter>
                 {
-                    new ResolvableFolderConverter()
+                    new ResolvablePathConverter()
                 },
                 DefaultValueHandling = DefaultValueHandling.Include,
                 DateParseHandling = DateParseHandling.DateTime,

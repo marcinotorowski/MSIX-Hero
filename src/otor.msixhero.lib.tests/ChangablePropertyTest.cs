@@ -216,7 +216,7 @@ namespace otor.msixhero.lib.tests
         {
             Func<int, string> validator = i => i % 2 != 0 ? "The number must be even" : null;
 
-            var validatedProperty = new ValidatedChangeableProperty<int>(validator, 0);
+            var validatedProperty = new ValidatedChangeableProperty<int>(0, validator);
             Assert.IsTrue(validatedProperty.IsValidated);
             Assert.IsTrue(validatedProperty.IsValid);
             Assert.IsNull(validatedProperty.ValidationMessage);

@@ -8,13 +8,26 @@ namespace otor.msixhero.ui.Domain
 {
     public class ChangeableFolderProperty : ValidatedChangeableProperty<string>
     {
+        // ReSharper disable once InconsistentNaming
         private static Func<string, string> validatePath;
+
+        // ReSharper disable once InconsistentNaming
         private static Func<string, string> validatePathAndPresence;
 
         private readonly IInteractionService interactionService;
         private ICommand browse;
 
-        public ChangeableFolderProperty(IInteractionService interactionService, string initialFolder = default) : base(initialFolder)
+        public ChangeableFolderProperty(IInteractionService interactionService, string initialFolder) : base(initialFolder)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFolderProperty(IInteractionService interactionService, string initialFolder, params Func<string, string>[] validators) : base(initialFolder, validators)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFolderProperty(IInteractionService interactionService, params Func<string, string>[] validators) : base(validators)
         {
             this.interactionService = interactionService;
         }

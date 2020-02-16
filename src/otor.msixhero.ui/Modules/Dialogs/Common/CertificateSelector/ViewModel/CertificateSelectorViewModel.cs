@@ -26,7 +26,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.signingManager = signingManager;
             var signConfig = configuration ?? new SigningConfiguration();
 
-            this.TimeStamp = new ValidatedChangeableProperty<string>(this.ValidateTimestamp, signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll");
+            this.TimeStamp = new ValidatedChangeableProperty<string>(signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll", this.ValidateTimestamp);
             this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source );
             this.Store.ValueChanged += StoreOnValueChanged;
             this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};

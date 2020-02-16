@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void TestCompacting()
         {
-            var resolvableFolder = new ResolvableFolder();
+            var resolvableFolder = new ResolvablePath();
 
             resolvableFolder.Resolved = "C:\\Program Files (x86)\\Test";
             Assert.AreEqual("{{ProgramFilesX86}}\\Test", resolvableFolder.Compacted, "The value must be compacted to ProgramFiles (x86).");
@@ -51,7 +51,7 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void TestImplicitConversion()
         {
-            ResolvableFolder folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.AdminTools, Environment.SpecialFolderOption.DoNotVerify), "Test");
+            ResolvablePath folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.AdminTools, Environment.SpecialFolderOption.DoNotVerify), "Test");
             Assert.AreEqual("{{AdminTools}}\\Test", folder.Compacted);
 
             string resolved = folder;
@@ -61,9 +61,9 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void TestSerialization()
         {
-            var folder = new ResolvableFolder("{{ProgramFiles}}\\ABC");
-            var serialized = JsonConvert.SerializeObject(folder, new ResolvableFolderConverter());
-            var deserialized = JsonConvert.DeserializeObject<ResolvableFolder>(serialized, new ResolvableFolderConverter());
+            var folder = new ResolvablePath("{{ProgramFiles}}\\ABC");
+            var serialized = JsonConvert.SerializeObject(folder, new ResolvablePathConverter());
+            var deserialized = JsonConvert.DeserializeObject<ResolvablePath>(serialized, new ResolvablePathConverter());
 
             Assert.IsTrue(serialized.Contains("\"{{ProgramFiles}}\\\\ABC\"", StringComparison.Ordinal), "Serialized object must be a plain type (compacted).");
             Assert.AreEqual(deserialized.Compacted, folder.Compacted, "Value before and after serialization must be the same.");

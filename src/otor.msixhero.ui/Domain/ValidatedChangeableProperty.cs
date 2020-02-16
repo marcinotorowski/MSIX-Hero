@@ -21,28 +21,25 @@ namespace otor.msixhero.ui.Domain
             this.Validate();
         }
 
-        public ValidatedChangeableProperty(Func<T, string> validator, T initialValue = default) : this(validator, true, initialValue)
+        public ValidatedChangeableProperty(T initialValue, params Func<T, string>[] validators) : this(initialValue, true, validators)
         {
         }
 
-        public ValidatedChangeableProperty(Func<T, string> validator, bool isValidated, T initialValue = default) : base(initialValue)
-        {
-            this.isValidated = isValidated;
-            this.validators = validator == null ? new Func<T, string>[0] :  new[] { validator };
-            this.Validate();
-        }
-
-        public ValidatedChangeableProperty(IReadOnlyCollection<Func<T, string>> validators, T initialValue = default) : this(validators, true, initialValue)
+        public ValidatedChangeableProperty(params Func<T, string>[] validators) : this(default, true, validators)
         {
         }
 
-        public ValidatedChangeableProperty(IReadOnlyCollection<Func<T, string>> validators, bool isValidated, T initialValue = default) : base(initialValue)
+        public ValidatedChangeableProperty(T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
         {
             this.isValidated = isValidated;
             this.validators = validators;
             this.Validate();
         }
 
+        public ValidatedChangeableProperty(bool isValidated, params Func<T, string>[] validators) : this(default, isValidated, validators)
+        {
+        }
+        
         public ValidationMode ValidationMode
         {
             get => this.validationMode;
@@ -201,6 +198,7 @@ namespace otor.msixhero.ui.Domain
 
             this.OnPropertyChanged(nameof(this.CurrentValue));
             this.OnPropertyChanged(nameof(this.Error));
+            this.OnPropertyChanged(nameof(this.IsValid));
         }
     }
 }

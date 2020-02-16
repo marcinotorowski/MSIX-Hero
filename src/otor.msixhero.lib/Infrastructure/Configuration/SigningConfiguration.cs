@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         }
 
         [DataMember(Name = "defaultOutputFolder")]
-        public ResolvableFolder.ResolvableFolder DefaultOutFolder { get; set; }
+        public ResolvableFolder.ResolvablePath DefaultOutFolder { get; set; }
 
         [DataMember(Name="timeStampServer")]
         public string TimeStampServer { get; set; }
@@ -30,6 +30,6 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         public bool ShowAllCertificates { get; set; }
 
         [DataMember(Name = "pfx")]
-        public ResolvableFolder.ResolvableFolder PfxPath { get; set; }
+        public ResolvableFolder.ResolvablePath PfxPath { get; set; }
     }
 }

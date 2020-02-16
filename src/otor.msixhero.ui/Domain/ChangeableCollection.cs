@@ -50,10 +50,16 @@ namespace otor.msixhero.ui.Domain
         {
             base.InsertItem(index, item);
 
-            if (item is IChangeableValue newChangeable)
+            if (item is IChangeableValue newChangeableValue)
             {
-                newChangeable.ValueChanged -= this.OnItemValueChanged;
-                newChangeable.ValueChanged += this.OnItemValueChanged;
+                newChangeableValue.ValueChanged -= this.OnItemValueChanged;
+                newChangeableValue.ValueChanged += this.OnItemValueChanged;
+            }
+
+            if (item is IChangeable newChangeable)
+            {
+                newChangeable.IsTouchedChanged -= this.OnIsTouchedChanged;
+                newChangeable.IsTouchedChanged += this.OnIsTouchedChanged;
             }
 
             if (!this.monitorChildren)
@@ -71,6 +77,14 @@ namespace otor.msixhero.ui.Domain
             else
             {
                 this.IsDirty = !this.originalItems.SequenceEqual(this);
+            }
+        }
+
+        private void OnIsTouchedChanged(object? sender, ValueChangedEventArgs<bool> e)
+        {
+            if (e.NewValue)
+            {
+                this.IsTouched = true;
             }
         }
 
@@ -92,9 +106,14 @@ namespace otor.msixhero.ui.Domain
             var item = this[index];
             base.RemoveItem(index);
 
-            if (item is IChangeableValue oldChangeable)
+            if (item is IChangeableValue oldChangeableValue)
             {
-                oldChangeable.ValueChanged -= this.OnItemValueChanged;
+                oldChangeableValue.ValueChanged -= this.OnItemValueChanged;
+            }
+
+            if (item is IChangeable oldChangeable)
+            {
+                oldChangeable.IsTouchedChanged -= this.OnIsTouchedChanged;
             }
 
             if (!this.monitorChildren)
@@ -119,15 +138,24 @@ namespace otor.msixhero.ui.Domain
             var oldItem = this[index];
             base.SetItem(index, item);
 
+            if (oldItem is IChangeableValue oldChangeableValue)
+            {
+                oldChangeableValue.ValueChanged -= this.OnItemValueChanged;
+            }
+
+            if (item is IChangeableValue newChangeableValue)
+            {
+                newChangeableValue.ValueChanged -= this.OnItemValueChanged;
+            }
+
             if (oldItem is IChangeableValue oldChangeable)
             {
-                oldChangeable.ValueChanged -= this.OnItemValueChanged;
+                oldChangeable.IsTouchedChanged -= this.OnIsTouchedChanged;
             }
 
             if (item is IChangeableValue newChangeable)
             {
-                newChangeable.ValueChanged -= this.OnItemValueChanged;
-                newChangeable.ValueChanged += this.OnItemValueChanged;
+                newChangeable.IsTouchedChanged += this.OnIsTouchedChanged;
             }
 
             if (!this.monitorChildren)

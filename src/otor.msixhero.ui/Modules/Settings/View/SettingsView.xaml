@@ -11,6 +11,10 @@
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:configuration="clr-namespace:otor.msixhero.lib.Infrastructure.Configuration;assembly=msixhero.lib"
              xmlns:tools="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel.Tools"
+             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
+             xmlns:commands="clr-namespace:otor.msixhero.ui.Modules.Settings.Commands"
              Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
@@ -139,7 +143,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
                         <TextBlock Text="Default editor for manifest files (AppxManifest.xml)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                        
+
                         <ComboBox SelectedValue="{Binding ManifestEditorType.CurrentValue}" SelectedValuePath="Tag">
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default XML editor" />
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
@@ -191,39 +195,175 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Tools">
-                <Grid>
+                <Grid DataContext="{Binding Tools}">
+                    <routedCommand:RoutedCommandHandlers.Commands>
+                        <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding NewCommand}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding DeleteCommand}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:SettingsCommands.OpenIcon}" Command="{Binding ReplaceIconCommand}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:SettingsCommands.DeleteIcon}" Command="{Binding DeleteIconCommand}" />
+                    </routedCommand:RoutedCommandHandlers.Commands>
+
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MinWidth="100" />
+                        <ColumnDefinition Width="2*" MinWidth="200" />
                         <ColumnDefinition Width="10" />
-                        <ColumnDefinition Width="2*" MinWidth="100" />
+                        <ColumnDefinition Width="5*" MinWidth="200" />
                     </Grid.ColumnDefinitions>
-                    <ListBox x:Name="ToolsList" SelectedIndex="0" Grid.Column="0" ItemsSource="{Binding Tools.Items}" BorderBrush="#ccc" BorderThickness="2" SnapsToDevicePixels="True" UseLayoutRounding="True">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <WrapPanel Grid.Row="0" Orientation="Horizontal" Grid.Column="0" Margin="-3 -3 -3 3">
+                        <Button Command="New" Content="New tool" Margin="3" />
+                        <Button Command="Delete" Content="Remove selected" Margin="3" />
+                    </WrapPanel>
+
+                    <ListBox Grid.Row="1" SelectedItem="{Binding Selected}" Grid.Column="0" ItemsSource="{Binding Items}" BorderBrush="#ccc" BorderThickness="2" SnapsToDevicePixels="True" UseLayoutRounding="True"
+                             dd:DragDrop.IsDragSource="True"
+                             dd:DragDrop.IsDropTarget="True"
+                             dd:DragDrop.DropHandler="{Binding}">
+                        <ListBox.Resources>
+                            <system:Boolean x:Key="False">False</system:Boolean>
+                        </ListBox.Resources>
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type tools:ToolViewModel}">
                                 <DockPanel>
-                                    <Image Source="{Binding Image}" Width="24" Height="24" Stretch="UniformToFill" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Center" Margin="0 0 8 0" />
+                                    <Image x:Name="PART_Image" Width="24" Height="24" 
+                                           Stretch="UniformToFill" 
+                                           SnapsToDevicePixels="True" 
+                                           UseLayoutRounding="True" 
+                                           VerticalAlignment="Center" 
+                                           Margin="0 0 6 0">
+                                        <Image.Source>
+                                            <Binding Path="Image" />
+                                        </Image.Source>
+                                    </Image>
+
+                                    <Viewbox 
+                                        Visibility="Collapsed" 
+                                        Width="24" 
+                                        Height="24" 
+                                        x:Name="PART_ImageFallback"
+                                        SnapsToDevicePixels="True" 
+                                        UseLayoutRounding="True" 
+                                        VerticalAlignment="Center" 
+                                        Margin="0 0 6 0">
+                                        <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                    </Viewbox>
+
+                                    <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" ToolTipService.ShowDuration="10000" Margin="6 0 0 0" Width="24" Height="24" Background="IndianRed" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
+                                        <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                            <Path Data="{StaticResource VectorError}" Width="32" Height="32" Fill="White" />
+                                        </Viewbox>
+                                    </Border>
+
                                     <TextBlock Text="{Binding Name.CurrentValue}" VerticalAlignment="Center" Margin="0" />
                                 </DockPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=PART_Image, Path=Source}" Value="{x:Null}">
+                                        <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
+                                        <Setter TargetName="PART_ImageFallback" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
+                                        <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path.IsValid}" Value="{StaticResource False}">
+                                        <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Delete" Command="Delete" />
+                                <Separator />
+                                <MenuItem Header="New tool" Command="New" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                     </ListBox>
-                    <GridSplitter Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                    <GridSplitter Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                   ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
-                    <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel d:DataContext="{d:DesignInstance tools:ToolViewModel}" DataContext="{Binding ElementName=ToolsList, Path=SelectedItem}">
-                            <TextBlock Text="Tool display name" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                    <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" 
+                                  HorizontalScrollBarVisibility="Disabled" 
+                                  DataContext="{Binding Selected}">
+                        <ScrollViewer.Style>
+                            <Style TargetType="ScrollViewer">
+                                <Style.Triggers>
+                                    <Trigger Property="DataContext" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ScrollViewer.Style>
+                        <StackPanel d:DataContext="{d:DesignInstance tools:ToolViewModel}">
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True" Text="Tool display name" 
+                                       Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                             <TextBox Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
 
-                            <TextBlock Text="Command" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True"  Text="Command" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                             <DockPanel>
                                 <Button DockPanel.Dock="Right" Content="..." Command="{Binding Path.Browse}" Margin="4 0 0 0" />
                                 <TextBox Text="{Binding Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
                             <TextBlock Text="Icon" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                            <DockPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button 
+                                    Height="64"
+                                    Width="64"
+                                    Cursor="Hand"
+                                    Command="{x:Static commands:SettingsCommands.OpenIcon}"
+                                    HorizontalAlignment="Left">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Image 
+                                            Width="32" 
+                                            Height="32" 
+                                            Stretch="UniformToFill" 
+                                            Source="{Binding Image}"
+                                            SnapsToDevicePixels="True" 
+                                            UseLayoutRounding="True">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Source" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+
+                                        <Viewbox
+                                            Width="32" 
+                                            Height="32" 
+                                            Tag="{Binding Image}"
+                                            SnapsToDevicePixels="True" 
+                                            UseLayoutRounding="True">
+                                            <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                            <Viewbox.Style>
+                                                <Style TargetType="Viewbox">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Tag" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Viewbox.Style>
+                                        </Viewbox>
+                                    </StackPanel>
+                                </Button>
+                                <TextBlock Visibility="{Binding HasIcon, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Margin="6 0 0 0">
+                                    <Hyperlink Command="{x:Static commands:SettingsCommands.DeleteIcon}">Use default icon</Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <TextBlock Visibility="Collapsed" Text="Icon" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <DockPanel Visibility="Collapsed" >
                                 <Button DockPanel.Dock="Right" Content="..." Command="{Binding Icon.Browse}" Margin="4 0 0 0" />
-                                <TextBox Text="{Binding Icon.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                                <TextBox IsReadOnly="True" Text="{Binding Icon.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
                         </StackPanel>
                     </ScrollViewer>
@@ -237,7 +377,7 @@
 
                     <TextBlock Text="Default base URI for hosted app installer files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                     <TextBox Text="{Binding DefaultRemoteLocationAppInstaller.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
-</StackPanel>
+                </StackPanel>
             </TabItem>
         </TabControl>
     </DockPanel>

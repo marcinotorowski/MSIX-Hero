@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,17 +55,27 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged);
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged);
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
+            stateManager.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.OnToolsChangedEvent, ThreadOption.UIThread);
 
             this.SetTools();
         }
 
-        private void SetTools()
+        private void OnToolsChangedEvent(IReadOnlyCollection<ToolListConfiguration> toolsCollection)
+        {
+            this.SetTools(toolsCollection);
+        }
+
+        private void SetTools(IEnumerable<ToolListConfiguration> tools = null)
         {
             this.Tools.Clear();
 
-            var config = this.configurationService.GetCurrentConfiguration();
+            if (tools == null)
+            {
+                var config = this.configurationService.GetCurrentConfiguration();
+                tools = config?.List?.Tools ?? Enumerable.Empty<ToolListConfiguration>();
+            }
 
-            foreach (var item in config?.List?.Tools ?? Enumerable.Empty<ToolListConfiguration>())
+            foreach (var item in tools)
             {
                 var itemName = item.Name;
                 if (string.IsNullOrEmpty(itemName) && !string.IsNullOrEmpty(item.Path))

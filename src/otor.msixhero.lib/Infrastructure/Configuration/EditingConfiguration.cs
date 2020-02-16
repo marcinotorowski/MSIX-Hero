@@ -18,34 +18,34 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             this.MsixEditorType = EditorType.Default;
             this.PsfEditorType = EditorType.Default;
 
-            this.ManifestEditor = new ResolvableFolder.ResolvableFolder();
-            this.AppInstallerEditor = new ResolvableFolder.ResolvableFolder();
-            this.MsixEditor = new ResolvableFolder.ResolvableFolder();
-            this.PsfEditor = new ResolvableFolder.ResolvableFolder();
+            this.ManifestEditor = new ResolvableFolder.ResolvablePath();
+            this.AppInstallerEditor = new ResolvableFolder.ResolvablePath();
+            this.MsixEditor = new ResolvableFolder.ResolvablePath();
+            this.PsfEditor = new ResolvableFolder.ResolvablePath();
         }
 
         [DataMember(Name = "manifestEditorType")]
         public EditorType ManifestEditorType { get; set; }
 
         [DataMember(Name = "manifestEditorPath")]
-        public ResolvableFolder.ResolvableFolder ManifestEditor { get; set; }
+        public ResolvableFolder.ResolvablePath ManifestEditor { get; set; }
 
         [DataMember(Name = "appInstallerEditorType")]
         public EditorType AppInstallerEditorType { get; set; }
 
         [DataMember(Name = "appinstallerEditorPath")]
-        public ResolvableFolder.ResolvableFolder AppInstallerEditor { get; set; }
+        public ResolvableFolder.ResolvablePath AppInstallerEditor { get; set; }
 
         [DataMember(Name = "msixEditorType")]
         public EditorType MsixEditorType { get; set; }
 
         [DataMember(Name = "msixEditorPath")]
-        public ResolvableFolder.ResolvableFolder MsixEditor { get; set; }
+        public ResolvableFolder.ResolvablePath MsixEditor { get; set; }
 
         [DataMember(Name = "psfEditorType")]
         public EditorType PsfEditorType { get; set; }
 
         [DataMember(Name = "psfEditorPath")]
-        public ResolvableFolder.ResolvableFolder PsfEditor { get; set; }
+        public ResolvableFolder.ResolvablePath PsfEditor { get; set; }
     }
 }

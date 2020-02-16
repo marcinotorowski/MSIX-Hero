@@ -40,18 +40,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(lib.BusinessLayer.Appx.AppInstaller.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.BlockLaunching = new ChangeableProperty<bool>();
-            this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion, "1.0.0.0");
+            this.Version = new ValidatedChangeableProperty<string>("1.0.0.0", this.ValidateVersion);
             this.ShowPrompt = new ChangeableProperty<bool>();
 
             this.AllowDowngrades.ValueChanged += this.OnBooleanChanged;
             this.BlockLaunching.ValueChanged += this.OnBooleanChanged;
             this.ShowPrompt.ValueChanged += this.OnBooleanChanged;
 
-            this.MainPackageUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>(this.ValidateUri, true);
+            this.MainPackageUri = new ValidatedChangeableProperty<string>(true, this.ValidateUri);
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>(true, this.ValidateUri);
             
             this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
-            this.Hours = new ValidatedChangeableProperty<string>(this.ValidateHours, "24");
+            this.Hours = new ValidatedChangeableProperty<string>("24", this.ValidateHours);
 
             this.PackageSelection = new PackageSelectorViewModel(
                 interactionService,

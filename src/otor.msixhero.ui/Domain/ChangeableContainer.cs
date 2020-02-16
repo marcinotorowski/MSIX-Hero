@@ -161,7 +161,7 @@ namespace otor.msixhero.ui.Domain
 
         public event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
 
-        public void Commit()
+        public virtual void Commit()
         {
             try
             {

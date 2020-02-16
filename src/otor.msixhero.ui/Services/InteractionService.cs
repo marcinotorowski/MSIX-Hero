@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
@@ -276,6 +277,40 @@ namespace otor.msixhero.ui.Services
 
             if (!string.IsNullOrEmpty(filterString))
             {
+                var items = filterString.Split('|');
+                if (items.Length > 2)
+                {
+                    var sb = new StringBuilder();
+
+                    var hasAll = false;
+                    for (var i = 0; i + 1 < items.Length; i += 2)
+                    {
+                        var first = items[i]; // the caption
+                        var second = items[i + 1]; // the filter
+
+                        if (sb.Length > 0)
+                        {
+                            sb.Append('|');
+                        }
+
+                        if (second.Contains("*.*"))
+                        {
+                            hasAll = true;
+                        }
+
+                        sb.Append(first);
+                        sb.Append('|');
+                        sb.Append(second);
+                    }
+
+                    if (!hasAll)
+                    {
+                        sb.Insert(0, "All files|*.*|");
+                    }
+
+                    filterString = sb.ToString();
+                }
+
                 dlg.Filter = filterString;
             }
 

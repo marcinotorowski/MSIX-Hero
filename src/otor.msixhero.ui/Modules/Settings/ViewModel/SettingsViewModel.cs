@@ -1,24 +1,30 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
+using Prism.Events;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Settings.ViewModel
 {
     public class SettingsViewModel : IDialogAware
     {
+        private readonly IEventAggregator eventAggregator;
         private readonly IConfigurationService configurationService;
 
         public SettingsViewModel(
+            IEventAggregator eventAggregator,
             IConfigurationService configurationService, 
             IInteractionService interactionService, 
             IAppxSigningManager signingManager)
         {
+            this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
 
             var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
@@ -36,8 +42,8 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.AppinstallerEditorPath = new ChangeableFileProperty(interactionService, config.Editing.AppInstallerEditor.Resolved),
                 this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
                 this.PsfEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PsfEditor.Resolved),
-                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationPackages),
-                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(this.ValidateUri, config.AppInstaller?.DefaultRemoteLocationAppInstaller),
+                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
+                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri),
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config)
             );
 
@@ -95,7 +101,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         {
             return this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid);
         }
-
+        
         public async Task<bool> Save()
         {
             if (!this.AllSettings.IsValidated)
@@ -187,9 +193,23 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             {
                 newConfiguration.Editing.PsfEditor.Resolved = this.PsfEditorPath.CurrentValue;
             }
-            
+
+            var toolsTouched = this.Tools.IsTouched;
             this.AllSettings.Commit();
+
+            if (toolsTouched)
+            {
+                newConfiguration.List.Tools.Clear();
+                newConfiguration.List.Tools.AddRange(this.Tools.Items.Select(t => (ToolListConfiguration)t));
+            }
+
             await this.configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);
+
+            if (toolsTouched)
+            {
+                this.eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Tools.Items.Select(t => (ToolListConfiguration)t).ToArray());
+            }
+
             return true;
         }
 

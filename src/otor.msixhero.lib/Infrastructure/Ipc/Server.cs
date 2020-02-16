@@ -23,7 +23,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
             TypeNameHandling = TypeNameHandling.Auto,
             Converters = new List<JsonConverter>
             {
-                new ResolvableFolderConverter()
+                new ResolvablePathConverter()
             }
         };
 

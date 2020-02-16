@@ -12,7 +12,7 @@ namespace otor.msixhero.ui.Modules.Settings
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<SettingsView, SettingsViewModel>(Path);
-            containerRegistry.RegisterSingleton(typeof(SettingsViewModel));
+            containerRegistry.Register(typeof(SettingsViewModel));
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

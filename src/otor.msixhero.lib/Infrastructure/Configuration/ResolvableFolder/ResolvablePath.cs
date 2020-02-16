@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace otor.msixhero.lib.Infrastructure.Configuration.ResolvableFolder
 {
-    public class ResolvableFolder
+    public class ResolvablePath
     {
         private static readonly Lazy<List<FolderDefinition>> PathLookup = new Lazy<List<FolderDefinition>>(GeneratePaths);
 
         private string resolved;
         private string compacted;
 
-        public ResolvableFolder()
+        public ResolvablePath()
         {
         }
 
-        public ResolvableFolder(string compactedPath)
+        public ResolvablePath(string compactedPath)
         {
             this.SetFromCompacted(compactedPath);
         }
@@ -34,14 +33,14 @@ namespace otor.msixhero.lib.Infrastructure.Configuration.ResolvableFolder
             set => this.SetFromCompacted(value);
         }
 
-        public static implicit operator string(ResolvableFolder folder)
+        public static implicit operator string(ResolvablePath folder)
         {
-            return folder.Resolved;
+            return folder?.Resolved;
         }
 
-        public static implicit operator ResolvableFolder(string folderPath)
+        public static implicit operator ResolvablePath(string folderPath)
         {
-            return new ResolvableFolder { Resolved = folderPath };
+            return new ResolvablePath { Resolved = string.IsNullOrEmpty(folderPath) ? null : folderPath };
         }
 
         private static List<FolderDefinition> GeneratePaths()

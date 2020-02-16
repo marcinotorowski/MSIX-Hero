@@ -20,6 +20,14 @@ namespace otor.msixhero.ui.Domain
             }
         }
 
+        public ValidatedChangeableCollection(Func<IEnumerable<T>, string> validator, IEnumerable<T> items) : base(items)
+        {
+            if (validator != null)
+            {
+                this.validators = new List<Func<IEnumerable<T>, string>> { validator };
+            }
+        }
+
         protected override void ClearItems()
         {
             base.ClearItems();
@@ -29,7 +37,26 @@ namespace otor.msixhero.ui.Domain
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
+
+            if (item is IValidatedChangeable validatedItem)
+            {
+                validatedItem.ValidationStatusChanged -= this.ItemOnValidationStatusChanged;
+                validatedItem.ValidationStatusChanged += this.ItemOnValidationStatusChanged;
+            }
+
             this.Validate();
+        }
+
+        private void ItemOnValidationStatusChanged(object sender, ValueChangedEventArgs<string> e)
+        {
+            if (string.IsNullOrEmpty(e.NewValue))
+            {
+                this.Validate();
+            }
+            else
+            {
+                this.Validate(e.NewValue);
+            }
         }
 
         protected override void MoveItem(int oldIndex, int newIndex)
@@ -40,13 +67,31 @@ namespace otor.msixhero.ui.Domain
 
         protected override void RemoveItem(int index)
         {
+            var item = this[index];
+            if (item is IValidatedChangeable validatedItem)
+            {
+                validatedItem.ValidationStatusChanged -= this.ItemOnValidationStatusChanged;
+            }
+
             base.RemoveItem(index);
             this.Validate();
         }
 
         protected override void SetItem(int index, T item)
         {
+            var oldItem = this[index];
+            if (oldItem is IValidatedChangeable oldValidatedItem)
+            {
+                oldValidatedItem.ValidationStatusChanged -= this.ItemOnValidationStatusChanged;
+            }
+
             base.SetItem(index, item);
+
+            if (item is IValidatedChangeable newValidatedItem)
+            {
+                newValidatedItem.ValidationStatusChanged += this.ItemOnValidationStatusChanged;
+            }
+
             this.Validate();
         }
 
@@ -127,27 +172,35 @@ namespace otor.msixhero.ui.Domain
         }
 
         public event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
-
-        private void Validate()
+        
+        private void Validate(string errorMessage = null)
         {
             var oldValidationMessage = this.ValidationMessage;
-            if (!this.IsValidated || this.Validators == null || !this.Validators.Any())
+
+            if (!string.IsNullOrEmpty(errorMessage))
             {
-                this.ValidationMessage = null;
+                this.ValidationMessage = errorMessage;
             }
             else
             {
-                string msg = null;
-                foreach (var validator in this.Validators)
+                if (!this.IsValidated || this.Validators == null || !this.Validators.Any())
                 {
-                    msg = validator(this);
-                    if (!string.IsNullOrEmpty(msg))
-                    {
-                        break;
-                    }
+                    this.ValidationMessage = null;
                 }
+                else
+                {
+                    string msg = null;
+                    foreach (var validator in this.Validators)
+                    {
+                        msg = validator(this);
+                        if (!string.IsNullOrEmpty(msg))
+                        {
+                            break;
+                        }
+                    }
 
-                this.ValidationMessage = msg;
+                    this.ValidationMessage = msg;
+                }
             }
 
             // ReSharper disable once InvertIf

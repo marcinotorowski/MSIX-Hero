@@ -17,7 +17,17 @@ namespace otor.msixhero.ui.Domain
         private readonly IInteractionService interactionService;
         private ICommand browse;
 
-        public ChangeableFileProperty(IInteractionService interactionService, string initialFile = default) : base(initialFile)
+        public ChangeableFileProperty(IInteractionService interactionService, string initialFile) : base(initialFile)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFileProperty(IInteractionService interactionService, string initialFile, params Func<string, string>[] validators) : base(initialFile, validators)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFileProperty(IInteractionService interactionService, params Func<string, string>[] validators) : base(validators)
         {
             this.interactionService = interactionService;
         }

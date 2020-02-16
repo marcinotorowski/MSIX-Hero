@@ -10,15 +10,25 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     internal class RunToolInPackageReducer : SelfElevationReducer
     {
         private readonly RunToolInPackage action;
-        
-        public RunToolInPackageReducer(RunToolInPackage action, IWritableApplicationStateManager stateManager) : base(action, stateManager)
+        private readonly IBusyManager busyManager;
+
+        public RunToolInPackageReducer(RunToolInPackage action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
         {
             this.action = action;
+            this.busyManager = busyManager;
         }
 
-        public override Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            return packageManager.RunToolInContext(this.action.PackageFamilyName, this.action.AppId, this.action.ToolPath, this.action.Arguments, cancellationToken);
+            var context = this.busyManager.Begin();
+            try
+            {
+                await packageManager.RunToolInContext(this.action.PackageFamilyName, this.action.AppId, this.action.ToolPath, this.action.Arguments, cancellationToken, context);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
     }
 }
