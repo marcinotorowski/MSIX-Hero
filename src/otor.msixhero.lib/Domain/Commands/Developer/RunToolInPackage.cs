@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Developer
 {
     [Serializable]
-    public class RunToolInPackage : BaseCommand
+    public class RunToolInPackage : SelfElevatedCommand
     {
         public RunToolInPackage(string packagePackageFamilyName, string packageName, string toolPath, string arguments = null)
         {
@@ -34,5 +34,10 @@ namespace otor.msixhero.lib.Domain.Commands.Developer
         
         [XmlElement]
         public string Arguments { get; set; }
+
+        [XmlElement]
+        public bool AsAdmin { get; set; }
+
+        public override bool RequiresElevation => this.AsAdmin;
     }
 }

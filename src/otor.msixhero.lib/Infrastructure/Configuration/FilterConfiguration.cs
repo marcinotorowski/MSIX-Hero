@@ -3,7 +3,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.lib.Infrastructure.Configuration
 {
-    public class FilterConfiguration
+    public class FilterConfiguration : BaseJsonSetting
     {
         public FilterConfiguration()
         {

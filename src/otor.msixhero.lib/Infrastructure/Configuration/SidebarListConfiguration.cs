@@ -3,7 +3,7 @@
 namespace otor.msixhero.lib.Infrastructure.Configuration
 {
     [DataContract]
-    public class SidebarListConfiguration
+    public class SidebarListConfiguration : BaseJsonSetting
     {
         public SidebarListConfiguration()
         {

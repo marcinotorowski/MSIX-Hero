@@ -2,7 +2,7 @@
 
 namespace otor.msixhero.lib.Infrastructure.Configuration
 {
-    public class AppInstallerConfiguration
+    public class AppInstallerConfiguration : BaseJsonSetting
     {
         public AppInstallerConfiguration()
         {

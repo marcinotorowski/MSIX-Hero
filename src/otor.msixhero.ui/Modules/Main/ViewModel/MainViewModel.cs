@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Grid;
@@ -14,7 +13,6 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
-using Prism.Regions;
 using Prism.Services.Dialogs;
 using Path = System.IO.Path;
 
@@ -24,9 +22,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
     {
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
-        private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
         private readonly IConfigurationService configurationService;
-        private readonly IRegionManager regionManager;
         private readonly IDialogService dialogService;
         private bool isLoading;
         private string loadingMessage;
@@ -34,18 +30,14 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
         public MainViewModel(
             IInteractionService interactionService,
-            IApplicationStateManager stateManager,
-            IAppxPackageManagerFactory appxPackageManagerFactory, 
-            IConfigurationService configurationService,
-            IRegionManager regionManager, 
+            IApplicationStateManager stateManager, 
+            IConfigurationService configurationService, 
             IDialogService dialogService, 
             IBusyManager busyManager)
         {
             this.interactionService = interactionService;
             this.stateManager = stateManager;
-            this.appxPackageManagerFactory = appxPackageManagerFactory;
             this.configurationService = configurationService;
-            this.regionManager = regionManager;
             this.dialogService = dialogService;
             this.Tools = new ObservableCollection<ToolViewModel>();
 
@@ -83,7 +75,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     itemName = Path.GetFileNameWithoutExtension(item.Path);
                 }
 
-                this.Tools.Add(new ToolViewModel(itemName, item.Path));
+                this.Tools.Add(new ToolViewModel(itemName, item));
             }
         }
 

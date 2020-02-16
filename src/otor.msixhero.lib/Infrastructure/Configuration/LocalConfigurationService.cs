@@ -106,7 +106,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         {
             var result = new Configuration();
             result.List.Sidebar.Visible = true;
-            result.List.Tools.Add(new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe" });
+            result.List.Tools.Add(new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe", AsAdmin = true });
             result.List.Tools.Add(new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" });
             result.List.Tools.Add(new ToolListConfiguration { Name = "Command Prompt", Path = "cmd.exe" });
             result.List.Tools.Add(new ToolListConfiguration { Name = "PowerShell Console", Path = "powershell.exe" });

@@ -319,6 +319,11 @@
                                 <TextBox Text="{Binding Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
+                            <CheckBox Content="Run as administrator" IsChecked="{Binding AsAdmin.CurrentValue}" Margin="0 4 0 0" />
+
+                            <TextBlock Text="Arguments" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <TextBox TextWrapping="Wrap" Height="80" Text="{Binding Arguments.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                            
                             <TextBlock Text="Icon" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                             <StackPanel Orientation="Horizontal">
                                 <Button 

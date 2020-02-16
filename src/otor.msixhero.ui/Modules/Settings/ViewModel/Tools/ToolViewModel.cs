@@ -17,7 +17,9 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel.Tools
             this.AddChildren(
                 this.Path = new ChangeableFileProperty(interactionService, model.Path, ValidatePath),
                 this.Name = new ValidatedChangeableProperty<string>(model.Name, ValidateName),
-                this.Icon = new ChangeableFileProperty(interactionService, model.Icon)
+                this.Icon = new ChangeableFileProperty(interactionService, model.Icon),
+                this.Arguments = new ChangeableProperty<string>(model.Arguments),
+                this.AsAdmin = new ChangeableProperty<bool>(model.AsAdmin)
             );
 
             this.Path.ValueChanged += (sender, args) => { this.OnPropertyChanged(nameof(Image)); };
@@ -27,8 +29,12 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel.Tools
         public ChangeableFileProperty Path { get; }
 
         public ValidatedChangeableProperty<string> Name { get; }
+        
+        public ChangeableProperty<string> Arguments { get; }
 
         public ChangeableFileProperty Icon { get; }
+
+        public ChangeableProperty<bool> AsAdmin { get; }
 
         public bool HasIcon => !string.IsNullOrEmpty(this.Icon.CurrentValue);
 
@@ -54,6 +60,16 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel.Tools
             if (this.Icon.IsTouched)
             {
                 this.model.Icon = this.Icon.CurrentValue;
+            }
+
+            if (this.AsAdmin.IsTouched)
+            {
+                this.model.AsAdmin = this.AsAdmin.CurrentValue;
+            }
+
+            if (this.Arguments.IsTouched)
+            {
+                this.model.Arguments = this.Arguments.CurrentValue;
             }
 
             base.Commit();

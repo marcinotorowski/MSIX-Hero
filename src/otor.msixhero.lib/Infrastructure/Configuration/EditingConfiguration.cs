@@ -9,7 +9,7 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         Ask = 2
     }
 
-    public class EditingConfiguration
+    public class EditingConfiguration : BaseJsonSetting
     {
         public EditingConfiguration()
         {

@@ -3,7 +3,7 @@
 namespace otor.msixhero.lib.Infrastructure.Configuration
 {
     [DataContract(Name = "packer")]
-    public class PackerConfiguration
+    public class PackerConfiguration : BaseJsonSetting
     {
         public PackerConfiguration()
         {

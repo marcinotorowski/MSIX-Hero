@@ -53,7 +53,7 @@ namespace otor.msixhero.ui.ViewModel
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanExecuteOpenManifest());
             this.OpenConfigJson = new DelegateCommand(param => this.OpenConfigJsonExecute(), param => this.CanExecuteOpenConfigJson());
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanExecuteSingleSelectionOnManifest());
-            this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as string), param => this.CanRunTool(param as string));
+            this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolListConfiguration), param => this.CanRunTool(param as ToolListConfiguration));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanExecuteOpenPowerShell());
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanExecuteSingleSelection());
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanExecuteMountRegistry());
@@ -451,7 +451,7 @@ namespace otor.msixhero.ui.ViewModel
             await this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection)).ConfigureAwait(false);
         }
 
-        private async void RunToolExecute(string tool)
+        private async void RunToolExecute(ToolListConfiguration tool)
         {
             var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
             if (package == null || tool == null)
@@ -459,10 +459,10 @@ namespace otor.msixhero.ui.ViewModel
                 return;
             }
 
-            await this.stateManager.CommandExecutor.ExecuteAsync(new RunToolInPackage(package, tool)).ConfigureAwait(false);
+            await this.stateManager.CommandExecutor.ExecuteAsync(new RunToolInPackage(package, tool.Path, tool.Arguments) { AsAdmin = tool.AsAdmin }).ConfigureAwait(false);
         }
 
-        private bool CanRunTool(string tool)
+        private bool CanRunTool(ToolListConfiguration tool)
         {
             if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
             {

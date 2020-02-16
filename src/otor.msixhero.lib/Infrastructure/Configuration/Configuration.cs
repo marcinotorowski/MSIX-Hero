@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace otor.msixhero.lib.Infrastructure.Configuration
 {
     [DataContract(Name = "configuration")]
-    public class Configuration
+    public class Configuration : BaseJsonSetting
     {
         public Configuration()
         {
