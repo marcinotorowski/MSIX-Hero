@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -6,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.Settings.ViewModel;
+using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Settings.View
@@ -73,6 +75,25 @@ namespace otor.msixhero.ui.Modules.Settings.View
             };
 
             Process.Start(p);
+        }
+        
+        private void ToolsDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is ToolsConfigurationViewModel dataContext)
+            {
+                dataContext.Items.CollectionChanged += this.ToolsCollectionChanged;
+            }
+        }
+
+        private void ToolsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                this.ToolDisplayName.Focus();
+                FocusManager.SetFocusedElement(this, this.ToolDisplayName);
+                Keyboard.Focus(this.ToolDisplayName);
+                this.ToolDisplayName.SelectAll();
+            }
         }
     }
 }

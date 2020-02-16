@@ -195,7 +195,7 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Tools">
-                <Grid DataContext="{Binding Tools}">
+                <Grid DataContext="{Binding Tools}" DataContextChanged="ToolsDataContextChanged">
                     <routedCommand:RoutedCommandHandlers.Commands>
                         <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding NewCommand}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding DeleteCommand}" />
@@ -252,9 +252,13 @@
                                         <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
                                     </Viewbox>
 
-                                    <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" ToolTipService.ShowDuration="10000" Margin="6 0 0 0" Width="24" Height="24" Background="IndianRed" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
-                                        <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
-                                            <Path Data="{StaticResource VectorError}" Width="32" Height="32" Fill="White" />
+                                    <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
+                                            ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
+                                            ToolTipService.ShowDuration="10000" 
+                                            Margin="6 -4 0 -4" Width="24" Height="24" 
+                                            Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
+                                        <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Width="24" Height="24">
+                                            <Path Data="{StaticResource VectorError}" Width="32" Height="32" Fill="IndianRed" />
                                         </Viewbox>
                                     </Border>
 
@@ -276,9 +280,17 @@
                         </ListBox.ItemTemplate>
                         <ListBox.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Delete" Command="Delete" />
+                                <MenuItem Header="Delete" Command="Delete">
+                                    <MenuItem.Icon>
+                                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                                 <Separator />
-                                <MenuItem Header="New tool" Command="New" />
+                                <MenuItem Header="New tool" Command="New">
+                                    <MenuItem.Icon>
+                                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorAdd}" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
@@ -299,7 +311,7 @@
                         <StackPanel d:DataContext="{d:DesignInstance tools:ToolViewModel}">
                             <TextBlock helpers:RequiredAdorner.IsRequired="True" Text="Tool display name" 
                                        Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                            <TextBox Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                            <TextBox x:Name="ToolDisplayName" Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
 
                             <TextBlock helpers:RequiredAdorner.IsRequired="True"  Text="Command" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                             <DockPanel>

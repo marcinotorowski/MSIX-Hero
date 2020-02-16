@@ -1,6 +1,38 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
+                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers">
+
+    <Style TargetType="uac:UACControl">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="uac:UACControl">
+                    <Grid Margin="{TemplateBinding Padding}">
+                        <ContentPresenter 
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+
+                        <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                               VerticalAlignment="Top" 
+                               HorizontalAlignment="Right"
+                               Source="{x:Static helpers:ShieldIcon.Source}" 
+                               Stretch="None" 
+                               UseLayoutRounding="True" 
+                               SnapsToDevicePixels="True">
+                            <Image.RenderTransform>
+                                <TranslateTransform X="8" />
+                            </Image.RenderTransform>
+                        </Image>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style TargetType="Path" x:Key="AnimatedSuccess">
         <Setter Property="StrokeThickness" Value="1" />
