@@ -8,15 +8,17 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
+using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Settings.ViewModel
 {
-    public class SettingsViewModel : IDialogAware
+    public class SettingsViewModel : NotifyPropertyChanged, IDialogAware
     {
         private readonly IEventAggregator eventAggregator;
         private readonly IConfigurationService configurationService;
+        private string entryPoint;
 
         public SettingsViewModel(
             IEventAggregator eventAggregator,
@@ -82,6 +84,12 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         
         public ChangeableProperty<bool> SidebarDefaultState { get; }
 
+        public string EntryPoint
+        {
+            get => this.entryPoint;
+            private set => this.SetField(ref this.entryPoint, value);
+        }
+
         public string Title => "Settings";
 
         public bool CanCloseDialog()
@@ -95,6 +103,12 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            if (!parameters.TryGetValue("tab", out string tab))
+            {
+                return;
+            }
+
+            this.EntryPoint = tab;
         }
 
         public bool CanSave()

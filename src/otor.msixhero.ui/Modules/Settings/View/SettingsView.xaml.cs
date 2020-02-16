@@ -1,5 +1,8 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +26,47 @@ namespace otor.msixhero.ui.Modules.Settings.View
         {
             this.interactionService = interactionService;
             InitializeComponent();
+            this.DataContextChanged += this.OnDataContextChanged;
+
+            if (this.DataContext is SettingsViewModel dataContext)
+            {
+                this.SetEntryPoint(dataContext.EntryPoint);
+                dataContext.PropertyChanged += this.DataContextOnPropertyChanged;
+            }
+        }
+
+        private void SetEntryPoint(string dataContextEntryPoint)
+        {
+            if (string.IsNullOrEmpty(dataContextEntryPoint))
+            {
+                return;
+            }
+
+            foreach (var tab in this.MainContent.Items.OfType<TabItem>())
+            {
+                if (string.Equals(tab.Name, dataContextEntryPoint, StringComparison.Ordinal))
+                {
+                    this.MainContent.SelectedItem = tab;
+                    break;
+                }
+            }
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue is SettingsViewModel dataContext)
+            {
+                this.SetEntryPoint(dataContext.EntryPoint);
+                dataContext.PropertyChanged += this.DataContextOnPropertyChanged;
+            }
+        }
+
+        private void DataContextOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SettingsViewModel.EntryPoint))
+            {
+                this.SetEntryPoint(((SettingsViewModel)sender).EntryPoint);
+            }
         }
 
         private void CloseExecuted(object sender, ExecutedRoutedEventArgs e)

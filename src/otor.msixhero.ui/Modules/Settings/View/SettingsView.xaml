@@ -194,7 +194,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Tools">
+            <TabItem Header="Tools" x:Name="tools">
                 <Grid DataContext="{Binding Tools}" DataContextChanged="ToolsDataContextChanged">
                     <routedCommand:RoutedCommandHandlers.Commands>
                         <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding NewCommand}" />

@@ -685,54 +685,67 @@
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorWindow}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:InRibbonGallery ItemsSource="{Binding Tools}" MaxItemsInRow="5">
+                    <Fluent:RibbonGroupBox.Resources>
+                        <SolidColorBrush x:Key="WhiteBrush" Color="#fafafa" />
+                    </Fluent:RibbonGroupBox.Resources>
+                    <Fluent:InRibbonGallery Selectable="False" Background="White" ItemsSource="{Binding Tools}" MaxItemsInRow="4">
+                        <Fluent:InRibbonGallery.ItemContainerStyle>
+                            <Style TargetType="{x:Type Fluent:GalleryItem}">
+                                <Setter Property="Command" Value="{x:Static commands:MsixHeroCommands.RunTool}" />
+                                <Setter Property="CommandParameter" Value="{Binding Config}" />
+                            </Style>
+                        </Fluent:InRibbonGallery.ItemContainerStyle>
                         <Fluent:InRibbonGallery.ItemTemplate>
                             <DataTemplate>
-                                <Fluent:Button 
+                                <!--<Fluent:Button 
                                     IsDefinitive="True" 
                                     Header="{Binding Name}"           
                                     Command="{x:Static commands:MsixHeroCommands.RunTool}" CommandParameter="{Binding Config}">
-                                    <Fluent:Button.LargeIcon>
-                                        <uac:UACControl
+                                    <Fluent:Button.LargeIcon>-->
+                                <StackPanel Width="64" Margin="4">
+                                    <uac:UACControl
+                                        HorizontalAlignment="Center"
                                             ShowShield="{Binding Config.AsAdmin}">
-                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                <Image Width="24" Height="24" Source="{Binding Image}" 
+                                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                            <Image Width="16" Height="16" Source="{Binding Image}" 
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Center">
-                                                    <Image.Style>
-                                                        <Style TargetType="Image">
-                                                            <Style.Triggers>
-                                                                <Trigger Property="Source" Value="{x:Null}">
-                                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="Source" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
 
-                                                <Viewbox 
+                                            <Viewbox 
                                                     VerticalAlignment="Center"
-                                                    Width="24" 
-                                                    Height="24" 
+                                                    Width="16" 
+                                                    Height="16" 
                                                     Tag="{Binding Image}"
                                                     SnapsToDevicePixels="True" 
                                                     UseLayoutRounding="True" 
                                                     HorizontalAlignment="Center">
-                                                    <Viewbox.Style>
-                                                        <Style TargetType="Viewbox">
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                            <Style.Triggers>
-                                                                <Trigger Property="Tag" Value="{x:Null}">
-                                                                    <Setter Property="Visibility" Value="Visible" />
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Viewbox.Style>
-                                                    <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                                                </Viewbox>
-                                            </StackPanel>
-                                        </uac:UACControl>
-                                    </Fluent:Button.LargeIcon>
+                                                <Viewbox.Style>
+                                                    <Style TargetType="Viewbox">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <Trigger Property="Tag" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Viewbox.Style>
+                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                            </Viewbox>
+                                        </StackPanel>
+                                    </uac:UACControl>
+                                    <TextBlock FontSize="10" Text="{Binding Name}" TextWrapping="Wrap" TextAlignment="Center" Margin="0 2 0 0" />
+                                </StackPanel>
+                                <!--</Fluent:Button.LargeIcon>
                                     <Fluent:Button.Icon>
                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Image VerticalAlignment="Center" Width="16" Height="16" Source="{Binding Image}" HorizontalAlignment="Center">
@@ -769,7 +782,7 @@
                                             </Viewbox>
                                         </StackPanel>
                                     </Fluent:Button.Icon>
-                                </Fluent:Button>
+                                </Fluent:Button>-->
                                 <!-- Image-->
                             </DataTemplate>
                         </Fluent:InRibbonGallery.ItemTemplate>

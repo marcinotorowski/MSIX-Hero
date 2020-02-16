@@ -82,7 +82,7 @@ namespace otor.msixhero.ui.ViewModel
             // Miscellaneous
             this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
-            this.Settings = new DelegateCommand(param => this.SettingsExecute(), param => true);
+            this.Settings = new DelegateCommand(param => this.SettingsExecute(param as string), param => true);
 
             this.Help = new DelegateCommand(param => this.HelpExecute());
         }
@@ -682,9 +682,9 @@ namespace otor.msixhero.ui.ViewModel
         {
         }
 
-        private void SettingsExecute()
+        private void SettingsExecute(string tab)
         {
-            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters() { { "tab", tab }}, this.OnDialogClosed);
         }
     }
 }
