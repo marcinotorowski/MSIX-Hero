@@ -21,7 +21,12 @@ namespace otor.msixhero.lib.tests
             BundleHelper.TemplatesPath = @"E:\Visual\Playground\MSIX-Hero\artifacts\templates";
 
             var appAttach = new AppAttach();
-            appAttach.CreateVolume(@"E:\temp\MSIX.Commander_1.0.6.0-x64.msix", @"C:\temp\my-disk.vhd", 100, true).GetAwaiter().GetResult();
+            appAttach.CreateVolume(
+                @"E:\temp\MSIX.Commander_1.0.6.0-x64.msix", 
+                @"C:\temp\my-disk.vhd",
+                100,
+                false,
+                true).GetAwaiter().GetResult();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
+using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.Reducers;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands;
@@ -15,8 +16,10 @@ using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Commands.Manager;
 using otor.msixhero.lib.Domain.Commands.Signing;
 using otor.msixhero.lib.Domain.Commands.UI;
+using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.Exceptions;
 using otor.msixhero.lib.Infrastructure.Helpers;
+using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 
@@ -30,16 +33,22 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         private readonly IInteractionService interactionService;
         private readonly IAppAttach appAttach;
         private readonly IBusyManager busyManager;
+        private readonly IProcessManager processManager;
         private IWritableApplicationStateManager writableApplicationStateManager;
+        private readonly IAppxVolumeManager appxVolumeManager;
 
         public CommandExecutor(
             IAppxPackageManagerFactory appxPackageManagerFactory,
+            IAppxVolumeManager appxVolumeManager,
             IInteractionService interactionService,
+            IProcessManager processManager,
             IAppAttach appAttach,
             IBusyManager busyManager)
         {
+            this.appxVolumeManager = appxVolumeManager;
             this.appxPackageManagerFactory = appxPackageManagerFactory;
             this.interactionService = interactionService;
+            this.processManager = processManager;
             this.appAttach = appAttach;
             this.busyManager = busyManager;
 
@@ -426,6 +435,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.writableApplicationStateManager, this.busyManager);
             this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.writableApplicationStateManager, this.busyManager);
+
+            this.reducerFactories[typeof(AddVolume)] = action => new AddVolumeReducer((AddVolume)action, this.appxVolumeManager, this.processManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(RemoveVolume)] = action => new RemoveVolumeReducer((RemoveVolume)action, this.appxVolumeManager, this.processManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(GetVolumes)] = action => new GetVolumesReducer((GetVolumes)action, this.appxVolumeManager, this.writableApplicationStateManager);
         }
     }
 }

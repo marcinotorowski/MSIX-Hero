@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using CommonServiceLocator;
-using NLog.Fluent;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
-using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
@@ -31,14 +30,13 @@ using otor.msixhero.ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
-using Prism.Unity;
 
 namespace otor.msixhero.ui
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : PrismApplication, IDisposable
+    public partial class App : IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
@@ -65,7 +63,7 @@ namespace otor.msixhero.ui
             Logger.Warn(e.Exception);
         }
 
-        private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
 
@@ -107,7 +105,8 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<ICommandExecutor, CommandExecutor>();
             containerRegistry.RegisterSingleton<ICommandExecutor, CommandExecutor>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
-            containerRegistry.RegisterInstance<IProcessManager>(this.processManager);
+            containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
+            containerRegistry.RegisterInstance(this.processManager);
         }
         
         protected override Window CreateShell()

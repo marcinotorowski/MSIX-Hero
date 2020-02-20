@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 using Prism.Events;
@@ -31,7 +32,7 @@ namespace otor.msixhero.adminhelper
 #endif
         }
 
-        private static void TaskSchedulerOnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
 
@@ -70,8 +71,10 @@ namespace otor.msixhero.adminhelper
                     IBusyManager busyManager = new BusyManager();
                     IEventAggregator eventAggregator = new EventAggregator();
                     IAppAttach appAttach = new AppAttach();
+                    IAppxVolumeManager volumeManager = new AppxVolumeManager();
+                    IProcessManager processManager = new ProcessManager();
 
-                    var commandExecutor = new CommandExecutor(packageManagerFactory, interactionService, appAttach, busyManager);
+                    var commandExecutor = new CommandExecutor(packageManagerFactory, volumeManager, interactionService, processManager, appAttach, busyManager);
                     var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
                     var server = new Server(applicationStateManager);
 

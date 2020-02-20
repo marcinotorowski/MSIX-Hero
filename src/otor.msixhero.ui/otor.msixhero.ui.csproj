@@ -78,6 +78,9 @@
     <Compile Update="Modules\Dialogs\Unpack\View\UnpackView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\Dialogs\Volumes\View\VolumesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Main\View\BackStageOpenView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -112,6 +115,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\Unpack\View\UnpackView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Volumes\View\VolumesView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Main\View\BackStageOpenView.xaml">

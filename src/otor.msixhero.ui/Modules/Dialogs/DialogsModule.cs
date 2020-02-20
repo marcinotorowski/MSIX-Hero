@@ -19,6 +19,8 @@ using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.View;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.Volumes.View;
+using otor.msixhero.ui.Modules.Dialogs.Volumes.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
@@ -36,6 +38,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public static string AppAttachPath = "AppAttach";
         public static string ModificationPackagePath = "ModificationPackage";
         public static string HelpPath = "Help";
+        public static string VolumesPath = "Volumes";
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -46,6 +49,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
             containerRegistry.RegisterDialog<HelpView, HelpViewModel>(HelpPath);
+            containerRegistry.RegisterDialog<VolumesView, VolumesViewModel>(VolumesPath);
             containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(AppAttachPath);
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(ModificationPackagePath);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(AppInstallerPath);

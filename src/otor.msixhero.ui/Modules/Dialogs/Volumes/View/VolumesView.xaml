@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.Volumes.View.VolumesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Volumes.ViewModel"
+             xmlns:volume="clr-namespace:otor.msixhero.lib.Domain.Appx.Volume;assembly=msixhero.lib"
+             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             mc:Ignorable="d" 
+             Background="#ffffff"
+             d:DesignHeight="650" 
+             d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance viewModel:VolumesViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="550" />
+            <Setter Property="Height" Value="550" />
+            <Setter Property="MinWidth" Value="500" />
+            <Setter Property="MinHeight" Value="350" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <Border Background="#2B579A" DockPanel.Dock="Top">
+            <DockPanel Margin="16">
+                <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorDisk}" />
+                <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Volumes Manager</Label>
+            </DockPanel>
+        </Border>
+
+        <Border Background="#eee" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
+                <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
+            </StackPanel>
+        </Border>
+
+        <Border Margin="16 16 16 0" DockPanel.Dock="Top">
+            <WrapPanel Orientation="Horizontal">
+                <Button Margin="0 0 6 6" Content="Create volume" Command="New" />
+                <Button Margin="0 0 6 6" Content="Delete selected" Command="Delete" />
+            </WrapPanel>
+        </Border>
+
+        <progressOverlay:ProgressOverlay Margin="16 0 16 16" IsShown="{Binding AllVolumes.IsLoading}" DockPanel.Dock="Top">
+            <ListBox BorderBrush="#ccc" BorderThickness="2" SnapsToDevicePixels="True" UseLayoutRounding="True" ItemsSource="{Binding AllVolumes.CurrentValue}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type volume:AppxVolume}">
+                        <DataTemplate.Resources>
+                            <system:Boolean x:Key="True">True</system:Boolean>
+                        </DataTemplate.Resources>
+                        <DockPanel>
+                            <Path x:Name="PART_Path" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDisk}" VerticalAlignment="Center" Margin="0 0 6 0" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding PackageStorePath}" />
+                                <TextBlock Text="{Binding Name}" Opacity="0.65" />
+                            </StackPanel>
+                        </DockPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsDefault}" Value="{StaticResource True}">
+                                <!--<Setter TargetName="PART_Path" Property="Data" Value="{StaticResource VectorBulb}" />-->
+                                <Setter TargetName="PART_Path" Property="Fill" Value="Green" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </progressOverlay:ProgressOverlay>
+    </DockPanel>
+</UserControl>
