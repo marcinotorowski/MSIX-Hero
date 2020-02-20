@@ -18,7 +18,13 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
         
         public Task Unpack(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{unpackedDirectory}\" -applyacls";
+            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{unpackedDirectory}\"";
+            return this.RunMsixMgr(arguments, cancellationToken);
+        }
+
+        public Task ApplyAcls(string unpackedPackageDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            var arguments = $"-ApplyACLs -packagePath \"{unpackedPackageDirectory}\"";
             return this.RunMsixMgr(arguments, cancellationToken);
         }
 

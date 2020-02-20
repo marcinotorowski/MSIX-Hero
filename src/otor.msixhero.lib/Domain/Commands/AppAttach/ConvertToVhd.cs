@@ -20,6 +20,8 @@
 
         public bool GenerateScripts { get; set; }
 
+        public bool ExtractCertificate { get; set; }
+
         public override bool RequiresElevation => true;
     }
 }

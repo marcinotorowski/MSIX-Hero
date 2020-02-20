@@ -7,6 +7,13 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
 {
     public interface IAppAttach
     {
-        Task CreateVolume(string packagePath, string volumePath, uint vhdSize, bool generateScripts, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null);
+        Task CreateVolume(
+            string packagePath, 
+            string volumePath, 
+            uint vhdSize, 
+            bool extractCertificate,
+            bool generateScripts, 
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progressReporter = null);
     }
 }

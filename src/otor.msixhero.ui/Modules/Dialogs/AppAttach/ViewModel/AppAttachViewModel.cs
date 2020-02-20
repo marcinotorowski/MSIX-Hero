@@ -42,20 +42,23 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
 
             this.InputPath.Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence };
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
-            
+
+            this.ExtractCertificate = new ChangeableProperty<bool>(false);
             this.SizeMode = new ChangeableProperty<AppAttachSizeMode>(AppAttachSizeMode.Auto);
             this.FixedSize = new ValidatedChangeableProperty<string>("100")
             {
                 Validators = new Func<string, string>[] { this.ValidateFixedSize }
             };
             
-            this.AddChildren(this.InputPath, this.GenerateScripts, this.FixedSize, this.SizeMode);
+            this.AddChildren(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
             this.SetValidationMode(ValidationMode.Silent, true);
         }
 
         public ChangeableFileProperty InputPath { get; }
 
         public ChangeableProperty<bool> GenerateScripts { get; }
+
+        public ChangeableProperty<bool> ExtractCertificate { get; }
         
         public ValidatedChangeableProperty<string> FixedSize { get; }
 
@@ -82,13 +85,21 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
 
             if (this.appState.CurrentState.IsElevated)
             {
-                await this.appAttach.CreateVolume(this.InputPath.CurrentValue, output, sizeInMegabytes, this.GenerateScripts.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                await this.appAttach.CreateVolume(
+                    this.InputPath.CurrentValue, 
+                    output, 
+                    sizeInMegabytes, 
+                    this.ExtractCertificate.CurrentValue,
+                    this.GenerateScripts.CurrentValue, 
+                    cancellationToken, 
+                    progress).ConfigureAwait(false);
             }
             else
             {
                 var cmd = new ConvertToVhd(this.InputPath.CurrentValue, output)
                 {
                     GenerateScripts = this.GenerateScripts.CurrentValue,
+                    ExtractCertificate = this.ExtractCertificate.CurrentValue,
                     SizeInMegaBytes = sizeInMegabytes
                 };
 

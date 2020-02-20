@@ -26,7 +26,14 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             var context = this.busyManager.Begin();
             try
             {
-                await this.appAttach.CreateVolume(this.command.PackagePath, this.command.VhdPath, this.command.SizeInMegaBytes, this.command.GenerateScripts, cancellationToken, context).ConfigureAwait(false);
+                await this.appAttach.CreateVolume(
+                    this.command.PackagePath, 
+                    this.command.VhdPath, 
+                    this.command.SizeInMegaBytes, 
+                    this.command.ExtractCertificate,
+                    this.command.GenerateScripts, 
+                    cancellationToken, 
+                    context).ConfigureAwait(false);
             }
             finally
             {

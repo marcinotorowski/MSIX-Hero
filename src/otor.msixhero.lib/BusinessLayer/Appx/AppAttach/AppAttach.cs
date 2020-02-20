@@ -8,8 +8,8 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.lib.Infrastructure.Wrappers;
@@ -22,7 +22,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
         protected readonly MsixMgrWrapper MsixMgr = new MsixMgrWrapper();
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AppAttach));
         
-        public async Task CreateVolume(string packagePath, string volumePath, uint vhdSize, bool generateScripts, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
+        public async Task CreateVolume(string packagePath, string volumePath, uint vhdSize, bool extractCertificate, bool generateScripts, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
         {
             if (packagePath == null)
             {
@@ -50,16 +50,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
 
             using (var progress = new WrappedProgress(progressReporter))
             {
-                var progressSize = vhdSize <= 0 ? progress.GetChildProgress(50) : null;
+                // ReSharper disable once UnusedVariable
+                var progressSize = vhdSize <= 0 ? progress.GetChildProgress(30) : null;
                 var progressStopService = progress.GetChildProgress(10);
-                var progressNewVhd = progress.GetChildProgress(50);
-                var progressMountVhd = progress.GetChildProgress(30);
-                var progressInitializeDisk = progress.GetChildProgress(20);
-                var progressNewPartition = progress.GetChildProgress(30);
-                var progressFormatVolume = progress.GetChildProgress(80);
+                var progressInitializeDisk = progress.GetChildProgress(100);
+                // var progressNewPartition = progress.GetChildProgress(30);
+                // var progressFormatVolume = progress.GetChildProgress(80);
                 var progressStartService = progress.GetChildProgress(10);
-                var progressExpand = progress.GetChildProgress(80);
-                var progressDismount = progress.GetChildProgress(10);
+                var progressExpand = progress.GetChildProgress(120);
                 var progressScripts = generateScripts ? progress.GetChildProgress(10) : null;
 
                 try
@@ -67,57 +65,47 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
                     long minimumSize;
                     if (vhdSize <= 0)
                     {
-                        minimumSize = await this.GetVhdSize(packagePath, 1.0, cancellationToken, progressSize).ConfigureAwait(false);
+                        minimumSize = Math.Max(25 * 1024 * 1024, await GetVhdSize(packagePath, 0.5, cancellationToken).ConfigureAwait(false));
                     }
                     else
                     {
                         minimumSize = 1024 * 1024 * vhdSize;
                     }
 
-                    var requiresRestart = await this.StopService(cancellationToken, progressStopService).ConfigureAwait(false);
-                    MountVhdData? moundVhdData = null;
+                    var requiresRestart = await StopService(cancellationToken, progressStopService).ConfigureAwait(false);
+                    
+                    Guid volumeGuid;
+                    var wrapper = new DiskPartWrapper();
+                    string pkgFullName;
 
                     try
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        await this.NewVhd((int)(10 * Math.Ceiling(0.1 * minimumSize / 1024 / 1024)), tmpPath, cancellationToken, progressNewVhd).ConfigureAwait(false);
+                        var allDrives = DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveFormat == "NTFS").Select(d => d.Name.ToLowerInvariant()).ToArray();
 
-                        cancellationToken.ThrowIfCancellationRequested();
-                        moundVhdData = await this.MountVhd(tmpPath, cancellationToken, progressMountVhd).ConfigureAwait(false);
+                        var existing = await this.GetVolumeIdentifiers().ConfigureAwait(false);
+                        await wrapper.CreateVhdAndAssignDriveLetter(tmpPath, minimumSize, cancellationToken, progressInitializeDisk).ConfigureAwait(false);
+                        var newVolumes = (await this.GetVolumeIdentifiers().ConfigureAwait(false)).Except(existing).ToArray();
 
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var initializedDiskNumber = await this.InitializeDisk(moundVhdData.Value.DiskNumber, cancellationToken, progressInitializeDisk).ConfigureAwait(false);
+                        var newDrives = DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveFormat == "NTFS").Select(d => d.Name.ToLowerInvariant()).Except(allDrives).ToArray();
 
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var driveLetter = await this.NewPartition(initializedDiskNumber, cancellationToken, progressNewPartition).ConfigureAwait(false);
+                        if (newDrives.Length != 1 || newVolumes.Length != 1)
+                        {
+                            throw new InvalidOperationException("Could not mount the drive.");
+                        }
 
+                        volumeGuid = newVolumes[0];
                         cancellationToken.ThrowIfCancellationRequested();
-                        await this.FormatVolume(driveLetter, cancellationToken, progressFormatVolume).ConfigureAwait(false);
-
-                        cancellationToken.ThrowIfCancellationRequested();
-                        var packageFullName = await this.ExpandMsix(packagePath, driveLetter + ":\\" + Path.GetFileNameWithoutExtension(packagePath), cancellationToken, progressExpand).ConfigureAwait(false);
-
-                        cancellationToken.ThrowIfCancellationRequested();
+                        pkgFullName = await this.ExpandMsix(packagePath, newDrives.First() + Path.GetFileNameWithoutExtension(packagePath), cancellationToken, progressExpand).ConfigureAwait(false);
                     }
                     finally
                     {
-                        if (moundVhdData.HasValue)
-                        {
-                            try
-                            {
-                                await this.DismountVhd(moundVhdData.Value.DiskNumber, cancellationToken, progressDismount);
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.Warn(e, "Could not dismount drive number {0}.", moundVhdData.Value.DiskNumber);
-                            }
-                        }
+                        await wrapper.UnmountVhd(tmpPath, cancellationToken).ConfigureAwait(false);
 
                         if (requiresRestart)
                         {
                             try
                             {
-                                await this.StartService(cancellationToken, progressStartService).ConfigureAwait(false);
+                                await StartService(cancellationToken, progressStartService).ConfigureAwait(false);
                             }
                             catch (Exception e)
                             {
@@ -130,8 +118,13 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
                     {
                         if (generateScripts)
                         {
-                            var guid = await this.GetVolumeIdentifier(tmpPath, cancellationToken).ConfigureAwait(false);
-                            await this.CreateScripts(volumeFileInfo.FullName, tmpPath, Path.GetFileNameWithoutExtension(packagePath), guid, cancellationToken, progressScripts).ConfigureAwait(false);
+                            await CreateScripts(volumeFileInfo.FullName, Path.GetFileNameWithoutExtension(packagePath), volumeGuid, pkgFullName, cancellationToken, progressScripts).ConfigureAwait(false);
+                        }
+
+                        if (extractCertificate)
+                        {
+                            var certMgr = new AppxSigningManager();
+                            await certMgr.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
                         }
 
                         File.Move(tmpPath, volumeFileInfo.FullName, true);
@@ -145,171 +138,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
                     }
                 }
             }
-        }
-
-        private async Task<Guid> GetVolumeIdentifier(string fullName, CancellationToken cancellationToken)
-        {
-            var existing = await this.GetVolumeIdentifiers().ConfigureAwait(false);
-            
-            Guid actual;
-            MountVhdData data = default;
-            try
-            {
-                data = await this.MountVhd(fullName, cancellationToken, new Progress()).ConfigureAwait(false);
-                
-                var after = await this.GetVolumeIdentifiers().ConfigureAwait(false);
-
-                if (after.Count - 1 != existing.Count)
-                {
-                    throw new InvalidOperationException("Could not find the volume.");
-                }
-
-                actual = after.Except(existing).FirstOrDefault();
-                if (actual == default(Guid))
-                {
-                    throw new InvalidOperationException("Could not find the volume.");
-                }
-            }
-            finally
-            {
-                if (data.DiskNumber != 0)
-                {
-                    await this.DismountVhd(data.DiskNumber, cancellationToken, new Progress());
-                }
-            }
-
-            return actual;
-        }
-
-        private async Task FormatVolume(string partitionLetter, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
-        {
-            progressReporter?.Report(new ProgressData(0, "Formatting partition..."));
-
-            using (var powerShellSession = await PowerShellSession.CreateForModule("Storage", true).ConfigureAwait(false))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                // New-VHD -SizeBytes <size>MB -Path c:\temp\<name>.vhd -Dynamic -Confirm:$false
-                using (var cmd = powerShellSession.AddCommand("Format-Volume"))
-                {
-                    cmd.AddParameter("DriveLetter", partitionLetter);
-                    cmd.AddParameter("FileSystem", "NTFS");
-                    cmd.AddParameter("Confirm", false);
-                    cmd.AddParameter("Force", false);
-                    await powerShellSession.InvokeAsync(new ProgressNumberOnly(progressReporter, "Formatting partition...")).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-            }
-
-            progressReporter?.Report(new ProgressData(100, "Formatting partition..."));
-        }
-
-        private async Task<string> NewPartition(uint diskNumber, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
-        {
-            string partitionDriveLetter;
-            progressReporter?.Report(new ProgressData(0, "Creating partition..."));
-
-            using (var powerShellSession = await PowerShellSession.CreateForModule("Storage", true).ConfigureAwait(false))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                // New-VHD -SizeBytes <size>MB -Path c:\temp\<name>.vhd -Dynamic -Confirm:$false
-                using (var cmd = powerShellSession.AddCommand("New-Partition"))
-                {
-                    cmd.AddParameter("DiskNumber", diskNumber);
-                    cmd.AddParameter("UseMaximumSize");
-                    cmd.AddParameter("AssignDriveLetter");
-                    var result = await powerShellSession.InvokeAsync(new ProgressNumberOnly(progressReporter, "Creating partition...")).ConfigureAwait(false);
-
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (!result.Any())
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    partitionDriveLetter = result[0].Members["DriveLetter"].Value.ToString();
-                }
-            }
-
-            progressReporter?.Report(new ProgressData(100, "Creating partition..."));
-            return partitionDriveLetter;
-        }
-
-        private async Task<uint> InitializeDisk(uint diskNumber, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
-        {
-            uint initializedDiskNumber;
-            progressReporter?.Report(new ProgressData(0, "Initializing virtual hard disk..."));
-
-            using (var powerShellSession = await PowerShellSession.CreateForModule("Storage", true).ConfigureAwait(false))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                // New-VHD -SizeBytes <size>MB -Path c:\temp\<name>.vhd -Dynamic -Confirm:$false
-                using (var cmd = powerShellSession.AddCommand("Initialize-Disk"))
-                {
-                    cmd.AddParameter("Number", diskNumber);
-                    cmd.AddParameter("PartitionStyle", "GPT");
-                    cmd.AddParameter("Passthru");
-                    var result = await powerShellSession.InvokeAsync(new ProgressNumberOnly(progressReporter, "Initializing virtual hard disk...")).ConfigureAwait(false);
-
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (!result.Any())
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    initializedDiskNumber = uint.Parse(result[0].Members["Number"].Value.ToString());
-                }
-            }
-
-            progressReporter?.Report(new ProgressData(100, "Initializing virtual hard disk..."));
-            return initializedDiskNumber;
-        }
-
-        private struct MountVhdData
-        {
-            public MountVhdData(Guid guid, uint diskNumber)
-            {
-                Guid = guid;
-                DiskNumber = diskNumber;
-            }
-
-            // ReSharper disable once NotAccessedField.Local
-            public Guid Guid;
-            public uint DiskNumber;
-        }
-
-
-        private async Task<MountVhdData> MountVhd(string path, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
-        {
-            uint diskNumber;
-            Guid guid;
-
-            progressReporter?.Report(new ProgressData(0, "Mounting virtual hard disk..."));
-
-            using (var powerShellSession = await PowerShellSession.CreateForModule("Hyper-V", true).ConfigureAwait(false))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                // New-VHD -SizeBytes <size>MB -Path c:\temp\<name>.vhd -Dynamic -Confirm:$false
-                using (var cmd = powerShellSession.AddCommand("Mount-VHD"))
-                {
-                    cmd.AddParameter("Path", path);
-                    cmd.AddParameter("Passthru");
-                    var result = await powerShellSession.InvokeAsync(new ProgressNumberOnly(progressReporter, "Mounting virtual hard disk...")).ConfigureAwait(false);
-
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    if (!result.Any())
-                    {
-                        throw new InvalidOperationException();
-                    }
-
-                    guid = Guid.Parse(result[0].Members["DiskIdentifier"].Value.ToString());
-                    diskNumber = uint.Parse(result[0].Members["DiskNumber"].Value.ToString());
-                }
-            }
-
-            progressReporter?.Report(new ProgressData(100, "Mounting virtual hard disk..."));
-            return new MountVhdData(guid, diskNumber);
         }
 
         private async Task<IList<Guid>> GetVolumeIdentifiers()
@@ -348,38 +176,26 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
             return list;
         }
 
-        private async Task DismountVhd(uint diskNumber, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
-        {
-            progressReporter?.Report(new ProgressData(0, "Mounting virtual hard disk..."));
-
-            using (var powerShellSession = await PowerShellSession.CreateForModule("Hyper-V", true).ConfigureAwait(false))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                // New-VHD -SizeBytes <size>MB -Path c:\temp\<name>.vhd -Dynamic -Confirm:$false
-                using (var cmd = powerShellSession.AddCommand("Dismount-VHD"))
-                {
-                    cmd.AddParameter("DiskNumber", diskNumber);
-                    cmd.AddParameter("Passthru");
-                    await powerShellSession.InvokeAsync(new ProgressNumberOnly(progressReporter, "Mounting virtual hard disk...")).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-            }
-
-            progressReporter?.Report(new ProgressData(100, "Mounting virtual hard disk..."));
-        }
-
         private async Task<string> ExpandMsix(string msixPath, string vhdPath, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
         {
             progressReporter?.Report(new ProgressData(0, "Expanding MSIX..."));
             cancellationToken.ThrowIfCancellationRequested();
-            await this.MsixMgr.Unpack(msixPath, vhdPath, cancellationToken, progressReporter).ConfigureAwait(false);
-            progressReporter?.Report(new ProgressData(100, "Expanding MSIX..."));
 
             var dir = new DirectoryInfo(vhdPath);
-            return dir.EnumerateDirectories().First().Name;
+            var existing = dir.Exists ? dir.EnumerateDirectories().Select(d => d.Name.ToLowerInvariant()).ToArray() : new string[0];
+
+            await this.MsixMgr.Unpack(msixPath, vhdPath, cancellationToken, progressReporter).ConfigureAwait(false);
+            progressReporter?.Report(new ProgressData(70, "Expanding MSIX..."));
+
+            var result = dir.EnumerateDirectories().Single(d => !existing.Contains(d.Name.ToLowerInvariant()));
+
+            progressReporter?.Report(new ProgressData(80, "Applying ACLs..."));
+            await this.MsixMgr.ApplyAcls(result.FullName, cancellationToken).ConfigureAwait(false);
+            progressReporter?.Report(new ProgressData(100, "Applying ACLs..."));
+            return result.Name;
         }
 
-        private async Task CreateScripts(string vhdPath, string packageName, string packageParentFolder, Guid volumeGuid, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
+        private static async Task CreateScripts(string targetVhdPath, string packageParentFolder, Guid volumeGuid, string pkgFullName, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
         {
             progressReporter?.Report(new ProgressData(0, "Creating PowerShell scripts..."));
 
@@ -422,65 +238,26 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
             // "<package parent folder>"
             // "<vol guid>"
 
-            var vhdDir = Path.GetDirectoryName(vhdPath);
-            var vhdFileName = Path.GetFileName(vhdPath);
+            var vhdDir = Path.GetDirectoryName(targetVhdPath);
+            var vhdFileName = Path.GetFileNameWithoutExtension(targetVhdPath);
 
             contentStage =
-                contentStage.Replace("<path to vhd>", vhdPath.Replace("\"", "`\""))
+                contentStage.Replace("<path to vhd>", targetVhdPath.Replace("\"", "`\""))
                     .Replace("<package parent folder>", packageParentFolder.Replace("\"", "`\""))
-                    .Replace("<package name>", packageName.Replace("\"", "`\""))
+                    .Replace("<package name>", pkgFullName.Replace("\"", "`\""))
                     .Replace("<vol guid>", volumeGuid.ToString("B"));
-
-            contentStage =
-                contentStage.Replace("<path to vhd>", vhdDir.Replace("\"", "`\""))
-                    .Replace("<package parent folder>", packageParentFolder.Replace("\"", "`\""))
-                    .Replace("<package name>", packageName.Replace("\"", "`\""))
-                    .Replace("<vol guid>", volumeGuid.ToString("B"));
-
-            contentRegister =
-                contentRegister.Replace("<package name>", packageName.Replace("\"", "`\""));
-
-            contentDeregister =
-                contentDeregister.Replace("<package name>", packageName.Replace("\"", "`\""));
-
-            contentDestage =
-                contentDestage.Replace("<package name>", packageName.Replace("\"", "`\""));
-
-            var baseDir = Path.Combine(vhdDir, vhdFileName + ".Scripts");
-            if (!Directory.Exists(baseDir))
-            {
-                Directory.CreateDirectory(baseDir);
-            }
-
-            await File.WriteAllTextAsync(Path.Combine(baseDir, "app-attach-stage.ps1"), contentStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            await File.WriteAllTextAsync(Path.Combine(baseDir, "app-attach-register.ps1"), contentRegister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            await File.WriteAllTextAsync(Path.Combine(baseDir, "app-attach-deregister.ps1"), contentDeregister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            await File.WriteAllTextAsync(Path.Combine(baseDir, "app-attach-destage.ps1"), contentDestage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            
+            contentRegister = contentRegister.Replace("<package name>", pkgFullName.Replace("\"", "`\""));
+            contentDeregister = contentDeregister.Replace("<package name>", pkgFullName.Replace("\"", "`\""));
+            contentDestage = contentDestage.Replace("<package name>", pkgFullName.Replace("\"", "`\""));
+            
+            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".stage.ps1"), contentStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".register.ps1"), contentRegister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".deregister.ps1"), contentDeregister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".destage.ps1"), contentDestage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task NewVhd(int sizeInMb, string path, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
-        {
-            Logger.Debug("Creating virtual hard dick with size {0}MB in {1}...", sizeInMb, path);
-            progressReporter?.Report(new ProgressData(0, "Creating virtual hard disk..."));
-
-            using (var powerShellSession = await PowerShellSession.CreateForModule("Hyper-V", true).ConfigureAwait(false))
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                // New-VHD -SizeBytes <size>MB -Path c:\temp\<name>.vhd -Dynamic -Confirm:$false
-                using (var cmd = powerShellSession.AddCommand("New-VHD"))
-                {
-                    var sizeBytesString = sizeInMb + "MB";
-                    cmd.AddParameter("SizeBytes", sizeBytesString);
-                    cmd.AddParameter("Path", path);
-                    cmd.AddParameter("Dynamic");
-                    cmd.AddParameter("Confirm", false);
-                    await powerShellSession.InvokeAsync(new ProgressNumberOnly(progressReporter, "Creating virtual hard disk...")).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-                }
-            }
-        }
-
-        private Task StartService(CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
+        private static Task StartService(CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
         {
             return Task.Run(() =>
                 {
@@ -499,7 +276,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
                 cancellationToken);
         }
 
-        private Task<bool> StopService(CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
+        private static Task<bool> StopService(CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
         {
             return Task.Run(() =>
                 {
@@ -520,76 +297,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
         }
 
 
-        private async Task<long> GetVhdSize(string packagePath, double extraMargin = 0.2, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
+        private static Task<long> GetVhdSize(string packagePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
         {
             var total = 0L;
-            using (ZipArchive archive = ZipFile.OpenRead(packagePath))
+            using (var archive = ZipFile.OpenRead(packagePath))
             {
                 foreach (var item in archive.Entries)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     total += item.Length;
                 }
             }
 
-            return (long)(total * (1 + extraMargin));
-
-            progressReporter?.Report(new ProgressData(0, "Calculating required size..."));
-            var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-            try
-            {
-                await this.MsixSdk.UnpackPackage(packagePath, tempDirectory, cancellationToken, new ProgressNumberOnly(progressReporter, "Calculating required size...")).ConfigureAwait(false);
-
-                var queue = new Queue<string>();
-                queue.Enqueue(tempDirectory);
-
-                var totalSize = 0L;
-
-                while (queue.Any())
-                {
-                    var take = queue.Dequeue();
-                    var dirInfo = new DirectoryInfo(take);
-                    if (!dirInfo.Exists)
-                    {
-                        continue;
-                    }
-
-                    foreach (var file in dirInfo.EnumerateFiles("*", SearchOption.TopDirectoryOnly))
-                    {
-                        totalSize += file.Length;
-                    }
-
-                    foreach (var directory in dirInfo.EnumerateDirectories("*", SearchOption.TopDirectoryOnly))
-                    {
-                        queue.Enqueue(directory.FullName);
-                    }
-                }
-
-                return (long)(totalSize * (1 + extraMargin));
-            }
-            finally
-            {
-                if (Directory.Exists(tempDirectory))
-                {
-                    Directory.Delete(tempDirectory, true);
-                }
-            }
-        }
-
-        private class ProgressNumberOnly : IProgress<ProgressData>
-        {
-            private readonly IProgress<ProgressData> parent;
-            private readonly string message;
-
-            public ProgressNumberOnly(IProgress<ProgressData> parent, string message)
-            {
-                this.parent = parent;
-                this.message = message;
-            }
-
-            public void Report(ProgressData value)
-            {
-                this.parent?.Report(new ProgressData(value.Progress, this.message));
-            }
+            return Task.FromResult((long)(total * (1 + extraMargin)));
         }
     }
 }

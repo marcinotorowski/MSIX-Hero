@@ -55,8 +55,16 @@
                             <TextBlock Text="MB" Margin="4 0 0 0" VerticalAlignment="Center" DockPanel.Dock="Right" />
                         </StackPanel>
 
+                        <CheckBox Margin="0 16 0 0" IsChecked="{Binding ExtractCertificate.CurrentValue}">
+                            <TextBlock Text="Extract package certificate" TextWrapping="Wrap" />
+                        </CheckBox>
+
+                        <TextBlock Foreground="#777" Margin="22 0 0 0" TextWrapping="Wrap">
+                            <Run Text="With this option enabled, MSIX Hero tries to extract digital certificate from the specified package and puts it next to the VHD image." />
+                        </TextBlock>
+
                         <CheckBox Margin="0 16 0 0" IsChecked="{Binding GenerateScripts.CurrentValue}">
-                            <TextBlock Text="Generate scripts for staging, registering, un-staging and un-registering" TextWrapping="Wrap" />
+                            <TextBlock Text="Generate scripts for staging, registering, destaging and deregistering" TextWrapping="Wrap" />
                         </CheckBox>
 
                         <TextBlock Foreground="#777" Margin="22 0 0 0">
