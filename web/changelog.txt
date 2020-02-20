@@ -1,3 +1,17 @@
+0.3.30.0
+Released 2020/02/16
+
+* [New feature] Ability to configure tools invoked in package context
+* [New feature] Support for arguments and running tools as administrator
+* [Improvement] Improved look and feel of the in-ribbon gallery with tools
+* [Improvement] Added shield (UAC) icons to several actions in the main ribbon that require admin rights
+* [Improvement] Forward and backward compatibility of application settings
+* [Fixed] Removed UPDATE tab from the settings, they are now only available in the About window
+* [Fixed] Wrong icon for removing package from the context menu
+* [Fixed] Fixed a few minor bugs in the settings when opening the dialog for the second time in a row
+
+------
+
 0.3.22.0
 Released 2020/01/31
 
