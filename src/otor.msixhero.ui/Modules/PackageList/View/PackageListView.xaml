@@ -14,6 +14,7 @@
              xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
+             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <UserControl.Resources>
@@ -23,6 +24,36 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <routedCommand:RoutedCommandHandlers.Commands>
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Command="{Binding CommandHandler.OpenConfigJson}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorer}" Command="{Binding CommandHandler.OpenExplorer}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Deprovision}" Command="{Binding CommandHandler.Deprovision}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunApp}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}" Command="{Binding CommandHandler.ExtractCert}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenResign}" Command="{Binding CommandHandler.OpenResign}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CertManager}" Command="{Binding CommandHandler.CertManager}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding CommandHandler.Pack}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding CommandHandler.AppInstaller}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ModificationPackage}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
+    </routedCommand:RoutedCommandHandlers.Commands>
     <Grid Margin="5" x:Name="Grid">
         <Grid.Resources>
             <system:Boolean x:Key="True">True</system:Boolean>
@@ -116,7 +147,9 @@
 
         <Border x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
             <Grid>
-                <TextBox Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+                <TextBox 
+                    Padding="26 0 0 0" 
+                    x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
                 <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
                     <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
                         <Path.LayoutTransform>

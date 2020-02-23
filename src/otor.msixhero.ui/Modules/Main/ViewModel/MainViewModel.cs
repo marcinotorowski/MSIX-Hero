@@ -79,7 +79,8 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             }
         }
 
-        public CommandHandler CommandHandler => new CommandHandler(this.interactionService, this.configurationService, this.stateManager, this.dialogService);
+        public MainCommandHandler CommandHandler => new MainCommandHandler(this.dialogService);
+        public BackstageCommandHandler BackstageCommandHandler => new BackstageCommandHandler(this.dialogService, this.interactionService);
 
         public ObservableCollection<ToolViewModel> Tools { get; }
         

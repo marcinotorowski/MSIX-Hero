@@ -3,10 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.Main.View"
-             xmlns:fluent="urn:fluent-ribbon"
              xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -68,7 +65,7 @@
 
             <TextBlock Visibility="Collapsed" Text="Other options" FontFamily="{StaticResource SourceSansPro}" FontWeight="Light" FontSize="30" Margin="0 20 0 20" />
 
-            <Button Command="{x:Static commands:MsixHeroCommands.Pack}">
+            <Button Command="{x:Static commands:MsixHeroCommands.Pack}" Click="BackstageButtonClicked">
                 <DockPanel>
                     <Path Data="{StaticResource VectorPack}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
@@ -79,7 +76,7 @@
                 </DockPanel>
             </Button>
 
-            <Button Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+            <Button Command="{x:Static commands:MsixHeroCommands.ModificationPackage}" Click="BackstageButtonClicked">
                 <DockPanel>
                     <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
@@ -90,7 +87,7 @@
                 </DockPanel>
             </Button>
 
-            <Button Command="{x:Static commands:MsixHeroCommands.AppAttach}">
+            <Button Command="{x:Static commands:MsixHeroCommands.AppAttach}" Click="BackstageButtonClicked">
                 <DockPanel>
                     <Path Data="{StaticResource VectorNetworkDrive}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
@@ -101,7 +98,7 @@
                 </DockPanel>
             </Button>
 
-            <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel:AppInstallerCommandParameter.Empty}">
+            <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" Click="BackstageButtonClicked">
                 <DockPanel>
                     <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 

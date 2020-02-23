@@ -12,11 +12,14 @@ using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.State;
+using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Themes;
 using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Events;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
@@ -31,12 +34,23 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
     {
         private readonly IApplicationStateManager stateManager;
         private readonly IRegionManager regionManager;
+        private readonly IInteractionService interactionService;
+        private readonly IConfigurationService configurationService;
+        private readonly IDialogService dialogService;
         private bool isActive;
 
-        public PackageListViewModel(IApplicationStateManager stateManager, IRegionManager regionManager)
+        public PackageListViewModel(
+            IApplicationStateManager stateManager, 
+            IRegionManager regionManager,
+            IInteractionService interactionService,
+            IConfigurationService configurationService,
+            IDialogService dialogService)
         {
             this.stateManager = stateManager;
             this.regionManager = regionManager;
+            this.interactionService = interactionService;
+            this.configurationService = configurationService;
+            this.dialogService = dialogService;
 
             this.AllPackages = new ObservableCollection<InstalledPackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
@@ -50,6 +64,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             this.RefreshPackages();
         }
+        public PackageListCommandHandler CommandHandler => new PackageListCommandHandler(this.interactionService, this.configurationService, this.stateManager, this.dialogService);
 
         public bool IsActive
         {

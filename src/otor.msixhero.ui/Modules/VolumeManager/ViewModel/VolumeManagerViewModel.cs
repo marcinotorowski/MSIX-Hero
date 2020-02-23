@@ -30,6 +30,8 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             this.AllVolumes = new AsyncProperty<ObservableCollection<AppxVolume>>();
         }
 
+        public VolumeManagerCommandHandler CommandHandler { get; } = new VolumeManagerCommandHandler();
+
         public bool IsActive    
         {
             get => this.isActive;

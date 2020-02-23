@@ -19,7 +19,7 @@ using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Settings;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
     public enum AppInstallerCommandParameter
     {
@@ -28,14 +28,14 @@ namespace otor.msixhero.ui.ViewModel
         Browse
     }
 
-    public class CommandHandler
+    public class PackageListCommandHandler
     {
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
 
-        public CommandHandler(
+        public PackageListCommandHandler(
             IInteractionService interactionService,
             IConfigurationService configurationService,
             IApplicationStateManager stateManager, 
@@ -82,9 +82,6 @@ namespace otor.msixhero.ui.ViewModel
             // Miscellaneous
             this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
-            this.Settings = new DelegateCommand(param => this.SettingsExecute(param as string), param => true);
-            
-            this.Help = new DelegateCommand(param => this.HelpExecute());
         }
 
         public ICommand Refresh { get; }
@@ -101,8 +98,6 @@ namespace otor.msixhero.ui.ViewModel
 
         public ICommand InstallCertificate { get; }
 
-        public ICommand Help { get; }
-
         public ICommand OpenLogs { get; }
         
         public ICommand Pack { get; }
@@ -114,8 +109,6 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand ModificationPackage { get; }
 
         public ICommand Unpack { get; }
-
-        public ICommand Settings { get; }
         
         public ICommand OpenResign { get; }
 

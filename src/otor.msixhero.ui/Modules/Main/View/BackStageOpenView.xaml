@@ -8,6 +8,7 @@
              xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
+             xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -56,7 +57,10 @@
 
         <TextBlock Text="Open" FontFamily="{StaticResource SourceSansPro}" FontWeight="Light" FontSize="30" Margin="0 0 0 20" />
 
-        <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel:AppInstallerCommandParameter.Browse}">
+        <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" Click="BackstageButtonClicked">
+            <Button.CommandParameter>
+                <system:Boolean>True</system:Boolean>
+            </Button.CommandParameter>
             <DockPanel>
                 <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 

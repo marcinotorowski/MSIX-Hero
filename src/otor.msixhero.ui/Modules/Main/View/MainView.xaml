@@ -16,6 +16,7 @@
                      xmlns:viewModel1="clr-namespace:otor.msixhero.ui.ViewModel"
                      xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
                      xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
+                     xmlns:viewModel11="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
                      d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -32,35 +33,7 @@
         <CommandBinding Command="Close" Executed="Close_OnExecuted"></CommandBinding>
     </UserControl.CommandBindings>
     <routedCommand:RoutedCommandHandlers.Commands>
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Command="{Binding CommandHandler.OpenConfigJson}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorer}" Command="{Binding CommandHandler.OpenExplorer}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Deprovision}" Command="{Binding CommandHandler.Deprovision}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunApp}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UnmountRegistry}" Command="{Binding CommandHandler.UnmountRegistry}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}" Command="{Binding CommandHandler.ExtractCert}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenResign}" Command="{Binding CommandHandler.OpenResign}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CertManager}" Command="{Binding CommandHandler.CertManager}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding CommandHandler.Pack}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding CommandHandler.AppInstaller}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ModificationPackage}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Settings}" Command="{Binding CommandHandler.Settings}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Help" Command="{Binding CommandHandler.Help}" />
     </routedCommand:RoutedCommandHandlers.Commands>
     <Grid>
@@ -99,13 +72,14 @@
             </Style>
         </Grid.Resources>
 
-        <Fluent:Ribbon
-            CanQuickAccessLocationChanging="False"
-            CanCustomizeQuickAccessToolBar="False"
-            CanCustomizeRibbon="False"
-            IsQuickAccessToolBarMenuDropDownVisible="False"
-            CanCustomizeQuickAccessToolBarItems="False"
-            x:Name="Ribbon"  Grid.Row="0">
+            <Fluent:Ribbon
+                FocusManager.IsFocusScope="True"
+                CanQuickAccessLocationChanging="False"
+                CanCustomizeQuickAccessToolBar="False"
+                CanCustomizeRibbon="False"
+                IsQuickAccessToolBarMenuDropDownVisible="False"
+                CanCustomizeQuickAccessToolBarItems="False"
+                x:Name="Ribbon"  Grid.Row="0">
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup 
                     x:Name="SelectedPackage"
@@ -132,6 +106,13 @@
             <!--Backstage-->
             <Fluent:Ribbon.Menu>
                 <Fluent:Backstage>
+                    <routedCommand:RoutedCommandHandlers.Commands>
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Settings}" Command="{Binding BackstageCommandHandler.Settings}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding BackstageCommandHandler.Pack}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding BackstageCommandHandler.AppInstaller}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding BackstageCommandHandler.ModificationPackage}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding BackstageCommandHandler.AppAttach}" />
+                    </routedCommand:RoutedCommandHandlers.Commands>
                     <Fluent:BackstageTabControl>
                         <Fluent:BackstageTabItem Header="New">
                             <Fluent:BackstageTabItem.Icon>
@@ -495,7 +476,7 @@
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
-                    <Fluent:Button Header="App installer editor" CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
+                    <Fluent:Button Header="App installer editor" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -784,7 +765,7 @@
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel1:AppInstallerCommandParameter.Selection}">
+                    <Fluent:Button Header="Appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -957,10 +938,11 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-
-        <Border Background="#FFFFFF" Grid.Row="2" >
+        <Border Background="#FFFFFF" Grid.Row="2">
             <progressOverlay:ProgressOverlay IsShown="{Binding IsLoading}" Progress="{Binding LoadingProgress}" Message="{Binding LoadingMessage}">
-                <TabControl Grid.IsSharedSizeScope="True" regions:RegionManager.RegionName="ContentRegion">
+                <TabControl 
+                    x:Name="TabControl"
+                    regions:RegionManager.RegionName="ContentRegion">
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="Header" Value="{Binding DataContext.Header}"/>

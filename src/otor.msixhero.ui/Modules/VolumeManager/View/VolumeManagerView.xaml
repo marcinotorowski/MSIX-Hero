@@ -57,7 +57,14 @@
             </Grid>
         </Border>
 
-        <ListBox Grid.Column="0" Grid.Row="1" BorderBrush="#ccc" SnapsToDevicePixels="True" UseLayoutRounding="True" ItemsSource="{Binding AllVolumes.CurrentValue}">
+        <ListBox 
+            x:Name="ListBox"
+            Grid.Column="0" 
+            Grid.Row="1" 
+            BorderBrush="#ccc" 
+            SnapsToDevicePixels="True" 
+            UseLayoutRounding="True" 
+            ItemsSource="{Binding AllVolumes.CurrentValue}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type volume:AppxVolume}">
                     <DataTemplate.Resources>

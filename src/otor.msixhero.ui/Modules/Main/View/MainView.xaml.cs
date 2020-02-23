@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Events;
@@ -23,6 +24,9 @@ namespace otor.msixhero.ui.Modules.Main.View
         public MainView()
         {
             this.InitializeComponent();
+            FocusManager.SetFocusedElement(this, this.TabControl);
+            Keyboard.Focus(this.TabControl);
+            this.TabControl.Focus();
         }
 
         public MainView(IRegionManager regionManager, IApplicationStateManager appStateManager) : this()
@@ -35,6 +39,8 @@ namespace otor.msixhero.ui.Modules.Main.View
             appStateManager.EventAggregator.GetEvent<ApplicationModeChangedEvent>().Subscribe(this.OnModeChanged, ThreadOption.UIThread);
 
             this.ChangeTabVisibility();
+            FocusManager.SetFocusedElement(this, this.TabControl);
+            Keyboard.Focus(this.TabControl);
         }
 
         private void ChangeTabVisibility()

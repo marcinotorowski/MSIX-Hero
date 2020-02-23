@@ -58,7 +58,36 @@
                         <DockPanel>
 
                             <Border DockPanel.Dock="Right" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Width="15" />
-                            <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 3" BorderBrush="#E2E7EF" Margin="0 0 0 0" Background="Transparent">
+
+                            <Grid
+                                DockPanel.Dock="Bottom">
+                                <Border 
+                                    DockPanel.Dock="Bottom"
+                                    RenderTransformOrigin="0.5, 0.5"
+                                    VerticalAlignment="Bottom" Height="3" Background="#E2E7EF" Margin="0 0 0 0">
+                                </Border>
+                                <Border 
+                                    x:Name="BorderMouseOver" 
+                                    Opacity="0"
+                                    RenderTransformOrigin="0.5, 0.5"
+                                    VerticalAlignment="Bottom" Height="3" Background="{StaticResource Otor.MsixHero.Brushes.Accent}" Margin="0 0 0 0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="0" />
+                                    </Border.RenderTransform>
+                                </Border>
+                                <Border 
+                                    x:Name="Border" 
+                                    DockPanel.Dock="Bottom"
+                                    RenderTransformOrigin="0.5, 0.5"
+                                    VerticalAlignment="Bottom" Height="3" Background="Transparent" Margin="0 0 0 0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="1" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Grid>
+
+                            <Border
+                                Background="Transparent">
                                 <ContentPresenter 
                                     IsHitTestVisible="False"
                                     x:Name="ContentSite"
@@ -72,18 +101,36 @@
                         </DockPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
+                        <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="1.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="RenderTransform.ScaleX" Storyboard.TargetName="BorderMouseOver" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="0.6" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BorderMouseOver" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="#E2E7EF" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="RenderTransform.ScaleX" Storyboard.TargetName="BorderMouseOver" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BorderMouseOver" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -95,6 +142,7 @@
     </Style>
 
     <Style TargetType="{x:Type TabItem}" x:Key="Compact">
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
@@ -112,7 +160,36 @@
                         <DockPanel>
 
                             <Border DockPanel.Dock="Right" VerticalAlignment="Bottom" BorderThickness="0 0 0 2" BorderBrush="#E2E7EF" Width="15" />
-                            <Border x:Name="Border" VerticalAlignment="Bottom" BorderThickness="0 0 0 2" BorderBrush="#E2E7EF" Margin="0 0 0 0" Background="Transparent">
+
+                            <Grid
+                                DockPanel.Dock="Bottom">
+                                <Border 
+                                    DockPanel.Dock="Bottom"
+                                    RenderTransformOrigin="0.5, 0.5"
+                                    VerticalAlignment="Bottom" Height="2" Background="#E2E7EF" Margin="0 0 0 0">
+                                </Border>
+                                <Border 
+                                    x:Name="BorderMouseOver" 
+                                    Opacity="0"
+                                    RenderTransformOrigin="0.5, 0.5"
+                                    VerticalAlignment="Bottom" Height="2" Background="{StaticResource Otor.MsixHero.Brushes.Accent}" Margin="0 0 0 0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="0" />
+                                    </Border.RenderTransform>
+                                </Border>
+                                <Border 
+                                    x:Name="Border" 
+                                    DockPanel.Dock="Bottom"
+                                    RenderTransformOrigin="0.5, 0.5"
+                                    VerticalAlignment="Bottom" Height="2" Background="Transparent" Margin="0 0 0 0">
+                                    <Border.RenderTransform>
+                                        <ScaleTransform ScaleX="1" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Grid>
+
+                            <Border
+                                Background="Transparent">
                                 <ContentPresenter 
                                     IsHitTestVisible="False"
                                     x:Name="ContentSite"
@@ -126,18 +203,36 @@
                         </DockPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
+                        <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="1.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="RenderTransform.ScaleX" Storyboard.TargetName="BorderMouseOver" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="0.6" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BorderMouseOver" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="#E2E7EF" Storyboard.TargetProperty="BorderBrush.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="RenderTransform.ScaleX" Storyboard.TargetName="BorderMouseOver" />
+                                        <DoubleAnimation Duration="00:00:00.3" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="BorderMouseOver" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.5" AccelerationRatio="0.5" DecelerationRatio="0.5" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>

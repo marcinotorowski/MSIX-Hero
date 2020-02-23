@@ -6,6 +6,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Grid;
@@ -29,7 +31,6 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private SortAdorner sortAdorner;
 
-
         public PackageListView(IApplicationStateManager applicationStateManager = null, IRegionManager regionManager = null)
         {
             this.applicationStateManager = applicationStateManager;
@@ -48,10 +49,25 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             // Set up defaults
             this.UpdateSidebarVisibility();
             this.Loaded += OnLoaded;
+
+            FocusManager.SetFocusedElement(this, this.ListBox);
+            Keyboard.Focus(this.ListBox);
+            this.ListBox.Focus();
+
+            this.Loaded += this.OnLoaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            // ReSharper disable once PossibleNullReferenceException
+            Application.Current.Dispatcher.BeginInvoke(
+                (Action)(() =>
+                {
+                    FocusManager.SetFocusedElement(this, this.ListBox);
+                    Keyboard.Focus(this.ListBox);
+                    this.ListBox.Focus();
+                }), 
+                DispatcherPriority.ApplicationIdle);
             this.SetSorting(this.applicationStateManager.CurrentState.Packages.Sort, this.applicationStateManager.CurrentState.Packages.SortDescending);
         }
 

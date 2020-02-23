@@ -1,4 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using Fluent;
+using Xceed.Wpf.Toolkit.Core.Utilities;
 
 namespace otor.msixhero.ui.Modules.Main.View
 {
@@ -10,6 +14,11 @@ namespace otor.msixhero.ui.Modules.Main.View
         public BackStageOpenView()
         {
             InitializeComponent();
+        }
+
+        private void BackstageButtonClicked(object sender, RoutedEventArgs e)
+        {
+            PopupService.RaiseDismissPopupEvent(sender, DismissPopupMode.Always);
         }
     }
 }
