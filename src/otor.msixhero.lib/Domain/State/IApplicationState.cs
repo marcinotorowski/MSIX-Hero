@@ -7,5 +7,7 @@
         bool IsElevated { get; }
 
         bool IsSelfElevated { get; }
+
+        ApplicationMode Mode { get; }
     }
 }

@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.VolumeManager.View.VolumeManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.VolumeManager"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:volume="clr-namespace:otor.msixhero.lib.Domain.Appx.Volume;assembly=msixhero.lib"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border x:Name="Search" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
+            <Grid>
+                <TextBox Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
+                <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+                    <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
+                        <Path.LayoutTransform>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                        </Path.LayoutTransform>
+                    </Path>
+                    <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in application list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
+                                            <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                <Condition.Value>
+                                                    <system:Int32>0</system:Int32>
+                                                </Condition.Value>
+                                            </Condition>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </DockPanel>
+            </Grid>
+        </Border>
+
+        <ListBox Grid.Column="0" Grid.Row="1" BorderBrush="#ccc" SnapsToDevicePixels="True" UseLayoutRounding="True" ItemsSource="{Binding AllVolumes.CurrentValue}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type volume:AppxVolume}">
+                    <DataTemplate.Resources>
+                        <system:Boolean x:Key="True">True</system:Boolean>
+                    </DataTemplate.Resources>
+                    <DockPanel>
+                        <Path x:Name="PART_Path" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDisk}" VerticalAlignment="Center" Margin="0 0 6 0" />
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{Binding PackageStorePath}" />
+                            <TextBlock Text="{Binding Name}" Opacity="0.65" />
+                        </StackPanel>
+                    </DockPanel>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsDefault}" Value="{StaticResource True}">
+                            <!--<Setter TargetName="PART_Path" Property="Data" Value="{StaticResource VectorBulb}" />-->
+                            <Setter TargetName="PART_Path" Property="Fill" Value="Green" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+
+    </Grid>
+</UserControl>

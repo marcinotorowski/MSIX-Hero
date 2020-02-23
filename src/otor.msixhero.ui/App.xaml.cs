@@ -26,6 +26,8 @@ using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.Settings;
+using otor.msixhero.ui.Modules.VolumeManager.View;
+using otor.msixhero.ui.Modules.VolumeManager.ViewModel;
 using otor.msixhero.ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -43,7 +45,8 @@ namespace otor.msixhero.ui
         static App()
         {
 #if DEBUG
-            LogManager.Initialize(MsixHeroLogLevel.Debug);
+            //LogManager.Initialize(MsixHeroLogLevel.Debug);
+            LogManager.Initialize(MsixHeroLogLevel.Info);
 #else
             LogManager.Initialize(MsixHeroLogLevel.Info);
 #endif
@@ -139,6 +142,7 @@ namespace otor.msixhero.ui
             base.ConfigureViewModelLocator();
             ViewModelLocationProvider.Register<MainView, MainViewModel>();
             ViewModelLocationProvider.Register<PackageListView, PackageListViewModel>();
+            ViewModelLocationProvider.Register<VolumeManagerView, VolumeManagerViewModel>();
             ViewModelLocationProvider.Register<SinglePackageView, SinglePackageViewModel>();
             ViewModelLocationProvider.Register<MultiSelectionView, MultiSelectionViewModel>();
             ViewModelLocationProvider.Register<NewSelfSignedView, NewSelfSignedViewModel>();

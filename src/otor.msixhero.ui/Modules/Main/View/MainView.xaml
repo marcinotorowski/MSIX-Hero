@@ -16,7 +16,6 @@
                      xmlns:viewModel1="clr-namespace:otor.msixhero.ui.ViewModel"
                      xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
                      xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
-                     xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
                      d:DesignWidth="600"
                      mc:Ignorable="d"
                      d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -61,7 +60,6 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Settings}" Command="{Binding CommandHandler.Settings}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Volumes}" Command="{Binding CommandHandler.Volumes}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Help" Command="{Binding CommandHandler.Help}" />
     </routedCommand:RoutedCommandHandlers.Commands>
@@ -74,6 +72,31 @@
         </Grid.RowDefinitions>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Style TargetType="Fluent:RibbonGroupBox">
+                <Style.Resources>
+                    <Storyboard x:Key="Animation">
+                        <DoubleAnimation From="0.0" To="1.0" Duration="00:00:0.15" Storyboard.TargetProperty="Opacity" />
+                        <DoubleAnimation From="-24" To="0" Duration="00:00:0.15" Storyboard.TargetProperty="RenderTransform.X" />
+                    </Storyboard>
+                </Style.Resources>
+                <Style.Triggers>
+                    <Trigger Property="IsVisible" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard Storyboard="{StaticResource Animation}" />
+                        </Trigger.EnterActions>
+                    </Trigger>
+                    <!--<EventTrigger RoutedEvent="Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard Storyboard="{StaticResource Animation}" />
+                        </EventTrigger.Actions>
+                    </EventTrigger>-->
+                </Style.Triggers>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TranslateTransform />
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </Grid.Resources>
 
         <Fluent:Ribbon
@@ -85,8 +108,13 @@
             x:Name="Ribbon"  Grid.Row="0">
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup 
-                    x:Name="ToolsGroup"
+                    x:Name="SelectedPackage"
                     Header="Selected package" 
+                    Background="GreenYellow" 
+                    BorderBrush="LightGreen" />
+                <Fluent:RibbonContextualTabGroup 
+                    x:Name="SelectedVolume"
+                    Header="Selected volume" 
                     Background="GreenYellow" 
                     BorderBrush="LightGreen" />
             </Fluent:Ribbon.ContextualGroups>
@@ -132,10 +160,41 @@
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
 
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabVolumesHome"
+                Header="Home">
+
+                <Fluent:RibbonGroupBox Header="Actions">
+                    <Fluent:Button Size="Large" Header="Refresh volumes" Command="Refresh" SizeDefinition="Large, Large, Small">
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
+                    <Separator />
+
+                    <Fluent:Button Header="Add volume..." Command="{x:Static commands:MsixHeroCommands.AddPackage}">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 Z" Style="{StaticResource LargeIcon}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 Z" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+
             <!--Tabs-->
-            <Fluent:RibbonTabItem Header="Home" ReduceOrder="
-                                      RibbonHomeActions,RibbonHomeActions,RibbonHomeActions,
-                                      RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabHome"
+                Header="Home" ReduceOrder="
+                  RibbonHomeActions,RibbonHomeActions,RibbonHomeActions,
+                  RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
 
                 <Fluent:RibbonGroupBox x:Name="RibbonHomeActions" Header="Actions">
                     <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Small">
@@ -146,6 +205,9 @@
                             <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
+
+                    <Separator />
+
                     <Fluent:Button Header="Install package for current user..." Command="{x:Static commands:MsixHeroCommands.AddPackage}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="M 16 3 C 8.832031 3 3 8.832031 3 16 C 3 23.167969 8.832031 29 16 29 C 23.167969 29 29 23.167969 29 16 C 29 8.832031 23.167969 3 16 3 Z M 16 5 C 22.085938 5 27 9.914063 27 16 C 27 22.085938 22.085938 27 16 27 C 9.914063 27 5 22.085938 5 16 C 5 9.914063 9.914063 5 16 5 Z M 15 10 L 15 15 L 10 15 L 10 17 L 15 17 L 15 22 L 17 22 L 17 17 L 22 17 L 22 15 L 17 15 L 17 10 Z" Style="{StaticResource LargeIcon}" />
@@ -206,20 +268,12 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorLogs}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Volume manager..." Command="{x:Static commands:MsixHeroCommands.Volumes}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.LargeIcon>
-                            <Path Data="{StaticResource VectorDisk}" Style="{StaticResource LargeIcon}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.Icon>
-                            <Path Data="{StaticResource VectorDisk}" Style="{StaticResource MediumIcon}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="View"
+
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabView"
+                Header="View"
                 ReduceOrder="RibbonViewGroupBy,RibbonViewGroupBy,RibbonViewGroupBy">
 
                 <Fluent:RibbonGroupBox x:Name="RibbonHomeContext" Header="Context">
@@ -366,7 +420,10 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
-            <Fluent:RibbonTabItem Header="Edit" ReduceOrder=",
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabEdit"
+                Header="Edit" 
+                ReduceOrder=",
                             RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
                             RibbonCodeSigning,RibbonCodeSigning,RibbonCodeSigning
                             RibbonToolsCreate,RibbonToolsCreate,RibbonToolsCreate,">
@@ -485,8 +542,10 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
-            <Fluent:RibbonTabItem Header="Certificates"
-                    ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabCertificates"
+                Header="Certificates"
+                ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1
                             RibbonToolsCerts2,RibbonToolsCerts2,RibbonToolsCerts2">
                 <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonToolsCerts1">
                     <Fluent:RibbonGroupBox.Icon>
@@ -553,10 +612,11 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem 
-                    ReduceOrder="
-                        RibbonManagementNavi,RibbonManagementNavi,RibbonManagementNavi,
-                        RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
-                    x:Name="TabMaintenance" Header="Management" Group="{Binding Source={x:Reference ToolsGroup}}">
+                x:Name="RibbonTabManagement"
+                ReduceOrder="
+                    RibbonManagementNavi,RibbonManagementNavi,RibbonManagementNavi,
+                    RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
+                Header="Management" Group="{Binding Source={x:Reference SelectedPackage}}">
                 <Fluent:RibbonGroupBox Visibility="Collapsed" IsEnabled="{Binding HasSingleSelection}">
                     <Fluent:SplitButton Header="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" Size="Middle">
                         <Fluent:SplitButton.Icon>
@@ -661,12 +721,54 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 
-            <Fluent:RibbonTabItem x:Name="TabDeveloper" 
-                    ReduceOrder="
-                      (RibbonDevRun),(RibbonDevRun),(RibbonDevRun),
-                      RibbonDevReg,RibbonDevReg,RibbonDevReg
-                      RibbonDevCreate,RibbonDevCreate,RibbonDevCreate"
-                      Header="Developer" Group="{Binding Source={x:Reference ToolsGroup}}">
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabVolumesManagement"
+                Header="Management" 
+                Group="{Binding Source={x:Reference SelectedVolume}}">
+                <Fluent:RibbonGroupBox>
+                    <Fluent:Button Header="Remove">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDelete}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Separator />
+                    <Fluent:Button Header="Set as default">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorWrench}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Separator />
+                    <Fluent:Button Header="Unmount">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDeleteUser}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDeleteUser}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabDeveloper" 
+                ReduceOrder="
+                  (RibbonDevRun),(RibbonDevRun),(RibbonDevRun),
+                  RibbonDevReg,RibbonDevReg,RibbonDevReg
+                  RibbonDevCreate,RibbonDevCreate,RibbonDevCreate"
+                  Header="Developer" 
+                Group="{Binding Source={x:Reference SelectedPackage}}">
                 <Fluent:RibbonGroupBox x:Name="RibbonDevCreate" Header="Create...">
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
@@ -858,7 +960,107 @@
 
         <Border Background="#FFFFFF" Grid.Row="2" >
             <progressOverlay:ProgressOverlay IsShown="{Binding IsLoading}" Progress="{Binding LoadingProgress}" Message="{Binding LoadingMessage}">
-                <ContentControl regions:RegionManager.RegionName="ContentRegion" />
+                <TabControl Grid.IsSharedSizeScope="True" regions:RegionManager.RegionName="ContentRegion">
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="Header" Value="{Binding DataContext.Header}"/>
+                        </Style>
+                    </TabControl.Resources>
+                    <TabControl.Style>
+                        <Style TargetType="{x:Type TabControl}">
+                            <Setter Property="OverridesDefaultStyle" Value="True" />
+                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                            <Setter Property="BorderBrush" Value="#D2D2D2" />
+                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0 5 0 0" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabControl}">
+                                        <DockPanel>
+                                            <StackPanel 
+                                                DockPanel.Dock="Left"
+                                                x:Name="HeaderPanel"
+                                                Panel.ZIndex="1"
+                                                Margin="{TemplateBinding Padding}"
+                                                IsItemsHost="True"
+                                                Width="42"
+                                                KeyboardNavigation.TabIndex="1"
+                                                Background="Transparent" />
+                                            <Border Width="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Stretch" />
+                                            <Border x:Name="Border"
+                                                KeyboardNavigation.TabNavigation="Local"
+                                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                                KeyboardNavigation.TabIndex="2">
+                                                <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  ContentSource="SelectedContent" />
+                                            </Border>
+                                        </DockPanel>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ItemContainerStyle">
+                                <Setter.Value>
+                                    <Style TargetType="{x:Type TabItem}">
+                                        <Setter Property="Header" Value="{Binding DataContext.Header}" />
+                                        <Setter Property="Tag" Value="{Binding DataContext.Icon}" />
+                                        <Setter Property="Width" Value="42" />
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Height" Value="42" />
+                                        <!--<Setter Property="VerticalContentAlignment" Value="Center" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />-->
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type TabItem}">
+                                                    <Border Background="{TemplateBinding Background}" ToolTip="{TemplateBinding Header}">
+                                                        <StackPanel 
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center">
+                                                            <Viewbox Width="24" Height="24">
+                                                                <Path 
+                                                                Width="32"
+                                                                Height="32"
+                                                                Fill="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                                                                IsHitTestVisible="False"
+                                                                x:Name="ContentIcon"
+                                                                Data="{TemplateBinding Tag}"/>
+                                                            </Viewbox>
+                                                            <ContentPresenter 
+                                                                Visibility="Collapsed"
+                                                                IsHitTestVisible="False"
+                                                                x:Name="ContentSite"
+                                                                ContentSource="Header"
+                                                                TextBlock.FontSize="8"
+                                                                RecognizesAccessKey="True" />
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="Tag" Value="{x:Null}">
+                                                            <Setter Property="Visibility" TargetName="ContentIcon" Value="Collapsed" />
+                                                            <Setter Property="Visibility" TargetName="ContentSite" Value="Visible" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#CDE6F7" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#B1D6F0" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Style>
+                </TabControl>
             </progressOverlay:ProgressOverlay>
         </Border>
         <Fluent:StatusBar Grid.Row="3">

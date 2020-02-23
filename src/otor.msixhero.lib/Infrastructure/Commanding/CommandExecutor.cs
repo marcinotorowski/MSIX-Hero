@@ -436,9 +436,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.writableApplicationStateManager, this.busyManager);
 
+            this.reducerFactories[typeof(SetMode)] = action => new SetModeReducer((SetMode)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(AddVolume)] = action => new AddVolumeReducer((AddVolume)action, this.appxVolumeManager, this.processManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RemoveVolume)] = action => new RemoveVolumeReducer((RemoveVolume)action, this.appxVolumeManager, this.processManager, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetVolumes)] = action => new GetVolumesReducer((GetVolumes)action, this.appxVolumeManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(GetVolumes)] = action => new GetVolumesReducer((GetVolumes)action, this.appxVolumeManager, this.writableApplicationStateManager, busyManager);
         }
     }
 }

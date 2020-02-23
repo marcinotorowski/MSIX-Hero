@@ -83,8 +83,7 @@ namespace otor.msixhero.ui.ViewModel
             this.Copy = new DelegateCommand(param => this.CopyExecute(param == null ? PackageProperty.FullName : (PackageProperty)param));
             this.Refresh = new DelegateCommand(param => this.RefreshExecute(), param => this.CanRefresh());
             this.Settings = new DelegateCommand(param => this.SettingsExecute(param as string), param => true);
-            this.Volumes = new DelegateCommand(param => this.VolumesExecute(), param => true);
-
+            
             this.Help = new DelegateCommand(param => this.HelpExecute());
         }
 
@@ -117,9 +116,7 @@ namespace otor.msixhero.ui.ViewModel
         public ICommand Unpack { get; }
 
         public ICommand Settings { get; }
-
-        public ICommand Volumes { get; }
-
+        
         public ICommand OpenResign { get; }
 
         public ICommand CertManager { get; }
@@ -688,11 +685,6 @@ namespace otor.msixhero.ui.ViewModel
         private void SettingsExecute(string tab)
         {
             this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters { { "tab", tab }}, this.OnDialogClosed);
-        }
-
-        private void VolumesExecute()
-        {
-            this.dialogService.ShowDialog(DialogsModule.VolumesPath, new DialogParameters(), this.OnDialogClosed);
         }
     }
 }

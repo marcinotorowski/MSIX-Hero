@@ -5,10 +5,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Domain.Commands.Grid;
 using otor.msixhero.lib.Domain.Events;
+using otor.msixhero.lib.Domain.State;
+using otor.msixhero.ui.Themes;
 using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Events;
@@ -16,10 +20,18 @@ using Prism.Regions;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
-    public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
+    public interface IHeaderViewModel
+    {
+        string Header { get; }
+
+        Geometry Icon { get; }
+    }
+
+    public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware, IHeaderViewModel
     {
         private readonly IApplicationStateManager stateManager;
         private readonly IRegionManager regionManager;
+        private bool isActive;
 
         public PackageListViewModel(IApplicationStateManager stateManager, IRegionManager regionManager)
         {
@@ -38,6 +50,32 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             this.RefreshPackages();
         }
+
+        public bool IsActive
+        {
+            get => this.isActive;
+            set
+            {
+                if (this.isActive == value)
+                {
+                    return;
+                }
+
+                this.isActive = value;
+                this.IsActiveChanged?.Invoke(this, new EventArgs());
+
+                if (value)
+                {
+                    this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
+                }
+            }
+        }
+
+        public event EventHandler IsActiveChanged;
+
+        public string Header { get; } = "Packages";
+
+        public Geometry Icon { get; } = VectorIcons.TabPackages;
 
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
@@ -215,12 +253,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
         
-        public bool IsActive { get; set; }
-
-        public event EventHandler IsActiveChanged;
-
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
+            this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

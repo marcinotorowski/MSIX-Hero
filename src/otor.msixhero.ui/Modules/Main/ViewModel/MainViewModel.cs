@@ -27,12 +27,13 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         private bool isLoading;
         private string loadingMessage;
         private int loadingProgress;
+        private PackageContext? tempContext;
 
         public MainViewModel(
             IInteractionService interactionService,
             IApplicationStateManager stateManager, 
             IConfigurationService configurationService, 
-            IDialogService dialogService, 
+            IDialogService dialogService,
             IBusyManager busyManager)
         {
             this.interactionService = interactionService;
@@ -48,7 +49,6 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnPackageGroupAndSortChanged);
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
             stateManager.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.OnToolsChangedEvent, ThreadOption.UIThread);
-
             this.SetTools();
         }
 
@@ -82,9 +82,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         public CommandHandler CommandHandler => new CommandHandler(this.interactionService, this.configurationService, this.stateManager, this.dialogService);
 
         public ObservableCollection<ToolViewModel> Tools { get; }
-
-        private PackageContext? tempContext;
-
+        
         public PackageContext Context
         {
             get

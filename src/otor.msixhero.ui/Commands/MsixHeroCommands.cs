@@ -32,7 +32,6 @@ namespace otor.msixhero.ui.Commands
             ModificationPackage = new RoutedUICommand { Text = "Opens a wizard for modification package generation" };
             AppAttach = new RoutedUICommand { Text = "Opens a wizard for app attach generation" };
             Settings = new RoutedUICommand { Text = "Opens settings" };
-            Volumes = new RoutedUICommand { Text = "Opens volume manager" };
         }
 
         public static RoutedUICommand Deprovision { get; }
@@ -42,9 +41,7 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand OpenResign { get; }
 
         public static RoutedUICommand OpenExplorerUser { get; }
-
-        public static RoutedUICommand Volumes { get; }
-
+        
         public static RoutedUICommand CreateSelfSign { get; }
 
         public static RoutedUICommand ExtractCertifiacte { get; }

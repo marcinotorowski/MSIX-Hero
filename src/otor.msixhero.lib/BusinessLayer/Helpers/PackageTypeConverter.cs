@@ -16,13 +16,13 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
             var isBridge = (packageType & MsixPackageType.BridgeDirect) == MsixPackageType.BridgeDirect;
             if (isBridge)
             {
-                return "Desktop Bridge";
+                return "Win32";
             }
 
             var isPsf = (packageType & MsixPackageType.BridgePsf) == MsixPackageType.BridgePsf;
             if (isPsf)
             {
-                return "Desktop Bridge + PSF";
+                return "Win32 + PSF";
             }
 
             var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web;

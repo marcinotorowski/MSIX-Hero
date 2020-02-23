@@ -17,28 +17,39 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         // ReSharper disable once NotAccessedField.Local
         private readonly GetVolumes command;
         private readonly IAppxVolumeManager volumeManager;
+        private readonly IBusyManager busyManager;
 
-        public GetVolumesReducer(GetVolumes command, IAppxVolumeManager volumeManager, IWritableApplicationStateManager stateManager) : base(command, stateManager)
+        public GetVolumesReducer(GetVolumes command, IAppxVolumeManager volumeManager, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(command, stateManager)
         {
             this.command = command;
             this.volumeManager = volumeManager;
+            this.busyManager = busyManager;
         }
 
         public override async Task<List<AppxVolume>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
         {
-            var defaultVolume = await this.volumeManager.GetDefault(cancellationToken).ConfigureAwait(false);
-            var allVolumes = await this.volumeManager.GetAll(cancellationToken).ConfigureAwait(false);
+            var context = this.busyManager.Begin();
 
-            if (defaultVolume != null)
+            try
             {
-                defaultVolume = allVolumes.FirstOrDefault(v => string.Equals(v.PackageStorePath, defaultVolume.PackageStorePath, StringComparison.OrdinalIgnoreCase));
+                var defaultVolume = await this.volumeManager.GetDefault(cancellationToken, context).ConfigureAwait(false);
+                var allVolumes = await this.volumeManager.GetAll(cancellationToken, context).ConfigureAwait(false);
+
                 if (defaultVolume != null)
                 {
-                    defaultVolume.IsDefault = true;
+                    defaultVolume = allVolumes.FirstOrDefault(v => string.Equals(v.PackageStorePath, defaultVolume.PackageStorePath, StringComparison.OrdinalIgnoreCase));
+                    if (defaultVolume != null)
+                    {
+                        defaultVolume.IsDefault = true;
+                    }
                 }
-            }
 
-            return allVolumes;
+                return allVolumes;
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
     }
 }
