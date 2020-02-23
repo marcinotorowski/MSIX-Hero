@@ -9,8 +9,13 @@
              xmlns:volume="clr-namespace:otor.msixhero.lib.Domain.Appx.Volume;assembly=msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel"
+             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
+    <routedCommand:RoutedCommandHandlers.Commands>
+        <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+    </routedCommand:RoutedCommandHandlers.Commands>
+
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -64,7 +69,7 @@
             BorderBrush="#ccc" 
             SnapsToDevicePixels="True" 
             UseLayoutRounding="True" 
-            ItemsSource="{Binding AllVolumes.CurrentValue}">
+            ItemsSource="{Binding AllVolumesView}">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type volume:AppxVolume}">
                     <DataTemplate.Resources>

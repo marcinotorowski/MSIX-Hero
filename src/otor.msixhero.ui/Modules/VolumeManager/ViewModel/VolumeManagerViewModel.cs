@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Media;
-using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Volumes;
+using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Domain.State;
-using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Themes;
 using otor.msixhero.ui.ViewModel;
 using Prism;
+using Prism.Events;
 using Prism.Regions;
 
 namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
@@ -24,16 +24,19 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
         private readonly IApplicationStateManager stateManager;
         private bool isActive;
         private string searchKey;
+        private bool firstRun = true;
 
-        public VolumeManagerViewModel(IApplicationStateManager stateManager)
+        public VolumeManagerViewModel(IApplicationStateManager stateManager, IEventAggregator eventAggregator)
         {
             this.stateManager = stateManager;
-            this.AllVolumes = new AsyncProperty<ObservableCollection<AppxVolume>>();
+            eventAggregator.GetEvent<VolumesCollectionChanged>().Subscribe(this.OnVolumesCollectionChanged, ThreadOption.UIThread);
+            this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
+            this.CommandHandler = new VolumeManagerCommandHandler(stateManager);
         }
 
-        public VolumeManagerCommandHandler CommandHandler { get; } = new VolumeManagerCommandHandler();
+        public VolumeManagerCommandHandler CommandHandler { get; }
 
-        public bool IsActive    
+        public bool IsActive
         {
             get => this.isActive;
             set
@@ -49,12 +52,12 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                 if (value)
                 {
                     this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.VolumeManager));
-#pragma warning disable 4014
-                    if (!this.AllVolumes.HasValue)
+
+                    if (this.firstRun)
                     {
-                        this.AllVolumes.Load(this.LoadVolumes());
+                        this.firstRun = false;
+                        this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes());
                     }
-#pragma warning restore 4014
                 }
             }
         }
@@ -75,7 +78,9 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
         {
         }
 
-        public AsyncProperty<ObservableCollection<AppxVolume>> AllVolumes { get; }
+        public ObservableCollection<AppxVolume> AllVolumes { get; } = new ObservableCollection<AppxVolume>();
+
+        public ICollectionView AllVolumesView { get; }
 
         public string Header { get; } = "Volume manager";
 
@@ -86,11 +91,29 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             get => this.searchKey;
             set => this.SetField(ref this.searchKey, value);
         }
-
-        private async Task<ObservableCollection<AppxVolume>> LoadVolumes()
+        private void OnVolumesCollectionChanged(VolumesCollectionChangedPayLoad obj)
         {
-            var items = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetVolumes()).ConfigureAwait(false);
-            return new ObservableCollection<AppxVolume>(items);
+            if (obj.Type == CollectionChangeType.Reset)
+            {
+
+                this.AllVolumes.Clear();
+                foreach (var item in this.stateManager.CurrentState.Volumes.VisibleItems.Union(this.stateManager.CurrentState.Volumes.HiddenItems))
+                {
+                    this.AllVolumes.Add(item);
+                }
+            }
+            else
+            {
+                foreach (var item in obj.NewVolumes)
+                {
+                    this.AllVolumes.Add(item);
+                }
+
+                foreach (var item in obj.OldVolumes)
+                {
+                    this.AllVolumes.Remove(item);
+                }
+            }
         }
     }
 }
