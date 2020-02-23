@@ -8,6 +8,7 @@ using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
 using otor.msixhero.lib.Domain.Commands.Volumes;
+using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -44,6 +45,14 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                     }
                 }
 
+                var state = this.StateManager.CurrentState;
+                state.Volumes.SelectedItems.Clear();
+                state.Volumes.VisibleItems.Clear();
+                state.Volumes.HiddenItems.Clear();
+                state.Volumes.VisibleItems.AddRange(allVolumes);
+
+                this.StateManager.EventAggregator.GetEvent<VolumesCollectionChanged>().Publish(new VolumesCollectionChangedPayLoad(CollectionChangeType.Reset));
+                await this.StateManager.CommandExecutor.ExecuteAsync(new SetVolumeFilter(state.Volumes.SearchKey), cancellationToken).ConfigureAwait(false);
                 return allVolumes;
             }
             finally

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using otor.msixhero.lib.Domain.Appx.Packages;
+﻿using System.Collections.Generic;
 using otor.msixhero.ui.ViewModel;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class MultiSelectionViewModel : NotifyPropertyChanged, INavigationAware
     {

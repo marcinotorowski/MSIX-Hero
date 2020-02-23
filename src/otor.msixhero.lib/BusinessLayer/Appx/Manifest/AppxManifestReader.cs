@@ -234,7 +234,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         }
 
                         var psfApps = appxPackage.Applications.Where(a =>
-                            PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage) ==
+                            PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, appxPackage.IsFramework) ==
                             MsixPackageType.BridgePsf).ToArray();
                         if (psfApps.Any())
                         {

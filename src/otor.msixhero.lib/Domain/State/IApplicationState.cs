@@ -4,6 +4,8 @@
     {
         IPackageListState Packages { get; }
 
+        IVolumeListState Volumes { get; }
+
         bool IsElevated { get; }
 
         bool IsSelfElevated { get; }

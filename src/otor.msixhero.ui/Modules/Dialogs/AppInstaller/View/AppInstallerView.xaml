@@ -11,6 +11,7 @@
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:common="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common"
              xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.View"
              mc:Ignorable="d" 
              d:DesignWidth="800"
              d:DesignHeight="800"
@@ -51,7 +52,7 @@
                     <TabItem Header="Package">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <AdornerDecorator>
-                                <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
+                                <view:PackageSelectorView DataContext="{Binding PackageSelection}" />
                             </AdornerDecorator>
                         </ScrollViewer>
                     </TabItem>

@@ -25,6 +25,7 @@ using otor.msixhero.ui.Modules.Main.ViewModel;
 using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.Modules.Settings;
 using otor.msixhero.ui.Modules.VolumeManager.View;
 using otor.msixhero.ui.Modules.VolumeManager.ViewModel;

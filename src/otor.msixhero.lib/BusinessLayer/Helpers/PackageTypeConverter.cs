@@ -31,52 +31,63 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                 return "Web";
             }
 
+            var isFramework = (packageType & MsixPackageType.Framework) == MsixPackageType.Framework;
+            if (isFramework)
+            {
+                return "Framework";
+            }
+
             return "Unknown";
         }
 
-        public static string GetPackageTypeStringFrom(string entryPoint, string executable, string startPage)
+        public static string GetPackageTypeStringFrom(string entryPoint, string executable, string startPage, bool isFramework)
         {
-            return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage));
+            return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework));
         }
 
-        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage)
+        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework)
         {
-            if (string.IsNullOrEmpty(entryPoint))
+            if (isFramework)
             {
+                return MsixPackageType.Framework;
+            }
+
+            if (!string.IsNullOrEmpty(entryPoint))
+            {
+                switch (entryPoint)
+                {
+                    case "Windows.FullTrustApplication":
+
+                        if (!string.IsNullOrEmpty(executable))
+                        {
+                            if (string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psflauncher64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psflauncher.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psfrundll64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psfrundll32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psfrundll.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("ai_stubs\\aistub.exe", executable, StringComparison.OrdinalIgnoreCase) ||
+                                string.Equals("psfmonitor.exe", executable, StringComparison.OrdinalIgnoreCase))
+                            {
+                                return MsixPackageType.BridgePsf;
+                            }
+
+                            return MsixPackageType.BridgeDirect;
+                        }
+
+                        return 0;
+                }
+
+                if (string.IsNullOrEmpty(startPage))
+                {
+                    return MsixPackageType.Uwp;
+                }
+
                 return 0;
             }
 
-            switch (entryPoint)
-            {
-                case "Windows.FullTrustApplication":
-
-                    if (!string.IsNullOrEmpty(executable))
-                    {
-                        if (string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals("psflauncher64.exe", executable, StringComparison.OrdinalIgnoreCase) || 
-                            string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals("psflauncher.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals("psfrundll64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals("psfrundll32.exe", executable, StringComparison.OrdinalIgnoreCase) || 
-                            string.Equals("psfrundll.exe", executable, StringComparison.OrdinalIgnoreCase) || 
-                            string.Equals("ai_stubs\\aistub.exe", executable, StringComparison.OrdinalIgnoreCase) || 
-                            string.Equals("psfmonitor.exe", executable, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return MsixPackageType.BridgePsf;
-                        }
-
-                        return MsixPackageType.BridgeDirect;
-                    }
-
-                    return 0;
-            }
-
-            if (string.IsNullOrEmpty(startPage))
-            {
-                return MsixPackageType.Uwp;
-            }
-
-            return MsixPackageType.Web;
+            return string.IsNullOrEmpty(startPage) ? 0 : MsixPackageType.Web;
         }
     }
 }

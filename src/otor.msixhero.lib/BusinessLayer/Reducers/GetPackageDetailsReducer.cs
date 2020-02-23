@@ -4,7 +4,7 @@ using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers

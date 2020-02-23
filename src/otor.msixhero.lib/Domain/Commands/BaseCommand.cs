@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Xml.Serialization;
-using otor.msixhero.lib.Domain.Commands.Developer;
-using otor.msixhero.lib.Domain.Commands.Grid;
-using otor.msixhero.lib.Domain.Commands.Manager;
-using otor.msixhero.lib.Domain.Commands.Signing;
-using otor.msixhero.lib.Domain.Commands.UI;
+using otor.msixhero.lib.Domain.Commands.Packages.Developer;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
+using otor.msixhero.lib.Domain.Commands.Packages.Manager;
+using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 
 namespace otor.msixhero.lib.Domain.Commands
 {

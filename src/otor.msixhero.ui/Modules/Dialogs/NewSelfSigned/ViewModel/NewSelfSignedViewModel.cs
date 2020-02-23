@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Signing;
+using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;

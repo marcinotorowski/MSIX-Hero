@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Events;
+using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.PackageList.View;

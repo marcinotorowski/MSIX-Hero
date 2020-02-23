@@ -17,6 +17,8 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
 
         public string Logo { get; set; }
 
+        public bool IsFramework { get; set; }
+
         public string DisplayName { get; set; }
         
         public MsixPackageType PackageType { get; set; }

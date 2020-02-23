@@ -3,7 +3,7 @@ using otor.msixhero.lib.Domain.Appx.Manifest.Build;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class InstalledPackageDetailsViewModel : NotifyPropertyChanged
     {
@@ -45,7 +45,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                         this.TileColor = item.BackgroundColor;
                     }
 
-                    this.Applications.Add(new AppxApplicationViewModel(item));
+                    this.Applications.Add(new AppxApplicationViewModel(item, model));
                 }
             }
 

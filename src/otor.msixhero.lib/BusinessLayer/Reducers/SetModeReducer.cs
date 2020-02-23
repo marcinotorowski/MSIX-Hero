@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands;
+using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Infrastructure;
 

@@ -11,7 +11,7 @@ using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands;
-using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;

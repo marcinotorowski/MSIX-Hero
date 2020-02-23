@@ -2,8 +2,9 @@
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Events;
+using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 

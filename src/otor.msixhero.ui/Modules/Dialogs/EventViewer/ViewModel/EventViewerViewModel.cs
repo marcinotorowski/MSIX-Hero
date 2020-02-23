@@ -8,7 +8,7 @@ using System.Windows.Data;
 using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Logs;
-using otor.msixhero.lib.Domain.Commands.Developer;
+using otor.msixhero.lib.Domain.Commands.Packages.Developer;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;

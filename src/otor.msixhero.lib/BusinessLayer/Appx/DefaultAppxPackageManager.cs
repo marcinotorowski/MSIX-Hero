@@ -743,6 +743,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 Description = details.Description,
                 DisplayPublisherName = details.DisplayPublisherName,
                 Publisher = item.Id.Publisher,
+                IsFramework = item.IsFramework,
                 TileColor = details.Color,
                 PackageType = details.PackageType,
                 Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),

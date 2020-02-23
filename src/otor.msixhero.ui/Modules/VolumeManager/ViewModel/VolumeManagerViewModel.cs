@@ -7,6 +7,7 @@ using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
 using otor.msixhero.lib.Domain.Commands;
+using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.ui.Helpers;

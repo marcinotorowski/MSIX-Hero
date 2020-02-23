@@ -1,18 +1,19 @@
-﻿using System;
-using otor.msixhero.lib.BusinessLayer.Helpers;
+﻿using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class AppxApplicationViewModel : NotifyPropertyChanged
     {
         private readonly AppxApplication model;
-        
-        public AppxApplicationViewModel(AppxApplication model)
+        private readonly AppxPackage package;
+
+        public AppxApplicationViewModel(AppxApplication model, AppxPackage package)
         {
             this.model = model;
+            this.package = package;
             this.Psf = model.Psf == null ? null : new AppxPsfViewModel(model.Psf);
         }
 
@@ -30,7 +31,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         {
             get
             {
-                switch (PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage))
+                switch (PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework))
                 {
                     case MsixPackageType.BridgeDirect:
                     case MsixPackageType.BridgePsf:
@@ -49,8 +50,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
         
-        public MsixPackageType Type => PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage);
+        public MsixPackageType Type => PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
 
-        public string DisplayType => PackageTypeConverter.GetPackageTypeStringFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage);
+        public string DisplayType => PackageTypeConverter.GetPackageTypeStringFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
     }
 }

@@ -3,6 +3,8 @@
     public interface IWritableApplicationState
     {
         IWritablePackageListState Packages { get; }
+
+        IWritableVolumeListState Volumes { get; }
         
         bool IsSelfElevated { get; set; }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using otor.msixhero.lib.BusinessLayer.Helpers;
+using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Infrastructure.Logging;
 
 namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
@@ -110,20 +111,6 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
                 result.Publisher = identity.Attributes["Publisher"]?.Value;
                 result.ProcessorArchitecture = identity.Attributes["ProcessorArchitecture"]?.Value;
             }
-            
-            if ((mode & AppxManifestSummaryBuilderMode.Applications) == AppxManifestSummaryBuilderMode.Applications)
-            {
-                result.PackageType = 0;
-                Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']...");
-                var applications = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
-                foreach (var subNode in applications.OfType<XmlNode>())
-                {
-                    var entryPoint = subNode.Attributes["EntryPoint"]?.Value;
-                    var executable = subNode.Attributes["Executable"]?.Value;
-                    var startPage = subNode.Attributes["StartPage"]?.Value;
-                    result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage);
-                }
-            }
 
             if ((mode & AppxManifestSummaryBuilderMode.Properties) == AppxManifestSummaryBuilderMode.Properties)
             {
@@ -146,12 +133,32 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
                         case "Logo":
                             result.Logo = subNode.InnerText;
                             break;
+                        case "Framework":
+                            result.IsFramework = bool.TryParse(subNode?.InnerText ?? "False", out var parsed) && parsed;
+                            break;
                     }
                 }
 
                 Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements'] for a single node...");
                 node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
                 result.AccentColor = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
+            }
+
+            if ((mode & AppxManifestSummaryBuilderMode.Applications) == AppxManifestSummaryBuilderMode.Applications)
+            {
+                result.PackageType = result.IsFramework ? MsixPackageType.Framework : 0;
+
+                Logger.Trace("Executing XQuery /*[local-name()='Package']");
+                var package = xmlDocument.SelectSingleNode("/*[local-name()='Package']");
+                Logger.Trace("Executing XQuery /*[local-name()='Applications']/*[local-name()='Application']...");
+                var applications = package.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
+                foreach (var subNode in applications.OfType<XmlNode>())
+                {
+                    var entryPoint = subNode.Attributes["EntryPoint"]?.Value;
+                    var executable = subNode.Attributes["Executable"]?.Value;
+                    var startPage = subNode.Attributes["StartPage"]?.Value;
+                    result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage, result.IsFramework);
+                }
             }
 
             Logger.Debug("Manifest information parsed.");

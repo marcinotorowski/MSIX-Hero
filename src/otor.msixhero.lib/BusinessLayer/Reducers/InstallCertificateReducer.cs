@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Signing;
+using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 

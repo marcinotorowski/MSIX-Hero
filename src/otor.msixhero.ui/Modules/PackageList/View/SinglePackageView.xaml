@@ -13,9 +13,10 @@
              xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
              xmlns:descriptor="clr-namespace:otor.msixhero.lib.Domain.Appx.Psf.Descriptor;assembly=msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewModel1:SinglePackageViewModel}"
+             d:DataContext="{d:DesignInstance elements:SinglePackageViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -119,7 +120,7 @@
                                             <DataTemplate>
                                                 <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
                                                     <ItemsControl.ItemTemplate>
-                                                        <DataTemplate DataType="{x:Type viewModel1:AppxApplicationViewModel}">
+                                                        <DataTemplate DataType="{x:Type elements:AppxApplicationViewModel}">
                                                             <StackPanel Margin="0 0 0 8">
                                                                 <DockPanel>
                                                                     <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -280,7 +281,7 @@
                                             <ListBox 
                                             ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
                                                 <ListBox.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type viewModel1:InstalledPackageDetailsViewModel}">
+                                                    <DataTemplate DataType="{x:Type elements:InstalledPackageDetailsViewModel}">
                                                         <DockPanel>
                                                             <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                                 <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -329,7 +330,7 @@
                     <DockPanel Margin="0">
                         <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type viewModel1:OperatingSystemDependencyViewModel}">
+                                <DataTemplate DataType="{x:Type elements:OperatingSystemDependencyViewModel}">
                                     <StackPanel>
                                         <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -351,7 +352,7 @@
 
                         <ListBox ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies}">
                             <ListBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type viewModel1:PackageDependencyViewModel}">
+                                <DataTemplate DataType="{x:Type elements:PackageDependencyViewModel}">
                                     <DockPanel>
                                         <TextBlock Text="{Binding Version}" Margin="10 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
 

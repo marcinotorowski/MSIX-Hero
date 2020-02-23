@@ -10,6 +10,7 @@
              xmlns:builder="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Builder;assembly=msixhero.lib"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
+             xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.View"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:ModificationPackageViewModel}">
@@ -44,7 +45,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <AdornerDecorator>
                                 <StackPanel>
-                                    <common:PackageSelectorView DataContext="{Binding ModificationPackageDetails}" />
+                                    <view1:PackageSelectorView DataContext="{Binding ModificationPackageDetails}" />
                                     <TextBlock Foreground="#666" Text="What should be created?" Margin="0 16 0 6" />
                                     <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create only manifest" />
                                     <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create unsigned MSIX modification package" Margin="0 6" />
@@ -55,7 +56,7 @@
                     </TabItem>
                     <TabItem Header="Parent package">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <common:PackageSelectorView DataContext="{Binding PackageSelection}" />
+                            <view1:PackageSelectorView DataContext="{Binding PackageSelection}" />
                         </ScrollViewer>
                     </TabItem>
                     <TabItem Header="Signature" Visibility="{Binding ElementName=Radio3, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">

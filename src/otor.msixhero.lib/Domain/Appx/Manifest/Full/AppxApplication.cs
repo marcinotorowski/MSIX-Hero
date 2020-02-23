@@ -12,11 +12,11 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 
         public string EntryPoint { get; set; }
 
-        public string Executable { get; set; }
-
         public string Id { get; set; }
 
         public byte[] Logo { get; set; }
+
+        public string Executable { get; set; }
         
         public string StartPage { get; set; }
 

@@ -6,7 +6,7 @@ using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Users;
-using otor.msixhero.lib.Domain.Commands.Grid;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Helpers;
@@ -14,7 +14,7 @@ using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class SinglePackageViewModel : NotifyPropertyChanged, INavigationAware
     {

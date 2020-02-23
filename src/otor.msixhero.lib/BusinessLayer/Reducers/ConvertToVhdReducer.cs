@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.AppAttach;
+using otor.msixhero.lib.Domain.Commands.Packages.AppAttach;
 using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers

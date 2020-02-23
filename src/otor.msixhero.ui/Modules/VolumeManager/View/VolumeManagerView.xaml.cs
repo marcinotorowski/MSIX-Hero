@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands;
+using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.ui.Modules.PackageList;
 using Prism.Regions;

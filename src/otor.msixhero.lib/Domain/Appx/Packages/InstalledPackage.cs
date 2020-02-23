@@ -78,5 +78,6 @@ namespace otor.msixhero.lib.Domain.Appx.Packages
         }
 
         public bool IsProvisioned { get; set; }
+        public bool IsFramework { get; set; }
     }
 }

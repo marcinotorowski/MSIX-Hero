@@ -3,7 +3,7 @@ using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class AppxPsfViewModel : NotifyPropertyChanged
     {
