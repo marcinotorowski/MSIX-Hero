@@ -5,12 +5,12 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Volume;
 using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements;
 using otor.msixhero.ui.Themes;
 using otor.msixhero.ui.ViewModel;
 using Prism;
@@ -23,13 +23,15 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
     {
         private readonly IApplicationStateManager stateManager;
         private bool isActive;
-        private string searchKey;
         private bool firstRun = true;
 
         public VolumeManagerViewModel(IApplicationStateManager stateManager, IEventAggregator eventAggregator)
         {
             this.stateManager = stateManager;
             eventAggregator.GetEvent<VolumesCollectionChanged>().Subscribe(this.OnVolumesCollectionChanged, ThreadOption.UIThread);
+            eventAggregator.GetEvent<VolumesSelectionChanged>().Subscribe(this.OnVolumesSelectionChanged, ThreadOption.UIThread);
+            eventAggregator.GetEvent<VolumesFilterChanged>().Subscribe(this.OnVolumesFilterChanged, ThreadOption.UIThread);
+            eventAggregator.GetEvent<VolumesVisibilityChanged>().Subscribe(this.OnVolumesVisibilityChanged, ThreadOption.UIThread);
             this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
             this.CommandHandler = new VolumeManagerCommandHandler(stateManager);
         }
@@ -78,7 +80,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
         {
         }
 
-        public ObservableCollection<AppxVolume> AllVolumes { get; } = new ObservableCollection<AppxVolume>();
+        public ObservableCollection<VolumeViewModel> AllVolumes { get; } = new ObservableCollection<VolumeViewModel>();
 
         public ICollectionView AllVolumesView { get; }
 
@@ -88,30 +90,104 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
 
         public string SearchKey
         {
-            get => this.searchKey;
-            set => this.SetField(ref this.searchKey, value);
+            get => this.stateManager.CurrentState.Volumes.SearchKey;
+            set => this.stateManager.CommandExecutor.ExecuteAsync(SetVolumeFilter.CreateFrom(value));
         }
+
+        private void OnVolumesFilterChanged(VolumesFilterChangedPayload filter)
+        {
+            if (filter.NewSearchKey != filter.OldSearchKey)
+            {
+                this.OnPropertyChanged(nameof(SearchKey));
+            }
+        }
+        private void OnVolumesVisibilityChanged(VolumesVisibilityChangedPayLoad visibilityInfo)
+        {
+            for (var i = this.AllVolumes.Count - 1; i >= 0; i--)
+            {
+                var item = this.AllVolumes[i];
+                if (visibilityInfo.NewHidden.Contains(item.Model))
+                {
+                    this.AllVolumes.RemoveAt(i);
+                }
+            }
+
+            foreach (var item in visibilityInfo.NewVisible)
+            {
+                this.AllVolumes.Add(new VolumeViewModel(item, this.stateManager));
+            }
+        }
+
+        private void OnVolumesSelectionChanged(VolumesSelectionChangedPayLoad selectionInfo)
+        {
+            var countSelected = 0;
+
+            foreach (var item in this.AllVolumes)
+            {
+                if (selectionInfo.Selected.Contains(item.Model))
+                {
+                    item.IsSelected = true;
+                }
+                else if (selectionInfo.Unselected.Contains(item.Model))
+                {
+                    item.IsSelected = false;
+                }
+
+                if (item.IsSelected && countSelected < 2)
+                {
+                    countSelected++;
+                }
+            }
+
+            // TODO
+            //var selected = this.AllVolumes.Where(p => p.IsSelected).Select(p => p.PackageStorePath).ToArray();
+            //switch (selected.Length)
+            //{
+            //    case 0:
+            //    {
+            //        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(VolumesModule.SidebarEmptySelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
+            //        break;
+            //    }
+
+            //    case 1:
+            //    {
+            //        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
+            //        break;
+            //    }
+
+            //    default:
+            //    {
+            //        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
+            //        break;
+            //    }
+            //}
+        }
+
         private void OnVolumesCollectionChanged(VolumesCollectionChangedPayLoad obj)
         {
+            var selectedItems = this.AllVolumes.Where(a => a.IsSelected).Select(a => a.Model.PackageStorePath).ToArray();
             if (obj.Type == CollectionChangeType.Reset)
             {
-
                 this.AllVolumes.Clear();
                 foreach (var item in this.stateManager.CurrentState.Volumes.VisibleItems.Union(this.stateManager.CurrentState.Volumes.HiddenItems))
                 {
-                    this.AllVolumes.Add(item);
+                    this.AllVolumes.Add(new VolumeViewModel(item, this.stateManager, selectedItems.Contains(item.PackageStorePath)));
                 }
             }
             else
             {
                 foreach (var item in obj.NewVolumes)
                 {
-                    this.AllVolumes.Add(item);
+                    this.AllVolumes.Add(new VolumeViewModel(item, this.stateManager, selectedItems.Contains(item.PackageStorePath)));
                 }
 
                 foreach (var item in obj.OldVolumes)
                 {
-                    this.AllVolumes.Remove(item);
+                    var found = this.AllVolumes.FirstOrDefault(a => a.Model == item);
+                    if (found != null)
+                    {
+                        this.AllVolumes.Remove(found);
+                    }
                 }
             }
         }

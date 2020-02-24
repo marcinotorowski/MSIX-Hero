@@ -10,10 +10,15 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel"
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+             xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
+             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding CommandHandler.New}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.Delete}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.SetVolumeAsDefault}" Command="{Binding CommandHandler.SetVolumeAsDefault}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
     <Grid Margin="5">
@@ -36,7 +41,7 @@
                             <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
                         </Path.LayoutTransform>
                     </Path>
-                    <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in application list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                    <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in volume list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -64,12 +69,32 @@
 
         <ListBox 
             x:Name="ListBox"
+            SelectionMode="Extended"
             Grid.Column="0" 
             Grid.Row="1" 
             BorderBrush="#ccc" 
             SnapsToDevicePixels="True" 
             UseLayoutRounding="True" 
             ItemsSource="{Binding AllVolumesView}">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Command="Delete" Header="Remove">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Command="{x:Static commands:MsixHeroCommands.SetVolumeAsDefault}" Header="Set as default" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource NegativeConverter}}">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type volume:AppxVolume}">
                     <DataTemplate.Resources>
@@ -78,8 +103,8 @@
                     <DockPanel>
                         <Path x:Name="PART_Path" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDisk}" VerticalAlignment="Center" Margin="0 0 6 0" />
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="{Binding PackageStorePath}" />
-                            <TextBlock Text="{Binding Name}" Opacity="0.65" />
+                            <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding PackageStorePath}" />
+                            <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Name}" Opacity="0.65" />
                         </StackPanel>
                     </DockPanel>
                     <DataTemplate.Triggers>

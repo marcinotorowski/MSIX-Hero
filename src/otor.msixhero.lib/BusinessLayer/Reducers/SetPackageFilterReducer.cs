@@ -7,7 +7,6 @@ using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Infrastructure;
 
@@ -61,7 +60,9 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 if (!string.IsNullOrEmpty(action.SearchKey))
                 {
-                    if (item.DisplayName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && item.DisplayPublisherName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                    if (item.DisplayName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                        && item.DisplayPublisherName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                        && item.Version.ToString().IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
                     {
                         toHide.Add(item);
                         continue;
@@ -98,7 +99,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             foreach (var item in state.Packages.HiddenItems)
             {
-                if (!string.IsNullOrEmpty(action.SearchKey) && item.DisplayName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && item.DisplayPublisherName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                if (
+                    !string.IsNullOrEmpty(action.SearchKey) && 
+                    item.DisplayName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 &&
+                    item.DisplayPublisherName.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 &&
+                    item.Version.ToString().IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
                 {
                     continue;
                 }

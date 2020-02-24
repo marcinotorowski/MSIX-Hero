@@ -15,6 +15,7 @@
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <UserControl.Resources>
@@ -241,7 +242,7 @@
                                     <GridViewColumnHeader IsHitTestVisible="False" Content="Icon" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
+                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
                                         <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                 <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
@@ -250,18 +251,23 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=DisplayName}">
+                            <GridViewColumn>
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader Content="Name" Tag="{x:Static enums:PackageSort.Name}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn>
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader Content="Version" Tag="{x:Static enums:PackageSort.Version}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
-                                        <TextBlock Opacity="0.7" Text="{Binding Version}" />
+                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding Version}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -270,8 +276,8 @@
                                     <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
-                                        <TextBlock Opacity="0.7" Text="{Binding DisplayPublisherName}" />
+                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPublisherName}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -280,8 +286,8 @@
                                     <GridViewColumnHeader Content="Package type" Tag="{x:Static enums:PackageSort.PackageType}" Click="ColumnClicked" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
-                                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
-                                        <TextBlock Opacity="0.7" Text="{Binding DisplayPackageType}" />
+                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPackageType}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -302,7 +308,6 @@
                 x:Name="ListBox"
                 SelectionMode="Extended"
                 ContextMenu="{StaticResource PackageContextMenu}"
-                SelectionChanged="OnListBoxSelectionChanged"
                 ItemsSource="{Binding AllPackagesView}">
                 <ListBox.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
@@ -313,6 +318,7 @@
                         <Setter Property="BorderThickness" Value="4 0 0 0" />
                         <Setter Property="BorderBrush" Value="Transparent" />
                         <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
@@ -340,7 +346,7 @@
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type viewModel:InstalledPackageViewModel}">
+                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
                         <DockPanel>
                             <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -349,17 +355,13 @@
                             </Border>
 
                             <StackPanel DockPanel.Dock="Right">
-                                <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                <TextBlock Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
                             </StackPanel>
 
                             <StackPanel Margin="10 0">
-                                <TextBlock TextTrimming="CharacterEllipsis">
-                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
-                                </TextBlock>
-                                <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
-                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
-                                </TextBlock>
+                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
                             </StackPanel>
 
                         </DockPanel>

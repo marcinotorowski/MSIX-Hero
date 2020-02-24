@@ -12,6 +12,13 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Vectors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="TextBox" x:Key="TextBlock">
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
     <Style TargetType="progressOverlay:ProgressOverlay">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -237,6 +244,10 @@
 
     <Style TargetType="TextBlock" x:Key="DataValue">
         <Setter Property="Margin" Value="0 0 0 8" />
+    </Style>
+
+    <Style TargetType="TextBox" x:Key="DataValueTextBlock" BasedOn="{StaticResource TextBlock}">
+        <Setter Property="Margin" Value="-1 0 0 8" />
     </Style>
 
     <Style TargetType="ListBoxItem" x:Key="{x:Type ListBoxItem}">

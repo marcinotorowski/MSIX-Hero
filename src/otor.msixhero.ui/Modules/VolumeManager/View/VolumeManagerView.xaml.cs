@@ -36,44 +36,9 @@ namespace otor.msixhero.ui.Modules.VolumeManager.View
             FocusManager.SetFocusedElement(this, this.ListBox);
             Keyboard.Focus(this.ListBox);
             this.ListBox.Focus();
-            
             this.Loaded += this.OnLoaded;
-
-            this.eventAggregator.GetEvent<VolumesSelectionChanged>().Subscribe(this.OnVolumesSelectionChanged, ThreadOption.UIThread);
-            this.ListBox.SelectionChanged += this.ListBoxOnSelectionChanged;
         }
 
-        private void OnVolumesSelectionChanged(VolumesSelectionChangedPayLoad obj)
-        {
-            if (this.ignoreSelectionChanged)
-            {
-                return;
-            }
-
-            try
-            {
-                this.ignoreSelectionChanged = true;
-                
-                foreach (var item in obj.Unselected)
-                {
-                    this.ListBox.SelectedItems.Remove(item);
-                }
-
-                foreach (var item in obj.Selected)
-                {
-                    if (this.ListBox.SelectedItems.Contains(item))
-                    {
-                        continue;
-                    }
-
-                    this.ListBox.SelectedItems.Add(item);
-                }
-            }
-            finally
-            {
-                this.ignoreSelectionChanged = false;
-            }
-        }
 
         private void ListBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {

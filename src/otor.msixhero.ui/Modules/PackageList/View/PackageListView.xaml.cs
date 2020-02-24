@@ -15,6 +15,7 @@ using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Regions;
@@ -43,9 +44,8 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             regionManager.RegisterViewWithRegion("PackageSidebar", typeof(EmptySelectionView));
 
             // Subscribe to events
-            applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged);
-            applicationStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(OnPackagesSelectionChanged, ThreadOption.UIThread);
-            applicationStateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(OnPackageGroupAndSortChanged);
+            applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged, ThreadOption.UIThread);
+            applicationStateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(OnPackageGroupAndSortChanged, ThreadOption.UIThread);
 
             // Set up defaults
             this.UpdateSidebarVisibility();
@@ -120,53 +120,6 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                 this.Grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
                 this.Grid.ColumnDefinitions[1].Width = new GridLength(0, GridUnitType.Pixel); 
                 this.Grid.ColumnDefinitions[2].Width = new GridLength(0, GridUnitType.Pixel);
-            }
-        }
-
-        private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionChanged)
-        {
-            var selectedPackages = ((PackageListViewModel)this.DataContext).SelectedPackages;
-            if (!this.disableSelectionNotification)
-            {
-                try
-                {
-                    this.disableSelectionNotification = true;
-
-                    this.ListView.SelectedItems.Clear();
-                    this.ListBox.SelectedItems.Clear();
-
-                    foreach (var item in selectedPackages)
-                    {
-                        this.ListView.SelectedItems.Add(item);
-                        this.ListBox.SelectedItems.Add(item);
-                    }
-                }
-                finally
-                {
-                    this.disableSelectionNotification = false;
-                }
-            }
-
-            var selected = selectedPackages.Select(p => p.ProductId).ToArray();
-            switch (selected.Length)
-            {
-                case 0:
-                {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
-                    break;
-                }
-
-                case 1:
-                {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
-                    break;
-                }
-
-                default:
-                {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
-                    break;
-                }
             }
         }
 

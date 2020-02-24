@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using otor.msixhero.lib.BusinessLayer.Helpers;
+using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
+using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.ViewModel
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class InstalledPackageViewModel : NotifyPropertyChanged
     {
-        public InstalledPackageViewModel(InstalledPackage package)
+        private readonly IApplicationStateManager stateManager;
+        private bool isSelected;
+
+        public InstalledPackageViewModel(InstalledPackage package, IApplicationStateManager stateManager)
         {
+            this.stateManager = stateManager;
             this.Model = package;
         }
 
@@ -47,6 +55,33 @@ namespace otor.msixhero.ui.ViewModel
         public SignatureKind SignatureKind
         {
             get => this.Model.SignatureKind;
+        }
+
+        public bool IsSelected
+        {
+            get => this.isSelected;
+            set
+            {
+                if (!SetField(ref this.isSelected, value))
+                {
+                    return;
+                }
+
+                if (value)
+                {
+                    if (!this.stateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
+                    {
+                        this.stateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.AddToSelection));
+                    }
+                }
+                else
+                {
+                    if (this.stateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
+                    {
+                        this.stateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.RemoveFromSelection));
+                    }
+                }
+            }
         }
 
         public string Type

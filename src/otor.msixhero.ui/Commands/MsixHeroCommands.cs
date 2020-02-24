@@ -6,6 +6,7 @@ namespace otor.msixhero.ui.Commands
     {
         static MsixHeroCommands()
         {
+            SetVolumeAsDefault = new RoutedUICommand() { Text = "Set volume as default..." };
             Deprovision = new RoutedUICommand { Text = "Deprovision for all users" };
             OpenExplorer = new RoutedUICommand { Text = "Open install location", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
             OpenExplorerUser = new RoutedUICommand { Text = "Open user data folder", InputGestures = { new KeyGesture(Key.U, ModifierKeys.Control) } };
@@ -33,6 +34,8 @@ namespace otor.msixhero.ui.Commands
             AppAttach = new RoutedUICommand { Text = "Opens a wizard for app attach generation" };
             Settings = new RoutedUICommand { Text = "Opens settings" };
         }
+
+        public static RoutedUICommand SetVolumeAsDefault { get; }
 
         public static RoutedUICommand Deprovision { get; }
 

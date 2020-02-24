@@ -8,8 +8,8 @@ namespace otor.msixhero.lib.Domain.Events.PackageList
     {
         public PackagesSelectionChangedPayLoad(IReadOnlyCollection<InstalledPackage> selected, IReadOnlyCollection<InstalledPackage> unselected)
         {
-            Selected = selected;
-            Unselected = unselected;
+            this.Selected = selected;
+            this.Unselected = unselected;
         }
 
         public IReadOnlyCollection<InstalledPackage> Selected { get; }

@@ -59,12 +59,12 @@
 
                                 <StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Version}" TextWrapping="Wrap" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Version, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayPublisherName}" TextWrapping="Wrap" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding DisplayPublisherName, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
@@ -73,24 +73,24 @@
                                 </StackPanel>
                                 <StackPanel Margin="0 0 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Publisher}" TextWrapping="Wrap" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Publisher, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=PackageFamilyName}" TextWrapping="Wrap" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=PackageFamilyName, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding Path=ProductId}" TextWrapping="Wrap" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=ProductId, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Margin="0 10 0 0" Visibility="{Binding SelectedPackageManifestInfo.CurrentValue.HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
                                 <TextBlock Style="{StaticResource DataValue}" Margin="0">
-                                <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductName, Mode=OneWay, TargetNullValue='Unknown product'}" />
-                                <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductVersion, Mode=OneWay}" />
+                                    <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductName, Mode=OneWay, TargetNullValue='Unknown product'}" />
+                                    <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.ProductVersion, Mode=OneWay}" />
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource DataValue}" Text="{Binding SelectedPackageManifestInfo.CurrentValue.BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
                             </StackPanel>

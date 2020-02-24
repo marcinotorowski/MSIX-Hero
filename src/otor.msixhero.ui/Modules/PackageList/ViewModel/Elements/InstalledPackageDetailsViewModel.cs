@@ -11,7 +11,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         {
             this.DisplayName = model.DisplayName;
             this.PublisherDisplayName = model.PublisherDisplayName;
-            this.Version = model.Version.ToString();
+            this.Version = model.Version;
             this.Logo = model.Logo;
             this.FamilyName = model.FamilyName;
 

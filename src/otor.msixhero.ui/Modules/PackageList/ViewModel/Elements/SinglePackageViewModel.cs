@@ -94,7 +94,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                 this.Error = null;
             }
             
-            this.SelectedInstalledPackage = lastSelected == null ? null : new InstalledPackageViewModel(lastSelected);
+            this.SelectedInstalledPackage = lastSelected == null ? null : new InstalledPackageViewModel(lastSelected, this.stateManager);
 
 #pragma warning disable 4014
             if (lastSelected == null || this.HasError)

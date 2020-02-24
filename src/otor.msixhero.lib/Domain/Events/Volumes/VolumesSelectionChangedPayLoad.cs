@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using otor.msixhero.lib.Domain.Appx.Volume;
-using Prism.Events;
 
 namespace otor.msixhero.lib.Domain.Events.Volumes
 {
@@ -15,9 +14,5 @@ namespace otor.msixhero.lib.Domain.Events.Volumes
         public IReadOnlyCollection<AppxVolume> Selected { get; }
 
         public IReadOnlyCollection<AppxVolume> Unselected { get; }
-    }
-
-    public class VolumesSelectionChanged : PubSubEvent<VolumesSelectionChangedPayLoad>
-    {
     }
 }
