@@ -22,6 +22,6 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
         [XmlElement]
         public PackageContext Context { get; set; }
 
-        public override bool RequiresElevation => this.Context == PackageContext.AllUsers;
+        public override SelfElevationType RequiresElevation => this.Context == PackageContext.AllUsers ? SelfElevationType.RequireAdministrator : SelfElevationType.HighestAvailable;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
@@ -7,18 +8,20 @@ using otor.msixhero.lib.Infrastructure;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    internal class RunPackageReducer : SelfElevationReducer
+    internal class RunPackageReducer : BaseReducer
     {
         private readonly RunPackage action;
+        private readonly IAppxPackageManager packageManager;
 
-        public RunPackageReducer(RunPackage action, IWritableApplicationStateManager stateManager) : base(action, stateManager)
+        public RunPackageReducer(RunPackage action, IAppxPackageManager packageManager, IWritableApplicationStateManager stateManager) : base(action, stateManager)
         {
             this.action = action;
+            this.packageManager = packageManager;
         }
 
-        public override Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
         {
-            return packageManager.Run(this.action.ManifestPath, this.action.PackageFamilyName, this.action.ApplicationId, cancellationToken);
+            return this.packageManager.Run(this.action.ManifestPath, this.action.PackageFamilyName, this.action.ApplicationId, cancellationToken);
         }
     }
 }

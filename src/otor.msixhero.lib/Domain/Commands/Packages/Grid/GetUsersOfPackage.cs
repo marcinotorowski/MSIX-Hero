@@ -23,6 +23,6 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 
         public string FullProductId { get; set; }
 
-        public override bool RequiresElevation => true;
+        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

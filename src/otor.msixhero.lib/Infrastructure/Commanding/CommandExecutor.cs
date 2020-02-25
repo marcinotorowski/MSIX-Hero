@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
@@ -19,7 +20,6 @@ using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.Exceptions;
 using otor.msixhero.lib.Infrastructure.Helpers;
-using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 
@@ -29,26 +29,26 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
     {
         private static readonly ILog Logger = LogManager.GetLogger();
         private readonly IDictionary<Type, Func<BaseCommand, IReducer>> reducerFactories = new Dictionary<Type, Func<BaseCommand, IReducer>>();
-        private readonly IAppxPackageManagerFactory appxPackageManagerFactory;
+        private readonly IAppxPackageManager appxPackageManager;
         private readonly IInteractionService interactionService;
         private readonly IAppAttach appAttach;
         private readonly IBusyManager busyManager;
-        private readonly IProcessManager processManager;
-        private IWritableApplicationStateManager writableApplicationStateManager;
+        private readonly IElevatedClient elevatedClient;
         private readonly IAppxVolumeManager appxVolumeManager;
+        private IWritableApplicationStateManager writableApplicationStateManager;
 
         public CommandExecutor(
-            IAppxPackageManagerFactory appxPackageManagerFactory,
+            IAppxPackageManager appxPackageManager,
             IAppxVolumeManager appxVolumeManager,
             IInteractionService interactionService,
-            IProcessManager processManager,
+            IElevatedClient elevatedClient,
             IAppAttach appAttach,
             IBusyManager busyManager)
         {
             this.appxVolumeManager = appxVolumeManager;
-            this.appxPackageManagerFactory = appxPackageManagerFactory;
+            this.appxPackageManager = appxPackageManager;
             this.interactionService = interactionService;
-            this.processManager = processManager;
+            this.elevatedClient = elevatedClient;
             this.appAttach = appAttach;
             this.busyManager = busyManager;
 
@@ -96,31 +96,34 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 var lazyReducer = reducerFactory(action);
 
 
-                bool elevate;
+                SelfElevationType elevate;
                 if (action is ISelfElevatedCommand selfElevateCommand)
                 {
                     elevate = selfElevateCommand.RequiresElevation;
 
                     if (this.writableApplicationStateManager.CurrentState.IsElevated)
                     {
-                        elevate = false;
+                        elevate = SelfElevationType.AsInvoker;
                     }
                 }
                 else
                 {
-                    elevate = false;
+                    elevate = SelfElevationType.AsInvoker;
                 }
 
-                var packageManager = elevate ? this.appxPackageManagerFactory.GetRemote() : this.appxPackageManagerFactory.GetLocal();
                 try
                 {
-                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    await lazyReducer.Reduce(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
+
+                    if (lazyReducer is IFinalizingReducer finalizingReducer)
+                    {
+                        await finalizingReducer.Finish(cancellationToken).ConfigureAwait(false);
+                    }
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    elevate = true;
-                    packageManager = this.appxPackageManagerFactory.GetRemote();
-                    await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    elevate = SelfElevationType.RequireAdministrator;
+                    await lazyReducer.Reduce(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
                 }
                 catch (ForwardedException e)
                 {
@@ -131,9 +134,8 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
 
                     if (e.InnerException is AdminRightsRequiredException)
                     {
-                        elevate = true;
-                        packageManager = this.appxPackageManagerFactory.GetRemote();
-                        await lazyReducer.Reduce(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                        elevate = SelfElevationType.RequireAdministrator;
+                        await lazyReducer.Reduce(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
                     }
                     else
                     {
@@ -141,7 +143,24 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     }
                 }
 
-                if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
+                bool startedAsAdmin = false;
+                if (action is ISelfElevatedCommand selfElevatedCommand)
+                {
+                    switch (selfElevatedCommand.RequiresElevation)
+                    {
+                        case SelfElevationType.AsInvoker:
+                            startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
+                            break;
+                        case SelfElevationType.HighestAvailable:
+                            startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
+                            break;
+                        case SelfElevationType.RequireAdministrator:
+                            startedAsAdmin = true;
+                            break;
+                    }
+                }
+
+                if (startedAsAdmin && !this.writableApplicationStateManager.CurrentState.IsSelfElevated && !this.writableApplicationStateManager.CurrentState.IsElevated)
                 {
                     this.writableApplicationStateManager.CurrentState.IsSelfElevated = true;
                 }
@@ -226,39 +245,19 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             
             try
             {
-                bool elevate;
-
-                if (command is ISelfElevatedCommand selfElevateCommand)
-                {
-                    elevate = selfElevateCommand.RequiresElevation;
-
-                    if (this.writableApplicationStateManager.CurrentState.IsElevated)
-                    {
-                        elevate = false;
-                    }
-                }
-                else
-                {
-                    elevate = false;
-                }
-
-                var packageManager = elevate
-                    ? this.appxPackageManagerFactory.GetRemote()
-                    : this.appxPackageManagerFactory.GetLocal();
-
-                Func<IAppxPackageManager, object> executor = (pkgMgr) =>
+                Func<object> executor = () =>
                 {
                     var methodName = nameof(IReducer<object>.GetReduced);
                     // ReSharper disable once PossibleNullReferenceException
                     try
                     {
-                        var invocationResult = reducerGenericType.GetMethod(methodName).Invoke(lazyReducer,
-                            new object[] {this.interactionService, pkgMgr, cancellationToken});
+                        var invocationResult = reducerGenericType.GetMethod(methodName).Invoke(lazyReducer, new object[] {this.interactionService, cancellationToken, this.busyManager });
 
                         var taskType = typeof(Task<>).MakeGenericType(resultType);
 
                         // ReSharper disable once PossibleNullReferenceException
-                        return taskType.GetProperty(nameof(Task<bool>.Result)).GetValue(invocationResult);
+                        var returned = taskType.GetProperty(nameof(Task<bool>.Result)).GetValue(invocationResult);
+                        return returned;
                     }
                     catch (AggregateException e)
                     {
@@ -266,21 +265,47 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     }
                 };
 
+                bool startedAsAdmin = false;
                 object result;
                 try
                 {
-                    var packMgr = packageManager;
-                    result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
+                    result = await Task.Run(() => executor(), cancellationToken).ConfigureAwait(false);
+
+                    var finalizingGenericType = typeof(IFinalizingReducer<>);
+                    var reducerFinalizingGenericType = finalizingGenericType.MakeGenericType(resultType);
+
+                    if (lazyReducer.GetType().GetInterfaces().Contains(finalizingGenericType))
+                    {
+                        // ReSharper disable once PossibleNullReferenceException
+                        var finalizingInvocationResult = reducerFinalizingGenericType.GetMethod(nameof(IFinalizingReducer.Finish)).Invoke(lazyReducer, new []{ result });
+
+                        // ReSharper disable once PossibleNullReferenceException
+                        typeof(Task).GetMethod(nameof(Task.Wait)).Invoke(finalizingInvocationResult, new object[0]);
+                    }
+
+                    if (command is ISelfElevatedCommand selfElevatedCommand)
+                    {
+                        switch (selfElevatedCommand.RequiresElevation)
+                        {
+                            case SelfElevationType.AsInvoker:
+                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
+                                break;
+                            case SelfElevationType.HighestAvailable:
+                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
+                                break;
+                            case SelfElevationType.RequireAdministrator:
+                                startedAsAdmin = true;
+                                break;
+                        }
+                    }
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    elevate = true;
-                    var packMgr = this.appxPackageManagerFactory.GetRemote();
-                    result = await Task.Run(() => executor(packMgr), cancellationToken).ConfigureAwait(false);
-                    // throw;
+                    // todo:
+                    throw;
                 }
-                
-                if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
+
+                if (startedAsAdmin && !this.writableApplicationStateManager.CurrentState.IsSelfElevated && !this.writableApplicationStateManager.CurrentState.IsElevated)
                 {
                     this.writableApplicationStateManager.CurrentState.IsSelfElevated = true;
                 }
@@ -321,57 +346,57 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             }
         }
 
-        public async Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default)
+        public async Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default)
         {
             try
             {
-                if (!this.reducerFactories.TryGetValue(action.GetType(), out var reducerFactory))
+                if (!this.reducerFactories.TryGetValue(command.GetType(), out var reducerFactory))
                 {
                     return default;
                 }
 
-                var lazyReducer = reducerFactory(action);
+                var lazyReducer = reducerFactory(command);
                 var lazyReducerOutput = lazyReducer as IReducer<T>;
                 if (lazyReducerOutput == null)
                 {
                     throw new NotSupportedException("This reducer does not support output.");
                 }
-
-                bool elevate;
-
-                if (action is ISelfElevatedCommand selfElevateCommand)
-                {
-                    elevate = selfElevateCommand.RequiresElevation;
-
-                    if (this.writableApplicationStateManager.CurrentState.IsElevated)
-                    {
-                        elevate = false;
-                    }
-                }
-                else
-                {
-                    elevate = false;
-                }
-
                 
-                var packageManager = elevate
-                    ? this.appxPackageManagerFactory.GetRemote()
-                    : this.appxPackageManagerFactory.GetLocal();
-
                 T result;
+                bool startedAsAdmin = false;
                 try
                 {
-                    result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
+                    result = await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
+
+                    if (lazyReducerOutput is IFinalizingReducer<T> finalizingReducer)
+                    {
+                        await finalizingReducer.Finish(result, cancellationToken).ConfigureAwait(false);
+                    }
+
+                    if (command is ISelfElevatedCommand selfElevatedCommand)
+                    {
+                        switch (selfElevatedCommand.RequiresElevation)
+                        {
+                            case SelfElevationType.AsInvoker:
+                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
+                                break;
+                            case SelfElevationType.HighestAvailable:
+                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
+                                break;
+                            case SelfElevationType.RequireAdministrator:
+                                startedAsAdmin = true;
+                                break;
+                        }
+                    }
                 }
                 catch (AdminRightsRequiredException)
                 {
-                    elevate = true;
-                    packageManager = this.appxPackageManagerFactory.GetRemote();
-                    result = await lazyReducerOutput.GetReduced(this.interactionService, packageManager, cancellationToken).ConfigureAwait(false);
-                    // throw;
+                    // todo:
+                    // result = await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
+                    throw;
                 }
 
-                if (elevate && !this.writableApplicationStateManager.CurrentState.IsSelfElevated)
+                if (startedAsAdmin && !this.writableApplicationStateManager.CurrentState.IsSelfElevated && !this.writableApplicationStateManager.CurrentState.IsElevated)
                 {
                     this.writableApplicationStateManager.CurrentState.IsSelfElevated = true;
                 }
@@ -393,7 +418,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 if (result == InteractionResult.Retry)
                 {
                     Logger.Info("Retrying..");
-                    return await this.GetExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                    return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
                 return default;
@@ -405,7 +430,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 if (result == InteractionResult.Retry)
                 {
                     Logger.Info("Retrying..");
-                    return await this.GetExecuteAsync(action, cancellationToken).ConfigureAwait(false);
+                    return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
                 return default;
@@ -416,31 +441,31 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         {
             this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetPackages)] = action => new GetInstalledPackagesReducer((GetPackages)action, this.writableApplicationStateManager, this.busyManager);
+            this.reducerFactories[typeof(GetPackages)] = action => new GetInstalledPackagesReducer((GetPackages)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateReducer((GetRegistryMountState)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(RunPackage)] = action => new RunPackageReducer((RunPackage)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(RunToolInPackage)] = action => new RunToolInPackageReducer((RunToolInPackage)action, this.writableApplicationStateManager, this.busyManager);
-            this.reducerFactories[typeof(ConvertToVhd)] = action => new ConvertToVhdReducer((ConvertToVhd)action, this.writableApplicationStateManager, this.appAttach, this.busyManager);
-            this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.writableApplicationStateManager, this.busyManager);
-            this.reducerFactories[typeof(Deprovision)] = action => new DeprovisionReducer((Deprovision)action, this.writableApplicationStateManager, this.busyManager);
-            this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateReducer((GetRegistryMountState)action, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(RunPackage)] = action => new RunPackageReducer((RunPackage)action, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(RunToolInPackage)] = action => new RunToolInPackageReducer((RunToolInPackage)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(ConvertToVhd)] = action => new ConvertToVhdReducer((ConvertToVhd)action, this.elevatedClient, this.appAttach, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(RemovePackages)] = action => new RemovePackageReducer((RemovePackages)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(Deprovision)] = action => new DeprovisionReducer((Deprovision)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(FindUsers)] = action => new FindUsersReducer((FindUsers)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.writableApplicationStateManager, this.busyManager);
+            this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.writableApplicationStateManager, this.busyManager);
-            this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.writableApplicationStateManager, this.busyManager);
+            this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
 
             this.reducerFactories[typeof(SelectVolumes)] = action => new SelectVolumesReducer((SelectVolumes)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetMode)] = action => new SetModeReducer((SetMode)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(AddVolume)] = action => new AddVolumeReducer((AddVolume)action, this.appxVolumeManager, this.processManager, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(RemoveVolume)] = action => new RemoveVolumeReducer((RemoveVolume)action, this.appxVolumeManager, this.processManager, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(GetVolumes)] = action => new GetVolumesReducer((GetVolumes)action, this.appxVolumeManager, this.writableApplicationStateManager, busyManager);
+            this.reducerFactories[typeof(AddVolume)] = action => new AddVolumeReducer((AddVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(RemoveVolume)] = action => new RemoveVolumeReducer((RemoveVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(GetVolumes)] = action => new GetVolumesReducer((GetVolumes)action, this.appxVolumeManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetVolumeFilter)] = action => new SetVolumeFilterReducer((SetVolumeFilter)action, this.writableApplicationStateManager);
         }
     }

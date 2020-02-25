@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
 
         Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default);
 
-        Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default);
+        Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default);
 
         Task<object> GetExecuteAsync(BaseCommand command, CancellationToken cancellationToken = default);
     }

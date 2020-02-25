@@ -11,7 +11,7 @@ using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.Infrastructure.Ipc
 {
-    public class Client
+    public class Client : IElevatedClient
     {
         private static readonly AutoResetEvent SafeHandle = new AutoResetEvent(true);
 

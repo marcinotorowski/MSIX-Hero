@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -11,26 +13,20 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     public class InstallCertificateReducer : SelfElevationReducer
     {
         private readonly InstallCertificate command;
-        private readonly IBusyManager busyManager;
+        private readonly IAppxPackageManager packageManager;
 
-        public InstallCertificateReducer(InstallCertificate command, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(command, stateManager)
+        public InstallCertificateReducer(InstallCertificate command,
+            IElevatedClient elevatedClient,
+            IAppxPackageManager packageManager,
+            IWritableApplicationStateManager stateManager) : base(command, elevatedClient, stateManager)
         {
             this.command = command;
-            this.busyManager = busyManager;
+            this.packageManager = packageManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        protected override Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            IBusyContext context = null;
-            try
-            {
-                context = this.busyManager.Begin();
-                await packageManager.InstallCertificate(this.command.FilePath, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                this.busyManager.End(context);
-            }
+            return this.packageManager.InstallCertificate(this.command.FilePath, cancellationToken, progress);
         }
     }
 }

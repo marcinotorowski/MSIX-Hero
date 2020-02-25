@@ -3,11 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Packages.Manager;
-using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -15,44 +14,27 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     public class DeprovisionReducer : SelfElevationReducer
     {
         private readonly Deprovision action;
-        private readonly IBusyManager busyManager;
+        private readonly IAppxPackageManager packageManager;
 
-        public DeprovisionReducer(Deprovision action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
+        public DeprovisionReducer(
+            Deprovision action,
+            IElevatedClient elevatedClient,
+            IAppxPackageManager packageManager,
+            IWritableApplicationStateManager stateManager) : base(action, elevatedClient, stateManager)
         {
             this.action = action;
-            this.busyManager = busyManager;
+            this.packageManager = packageManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager,
-CancellationToken cancellationToken = default)
+        protected override async Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (this.action.PackageFamilyName == null)
             {
                 return;
             }
-            
-            var context = this.busyManager.Begin();
 
-            var myProgress = new Progress();
-            // ReSharper disable once ConvertToLocalFunction
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                context.Progress = data.Progress;
-                context.Message = data.Message;
-            };
-
-            myProgress.ProgressChanged += handler;
-
-            try
-            {
-                await packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: myProgress).ConfigureAwait(false);
-                await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                myProgress.ProgressChanged -= handler;
-                this.busyManager.End(context);
-            }
+            await this.packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: progress).ConfigureAwait(false);
+            await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace otor.msixhero.lib.tests
                 return Task.FromResult(true);
             }
 
-            public Task<T> GetExecuteAsync<T>(BaseCommand<T> action, CancellationToken cancellationToken = default)
+            public Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default)
             {
                 return Task.FromResult(default(T));
             }

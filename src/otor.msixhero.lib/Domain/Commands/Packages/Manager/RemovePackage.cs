@@ -36,6 +36,6 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
 
         public bool RemoveAppData { get; set; }
         
-        public override bool RequiresElevation => this.Context == PackageContext.AllUsers;
+        public override SelfElevationType RequiresElevation => this.Context == PackageContext.AllUsers ? SelfElevationType.RequireAdministrator : SelfElevationType.HighestAvailable;
     }
 }

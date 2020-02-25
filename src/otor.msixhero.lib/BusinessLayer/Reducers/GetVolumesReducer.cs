@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
@@ -19,30 +18,28 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         // ReSharper disable once NotAccessedField.Local
         private readonly GetVolumes command;
         private readonly IAppxVolumeManager volumeManager;
-        private readonly IBusyManager busyManager;
 
-        public GetVolumesReducer(GetVolumes command, IAppxVolumeManager volumeManager, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(command, stateManager)
+        public GetVolumesReducer(GetVolumes command, IAppxVolumeManager volumeManager, IWritableApplicationStateManager stateManager) : base(command, stateManager)
         {
             this.command = command;
             this.volumeManager = volumeManager;
-            this.busyManager = busyManager;
         }
 
-        public override async Task<List<AppxVolume>> GetReduced(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override async Task<List<AppxVolume>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
         {
-            var context = this.busyManager.Begin();
+            var context = busyManager?.Begin();
 
             try
             {
-                context.Report(new ProgressData(0, "Getting volumes..."));
-                await Task.Delay(TimeSpan.FromMilliseconds(500)).ConfigureAwait(false);
-                context.Report(new ProgressData(20, "Getting volumes..."));
+                context?.Report(new ProgressData(0, "Getting volumes..."));
+                await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
+                context?.Report(new ProgressData(20, "Getting volumes..."));
                 var defaultVolume = await this.volumeManager.GetDefault(cancellationToken, context).ConfigureAwait(false);
 
-                context.Report(new ProgressData(80, "Getting volumes..."));
+                context?.Report(new ProgressData(80, "Getting volumes..."));
                 var allVolumes = await this.volumeManager.GetAll(cancellationToken, context).ConfigureAwait(false);
 
-                context.Report(new ProgressData(100, "Getting volumes..."));
+                context?.Report(new ProgressData(100, "Getting volumes..."));
 
                 if (defaultVolume != null)
                 {
@@ -69,7 +66,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             }
             finally
             {
-                this.busyManager.End(context);
+                busyManager?.End(context);
             }
         }
     }

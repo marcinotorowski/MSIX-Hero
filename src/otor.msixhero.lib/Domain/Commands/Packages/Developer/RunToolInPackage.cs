@@ -38,6 +38,6 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
         [XmlElement]
         public bool AsAdmin { get; set; }
 
-        public override bool RequiresElevation => this.AsAdmin;
+        public override SelfElevationType RequiresElevation => this.AsAdmin ? SelfElevationType.RequireAdministrator : SelfElevationType.AsInvoker;
     }
 }

@@ -14,6 +14,7 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
+using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.Modules.Dialogs;
@@ -92,7 +93,6 @@ namespace otor.msixhero.ui
             }
         }
 
-        private readonly IProcessManager processManager = new ProcessManager();
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -101,7 +101,7 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
             containerRegistry.RegisterSingleton<IAppAttach, AppAttach>();
             containerRegistry.RegisterSingleton<IAppxContentBuilder, AppxContentBuilder>();
-            containerRegistry.RegisterSingleton<IAppxPackageManagerFactory, AppxPackageManagerFactory>();
+            containerRegistry.RegisterSingleton<IElevatedClient, Client>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IWritableApplicationStateManager, ApplicationStateManager>();
@@ -110,7 +110,8 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<ICommandExecutor, CommandExecutor>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
-            containerRegistry.RegisterInstance(this.processManager);
+            containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
+            containerRegistry.RegisterSingleton<IProcessManager, ProcessManager>();
         }
         
         protected override Window CreateShell()
@@ -126,7 +127,8 @@ namespace otor.msixhero.ui
                 appStateManager.Dispose();
             }
 
-            this.processManager.Dispose();
+            var processManager = ServiceLocator.Current.GetInstance<IProcessManager>();
+            processManager.Dispose();
             base.OnExit(e);
         }
 
@@ -151,7 +153,8 @@ namespace otor.msixhero.ui
 
         public void Dispose()
         {
-            this.processManager.Dispose();
+            var processManager = ServiceLocator.Current.GetInstance<IProcessManager>();
+            processManager.Dispose();
         }
     }
 }

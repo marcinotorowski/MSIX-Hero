@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Infrastructure;
@@ -16,7 +15,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
         {
             var state = this.StateManager.CurrentState;
 
@@ -25,7 +24,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return;
             }
 
-            await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(action.Context), cancellationToken).ConfigureAwait(false);
+            await this.StateManager.CommandExecutor.GetExecuteAsync(new GetPackages(action.Context), cancellationToken).ConfigureAwait(false);
         }
     }
 }

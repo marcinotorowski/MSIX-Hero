@@ -67,14 +67,13 @@ namespace otor.msixhero.adminhelper
 
                     IConfigurationService configurationService = new LocalConfigurationService();
                     IInteractionService interactionService = new SilentInteractionService();
-                    IAppxPackageManagerFactory packageManagerFactory = new AppxPackageFactory(new AppxSigningManager());
                     IBusyManager busyManager = new BusyManager();
                     IEventAggregator eventAggregator = new EventAggregator();
                     IAppAttach appAttach = new AppAttach();
                     IAppxVolumeManager volumeManager = new AppxVolumeManager();
                     IProcessManager processManager = new ProcessManager();
 
-                    var commandExecutor = new CommandExecutor(packageManagerFactory, volumeManager, interactionService, processManager, appAttach, busyManager);
+                    var commandExecutor = new CommandExecutor(new AppxPackageManager(new AppxSigningManager()), volumeManager, interactionService, new Client(processManager), appAttach, busyManager);
                     var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
                     var server = new Server(applicationStateManager);
 
@@ -99,26 +98,6 @@ namespace otor.msixhero.adminhelper
 
             Logger.Info("Waiting for the user to press a key...");
             Console.ReadKey();
-        }
-
-        private class AppxPackageFactory : IAppxPackageManagerFactory
-        {
-            private DefaultAppxPackageManager factory;
-
-            public AppxPackageFactory(IAppxSigningManager signingManager)
-            {
-                this.factory = new DefaultAppxPackageManager(signingManager);
-            }
-
-            public IAppxPackageManager GetLocal()
-            {
-                return this.factory;
-            }
-
-            public IAppxPackageManager GetRemote()
-            {
-                return this.GetLocal();
-            }
         }
 
         private class SilentInteractionService : IInteractionService

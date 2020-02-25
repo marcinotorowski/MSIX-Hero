@@ -35,6 +35,6 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
         public bool StartRegedit { get; set; }
 
         [XmlIgnore]
-        public override bool RequiresElevation => true;
+        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

@@ -21,6 +21,6 @@
 
         public bool KillRunningApps { get; set; }
 
-        public override bool RequiresElevation => this.AllUsers;
+        public override SelfElevationType RequiresElevation => this.AllUsers ? SelfElevationType.RequireAdministrator : SelfElevationType.AsInvoker;
     }
 }

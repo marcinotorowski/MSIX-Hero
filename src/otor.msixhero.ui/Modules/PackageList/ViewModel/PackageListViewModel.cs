@@ -85,7 +85,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     if (this.firstRun)
                     {
                         firstRun = false;
-                        this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context));
+                        this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context));
                     }
                 }
             }
@@ -264,14 +264,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 case CollectionChangeType.Reset:
                     this.AllPackages.Clear();
-                    foreach (var item in this.stateManager.CurrentState.Packages.VisibleItems)
+                    foreach (var item in this.stateManager.CurrentState.Packages.VisibleItems.ToArray())
                     {
                         var isSelected = selectedItems.Contains(item.PackageId);
-                        this.AllPackages.Add(
-                            new InstalledPackageViewModel(item, this.stateManager)
-                            {
-                                IsSelected = isSelected
-                            });
+                        this.AllPackages.Add(new InstalledPackageViewModel(item, this.stateManager, isSelected));
                     }
 
                     break;
@@ -289,11 +285,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     foreach (var item in payload.NewPackages)
                     {
                         var isSelected = selectedItems.Contains(item.PackageId);
-                        this.AllPackages.Add(
-                            new InstalledPackageViewModel(item, this.stateManager)
-                            {
-                                IsSelected = isSelected
-                            });
+                        this.AllPackages.Add(new InstalledPackageViewModel(item, this.stateManager, isSelected));
                     }
 
                     break;

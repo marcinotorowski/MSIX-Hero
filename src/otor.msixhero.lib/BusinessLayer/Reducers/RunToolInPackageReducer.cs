@@ -1,34 +1,29 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Packages.Developer;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Ipc;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
     internal class RunToolInPackageReducer : SelfElevationReducer
     {
         private readonly RunToolInPackage action;
-        private readonly IBusyManager busyManager;
+        private readonly IAppxPackageManager packageManager;
 
-        public RunToolInPackageReducer(RunToolInPackage action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
+        public RunToolInPackageReducer(RunToolInPackage action, IElevatedClient elevatedClient, IAppxPackageManager packageManager, IWritableApplicationStateManager stateManager) : base(action, elevatedClient, stateManager)
         {
             this.action = action;
-            this.busyManager = busyManager;
+            this.packageManager = packageManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        protected override Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var context = this.busyManager.Begin();
-            try
-            {
-                await packageManager.RunToolInContext(this.action.PackageFamilyName, this.action.AppId, this.action.ToolPath, this.action.Arguments, cancellationToken, context);
-            }
-            finally
-            {
-                this.busyManager.End(context);
-            }
+            return this.packageManager.RunToolInContext(this.action.PackageFamilyName, this.action.AppId, this.action.ToolPath, this.action.Arguments, cancellationToken, progress);
         }
     }
 }

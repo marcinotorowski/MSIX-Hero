@@ -20,6 +20,6 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
 
         public string Name { get; set; }
 
-        public override bool RequiresElevation { get; } = true;
+        public override SelfElevationType RequiresElevation { get; } = SelfElevationType.RequireAdministrator;
     }
 }

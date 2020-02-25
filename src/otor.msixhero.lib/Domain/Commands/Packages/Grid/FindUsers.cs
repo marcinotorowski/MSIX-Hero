@@ -30,11 +30,11 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
         public bool ForceElevation { get; set; }
 
         [XmlIgnore]
-        public override bool RequiresElevation
+        public override SelfElevationType RequiresElevation
         {
             get
             {
-                return this.ForceElevation;
+                return this.ForceElevation ? SelfElevationType.RequireAdministrator : SelfElevationType.HighestAvailable;
             }
         }
     }

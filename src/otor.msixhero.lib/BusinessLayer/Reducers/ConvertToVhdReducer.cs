@@ -1,10 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Packages.AppAttach;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Ipc;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -12,33 +14,23 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     {
         private readonly ConvertToVhd command;
         private readonly IAppAttach appAttach;
-        private readonly IBusyManager busyManager;
 
-        public ConvertToVhdReducer(ConvertToVhd command, IWritableApplicationStateManager stateManager, IAppAttach appAttach, IBusyManager busyManager) : base(command, stateManager)
+        public ConvertToVhdReducer(ConvertToVhd command, IElevatedClient elevatedClient, IAppAttach appAttach, IWritableApplicationStateManager stateManager) : base(command, elevatedClient, stateManager)
         {
             this.command = command;
             this.appAttach = appAttach;
-            this.busyManager = busyManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager, CancellationToken cancellationToken = default)
+        protected override Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var context = this.busyManager.Begin();
-            try
-            {
-                await this.appAttach.CreateVolume(
-                    this.command.PackagePath, 
-                    this.command.VhdPath, 
-                    this.command.SizeInMegaBytes, 
-                    this.command.ExtractCertificate,
-                    this.command.GenerateScripts, 
-                    cancellationToken, 
-                    context).ConfigureAwait(false);
-            }
-            finally
-            {
-                this.busyManager.End(context);
-            }
+            return this.appAttach.CreateVolume(
+                this.command.PackagePath, 
+                this.command.VhdPath, 
+                this.command.SizeInMegaBytes, 
+                this.command.ExtractCertificate,
+                this.command.GenerateScripts, 
+                cancellationToken, 
+                progress);
         }
     }
 }

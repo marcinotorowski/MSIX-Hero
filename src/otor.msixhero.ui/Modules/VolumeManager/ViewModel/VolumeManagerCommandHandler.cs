@@ -25,6 +25,17 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
 
         private void DeleteExecute(object obj)
         {
+            if (this.stateManager.CurrentState.Volumes.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            if (this.stateManager.CurrentState.Volumes.SelectedItems.First().IsDefault)
+            {
+                return;
+            }
+
+            this.stateManager.CommandExecutor.ExecuteAsync(new RemoveVolume(this.stateManager.CurrentState.Volumes.SelectedItems.First()));
         }
 
         private void SetVolumeAsDefaultExecute(object obj)

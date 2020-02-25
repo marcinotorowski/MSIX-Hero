@@ -13,6 +13,6 @@
 
         public string FilePath { get; set; }
 
-        public override bool RequiresElevation => true;
+        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

@@ -29,7 +29,7 @@ using LogFactory = otor.msixhero.lib.BusinessLayer.Helpers.LogFactory;
 namespace otor.msixhero.lib.BusinessLayer.Appx
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
-    public class DefaultAppxPackageManager : IAppxPackageManager
+    public class AppxPackageManager : IAppxPackageManager
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
@@ -39,7 +39,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         private readonly IAppxSigningManager signingManager;
 
-        public DefaultAppxPackageManager(IAppxSigningManager signingManager)
+        public AppxPackageManager(IAppxSigningManager signingManager)
         {
             this.signingManager = signingManager;
             this.PackageDetailsProvider = new PackageDetailsProvider(this);

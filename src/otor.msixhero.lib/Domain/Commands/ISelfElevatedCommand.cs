@@ -2,6 +2,6 @@
 {
     public interface ISelfElevatedCommand
     {
-        bool RequiresElevation { get; }
+        SelfElevationType RequiresElevation { get; }
     }
 }

@@ -4,12 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Packages.Manager;
-using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
@@ -17,62 +16,41 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
     public class RemovePackageReducer : SelfElevationReducer
     {
         private readonly RemovePackages action;
-        private readonly IBusyManager busyManager;
+        private readonly IAppxPackageManager packageManager;
 
-        public RemovePackageReducer(RemovePackages action, IWritableApplicationStateManager stateManager, IBusyManager busyManager) : base(action, stateManager)
+        public RemovePackageReducer(RemovePackages action, IElevatedClient elevatedClient, IAppxPackageManager packageManager, IWritableApplicationStateManager stateManager) : base(action, elevatedClient, stateManager)
         {
             this.action = action;
-            this.busyManager = busyManager;
+            this.packageManager = packageManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, IAppxPackageManager packageManager,
-CancellationToken cancellationToken = default)
+        protected override async Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (this.action.Packages == null || !this.action.Packages.Any())
             {
                 return;
             }
             
-            var context = this.busyManager.Begin();
-
-            var myProgress = new Progress();
-            // ReSharper disable once ConvertToLocalFunction
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                context.Progress = data.Progress;
-                context.Message = data.Message;
-            };
-
-            myProgress.ProgressChanged += handler;
-
             var eventData = new PackagesCollectionChangedPayLoad(this.action.Context, CollectionChangeType.Simple);
-            try
-            {
-                await packageManager.Remove(this.action.Packages, cancellationToken: cancellationToken, progress: myProgress).ConfigureAwait(false);
+            await this.packageManager.Remove(this.action.Packages, cancellationToken: cancellationToken, progress: progress).ConfigureAwait(false);
                 
-                foreach (var item in this.action.Packages)
-                {
-                    if (item.IsProvisioned)
-                    {
-                        continue;
-                    }
-
-                    eventData.OldPackages.Add(item);
-                }
-
-                if (!eventData.OldPackages.Any())
-                {
-                    return;
-                }
-
-                await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.action.Packages, SelectionMode.RemoveFromSelection), cancellationToken).ConfigureAwait(false);
-                this.StateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Publish(eventData);
-            }
-            finally
+            foreach (var item in this.action.Packages)
             {
-                myProgress.ProgressChanged -= handler;
-                this.busyManager.End(context);
+                if (item.IsProvisioned)
+                {
+                    continue;
+                }
+
+                eventData.OldPackages.Add(item);
             }
+
+            if (!eventData.OldPackages.Any())
+            {
+                return;
+            }
+
+            await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.action.Packages, SelectionMode.RemoveFromSelection), cancellationToken).ConfigureAwait(false);
+            this.StateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Publish(eventData);
         }
     }
 }

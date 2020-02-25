@@ -5,19 +5,15 @@ using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
+using otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements;
 using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
-    public class InstalledPackageViewModel : NotifyPropertyChanged
+    public class InstalledPackageViewModel : SelectableViewModel<InstalledPackage>
     {
-        private readonly IApplicationStateManager stateManager;
-        private bool isSelected;
-
-        public InstalledPackageViewModel(InstalledPackage package, IApplicationStateManager stateManager)
+        public InstalledPackageViewModel(InstalledPackage package, IApplicationStateManager stateManager, bool isSelected = false) : base(package, stateManager, isSelected)
         {
-            this.stateManager = stateManager;
-            this.Model = package;
         }
 
         public string Description => this.Model.Description;
@@ -57,33 +53,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
             get => this.Model.SignatureKind;
         }
 
-        public bool IsSelected
-        {
-            get => this.isSelected;
-            set
-            {
-                if (!SetField(ref this.isSelected, value))
-                {
-                    return;
-                }
-
-                if (value)
-                {
-                    if (!this.stateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
-                    {
-                        this.stateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.AddToSelection));
-                    }
-                }
-                else
-                {
-                    if (this.stateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
-                    {
-                        this.stateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.RemoveFromSelection));
-                    }
-                }
-            }
-        }
-
         public string Type
         {
             get
@@ -111,14 +80,34 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
             get => this.Model.UserDataPath;
         }
 
-        public InstalledPackage Model { get; }
-
         public ObservableCollection<OperatingSystemViewModel> TargetOperatingSystems { get; }
 
         
         public static explicit operator InstalledPackage(InstalledPackageViewModel installedPackageViewModel)
         {
             return installedPackageViewModel.Model;
+        }
+
+        protected override bool TrySelect()
+        {
+            if (!this.StateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
+            {
+                this.StateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.AddToSelection));
+                return true;
+            }
+
+            return false;
+        }
+
+        protected override bool TryUnselect()
+        {
+            if (this.StateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
+            {
+                this.StateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.RemoveFromSelection));
+                return true;
+            }
+
+            return false;
         }
     }
 }

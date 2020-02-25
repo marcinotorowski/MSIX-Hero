@@ -16,6 +16,6 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
 
         public string PackageFamilyName { get; set;  }
 
-        public override bool RequiresElevation => true;
+        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }
