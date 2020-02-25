@@ -15,6 +15,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
+using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Services;
 using Prism.Events;
 using ICommandExecutor = otor.msixhero.lib.Infrastructure.Commanding.ICommandExecutor;
@@ -66,17 +67,17 @@ namespace otor.msixhero.lib.tests
                 return default;
             }
 
-            public Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default)
+            public Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
             {
                 return Task.FromResult(true);
             }
 
-            public Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default)
+            public Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
             {
                 return Task.FromResult(default(T));
             }
 
-            public Task<object> GetExecuteAsync(BaseCommand command, CancellationToken cancellationToken = default)
+            public Task<object> GetExecuteAsync(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
             {
                 return Task.FromResult(result);
             }

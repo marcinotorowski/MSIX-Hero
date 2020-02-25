@@ -26,94 +26,43 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         public sealed override async Task Reduce(
             IInteractionService interactionService, 
             CancellationToken cancellationToken = default,
-            IBusyManager busyManager = default)
+            IProgress<ProgressData> progressReporter = default)
         {
-            if (busyManager == null)
+            switch (this.selfElevatedCommand.RequiresElevation)
             {
-                switch (this.selfElevatedCommand.RequiresElevation)
-                {
-                    case SelfElevationType.AsInvoker:
-                        await this.ReduceAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        break;
+                case SelfElevationType.AsInvoker:
+                    await this.ReduceAsCurrentUser(interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
+                    break;
 
-                    case SelfElevationType.HighestAvailable:
-                        if (this.StateManager.CurrentState.IsElevated)
-                        {
-                            await this.ReduceAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        }
-                        else if (this.StateManager.CurrentState.IsSelfElevated)
-                        {
-                            await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await this.ReduceAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        }
-
-                        break;
-
-                    case SelfElevationType.RequireAdministrator:
-                        if (this.StateManager.CurrentState.IsElevated)
-                        {
-                            await this.ReduceAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken).ConfigureAwait(false);
-                        }
-
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                var context = busyManager.Begin();
-
-                try
-                {
-                    switch (this.selfElevatedCommand.RequiresElevation)
+                case SelfElevationType.HighestAvailable:
+                    if (this.StateManager.CurrentState.IsElevated)
                     {
-                        case SelfElevationType.AsInvoker:
-                            await this.ReduceAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                            break;
-
-                        case SelfElevationType.HighestAvailable:
-                            if (this.StateManager.CurrentState.IsElevated)
-                            {
-                                await this.ReduceAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                            }
-                            else if (this.StateManager.CurrentState.IsSelfElevated)
-                            {
-                                await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken, context).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await this.ReduceAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                            }
-
-                            break;
-
-                        case SelfElevationType.RequireAdministrator:
-                            if (this.StateManager.CurrentState.IsElevated)
-                            {
-                                await this.ReduceAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken, context).ConfigureAwait(false);
-                            }
-
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        await this.ReduceAsCurrentUser(interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    busyManager.End(context);
-                }
+                    else if (this.StateManager.CurrentState.IsSelfElevated)
+                    {
+                        await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken, progressReporter).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await this.ReduceAsCurrentUser(interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
+                    }
+
+                    break;
+
+                case SelfElevationType.RequireAdministrator:
+                    if (this.StateManager.CurrentState.IsElevated)
+                    {
+                        await this.ReduceAsCurrentUser(interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken, progressReporter).ConfigureAwait(false);
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -134,83 +83,39 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.selfElevatedCommand = selfElevatedCommand;
         }
 
-        public sealed override async Task<T> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
+        public sealed override async Task<T> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressData = default)
         {
-            if (busyManager == null)
+            switch (this.selfElevatedCommand.RequiresElevation)
             {
-                switch (this.selfElevatedCommand.RequiresElevation)
-                {
-                    case SelfElevationType.AsInvoker:
-                        return await this.GetReducedAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
+                case SelfElevationType.AsInvoker:
+                    return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, progressData).ConfigureAwait(false);
 
-                    case SelfElevationType.HighestAvailable:
-                        if (this.StateManager.CurrentState.IsElevated)
-                        {
-                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        }
-                        else if (this.StateManager.CurrentState.IsSelfElevated)
-                        {
-                            return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        }
+                case SelfElevationType.HighestAvailable:
+                    if (this.StateManager.CurrentState.IsElevated)
+                    {
+                        return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, progressData).ConfigureAwait(false);
+                    }
+                    else if (this.StateManager.CurrentState.IsSelfElevated)
+                    {
+                        return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken, progressData).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, progressData).ConfigureAwait(false);
+                    }
 
-                    case SelfElevationType.RequireAdministrator:
-                        if (this.StateManager.CurrentState.IsElevated)
-                        {
-                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken).ConfigureAwait(false);
-                        }
+                case SelfElevationType.RequireAdministrator:
+                    if (this.StateManager.CurrentState.IsElevated)
+                    {
+                        return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, progressData).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken, progressData).ConfigureAwait(false);
+                    }
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            var context = busyManager.Begin();
-            try
-            {
-                switch (this.selfElevatedCommand.RequiresElevation)
-                {
-                    case SelfElevationType.AsInvoker:
-                        return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                            
-                    case SelfElevationType.HighestAvailable:
-                        if (this.StateManager.CurrentState.IsElevated)
-                        {
-                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                        }
-                        else if (this.StateManager.CurrentState.IsSelfElevated)
-                        {
-                            return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken, context).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                        }
-                            
-                    case SelfElevationType.RequireAdministrator:
-                        if (this.StateManager.CurrentState.IsElevated)
-                        {
-                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, context).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken, context).ConfigureAwait(false);
-                        }
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            finally
-            {
-                busyManager.End(context);
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

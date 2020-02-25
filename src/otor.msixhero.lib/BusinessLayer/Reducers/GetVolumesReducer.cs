@@ -25,49 +25,39 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.volumeManager = volumeManager;
         }
 
-        public override async Task<List<AppxVolume>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
+        public override async Task<List<AppxVolume>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = default)
         {
-            var context = busyManager?.Begin();
+            progressReporter?.Report(new ProgressData(0, "Getting volumes..."));
+            await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
+            progressReporter?.Report(new ProgressData(20, "Getting volumes..."));
+            var defaultVolume = await this.volumeManager.GetDefault(cancellationToken).ConfigureAwait(false);
 
-            try
+            progressReporter?.Report(new ProgressData(80, "Getting volumes..."));
+            var allVolumes = await this.volumeManager.GetAll(cancellationToken).ConfigureAwait(false);
+                
+            progressReporter?.Report(new ProgressData(100, "Getting volumes..."));
+            if (defaultVolume != null)
             {
-                context?.Report(new ProgressData(0, "Getting volumes..."));
-                await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken).ConfigureAwait(false);
-                context?.Report(new ProgressData(20, "Getting volumes..."));
-                var defaultVolume = await this.volumeManager.GetDefault(cancellationToken, context).ConfigureAwait(false);
-
-                context?.Report(new ProgressData(80, "Getting volumes..."));
-                var allVolumes = await this.volumeManager.GetAll(cancellationToken, context).ConfigureAwait(false);
-
-                context?.Report(new ProgressData(100, "Getting volumes..."));
-
+                defaultVolume = allVolumes.FirstOrDefault(v => string.Equals(v.PackageStorePath, defaultVolume.PackageStorePath, StringComparison.OrdinalIgnoreCase));
                 if (defaultVolume != null)
                 {
-                    defaultVolume = allVolumes.FirstOrDefault(v => string.Equals(v.PackageStorePath, defaultVolume.PackageStorePath, StringComparison.OrdinalIgnoreCase));
-                    if (defaultVolume != null)
-                    {
-                        defaultVolume.IsDefault = true;
-                    }
+                    defaultVolume.IsDefault = true;
                 }
-
-                var state = this.StateManager.CurrentState;
-                var selectedPackageNames = new HashSet<string>(state.Volumes.SelectedItems.Select(item => item.PackageStorePath));
-
-                state.Volumes.SelectedItems.Clear();
-                state.Volumes.VisibleItems.Clear();
-                state.Volumes.HiddenItems.Clear();
-                state.Volumes.VisibleItems.AddRange(allVolumes);
-
-                this.StateManager.EventAggregator.GetEvent<VolumesCollectionChanged>().Publish(new VolumesCollectionChangedPayLoad(CollectionChangeType.Reset));
-                await this.StateManager.CommandExecutor.ExecuteAsync(new SetVolumeFilter(state.Volumes.SearchKey), cancellationToken).ConfigureAwait(false);
-                await this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(state.Volumes.VisibleItems.Where(item => selectedPackageNames.Contains(item.PackageStorePath)).ToList()), cancellationToken).ConfigureAwait(false);
-
-                return allVolumes;
             }
-            finally
-            {
-                busyManager?.End(context);
-            }
+
+            var state = this.StateManager.CurrentState;
+            var selectedPackageNames = new HashSet<string>(state.Volumes.SelectedItems.Select(item => item.PackageStorePath));
+
+            state.Volumes.SelectedItems.Clear();
+            state.Volumes.VisibleItems.Clear();
+            state.Volumes.HiddenItems.Clear();
+            state.Volumes.VisibleItems.AddRange(allVolumes);
+
+            this.StateManager.EventAggregator.GetEvent<VolumesCollectionChanged>().Publish(new VolumesCollectionChangedPayLoad(CollectionChangeType.Reset));
+            await this.StateManager.CommandExecutor.ExecuteAsync(new SetVolumeFilter(state.Volumes.SearchKey), cancellationToken).ConfigureAwait(false);
+            await this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(state.Volumes.VisibleItems.Where(item => selectedPackageNames.Contains(item.PackageStorePath)).ToList()), cancellationToken).ConfigureAwait(false);
+
+            return allVolumes;
         }
     }
 }

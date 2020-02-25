@@ -63,7 +63,7 @@
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Publisher name" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding DisplayPublisherName, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -71,8 +71,9 @@
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
                                     <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
                                 </StackPanel>
-                                <StackPanel Margin="0 0 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Subject" />
+
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Publisher, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
@@ -82,7 +83,7 @@
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Product ID" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Full package name" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=ProductId, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>

@@ -26,7 +26,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         protected override async Task<List<Log>> GetReducedAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = default)
         {
-            return new List<Log>(await this.packageManager.GetLogs(this.command.MaxCount, cancellationToken).ConfigureAwait(false));
+            return new List<Log>(await this.packageManager.GetLogs(this.command.MaxCount, cancellationToken, progressReporter).ConfigureAwait(false));
         }
     }
 }

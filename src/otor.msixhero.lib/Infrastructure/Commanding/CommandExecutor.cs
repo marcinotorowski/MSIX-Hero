@@ -22,6 +22,7 @@ using otor.msixhero.lib.Domain.Exceptions;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.Infrastructure.Commanding
 {
@@ -32,7 +33,6 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         private readonly IAppxPackageManager appxPackageManager;
         private readonly IInteractionService interactionService;
         private readonly IAppAttach appAttach;
-        private readonly IBusyManager busyManager;
         private readonly IElevatedClient elevatedClient;
         private readonly IAppxVolumeManager appxVolumeManager;
         private IWritableApplicationStateManager writableApplicationStateManager;
@@ -42,15 +42,13 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             IAppxVolumeManager appxVolumeManager,
             IInteractionService interactionService,
             IElevatedClient elevatedClient,
-            IAppAttach appAttach,
-            IBusyManager busyManager)
+            IAppAttach appAttach)
         {
             this.appxVolumeManager = appxVolumeManager;
             this.appxPackageManager = appxPackageManager;
             this.interactionService = interactionService;
             this.elevatedClient = elevatedClient;
             this.appAttach = appAttach;
-            this.busyManager = busyManager;
 
             this.ConfigureReducers();
         }
@@ -84,7 +82,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             }
         }
 
-        public async Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default)
+        public async Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = default)
         {
             try
             {
@@ -94,56 +92,14 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 }
 
                 var lazyReducer = reducerFactory(action);
+                await lazyReducer.Reduce(this.interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
 
-
-                SelfElevationType elevate;
-                if (action is ISelfElevatedCommand selfElevateCommand)
+                if (lazyReducer is IFinalizingReducer finalizingReducer)
                 {
-                    elevate = selfElevateCommand.RequiresElevation;
-
-                    if (this.writableApplicationStateManager.CurrentState.IsElevated)
-                    {
-                        elevate = SelfElevationType.AsInvoker;
-                    }
-                }
-                else
-                {
-                    elevate = SelfElevationType.AsInvoker;
+                    await finalizingReducer.Finish(cancellationToken).ConfigureAwait(false);
                 }
 
-                try
-                {
-                    await lazyReducer.Reduce(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
-
-                    if (lazyReducer is IFinalizingReducer finalizingReducer)
-                    {
-                        await finalizingReducer.Finish(cancellationToken).ConfigureAwait(false);
-                    }
-                }
-                catch (AdminRightsRequiredException)
-                {
-                    elevate = SelfElevationType.RequireAdministrator;
-                    await lazyReducer.Reduce(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
-                }
-                catch (ForwardedException e)
-                {
-                    if (e.InnerException == null)
-                    {
-                        throw;
-                    }
-
-                    if (e.InnerException is AdminRightsRequiredException)
-                    {
-                        elevate = SelfElevationType.RequireAdministrator;
-                        await lazyReducer.Reduce(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        throw e.InnerException;
-                    }
-                }
-
-                bool startedAsAdmin = false;
+                var startedAsAdmin = false;
                 if (action is ISelfElevatedCommand selfElevatedCommand)
                 {
                     switch (selfElevatedCommand.RequiresElevation)
@@ -215,7 +171,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             }
         }
 
-        public async Task<object> GetExecuteAsync(BaseCommand command, CancellationToken cancellationToken = default)
+        public async Task<object> GetExecuteAsync(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = default)
         {
             var resultType = GenericArgumentResolver.GetResultType(command.GetType(), typeof(BaseCommand<>));
             if (resultType == null)
@@ -251,7 +207,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     // ReSharper disable once PossibleNullReferenceException
                     try
                     {
-                        var invocationResult = reducerGenericType.GetMethod(methodName).Invoke(lazyReducer, new object[] {this.interactionService, cancellationToken, this.busyManager });
+                        var invocationResult = reducerGenericType.GetMethod(methodName).Invoke(lazyReducer, new object[] {this.interactionService, cancellationToken, progressReporter });
 
                         var taskType = typeof(Task<>).MakeGenericType(resultType);
 
@@ -267,42 +223,34 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
 
                 bool startedAsAdmin = false;
                 object result;
-                try
+                result = await Task.Run(() => executor(), cancellationToken).ConfigureAwait(false);
+
+                var finalizingGenericType = typeof(IFinalizingReducer<>);
+                var reducerFinalizingGenericType = finalizingGenericType.MakeGenericType(resultType);
+
+                if (lazyReducer.GetType().GetInterfaces().Contains(finalizingGenericType))
                 {
-                    result = await Task.Run(() => executor(), cancellationToken).ConfigureAwait(false);
+                    // ReSharper disable once PossibleNullReferenceException
+                    var finalizingInvocationResult = reducerFinalizingGenericType.GetMethod(nameof(IFinalizingReducer.Finish)).Invoke(lazyReducer, new []{ result });
 
-                    var finalizingGenericType = typeof(IFinalizingReducer<>);
-                    var reducerFinalizingGenericType = finalizingGenericType.MakeGenericType(resultType);
-
-                    if (lazyReducer.GetType().GetInterfaces().Contains(finalizingGenericType))
-                    {
-                        // ReSharper disable once PossibleNullReferenceException
-                        var finalizingInvocationResult = reducerFinalizingGenericType.GetMethod(nameof(IFinalizingReducer.Finish)).Invoke(lazyReducer, new []{ result });
-
-                        // ReSharper disable once PossibleNullReferenceException
-                        typeof(Task).GetMethod(nameof(Task.Wait)).Invoke(finalizingInvocationResult, new object[0]);
-                    }
-
-                    if (command is ISelfElevatedCommand selfElevatedCommand)
-                    {
-                        switch (selfElevatedCommand.RequiresElevation)
-                        {
-                            case SelfElevationType.AsInvoker:
-                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
-                                break;
-                            case SelfElevationType.HighestAvailable:
-                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
-                                break;
-                            case SelfElevationType.RequireAdministrator:
-                                startedAsAdmin = true;
-                                break;
-                        }
-                    }
+                    // ReSharper disable once PossibleNullReferenceException
+                    typeof(Task).GetMethod(nameof(Task.Wait)).Invoke(finalizingInvocationResult, new object[0]);
                 }
-                catch (AdminRightsRequiredException)
+
+                if (command is ISelfElevatedCommand selfElevatedCommand)
                 {
-                    // todo:
-                    throw;
+                    switch (selfElevatedCommand.RequiresElevation)
+                    {
+                        case SelfElevationType.AsInvoker:
+                            startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
+                            break;
+                        case SelfElevationType.HighestAvailable:
+                            startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
+                            break;
+                        case SelfElevationType.RequireAdministrator:
+                            startedAsAdmin = true;
+                            break;
+                    }
                 }
 
                 if (startedAsAdmin && !this.writableApplicationStateManager.CurrentState.IsSelfElevated && !this.writableApplicationStateManager.CurrentState.IsElevated)
@@ -346,7 +294,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             }
         }
 
-        public async Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default)
+        public async Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = default)
         {
             try
             {
@@ -364,36 +312,27 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 
                 T result;
                 bool startedAsAdmin = false;
-                try
+                result = await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
+
+                if (lazyReducerOutput is IFinalizingReducer<T> finalizingReducer)
                 {
-                    result = await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
-
-                    if (lazyReducerOutput is IFinalizingReducer<T> finalizingReducer)
-                    {
-                        await finalizingReducer.Finish(result, cancellationToken).ConfigureAwait(false);
-                    }
-
-                    if (command is ISelfElevatedCommand selfElevatedCommand)
-                    {
-                        switch (selfElevatedCommand.RequiresElevation)
-                        {
-                            case SelfElevationType.AsInvoker:
-                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
-                                break;
-                            case SelfElevationType.HighestAvailable:
-                                startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
-                                break;
-                            case SelfElevationType.RequireAdministrator:
-                                startedAsAdmin = true;
-                                break;
-                        }
-                    }
+                    await finalizingReducer.Finish(result, cancellationToken).ConfigureAwait(false);
                 }
-                catch (AdminRightsRequiredException)
+
+                if (command is ISelfElevatedCommand selfElevatedCommand)
                 {
-                    // todo:
-                    // result = await lazyReducerOutput.GetReduced(this.interactionService, cancellationToken, this.busyManager).ConfigureAwait(false);
-                    throw;
+                    switch (selfElevatedCommand.RequiresElevation)
+                    {
+                        case SelfElevationType.AsInvoker:
+                            startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsElevated;
+                            break;
+                        case SelfElevationType.HighestAvailable:
+                            startedAsAdmin = this.writableApplicationStateManager.CurrentState.IsSelfElevated;
+                            break;
+                        case SelfElevationType.RequireAdministrator:
+                            startedAsAdmin = true;
+                            break;
+                    }
                 }
 
                 if (startedAsAdmin && !this.writableApplicationStateManager.CurrentState.IsSelfElevated && !this.writableApplicationStateManager.CurrentState.IsElevated)

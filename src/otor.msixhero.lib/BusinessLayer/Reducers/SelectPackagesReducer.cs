@@ -8,6 +8,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -20,7 +21,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             this.action = action;
         }
 
-        public override Task<List<InstalledPackage>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
+        public override Task<List<InstalledPackage>> GetReduced(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = default)
         {
             IReadOnlyCollection<InstalledPackage> select;
             IReadOnlyCollection<InstalledPackage> deselect;

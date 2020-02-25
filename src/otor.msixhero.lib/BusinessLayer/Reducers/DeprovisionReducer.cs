@@ -33,8 +33,14 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return;
             }
 
-            await this.packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: progress).ConfigureAwait(false);
-            await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
+            using (var compound = new WrappedProgress(progress))
+            {
+                var progress1 = compound.GetChildProgress(20);
+                var progress2 = compound.GetChildProgress(50);
+
+                await this.packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: progress1).ConfigureAwait(false);
+                await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken, progress2).ConfigureAwait(false);
+            }
         }
     }
 }

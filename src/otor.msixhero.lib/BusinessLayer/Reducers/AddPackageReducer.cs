@@ -9,7 +9,7 @@ using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Packages.Manager;
 using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Ipc;
+using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -18,13 +18,16 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         private readonly AddPackage command;
         private readonly IAppxPackageManager packageManager;
 
-        public AddPackageReducer(AddPackage command, IAppxPackageManager packageManager, IWritableApplicationStateManager stateManager) : base(command, stateManager)
+        public AddPackageReducer(
+            AddPackage command, 
+            IAppxPackageManager packageManager, 
+            IWritableApplicationStateManager stateManager) : base(command, stateManager)
         {
             this.command = command;
             this.packageManager = packageManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default, IBusyManager busyManager = default)
+        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressData = default)
         {
             AppxManifestSummary appxReader;
             if (!string.Equals(".appinstaller", Path.GetExtension(this.command.FilePath),  StringComparison.OrdinalIgnoreCase))
@@ -36,7 +39,6 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 appxReader = null;
             }
 
-            var context = busyManager.Begin();
             AddPackageOptions opts = 0;
 
             if (this.command.AllUsers)
@@ -54,9 +56,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 opts |= AddPackageOptions.AllowDowngrade;
             }
 
-            await busyManager.ExecuteAsync(progress => this.packageManager.Add(this.command.FilePath, opts, cancellationToken, progress)).ConfigureAwait(false);
-
-            var allPackages = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
+            var progress = new WrappedProgress(progressData);
+            var progress1 = progress.GetChildProgress(20);
+            var progress2 = progress.GetChildProgress(20);
+            await this.packageManager.Add(this.command.FilePath, opts, cancellationToken, progress1).ConfigureAwait(false);
+            var allPackages = await this.StateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken, progress2).ConfigureAwait(false);
 
             if (appxReader != null)
             {

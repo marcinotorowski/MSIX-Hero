@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 using otor.msixhero.lib.BusinessLayer.State;
@@ -9,6 +10,7 @@ using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Domain.State;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements;
 using otor.msixhero.ui.Themes;
@@ -22,18 +24,20 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
     public class VolumeManagerViewModel : NotifyPropertyChanged, INavigationAware, IHeaderViewModel, IActiveAware
     {
         private readonly IApplicationStateManager stateManager;
+        private readonly IBusyManager busyManager;
         private bool isActive;
         private bool firstRun = true;
 
-        public VolumeManagerViewModel(IApplicationStateManager stateManager, IEventAggregator eventAggregator)
+        public VolumeManagerViewModel(IApplicationStateManager stateManager, IEventAggregator eventAggregator, IBusyManager busyManager)
         {
             this.stateManager = stateManager;
+            this.busyManager = busyManager;
             eventAggregator.GetEvent<VolumesCollectionChanged>().Subscribe(this.OnVolumesCollectionChanged, ThreadOption.UIThread);
             eventAggregator.GetEvent<VolumesSelectionChanged>().Subscribe(this.OnVolumesSelectionChanged, ThreadOption.UIThread);
             eventAggregator.GetEvent<VolumesFilterChanged>().Subscribe(this.OnVolumesFilterChanged, ThreadOption.UIThread);
             eventAggregator.GetEvent<VolumesVisibilityChanged>().Subscribe(this.OnVolumesVisibilityChanged, ThreadOption.UIThread);
             this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
-            this.CommandHandler = new VolumeManagerCommandHandler(stateManager);
+            this.CommandHandler = new VolumeManagerCommandHandler(stateManager, busyManager);
         }
 
         public VolumeManagerCommandHandler CommandHandler { get; }
@@ -58,7 +62,14 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                     if (this.firstRun)
                     {
                         this.firstRun = false;
-                        this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes());
+
+                        var context = this.busyManager.Begin();
+                        this.stateManager.CommandExecutor.GetExecuteAsync(new GetVolumes()).ContinueWith(
+                            t =>
+                            {
+                                this.busyManager.End(context);
+                            },
+                            TaskContinuationOptions.AttachedToParent);
                     }
                 }
             }

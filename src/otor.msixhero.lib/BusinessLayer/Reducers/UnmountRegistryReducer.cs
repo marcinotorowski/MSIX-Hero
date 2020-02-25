@@ -30,7 +30,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         protected override async Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             progress?.Report(new ProgressData(0, "Un-mounting registry..."));
-            await this.packageManager.UnmountRegistry(this.action.PackageName, cancellationToken).ConfigureAwait(false);
+            await this.packageManager.UnmountRegistry(this.action.PackageName, cancellationToken, progress).ConfigureAwait(false);
         }
     }
 }

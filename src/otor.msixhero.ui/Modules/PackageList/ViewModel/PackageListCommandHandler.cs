@@ -16,7 +16,6 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
-using otor.msixhero.ui.Modules.Settings;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
@@ -34,17 +33,20 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private readonly IApplicationStateManager stateManager;
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
+        private readonly IBusyManager busyManager;
 
         public PackageListCommandHandler(
             IInteractionService interactionService,
             IConfigurationService configurationService,
             IApplicationStateManager stateManager, 
-            IDialogService dialogService)
+            IDialogService dialogService,
+            IBusyManager busyManager)
         {
             this.interactionService = interactionService;
             this.configurationService = configurationService;
             this.stateManager = stateManager;
             this.dialogService = dialogService;
+            this.busyManager = busyManager;
 
             // Package-specific
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanExecuteSingleSelectionOnManifest());
@@ -138,9 +140,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public ICommand Copy { get; }
 
-        private void RefreshExecute()
+        private async void RefreshExecute()
         {
-            this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context));
+            var context = this.busyManager.Begin();
+            try
+            {
+                await this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private bool CanRefresh()
@@ -154,7 +164,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             return true;
         }
 
-        private void AddPackageExecute(bool forAllUsers)
+        private async void AddPackageExecute(bool forAllUsers)
         {
             string selection;
             if (forAllUsers)
@@ -178,8 +188,16 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 KillRunningApps = true,
                 AllowDowngrade = false
             };
-
-            this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None);
+            
+            var context = this.busyManager.Begin();
+            try
+            {
+                await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private void OpenPowerShellExecute()
@@ -210,7 +228,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             this.stateManager.CommandExecutor.ExecuteAsync(new MountRegistry(selection.First(), true));
         }
-        private void DeprovisionExecute()
+        private async void DeprovisionExecute()
         {
             var selection = this.stateManager.CurrentState.Packages.SelectedItems;
             if (selection.Count != 1)
@@ -224,7 +242,16 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new Deprovision(selection.First().PackageFamilyName));
+            var context = this.busyManager.Begin();
+            try
+            {
+                var command = new Deprovision(selection.First().PackageFamilyName);
+                await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private void UnmountRegistryExecute()
@@ -441,7 +468,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            await this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection)).ConfigureAwait(false);
+            var context = this.busyManager.Begin();
+            try
+            {
+                await this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection), CancellationToken.None, context).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private async void RunToolExecute(ToolListConfiguration tool)
@@ -452,7 +487,16 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            await this.stateManager.CommandExecutor.ExecuteAsync(new RunToolInPackage(package, tool.Path, tool.Arguments) { AsAdmin = tool.AsAdmin }).ConfigureAwait(false);
+            var command = new RunToolInPackage(package, tool.Path, tool.Arguments) {AsAdmin = tool.AsAdmin};
+            var context = this.busyManager.Begin();
+            try
+            {
+                await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private bool CanRunTool(ToolListConfiguration tool)
@@ -591,11 +635,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
-        private void HelpExecute()
-        {
-            this.dialogService.ShowDialog(DialogsModule.HelpPath, new DialogParameters(), this.OnDialogClosed);
-        }
-
         private void OpenResignExecute()
         {
             this.dialogService.ShowDialog(DialogsModule.PackageSigningPath, new DialogParameters(), this.OnDialogClosed);
@@ -673,11 +712,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void OnDialogClosed(IDialogResult obj)
         {
-        }
-
-        private void SettingsExecute(string tab)
-        {
-            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters { { "tab", tab }}, this.OnDialogClosed);
         }
     }
 }

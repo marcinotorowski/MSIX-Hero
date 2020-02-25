@@ -73,7 +73,7 @@ namespace otor.msixhero.adminhelper
                     IAppxVolumeManager volumeManager = new AppxVolumeManager();
                     IProcessManager processManager = new ProcessManager();
 
-                    var commandExecutor = new CommandExecutor(new AppxPackageManager(new AppxSigningManager()), volumeManager, interactionService, new Client(processManager), appAttach, busyManager);
+                    var commandExecutor = new CommandExecutor(new AppxPackageManager(new AppxSigningManager()), volumeManager, interactionService, new Client(processManager), appAttach);
                     var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
                     var server = new Server(applicationStateManager);
 

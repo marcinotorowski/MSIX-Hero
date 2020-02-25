@@ -10,6 +10,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Helpers;
+using otor.msixhero.ui.Modules.PackageList.Navigation;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
@@ -20,7 +21,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
     {
         private readonly IApplicationStateManager stateManager;
         private readonly IInteractionService interactionService;
-        private string currentPackageId;
+        private string currentManifest;
         private InstalledPackageViewModel selectedInstalledPackage;
         private ICommand findUsers;
         private string error;
@@ -72,17 +73,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
             }
         }
 
-        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
+        async void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
             this.Error = null;
-            var param = navigationContext.Parameters["Packages"] as IList<string>;
-            if (param == null || param.Count != 1)
+
+            var navigation = new PackageListNavigation(navigationContext);
+            if (navigation.SelectedManifests?.Count != 1)
             {
                 return;
             }
 
-            this.currentPackageId = param.FirstOrDefault();
-
+            this.currentManifest = navigation.SelectedManifests.First();
             var lastSelected = this.stateManager.CurrentState.Packages.SelectedItems.LastOrDefault();
             if (lastSelected?.InstallLocation == null)
             {
@@ -104,15 +105,22 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
             }
             else
             {
-                this.SelectedPackageManifestInfo.Load(this.GetManifestDetails(lastSelected));
+                await this.SelectedPackageManifestInfo.Load(this.GetManifestDetails(lastSelected)).ConfigureAwait(false);
 
-                try
+                if (!this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
                 {
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated));
+                    await this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired))).ConfigureAwait(false);
                 }
-                catch (Exception)
+                else
                 {
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, false));
+                    try
+                    {
+                        await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated)).ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                    {
+                        await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, false)).ConfigureAwait(false);
+                    }
                 }
 #pragma warning restore 4014   
             }
@@ -145,7 +153,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 
                 return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
             }

@@ -32,7 +32,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return null;
             }
 
-            return await this.packageManager.GetUsersForPackage(this.action.FullProductId, cancellationToken).ConfigureAwait(false);
+            return await this.packageManager.GetUsersForPackage(this.action.FullProductId, cancellationToken, progressReporter).ConfigureAwait(false);
         }
     }
 }

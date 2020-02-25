@@ -23,7 +23,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         protected override async Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            await this.packageManager.MountRegistry(this.action.PackageName, this.action.InstallLocation, true, cancellationToken).ConfigureAwait(false);
+            await this.packageManager.MountRegistry(this.action.PackageName, this.action.InstallLocation, true, cancellationToken, progress).ConfigureAwait(false);
         }
     }
 }
