@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using otor.msixhero.lib.Domain.Appx.Manifest.Build;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.ui.ViewModel;
@@ -7,6 +8,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 {
     public class InstalledPackageDetailsViewModel : NotifyPropertyChanged
     {
+        private AppxApplicationViewModel selectedFixup;
+
         public InstalledPackageDetailsViewModel(AppxPackage model)
         {
             this.DisplayName = model.DisplayName;
@@ -48,6 +51,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                     this.Applications.Add(new AppxApplicationViewModel(item, model));
                 }
             }
+            
+            this.Fixups = new ObservableCollection<AppxApplicationViewModel>(this.Applications.Where(a => a.HasPsf && a.Psf != null && (a.Psf.HasFileRedirections || a.Psf.HasOtherFixups)));
+            this.selectedFixup = this.Fixups.FirstOrDefault();
+            this.FixupsCount = this.Fixups.SelectMany(s => s.Psf.FileRedirections).Select(s => s.Exclusions.Count + s.Inclusions.Count).Sum();
 
             if (model.Addons != null)
             {
@@ -85,7 +92,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
 
+        public ObservableCollection<AppxApplicationViewModel> Fixups { get; }
+
+        public AppxApplicationViewModel SelectedFixup
+        {
+            get => this.selectedFixup;
+            set => this.SetField(ref this.selectedFixup, value);
+        }
+
         public BuildInfo BuildInfo { get; }
+
+        public int FixupsCount { get; }
 
         public bool HasBuildInfo => this.BuildInfo != null;
     }

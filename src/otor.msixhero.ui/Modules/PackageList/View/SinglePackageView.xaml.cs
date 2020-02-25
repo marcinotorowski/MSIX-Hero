@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using otor.msixhero.ui.Modules.PackageList.Navigation;
 using Prism.Regions;
 
 namespace otor.msixhero.ui.Modules.PackageList.View
@@ -20,13 +21,8 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
         {
-            var pkgs = navigationContext.Parameters["Packages"] as IList<string>;
-            if (pkgs == null || pkgs.Count != 1)
-            {
-                return false;
-            }
-
-            return true;
+            var navigationParameters = new PackageListNavigation(navigationContext);
+            return navigationParameters.SelectedManifests.Count == 1;
         }
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)

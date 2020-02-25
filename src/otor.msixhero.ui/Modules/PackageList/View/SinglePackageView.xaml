@@ -105,8 +105,8 @@
                         <TabItem Style="{StaticResource Compact}">
                             <TabItem.Header>
                                 <TextBlock>
-                        <Run Text="Applications" />
-                        <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />
+                                    <Run Text="Applications" />
+                                    <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />
                                 </TextBlock>
                             </TabItem.Header>
                             <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
@@ -167,68 +167,7 @@
                                                                     <StackPanel Margin="0 10 0 0">
                                                                         <TextBlock Style="{StaticResource DataHeader}" Text="File redirections" />
                                                                         <TextBlock Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="None" TextWrapping="Wrap" />
-
-                                                                        <ItemsControl Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
-                                                                            <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate DataType="{x:Type descriptor:PsfFolderRedirection}">
-                                                                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
-                                                                                    <Border>
-                                                                                        <StackPanel Margin="0 0 0 -6">
-                                                                                            <TextBlock Text="{Binding Directory}" Margin="0 0 0 6" />
-
-                                                                                            <Border BorderBrush="#ccc" Margin="16 0 0 6">
-                                                                                                <StackPanel>
-                                                                                                    <TextBlock Margin="6 0 0 0" x:Name="Inc0" Text="Redirect the following files:" />
-                                                                                                    <ItemsControl Margin="28 0 0 6" x:Name="Inc1" ItemsSource="{Binding Inclusions}">
-                                                                                                        <ItemsControl.ItemTemplate>
-                                                                                                            <DataTemplate DataType="{x:Type descriptor:PsfFileRedirection}">
-                                                                                                                <TextBlock x:Name="txt" ToolTip="{Binding RegularExpression}" Text="{Binding DisplayName, StringFormat='{}&#x2022; {0}'}" />
-                                                                                                                <DataTemplate.Triggers>
-                                                                                                                    <DataTrigger Binding="{Binding DisplayName}" Value="{x:Null}">
-                                                                                                                        <Setter TargetName="txt" Property="Text" Value="{Binding RegularExpression, StringFormat='{}&#x2022; {0}'}" />
-                                                                                                                        <Setter TargetName="txt" Property="ToolTip" Value="{x:Null}" />
-                                                                                                                    </DataTrigger>
-                                                                                                                </DataTemplate.Triggers>
-                                                                                                            </DataTemplate>
-                                                                                                        </ItemsControl.ItemTemplate>
-                                                                                                    </ItemsControl>
-
-                                                                                                    <TextBlock Margin="6 0 0 0" x:Name="Exc0" Text="Files excluded from redirection:" />
-                                                                                                    <ItemsControl Margin="18 0 0 6" x:Name="Exc1" ItemsSource="{Binding Exclusions}">
-                                                                                                <ItemsControl.ItemTemplate>
-                                                                                                    <DataTemplate DataType="{x:Type descriptor:PsfFileRedirection}">
-                                                                                                        <TextBlock x:Name="txt" ToolTip="{Binding RegularExpression}" Text="{Binding DisplayName, StringFormat='{}&#x2022; {0}'}" />
-                                                                                                        <DataTemplate.Triggers>
-                                                                                                            <DataTrigger Binding="{Binding DisplayName}" Value="{x:Null}">
-                                                                                                                <Setter TargetName="txt" Property="Text" Value="{Binding RegularExpression, StringFormat='{}&#x2022; {0}'}" />
-                                                                                                                <Setter TargetName="txt" Property="ToolTip" Value="{x:Null}" />
-                                                                                                            </DataTrigger>
-                                                                                                        </DataTemplate.Triggers>
-                                                                                                    </DataTemplate>
-                                                                                                </ItemsControl.ItemTemplate>
-                                                                                            </ItemsControl>
-                                                                                            
-                                                                                                </StackPanel>
-                                                                                            </Border>
-                                                                                        </StackPanel>
-                                                                                    </Border>
-                                                                                </TextBlock>
-                                                                                    <DataTemplate.Resources>
-                                                                                        <system:Int32 x:Key="Int0">0</system:Int32>
-                                                                                    </DataTemplate.Resources>
-                                                                                    <DataTemplate.Triggers>
-                                                                                        <DataTrigger Binding="{Binding Path=Inclusions.Count}" Value="{StaticResource Int0}">
-                                                                                            <Setter Property="Visibility" TargetName="Inc0" Value="Collapsed" />
-                                                                                            <Setter Property="Visibility" TargetName="Inc1" Value="Collapsed" />
-                                                                                        </DataTrigger>
-                                                                                        <DataTrigger Binding="{Binding Path=Exclusions.Count}" Value="{StaticResource Int0}">
-                                                                                            <Setter Property="Visibility" TargetName="Exc0" Value="Collapsed" />
-                                                                                            <Setter Property="Visibility" TargetName="Exc1" Value="Collapsed" />
-                                                                                        </DataTrigger>
-                                                                                    </DataTemplate.Triggers>
-                                                                                </DataTemplate>
-                                                                            </ItemsControl.ItemTemplate>
-                                                                        </ItemsControl>
+                                                                        <TextBlock Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" Text="{Binding Psf.FileRedirections.Count}" TextWrapping="Wrap" />
                                                                     </StackPanel>
 
                                                                     <StackPanel Margin="0 10 0 0">
@@ -265,57 +204,137 @@
                         <TabItem Style="{StaticResource Compact}">
                             <TabItem.Header>
                                 <TextBlock>
-                        <Run Text="Modifications + Add-ons" />
-                        <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count, Mode=OneWay}"  Foreground="#777" />
+                                    <Run Text="PSF fix-ups" />
+                                    <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.FixupsCount, Mode=OneWay}" Foreground="#777" />
                                 </TextBlock>
                             </TabItem.Header>
                             <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+                                <DockPanel DataContext="{Binding SelectedPackageManifestInfo.CurrentValue}">
+                                    <ComboBox DockPanel.Dock="Top" SelectedItem="{Binding SelectedFixup}" ItemsSource="{Binding Fixups}">
+                                        <ComboBox.Style>
+                                            <Style TargetType="ComboBox">
+                                                <Style.Triggers>
+                                                    <Trigger Property="HasItems" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </Trigger>
+                                                    <DataTrigger Binding="{Binding Fixups.Count}">
+                                                        <DataTrigger.Value>
+                                                            <system:Int32>1</system:Int32>
+                                                        </DataTrigger.Value>
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type elements:AppxApplicationViewModel}">
+                                                <DockPanel Margin="6">
+                                                    <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                            <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                        </Border>
+                                                    </Border>
 
-                                <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
-                                    <controls:ZeroOrAny.Template>
-                                        <ControlTemplate TargetType="controls:ZeroOrAny">
-                                            <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
-                                        </ControlTemplate>
-                                    </controls:ZeroOrAny.Template>
-                                    <controls:ZeroOrAny.AnyItemTemplate>
-                                        <DataTemplate>
-                                            <ListBox 
-                                            ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type elements:InstalledPackageDetailsViewModel}">
-                                                        <DockPanel>
-                                                            <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                    <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
-                                                                </Border>
-                                                            </Border>
+                                                    <StackPanel VerticalAlignment="Center" Margin="10 0 0 0">
+                                                        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
+                                                        <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" Opacity="0.7" />
+                                                        <TextBlock Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding Psf.Executable, Mode=OneTime}" Opacity="0.7" />
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding SelectedFixup}">
+                                        <ScrollViewer.Style>
+                                            <Style TargetType="ScrollViewer">
+                                                <Style.Triggers>
+                                                    <Trigger Property="DataContext" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ScrollViewer.Style>
+                                        <ItemsControl Visibility="{Binding Psf.HasFileRedirections, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}"
+                                                      d:DataContext="{d:DesignInstance elements:AppxApplicationViewModel}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type descriptor:PsfFolderRedirection}">
 
-                                                            <StackPanel DockPanel.Dock="Right">
-                                                                <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                                            </StackPanel>
-
-                                                            <StackPanel Margin="10 0">
-                                                                <TextBlock TextTrimming="CharacterEllipsis">
-                                                                <Run Text="{Binding DisplayName, Mode=OneTime}" />
-                                                                </TextBlock>
-                                                                <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
-                                                                <Run Text="{Binding PublisherDisplayName, Mode=OneTime}" />
-                                                                </TextBlock>
-                                                            </StackPanel>
-
+                                                    <StackPanel Margin="0 0 0 -6">
+                                                        <DockPanel Margin="0 0 0 6">
+                                                            <Viewbox Width="16" Height="16" VerticalAlignment="Center" Margin="0 0 4 0">
+                                                                <Path Width="32" Height="32" Fill="DimGray" Data="M 6 3 L 6 29 L 26 29 L 26 15.4375 L 27.71875 13.71875 L 28 13.40625 L 28 3 Z M 8 5 L 22 5 L 22 13.40625 L 22.28125 13.71875 L 24 15.4375 L 24 27 L 8 27 Z M 24 5 L 26 5 L 26 12.5625 L 25 13.5625 L 24 12.5625 Z" />
+                                                            </Viewbox>
+                                                            <TextBlock Text="{Binding Directory}" VerticalAlignment="Center" />
                                                         </DockPanel>
-                                                    </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
-                                        </DataTemplate>
-                                    </controls:ZeroOrAny.AnyItemTemplate>
-                                    <controls:ZeroOrAny.NoItemsTemplate>
-                                        <DataTemplate>
-                                            <controls:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
-                                        </DataTemplate>
-                                    </controls:ZeroOrAny.NoItemsTemplate>
-                                </controls:ZeroOrAny>
+
+                                                        <Border BorderBrush="#ccc" Margin="32 0 0 16">
+                                                            <StackPanel>
+                                                                <TextBlock Margin="6 0 0 0" x:Name="Inc0" Text="Redirect the following files:" />
+                                                                <ItemsControl Margin="16 0 0 6" x:Name="Inc1" ItemsSource="{Binding Inclusions}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate DataType="{x:Type descriptor:PsfFileRedirection}">
+                                                                            <DockPanel VerticalAlignment="Center">
+                                                                                <!--<Viewbox Width="16" Height="16" VerticalAlignment="Center" Margin="0 0 4 0">
+                                                                                    <Path Width="32" Height="32" Fill="DimGray" Data="M 21.1875 2.28125 L 19.78125 3.71875 L 24.0625 8 L 12 8 L 12 10 L 24.0625 10 L 19.78125 14.28125 L 21.1875 15.71875 L 27.90625 9 Z M 4 8 L 4 10 L 6 10 L 6 8 Z M 8 8 L 8 10 L 10 10 L 10 8 Z M 9.8125 16.28125 L 3.09375 23 L 9.8125 29.71875 L 11.21875 28.28125 L 6.9375 24 L 19 24 L 19 22 L 6.9375 22 L 11.21875 17.71875 Z M 21 22 L 21 24 L 23 24 L 23 22 Z M 25 22 L 25 24 L 27 24 L 27 22 Z"></Path>
+                                                                                </Viewbox>-->
+                                                                                <TextBlock x:Name="txt" ToolTip="{Binding RegularExpression}" Text="{Binding DisplayName, StringFormat='{}&#x2022; {0}'}" VerticalAlignment="Center" />
+                                                                            </DockPanel>
+                                                                            <DataTemplate.Triggers>
+                                                                                <DataTrigger Binding="{Binding DisplayName}" Value="{x:Null}">
+                                                                                    <Setter TargetName="txt" Property="Text" Value="{Binding RegularExpression, StringFormat='{}&#x2022; {0}'}" />
+                                                                                    <Setter TargetName="txt" Property="ToolTip" Value="{x:Null}" />
+                                                                                </DataTrigger>
+                                                                            </DataTemplate.Triggers>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+
+                                                                <TextBlock Margin="6 0 0 0" x:Name="Exc0" Text="Files excluded from redirection:" />
+                                                                <ItemsControl Margin="16 0 0 6" x:Name="Exc1" ItemsSource="{Binding Exclusions}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate DataType="{x:Type descriptor:PsfFileRedirection}">
+                                                                    <TextBlock x:Name="txt" ToolTip="{Binding RegularExpression}" Text="{Binding DisplayName, StringFormat='{}&#x2022; {0}'}" />
+                                                                    <DataTemplate.Triggers>
+                                                                        <DataTrigger Binding="{Binding DisplayName}" Value="{x:Null}">
+                                                                            <Setter TargetName="txt" Property="Text" Value="{Binding RegularExpression, StringFormat='{}&#x2022; {0}'}" />
+                                                                            <Setter TargetName="txt" Property="ToolTip" Value="{x:Null}" />
+                                                                        </DataTrigger>
+                                                                    </DataTemplate.Triggers>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                        
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <DataTemplate.Resources>
+                                                        <system:Int32 x:Key="Int0">0</system:Int32>
+                                                    </DataTemplate.Resources>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=Inclusions.Count}" Value="{StaticResource Int0}">
+                                                            <Setter Property="Visibility" TargetName="Inc0" Value="Collapsed" />
+                                                            <Setter Property="Visibility" TargetName="Inc1" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Path=Exclusions.Count}" Value="{StaticResource Int0}">
+                                                            <Setter Property="Visibility" TargetName="Exc0" Value="Collapsed" />
+                                                            <Setter Property="Visibility" TargetName="Exc1" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </DockPanel>
                             </progressOverlay:ProgressOverlay>
+                        </TabItem>
+                        <TabItem Style="{StaticResource Compact}">
+                            <TabItem.Header>
+                                <TextBlock>
+                                    <Run Text="Scripts" />
+                                    <!--<Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />-->
+                                </TextBlock>
+                            </TabItem.Header>
                         </TabItem>
                     </TabControl>
                 </progressOverlay:ProgressOverlay>
@@ -369,34 +388,93 @@
                     </DockPanel>
                 </progressOverlay:ProgressOverlay>
             </TabItem>
-            <TabItem Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Run FontSize="13" Text="Installed by" />
-                            <Run Text="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy.Count, Mode=OneWay, FallbackValue=''}" Foreground="#777" />
-                        </TextBlock>
-                        <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
-                            <Run FontSize="13" Text="Installed by" />
-                        </TextBlock>
-                    </StackPanel>
-                </TabItem.Header>
-                <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageUsersInfo.IsLoading}">
-                    <Grid>
-                        <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <TabItem Header="Installation" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TabControl Margin="0 -7 0 0">
+                    <TabItem Style="{StaticResource Compact}">
+                        <TabItem.Header>
+                            <TextBlock>
+                            <Run Text="Modifications + Add-ons" />
+                            <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count, Mode=OneWay}"  Foreground="#777" />
+                            </TextBlock>
+                        </TabItem.Header>
+                        <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
 
-                            <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
-                            <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
-                                    <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />
+                            <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
+                                <controls:ZeroOrAny.Template>
+                                    <ControlTemplate TargetType="controls:ZeroOrAny">
+                                        <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
+                                    </ControlTemplate>
+                                </controls:ZeroOrAny.Template>
+                                <controls:ZeroOrAny.AnyItemTemplate>
+                                    <DataTemplate>
+                                        <ListBox 
+                                                ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type elements:InstalledPackageDetailsViewModel}">
+                                                    <DockPanel>
+                                                        <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                            <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                                <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                            </Border>
+                                                        </Border>
+
+                                                        <StackPanel DockPanel.Dock="Right">
+                                                            <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                                        </StackPanel>
+
+                                                        <StackPanel Margin="10 0">
+                                                            <TextBlock TextTrimming="CharacterEllipsis">
+                                                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
+                                                            </TextBlock>
+                                                            <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
+                                                                    <Run Text="{Binding PublisherDisplayName, Mode=OneTime}" />
+                                                            </TextBlock>
+                                                        </StackPanel>
+
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </DataTemplate>
+                                </controls:ZeroOrAny.AnyItemTemplate>
+                                <controls:ZeroOrAny.NoItemsTemplate>
+                                    <DataTemplate>
+                                        <controls:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
+                                    </DataTemplate>
+                                </controls:ZeroOrAny.NoItemsTemplate>
+                            </controls:ZeroOrAny>
+                        </progressOverlay:ProgressOverlay>
+                    </TabItem>
+                    <TabItem Style="{StaticResource Compact}">
+                        <TabItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Run Text="Installed by" />
+                                    <Run Text="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy.Count, Mode=OneWay, FallbackValue=''}" Foreground="#777" />
+                                </TextBlock>
+                                <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                                    <Run Text="Installed by" />
+                                </TextBlock>
+                            </StackPanel>
+                        </TabItem.Header>
+                        <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageUsersInfo.IsLoading}">
+                            <Grid>
+                                <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+
+                                    <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
+                                    <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
+                                            <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
-                            </Button>
-                        </StackPanel>
 
-                        <ListBox Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 0 0 0" ItemsSource="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy}" />
-                    </Grid>
-                </progressOverlay:ProgressOverlay>
+                                <ListBox Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}" DisplayMemberPath="Name" Margin="0 0 0 0" ItemsSource="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy}" />
+                            </Grid>
+                        </progressOverlay:ProgressOverlay>
+                    </TabItem>
+                </TabControl>
             </TabItem>
         </TabControl>
     </DockPanel>

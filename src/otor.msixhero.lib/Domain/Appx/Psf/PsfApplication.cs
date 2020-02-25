@@ -16,6 +16,18 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
 
         [DataMember(Name = "arguments")]
         public string Arguments { get; set; }
+        
+        [DataMember(Name = "startScript", EmitDefaultValue = false)]
+        public PsfScript StartScript { get; set; }
+        
+        [DataMember(Name = "endScript", EmitDefaultValue = false)]
+        public PsfScript EndScript { get; set; }
+
+        /// <summary>
+        /// Specifies whether to exit the application if the starting script fails.
+        /// </summary>
+        [DataMember(Name = "stopOnScriptError")]
+        public bool StopOnScriptError { get; set; }
 
         public override string ToString()
         {

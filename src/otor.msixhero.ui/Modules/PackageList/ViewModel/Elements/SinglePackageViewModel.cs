@@ -128,13 +128,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
         {
-            var param = navigationContext.Parameters["Packages"] as IList<string>;
-            if (param == null || param.Count != 1)
-            {
-                return false;
-            }
-
-            return true;
+            var navigation = new PackageListNavigation(navigationContext);
+            return navigation.SelectedManifests?.Count == 1;
         }
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
