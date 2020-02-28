@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="4.6.8" />
-    <PackageReference Include="System.Management.Automation" Version="7.0.0-rc.2" />
+    <PackageReference Include="NLog" Version="4.7.0-rc1" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.0-rc.3" />
   </ItemGroup>
 
   <ItemGroup>
