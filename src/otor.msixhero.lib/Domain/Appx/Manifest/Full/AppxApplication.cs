@@ -1,5 +1,6 @@
 ﻿using System;
 using otor.msixhero.lib.Domain.Appx.Psf;
+using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 
 namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 {
@@ -36,6 +37,6 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 
         public string Square71x71Logo { get; set; }
 
-        public PsfApplicationDefinition Psf { get; set; }
+        public PsfApplicationDescriptor Psf { get; set; }
     }
 }

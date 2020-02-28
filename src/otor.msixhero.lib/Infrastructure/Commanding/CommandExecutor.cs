@@ -164,10 +164,6 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(action, cancellationToken).ConfigureAwait(false);
                 }
-                else
-                {
-                    throw;
-                }
             }
         }
 

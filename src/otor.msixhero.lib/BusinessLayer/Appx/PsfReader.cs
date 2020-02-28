@@ -13,7 +13,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
     public class PsfReader
     {
-        public PsfApplicationDefinition Read(string applicationId, string packageRootFolder)
+        public PsfApplicationDescriptor Read(string applicationId, string packageRootFolder)
         {
             if (!Directory.Exists(packageRootFolder))
             {
@@ -26,7 +26,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        public PsfApplicationDefinition Read(string applicationId, IAppxFileReader fileReader)
+        public PsfApplicationDescriptor Read(string applicationId, IAppxFileReader fileReader)
         {
             if (fileReader.FileExists("config.json"))
             {
@@ -65,7 +65,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     var key = reg.GetKey(@"root\registry\machine\software\caphyon\advanced installer\" + applicationId);
                     if (key?.Values != null)
                     {
-                        var psfDef = new PsfApplicationDefinition();
+                        var psfDef = new PsfApplicationDescriptor();
 
                         foreach (var item in key.Values.Where(item => item.ValueName != null))
                         {
@@ -112,7 +112,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return null;
         }
 
-        private PsfApplicationDefinition Read(string applicationId, IAppxFileReader fileReader, TextReader configJson)
+        private PsfApplicationDescriptor Read(string applicationId, IAppxFileReader fileReader, TextReader configJson)
         {
             var jsonSerializer = new PsfConfigSerializer();
             var config = jsonSerializer.Deserialize(configJson.ReadToEnd());
@@ -120,16 +120,31 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             string executable = null;
             string workingDirectory = null;
             string arguments = null;
+            var scripts = new List<PsfScriptDescriptor>();
+
             foreach (var item in config.Applications ?? Enumerable.Empty<PsfApplication>())
             {
                 var id = item.Id;
-                if (id == applicationId)
+                if (id != applicationId)
                 {
-                    executable = item.Executable;
-                    workingDirectory = item.WorkingDirectory;
-                    arguments = item.Arguments;
-                    break;
+                    continue;
                 }
+
+                executable = item.Executable;
+                workingDirectory = item.WorkingDirectory;
+                arguments = item.Arguments;
+
+                if (item.StartScript != null)
+                {
+                    scripts.Add(new PsfScriptDescriptor(item.StartScript, PsfScriptDescriptorTiming.Start));
+                }
+
+                if (item.EndScript != null)
+                {
+                    scripts.Add(new PsfScriptDescriptor(item.EndScript, PsfScriptDescriptorTiming.Finish));
+                }
+
+                break;
             }
 
             if (executable == null)
@@ -137,16 +152,17 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 return null;
             }
 
-            var psfDef = new PsfApplicationDefinition
+            var psfDef = new PsfApplicationDescriptor
             {
                 Executable = executable,
                 Arguments = arguments,
                 WorkingDirectory = workingDirectory,
                 OtherFixups = new List<string>(),
-                FileRedirections = new List<PsfFolderRedirection>(),
+                FileRedirections = new List<PsfFolderRedirectionDescriptor>(),
                 Tracing = null,
+                Scripts = scripts
             };
-
+            
             foreach (var p in config.Processes ?? Enumerable.Empty<PsfProcess>())
             {
                 var exe = p.Executable;
@@ -187,38 +203,34 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     switch (dll.ToLower())
                     {
                         case "tracefixup64.dll":
-                            if (psfDef.Tracing == null)
+                        { 
+                            if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
+
                             {
-                                psfDef.Tracing = PsfBitness.x64;
-                            }
-                            else
-                            {
-                                psfDef.Tracing |= PsfBitness.x64;
+                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig, PsfBitness.x64);
                             }
 
                             break;
+                        }
+
                         case "tracefixup32.dll":
-                            if (psfDef.Tracing == null)
+                        {
+                            if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
                             {
-                                psfDef.Tracing = PsfBitness.x86;
+                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig, PsfBitness.x86);
                             }
-                            else
-                            {
-                                psfDef.Tracing |= PsfBitness.x86;
-                            }
-
                             break;
+                        }
+
                         case "tracefixup.dll":
-                            if (psfDef.Tracing == null)
+                        { 
+                            if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
                             {
-                                psfDef.Tracing = fileReader.FileExists("tracefixup32.dll") ? PsfBitness.x86 : PsfBitness.x64;
+                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig, PsfBitness.x64);
                             }
-                            else
-                            {
-                                psfDef.Tracing |= fileReader.FileExists("tracefixup32.dll") ? PsfBitness.x86 : PsfBitness.x64;
-                            }
-
                             break;
+                        }
+
                         case "fileredirectionfixup64.dll":
                         case "fileredirectionfixup32.dll":
                         case "fileredirectionfixup.dll":
@@ -240,9 +252,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return psfDef;
         }
 
-        private List<PsfFolderRedirection> GetFolderRedirections(PsfFixup jsonConvert)
+        private List<PsfFolderRedirectionDescriptor> GetFolderRedirections(PsfFixup jsonConvert)
         {
-            var list = new List<PsfFolderRedirection>();
+            var list = new List<PsfFolderRedirectionDescriptor>();
 
             if (!(jsonConvert.Config is PsfRedirectionFixupConfig config))
             {
@@ -275,11 +287,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
                     if (def == null)
                     {
-                        def = new PsfFolderRedirection
+                        def = new PsfFolderRedirectionDescriptor
                         {
                             Directory = valueBase,
-                            Inclusions = new List<PsfFileRedirection>(),
-                            Exclusions = new List<PsfFileRedirection>()
+                            Inclusions = new List<PsfFileRedirectionDescriptor>(),
+                            Exclusions = new List<PsfFileRedirectionDescriptor>()
                         };
 
                         list.Add(def);
@@ -289,14 +301,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     {
                         foreach (var pattern in packageRelativeItem.Patterns ?? Enumerable.Empty<string>())
                         {
-                            def.Exclusions.Add(new PsfFileRedirection { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                            def.Exclusions.Add(new PsfFileRedirectionDescriptor { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                         }
                     }
                     else
                     {
                         foreach (var pattern in packageRelativeItem.Patterns ?? Enumerable.Empty<string>())
                         {
-                            def.Inclusions.Add(new PsfFileRedirection { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                            def.Inclusions.Add(new PsfFileRedirectionDescriptor { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                         }
                     }
                 }
@@ -321,11 +333,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     if (def == null)
                     {
 
-                        def = new PsfFolderRedirection
+                        def = new PsfFolderRedirectionDescriptor
                         {
                             Directory = valueBase,
-                            Inclusions = new List<PsfFileRedirection>(),
-                            Exclusions = new List<PsfFileRedirection>()
+                            Inclusions = new List<PsfFileRedirectionDescriptor>(),
+                            Exclusions = new List<PsfFileRedirectionDescriptor>()
                         };
 
                         list.Add(def);
@@ -335,14 +347,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                     {
                         foreach (var pattern in packageDriveRelativeItem.Patterns ?? Enumerable.Empty<string>())
                         {
-                            def.Exclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                            def.Exclusions.Add(new PsfFileRedirectionDescriptor() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                         }
                     }
                     else
                     {
                         foreach (var pattern in packageDriveRelativeItem.Patterns ?? Enumerable.Empty<string>())
                         {
-                            def.Inclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                            def.Inclusions.Add(new PsfFileRedirectionDescriptor() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                         }
                     }
                 }
@@ -374,11 +386,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
                             if (def == null)
                             {
-                                def = new PsfFolderRedirection
+                                def = new PsfFolderRedirectionDescriptor
                                 {
                                     Directory = valueBase,
-                                    Inclusions = new List<PsfFileRedirection>(),
-                                    Exclusions = new List<PsfFileRedirection>()
+                                    Inclusions = new List<PsfFileRedirectionDescriptor>(),
+                                    Exclusions = new List<PsfFileRedirectionDescriptor>()
                                 };
 
                                 list.Add(def);
@@ -388,14 +400,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                             {
                                 foreach (var pattern in relativePathItem.Patterns ?? Enumerable.Empty<string>())
                                 {
-                                    def.Exclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                                    def.Exclusions.Add(new PsfFileRedirectionDescriptor() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                                 }
                             }
                             else
                             {
                                 foreach (var pattern in relativePathItem.Patterns ?? Enumerable.Empty<string>())
                                 {
-                                    def.Inclusions.Add(new PsfFileRedirection() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
+                                    def.Inclusions.Add(new PsfFileRedirectionDescriptor() { RegularExpression = pattern, DisplayName = GetNiceRegExpDescription(pattern) });
                                 }
                             }
                         }

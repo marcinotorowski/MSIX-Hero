@@ -39,6 +39,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                 }
             }
 
+            this.ScriptsCount = 0;
+
             if (model.Applications != null)
             {
                 foreach (var item in model.Applications)
@@ -49,12 +51,18 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                     }
 
                     this.Applications.Add(new AppxApplicationViewModel(item, model));
+                    this.ScriptsCount += item.Psf?.Scripts?.Count ?? 0;
                 }
             }
             
-            this.Fixups = new ObservableCollection<AppxApplicationViewModel>(this.Applications.Where(a => a.HasPsf && a.Psf != null && (a.Psf.HasFileRedirections || a.Psf.HasOtherFixups)));
+            this.Fixups = new ObservableCollection<AppxApplicationViewModel>(this.Applications.Where(a => a.HasPsf && a.Psf != null && (a.Psf.HasFileRedirections || a.Psf.HasTracing || a.Psf.HasOtherFixups)));
             this.selectedFixup = this.Fixups.FirstOrDefault();
+            
+            // 1) fixup count is the sum of all individual file redirections...
             this.FixupsCount = this.Fixups.SelectMany(s => s.Psf.FileRedirections).Select(s => s.Exclusions.Count + s.Inclusions.Count).Sum();
+            
+            // 2) plus additionally number of apps that have tracing
+            this.FixupsCount += this.Applications.Count(a => a.HasPsf && a.Psf.HasTracing);
 
             if (model.Addons != null)
             {
@@ -103,6 +111,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         public BuildInfo BuildInfo { get; }
 
         public int FixupsCount { get; }
+        
+        public int ScriptsCount { get; }
 
         public bool HasBuildInfo => this.BuildInfo != null;
     }

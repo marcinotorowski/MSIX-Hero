@@ -1,17 +1,21 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf
 {
     public class AppxPsfViewModel : NotifyPropertyChanged
     {
-        private readonly PsfApplicationDefinition definition;
+        private readonly PsfApplicationDescriptor definition;
 
-        public AppxPsfViewModel(PsfApplicationDefinition definition)
+        public AppxPsfViewModel(PsfApplicationDescriptor definition)
         {
             this.definition = definition;
+
+            if (this.definition.Tracing != null)
+            {
+                this.Tracing = new TracingPsfViewModel(this.definition.Tracing);
+            }
         }
 
         public string Executable => this.definition.Executable;
@@ -20,7 +24,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         
         public string WorkingDirectory => this.definition.WorkingDirectory;
         
-        public List<PsfFolderRedirection> FileRedirections => this.definition.FileRedirections;
+        public List<PsfFolderRedirectionDescriptor> FileRedirections => this.definition.FileRedirections;
+        
+        public List<PsfScriptDescriptor> Scripts => this.definition.Scripts;
 
         public List<string> OtherFixups => this.definition.OtherFixups;
 
@@ -30,28 +36,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 
         public bool HasWorkingDirectory => !string.IsNullOrEmpty(this.definition.WorkingDirectory);
 
+        public TracingPsfViewModel Tracing { get; }
+
         public bool HasFileRedirections => this.definition.FileRedirections?.Count > 0;
+        
+        public bool HasScripts => this.definition.Scripts?.Count > 0;
 
         public bool HasOtherFixups => this.definition.OtherFixups?.Count > 0;
 
-        public bool HasTracing => this.definition.Tracing.HasValue;
-
-        public string DisplayTracing
-        {
-            get
-            {
-                if (this.definition.Tracing == PsfBitness.x64)
-                {
-                    return "Yes, 64-bit";
-                }
-
-                if (this.definition.Tracing == PsfBitness.x64)
-                {
-                    return "Yes, 32-bit";
-                }
-
-                return "Yes";
-            }
-        }
+        public bool HasTracing => this.Tracing != null;
     }
 }
