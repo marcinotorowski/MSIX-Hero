@@ -968,10 +968,10 @@
                                                 Panel.ZIndex="1"
                                                 Margin="{TemplateBinding Padding}"
                                                 IsItemsHost="True"
-                                                Width="42"
+                                                Width="0"
                                                 KeyboardNavigation.TabIndex="1"
                                                 Background="Transparent" />
-                                            <Border Width="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Stretch" />
+                                            <!--<Border Width="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Stretch" />-->
                                             <Border x:Name="Border"
                                                 KeyboardNavigation.TabNavigation="Local"
                                                 KeyboardNavigation.DirectionalNavigation="Contained"
