@@ -109,7 +109,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
                 var context = this.busyManager.Begin();
 
-                this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(value), CancellationToken.None, context).ContinueWith(
+                this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(value), CancellationToken.None, context).ContinueWith(
                     t =>
                     {
                         this.busyManager.End(context);

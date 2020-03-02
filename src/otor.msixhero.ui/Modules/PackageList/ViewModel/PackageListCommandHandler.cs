@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Developer;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
@@ -15,6 +16,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
+using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
 using Prism.Services.Dialogs;
@@ -148,7 +150,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             var context = this.busyManager.Begin();
             try
             {
-                await this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
+                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
             }
             finally
             {
@@ -195,7 +197,30 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             var context = this.busyManager.Begin();
             try
             {
-                await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+                using (var wrappedProgress = new WrappedProgress(context))
+                {
+                    var p1 = wrappedProgress.GetChildProgress(50);
+                    var p2 = wrappedProgress.GetChildProgress(50);
+                    await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
+
+                    AppxManifestSummary appxReader;
+
+                    var allPackages = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, p2).ConfigureAwait(false);
+                    if (!string.Equals(".appinstaller", Path.GetExtension(selection), StringComparison.OrdinalIgnoreCase))
+                    {
+                        appxReader = await AppxManifestSummaryBuilder.FromFile(selection, AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        appxReader = null;
+                    }
+
+                    if (appxReader != null)
+                    {
+                        var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
+                        await this.stateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected)).ConfigureAwait(false);
+                    }
+                }
             }
             finally
             {
@@ -249,7 +274,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             try
             {
                 var command = new Deprovision(selection.First().PackageFamilyName);
-                await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+                using (var pw = new WrappedProgress(context))
+                {
+                    var p1 = pw.GetChildProgress(30);
+                    var p2 = pw.GetChildProgress(30);
+
+                    await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
+                    await this.stateManager.CommandExecutor.ExecuteAsync(SelectPackages.CreateEmpty(), CancellationToken.None).ConfigureAwait(false);
+                    await this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, p2).ConfigureAwait(false);
+                }
             }
             finally
             {

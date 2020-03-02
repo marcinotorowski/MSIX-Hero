@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Packages.Manager;
 using otor.msixhero.lib.Infrastructure;
@@ -33,13 +35,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return;
             }
 
-            using (var compound = new WrappedProgress(progress))
+            var pkg = this.StateManager.CurrentState.Packages.VisibleItems.Union(this.StateManager.CurrentState.Packages.HiddenItems).FirstOrDefault(p => p.PackageFamilyName == this.action.PackageFamilyName);
+            await this.packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: progress).ConfigureAwait(false);
+            if (pkg != null)
             {
-                var progress1 = compound.GetChildProgress(20);
-                var progress2 = compound.GetChildProgress(50);
-
-                await this.packageManager.Deprovision(this.action.PackageFamilyName, cancellationToken: cancellationToken, progress: progress1).ConfigureAwait(false);
-                await this.StateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.StateManager.CurrentState.Packages.Context), cancellationToken, progress2).ConfigureAwait(false);
+                await this.packageManager.Remove(new InstalledPackage[] {pkg}, false, false, cancellationToken);
             }
         }
     }

@@ -13,7 +13,7 @@ using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class RemovePackageReducer : SelfElevationReducer
+    public class RemovePackageReducer : SelfElevationReducer, IFinalizingReducer
     {
         private readonly RemovePackages action;
         private readonly IAppxPackageManager packageManager;
@@ -31,9 +31,14 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return;
             }
             
-            var eventData = new PackagesCollectionChangedPayLoad(this.action.Context, CollectionChangeType.Simple);
             await this.packageManager.Remove(this.action.Packages, cancellationToken: cancellationToken, progress: progress).ConfigureAwait(false);
-                
+        }
+
+        public async Task Finish(CancellationToken cancellationToken = default)
+        {
+            var eventData = new PackagesCollectionChangedPayLoad(this.action.Context, CollectionChangeType.Simple);
+
+            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
             foreach (var item in this.action.Packages)
             {
                 if (item.IsProvisioned)
