@@ -41,7 +41,15 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                     }
                     else if (this.StateManager.CurrentState.IsSelfElevated)
                     {
-                        await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken, progressReporter).ConfigureAwait(false);
+                        // Before calling self-elevated client, make sure he still really exists.
+                        if (await this.ElevatedClient.Test(cancellationToken).ConfigureAwait(false))
+                        {
+                            await this.ElevatedClient.Execute(this.selfElevatedCommand, cancellationToken, progressReporter).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await this.ReduceAsCurrentUser(interactionService, cancellationToken, progressReporter).ConfigureAwait(false);
+                        }
                     }
                     else
                     {
@@ -97,7 +105,15 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                     }
                     else if (this.StateManager.CurrentState.IsSelfElevated)
                     {
-                        return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken, progressData).ConfigureAwait(false);
+                        // Before calling self-elevated client, make sure he still really exists.
+                        if (await this.ElevatedClient.Test(cancellationToken).ConfigureAwait(false))
+                        {
+                            return await this.ElevatedClient.GetExecuted(this.selfElevatedCommand, cancellationToken, progressData).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            return await this.GetReducedAsCurrentUser(interactionService, cancellationToken, progressData).ConfigureAwait(false);
+                        }
                     }
                     else
                     {

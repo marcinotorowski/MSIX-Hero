@@ -87,7 +87,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                 return;
             }
 
-            this.currentManifest = navigation.SelectedManifests.First();
+            var manifest = navigation.SelectedManifests.First();
+            if (this.currentManifest == manifest)
+            {
+                return;
+            }
+
+            this.currentManifest = manifest;
             var lastSelected = this.stateManager.CurrentState.Packages.SelectedItems.LastOrDefault();
             if (lastSelected?.InstallLocation == null)
             {

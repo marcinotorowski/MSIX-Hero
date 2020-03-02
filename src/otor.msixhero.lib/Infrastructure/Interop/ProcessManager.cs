@@ -13,6 +13,12 @@ namespace otor.msixhero.lib.Infrastructure.Interop
 
         private readonly HashSet<Process> processes = new HashSet<Process>();
 
+        public async Task<bool> CheckIfRunning(CancellationToken cancellationToken = default)
+        {
+            var process = await GetProcessIfRunning(cancellationToken).ConfigureAwait(false);
+            return process != null;
+        }
+
         public async Task Connect(CancellationToken cancellationToken = default)
         {
             var process = Process.GetProcessesByName("msixhero-uac").FirstOrDefault();
@@ -54,6 +60,11 @@ namespace otor.msixhero.lib.Infrastructure.Interop
                     SafeHandle.Set();
                 }
             }
+        }
+
+        private static Task<Process> GetProcessIfRunning(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(Process.GetProcessesByName("msixhero-uac").FirstOrDefault());
         }
 
         private Process Start(ProcessStartInfo info)

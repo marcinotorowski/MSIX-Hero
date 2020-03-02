@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO.Pipes;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Domain.Commands;
@@ -20,6 +18,11 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
         public Client(IProcessManager processManager)
         {
             this.processManager = processManager;
+        }
+
+        public Task<bool> Test(CancellationToken cancellationToken = default)
+        {
+            return this.processManager.CheckIfRunning(cancellationToken);
         }
 
         public async Task Execute(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

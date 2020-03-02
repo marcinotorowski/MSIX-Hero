@@ -9,25 +9,27 @@ using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Packages.Manager;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
-    public class AddPackageReducer : BaseReducer
+    public class AddPackageReducer : SelfElevationReducer
     {
         private readonly AddPackage command;
         private readonly IAppxPackageManager packageManager;
 
         public AddPackageReducer(
             AddPackage command, 
+            IElevatedClient elevatedClient,
             IAppxPackageManager packageManager, 
-            IWritableApplicationStateManager stateManager) : base(command, stateManager)
+            IWritableApplicationStateManager stateManager) : base(command, elevatedClient, stateManager)
         {
             this.command = command;
             this.packageManager = packageManager;
         }
 
-        public override async Task Reduce(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressData = default)
+        protected override async Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressData = default)
         {
             AppxManifestSummary appxReader;
             if (!string.Equals(".appinstaller", Path.GetExtension(this.command.FilePath),  StringComparison.OrdinalIgnoreCase))

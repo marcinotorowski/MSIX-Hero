@@ -392,7 +392,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
 
