@@ -191,6 +191,18 @@
                             <Button DockPanel.Dock="Right" Content="..." Command="{Binding PsfEditorPath.Browse}" Margin="4 0 0 0" />
                             <TextBox IsEnabled="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PsfEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
+
+                        <TextBlock Text="Default editor for PS1 scripts" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <ComboBox SelectedValue="{Binding PowerShellEditorType.CurrentValue}" SelectedValuePath="Tag">
+                            <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default application" />
+                            <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
+                            <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="Always ask me which program to use" />
+                        </ComboBox>
+
+                        <DockPanel Margin="0 6 0 0" Visibility="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
+                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding PowerShellEditorPath.Browse}" Margin="4 0 0 0" />
+                            <TextBox IsEnabled="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PowerShellEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                        </DockPanel>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

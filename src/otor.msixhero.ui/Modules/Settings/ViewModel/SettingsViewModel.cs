@@ -44,6 +44,8 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.AppinstallerEditorPath = new ChangeableFileProperty(interactionService, config.Editing.AppInstallerEditor.Resolved),
                 this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
                 this.PsfEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PsfEditor.Resolved),
+                this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
+                this.PowerShellEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PowerShellEditor.Resolved),
                 this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
                 this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri),
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config)
@@ -79,6 +81,10 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         public ChangeableProperty<EditorType> PsfEditorType { get; }
 
         public ChangeableFileProperty PsfEditorPath { get; }
+
+        public ChangeableProperty<EditorType> PowerShellEditorType { get; }
+
+        public ChangeableFileProperty PowerShellEditorPath { get; }
 
         public ChangeableProperty<bool> PackerSignByDefault { get; }
         
@@ -188,6 +194,11 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 newConfiguration.Editing.PsfEditorType = this.PsfEditorType.CurrentValue;
             }
 
+            if (this.PowerShellEditorType.IsTouched)
+            {
+                newConfiguration.Editing.PowerShellEditorType = this.PowerShellEditorType.CurrentValue;
+            }
+
             if (this.ManifestEditorPath.IsTouched)
             {
                 newConfiguration.Editing.ManifestEditor.Resolved = this.ManifestEditorPath.CurrentValue;
@@ -206,6 +217,11 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             if (this.PsfEditorPath.IsTouched)
             {
                 newConfiguration.Editing.PsfEditor.Resolved = this.PsfEditorPath.CurrentValue;
+            }
+
+            if (this.PowerShellEditorPath.IsTouched)
+            {
+                newConfiguration.Editing.PowerShellEditor.Resolved = this.PowerShellEditorPath.CurrentValue;
             }
 
             var toolsTouched = this.Tools.IsTouched;
