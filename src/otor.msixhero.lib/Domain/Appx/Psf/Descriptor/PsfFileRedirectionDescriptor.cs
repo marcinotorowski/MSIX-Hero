@@ -6,6 +6,7 @@ namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
     public class PsfFileRedirectionDescriptor
     {
         public string RegularExpression { get; set; }
+
         public string DisplayName { get; set; }
     }
 }

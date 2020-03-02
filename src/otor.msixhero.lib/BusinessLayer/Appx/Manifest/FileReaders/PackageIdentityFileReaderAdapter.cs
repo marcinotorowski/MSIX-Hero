@@ -6,7 +6,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 {
-    public class PackageIdentityFileReaderAdapter : IAppxFileReader
+    public class PackageIdentityFileReaderAdapter : IAppxDiskFileReader
     {
         private readonly PackageContext context;
         private readonly string packageFullName;
@@ -37,6 +37,24 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             }
 
             this.packagePublisher = packagePublisher;
+        }
+
+        public string RootDirectory
+        {
+            get
+            {
+                if (this.adapter == null)
+                {
+                    this.adapter = GetAdapter();
+                }
+
+                if (this.adapter is IAppxDiskFileReader diskReader)
+                {
+                    return diskReader.RootDirectory;
+                }
+
+                return null;
+            }
         }
 
         public Stream GetFile(string filePath)

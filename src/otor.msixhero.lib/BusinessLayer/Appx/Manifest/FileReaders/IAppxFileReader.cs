@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Org.BouncyCastle.Asn1;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 {
@@ -11,5 +10,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
         bool FileExists(string filePath);
 
         Stream GetResource(string resourceFilePath);
+    }
+
+    public interface IAppxDiskFileReader : IAppxFileReader
+    {
+        string RootDirectory { get; }
     }
 }

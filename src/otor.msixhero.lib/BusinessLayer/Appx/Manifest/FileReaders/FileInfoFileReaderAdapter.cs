@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 {
-    public class FileInfoFileReaderAdapter : IAppxFileReader
+    public class FileInfoFileReaderAdapter : IAppxDiskFileReader
     {
         private readonly FileInfo appxManifestFile;
 
@@ -17,12 +17,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
                 throw new ArgumentException($"File {appxManifestFile.FullName} does not exist.", nameof(appxManifestFile));
             }
 
+            this.RootDirectory = appxManifestFile.DirectoryName;
             this.appxManifestFile = appxManifestFile;
         }
 
         public FileInfoFileReaderAdapter(string appxManifestFile) : this(new FileInfo(appxManifestFile))
         {
         }
+
+        public string RootDirectory { get; }
 
         public Stream GetFile(string filePath)
         {

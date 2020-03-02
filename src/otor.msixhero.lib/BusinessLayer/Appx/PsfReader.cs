@@ -207,7 +207,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                             if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
 
                             {
-                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig, PsfBitness.x64);
+                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig ?? new PsfTraceFixupConfig(), PsfBitness.x64);
                             }
 
                             break;
@@ -217,7 +217,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         {
                             if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
                             {
-                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig, PsfBitness.x86);
+                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig ?? new PsfTraceFixupConfig(), PsfBitness.x86);
                             }
                             break;
                         }
@@ -226,7 +226,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         { 
                             if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
                             {
-                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig, PsfBitness.x64);
+                                psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig ?? new PsfTraceFixupConfig(), PsfBitness.x64);
                             }
                             break;
                         }

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
 using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 using otor.msixhero.ui.ViewModel;
 
@@ -8,13 +10,20 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf
     {
         private readonly PsfApplicationDescriptor definition;
 
-        public AppxPsfViewModel(PsfApplicationDescriptor definition)
+        public static readonly ICommand EditScript = new RoutedUICommand() { Text = "Edit script" };
+
+        public AppxPsfViewModel(string installFolder, PsfApplicationDescriptor definition)
         {
             this.definition = definition;
 
             if (this.definition.Tracing != null)
             {
                 this.Tracing = new TracingPsfViewModel(this.definition.Tracing);
+            }
+
+            if (this.definition.Scripts != null)
+            {
+                this.Scripts = new List<AppxPsfScriptViewModel>(definition.Scripts.Select(s => new AppxPsfScriptViewModel(installFolder, s)));
             }
         }
 
@@ -26,7 +35,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf
         
         public List<PsfFolderRedirectionDescriptor> FileRedirections => this.definition.FileRedirections;
         
-        public List<PsfScriptDescriptor> Scripts => this.definition.Scripts;
+        public List<AppxPsfScriptViewModel> Scripts { get; }
 
         public List<string> OtherFixups => this.definition.OtherFixups;
 

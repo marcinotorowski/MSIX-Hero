@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
 {
@@ -13,20 +14,43 @@ namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
     public class PsfScriptDescriptor
     {
         private readonly PsfScript script;
-        private readonly PsfScriptDescriptorTiming timing;
+
+        // For serialization
+        public PsfScriptDescriptor()
+        {
+        }
 
         public PsfScriptDescriptor(PsfScript script, PsfScriptDescriptorTiming timing)
         {
             this.script = script;
-            this.timing = timing;
+            this.Timing = timing;
+            this.Name = this.script.ScriptPath;
+            this.Arguments = this.script.ScriptArguments;
+            this.RunInVirtualEnvironment = this.script.RunInVirtualEnvironment;
+            this.RunOnce = this.script.RunOnce;
+            this.ShowWindow = this.script.ShowWindow;
+            this.WaitForScriptToFinish = this.script.WaitForScriptToFinish;
         }
 
-        public string Name => this.script.ScriptPath;
+        [DataMember(Name = "scriptPath")]
+        public string Name { get; set; }
 
-        public string Arguments => this.script.ScriptArguments;
+        [DataMember(Name = "scriptArguments")]
+        public string Arguments { get; set; }
 
-        public PsfScriptDescriptorTiming Timing => this.timing;
+        [DataMember(Name = "timing")]
+        public PsfScriptDescriptorTiming Timing { get; set; }
 
-        public bool OnlyOnce => this.script.RunOnce;
+        [DataMember(Name = "runOnce")]
+        public bool RunOnce { get; set; }
+
+        [DataMember(Name = "runInVirtualEnvironment")]
+        public bool RunInVirtualEnvironment { get; set; }
+
+        [DataMember(Name = "waitForScriptToFinish")]
+        public bool WaitForScriptToFinish { get; set; }
+        
+        [DataMember(Name = "showWindow")]
+        public bool ShowWindow { get; set; }
     }
 }

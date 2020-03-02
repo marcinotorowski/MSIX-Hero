@@ -14,6 +14,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Manager;
 using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs;
 using Prism.Services.Dialogs;
@@ -34,6 +35,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
         private readonly IBusyManager busyManager;
+        private readonly FileInvoker fileInvoker;
 
         public PackageListCommandHandler(
             IInteractionService interactionService,
@@ -47,6 +49,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.stateManager = stateManager;
             this.dialogService = dialogService;
             this.busyManager = busyManager;
+            this.fileInvoker = new FileInvoker(interactionService);
 
             // Package-specific
             this.OpenExplorer = new DelegateCommand(param => this.OpenExplorerExecute(), param => this.CanExecuteSingleSelectionOnManifest());
@@ -380,28 +383,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
 
             var config = this.configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            switch (config.ManifestEditorType)
-            {
-                case EditorType.Default:
-                {
-                    var spi = new ProcessStartInfo(package.ManifestLocation) { UseShellExecute = true };
-                    Process.Start(spi);
-                    break;
-                }
-
-                case EditorType.Ask:
-                {
-                    Process.Start("rundll32.exe", "shell32.dll, OpenAs_RunDLL " + package.ManifestLocation);
-                    break;
-                }
-
-                default:
-                {
-                    var spi = new ProcessStartInfo(config.ManifestEditor.Resolved, "\"" + package.ManifestLocation + "\"") { UseShellExecute = true };
-                    Process.Start(spi);
-                    break;
-                }
-            }
+            this.fileInvoker.Execute(config.ManifestEditorType, config.ManifestEditor, package.ManifestLocation);
         }
 
         private void OpenConfigJsonExecute()
@@ -413,28 +395,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
 
             var config = this.configurationService.GetCurrentConfiguration().Editing ?? new EditingConfiguration();
-            switch (config.PsfEditorType)
-            {
-                case EditorType.Default:
-                {
-                    var spi = new ProcessStartInfo(package.PsfConfig) { UseShellExecute = true };
-                    Process.Start(spi);
-                    break;
-                }
-
-                case EditorType.Ask:
-                {
-                    Process.Start("rundll32.exe", "shell32.dll, OpenAs_RunDLL " + package.PsfConfig);
-                    break;
-                }
-
-                default:
-                {
-                    var spi = new ProcessStartInfo(config.PsfEditor.Resolved, "\"" + package.PsfConfig + "\"") { UseShellExecute = true };
-                    Process.Start(spi);
-                    break;
-                }
-            }
+            this.fileInvoker.Execute(config.PsfEditorType, config.PsfEditor, package.PsfConfig);
         }
 
         private bool CanExecuteOpenManifest()

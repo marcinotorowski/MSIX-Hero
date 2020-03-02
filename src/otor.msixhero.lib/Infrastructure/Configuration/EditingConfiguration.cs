@@ -17,11 +17,13 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             this.AppInstallerEditorType = EditorType.Default;
             this.MsixEditorType = EditorType.Default;
             this.PsfEditorType = EditorType.Default;
+            this.PowerShellEditorType = EditorType.Ask;
 
             this.ManifestEditor = new ResolvableFolder.ResolvablePath();
             this.AppInstallerEditor = new ResolvableFolder.ResolvablePath();
             this.MsixEditor = new ResolvableFolder.ResolvablePath();
             this.PsfEditor = new ResolvableFolder.ResolvablePath();
+            this.PowerShellEditor = new ResolvableFolder.ResolvablePath();
         }
 
         [DataMember(Name = "manifestEditorType")]
@@ -32,6 +34,9 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name = "appInstallerEditorType")]
         public EditorType AppInstallerEditorType { get; set; }
+
+        [DataMember(Name = "powerShellEditorType")]
+        public EditorType PowerShellEditorType { get; set; }
 
         [DataMember(Name = "appinstallerEditorPath")]
         public ResolvableFolder.ResolvablePath AppInstallerEditor { get; set; }
@@ -47,5 +52,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name = "psfEditorPath")]
         public ResolvableFolder.ResolvablePath PsfEditor { get; set; }
+
+        [DataMember(Name = "powerShellEditorPath")]
+        public ResolvableFolder.ResolvablePath PowerShellEditor { get; set; }
     }
 }

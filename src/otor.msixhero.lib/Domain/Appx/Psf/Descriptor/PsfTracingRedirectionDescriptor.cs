@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
 {
@@ -12,9 +10,15 @@ namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
         Default
     }
 
+    [Serializable]
     public class PsfTracingRedirectionDescriptor
     {
         private readonly PsfTraceFixupConfig traceFixupConfig;
+
+        // For serialization
+        public PsfTracingRedirectionDescriptor()
+        {
+        }
 
         public PsfTracingRedirectionDescriptor(PsfTraceFixupConfig traceFixupConfig, PsfBitness psfBitness)
         {
@@ -44,11 +48,15 @@ namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
             }
         }
 
-        public PsfBitness PsfBitness { get; }
+        [DataMember(Name = "psfBitness")]
+        public PsfBitness PsfBitness { get; set; }
 
-        public TracingType TracingType { get; }
+        [DataMember(Name = "tracingType")]
+        public TracingType TracingType { get; set; }
 
-        public TraceLevel BreakOn { get; }
+
+        [DataMember(Name = "breakOn")]
+        public TraceLevel BreakOn { get; set; }
 
         public override string ToString()
         {

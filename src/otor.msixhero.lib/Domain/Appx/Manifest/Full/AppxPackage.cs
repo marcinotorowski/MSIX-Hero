@@ -7,6 +7,8 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
     [Serializable]
     public class AppxPackage
     {
+        public string RootFolder { get; set; }
+
         public string Name { get; set; }
         
         public string FullName { get; set; }

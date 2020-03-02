@@ -3,7 +3,7 @@ using System.IO;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 {
-    public class DirectoryInfoFileReaderAdapter : IAppxFileReader
+    public class DirectoryInfoFileReaderAdapter : IAppxDiskFileReader
     {
         private readonly IAppxFileReader adapter;
 
@@ -13,6 +13,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             {
                 throw new ArgumentException($"Directory {appxManifestFolder.FullName} does not exist.");
             }
+
+            this.RootDirectory = appxManifestFolder.FullName;
 
             var appxManifest = Path.Combine(appxManifestFolder.FullName, "AppxManifest.xml");
             if (!File.Exists(appxManifest))
@@ -34,6 +36,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
         public DirectoryInfoFileReaderAdapter(string appxManifestFolder) : this(new DirectoryInfo(appxManifestFolder))
         {
         }
+
+        public string RootDirectory { get; }
 
         public Stream GetFile(string filePath)
         {

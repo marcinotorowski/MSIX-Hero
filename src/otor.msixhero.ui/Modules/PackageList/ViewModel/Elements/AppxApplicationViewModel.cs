@@ -15,12 +15,31 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         {
             this.model = model;
             this.package = package;
-            this.Psf = model.Psf == null ? null : new AppxPsfViewModel(model.Psf);
+            this.Psf = model.Psf == null ? null : new AppxPsfViewModel(package.RootFolder, model.Psf);
+            this.Services = model.Extensions == null ? null : new AppxServicesViewModel(model.Extensions);
+
+            var type = PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
+            switch (type)
+            {
+                case MsixPackageType.BridgePsf: 
+                    // we adjust the information to not show PSF here, because we show it elsewhere.
+                    this.Type = MsixPackageType.BridgeDirect;
+                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(MsixPackageType.BridgeDirect, true);
+                    break;
+                default:
+                    this.Type = type;
+                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(type, true);
+                    break;
+            }
         }
+
+        public bool Visible => this.model.Visible;
 
         public bool HasPsf => this.model.Psf != null;
         
         public AppxPsfViewModel Psf { get; }
+
+        public AppxServicesViewModel Services { get; }
 
         public string DisplayName => this.model.DisplayName;
 
@@ -46,13 +65,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                             return this.model.Executable;
                         }
 
-                        return this.model.Executable + " > " + this.model.EntryPoint;
+                        return this.model.Executable;
                 }
             }
         }
-        
-        public MsixPackageType Type => PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
 
-        public string DisplayType => PackageTypeConverter.GetPackageTypeStringFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
+        public string EntryPoint => this.Type == MsixPackageType.Uwp ? this.model.EntryPoint : null;
+
+        public bool HasEntryPoint => this.Type == MsixPackageType.Uwp;
+
+        public MsixPackageType Type { get; }
+
+        public string DisplayType { get; }
     }
 }

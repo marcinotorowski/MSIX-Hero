@@ -97,6 +97,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     var nodeBuild = GetNode(nodePackage, "Metadata", true);
 
                     var appxPackage = new AppxPackage();
+
+                    if (fileReader is IAppxDiskFileReader diskReader)
+                    {
+                        appxPackage.RootFolder = diskReader.RootDirectory;
+                    }
+                    
                     if (nodeIdentity != null)
                     {
                         appxPackage.Name = GetNodeAttribute(nodeIdentity, "Name");
@@ -172,6 +178,45 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             appxApplication.Executable = GetNodeAttribute(node, "Executable");
                             appxApplication.Id = GetNodeAttribute(node, "Id");
 
+                            /*
+                             *<Extensions><desktop6:Extension Category="windows.service" Executable="VFS\ProgramFilesX86\RayPackStudio\FloatingLicenseServer\FloatingLicenseServer.exe" EntryPoint="Windows.FullTrustApplication"><desktop6:Service Name="PkgSuiteFloatingLicenseServer" StartupType="auto" StartAccount="networkService" /></desktop6:Extension></Extensions>
+                             *
+                             */
+
+                            appxApplication.Extensions = new List<AppxExtension>();
+                            var extensions = GetNode(node, "Extensions");
+                            if (extensions != null)
+                            {
+                                foreach (var extension in GetNodes(extensions, "Extension"))
+                                {
+                                    var category = GetNodeAttribute(extension, "Category");
+                                    if (category != "windows.service")
+                                    {
+                                        continue;
+                                    }
+
+                                    var serviceNode = GetNode(extension, "Service", true);
+                                    if (serviceNode == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    var service = new AppxService
+                                    {
+                                        Category = "windows.service"
+                                    };
+
+                                    service.EntryPoint = GetNodeAttribute(extension, "EntryPoint");
+                                    service.Executable = GetNodeAttribute(extension, "Executable");
+
+                                    service.Name = GetNodeAttribute(serviceNode, "Name");
+                                    service.StartAccount = GetNodeAttribute(serviceNode, "StartAccount");
+                                    service.StartupType = GetNodeAttribute(serviceNode, "StartupType");
+
+                                    appxApplication.Extensions.Add(service);
+                                }
+                            }
+
                             var visualElements = GetNode(node, "VisualElements", true);
                             if (visualElements != null)
                             {
@@ -180,6 +225,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                                 appxApplication.BackgroundColor = GetNodeAttribute(visualElements, "BackgroundColor");
                                 appxApplication.Square150x150Logo = GetNodeAttribute(visualElements, "Square150x150Logo");
                                 appxApplication.Square44x44Logo = GetNodeAttribute(visualElements, "Square44x44Logo");
+                                appxApplication.Visible = GetNodeAttribute(visualElements, "AppListEntry") != "none";
 
                                 var defaultTile = GetNode(visualElements, "DefaultTile", true);
                                 if (defaultTile != null)

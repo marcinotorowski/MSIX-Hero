@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace otor.msixhero.lib.Domain.Appx.Psf
 {
@@ -23,6 +24,7 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
         /// </summary>
         [DataMember(Name = "runInVirtualEnvironment")]
         [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool RunInVirtualEnvironment { get; set; }
 
         /// <summary>
@@ -30,6 +32,7 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
         /// </summary>
         [DataMember(Name = "runOnce")]
         [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool RunOnce { get; set; }
 
         /// <summary>
@@ -37,6 +40,7 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
         /// </summary>
         [DataMember(Name = "waitForScriptToFinish")]
         [DefaultValue(true)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public bool WaitForScriptToFinish { get; set; }
 
         /// <summary>
