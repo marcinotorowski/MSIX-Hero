@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
+             xmlns:msixHeroText="clr-namespace:otor.msixhero.ui.Controls.MsixHeroText"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <controls:MsixHeroText HorizontalAlignment="Center" Tag="Select one package to display its properties here." VerticalAlignment="Center" />
+    <msixHeroText:MsixHeroText HorizontalAlignment="Center" Tag="Select one package to display its properties here." VerticalAlignment="Center" />
 </UserControl>

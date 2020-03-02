@@ -4,13 +4,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace otor.msixhero.ui.Controls
+namespace otor.msixhero.ui.Controls.Highlighter
 {
     internal class Highlighter : DependencyObject
     {
-        public static readonly DependencyProperty SelectionProperty = DependencyProperty.RegisterAttached("Selection", typeof(string), typeof(Highlighter), new PropertyMetadata(new PropertyChangedCallback(SelectText)));
+        public static readonly DependencyProperty SelectionProperty = DependencyProperty.RegisterAttached("Selection", typeof(string), typeof(Highlighter), new PropertyMetadata(SelectText));
 
         public static string GetSelection(DependencyObject obj)
         {
@@ -81,7 +80,6 @@ namespace otor.msixhero.ui.Controls
             }
         }
 
-
         public static Brush GetHighlightColor(DependencyObject obj)
         {
             return (Brush)obj.GetValue(HighlightColorProperty);
@@ -92,9 +90,7 @@ namespace otor.msixhero.ui.Controls
             obj.SetValue(HighlightColorProperty, value);
         }
 
-        public static readonly DependencyProperty HighlightColorProperty =
-            DependencyProperty.RegisterAttached("HighlightColor", typeof(Brush), typeof(Highlighter),
-                new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 255, 238, 128)), SelectText));
+        public static readonly DependencyProperty HighlightColorProperty = DependencyProperty.RegisterAttached("HighlightColor", typeof(Brush), typeof(Highlighter), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 255, 238, 128)), SelectText));
 
 
         public static Brush GetForecolor(DependencyObject obj)
@@ -107,9 +103,6 @@ namespace otor.msixhero.ui.Controls
             obj.SetValue(ForecolorProperty, value);
         }
 
-        public static readonly DependencyProperty ForecolorProperty =
-            DependencyProperty.RegisterAttached("Forecolor", typeof(Brush), typeof(Highlighter),
-                new PropertyMetadata(Brushes.Black, SelectText));
-
+        public static readonly DependencyProperty ForecolorProperty = DependencyProperty.RegisterAttached("Forecolor", typeof(Brush), typeof(Highlighter), new PropertyMetadata(Brushes.Black, SelectText));
     }
 }

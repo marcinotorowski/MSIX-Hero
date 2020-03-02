@@ -7,11 +7,9 @@ namespace otor.msixhero.ui.Modules.Settings
 {
     public class SettingsModule : IModule
     {
-        public static string Path = "Settings";
-
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterDialog<SettingsView, SettingsViewModel>(Path);
+            containerRegistry.RegisterDialog<SettingsView, SettingsViewModel>(Constants.PathSettings);
             containerRegistry.Register(typeof(SettingsViewModel));
         }
 

@@ -1,34 +1,36 @@
-﻿using otor.msixhero.ui.Modules.PackageList.View;
+﻿using otor.msixhero.ui.Modules.Common.PackageContent.View;
+using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
-using otor.msixhero.ui.Modules.VolumeManager.View;
-using otor.msixhero.ui.Modules.VolumeManager.ViewModel;
+using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
+using Prism.Regions;
 
 namespace otor.msixhero.ui.Modules.PackageList
 {
     public class PackageListModule : IModule
     {
-        public static string PackagesPath = "PackageList";
-        public static string SidebarSingleSelection = "SidebarSingle";
-        public static string SidebarEmptySelection = "SidebarEmpty";
-        public static string SidebarMultiSelection = "SidebarMulti";
-        public static string VolumeManagerPath = "VolumeManager";
+        private readonly IRegionManager regionManager;
+
+        public PackageListModule(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
+            ViewModelLocationProvider.Register<PackageListView, PackageListViewModel>();
+            ViewModelLocationProvider.Register<MultiSelectionView, MultiSelectionViewModel>();
+        }
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<PackageListView>(PackagesPath);
-            containerRegistry.RegisterForNavigation<VolumeManagerView>(VolumeManagerPath);
-            containerRegistry.RegisterForNavigation<SinglePackageView>(SidebarSingleSelection);
-            containerRegistry.RegisterForNavigation<EmptySelectionView>(SidebarEmptySelection);
-            containerRegistry.RegisterForNavigation<MultiSelectionView>(SidebarMultiSelection);
-
-            containerRegistry.RegisterSingleton(typeof(PackageListViewModel));
-            containerRegistry.RegisterSingleton(typeof(VolumeManagerViewModel));
+            containerRegistry.RegisterForNavigation<PackageListView>(Constants.PathPackagesList);
+            containerRegistry.RegisterForNavigation<EmptySelectionView>(Constants.PathPackagesEmptySelection);
+            containerRegistry.RegisterForNavigation<MultiSelectionView>(Constants.PathPackagesMultiSelection);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
+            regionManager.RegisterViewWithRegion(Constants.RegionContent, typeof(PackageListView));
+            this.regionManager.RequestNavigate(Constants.RegionContent, Constants.PathPackagesList);
         }
     }
 }

@@ -36,12 +36,12 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
         private void PackExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.PackPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathPack, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void SettingsExecute(string tab)
         {
-            this.dialogService.ShowDialog(SettingsModule.Path, new DialogParameters { { "tab", tab } }, this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathSettings, new DialogParameters { { "tab", tab } }, this.OnDialogClosed);
         }
 
         private void AppInstallerExecute(bool browse)
@@ -55,23 +55,23 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                         { "file", selected }
                     };
 
-                    this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, parameters, this.OnDialogClosed);
+                    this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, this.OnDialogClosed);
                 }
             }
             else
             {
-                this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, new DialogParameters(), this.OnDialogClosed);
+                this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
             }
         }
 
         private void ModificationPackageExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.ModificationPackagePath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathAppAttach, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void AppAttachExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.AppAttachPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathAppAttach, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnDialogClosed(IDialogResult obj)

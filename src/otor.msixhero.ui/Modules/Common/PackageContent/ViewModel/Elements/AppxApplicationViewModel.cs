@@ -1,10 +1,10 @@
 ﻿using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf;
+using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
 {
     public class AppxApplicationViewModel : NotifyPropertyChanged
     {

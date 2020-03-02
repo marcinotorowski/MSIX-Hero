@@ -149,29 +149,6 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                     countSelected++;
                 }
             }
-
-            // TODO
-            //var selected = this.AllVolumes.Where(p => p.IsSelected).Select(p => p.PackageStorePath).ToArray();
-            //switch (selected.Length)
-            //{
-            //    case 0:
-            //    {
-            //        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(VolumesModule.SidebarEmptySelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
-            //        break;
-            //    }
-
-            //    case 1:
-            //    {
-            //        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
-            //        break;
-            //    }
-
-            //    default:
-            //    {
-            //        this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), new NavigationParameters { { "Packages", selected } });
-            //        break;
-            //    }
-            //}
         }
 
         private void OnVolumesCollectionChanged(VolumesCollectionChangedPayLoad obj)

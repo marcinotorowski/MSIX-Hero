@@ -41,7 +41,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             Debug.Assert(applicationStateManager != null);
             Debug.Assert(regionManager != null);
 
-            regionManager.RegisterViewWithRegion("PackageSidebar", typeof(EmptySelectionView));
+            regionManager.RegisterViewWithRegion(Constants.RegionPackageSidebar, typeof(EmptySelectionView));
 
             // Subscribe to events
             applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged, ThreadOption.UIThread);

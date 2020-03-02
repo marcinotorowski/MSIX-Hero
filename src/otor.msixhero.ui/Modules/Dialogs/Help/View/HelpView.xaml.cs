@@ -13,7 +13,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Help.View
         public HelpView()
         {
             this.InitializeComponent();
-            this.TextBox.Text = @"Copyright (c) Jan 20th, 2020, Marcin Otorowski
+            this.TextBox.Text = @"Copyright (c) 2020 by Marcin Otorowski
 
 All rights reserved.
 
@@ -40,7 +40,26 @@ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.";
+POSSIBILITY OF SUCH DAMAGE.
+
+---
+
+MSIX Hero uses the following third-party software and libraries.
+
+* BouncyCastle (by Legion of the Bouncy Castle Inc)
+* ControlzEx (by Jan Karger, Bastian Schmidt, James Willock)
+* Extended WPF Toolkit for .NET Core 3.0 (by Xceed, ported by Mikołaj M)
+* Fluent Ribbon (by Bastian Schmidt, Degtyarev Daniel, Rikker Serg)
+* GongSolutions.WPF.DragDrop (by Jan Karger, Steven Kirk)
+* MSIX Package Support Framework (by Microsoft and contributors)
+* msixmgr (by Microsoft)
+* NLog (by Jaroslaw Kowalski, Kim Christensen, Julian Verdurmen)
+* Ookii Dialogs WPF (by Sven Groot)
+* Prism (by .NET Foundation)
+* Registry (by Eric Zimmerman)
+* Windows 10 SDK (selected) (by Microsoft)
+
+See also https://msixhero.net/license/.";
         }
 
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)

@@ -18,7 +18,6 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Dialogs;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
@@ -515,27 +514,27 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void NewSelfSignedCertExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.NewSelfSignedPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathNewSelfSigned, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void ExtractCertExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.CertificateExportPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathCertificateExport, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OpenLogsExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.EventViewerPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathEventViewer, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void UnpackExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.UnpackPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathUnpack, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void PackExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.PackPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathPack, new DialogParameters(), this.OnDialogClosed);
         }
 
         private bool CanExecuteSingleSelection(bool forSelection)
@@ -562,12 +561,12 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             switch (parameter)
             {
                 case AppInstallerCommandParameter.Empty:
-                    this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, new DialogParameters(), this.OnDialogClosed);
+                    this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
                     break;
                 case AppInstallerCommandParameter.Selection:
                     if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
                     {
-                        this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, new DialogParameters(), this.OnDialogClosed);
+                        this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
                     }
                     else
                     {
@@ -576,7 +575,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                             { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
                         };
 
-                        this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, parameters, this.OnDialogClosed);
+                        this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, this.OnDialogClosed);
                     }
                     break;
                 case AppInstallerCommandParameter.Browse:
@@ -587,7 +586,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                             { "file", selected }
                         };
 
-                        this.dialogService.ShowDialog(DialogsModule.AppInstallerPath, parameters, this.OnDialogClosed);
+                        this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, this.OnDialogClosed);
                     }
                     break;
                 default:
@@ -599,7 +598,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         {
             if (!forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
             {
-                this.dialogService.ShowDialog(DialogsModule.ModificationPackagePath, new DialogParameters(), this.OnDialogClosed);
+                this.dialogService.ShowDialog(Constants.PathModificationPackage, new DialogParameters(), this.OnDialogClosed);
             }
             else
             {
@@ -608,7 +607,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
                 };
 
-                this.dialogService.ShowDialog(DialogsModule.ModificationPackagePath, parameters, this.OnDialogClosed);
+                this.dialogService.ShowDialog(Constants.PathModificationPackage, parameters, this.OnDialogClosed);
             }
         }
 
@@ -616,7 +615,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         {
             if (!forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
             {
-                this.dialogService.ShowDialog(DialogsModule.AppAttachPath, new DialogParameters(), this.OnDialogClosed);
+                this.dialogService.ShowDialog(Constants.PathAppAttach, new DialogParameters(), this.OnDialogClosed);
             }
             else
             {
@@ -625,13 +624,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
                 };
 
-                this.dialogService.ShowDialog(DialogsModule.AppAttachPath, parameters, this.OnDialogClosed);
+                this.dialogService.ShowDialog(Constants.PathAppAttach, parameters, this.OnDialogClosed);
             }
         }
 
         private void OpenResignExecute()
         {
-            this.dialogService.ShowDialog(DialogsModule.PackageSigningPath, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathPackageSigning, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void CertManagerExecute(bool perMachine)

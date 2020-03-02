@@ -16,6 +16,8 @@
              xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
+             xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
+             xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <UserControl.Resources>
@@ -257,7 +259,7 @@
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayName}" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayName}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -267,7 +269,7 @@
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding Version}" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding Version}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -277,7 +279,7 @@
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPublisherName}" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPublisherName}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -287,7 +289,7 @@
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                        <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPackageType}" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPackageType}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -355,13 +357,13 @@
                             </Border>
 
                             <StackPanel DockPanel.Dock="Right">
-                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
                             </StackPanel>
 
                             <StackPanel Margin="10 0">
-                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
-                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
                             </StackPanel>
 
                         </DockPanel>
@@ -372,9 +374,8 @@
 
         <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
-        <!--<ContentControl Grid.Row="1" Grid.Column="2" mvvm:RegionManager.RegionName="PackageListSidebar" />-->
         <Border x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2">
-            <ContentControl mvvm:RegionManager.RegionName="PackageSidebar" />
+            <ContentControl mvvm:RegionManager.RegionName="{x:Static modules:Constants.RegionPackageSidebar}" />
         </Border>
     </Grid>
 </UserControl>

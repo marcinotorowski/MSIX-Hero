@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
-using otor.msixhero.lib.BusinessLayer.Appx;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands;
@@ -16,7 +11,6 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Services;
 using Prism.Events;
 using ICommandExecutor = otor.msixhero.lib.Infrastructure.Commanding.ICommandExecutor;
 
@@ -88,6 +82,11 @@ namespace otor.msixhero.lib.tests
         {
             public void Dispose()
             {   
+            }
+
+            public Task<bool> CheckIfRunning(CancellationToken cancellationToken = default)
+            {
+                return Task.FromResult(true);
             }
 
             public async Task Connect(CancellationToken cancellationToken = default)

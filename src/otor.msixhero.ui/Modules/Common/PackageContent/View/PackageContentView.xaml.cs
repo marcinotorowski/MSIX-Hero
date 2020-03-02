@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using otor.msixhero.ui.Modules.PackageList.Navigation;
+﻿using otor.msixhero.ui.Modules.PackageList.Navigation;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.View
+namespace otor.msixhero.ui.Modules.Common.PackageContent.View
 {
     /// <summary>
-    /// Interaction logic for SinglePackageDetails.xaml
+    /// Interaction logic for PackageContentView.xaml
     /// </summary>
-    public partial class SinglePackageView : INavigationAware
+    public partial class PackageContentView : INavigationAware
     {
-        public SinglePackageView()
+        public PackageContentView()
         {
             InitializeComponent();
         }

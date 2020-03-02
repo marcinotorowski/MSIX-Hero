@@ -1,19 +1,18 @@
-﻿using System.Diagnostics;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf;
+using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 {
-    public class SinglePackageCommandHandler
+    public class PackageContentCommandHandler
     {
         private readonly IConfigurationService configurationService;
         private readonly IInteractionService interactionService;
 
-        public SinglePackageCommandHandler(IConfigurationService configurationService, IInteractionService interactionService)
+        public PackageContentCommandHandler(IConfigurationService configurationService, IInteractionService interactionService)
         {
             this.configurationService = configurationService;
             this.interactionService = interactionService;

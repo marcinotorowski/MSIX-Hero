@@ -12,6 +12,7 @@
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
+             xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -103,8 +104,8 @@
                     <DockPanel>
                         <Path x:Name="PART_Path" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDisk}" VerticalAlignment="Center" Margin="0 0 6 0" />
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding PackageStorePath}" />
-                            <TextBlock controls:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Name}" Opacity="0.65" />
+                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding PackageStorePath}" />
+                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Name}" Opacity="0.65" />
                         </StackPanel>
                     </DockPanel>
                     <DataTemplate.Triggers>

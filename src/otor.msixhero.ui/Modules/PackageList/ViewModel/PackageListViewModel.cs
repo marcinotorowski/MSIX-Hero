@@ -138,19 +138,19 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 case 0:
                 {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarEmptySelection, UriKind.Relative), navigation.ToParameters());
+                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesEmptySelection, UriKind.Relative), navigation.ToParameters());
                     break;
                 }
 
                 case 1:
                 {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarSingleSelection, UriKind.Relative), navigation.ToParameters());
+                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesSingleSelection, UriKind.Relative), navigation.ToParameters());
                     break;
                 }
 
                 default:
                 {
-                    this.regionManager.Regions["PackageSidebar"].RequestNavigate(new Uri(PackageListModule.SidebarMultiSelection, UriKind.Relative), navigation.ToParameters());
+                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesMultiSelection, UriKind.Relative), navigation.ToParameters());
                     break;
                 }
             }

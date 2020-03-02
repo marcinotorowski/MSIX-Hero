@@ -17,6 +17,9 @@ using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Update;
+using otor.msixhero.ui.Modules.Common;
+using otor.msixhero.ui.Modules.Common.PackageContent.View;
+using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
 using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
@@ -28,6 +31,7 @@ using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.Modules.Settings;
+using otor.msixhero.ui.Modules.VolumeManager;
 using otor.msixhero.ui.Modules.VolumeManager.View;
 using otor.msixhero.ui.Modules.VolumeManager.ViewModel;
 using otor.msixhero.ui.Services;
@@ -137,18 +141,14 @@ namespace otor.msixhero.ui
             moduleCatalog.AddModule<MainModule>();
             moduleCatalog.AddModule<SettingsModule>();
             moduleCatalog.AddModule<PackageListModule>();
+            moduleCatalog.AddModule<VolumeManagerModule>();
             moduleCatalog.AddModule<DialogsModule>();
+            moduleCatalog.AddModule<CommonModule>();
         }
         
         protected override void ConfigureViewModelLocator()
         {
             base.ConfigureViewModelLocator();
-            ViewModelLocationProvider.Register<MainView, MainViewModel>();
-            ViewModelLocationProvider.Register<PackageListView, PackageListViewModel>();
-            ViewModelLocationProvider.Register<VolumeManagerView, VolumeManagerViewModel>();
-            ViewModelLocationProvider.Register<SinglePackageView, SinglePackageViewModel>();
-            ViewModelLocationProvider.Register<MultiSelectionView, MultiSelectionViewModel>();
-            ViewModelLocationProvider.Register<NewSelfSignedView, NewSelfSignedViewModel>();
         }
 
         public void Dispose()

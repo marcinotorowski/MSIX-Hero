@@ -1,25 +1,27 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Main.View.MainView"
-                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                     xmlns:Fluent="urn:fluent-ribbon"
-                     regions:ViewModelLocator.AutoWireViewModel="True"
-                     xmlns:regions="http://prismlibrary.com/"
-                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                     xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
-                     xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
-                     xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Main.ViewModel"
-                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                     xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
-                     xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Main.View"
-                     xmlns:viewModel1="clr-namespace:otor.msixhero.ui.ViewModel"
-                     xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
-                     xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
-                     xmlns:viewModel11="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
-                     d:DesignWidth="600"
-                     mc:Ignorable="d"
-                     d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
+﻿<UserControl 
+    x:Class="otor.msixhero.ui.Modules.Main.View.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Fluent="urn:fluent-ribbon"
+    regions:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:regions="http://prismlibrary.com/"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+    xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
+    xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Main.ViewModel"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
+    xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Main.View"
+    xmlns:viewModel1="clr-namespace:otor.msixhero.ui.ViewModel"
+    xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+    xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
+    xmlns:viewModel11="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
+    xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
+    d:DesignWidth="600"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -285,78 +287,6 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUsers}" />
                         </Fluent:RadioButton.Icon>
                     </Fluent:RadioButton>
-                    <!--<Fluent:RadioButton GroupName="Users2" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:PackageContext.AllUsers}}">
-                        <Fluent:RadioButton.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="All users " VerticalAlignment="Center" />
-                                <Image VerticalAlignment="Center" Stretch="None" Source="{x:Static helpers:ShieldIcon.Source}" UseLayoutRounding="True" SnapsToDevicePixels="True" />
-                            </StackPanel>
-                        </Fluent:RadioButton.Header>
-                        <Fluent:RadioButton.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
-                        </Fluent:RadioButton.SizeDefinition>
-                        <Fluent:RadioButton.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUsers}" />
-                        </Fluent:RadioButton.Icon>
-                        <Fluent:RadioButton.Template>
-                            <ControlTemplate TargetType="{x:Type Fluent:RadioButton}">
-                                <BulletDecorator SnapsToDevicePixels="true"
-                                     Background="Transparent"
-                                     x:Name="bulletDecorator"
-                                     Height="22">
-                                    <BulletDecorator.Bullet>
-                                        <Grid Width="12"
-                                              Height="12"
-                                              HorizontalAlignment="Left"
-                                              VerticalAlignment="Center"
-                                              Margin="4,4,0,0">
-                                            <Rectangle Margin="-6,0"
-                                                Fill="{DynamicResource TransparentWhiteBrush}" />
-                                            <Ellipse x:Name="normal"
-                                                 HorizontalAlignment="Stretch"
-                                                 VerticalAlignment="Stretch"
-                                                 Fill="{TemplateBinding Background}"
-                                                 Stroke="{TemplateBinding BorderBrush}"
-                                                 StrokeThickness="{TemplateBinding BorderThickness}" />
-                                            <Ellipse x:Name="Checked1"
-                                                 Margin="3"
-                                                 HorizontalAlignment="Stretch"
-                                                 VerticalAlignment="Stretch"
-                                                 Fill="{DynamicResource Fluent.Ribbon.Brushes.HighlightBrush}"
-                                                 Opacity="0" />
-                                        </Grid>
-                                    </BulletDecorator.Bullet>
-                                    <ContentPresenter Content="{TemplateBinding Header}" Margin="8,3,4,0" />
-                                </BulletDecorator>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsMouseOver"
-                                 Value="True">
-                                        <Setter TargetName="normal"
-                                    Property="Stroke"
-                                    Value="{DynamicResource Fluent.Ribbon.Brushes.Button.MouseOver.BorderBrush}" />
-                                    </Trigger>
-                                    <Trigger Property="IsPressed"
-                                 Value="True">
-                                        <Setter TargetName="normal"
-                                    Property="Stroke"
-                                    Value="{DynamicResource Fluent.Ribbon.Brushes.HighlightBrush}" />
-                                    </Trigger>
-                                    <Trigger Property="IsChecked"
-                                 Value="True">
-                                        <Setter Property="Opacity"
-                                    TargetName="Checked1"
-                                    Value="1" />
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled"
-                                 Value="false">
-                                        <Setter Property="Opacity"
-                                    TargetName="bulletDecorator"
-                                    Value="0.3" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Fluent:RadioButton.Template>
-                    </Fluent:RadioButton>-->
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="App types">
@@ -942,7 +872,7 @@
             <progressOverlay:ProgressOverlay IsShown="{Binding IsLoading}" Progress="{Binding LoadingProgress}" Message="{Binding LoadingMessage}">
                 <TabControl 
                     x:Name="TabControl"
-                    regions:RegionManager.RegionName="ContentRegion">
+                    regions:RegionManager.RegionName="{x:Static modules:Constants.RegionContent}">
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="Header" Value="{Binding DataContext.Header}"/>

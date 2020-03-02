@@ -32,9 +32,6 @@ namespace otor.msixhero.ui.Modules.Main.View
 
         public MainView(IRegionManager regionManager, IApplicationStateManager appStateManager) : this()
         {
-            regionManager.RegisterViewWithRegion("ContentRegion", typeof(PackageListView));
-            regionManager.RegisterViewWithRegion("ContentRegion", typeof(VolumeManagerView));
-            regionManager.RequestNavigate("ContentRegion", PackageListModule.PackagesPath);
             this.appStateManager = appStateManager;
             appStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
             appStateManager.EventAggregator.GetEvent<ApplicationModeChangedEvent>().Subscribe(this.OnModeChanged, ThreadOption.UIThread);

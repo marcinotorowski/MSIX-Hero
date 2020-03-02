@@ -11,14 +11,16 @@ using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Helpers;
+using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
+using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 {
-    public class SinglePackageViewModel : NotifyPropertyChanged, INavigationAware
+    public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware
     {
         private readonly IApplicationStateManager stateManager;
         private readonly IInteractionService interactionService;
@@ -27,14 +29,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         private ICommand findUsers;
         private string error;
 
-        public SinglePackageViewModel(IApplicationStateManager stateManager, IInteractionService interactionService, IConfigurationService configurationService)
+        public PackageContentViewModel(IApplicationStateManager stateManager, IInteractionService interactionService, IConfigurationService configurationService)
         {
             this.stateManager = stateManager;
             this.interactionService = interactionService;
-            this.CommandHandler = new SinglePackageCommandHandler(configurationService, interactionService);
+            this.CommandHandler = new PackageContentCommandHandler(configurationService, interactionService);
         }
 
-        public SinglePackageCommandHandler CommandHandler { get; }
+        public PackageContentCommandHandler CommandHandler { get; }
 
         public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
 

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Controls
+namespace otor.msixhero.ui.Controls.ZeroOrAny
 {
     public class ZeroOrAny : Control
     {

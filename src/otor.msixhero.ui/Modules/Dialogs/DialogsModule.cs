@@ -25,29 +25,18 @@ namespace otor.msixhero.ui.Modules.Dialogs
 {
     public class DialogsModule : IModule
     {
-        public static string NewSelfSignedPath = "NewSelfSigned";
-        public static string EventViewerPath = "EventViewer";
-        public static string PackageSigningPath = "PackageSigning";
-        public static string CertificateExportPath = "CertificateExport";
-        public static string UnpackPath = "Unpack";
-        public static string AppInstallerPath = "AppInstaller";
-        public static string PackPath = "Pack";
-        public static string AppAttachPath = "AppAttach";
-        public static string ModificationPackagePath = "ModificationPackage";
-        public static string HelpPath = "Help";
-
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterDialog<NewSelfSignedView, NewSelfSignedViewModel>(NewSelfSignedPath);
-            containerRegistry.RegisterDialog<EventViewerView, EventViewerViewModel>(EventViewerPath);
-            containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(PackageSigningPath);
-            containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(CertificateExportPath);
-            containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(UnpackPath);
-            containerRegistry.RegisterDialog<PackView, PackViewModel>(PackPath);
-            containerRegistry.RegisterDialog<HelpView, HelpViewModel>(HelpPath);
-            containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(AppAttachPath);
-            containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(ModificationPackagePath);
-            containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(AppInstallerPath);
+            containerRegistry.RegisterDialog<NewSelfSignedView, NewSelfSignedViewModel>(Constants.PathNewSelfSigned);
+            containerRegistry.RegisterDialog<EventViewerView, EventViewerViewModel>(Constants.PathEventViewer);
+            containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(Constants.PathPackageSigning);
+            containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(Constants.PathCertificateExport);
+            containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(Constants.PathUnpack);
+            containerRegistry.RegisterDialog<PackView, PackViewModel>(Constants.PathPack);
+            containerRegistry.RegisterDialog<HelpView, HelpViewModel>(Constants.PathHelp);
+            containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(Constants.PathAppAttach);
+            containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(Constants.PathModificationPackage);
+            containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(Constants.PathAppInstaller);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

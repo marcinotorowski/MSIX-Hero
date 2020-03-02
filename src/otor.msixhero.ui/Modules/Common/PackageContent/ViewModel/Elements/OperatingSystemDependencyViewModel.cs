@@ -1,7 +1,7 @@
 ﻿using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
 {
     public class OperatingSystemDependencyViewModel : NotifyPropertyChanged
     {

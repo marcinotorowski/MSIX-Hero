@@ -1,21 +1,23 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.PackageList.View.SinglePackageView"
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Common.PackageContent.View.PackageContentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
              xmlns:descriptor="clr-namespace:otor.msixhero.lib.Domain.Appx.Psf.Descriptor;assembly=msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
-             xmlns:psf="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf"
-             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+             xmlns:zeroOrAny="clr-namespace:otor.msixhero.ui.Controls.ZeroOrAny"
+             xmlns:msixHeroText="clr-namespace:otor.msixhero.ui.Controls.MsixHeroText"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View"
+             xmlns:psf="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf"
+             xmlns:elements1="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance elements:SinglePackageViewModel}"
+             d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -128,13 +130,13 @@
             <TabItem Header="Content" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
-                            <controls:ZeroOrAny.Template>
-                                <ControlTemplate TargetType="controls:ZeroOrAny">
+                        <zeroOrAny:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
+                            <zeroOrAny:ZeroOrAny.Template>
+                                <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
                                     <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
                                 </ControlTemplate>
-                            </controls:ZeroOrAny.Template>
-                            <controls:ZeroOrAny.AnyItemTemplate>
+                            </zeroOrAny:ZeroOrAny.Template>
+                            <zeroOrAny:ZeroOrAny.AnyItemTemplate>
                                 <DataTemplate>
                                     <DataTemplate.Resources>
                                         <system:Boolean x:Key="True">True</system:Boolean>
@@ -142,7 +144,7 @@
                                     </DataTemplate.Resources>
                                     <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type elements:AppxApplicationViewModel}">
+                                            <DataTemplate DataType="{x:Type elements1:AppxApplicationViewModel}">
                                                 <StackPanel Margin="0 0 0 24">
                                                     <view:BulletItemControl>
                                                         <view:BulletItemControl.Header>
@@ -430,13 +432,13 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </DataTemplate>
-                            </controls:ZeroOrAny.AnyItemTemplate>
-                            <controls:ZeroOrAny.NoItemsTemplate>
+                            </zeroOrAny:ZeroOrAny.AnyItemTemplate>
+                            <zeroOrAny:ZeroOrAny.NoItemsTemplate>
                                 <DataTemplate>
-                                    <controls:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
+                                    <msixHeroText:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
                                 </DataTemplate>
-                            </controls:ZeroOrAny.NoItemsTemplate>
-                        </controls:ZeroOrAny>
+                            </zeroOrAny:ZeroOrAny.NoItemsTemplate>
+                        </zeroOrAny:ZeroOrAny>
                     </ScrollViewer>
                 </progressOverlay:ProgressOverlay>
             </TabItem>
@@ -461,7 +463,7 @@
 
                             <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type elements:OperatingSystemDependencyViewModel}">
+                                    <DataTemplate DataType="{x:Type elements1:OperatingSystemDependencyViewModel}">
                                         <StackPanel>
                                             <view:BulletItemControl>
                                                 <view:BulletItemControl.Header>
@@ -503,7 +505,7 @@
 
                             <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type elements:PackageDependencyViewModel}">
+                                    <DataTemplate DataType="{x:Type elements1:PackageDependencyViewModel}">
 
                                         <view:BulletItemControl>
                                             <view:BulletItemControl.Header>
@@ -539,18 +541,18 @@
                         </TabItem.Header>
                         <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
 
-                            <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
-                                <controls:ZeroOrAny.Template>
-                                    <ControlTemplate TargetType="controls:ZeroOrAny">
+                            <zeroOrAny:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
+                                <zeroOrAny:ZeroOrAny.Template>
+                                    <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
                                         <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
                                     </ControlTemplate>
-                                </controls:ZeroOrAny.Template>
-                                <controls:ZeroOrAny.AnyItemTemplate>
+                                </zeroOrAny:ZeroOrAny.Template>
+                                <zeroOrAny:ZeroOrAny.AnyItemTemplate>
                                     <DataTemplate>
                                         <ListBox 
                                                 ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
                                             <ListBox.ItemTemplate>
-                                                <DataTemplate DataType="{x:Type elements:InstalledPackageDetailsViewModel}">
+                                                <DataTemplate DataType="{x:Type elements1:InstalledPackageDetailsViewModel}">
                                                     <DockPanel>
                                                         <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                             <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -576,13 +578,13 @@
                                             </ListBox.ItemTemplate>
                                         </ListBox>
                                     </DataTemplate>
-                                </controls:ZeroOrAny.AnyItemTemplate>
-                                <controls:ZeroOrAny.NoItemsTemplate>
+                                </zeroOrAny:ZeroOrAny.AnyItemTemplate>
+                                <zeroOrAny:ZeroOrAny.NoItemsTemplate>
                                     <DataTemplate>
-                                        <controls:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
+                                        <msixHeroText:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
                                     </DataTemplate>
-                                </controls:ZeroOrAny.NoItemsTemplate>
-                            </controls:ZeroOrAny>
+                                </zeroOrAny:ZeroOrAny.NoItemsTemplate>
+                            </zeroOrAny:ZeroOrAny>
                         </progressOverlay:ProgressOverlay>
                     </TabItem>
                     <TabItem Style="{StaticResource Compact}">

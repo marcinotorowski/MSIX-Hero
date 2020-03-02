@@ -2,7 +2,7 @@
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf
+namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
 {
     public class TracingPsfViewModel
     {
