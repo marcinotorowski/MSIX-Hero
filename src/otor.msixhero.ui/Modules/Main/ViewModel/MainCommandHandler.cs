@@ -21,7 +21,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         
         private void HelpExecute()
         {
-            this.dialogService.ShowDialog(Constants.PathSettings, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathHelp, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void SettingsExecute(string tab)
