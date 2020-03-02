@@ -375,7 +375,6 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         private void ConfigureReducers()
         {
             this.reducerFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterReducer((SetPackageFilter)action, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(SetPackageContext)] = action => new SetPackageContextReducer((SetPackageContext)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetPackages)] = action => new GetInstalledPackagesReducer((GetPackages)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SelectPackages)] = action => new SelectPackagesReducer((SelectPackages)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateReducer((GetRegistryMountState)action, this.appxPackageManager, this.writableApplicationStateManager);

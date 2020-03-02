@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace otor.msixhero.lib.Infrastructure.Logging
 {
@@ -64,7 +66,8 @@ namespace otor.msixhero.lib.Infrastructure.Logging
             };
 
             config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), logfile);
-        
+            config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), new ConsoleTarget());
+
             NLog.LogManager.Configuration = config;
         }
 

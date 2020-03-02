@@ -24,6 +24,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         private readonly IApplicationStateManager stateManager;
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
+        private readonly IBusyManager busyManager;
         private bool isLoading;
         private string loadingMessage;
         private int loadingProgress;
@@ -40,6 +41,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.stateManager = stateManager;
             this.configurationService = configurationService;
             this.dialogService = dialogService;
+            this.busyManager = busyManager;
             this.Tools = new ObservableCollection<ToolViewModel>();
 
             busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
@@ -97,16 +99,25 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             }
             set
             {
+                if (this.Context == value)
+                {
+                    return;
+                }
+
                 this.tempContext = value;
                 this.OnPropertyChanged();
 
-                this.stateManager.CommandExecutor.ExecuteAsync(new SetPackageContext(value)).ContinueWith(t =>
-                {
-                    this.tempContext = null;
-                    this.OnPropertyChanged(nameof(this.Context));
-                },
+                var context = this.busyManager.Begin();
+
+                this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(value), CancellationToken.None, context).ContinueWith(
+                    t =>
+                    {
+                        this.busyManager.End(context);
+                        this.tempContext = null;
+                        this.OnPropertyChanged(nameof(this.Context));
+                    },
                 CancellationToken.None,
-                TaskContinuationOptions.ExecuteSynchronously,
+                TaskContinuationOptions.AttachedToParent,
                 TaskScheduler.FromCurrentSynchronizationContext());
             }
         }

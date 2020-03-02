@@ -49,6 +49,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                     throw new NotSupportedException();
             }
 
+            this.StateManager.CurrentState.Packages.Context = command.Context;
             return packageSource;
         }
 

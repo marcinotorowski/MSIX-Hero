@@ -61,6 +61,11 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                         break;
 
                     case ResponseType.Result:
+                        if (progress != null)
+                        {
+                            progress.Report(new ProgressData(100, null));
+                        }
+
                         return;
 
                     default:
@@ -98,6 +103,11 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
 
                     case ResponseType.Result:
                         var deserializedObject = await binaryProcessor.Read<TOutput>(cancellationToken).ConfigureAwait(false);
+                        if (progress != null)
+                        {
+                            progress.Report(new ProgressData(100, null));
+                        }
+
                         return deserializedObject;
 
                     case ResponseType.Progress:

@@ -122,15 +122,37 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     
                                     if (!returnsValue)
                                     {
-                                        await this.applicationStateManager.CommandExecutor.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
-                                        result = null;
-                                        success = true;
+                                        var p = busyManager?.Begin();
+                                        try
+                                        {
+                                            await this.applicationStateManager.CommandExecutor.ExecuteAsync(command, cancellationToken, p).ConfigureAwait(false);
+                                            result = null;
+                                            success = true;
+                                        }
+                                        finally
+                                        {
+                                            if (busyManager != null && p != null)
+                                            {
+                                                busyManager.End(p);
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        var executionResult = await this.applicationStateManager.CommandExecutor.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
-                                        result = JsonConvert.SerializeObject(executionResult, Formatting.None, SerializerSettings);
-                                        success = true;
+                                        var p = busyManager?.Begin();
+                                        try
+                                        {
+                                            var executionResult = await this.applicationStateManager.CommandExecutor.GetExecuteAsync(command, cancellationToken, p).ConfigureAwait(false);
+                                            result = JsonConvert.SerializeObject(executionResult, Formatting.None, SerializerSettings);
+                                            success = true;
+                                        }
+                                        finally
+                                        {
+                                            if (busyManager != null && p != null)
+                                            {
+                                                busyManager.End(p);
+                                            }
+                                        }
                                     }
                                 }
                                 finally

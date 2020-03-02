@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -92,7 +93,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                         firstRun = false;
 
                         var context = this.busyManager.Begin();
-                        this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context)).ContinueWith(
+                        this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ContinueWith(
                             t =>
                             {
                                 this.busyManager.End(context);

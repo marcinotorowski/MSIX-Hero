@@ -12,7 +12,6 @@ namespace otor.msixhero.lib.Domain.Commands
     [XmlInclude(typeof(SelectPackages))]
     [XmlInclude(typeof(SetPackageFilter))]
     [XmlInclude(typeof(RunPackage))]
-    [XmlInclude(typeof(SetPackageContext))]
     [XmlInclude(typeof(SetPackageSidebarVisibility))]
     [XmlInclude(typeof(MountRegistry))]
     [XmlInclude(typeof(UnmountRegistry))]

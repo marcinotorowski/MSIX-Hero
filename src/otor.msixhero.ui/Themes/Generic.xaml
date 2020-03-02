@@ -97,7 +97,7 @@
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                         </Trigger>
-                        <Trigger Property="Progress" Value="0">
+                        <Trigger Property="Progress" Value="-1">
                             <Setter TargetName="PART_ProgressBar" Property="IsIndeterminate" Value="True" />
                         </Trigger>
                     </ControlTemplate.Triggers>
