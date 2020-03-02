@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>msixhero.lib</AssemblyName>
-    <Copyright>Copyright (c) 2019-2020 by Marcin Otorowski</Copyright>
+    <Copyright>Copyright (c) 2020 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
     <Product>MSIX Hero</Product>

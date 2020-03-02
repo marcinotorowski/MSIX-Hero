@@ -9,11 +9,14 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AssemblyName>msixhero</AssemblyName>
     <Product>MSIX Hero</Product>
-    <Copyright>Copyright (c) 2019-2020 by Marcin Otorowski</Copyright>
+    <Copyright>Copyright (c) 2020 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <OutputPath>$(SolutionDir)src\bin\</OutputPath>
     <Company />
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	<PackageId>MSIX Hero</PackageId>
+	<PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
+	<PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
