@@ -13,7 +13,6 @@ using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
-using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Logs;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
@@ -42,7 +41,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
         public AppxPackageManager(IAppxSigningManager signingManager)
         {
             this.signingManager = signingManager;
-            this.PackageDetailsProvider = new PackageDetailsProvider(this);
+            this.PackageDetailsProvider = new PackageDetailsProvider();
         }
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -351,7 +350,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
             else
             {
-                using (var reg = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("MSIX-Hero-" + packageName))
+                using (var reg = Registry.LocalMachine.OpenSubKey("MSIX-Hero-" + packageName))
                 {
                     if (reg != null)
                     {
@@ -526,9 +525,14 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return converted;
         }
 
-        public Task<AppxPackage> Get(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.PackageDetailsProvider.GetPackage(packageName, mode, cancellationToken, progress);
+            return this.PackageDetailsProvider.GetPackageByIdentity(packageName, mode, cancellationToken, progress);
+        }
+
+        public Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            return this.PackageDetailsProvider.GetPackageByManifestFilePath(manifestPath, mode, cancellationToken, progress);
         }
 
         private async Task<List<InstalledPackage>> GetInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
@@ -577,7 +581,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
                 finally
                 {
-                    if (tempFile != null && File.Exists(tempFile))
+                    if (File.Exists(tempFile))
                     {
                         File.Delete(tempFile);
                     }
@@ -728,7 +732,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
             else
             {
-                details = await GetVisualsFromManifest(installLocation, cancellationToken, progress).ConfigureAwait(false);
+                details = await GetVisualsFromManifest(installLocation, cancellationToken).ConfigureAwait(false);
                 hasRegistry = await this.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
             }
 
@@ -808,7 +812,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             }
         }
 
-        private static async Task<MsixPackageVisuals> GetVisualsFromManifest(string installLocation, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        private static async Task<MsixPackageVisuals> GetVisualsFromManifest(string installLocation, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -862,10 +866,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
             try
             {
-                regKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(key);
+                regKey = Registry.CurrentUser.OpenSubKey(key);
                 if (regKey == null)
                 {
-                    regKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(key);
+                    regKey = Registry.CurrentUser.CreateSubKey(key);
                 }
 
                 if (regKey == null)

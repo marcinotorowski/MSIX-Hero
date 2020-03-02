@@ -13,18 +13,18 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 
         public FindUsers(InstalledPackage package, bool forceElevation)
         {
-            this.FullProductId = package.PackageId;
+            this.Source = package.PackageId;
             this.ForceElevation = forceElevation;
         }
 
-        public FindUsers(string fullProductId, bool forceElevation)
+        public FindUsers(string source, bool forceElevation)
         {
-            this.FullProductId = fullProductId;
+            this.Source = source;
             this.ForceElevation = forceElevation;
         }
 
         [XmlElement]
-        public string FullProductId { get; set; }
+        public string Source { get; set; }
 
         [XmlElement]
         public bool ForceElevation { get; set; }

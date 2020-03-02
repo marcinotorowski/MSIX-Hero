@@ -40,6 +40,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
 
         public Stream GetResource(string resourceFilePath)
         {
+            if (string.IsNullOrEmpty(resourceFilePath))
+            {
+                return null;
+            }
+
             if (this.FileExists(resourceFilePath))
             {
                 return this.GetFile(resourceFilePath);
@@ -50,7 +55,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             var resourceDir = Path.GetDirectoryName(resourceFilePath);
 
             var dirsToTry = new Queue<string>();
-            dirsToTry.Enqueue(Path.Combine(this.appxManifestFile.DirectoryName, resourceDir));
+            dirsToTry.Enqueue(string.IsNullOrEmpty(resourceDir) ? this.appxManifestFile.DirectoryName : Path.Combine(this.appxManifestFile.DirectoryName, resourceDir));
 
             while (dirsToTry.Any())
             {

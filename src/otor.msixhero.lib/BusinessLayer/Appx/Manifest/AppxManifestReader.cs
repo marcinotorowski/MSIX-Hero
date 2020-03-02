@@ -12,6 +12,7 @@ using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Build;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Interop;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
 {
@@ -378,6 +379,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             appxPackage.BuildInfo = buildInfo;
                         }
                     }
+
+                    appxPackage.FamilyName = AppxPackaging.GetPackageFamilyName(appxPackage.Name, appxPackage.Publisher);
+                    appxPackage.FullName = AppxPackaging.GetPackageFullName(appxPackage.Name, appxPackage.Publisher, appxPackage.ProcessorArchitecture, appxPackage.Version, appxPackage.ResourceId);
 
                     return appxPackage;
                 }

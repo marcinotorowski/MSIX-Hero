@@ -6,13 +6,17 @@ using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
 {
-    public class InstalledPackageDetailsViewModel : NotifyPropertyChanged
+    public class PackageContentDetailsViewModel : NotifyPropertyChanged
     {
         private AppxApplicationViewModel selectedFixup;
 
-        public InstalledPackageDetailsViewModel(AppxPackage model)
+        public PackageContentDetailsViewModel(AppxPackage model)
         {
             this.DisplayName = model.DisplayName;
+            this.Description = model.Description;
+            this.Publisher = model.Publisher;
+            this.FamilyName = model.FamilyName;
+            this.PackageFullName = model.FullName;
             this.PublisherDisplayName = model.PublisherDisplayName;
             this.Version = model.Version;
             this.Logo = model.Logo;
@@ -21,7 +25,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
             this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
-            this.Addons = new ObservableCollection<InstalledPackageDetailsViewModel>();
+            this.Addons = new ObservableCollection<PackageContentDetailsViewModel>();
 
             if (model.OperatingSystemDependencies != null)
             {
@@ -71,7 +75,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             {
                 foreach (var item in model.Addons)
                 {
-                    this.Addons.Add(new InstalledPackageDetailsViewModel(item));
+                    this.Addons.Add(new PackageContentDetailsViewModel(item));
                 }
             }
 
@@ -83,7 +87,13 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             }
         }
 
+        public string PackageFullName { get; }
+
+        public string Description { get; }
+
         public string PublisherDisplayName { get; }
+
+        public string Publisher { get; }
 
         public string TileColor { get; }
 
@@ -103,7 +113,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
 
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
         
-        public ObservableCollection<InstalledPackageDetailsViewModel> Addons { get; }
+        public ObservableCollection<PackageContentDetailsViewModel> Addons { get; }
         
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
 

@@ -25,7 +25,12 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
         protected override Task<AppxPackage> GetReducedAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = default)
         {
-            return this.packageManager.Get(this.command.PackageFullName, command.Context == PackageContext.CurrentUser ? PackageFindMode.CurrentUser : PackageFindMode.AllUsers, cancellationToken, progressReporter);
+            var context = command.Context == PackageContext.CurrentUser
+                ? PackageFindMode.CurrentUser
+                : PackageFindMode.AllUsers;
+
+            return Uri.TryCreate(this.command.Source, UriKind.Absolute, out _) 
+                ? this.packageManager.GetByManifestPath(this.command.Source, context, cancellationToken, progressReporter) : this.packageManager.GetByIdentity(this.command.Source, context, cancellationToken, progressReporter);
         }
     }
 }

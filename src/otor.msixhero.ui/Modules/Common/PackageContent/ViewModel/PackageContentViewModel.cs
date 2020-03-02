@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.State;
@@ -13,7 +13,6 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
@@ -24,8 +23,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
     {
         private readonly IApplicationStateManager stateManager;
         private readonly IInteractionService interactionService;
-        private string currentManifest;
-        private InstalledPackageViewModel selectedInstalledPackage;
+        private FileInfo currentManifest;
         private ICommand findUsers;
         private string error;
 
@@ -40,26 +38,21 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 
         public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
 
-        public AsyncProperty<InstalledPackageDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<InstalledPackageDetailsViewModel>();
+        public AsyncProperty<PackageContentDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<PackageContentDetailsViewModel>();
 
-        public InstalledPackageViewModel SelectedInstalledPackage
-        {
-            get => this.selectedInstalledPackage;
-            set => this.SetField(ref this.selectedInstalledPackage, value);
-        }
         public ICommand FindUsers
         {
             get
             {
                 return this.findUsers ?? (this.findUsers = new DelegateCommand(() =>
                 {
-                    if (this.SelectedInstalledPackage == null)
+                    if (this.currentManifest == null)
                     {
                         return;
                     }
 
 #pragma warning disable 4014
-                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.SelectedInstalledPackage.Model, true));
+                    this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(true));
 #pragma warning restore 4014
                 }));
             }
@@ -90,34 +83,37 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             }
 
             var manifest = navigation.SelectedManifests.First();
-            if (this.currentManifest == manifest)
+            if (this.currentManifest != null && string.Equals(this.currentManifest.FullName, manifest, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            this.currentManifest = manifest;
-            var lastSelected = this.stateManager.CurrentState.Packages.SelectedItems.LastOrDefault();
-            if (lastSelected?.InstallLocation == null)
+            if (manifest == null)
             {
-                this.Error = "Could not load the manifest";
-                this.SelectedInstalledPackage = null;
+                this.Error = "Could not find package manifest.";
             }
             else
             {
-                this.Error = null;
+                this.currentManifest = new FileInfo(manifest);
+                if (!currentManifest.Exists)
+                {
+                    this.Error = "Could not load the manifest";
+                }
+                else
+                {
+                    this.Error = null;
+                }
             }
-            
-            this.SelectedInstalledPackage = lastSelected == null ? null : new InstalledPackageViewModel(lastSelected, this.stateManager);
 
 #pragma warning disable 4014
-            if (lastSelected == null || this.HasError)
+            if (this.HasError)
             {
                 this.SelectedPackageUsersInfo.Load(Task.FromResult((FoundUsersViewModel)null));
-                this.SelectedPackageManifestInfo.Load(Task.FromResult((InstalledPackageDetailsViewModel)null));
+                this.SelectedPackageManifestInfo.Load(Task.FromResult((PackageContentDetailsViewModel)null));
             }
             else
             {
-                await this.SelectedPackageManifestInfo.Load(this.GetManifestDetails(lastSelected)).ConfigureAwait(false);
+                await this.SelectedPackageManifestInfo.Load(this.GetManifestDetails()).ConfigureAwait(false);
 
                 if (!this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
                 {
@@ -127,11 +123,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                 {
                     try
                     {
-                        await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated)).ConfigureAwait(false);
+                        await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated)).ConfigureAwait(false);
                     }
                     catch (Exception)
                     {
-                        await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(lastSelected, false)).ConfigureAwait(false);
+                        await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(false)).ConfigureAwait(false);
                     }
                 }
 #pragma warning restore 4014   
@@ -148,11 +144,16 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
         {
         }
 
-        private async Task<FoundUsersViewModel> GetSelectionDetails(InstalledPackage package, bool forceElevation)
+        private async Task<FoundUsersViewModel> GetSelectionDetails(bool forceElevation)
         {
+            if (this.currentManifest == null || !this.currentManifest.Exists)
+            {
+                return null;
+            }
+
             try
             {
-                var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(package, forceElevation)).ConfigureAwait(false);
+                var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(this.currentManifest.FullName, forceElevation)).ConfigureAwait(false);
                 if (stateDetails == null)
                 {
                     return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
@@ -166,18 +167,23 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             }
         }
 
-        private async Task<InstalledPackageDetailsViewModel> GetManifestDetails(InstalledPackage package)
+        private async Task<PackageContentDetailsViewModel> GetManifestDetails()
         {
+            if (this.currentManifest == null || !this.currentManifest.Exists)
+            {
+                return null;
+            }
+
             try
             {
-                var cmd = new GetPackageDetails(package);
+                var cmd = new GetPackageDetails(this.currentManifest.FullName);
                 var manifestDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(cmd).ConfigureAwait(false);
                 if (manifestDetails == null)
                 {
                     return null;
                 }
 
-                return new InstalledPackageDetailsViewModel(manifestDetails);
+                return new PackageContentDetailsViewModel(manifestDetails);
             }
             catch (Exception e)
             {

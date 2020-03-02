@@ -15,15 +15,11 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
         public GetPackageDetails(string fullName, PackageContext context = PackageContext.CurrentUser)
         {
             this.Context = context;
-            this.PackageFullName = fullName;
+            this.Source = fullName;
         }
-
-        public GetPackageDetails(InstalledPackage package) : this(package.PackageId, package.Context)
-        {
-        }
-
+        
         [XmlElement]
-        public string PackageFullName { get; set; }
+        public string Source { get; set; }
         
 
         [XmlElement]

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Interop;
 
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
@@ -32,7 +35,17 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 return null;
             }
 
-            return await this.packageManager.GetUsersForPackage(this.action.FullProductId, cancellationToken, progressReporter).ConfigureAwait(false);
+            var source = this.action.Source;
+            // ReSharper disable once InvertIf
+            if (Uri.TryCreate(source, UriKind.Absolute, out _))
+            {
+                using IAppxFileReader reader = new FileInfoFileReaderAdapter(source);
+                var appxManifestReader = new AppxManifestReader();
+                var pkg = appxManifestReader.Read(reader);
+                source = AppxPackaging.GetPackageFullName(pkg.Name, pkg.Publisher, pkg.ProcessorArchitecture, pkg.Version, pkg.ResourceId);
+            }
+
+            return await this.packageManager.GetUsersForPackage(source, cancellationToken, progressReporter).ConfigureAwait(false);
         }
     }
 }

@@ -16,9 +16,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public string Path { get; set; }
 
         public string Publisher { get; set; }
-
-        public string PublisherId { get; set; }
-
+        
         public string ResourceId { get; set; }
 
         public string FamilyName { get; set; }
