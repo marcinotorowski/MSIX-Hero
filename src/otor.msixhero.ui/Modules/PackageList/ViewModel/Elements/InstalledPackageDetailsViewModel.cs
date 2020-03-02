@@ -39,6 +39,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
                 }
             }
 
+            this.HasOperatingSystemDependencies = this.OperatingSystemDependencies.Any();
+            this.HasPackageDependencies = this.PackageDependencies.Any();
+
             this.ScriptsCount = 0;
 
             if (model.Applications != null)
@@ -93,6 +96,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         public string Version { get; }
         
         public ObservableCollection<OperatingSystemDependencyViewModel> OperatingSystemDependencies { get; }
+
+        public bool HasOperatingSystemDependencies { get; }
+
+        public bool HasPackageDependencies { get; }
 
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
         

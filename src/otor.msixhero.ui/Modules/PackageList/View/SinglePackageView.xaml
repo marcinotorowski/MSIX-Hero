@@ -13,7 +13,6 @@
              xmlns:psf="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements.Psf"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
-             xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance elements:SinglePackageViewModel}"
@@ -26,6 +25,30 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="view:BulletItemControl">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="view:BulletItemControl">
+                            <DockPanel>
+                                <Border Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 0 0 10">
+                                    <ContentPresenter Width="32" Content="{TemplateBinding Header}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </Border>
+
+                                <Border Width="1" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Stretch" Background="#DDD" Margin="10 0" />
+
+                                <StackPanel IsItemsHost="True" Margin="0 0 0 10" />
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Path" x:Key="Icon">
+                <Setter Property="Width" Value="32" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Fill" Value="#999" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -103,21 +126,6 @@
                 </progressOverlay:ProgressOverlay>
             </TabItem>
             <TabItem Header="Content" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                <TabItem.Resources>
-                    <Style TargetType="ComboBox" x:Key="SingleItemCombo">
-                        <Style.Triggers>
-                            <Trigger Property="HasItems" Value="False">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                            <Trigger Property="Tag">
-                                <Trigger.Value>
-                                    <system:Int32>1</system:Int32>
-                                </Trigger.Value>
-                                <Setter Property="Visibility" Value="Collapsed" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TabItem.Resources>
                 <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <controls:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
@@ -131,35 +139,10 @@
                                     <DataTemplate.Resources>
                                         <system:Boolean x:Key="True">True</system:Boolean>
                                         <system:Boolean x:Key="False">False</system:Boolean>
-
-                                        <Style TargetType="view:BulletItemControl">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="view:BulletItemControl">
-                                                        <DockPanel>
-                                                            <Border Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 0 0 10">
-                                                                <ContentPresenter Width="32" Content="{TemplateBinding Header}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                                            </Border>
-
-                                                            <Border Width="1" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Stretch" Background="#DDD" Margin="10 0" />
-
-                                                            <StackPanel IsItemsHost="True" Margin="0 0 0 10" />
-                                                        </DockPanel>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
                                     </DataTemplate.Resources>
                                     <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type elements:AppxApplicationViewModel}">
-                                                <DataTemplate.Resources>
-                                                    <Style TargetType="Path" x:Key="Icon">
-                                                        <Setter Property="Width" Value="32" />
-                                                        <Setter Property="Height" Value="32" />
-                                                        <Setter Property="Fill" Value="#999" />
-                                                    </Style>
-                                                </DataTemplate.Resources>
                                                 <StackPanel Margin="0 0 0 24">
                                                     <view:BulletItemControl>
                                                         <view:BulletItemControl.Header>
@@ -211,7 +194,7 @@
                                                         </view:BulletItemControl.Header>
 
                                                         <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
-                                                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
+                                                        <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
                                                     </view:BulletItemControl>
 
                                                     <view:BulletItemControl x:Name="WorkingDirectory">
@@ -461,49 +444,88 @@
                 <TabItem.Header>
                     <TextBlock>
                         <Run FontSize="13" Text="Dependencies" />
-                        <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies.Count, Mode=OneWay}"  Foreground="#777" />
+                        <!--<Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies.Count, Mode=OneWay}"  Foreground="#777" />-->
                     </TextBlock>
                 </TabItem.Header>
                 <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
-                    <DockPanel Margin="0">
-                        <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="{x:Type elements:OperatingSystemDependencyViewModel}">
-                                    <StackPanel>
-                                        <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
-                                        <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
-                                            <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
-                                        </TextBlock>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0">
+                            <Border DockPanel.Dock="Top" Visibility="{Binding SelectedPackageManifestInfo.CurrentValue.HasOperatingSystemDependencies, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Visible}}">
+                                <StackPanel>
+                                    <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
+                                        <TextBlock Text="DEVICE FAMILIES" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                    </Border>
+                                    <view:BulletItemControl Height="10" />
+                                </StackPanel>
+                            </Border>
 
-                                        <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
-                                        <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                            <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
-                                            <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
-                                        </TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <Border Margin="0 4" Background="#b2b2b2" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" DockPanel.Dock="Top" />
-
-                        <ListBox ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type elements:PackageDependencyViewModel}">
-                                    <DockPanel>
-                                        <TextBlock Text="{Binding Version}" Margin="10 0 0 0" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
-
-                                        <StackPanel Margin="0 0">
-                                            <TextBlock Text="{Binding DisplayName}" ToolTip="{Binding Name}" TextTrimming="CharacterEllipsis" />
-                                            <TextBlock Text="{Binding DisplayPublisherName}" ToolTip="{Binding Publisher}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                            <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.OperatingSystemDependencies}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type elements:OperatingSystemDependencyViewModel}">
+                                        <StackPanel>
+                                            <view:BulletItemControl>
+                                                <view:BulletItemControl.Header>
+                                                    <Viewbox Width="24" Height="24">
+                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
+                                                    </Viewbox>
+                                                </view:BulletItemControl.Header>
+                                                <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
+                                                <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
+                                                    <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                                </TextBlock>
+                                            </view:BulletItemControl>
+                                            <view:BulletItemControl>
+                                                <view:BulletItemControl.Header>
+                                                    <Viewbox Width="24" Height="24">
+                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
+                                                    </Viewbox>
+                                                </view:BulletItemControl.Header>
+                                                <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
+                                                <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
+                                                    <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                                </TextBlock>
+                                            </view:BulletItemControl>
                                         </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
-                                    </DockPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
+                            <Border Visibility="{Binding SelectedPackageManifestInfo.CurrentValue.HasPackageDependencies, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Visible}}">
+                                <StackPanel>
+                                    <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
+                                        <TextBlock Text="PACKAGE DEPENDENCIES" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                    </Border>
+                                    <view:BulletItemControl Height="10" />
+                                </StackPanel>
+                            </Border>
+
+                            <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.PackageDependencies}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type elements:PackageDependencyViewModel}">
+
+                                        <view:BulletItemControl>
+                                            <view:BulletItemControl.Header>
+                                                <Viewbox Width="24" Height="24">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource VectorCollection}" />
+                                                </Viewbox>
+                                            </view:BulletItemControl.Header>
+                                            <DockPanel>
+                                                <TextBlock Text="{Binding Version}" Margin="8 0" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
+
+                                                <StackPanel Margin="0 0" VerticalAlignment="Center">
+                                                    <TextBlock Style="{StaticResource DataHeader}" Text="{Binding DisplayPublisherName}" ToolTip="{Binding Publisher}" TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayName}" ToolTip="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                            </DockPanel>
+                                        </view:BulletItemControl>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </StackPanel>
+                    </ScrollViewer>
                 </progressOverlay:ProgressOverlay>
             </TabItem>
             <TabItem Header="Installation" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
