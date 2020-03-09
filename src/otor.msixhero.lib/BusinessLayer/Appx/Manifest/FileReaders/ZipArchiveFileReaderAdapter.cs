@@ -62,7 +62,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
                         continue;
                     }
 
-                    currentName = currentName.Remove(0, resourceDir.Length).TrimStart('\\');
+                    currentName = currentName.Remove(0, resourceDir.Length).TrimStart('/');
                 }
 
                 // 1) Remove quantified folder names

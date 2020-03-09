@@ -10,6 +10,9 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    <system:Boolean x:Key="True">True</system:Boolean>
+
     <Style TargetType="changeableDialog:ChangeableDialog">
         <Setter Property="ShowShield" Value="False" />
         <Setter Property="Template">
@@ -41,7 +44,7 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                        <Button Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
+                                        <Button x:Name="PART_ButtonOK" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
                                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                 <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
                                                 <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding OkButtonLabel}" />
@@ -181,6 +184,17 @@
                             </Grid>
                         </DockPanel>
                     </progressOverlay:ProgressOverlay>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="OkButtonVisibility" Value="Collapsed">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ButtonOK" />
+                        </Trigger>
+                        <Trigger Property="OkButtonVisibility" Value="Hidden">
+                            <Setter Property="Visibility" Value="Hidden" TargetName="PART_ButtonOK" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" Value="{StaticResource True}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

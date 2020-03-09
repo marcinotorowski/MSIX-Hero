@@ -11,6 +11,8 @@ namespace otor.msixhero.ui.Helpers
     {
         private T currentValue;
         private bool isLoading;
+        private bool hasError;
+        private string error;
 
         public AsyncProperty(T initialValue = default)
         {
@@ -37,20 +39,21 @@ namespace otor.msixhero.ui.Helpers
                 if (this.CurrentValue != null && typeof(T).IsGenericType)
                 {
                     var generic = typeof(T).GetGenericTypeDefinition();
-                    
+
                     if (typeof(ObservableCollection<>) == generic)
                     {
                         // this is an observable collection, use events
                         if (this.CurrentValue == null)
                         {
-                            this.CurrentValue = (T)Activator.CreateInstance(typeof(ObservableCollection<>).MakeGenericType(typeof(T).GetGenericArguments()[0]));
+                            this.CurrentValue = (T) Activator.CreateInstance(
+                                typeof(ObservableCollection<>).MakeGenericType(typeof(T).GetGenericArguments()[0]));
                         }
                         else
                         {
-                            ((IList)this.CurrentValue).Clear();
+                            ((IList) this.CurrentValue).Clear();
                         }
 
-                        foreach (var item in (IList)newValue)
+                        foreach (var item in (IList) newValue)
                         {
                             ((IList) this.CurrentValue).Add(item);
                         }
@@ -62,11 +65,31 @@ namespace otor.msixhero.ui.Helpers
 
                 this.HasValue = true;
                 this.CurrentValue = newValue;
+
+                this.HasError = false;
+                this.Error = null;
+            }
+            catch (Exception e)
+            {
+                this.Error = e.Message;
+                this.HasError = !string.IsNullOrEmpty(e.Message);
             }
             finally
             {
                 this.IsLoading = false;
             }
+        }
+
+        public bool HasError
+        {
+            get => this.hasError;
+            private set => this.SetField(ref this.hasError, value);
+        }
+
+        public string Error
+        {
+            get => this.error;
+            private set => this.SetField(ref this.error, value);
         }
 
         public T CurrentValue

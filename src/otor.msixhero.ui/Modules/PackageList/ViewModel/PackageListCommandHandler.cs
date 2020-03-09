@@ -18,6 +18,7 @@ using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
@@ -25,6 +26,12 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
     public enum AppInstallerCommandParameter
     {
         Empty,
+        Selection,
+        Browse
+    }
+
+    public enum PackageExpertCommandParameter
+    {
         Selection,
         Browse
     }
@@ -71,6 +78,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.Pack = new DelegateCommand(param => this.PackExecute());
             this.AppAttach = new DelegateCommand(param => this.AppAttachExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
+            this.PackageExpert = new DelegateCommand(param => this.PackageExpertExecute(), param => this.CanExecutePackageExpert());
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.Unpack = new DelegateCommand(param => this.UnpackExecute());
 
@@ -109,6 +117,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ICommand Pack { get; }
         
         public ICommand AppInstaller { get; }
+
+        public ICommand PackageExpert { get; }
 
         public ICommand AppAttach { get; }
 
@@ -554,6 +564,21 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 default:
                     return false;
             }
+        }
+        private bool CanExecutePackageExpert()
+        {
+            return this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
+        }
+
+        private void PackageExpertExecute()
+        {
+            if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            var parameters = new PackageExpertSelection(this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation).ToDialogParameters();
+            this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, this.OnDialogClosed);
         }
 
         private void AppInstallerExecute(AppInstallerCommandParameter parameter)

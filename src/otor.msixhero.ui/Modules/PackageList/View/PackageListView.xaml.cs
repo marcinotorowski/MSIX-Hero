@@ -11,12 +11,10 @@ using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
-using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Regions;
 
@@ -245,6 +243,11 @@ namespace otor.msixhero.ui.Modules.PackageList.View
                 this.PanelListView.Visibility = Visibility.Collapsed;
                 this.PanelListBox.Visibility = Visibility.Visible;
             }
+        }
+
+        private void ListOnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ((PackageListViewModel)this.DataContext).ShowSelectionDetails.Execute(null);
         }
     }
 }

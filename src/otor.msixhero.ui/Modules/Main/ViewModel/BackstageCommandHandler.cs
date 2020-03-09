@@ -1,8 +1,7 @@
 ﻿using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Dialogs;
-using otor.msixhero.ui.Modules.Settings;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Main.ViewModel
@@ -22,11 +21,14 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is bool boolParam && boolParam));
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute());
             this.Settings = new DelegateCommand(param => this.SettingsExecute(param as string));
+            this.PackageExpert = new DelegateCommand(param => this.PackageExpertExecute());
         }
-
+        
         public ICommand Settings { get; }
 
         public ICommand AppInstaller { get; }
+
+        public ICommand PackageExpert { get; }
 
         public ICommand AppAttach { get; }
 
@@ -37,6 +39,15 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         private void PackExecute()
         {
             this.dialogService.ShowDialog(Constants.PathPack, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void PackageExpertExecute()
+        {
+            if (this.interactionService.SelectFile("Manifest files|AppxManifest.xml|AppxManifest.xml|MSIX packages|*.msix", out var selected))
+            {
+                var parameters = new PackageExpertSelection(selected).ToDialogParameters();
+                this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, this.OnDialogClosed);
+            }
         }
 
         private void SettingsExecute(string tab)

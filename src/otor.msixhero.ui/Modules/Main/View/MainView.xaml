@@ -112,6 +112,7 @@
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Settings}" Command="{Binding BackstageCommandHandler.Settings}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding BackstageCommandHandler.Pack}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding BackstageCommandHandler.AppInstaller}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.PackageExpert}" Command="{Binding BackstageCommandHandler.PackageExpert}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding BackstageCommandHandler.ModificationPackage}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding BackstageCommandHandler.AppAttach}" />
                     </routedCommand:RoutedCommandHandlers.Commands>
@@ -898,7 +899,6 @@
                                                 Panel.ZIndex="1"
                                                 Margin="{TemplateBinding Padding}"
                                                 IsItemsHost="True"
-                                                Width="0"
                                                 KeyboardNavigation.TabIndex="1"
                                                 Background="Transparent" />
                                             <!--<Border Width="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Stretch" />-->

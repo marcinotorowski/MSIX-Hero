@@ -18,6 +18,8 @@ using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.View;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.View;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
@@ -37,6 +39,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(Constants.PathAppAttach);
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(Constants.PathModificationPackage);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(Constants.PathAppInstaller);
+            containerRegistry.RegisterDialog<PackageExpertView, PackageExpertViewModel>(Constants.PathPackageExpert);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

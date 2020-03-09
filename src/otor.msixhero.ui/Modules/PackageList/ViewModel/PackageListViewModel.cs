@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
@@ -14,6 +15,8 @@ using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
 using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.Themes;
@@ -42,6 +45,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private readonly IBusyManager busyManager;
         private bool isActive;
         private bool firstRun = true;
+        private ICommand showSelectionDetails;
 
         public PackageListViewModel(
             IApplicationStateManager stateManager,
@@ -338,5 +342,24 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ObservableCollection<InstalledPackageViewModel> AllPackages { get; }
 
         public ICollectionView AllPackagesView { get; }
+
+        public ICommand ShowSelectionDetails
+        {
+            get
+            {
+                return this.showSelectionDetails ??= new DelegateCommand(this.ShowSelectionDetailsExecute);
+            }
+        }
+
+        private void ShowSelectionDetailsExecute(object obj)
+        {
+            var selected = this.AllPackages.FirstOrDefault(item => item.IsSelected);
+            if (selected == null)
+            {
+                return;
+            }
+
+            this.dialogService.ShowDialog(Constants.PathPackageExpert, new PackageExpertSelection(selected.ManifestLocation).ToDialogParameters(), result => {});
+        }
     }
 }

@@ -59,15 +59,15 @@
 
     <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
         <DockPanel>
-            <Border Height="31" Margin="0 0 0 -11" DockPanel.Dock="Top" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <Border Height="31" Margin="0 0 0 -11" DockPanel.Dock="Top" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackageManifestInfo.CurrentValue.DisplayName}" />
             </Border>
 
-            <Border VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Top" Background="IndianRed" Padding="10" Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="{Binding Error}" Foreground="White" TextWrapping="Wrap" Margin="12 6" />
+            <Border VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Top" Background="IndianRed" Padding="10" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="{Binding SelectedPackageManifestInfo.Error}" Foreground="White" TextWrapping="Wrap" Margin="12 6" />
             </Border>
 
-            <TabControl DockPanel.Dock="Top" Margin="0 0 0 0" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <TabControl DockPanel.Dock="Top" Margin="0 0 0 0" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabItem Header="Properties">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
@@ -127,7 +127,7 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Content" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TabItem Header="Content" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <zeroOrAny:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
                             <zeroOrAny:ZeroOrAny.Template>
@@ -441,7 +441,7 @@
                     </ScrollViewer>
 
                 </TabItem>
-                <TabItem Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TabItem Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                     <TabItem.Header>
                         <TextBlock>
                         <Run FontSize="13" Text="Dependencies" />
@@ -529,7 +529,7 @@
                         </ScrollViewer>
                     </progressOverlay:ProgressOverlay>
                 </TabItem>
-                <TabItem Header="Installation" Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                <TabItem Header="Installation" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                     <TabControl Margin="0 -7 0 0">
                         <TabItem Style="{StaticResource Compact}">
                             <TabItem.Header>

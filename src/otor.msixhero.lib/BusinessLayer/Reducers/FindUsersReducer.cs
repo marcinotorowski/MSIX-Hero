@@ -41,7 +41,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 using IAppxFileReader reader = new FileInfoFileReaderAdapter(source);
                 var appxManifestReader = new AppxManifestReader();
-                var pkg = appxManifestReader.Read(reader);
+                var pkg = await appxManifestReader.Read(reader).ConfigureAwait(false);
                 source = AppxPackaging.GetPackageFullName(pkg.Name, pkg.Publisher, pkg.ProcessorArchitecture, pkg.Version, pkg.ResourceId);
             }
 

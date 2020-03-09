@@ -33,6 +33,7 @@ namespace otor.msixhero.ui.Commands
             ModificationPackage = new RoutedUICommand { Text = "Opens a wizard for modification package generation" };
             AppAttach = new RoutedUICommand { Text = "Opens a wizard for app attach generation" };
             Settings = new RoutedUICommand { Text = "Opens settings" };
+            PackageExpert = new RoutedUICommand { Text = "Open Package Expert"};
         }
 
         public static RoutedUICommand SetVolumeAsDefault { get; }
@@ -82,6 +83,8 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand Unpack { get; }
 
         public static RoutedUICommand AppInstaller { get; }
+
+        public static RoutedUICommand PackageExpert { get; }
 
         public static RoutedUICommand ModificationPackage { get; }
 

@@ -12,6 +12,8 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ChangeableDialog),  new FrameworkPropertyMetadata(typeof(ChangeableDialog)));
         }
 
+        public static readonly DependencyProperty OkButtonVisibilityProperty =  DependencyProperty.Register("OkButtonVisibility", typeof(Visibility), typeof(ChangeableDialog), new PropertyMetadata(System.Windows.Visibility.Visible));
+        
         public static readonly DependencyProperty SuccessContentTemplateProperty = DependencyProperty.Register("SuccessContentTemplate", typeof(DataTemplate), typeof(ChangeableDialog), new PropertyMetadata(null));
 
         public static readonly DependencyProperty SuccessContentTemplateSelectorProperty = DependencyProperty.Register("SuccessContentTemplateSelector", typeof(DataTemplateSelector), typeof(ChangeableDialog), new PropertyMetadata(null));
@@ -50,6 +52,12 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
         {
             get => this.GetValue(FooterProperty);
             set => this.SetValue(FooterProperty, value);
+        }
+
+        public Visibility OkButtonVisibility
+        {
+            get => (Visibility)this.GetValue(OkButtonVisibilityProperty);
+            set => this.SetValue(OkButtonVisibilityProperty, value);
         }
 
         public Geometry Icon

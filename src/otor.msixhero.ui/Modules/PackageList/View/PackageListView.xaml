@@ -52,6 +52,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Pack}" Command="{Binding CommandHandler.Pack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppInstaller}" Command="{Binding CommandHandler.AppInstaller}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.PackageExpert}" Command="{Binding CommandHandler.PackageExpert}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ModificationPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
@@ -191,6 +192,7 @@
             Grid.Column="0"
             Grid.Row="1">
             <ListView 
+                MouseDoubleClick="ListOnMouseDoubleClick"
                 IsSynchronizedWithCurrentItem="False"
                 VirtualizingPanel.IsVirtualizing="True"
                 VirtualizingPanel.IsVirtualizingWhenGrouping="True"
@@ -309,6 +311,7 @@
             <ListBox 
                 x:Name="ListBox"
                 SelectionMode="Extended"
+                MouseDoubleClick="ListOnMouseDoubleClick"
                 ContextMenu="{StaticResource PackageContextMenu}"
                 ItemsSource="{Binding AllPackagesView}">
                 <ListBox.GroupStyle>

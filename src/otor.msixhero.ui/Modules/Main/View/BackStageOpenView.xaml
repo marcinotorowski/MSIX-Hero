@@ -70,5 +70,16 @@
                 </StackPanel>
             </DockPanel>
         </Button>
+        <Button Command="{x:Static commands:MsixHeroCommands.PackageExpert}" Click="BackstageButtonClicked" CommandParameter="{x:Static viewModel1:PackageExpertCommandParameter.Browse}">
+
+            <DockPanel>
+                <Path Data="{StaticResource VectorOpen}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+
+                <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <TextBlock FontWeight="Light" Text="Manifest or MSIX package" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                    <TextBlock Opacity="0.66" Text="Opens manifest or an MSIX package in Package Expert." Margin="0 0 0 0" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
+        </Button>
     </StackPanel>
 </UserControl>

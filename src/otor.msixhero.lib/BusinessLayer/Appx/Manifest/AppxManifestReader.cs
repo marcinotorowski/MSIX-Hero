@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.CodeAnalysis;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Build;
@@ -19,37 +18,30 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
     public class AppxManifestReader : IAppxManifestReader
     {
         protected readonly PsfReader PsfReader = new PsfReader();
-
-        /*private readonly IAppxPackageManager packageManager;
         
-        public AppxManifestReader(IAppxPackageManager packageManager)
-        {
-            this.packageManager = packageManager;
-        }*/
-
-        public AppxPackage Read(IAppxFileReader fileReader)
+        public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
             var isMsix = fileReader.FileExists("AppxManifest.xml");
             if (isMsix)
             {
-                return this.ReadMsix(fileReader);
+                return this.ReadMsix(fileReader, cancellationToken);
             }
 
             var isAppxBundle = fileReader.FileExists("AppxMetaData\\AppxBundleManigest.xml");
             if (isAppxBundle)
             {
-                return this.ReadBundle(fileReader);
+                return this.ReadBundle(fileReader, cancellationToken);
             }
 
             throw new NotSupportedException("Required package source is not supported.");
         }
 
-        private AppxPackage ReadBundle(IAppxFileReader fileReader)
+        private Task<AppxPackage> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Reading of bundle manifests is not supported yet.");
         }
 
-        private AppxPackage ReadMsix(IAppxFileReader fileReader)
+        private async Task<AppxPackage> ReadMsix(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
             var xmlDocument = new XmlDocument();
 
@@ -71,8 +63,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
 
                             using (var fs = File.OpenWrite(priFullPath))
                             {
-                                stream.CopyTo(fs);
-                                fs.Flush();
+                                await stream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
+                                await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
                             }
 
                             cleanUp = true;
@@ -91,10 +83,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
                     }
 
+                    cancellationToken.ThrowIfCancellationRequested();
                     var nodeIdentity = GetNode(nodePackage, "Identity", true);
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     var nodeProperties = GetNode(nodePackage, "Properties", true);
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     var nodeApplicationsRoot = GetNode(nodePackage, "Applications", true);
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     var nodeDependenciesRoot = GetNode(nodePackage, "Dependencies", true);
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     var nodeBuild = GetNode(nodePackage, "Metadata", true);
 
                     var appxPackage = new AppxPackage();
@@ -103,7 +104,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     {
                         appxPackage.RootFolder = diskReader.RootDirectory;
                     }
-                    
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (nodeIdentity != null)
                     {
                         appxPackage.Name = GetNodeAttribute(nodeIdentity, "Name");
@@ -117,6 +119,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         appxPackage.Version = GetNodeAttribute(nodeIdentity, "Version");
                     }
 
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (nodeProperties != null)
                     {
                         appxPackage.PublisherDisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "PublisherDisplayName"));
@@ -141,6 +144,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         appxPackage.IsFramework = string.Equals(GetNodeValue(nodeProperties, "Framework") ?? "false", "true", StringComparison.OrdinalIgnoreCase);
                     }
 
+                    cancellationToken.ThrowIfCancellationRequested();
                     appxPackage.PackageDependencies = new List<AppxPackageDependency>();
                     appxPackage.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
                     appxPackage.Applications = new List<AppxApplication>();
@@ -149,6 +153,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     {
                         foreach (var node in GetNodes(nodeApplicationsRoot, "Application"))
                         {
+                            cancellationToken.ThrowIfCancellationRequested();
                             /*
                              *<Application EntryPoint="SparklerApp.App" Executable="XD.exe" Id="App">
                                 <uap:VisualElements BackgroundColor="#2D001E" Description="Adobe XD" DisplayName="Adobe XD" Square150x150Logo="Assets\xd_med_tile.png" Square44x44Logo="Assets\xd_app_list_icon.png">
@@ -190,6 +195,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             {
                                 foreach (var extension in GetNodes(extensions, "Extension"))
                                 {
+                                    cancellationToken.ThrowIfCancellationRequested();
                                     var category = GetNodeAttribute(extension, "Category");
                                     if (category != "windows.service")
                                     {
@@ -221,6 +227,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             var visualElements = GetNode(node, "VisualElements", true);
                             if (visualElements != null)
                             {
+                                cancellationToken.ThrowIfCancellationRequested();
                                 appxApplication.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeAttribute(visualElements, "Description"));
                                 appxApplication.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeAttribute(visualElements, "DisplayName"));
                                 appxApplication.BackgroundColor = GetNodeAttribute(visualElements, "BackgroundColor");
@@ -257,8 +264,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                                         {
                                             using (var memoryStream = new MemoryStream())
                                             {
-                                                stream.CopyTo(memoryStream);
-                                                memoryStream.Flush();
+                                                await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+                                                await memoryStream.FlushAsync(cancellationToken);
                                                 appxApplication.Logo = memoryStream.ToArray();
                                             }
                                         }
@@ -287,6 +294,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                         {
                             foreach (var psfApp in psfApps)
                             {
+                                cancellationToken.ThrowIfCancellationRequested();
                                 psfApp.Psf = this.PsfReader.Read(psfApp.Id, fileReader);
                             }
                         }
