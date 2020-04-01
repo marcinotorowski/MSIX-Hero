@@ -43,7 +43,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
         private void PackageExpertExecute()
         {
-            if (this.interactionService.SelectFile("Manifest files|AppxManifest.xml|AppxManifest.xml|MSIX packages|*.msix", out var selected))
+            if (this.interactionService.SelectFile("Manifest files|AppxManifest.xml|MSIX/APPX packages|*.msix;*.appx", out var selected))
             {
                 var parameters = new PackageExpertSelection(selected).ToDialogParameters();
                 this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, this.OnDialogClosed);

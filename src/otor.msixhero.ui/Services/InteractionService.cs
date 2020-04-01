@@ -281,12 +281,18 @@ namespace otor.msixhero.ui.Services
                 if (items.Length > 2)
                 {
                     var sb = new StringBuilder();
+                    var supportedPatterns = new List<string>();
 
                     var hasAll = false;
                     for (var i = 0; i + 1 < items.Length; i += 2)
                     {
                         var first = items[i]; // the caption
                         var second = items[i + 1]; // the filter
+
+                        if (!supportedPatterns.Contains(second) && second != "*.*")
+                        {
+                            supportedPatterns.Add(second);
+                        }
 
                         if (sb.Length > 0)
                         {
@@ -305,7 +311,13 @@ namespace otor.msixhero.ui.Services
 
                     if (!hasAll)
                     {
-                        sb.Insert(0, "All files|*.*|");
+                        sb.Append("|All files|*.*");
+                    }
+
+                    if (supportedPatterns.Count > 1)
+                    {
+                        var supported = string.Join(";", supportedPatterns);
+                        sb.Insert(0, "All supported files|" + supported + "|");
                     }
 
                     filterString = sb.ToString();
