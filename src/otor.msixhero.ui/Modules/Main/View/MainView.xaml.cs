@@ -7,11 +7,15 @@ using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Domain.State;
+using otor.msixhero.ui.Modules.Dialogs;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using otor.msixhero.ui.Modules.Main.ViewModel;
 using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.PackageList.View;
 using otor.msixhero.ui.Modules.VolumeManager.View;
 using Prism.Events;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Main.View
 {
@@ -20,6 +24,7 @@ namespace otor.msixhero.ui.Modules.Main.View
     /// </summary>
     public partial class MainView
     {
+        private readonly IDialogService dialogService;
         private readonly IApplicationStateManager appStateManager;
 
         public MainView()
@@ -30,8 +35,9 @@ namespace otor.msixhero.ui.Modules.Main.View
             this.TabControl.Focus();
         }
 
-        public MainView(IRegionManager regionManager, IApplicationStateManager appStateManager) : this()
+        public MainView(IRegionManager regionManager, IDialogService dialogService, IApplicationStateManager appStateManager) : this()
         {
+            this.dialogService = dialogService;
             this.appStateManager = appStateManager;
             appStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
             appStateManager.EventAggregator.GetEvent<ApplicationModeChangedEvent>().Subscribe(this.OnModeChanged, ThreadOption.UIThread);
@@ -100,6 +106,23 @@ namespace otor.msixhero.ui.Modules.Main.View
         private void Close_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Application.Current.MainWindow.Close();
+        }
+
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            string[] droppedFiles = null;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+            }
+
+            if ((null == droppedFiles) || !droppedFiles.Any())
+            {
+                return;
+            }
+
+            var handler = new ExplorerHandler(this.dialogService);
+            handler.Handle(droppedFiles);
         }
     }
 }

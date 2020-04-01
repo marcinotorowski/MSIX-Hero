@@ -11,6 +11,7 @@ using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Services.Dialogs;
@@ -212,7 +213,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             get => this.loadingMessage;
             private set => this.SetField(ref this.loadingMessage, value);
         }
-
+        
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
             this.IsLoading = e.IsBusy;

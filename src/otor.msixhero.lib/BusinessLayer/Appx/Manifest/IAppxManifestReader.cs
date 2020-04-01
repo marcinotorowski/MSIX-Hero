@@ -8,5 +8,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
     public interface IAppxManifestReader
     {
         Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default);
+
+        Task<AppxPackage> Read(IAppxFileReader fileReader, bool resolveDependencies, CancellationToken cancellationToken = default);
     }
 }

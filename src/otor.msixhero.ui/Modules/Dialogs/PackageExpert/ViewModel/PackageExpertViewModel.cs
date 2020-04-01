@@ -13,7 +13,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel
 {
     public class PackageExpertViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        public PackageExpertViewModel(IInteractionService interactionService, IApplicationStateManager stateManager, IConfigurationService configurationService) : base("Package expert", interactionService)
+        public PackageExpertViewModel(IInteractionService interactionService, IApplicationStateManager stateManager, IConfigurationService configurationService) : base("MSIX Hero - Package Expert", interactionService)
         {
             this.Content = new PackageContentViewModel(stateManager, interactionService, configurationService);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -18,26 +19,15 @@ using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.Modules.Common;
-using otor.msixhero.ui.Modules.Common.PackageContent.View;
-using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs;
-using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View;
-using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
 using otor.msixhero.ui.Modules.Main;
-using otor.msixhero.ui.Modules.Main.View;
-using otor.msixhero.ui.Modules.Main.ViewModel;
 using otor.msixhero.ui.Modules.PackageList;
-using otor.msixhero.ui.Modules.PackageList.View;
-using otor.msixhero.ui.Modules.PackageList.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.Modules.Settings;
 using otor.msixhero.ui.Modules.VolumeManager;
-using otor.msixhero.ui.Modules.VolumeManager.View;
-using otor.msixhero.ui.Modules.VolumeManager.ViewModel;
 using otor.msixhero.ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Mvvm;
+using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui
 {
@@ -47,6 +37,7 @@ namespace otor.msixhero.ui
     public partial class App : IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger();
+        private string[] arguments;
 
         static App()
         {
@@ -118,8 +109,31 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IProcessManager, ProcessManager>();
         }
         
+        protected override void OnStartup(StartupEventArgs startupEventArgs)
+        {
+            this.arguments = startupEventArgs.Args;
+            base.OnStartup(startupEventArgs);
+        }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (this.arguments.Any())
+            {
+                var dlg = ServiceLocator.Current.GetInstance<IDialogService>();
+                var handler = new ExplorerHandler(dlg, true);
+                handler.Handle(this.arguments.First());
+            }
+        }
+
         protected override Window CreateShell()
         {
+            if (this.arguments.Any())
+            {
+                return null;
+            }
+
             var shell = ServiceLocator.Current.GetInstance<MainWindow>();
             return shell;
         }

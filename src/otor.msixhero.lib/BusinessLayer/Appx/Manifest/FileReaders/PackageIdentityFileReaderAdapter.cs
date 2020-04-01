@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using otor.msixhero.lib.Domain.Appx.Packages;
 
@@ -11,6 +12,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
         private readonly PackageContext context;
         private readonly string packageFullName;
         private readonly string packagePublisher;
+        private readonly string packageVersion;
         private IAppxFileReader adapter;
 
         public PackageIdentityFileReaderAdapter(PackageContext context, string packageFullName)
@@ -24,7 +26,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             this.packageFullName = packageFullName;
         }
 
-        public PackageIdentityFileReaderAdapter(PackageContext context, string packageName, string packagePublisher) : this(context, packageName)
+        public PackageIdentityFileReaderAdapter(PackageContext context, string packageName, string packagePublisher, string version) : this(context, packageName)
         {
             if (string.IsNullOrEmpty(packageName))
             {
@@ -37,6 +39,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             }
 
             this.packagePublisher = packagePublisher;
+            this.packageVersion = version;
         }
 
         public string RootDirectory
@@ -118,30 +121,90 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             {
                 case PackageContext.CurrentUser:
                 {
-                    var pkg =
-                        string.IsNullOrEmpty(this.packagePublisher)
-                            ? pkgManager.FindPackageForUser(string.Empty, this.packageFullName)
-                            : pkgManager.FindPackagesForUser(string.Empty, this.packageFullName, this.packagePublisher)
-                                .FirstOrDefault();
+                    Package pkg = null;
+                    if (string.IsNullOrEmpty(this.packagePublisher))
+                    {
+                        pkg = pkgManager.FindPackageForUser(string.Empty, this.packageFullName);
+                        if (pkg == null)
+                        {
+                            throw new FileNotFoundException("Could not find the required package.");
+                        }
+
+                        return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
+                    }
+
+                    var pkgs = pkgManager.FindPackagesForUser(string.Empty, this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
+
+                    if (string.IsNullOrEmpty(this.packageVersion) || !Version.TryParse(this.packageVersion, out Version parsedVersion))
+                    {
+                        pkg = pkgs.FirstOrDefault();
+                        if (pkg == null)
+                        {
+                            throw new FileNotFoundException("Could not find the required package.");
+                        }
+
+                        return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
+                    }
+                    
+                    foreach (var item in pkgs)
+                    {
+                        pkg = item;
+                        var compareAgainst = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision);
+
+                        if (compareAgainst >= parsedVersion)
+                        {
+                            return new DirectoryInfoFileReaderAdapter(item.InstalledLocation.Path);
+                        }
+                    }
 
                     if (pkg == null)
                     {
-                        throw new FileNotFoundException("Could not find the required package.");
+                        return null;
                     }
 
                     return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                 }
                 default:
                 {
-                    var pkg =
-                        string.IsNullOrEmpty(this.packagePublisher)
-                            ? pkgManager.FindPackage(this.packageFullName)
-                            : pkgManager.FindPackages(this.packageFullName, this.packagePublisher)
-                                .FirstOrDefault();
+                    Package pkg = null;
+                    if (string.IsNullOrEmpty(this.packagePublisher))
+                    {
+                        pkg = pkgManager.FindPackage(this.packageFullName);
+                        if (pkg == null)
+                        {
+                            throw new FileNotFoundException("Could not find the required package.");
+                        }
+
+                        return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
+                    }
+
+                    var pkgs = pkgManager.FindPackages(this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
+
+                    if (string.IsNullOrEmpty(this.packageVersion) || !Version.TryParse(this.packageVersion, out Version parsedVersion))
+                    {
+                        pkg = pkgs.FirstOrDefault();
+                        if (pkg == null)
+                        {
+                            throw new FileNotFoundException("Could not find the required package.");
+                        }
+
+                        return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
+                    }
+
+                    foreach (var item in pkgs)
+                    {
+                        pkg = item;
+                        var compareAgainst = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision);
+
+                        if (compareAgainst >= parsedVersion)
+                        {
+                            return new DirectoryInfoFileReaderAdapter(item.InstalledLocation.Path);
+                        }
+                    }
 
                     if (pkg == null)
                     {
-                        throw new FileNotFoundException("Could not find the required package.");
+                        return null;
                     }
 
                     return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);

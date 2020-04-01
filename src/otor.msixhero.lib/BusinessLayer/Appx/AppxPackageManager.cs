@@ -12,6 +12,7 @@ using Windows.Management.Deployment;
 using Microsoft.Win32;
 using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.Domain.Appx.Logs;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
@@ -33,15 +34,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
         private static readonly ILog Logger = LogManager.GetLogger();
 
         protected readonly ISideloadingChecker SideloadingChecker = new RegistrySideloadingChecker();
-
-        protected readonly PackageDetailsProvider PackageDetailsProvider;
-
+        
         private readonly IAppxSigningManager signingManager;
 
         public AppxPackageManager(IAppxSigningManager signingManager)
         {
             this.signingManager = signingManager;
-            this.PackageDetailsProvider = new PackageDetailsProvider();
         }
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -525,14 +523,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return converted;
         }
 
-        public Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.PackageDetailsProvider.GetPackageByIdentity(packageName, mode, cancellationToken, progress);
+            using var reader = new PackageIdentityFileReaderAdapter(mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers, packageName);
+            var manifestReader = new AppxManifestReader();
+            // ReSharper disable once AccessToDisposedClosure
+            var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
+            return package;
         }
 
-        public Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<AppxPackage> GetByManifestPath(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.PackageDetailsProvider.GetPackageByManifestFilePath(manifestPath, mode, cancellationToken, progress);
+            using IAppxFileReader reader = new FileInfoFileReaderAdapter(manifestPath);
+            var manifestReader = new AppxManifestReader();
+            // ReSharper disable once AccessToDisposedClosure
+            var package = await Task.Run(() => manifestReader.Read(reader, true, cancellationToken), cancellationToken).ConfigureAwait(false);
+            return package;
         }
 
         private async Task<List<InstalledPackage>> GetInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)

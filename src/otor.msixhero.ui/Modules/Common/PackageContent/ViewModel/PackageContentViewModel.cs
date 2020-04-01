@@ -25,8 +25,8 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
     public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware
     {
         private readonly IApplicationStateManager stateManager;
-        private string lastSource;
         private ICommand findUsers;
+        private string fullPackageName;
 
         public PackageContentViewModel(IApplicationStateManager stateManager, IInteractionService interactionService, IConfigurationService configurationService)
         {
@@ -47,13 +47,13 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                 return this.findUsers ??= new DelegateCommand(
                     () =>
                     {
-                        if (this.lastSource == null)
+                        if (this.fullPackageName == null)
                         {
                             return;
                         }
 
 #pragma warning disable 4014
-                        this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.lastSource, true));
+                        this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(true));
 #pragma warning restore 4014
                     });
             }
@@ -69,6 +69,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             var appxReader = new AppxManifestReader();
             var appxManifest = await appxReader.Read(source, cancellationToken).ConfigureAwait(false);
 
+            this.fullPackageName = appxManifest.FullName;
             if (!this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
             {
                 await this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired))).ConfigureAwait(false);
@@ -77,11 +78,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             {
                 try
                 {
-                    await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(appxManifest.FullName, this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated)).ConfigureAwait(false);
+                    await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated)).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
-                    await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(appxManifest.FullName, false)).ConfigureAwait(false);
+                    await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(false)).ConfigureAwait(false);
                 }
             }
 
@@ -97,14 +98,8 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             }
 
             var manifest = navigation.SelectedManifests.First();
-            if (string.Equals(this.lastSource, manifest, StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
             await this.SelectedPackageManifestInfo.Load(this.LoadPackage(fileReader, CancellationToken.None)).ConfigureAwait(false);
-            this.lastSource = manifest;
         }
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
@@ -117,11 +112,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
         {
         }
 
-        private async Task<FoundUsersViewModel> GetSelectionDetails(string source, bool forceElevation)
+        private async Task<FoundUsersViewModel> GetSelectionDetails(bool forceElevation)
         {
             try
             {
-                var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(source, forceElevation)).ConfigureAwait(false);
+                var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(this.fullPackageName, forceElevation)).ConfigureAwait(false);
                 if (stateDetails == null)
                 {
                     return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);

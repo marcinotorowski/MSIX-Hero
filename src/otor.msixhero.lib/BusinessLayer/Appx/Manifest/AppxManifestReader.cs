@@ -11,6 +11,7 @@ using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Build;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
+using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Interop;
 
 namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
@@ -19,6 +20,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
     {
         protected readonly PsfReader PsfReader = new PsfReader();
         
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppxManifestReader));
+
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
             var isMsix = fileReader.FileExists("AppxManifest.xml");
@@ -34,6 +37,30 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
             }
 
             throw new NotSupportedException("Required package source is not supported.");
+        }
+
+        public async Task<AppxPackage> Read(IAppxFileReader fileReader, bool resolveDependencies, CancellationToken cancellationToken = default)
+        {
+            var result = await this.Read(fileReader, cancellationToken).ConfigureAwait(false);
+            if (resolveDependencies)
+            {
+                foreach (var item in result.PackageDependencies)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    using IAppxFileReader tempReader = new PackageIdentityFileReaderAdapter(PackageContext.CurrentUser, item.Name, item.Publisher, item.Version);
+                    try
+                    {
+                        item.Dependency = await this.Read(tempReader, cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.Warn("Could not read a dependency to {0} {2} by {1}", item.Name, item.Publisher, item.Version);
+                    }
+                }
+            }
+            
+            return result;
         }
 
         private Task<AppxPackage> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
