@@ -149,9 +149,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     cancellationToken.ThrowIfCancellationRequested();
                     if (nodeProperties != null)
                     {
-                        appxPackage.PublisherDisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "PublisherDisplayName"));
-                        appxPackage.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "DisplayName"));
-                        var logo = GetNodeValue(nodeProperties, "Logo");
+                        appxPackage.PublisherDisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "PublisherDisplayName", true));
+                        appxPackage.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "DisplayName", true));
+                        var logo = GetNodeValue(nodeProperties, "Logo", true);
                         if (!string.IsNullOrEmpty(logo))
                         {
                             using (var resourceStream = fileReader.GetResource(logo))
@@ -167,8 +167,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                                 }
                             }
                         }
-                        appxPackage.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "Description"));
-                        appxPackage.IsFramework = string.Equals(GetNodeValue(nodeProperties, "Framework") ?? "false", "true", StringComparison.OrdinalIgnoreCase);
+                        appxPackage.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "Description", true));
+                        appxPackage.IsFramework = string.Equals(GetNodeValue(nodeProperties, "Framework", true) ?? "false", "true", StringComparison.OrdinalIgnoreCase);
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
