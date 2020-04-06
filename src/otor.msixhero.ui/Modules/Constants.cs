@@ -18,6 +18,7 @@
 
         public const string PathNewSelfSigned = "NewSelfSigned";
         public const string PathEventViewer = "EventViewer";
+        public const string PathPsfExpert = "PsfExpert";
         public const string PathPackageSigning = "PackageSigning";
         public const string PathCertificateExport = "CertificateExport";
         public const string PathUnpack = "Unpack";

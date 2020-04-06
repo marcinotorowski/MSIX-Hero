@@ -20,6 +20,8 @@ using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.View;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.PsfExpert.View;
+using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
@@ -30,6 +32,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<NewSelfSignedView, NewSelfSignedViewModel>(Constants.PathNewSelfSigned);
+            containerRegistry.RegisterDialog<PsfExpertView, PsfExpertViewModel>(Constants.PathPsfExpert);
             containerRegistry.RegisterDialog<EventViewerView, EventViewerViewModel>(Constants.PathEventViewer);
             containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(Constants.PathPackageSigning);
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(Constants.PathCertificateExport);

@@ -534,7 +534,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void OpenLogsExecute()
         {
-            this.dialogService.ShowDialog(Constants.PathEventViewer, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathPsfExpert, new DialogParameters(), this.OnDialogClosed);
+            // this.dialogService.ShowDialog(Constants.PathEventViewer, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void UnpackExecute()
