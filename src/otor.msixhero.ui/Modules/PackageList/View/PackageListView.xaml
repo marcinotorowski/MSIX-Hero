@@ -25,6 +25,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Themes/Vectors.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <BitmapImage x:Key="DummyLogo" UriSource="icons8-sugar-cube-48.png" />
         </ResourceDictionary>
     </UserControl.Resources>
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -249,7 +251,7 @@
                                     <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
                                         <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                             <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                <Image Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                             </Border>
                                         </Border>
                                     </DataTemplate>

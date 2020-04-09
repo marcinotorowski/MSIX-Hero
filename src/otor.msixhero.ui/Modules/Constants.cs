@@ -28,5 +28,7 @@
         public const string PathAppAttach = "AppAttach";
         public const string PathModificationPackage = "ModificationPackage";
         public const string PathHelp = "Help";
+
+        public const string PathPackageExpertFileRule = PathPackageExpert + ".FileRule";
     }
 }

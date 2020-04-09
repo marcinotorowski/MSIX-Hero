@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using otor.msixhero.ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
+namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items
 {
     public class PsfExpertRedirectionsViewModel : ChangeableContainer
     {

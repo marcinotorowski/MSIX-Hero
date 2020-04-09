@@ -36,6 +36,8 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
 
         public static readonly DependencyProperty ShowShieldProperty = DependencyProperty.Register("ShowShield", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
         
+        public static readonly DependencyProperty ShowHeaderProperty = DependencyProperty.Register("ShowHeader", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(true));
+        
         public ChangeableDialogViewModel Dialog
         {
             get => (ChangeableDialogViewModel)this.GetValue(DialogProperty);
@@ -64,6 +66,12 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
         {
             get => (Geometry)this.GetValue(IconProperty);
             set => this.SetValue(IconProperty, value);
+        }
+
+        public bool ShowHeader
+        {
+            get => (bool)this.GetValue(ShowHeaderProperty);
+            set => this.SetValue(ShowHeaderProperty, value);
         }
 
         public object OkButtonLabel

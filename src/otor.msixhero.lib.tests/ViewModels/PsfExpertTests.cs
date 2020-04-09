@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items;
 
 namespace otor.msixhero.lib.tests.ViewModels
 {

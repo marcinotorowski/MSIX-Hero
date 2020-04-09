@@ -15,6 +15,8 @@
              xmlns:psf="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf"
              xmlns:elements1="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel"
+             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
+             xmlns:packageHeader="clr-namespace:otor.msixhero.ui.Controls.PackageHeader"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}"
@@ -51,17 +53,30 @@
                 <Setter Property="Height" Value="32" />
                 <Setter Property="Fill" Value="#999" />
             </Style>
+
+            <BitmapImage x:Key="DummyLogo" UriSource="icons8-sugar-cube-64.png" />
         </ResourceDictionary>
     </UserControl.Resources>
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static psf:AppxPsfViewModel.EditScript}" Command="{Binding CommandHandler.EditScript}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
-    <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
-        <DockPanel>
+    <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}" Margin="-5">
+        <DockPanel Margin="5 5 0 0">
+            <packageHeader:PackageHeader
+                Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                DataContext="{Binding SelectedPackageManifestInfo}"
+                Publisher="{Binding CurrentValue.PublisherDisplayName}" 
+                Version="{Binding CurrentValue.Version}"
+                PackageName="{Binding CurrentValue.DisplayName}" 
+                Logo="{Binding CurrentValue.Logo, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" 
+                TileColor="{Binding CurrentValue.TileColor, TargetNullValue={x:Static Brushes.Gray}, FallbackValue={x:Static Brushes.Gray}}"
+                DockPanel.Dock="Top" Margin="-5 -5 0 0" />
+
+            <!--
             <Border Height="31" Margin="0 0 0 -11" DockPanel.Dock="Top" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackageManifestInfo.CurrentValue.DisplayName}" />
-            </Border>
+            </Border>-->
 
             <Border VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Top" Background="IndianRed" Padding="10" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{Binding SelectedPackageManifestInfo.Error}" Foreground="White" TextWrapping="Wrap" Margin="12 6" />
@@ -72,11 +87,11 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <StackPanel DataContext="{Binding SelectedPackageManifestInfo.CurrentValue}">
-                                <DockPanel DockPanel.Dock="Top" >
+                                <!--<DockPanel DockPanel.Dock="Top" >
 
-                                    <!--<Border Margin="0 0 0 10" Background="#CCFFD1" DockPanel.Dock="Top" Padding="10" Visibility="{Binding IsProvisioned, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border Margin="0 0 0 10" Background="#CCFFD1" DockPanel.Dock="Top" Padding="10" Visibility="{Binding IsProvisioned, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <TextBlock Text="This is a provisioned package" Foreground="DarkGreen" TextAlignment="Left" TextWrapping="Wrap" />
-                                    </Border>-->
+                                    </Border>
 
                                     <Border Background="#2B579A" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         <Border Background="{Binding TileColor}" Width="64" Height="64" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -84,9 +99,14 @@
                                         </Border>
                                     </Border>
                                     <TextBlock TextWrapping="Wrap" Text="{Binding Description}" Margin="10 0 0 0" VerticalAlignment="Center" />
-                                </DockPanel>
+                                </DockPanel>-->
 
                                 <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Description" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Description, Mode=OneWay, TargetNullValue='None', FallbackValue='None'}" TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <!--<StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Version" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Version, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
@@ -96,7 +116,7 @@
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding PublisherDisplayName, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
-                                <!--<StackPanel Margin="0 10 0 0">
+                                <StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
                                     <TextBlock Style="{StaticResource DataValue}" Text="{Binding InstallDate}" TextWrapping="Wrap" />
                                 </StackPanel>-->

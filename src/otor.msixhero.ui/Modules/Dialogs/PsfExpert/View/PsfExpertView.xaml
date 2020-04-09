@@ -10,7 +10,12 @@
              d:DesignHeight="450" d:DesignWidth="800"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
     xmlns:mvvm="http://prismlibrary.com/"
-    xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View">
+    xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View"
+    xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items"
+    xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+    d:DataContext="{d:DesignInstance viewModel:PsfExpertViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
@@ -174,183 +179,225 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <TabControl Margin="10">
-        <TabItem Header="Applications"></TabItem>
-        <TabItem Header="File redirections">
 
-            <view:BulletItemControl>
-                <view:BulletItemControl.Header>
-                    <Viewbox Width="24" Height="24">
-                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorShortcut}" />
-                    </Viewbox>
-                </view:BulletItemControl.Header>
-
-                <view:BulletItemControl.Resources>
-                    <Style TargetType="ComboBox">
-                        <Setter Property="Margin" Value="4 0" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Height" Value="30" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ComboBox}">
-                                    <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
-                                        <Popup 
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="4 1" />
+                <Setter Property="Padding" Value="4 0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBox}">
+                            <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                                <Popup 
                                         x:Name="PART_Popup" 
                                         AllowsTransparency="true" 
                                         IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" Placement="Bottom" 
                                         PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                                            <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                                <Border x:Name="dropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
-                                                    <ScrollViewer x:Name="DropDownScrollViewer">
-                                                        <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
-                                                            <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
-                                                                <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
-                                                            </Canvas>
-                                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                                        </Grid>
-                                                    </ScrollViewer>
-                                                </Border>
-                                            </theme:SystemDropShadowChrome>
-                                        </Popup>
-                                        <ToggleButton 
+                                    <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        <Border x:Name="dropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}">
+                                            <ScrollViewer x:Name="DropDownScrollViewer">
+                                                <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                                    <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                                        <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                                    </Canvas>
+                                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                </Grid>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </theme:SystemDropShadowChrome>
+                                </Popup>
+                                <ToggleButton 
                                         Height="30"
                                         VerticalContentAlignment="Center"
                                         VerticalAlignment="Stretch"
                                         x:Name="toggleButton" 
                                         IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" 
                                         Style="{StaticResource ComboBoxToggleButton}"/>
-                                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
-                                            <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
-                                            <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
-                                        </Trigger>
-                                        <Trigger Property="HasItems" Value="false">
-                                            <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
-                                        </Trigger>
-                                        <MultiTrigger>
-                                            <MultiTrigger.Conditions>
-                                                <Condition Property="IsGrouping" Value="true"/>
-                                                <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
-                                            </MultiTrigger.Conditions>
-                                            <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-                                        </MultiTrigger>
-                                        <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
-                                            <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
-                                            <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style TargetType="TextBox">
-                        <Setter Property="Margin" Value="4 0" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Setter Property="Padding" Value="5 2" />
-                        <Setter Property="BorderThickness" Value="2" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Height" Value="30" />
-                        <Style.Triggers>
-                            <Trigger Property="IsFocused" Value="False">
-                                <Setter Property="Background" Value="#eee" />
-                                <Setter Property="Background" Value="#eee" />
-                                <Setter Property="BorderBrush" Value="#eee" />
-                                <Setter Property="Cursor" Value="Hand" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-
-                    <Style TargetType="{x:Type ToggleButton}">
-                        <Setter Property="IsTabStop" Value="false"/>
-                        <Setter Property="Focusable" Value="false"/>
+                                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                                </Trigger>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsGrouping" Value="true"/>
+                                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                                </MultiTrigger>
+                                <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                                    <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                                    <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="4 0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Padding" Value="4 0" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Height" Value="30" />
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="False">
+                        <Setter Property="Background" Value="#eee" />
                         <Setter Property="Background" Value="#eee" />
                         <Setter Property="BorderBrush" Value="#eee" />
-                        <Setter Property="BorderThickness" Value="2" />
-                        <Setter Property="Margin" Value="4 0" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Height" Value="30" />
-                        <Setter Property="ClickMode" Value="Press"/>
-                    </Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                    </Style>
-                    <Style TargetType="TextBlock" x:Key="Prompt">
-                        <Setter Property="FontWeight" Value="Bold" />
-                        <Setter Property="Margin" Value="0 0 4 0" />
-                        <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                    </Style>
-                </view:BulletItemControl.Resources>
-                <WrapPanel Margin="0 1">
-                    <TextBlock Text="FOR" Style="{StaticResource Prompt}" />
-                    <TextBlock Text="a call from a" />
-                    <ComboBox>
-                        <ComboBoxItem Content="32-bit" IsSelected="True" />
-                        <ComboBoxItem Content="64-bit" />
-                    </ComboBox>
-                    <TextBlock Text="process" />
-                    <TextBox Text="rayeval" />
-                </WrapPanel>
+                        <Setter Property="Cursor" Value="Hand" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
 
-                <Border Margin="30 1 0 1" Height="24">
-                    <TextBlock Text="IF" Style="{StaticResource Prompt}" />
-                </Border>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="IsTabStop" Value="false"/>
+                <Setter Property="Focusable" Value="false"/>
+                <Setter Property="Background" Value="#eee" />
+                <Setter Property="BorderBrush" Value="#eee" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="Margin" Value="4 1" />
+                <Setter Property="Padding" Value="4 0" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="ClickMode" Value="Press"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="TextBlock" x:Key="Prompt">
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="Margin" Value="0 0 4 0" />
+                <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <TabControl Margin="10">
+        <TabItem Header="Applications"></TabItem>
+        <TabItem Header="File redirections">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <routedCommand:RoutedCommandHandlers.Commands>
+                    <routedCommand:RoutedCommandHandler Command="{Binding CommandHandler.Edit}" RoutedCommand="Properties" />
+                </routedCommand:RoutedCommandHandlers.Commands>
+                <ItemsControl ItemsSource="{Binding Redirections.Redirections}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type items:PsfExpertRedirectionIfProcessViewModel}">
 
-                <WrapPanel Margin="60 1 0 1">
-                    <TextBlock Text="requested directory is" />
-                    <ToggleButton Content="Package Directory\test" />
-                    <TextBlock Text="and the file name is like" />
-                    <TextBox Text="*.fuk" />
-                </WrapPanel>
+                            <view:BulletItemControl>
+                                <view:BulletItemControl.Header>
+                                    <Viewbox Width="24" Height="24">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorShortcut}" />
+                                    </Viewbox>
+                                </view:BulletItemControl.Header>
 
-                <WrapPanel Margin="60 1 0 1">
-                    <TextBlock Text="OR" Style="{StaticResource Prompt}" />
-                    <TextBlock Text="requested directory is" />
-                    <ToggleButton Content="Package Directory\test" />
-                    <TextBlock Text="and the file name is like" />
-                    <TextBox Text="*.fuk" />
-                </WrapPanel>
+                                <WrapPanel Margin="0 1">
+                                    <TextBlock Text="FOR" Style="{StaticResource Prompt}" />
+                                    <TextBlock Text="a call from a" VerticalAlignment="Center" />
+                                    <ComboBox SelectedValue="{Binding FixupMode}" SelectedValuePath="Tag">
+                                        <ComboBoxItem Content="32-bit" Tag="{x:Static items:PsfExpertRuleConditionRedirectionMode.X86}" />
+                                        <ComboBoxItem Content="64-bit" Tag="{x:Static items:PsfExpertRuleConditionRedirectionMode.X64}" />
+                                    </ComboBox>
+                                    <TextBlock Text="process" VerticalAlignment="Center" />
+                                    <Button Command="Properties" CommandParameter="{Binding}" Content="{Binding ProcessName}" />
+                                </WrapPanel>
 
-                <Border Margin="30 1 0 1" Height="24">
-                    <TextBlock Text="AND" Style="{StaticResource Prompt}" />
-                </Border>
+                                <ItemsControl ItemsSource="{Binding DirectoryCondition}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type items:PsfExpertRuleConditionViewModel}">
+                                            <StackPanel>
 
-                <WrapPanel Margin="60 0 0 0">
-                    <TextBlock Text="requested file in folder" Margin="0 1" />
-                    <ToggleButton Style="{StaticResource ComboBoxToggleButton}" Content="Package Directory\test" />
-                    <TextBlock Text="is not like" Margin="0 1" />
-                    <TextBox Text="*.fuk me" Margin="4 1 0 1" />
-                </WrapPanel>
+                                                <Border Margin="30 1 0 1" Height="24">
+                                                    <TextBlock Text="IF" Style="{StaticResource Prompt}" />
+                                                </Border>
 
-                <Border Margin="30 1 0 1" Height="24">
-                    <TextBlock Text="THEN" Style="{StaticResource Prompt}" />
-                </Border>
+                                                <ItemsControl ItemsSource="{Binding Positive}" AlternationCount="{Binding Positive.Count}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type items:PsfExpertFilePatternViewModel}">
+                                                            <WrapPanel Margin="60 1 0 1">
+                                                                <TextBlock Tag="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContentPresenter}, Path=(ItemsControl.AlternationIndex)}" 
+                                                                           Text="OR" x:Name="PART_Prompt" >
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Prompt}">
+                                                                            <Style.Triggers>
+                                                                                <Trigger Property="Tag">
+                                                                                    <Trigger.Value>
+                                                                                        <system:Int32>0</system:Int32>
+                                                                                    </Trigger.Value>
+                                                                                    <Trigger.Setters>
+                                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                                    </Trigger.Setters>
+                                                                                </Trigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                                <TextBlock VerticalAlignment="Center" Text="requested directory is" />
+                                                                <Button Command="Properties" CommandParameter="{Binding}" Content="{Binding FullPath}" />
+                                                                <TextBlock VerticalAlignment="Center">
+                                                                <Run Text="and" />
+                                                                <Run Text="{Binding RegexMode.Prompt, Mode=OneWay}" />
+                                                                </TextBlock>
+                                                                <Button Command="Properties" CommandParameter="{Binding}" Content="{Binding RegexMode.DisplayName, Mode=OneWay}" />
+                                                            </WrapPanel>
+                                                            <!--<DataTemplate.Triggers>
+                                                            <DataTrigger Bindi Value="1">
+                                                                <DataTrigger.Setters>
+                                                                    <Setter Property="Visibility" TargetName="PART_Prompt" Value="Collapsed" />
+                                                                </DataTrigger.Setters>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>-->
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <ItemsControl ItemsSource="{Binding Negative}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate DataType="{x:Type items:PsfExpertFilePatternViewModel}">
+                                                            <StackPanel>
+                                                                <Border Margin="30 1 0 1" Height="24">
+                                                                    <TextBlock Text="AND" Style="{StaticResource Prompt}" />
+                                                                </Border>
 
-                <WrapPanel Margin="60 0 0 0">
-                    <TextBlock Text="Redirect (copy-on-write) to" Margin="0 1" />
-                    <TextBox Text="Local Application Data" Margin="4 1" />
-                </WrapPanel>
+                                                                <WrapPanel Margin="60 0 0 0">
+                                                                    <TextBlock VerticalAlignment="Center" Text="requested file in folder" Margin="0 1" />
+                                                                    <Button Command="Properties" CommandParameter="{Binding}" Content="{Binding FullPath}" />
 
+                                                                    <TextBlock VerticalAlignment="Center">
+                                                                        <Run Text="{Binding RegexMode.Prompt, Mode=OneWay}" />
+                                                                    </TextBlock>
+                                                                    <Button Command="Properties" CommandParameter="{Binding}" Content="{Binding RegexMode.DisplayName, Mode=OneWay}" />
 
-                <Border x:Name="HeaderFixups" Visibility="Collapsed">
-                    <StackPanel>
-                        <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
-                            <TextBlock Text="PSF FIXUPS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
-                        </Border>
-                        <Border Height="10">
-                            <TextBlock Text="ttt" />
-                        </Border>
-                    </StackPanel>
-                </Border>
+                                                                </WrapPanel>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
 
+                                                <Border Margin="30 1 0 1" Height="24">
+                                                    <TextBlock Text="THEN" Style="{StaticResource Prompt}" />
+                                                </Border>
 
-            </view:BulletItemControl>
+                                                <WrapPanel Margin="60 0 0 0">
+                                                    <TextBlock VerticalAlignment="Center" Text="Redirect the file (copy-on-write)" Margin="0 1" />
+                                                </WrapPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </view:BulletItemControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </TabItem>
         <TabItem Header="Tracing"></TabItem>
         <TabItem Header="Other" />

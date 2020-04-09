@@ -20,6 +20,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Modules\Common\PackageContent\View\icons8-sugar-cube-64.png" />
+    <None Remove="Modules\PackageList\View\icons8-sugar-cube-48.png" />
     <None Remove="Modules\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Settings\View\Images\sidebar.png" />
     <None Remove="Resources\Images\help.png" />
@@ -46,6 +48,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Modules\Common\PackageContent\View\icons8-sugar-cube-64.png" />
+    <Resource Include="Modules\PackageList\View\icons8-sugar-cube-48.png" />
     <Resource Include="Modules\Settings\View\Images\no-sidebar.png" />
     <Resource Include="Modules\Settings\View\Images\sidebar.png" />
     <Resource Include="Resources\Images\help.png" />

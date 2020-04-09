@@ -20,6 +20,8 @@ using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.View;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.View;
+using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.View;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel;
 using Prism.Ioc;
@@ -43,6 +45,9 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(Constants.PathModificationPackage);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(Constants.PathAppInstaller);
             containerRegistry.RegisterDialog<PackageExpertView, PackageExpertViewModel>(Constants.PathPackageExpert);
+
+
+            containerRegistry.RegisterDialog<FileRuleView, FileRuleViewModel>(Constants.PathPackageExpertFileRule);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using otor.msixhero.ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
+namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items
 {
     public class PsfExpertRuleConditionViewModel : ChangeableContainer
     {

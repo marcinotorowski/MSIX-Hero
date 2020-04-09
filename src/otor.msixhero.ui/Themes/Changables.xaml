@@ -23,7 +23,7 @@
                         Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress, Mode=OneWay}"
                         Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Message}">
                         <DockPanel>
-                            <Border Background="#2B579A" DockPanel.Dock="Top">
+                            <Border Background="#2B579A" DockPanel.Dock="Top" Visibility="{TemplateBinding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <DockPanel Margin="16">
                                     <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{TemplateBinding Icon}" />
                                     <Label 

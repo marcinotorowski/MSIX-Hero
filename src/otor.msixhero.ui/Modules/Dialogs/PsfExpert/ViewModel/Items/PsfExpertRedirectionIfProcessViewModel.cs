@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
+namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items
 {
     public enum PsfExpertRuleConditionRedirectionMode
     {
