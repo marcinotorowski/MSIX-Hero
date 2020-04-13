@@ -15,6 +15,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items"
     xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+    xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
     d:DataContext="{d:DesignInstance viewModel:PsfExpertViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -399,7 +400,11 @@
                 </ItemsControl>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Tracing"></TabItem>
+        <TabItem Header="Tracing">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <view1:PsfContentView />
+            </ScrollViewer>
+        </TabItem>
         <TabItem Header="Other" />
     </TabControl>
 </UserControl>

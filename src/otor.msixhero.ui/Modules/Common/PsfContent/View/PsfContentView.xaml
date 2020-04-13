@@ -1,0 +1,393 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Common.PsfContent.View.PsfContentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             Background="White"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel"
+             xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PsfContentViewModel}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="Border" x:Key="LeftPadding">
+                <Setter Property="Padding" Value="24 6 6 6" />
+            </Style>
+        </StackPanel.Resources>
+
+        <ItemsControl ItemsSource="{Binding RedirectionRules}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="items:PsfContentProcessViewModel">
+                    <StackPanel Margin="0 0 0 12">
+                        <!-- Process header -->
+                        <TextBlock Margin="0 6 0 9">
+                            <Run Text="For" />
+                            <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink FontWeight="SemiBold"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                        </TextBlock>
+
+                        <ItemsControl ItemsSource="{Binding Rules}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="items:PsfContentFolderViewModel">
+                                    <Border Padding="6 6 6 0" BorderThickness="0" BorderBrush="#ddd" Background="#efefef" Margin="0 0 0 6">
+                                        <StackPanel>
+                                            <!-- Folder header -->
+                                            <TextBlock Margin="0 6 0 9">
+                                                <Run Text="In directory" />
+                                                <Hyperlink FontWeight="SemiBold">
+                                                    <Run Text="{Binding FullDir, Mode=OneWay}" />
+                                                </Hyperlink>
+                                            </TextBlock>
+
+                                            <ItemsControl ItemsSource="{Binding Rules}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="items:PsfContentRuleViewModel">
+                                                        <Border x:Name="Border" Background="White" Padding="12 6 6 6" BorderBrush="#ddd" BorderThickness="0" Margin="0 0 0 6">
+                                                            <StackPanel>
+                                                                <TextBlock 
+                                                                    Visibility="{Binding ElementName=PART_ItemsInclude, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                                    Text="Redirect" 
+                                                                    Margin="0 8" />
+                                                                <ItemsControl x:Name="PART_ItemsInclude" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Include}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate DataType="items:PsfContentFileViewModel">
+                                                                            <DockPanel>
+                                                                                <Border Width="20" Height="20" VerticalAlignment="Center">
+                                                                                    <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                                                                                </Border>
+
+                                                                                <TextBlock>
+                                                                                    <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink FontWeight="SemiBold"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                                                                </TextBlock>
+                                                                            </DockPanel>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                                <TextBlock 
+                                                                    Visibility="{Binding ElementName=PART_ItemsExclude, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                                    Text="Do not redirect" 
+                                                                    Margin="0 8" />
+                                                                <ItemsControl 
+                                                                    x:Name="PART_ItemsExclude" 
+                                                                    Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                                    ItemsSource="{Binding Exclude}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate DataType="items:PsfContentFileViewModel">
+                                                                            <DockPanel>
+                                                                                <Border Width="20" Height="20" VerticalAlignment="Center">
+                                                                                    <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                                                                                </Border>
+
+                                                                                <TextBlock>
+                                                                                    <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink FontWeight="SemiBold"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                                                                </TextBlock>
+                                                                            </DockPanel>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+
+                                                                <TextBlock Margin="0 8" x:Name="PART_TextRedirectTo">
+                                                                    <Path Width="32" Height="32" Data="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z" Fill="Black">
+                                                                        <Path.LayoutTransform>
+                                                                            <ScaleTransform ScaleX="0.3" ScaleY="0.3" />
+                                                                        </Path.LayoutTransform>
+                                                                    </Path>
+                                                                    <Run Text="To:" />
+                                                                    <Hyperlink FontWeight="SemiBold">
+                                                                        <Run x:Name="Hyperlink" Text="{Binding TargetRedirection, Mode=OneWay}" />
+                                                                    </Hyperlink>
+                                                                    <Hyperlink FontWeight="SemiBold">
+                                                                        <Run x:Name="ReadOnly" Text="" />
+                                                                    </Hyperlink>
+                                                                </TextBlock>
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <DataTemplate.Resources>
+                                                            <system:Boolean x:Key="True">True</system:Boolean>
+                                                            <system:Boolean x:Key="False">False</system:Boolean>
+                                                        </DataTemplate.Resources>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding TargetRedirection}" Value="{x:Null}">
+                                                                <Setter Property="Text" TargetName="Hyperlink" Value="Local AppData (default)" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsReadOnly}" Value="{StaticResource True}">
+                                                                <Setter Property="Text" TargetName="ReadOnly" Value="(read-only)" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ElementName=PART_ItemsExclude, Path=HasItems}" Value="{StaticResource True}">
+                                                                <Setter Property="Background" TargetName="Border" Value="#EADCDF" />
+                                                                <Setter Property="Visibility" TargetName="PART_TextRedirectTo" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <!--
+
+        <Grid Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <TextBlock Text="{TemplateBinding Content}" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style TargetType="Border" x:Key="BorderNoBackground">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Margin" Value="0 4 0 4" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="UseLayoutRounding" Value="True" />
+                    <Setter Property="Padding" Value="10 5" />
+                </Style>
+                <Style TargetType="Border" x:Key="Border">
+                    <Setter Property="Background" Value="#ddd" />
+                    <Setter Property="BorderBrush" Value="#bbb" />
+                    <Setter Property="Margin" Value="0 14 0 4" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="UseLayoutRounding" Value="True" />
+                    <Setter Property="Padding" Value="10 5" />
+                </Style>
+            </Grid.Resources>
+
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource Border}">
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Run Text="Directory" />
+                    <Hyperlink FontWeight="SemiBold">&lt;Package Directory&gt;test</Hyperlink>
+                </TextBlock>
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="0" BorderThickness="1 1 0 1" Style="{StaticResource BorderNoBackground}">
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Include" />
+            </Border>
+            <StackPanel Grid.Row="3" Grid.Column="0">
+                <DockPanel Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Files with extension"></Run>
+                        <Hyperlink FontWeight="SemiBold">exe</Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <DockPanel Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Files matching pattern"></Run>
+                        <Hyperlink FontWeight="SemiBold">Package Directory\test</Hyperlink>
+                    </TextBlock>
+
+                </DockPanel>
+                <DockPanel Visibility="Collapsed" Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+                    <Button Content="Add new inclusion..." VerticalAlignment="Center" Padding="0 0" />
+                </DockPanel>
+            </StackPanel>
+
+            <Border Grid.Row="2" Grid.Column="1" BorderThickness="0 1 0 1" Style="{StaticResource BorderNoBackground}">
+            </Border>
+            <Border Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1" Style="{StaticResource BorderNoBackground}">
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="Exclude" />
+            </Border>
+
+            <StackPanel Grid.Row="3" Grid.Column="2">
+                <DockPanel Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Files with extension"></Run>
+                        <Hyperlink FontWeight="SemiBold">exe</Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+            </StackPanel>
+
+            <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource BorderNoBackground}">
+                <WrapPanel>
+                    <TextBlock>
+                        <Path Width="32" Height="32" Data="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z" Fill="Black">
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="0.3" ScaleY="0.3" />
+                            </Path.LayoutTransform>
+                           
+                        </Path>
+                        <Run Text="Redirect to" />
+                        <Hyperlink FontWeight="SemiBold">Package Directory\test</Hyperlink>
+                    </TextBlock>
+                </WrapPanel>
+            </Border>
+        </Grid>
+
+        <Grid Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <TextBlock Text="{TemplateBinding Content}" />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style TargetType="Border" x:Key="BorderNoBackground">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Margin" Value="0 4 0 4" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="UseLayoutRounding" Value="True" />
+                    <Setter Property="Padding" Value="10 5" />
+                </Style>
+                <Style TargetType="Border" x:Key="Border">
+                    <Setter Property="Background" Value="#ddd" />
+                    <Setter Property="BorderBrush" Value="#bbb" />
+                    <Setter Property="Margin" Value="0 14 0 4" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="SnapsToDevicePixels" Value="True" />
+                    <Setter Property="UseLayoutRounding" Value="True" />
+                    <Setter Property="Padding" Value="10 5" />
+                </Style>
+            </Grid.Resources>
+
+            <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource Border}">
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Run Text="Directory" />
+                    <Hyperlink FontWeight="SemiBold">&lt;Package Directory&gt;test</Hyperlink>
+                </TextBlock>
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="0" BorderThickness="1 1 0 1" Style="{StaticResource BorderNoBackground}">
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Include" />
+            </Border>
+            <StackPanel Grid.Row="3" Grid.Column="0">
+                <DockPanel Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Files with extension"></Run>
+                        <Hyperlink FontWeight="SemiBold">exe</Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+                <DockPanel Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Files matching pattern"></Run>
+                        <Hyperlink FontWeight="SemiBold">Package Directory\test</Hyperlink>
+                    </TextBlock>
+
+                </DockPanel>
+                <DockPanel Visibility="Collapsed" Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+                    <Button Content="Add new inclusion..." VerticalAlignment="Center" Padding="0 0" />
+                </DockPanel>
+            </StackPanel>
+
+            <Border Grid.Row="2" Grid.Column="1" BorderThickness="0 1 0 1" Style="{StaticResource BorderNoBackground}">
+            </Border>
+            <Border Grid.Row="2" Grid.Column="2" BorderThickness="0 1 1 1" Style="{StaticResource BorderNoBackground}">
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="Exclude" />
+            </Border>
+
+            <StackPanel Grid.Row="3" Grid.Column="2">
+                <DockPanel Margin="20 2 0 2">
+                    <Border Width="20" Height="20" VerticalAlignment="Center">
+                        <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Files with extension"></Run>
+                        <Hyperlink FontWeight="SemiBold">exe</Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+            </StackPanel>
+
+            <Border Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource BorderNoBackground}">
+                <WrapPanel>
+                    <TextBlock>
+                        <Path Width="32" Height="32" Data="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z" Fill="Black">
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="0.3" ScaleY="0.3" />
+                            </Path.LayoutTransform>
+        
+                            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+width="32" height="32"
+viewBox="0 0 32 32"
+style=" fill:#000000;"><path d="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z"></path></svg>
+
+                        </Path>
+                        <Run Text="Redirect to" />
+                        <Hyperlink FontWeight="SemiBold">Package Directory\test</Hyperlink>
+                    </TextBlock>
+                </WrapPanel>
+            </Border>
+        </Grid>
+-->
+    </StackPanel>
+</UserControl>
