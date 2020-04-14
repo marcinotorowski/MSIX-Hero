@@ -17,6 +17,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel"
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:packageHeader="clr-namespace:otor.msixhero.ui.Controls.PackageHeader"
+             xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}"
@@ -263,7 +264,7 @@
                                                         </TextBlock>
                                                     </view:BulletItemControl>
 
-                                                    <ItemsControl x:Name="FileRedirections" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
+                                                    <ItemsControl Visibility="Collapsed" x:Name="FileRedirections" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate DataType="{x:Type descriptor:PsfFolderRedirectionDescriptor}">
                                                                 <view:BulletItemControl>
@@ -460,6 +461,22 @@
                         </zeroOrAny:ZeroOrAny>
                     </ScrollViewer>
 
+                </TabItem>
+                <TabItem Header="PSF" Tag="{Binding SelectedPackageJsonInfo.CurrentValue, TargetNullValue={x:Null}, FallbackValue={x:Null}}">
+                    <TabItem.Style>
+                        <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                            <Style.Triggers>
+                                <Trigger Property="Tag" Value="{x:Null}">
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabItem.Style>
+                    <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageJsonInfo.IsLoading}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <view1:PsfContentView IsEnabled="False" DataContext="{Binding SelectedPackageJsonInfo.CurrentValue}" />
+                        </ScrollViewer>
+                    </progressOverlay:ProgressOverlay>
                 </TabItem>
                 <TabItem Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                     <TabItem.Header>

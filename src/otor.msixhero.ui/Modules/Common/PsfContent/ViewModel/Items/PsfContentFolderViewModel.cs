@@ -32,7 +32,7 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
             this.knownDir = new ChangeableProperty<string>(knownDir);
             this.baseDir = new ChangeableProperty<string>(baseDir);
             this.relationTo = new ChangeableProperty<PsfContentFolderRelationTo>(relation);
-
+            
             this.Rules = new ChangeableCollection<PsfContentRuleViewModel>(rules.OrderBy(r => r.Exclude.Any() ? 1 : 0));
             this.Rules.Commit();
             this.AddChildren(this.Rules, this.knownDir, this.relationTo, this.baseDir);

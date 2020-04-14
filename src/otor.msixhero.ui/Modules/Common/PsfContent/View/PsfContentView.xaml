@@ -8,6 +8,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel"
              xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PsfContentViewModel}">
 
@@ -20,127 +21,204 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <system:Boolean x:Key="True">True</system:Boolean>
+            <system:Boolean x:Key="False">False</system:Boolean>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <StackPanel>
         <StackPanel.Resources>
-            <Style TargetType="Border" x:Key="LeftPadding">
-                <Setter Property="Padding" Value="24 6 6 6" />
+
+            <Style TargetType="Hyperlink" x:Key="Hyperlink">
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="TextDecorations" Value="None" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="True">
+                        <Setter Property="TextDecorations" Value="Underline" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Path" x:Key="Path">
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Width" Value="32" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Fill" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                <Setter Property="LayoutTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Path" x:Key="PathSmall" BasedOn="{StaticResource Path}">
+                <Setter Property="LayoutTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="Path" x:Key="Icon">
+                <Setter Property="Width" Value="32" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Fill" Value="#999" />
             </Style>
         </StackPanel.Resources>
 
         <ItemsControl ItemsSource="{Binding RedirectionRules}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="items:PsfContentProcessViewModel">
-                    <StackPanel Margin="0 0 0 12">
-                        <!-- Process header -->
-                        <TextBlock Margin="0 6 0 9">
-                            <Run Text="For" />
-                            <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink FontWeight="SemiBold"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
-                        </TextBlock>
 
-                        <ItemsControl ItemsSource="{Binding Rules}">
+                    <view:BulletItemControl>
+                        <view:BulletItemControl.Header>
+                            <Viewbox Width="24" Height="24">
+                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
+                            </Viewbox>
+                        </view:BulletItemControl.Header>
+                        <Border Height="32">
+                            <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+                                <Run Text="For" />
+                                <Hyperlink Style="{StaticResource Hyperlink}">
+                                    <Run Text="32-bit" x:Name="PART_Bit" />
+                                </Hyperlink>
+                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                            </TextBlock>
+                        </Border>
+
+                        <!--<StackPanel Margin="0 0 0 12">
+                         Process header 
+                        <StackPanel Orientation="Horizontal">
+                            <Path Style="{StaticResource Path}" Data="{StaticResource VectorConsole}" />
+                            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                                <Run Text="For" />
+                                <Hyperlink Style="{StaticResource Hyperlink}">
+                                    <Run Text="32-bit" x:Name="PART_Bit" />
+                                </Hyperlink>
+                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                            </TextBlock>
+
+                        </StackPanel>-->
+
+                        <ItemsControl Margin="0 6 0 0" ItemsSource="{Binding Rules}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="items:PsfContentFolderViewModel">
-                                    <Border Padding="6 6 6 0" BorderThickness="0" BorderBrush="#ddd" Background="#efefef" Margin="0 0 0 6">
-                                        <StackPanel>
-                                            <!-- Folder header -->
-                                            <TextBlock Margin="0 6 0 9">
+                                    <StackPanel Margin="0 0 0 6">
+                                        <!-- Folder header -->
+                                        <StackPanel Orientation="Horizontal">
+                                            <Path Style="{StaticResource PathSmall}" Data="{StaticResource VectorDirectoryLink}" />
+                                            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
                                                 <Run Text="In directory" />
-                                                <Hyperlink FontWeight="SemiBold">
+                                                <Hyperlink Style="{StaticResource Hyperlink}">
                                                     <Run Text="{Binding FullDir, Mode=OneWay}" />
                                                 </Hyperlink>
                                             </TextBlock>
+                                        </StackPanel>
 
-                                            <ItemsControl ItemsSource="{Binding Rules}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate DataType="items:PsfContentRuleViewModel">
-                                                        <Border x:Name="Border" Background="White" Padding="12 6 6 6" BorderBrush="#ddd" BorderThickness="0" Margin="0 0 0 6">
-                                                            <StackPanel>
-                                                                <TextBlock 
-                                                                    Visibility="{Binding ElementName=PART_ItemsInclude, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                                                    Text="Redirect" 
-                                                                    Margin="0 8" />
-                                                                <ItemsControl x:Name="PART_ItemsInclude" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Include}">
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate DataType="items:PsfContentFileViewModel">
-                                                                            <DockPanel>
-                                                                                <Border Width="20" Height="20" VerticalAlignment="Center">
-                                                                                    <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
-                                                                                </Border>
+                                        <ItemsControl Margin="24 0 0 6" ItemsSource="{Binding Rules}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="2" SizeChanged="FrameworkElement_OnSizeChanged" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate DataType="items:PsfContentRuleViewModel">
+                                                    <Border x:Name="Border" Padding="12 6" BorderBrush="#D5D5D5" BorderThickness="0 0 0 1" Margin="0 0 6 6">
+                                                        <StackPanel>
+                                                            <TextBlock 
+                                                                Visibility="{Binding ElementName=PART_ItemsInclude, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                                Text="Redirect" 
+                                                                Margin="0 6" />
+                                                            <ItemsControl
+                                                                Margin="0 0 0 6"
+                                                                x:Name="PART_ItemsInclude" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Include}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate DataType="items:PsfContentFileViewModel">
+                                                                        <DockPanel>
+                                                                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                                                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                                                                            </Border>
 
-                                                                                <TextBlock>
-                                                                                    <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink FontWeight="SemiBold"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
-                                                                                </TextBlock>
-                                                                            </DockPanel>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
-                                                                <TextBlock 
-                                                                    Visibility="{Binding ElementName=PART_ItemsExclude, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                                                    Text="Do not redirect" 
-                                                                    Margin="0 8" />
-                                                                <ItemsControl 
-                                                                    x:Name="PART_ItemsExclude" 
-                                                                    Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                                                    ItemsSource="{Binding Exclude}">
-                                                                    <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate DataType="items:PsfContentFileViewModel">
-                                                                            <DockPanel>
-                                                                                <Border Width="20" Height="20" VerticalAlignment="Center">
-                                                                                    <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
-                                                                                </Border>
+                                                                            <TextBlock TextWrapping="Wrap">
+                                                                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                                                            </TextBlock>
+                                                                        </DockPanel>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                            <TextBlock 
+                                                                Visibility="{Binding ElementName=PART_ItemsExclude, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                                Text="Except of:" 
+                                                                Margin="0 6" />
+                                                            <ItemsControl 
+                                                                Margin="0 0 0 6"
+                                                                x:Name="PART_ItemsExclude" 
+                                                                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                                ItemsSource="{Binding Exclude}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate DataType="items:PsfContentFileViewModel">
+                                                                        <DockPanel>
+                                                                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                                                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                                                                            </Border>
 
-                                                                                <TextBlock>
-                                                                                    <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink FontWeight="SemiBold"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
-                                                                                </TextBlock>
-                                                                            </DockPanel>
-                                                                        </DataTemplate>
-                                                                    </ItemsControl.ItemTemplate>
-                                                                </ItemsControl>
+                                                                            <TextBlock TextWrapping="Wrap">
+                                                                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                                                            </TextBlock>
+                                                                        </DockPanel>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
 
-                                                                <TextBlock Margin="0 8" x:Name="PART_TextRedirectTo">
-                                                                    <Path Width="32" Height="32" Data="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z" Fill="Black">
-                                                                        <Path.LayoutTransform>
-                                                                            <ScaleTransform ScaleX="0.3" ScaleY="0.3" />
-                                                                        </Path.LayoutTransform>
-                                                                    </Path>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Path VerticalAlignment="Center" Width="32" Height="32" Data="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z" Fill="Black">
+                                                                    <Path.LayoutTransform>
+                                                                        <ScaleTransform ScaleX="0.3" ScaleY="0.3" />
+                                                                    </Path.LayoutTransform>
+                                                                </Path>
+                                                                <TextBlock Margin="0 6" x:Name="PART_TextRedirectTo" VerticalAlignment="Center">
                                                                     <Run Text="To:" />
-                                                                    <Hyperlink FontWeight="SemiBold">
+                                                                    <Hyperlink Style="{StaticResource Hyperlink}">
                                                                         <Run x:Name="Hyperlink" Text="{Binding TargetRedirection, Mode=OneWay}" />
-                                                                    </Hyperlink>
-                                                                    <Hyperlink FontWeight="SemiBold">
-                                                                        <Run x:Name="ReadOnly" Text="" />
+                                                                        <Run x:Name="ReadOnly" />
                                                                     </Hyperlink>
                                                                 </TextBlock>
                                                             </StackPanel>
-                                                        </Border>
-                                                        <DataTemplate.Resources>
-                                                            <system:Boolean x:Key="True">True</system:Boolean>
-                                                            <system:Boolean x:Key="False">False</system:Boolean>
-                                                        </DataTemplate.Resources>
-                                                        <DataTemplate.Triggers>
-                                                            <DataTrigger Binding="{Binding TargetRedirection}" Value="{x:Null}">
-                                                                <Setter Property="Text" TargetName="Hyperlink" Value="Local AppData (default)" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding IsReadOnly}" Value="{StaticResource True}">
-                                                                <Setter Property="Text" TargetName="ReadOnly" Value="(read-only)" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding ElementName=PART_ItemsExclude, Path=HasItems}" Value="{StaticResource True}">
-                                                                <Setter Property="Background" TargetName="Border" Value="#EADCDF" />
-                                                                <Setter Property="Visibility" TargetName="PART_TextRedirectTo" Value="Collapsed" />
-                                                            </DataTrigger>
-                                                        </DataTemplate.Triggers>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </Border>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding TargetRedirection}" Value="{x:Null}">
+                                                            <Setter Property="Text" TargetName="Hyperlink" Value="Local AppData (default)" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsReadOnly}" Value="{StaticResource True}">
+                                                            <Setter Property="Text" TargetName="ReadOnly" Value="(read-only)" />
+                                                        </DataTrigger>
+                                                        <!--<DataTrigger Binding="{Binding ElementName=PART_ItemsExclude, Path=HasItems}" Value="{StaticResource True}">
+                                                            <Setter Property="Background" TargetName="Border" Value="#EADCDF" />
+                                                            <Setter Property="Visibility" TargetName="PART_TextRedirectTo" Value="Collapsed" />
+                                                        </DataTrigger>-->
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                    </StackPanel>
+
+                    </view:BulletItemControl>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{StaticResource True}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

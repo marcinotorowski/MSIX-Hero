@@ -119,6 +119,9 @@
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" TargetName="ContentSite" />
+                        </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>

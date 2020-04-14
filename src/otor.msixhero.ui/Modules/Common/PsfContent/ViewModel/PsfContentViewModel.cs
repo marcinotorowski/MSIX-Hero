@@ -17,7 +17,7 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
             this.AddChild(this.RedirectionRules);
         }
 
-        public  ChangeableCollection<PsfContentProcessViewModel> RedirectionRules { get; }
+        public ChangeableCollection<PsfContentProcessViewModel> RedirectionRules { get; }
 
         private void Setup(PsfConfig psfConfig)
         {

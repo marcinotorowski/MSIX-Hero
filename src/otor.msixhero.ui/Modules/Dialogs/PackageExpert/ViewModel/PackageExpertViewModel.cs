@@ -23,6 +23,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel
             var parsedParams = new PackageExpertSelection(parameters);
 #pragma warning disable 4014
             this.Content.SelectedPackageManifestInfo.Load(this.Content.LoadPackage(parsedParams.Source, CancellationToken.None));
+            this.Content.SelectedPackageJsonInfo.Load(this.Content.LoadPackageJson(parsedParams.Source, CancellationToken.None));
 #pragma warning restore 4014
         }
 

@@ -109,17 +109,46 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
 
         private static IEnumerable<PsfContentRuleViewModel> GetRules(IEnumerable<PsfRedirectedPathEntryConfig> rawRules)
         {
+            var list = new List<PsfContentRuleViewModel>();
+
+            var exclusions = new List<string>();
+
             foreach (var group in rawRules.GroupBy(r => new { r.RedirectTargetBase, r.IsReadOnly, r.IsExclusion }))
             {
                 var files = new List<PsfContentFileViewModel>();
                 
                 foreach (var item in group.SelectMany(g => g.Patterns))
                 {
-                    files.Add(new PsfContentFileViewModel(item, group.Key.IsExclusion));
+                    if (!group.Key.IsExclusion)
+                    {
+                        files.Add(new PsfContentFileViewModel(item, false));
+                    }
+                    else
+                    {
+                        exclusions.Add(item);
+                    }
                 }
 
-                yield return new PsfContentRuleViewModel(files.Where(f => !f.IsExclusion), files.Where(f => f.IsExclusion), group.Key.RedirectTargetBase, group.Key.IsReadOnly);
+                if (files.Any())
+                {
+                    list.Add(new PsfContentRuleViewModel(files.Where(f => !f.IsExclusion), files.Where(f => f.IsExclusion), group.Key.RedirectTargetBase, group.Key.IsReadOnly));
+                }
             }
+
+            if (exclusions.Any())
+            {
+                foreach (var item in list)
+                {
+                    foreach (var exclusion in exclusions)
+                    {
+                        item.Exclude.Add(new PsfContentFileViewModel(exclusion, true));
+                    }
+
+                    item.Commit();
+                }
+            }
+            
+            return list;
         }
     }
 }

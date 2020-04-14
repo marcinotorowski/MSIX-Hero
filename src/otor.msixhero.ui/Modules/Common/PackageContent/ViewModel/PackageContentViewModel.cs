@@ -8,6 +8,7 @@ using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.State;
@@ -15,6 +16,7 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
@@ -40,6 +42,8 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 
         public AsyncProperty<PackageContentDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<PackageContentDetailsViewModel>();
 
+        public AsyncProperty<PsfContentViewModel> SelectedPackageJsonInfo { get; } = new AsyncProperty<PsfContentViewModel>();
+        
         public ICommand FindUsers
         {
             get
@@ -89,6 +93,21 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
+        public async Task<PsfContentViewModel> LoadPackageJson(IAppxFileReader source, CancellationToken cancellationToken = default)
+        {
+            if (!source.FileExists("config.json"))
+            {
+                return null;
+            }
+
+            using var stringReader = new StreamReader(source.GetFile("config.json"));
+            var all = await stringReader.ReadToEndAsync().ConfigureAwait(false);
+            var psfSerializer = new PsfConfigSerializer();
+
+            var configJson = psfSerializer.Deserialize(all);
+            return new PsfContentViewModel(configJson);
+        }
+
         async void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
             var navigation = new PackageListNavigation(navigationContext);
@@ -100,6 +119,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             var manifest = navigation.SelectedManifests.First();
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
             await this.SelectedPackageManifestInfo.Load(this.LoadPackage(fileReader, CancellationToken.None)).ConfigureAwait(false);
+            await this.SelectedPackageJsonInfo.Load(this.LoadPackageJson(fileReader, CancellationToken.None)).ConfigureAwait(false);
         }
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
