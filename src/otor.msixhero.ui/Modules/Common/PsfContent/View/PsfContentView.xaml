@@ -9,6 +9,9 @@
              xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View"
+             xmlns:redirection="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection"
+             xmlns:trace="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace"
+             xmlns:converters="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PsfContentViewModel}">
 
@@ -73,10 +76,15 @@
             </Style>
         </StackPanel.Resources>
 
-        <ItemsControl ItemsSource="{Binding RedirectionRules}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="items:PsfContentProcessViewModel">
+        <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
+            <TextBlock Text="TRACING" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+        </Border>
+        <view:BulletItemControl Height="10" />
 
+
+        <ItemsControl ItemsSource="{Binding TraceRules}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="trace:PsfContentProcessTraceViewModel">
                     <view:BulletItemControl>
                         <view:BulletItemControl.Header>
                             <Viewbox Width="24" Height="24">
@@ -93,23 +101,109 @@
                             </TextBlock>
                         </Border>
 
-                        <!--<StackPanel Margin="0 0 0 12">
-                         Process header 
                         <StackPanel Orientation="Horizontal">
-                            <Path Style="{StaticResource Path}" Data="{StaticResource VectorConsole}" />
+                            <Path Style="{StaticResource PathSmall}" Data="{StaticResource VectorDebugging}" />
                             <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                                <Run Text="Enable trace method" />
+                                <Hyperlink Style="{StaticResource Hyperlink}">
+                                    <Run Text="{Binding TraceMethod, Mode=OneWay}" />
+                                </Hyperlink>
+                                <Run Text="breaking on" />
+                                <Hyperlink Style="{StaticResource Hyperlink}">
+                                    <Run Text="{Binding BreakOn, Mode=OneWay, Converter={converters:TraceLevelConverter}}" />
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <TextBlock Text="Trace levels:" Margin="24 6 0 0" />
+
+                        <DockPanel Margin="24 6 0 0">
+                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="Default: " /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding TraceLevel.DefaultLevel, Mode=OneWay, Converter={converters:TraceLevelConverter}}" /></Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                        <DockPanel Margin="24 6 0 0">
+                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="File system: " /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding TraceLevel.FilesystemLevel, Mode=OneWay, Converter={converters:TraceLevelConverter}}" /></Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                        <DockPanel Margin="24 6 0 0">
+                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="Registry: " /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding TraceLevel.RegistryLevel, Mode=OneWay, Converter={converters:TraceLevelConverter}}" /></Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                        <DockPanel Margin="24 6 0 0">
+                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="Process and thread: " /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding TraceLevel.ProcessAndThreadLevel, Mode=OneWay, Converter={converters:TraceLevelConverter}}" /></Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                        <DockPanel Margin="24 6 0 0">
+                            <Border Width="20" Height="20" VerticalAlignment="Center">
+                                <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
+                            </Border>
+
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="DLL: " /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding TraceLevel.DynamicLinkLibraryLevel, Mode=OneWay, Converter={converters:TraceLevelConverter}}" /></Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+
+                    </view:BulletItemControl>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{StaticResource True}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
+            <TextBlock Text="REDIRECTIONS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+        </Border>
+        <view:BulletItemControl Height="10" />
+
+        <ItemsControl ItemsSource="{Binding RedirectionRules}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="redirection:PsfContentProcessRedirectionViewModel">
+                    <view:BulletItemControl>
+                        <view:BulletItemControl.Header>
+                            <Viewbox Width="24" Height="24">
+                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
+                            </Viewbox>
+                        </view:BulletItemControl.Header>
+                        <Border Height="32">
+                            <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                 <Run Text="For" />
                                 <Hyperlink Style="{StaticResource Hyperlink}">
                                     <Run Text="32-bit" x:Name="PART_Bit" />
                                 </Hyperlink>
                                 <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
                             </TextBlock>
-
-                        </StackPanel>-->
+                        </Border>
 
                         <ItemsControl Margin="0 6 0 0" ItemsSource="{Binding Rules}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="items:PsfContentFolderViewModel">
+                                <DataTemplate DataType="redirection:PsfContentFolderViewModel">
                                     <StackPanel Margin="0 0 0 6">
                                         <!-- Folder header -->
                                         <StackPanel Orientation="Horizontal">
@@ -129,7 +223,7 @@
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate DataType="items:PsfContentRuleViewModel">
+                                                <DataTemplate DataType="redirection:PsfContentRuleViewModel">
                                                     <Border x:Name="Border" Padding="12 6" BorderBrush="#D5D5D5" BorderThickness="0 0 0 1" Margin="0 0 6 6">
                                                         <StackPanel>
                                                             <TextBlock 
@@ -140,7 +234,7 @@
                                                                 Margin="0 0 0 6"
                                                                 x:Name="PART_ItemsInclude" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding Include}">
                                                                 <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate DataType="items:PsfContentFileViewModel">
+                                                                    <DataTemplate DataType="redirection:PsfContentFileViewModel">
                                                                         <DockPanel>
                                                                             <Border Width="20" Height="20" VerticalAlignment="Center">
                                                                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
@@ -163,7 +257,7 @@
                                                                 Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                                                 ItemsSource="{Binding Exclude}">
                                                                 <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate DataType="items:PsfContentFileViewModel">
+                                                                    <DataTemplate DataType="redirection:PsfContentFileViewModel">
                                                                         <DockPanel>
                                                                             <Border Width="20" Height="20" VerticalAlignment="Center">
                                                                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />

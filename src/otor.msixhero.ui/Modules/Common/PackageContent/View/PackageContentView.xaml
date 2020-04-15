@@ -15,7 +15,6 @@
              xmlns:psf="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf"
              xmlns:elements1="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel"
-             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:packageHeader="clr-namespace:otor.msixhero.ui.Controls.PackageHeader"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
@@ -241,97 +240,6 @@
                                                         <TextBlock x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Visible" TextWrapping="Wrap" />
                                                     </view:BulletItemControl>
 
-                                                    <Border x:Name="HeaderFixups" Visibility="Collapsed">
-                                                        <StackPanel>
-                                                            <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
-                                                                <TextBlock Text="PSF FIXUPS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
-                                                            </Border>
-                                                            <view:BulletItemControl Height="10" />
-                                                        </StackPanel>
-                                                    </Border>
-
-                                                    <view:BulletItemControl x:Name="Tracing">
-                                                        <view:BulletItemControl.Header>
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path Style="{StaticResource Icon}" Data="M 24 0 L 21.714844 4 L 6 4 L 6 9 L 5 9 L 5 11 L 8 11 L 8 10 L 8 9 L 8 6 L 20.572266 6 L 16 14 L 24 14 L 24 16 C 19.6 16 16 19.6 16 24 C 16 24.691044 16.098874 25.35927 16.265625 26 L 8 26 L 8 22 L 6 22 L 6 28 L 17.087891 28 C 18.477015 30.384094 21.05638 32 24 32 C 28.4 32 32 28.4 32 24 C 32 20.291044 29.438915 17.160607 26 16.265625 L 26 14 L 32 14 L 24 0 z M 23 5 L 25 5 L 25.03125 9 L 23 9 L 23 5 z M 23 10 L 25 10 L 25 12 L 23 12 L 23 10 z M 6 12 L 6 14 L 5 14 L 5 16 L 8 16 L 8 14 L 8 12 L 6 12 z M 6 17 L 6 19 L 5 19 L 5 21 L 8 21 L 8 19 L 8 17 L 6 17 z M 24 18 C 27.3 18 30 20.7 30 24 C 30 27.3 27.3 30 24 30 C 20.7 30 18 27.3 18 24 C 18 20.7 20.7 18 24 18 z M 21.699219 20.300781 L 20.300781 21.699219 L 22.599609 24 L 20.300781 26.300781 L 21.699219 27.699219 L 24 25.400391 L 26.300781 27.699219 L 27.699219 26.300781 L 25.400391 24 L 27.699219 21.699219 L 26.300781 20.300781 L 24 22.599609 L 21.699219 20.300781 z" />
-                                                            </Viewbox>
-                                                        </view:BulletItemControl.Header>
-
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Enable tracing (fix-up)" />
-                                                        <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
-                                                                        <Run Text="Break on:" />
-                                                                        <Run Text="{Binding Psf.Tracing.BreaksOn, Mode=OneWay}" />
-                                                        </TextBlock>
-                                                    </view:BulletItemControl>
-
-                                                    <ItemsControl Visibility="Collapsed" x:Name="FileRedirections" ItemsSource="{Binding Psf.FileRedirections, Mode=OneWay}">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate DataType="{x:Type descriptor:PsfFolderRedirectionDescriptor}">
-                                                                <view:BulletItemControl>
-                                                                    <view:BulletItemControl.Header>
-                                                                        <Viewbox Width="24" Height="24">
-                                                                            <Path Style="{StaticResource Icon}" Data="M 6 3 L 6 19.738281 L 6.2265625 19.990234 C 6.2425625 20.008234 6.906 20.724375 8 21.609375 L 8 5 L 18 5 L 18 11 L 24 11 L 24 18 L 26 18 L 26 9.5859375 L 19.414062 3 L 6 3 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 23 20 L 23 22 L 25.6875 22 C 24.572279 23.304175 21.006174 27 16 27 C 9.9765914 27 4.7441406 21.332031 4.7441406 21.332031 L 3.2558594 22.667969 C 3.2558594 22.667969 8.7694086 29 16 29 C 21.451867 29 25.389563 25.361343 27 23.568359 L 27 26 L 29 26 L 29 20 L 23 20 z" />
-                                                                        </Viewbox>
-                                                                    </view:BulletItemControl.Header>
-
-                                                                    <TextBlock Style="{StaticResource DataHeader}" Text="Redirect files from folder (fix-up)" />
-                                                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Text="{Binding Directory}" />
-
-                                                                    <Border BorderBrush="#ccc" Margin="32 0 0 16">
-                                                                        <StackPanel>
-                                                                            <TextBlock Margin="6 0 0 0" x:Name="Inc0" Opacity="0.7" Text="...matching the following conditions:" />
-                                                                            <ItemsControl Margin="16 0 0 6" x:Name="Inc1" ItemsSource="{Binding Inclusions}">
-                                                                                <ItemsControl.ItemTemplate>
-                                                                                    <DataTemplate DataType="{x:Type descriptor:PsfFileRedirectionDescriptor}">
-                                                                                        <DockPanel VerticalAlignment="Center">
-                                                                                            <TextBlock x:Name="txt" ToolTip="{Binding RegularExpression}" Text="{Binding DisplayName, StringFormat='{}&#x2022; {0}'}" VerticalAlignment="Center" />
-                                                                                        </DockPanel>
-                                                                                        <DataTemplate.Triggers>
-                                                                                            <DataTrigger Binding="{Binding DisplayName}" Value="{x:Null}">
-                                                                                                <Setter TargetName="txt" Property="Text" Value="{Binding RegularExpression, StringFormat='{}&#x2022; {0}'}" />
-                                                                                                <Setter TargetName="txt" Property="ToolTip" Value="{x:Null}" />
-                                                                                            </DataTrigger>
-                                                                                        </DataTemplate.Triggers>
-                                                                                    </DataTemplate>
-                                                                                </ItemsControl.ItemTemplate>
-                                                                            </ItemsControl>
-
-                                                                            <TextBlock Margin="6 0 0 0" x:Name="Exc0" Opacity="0.7" Text="...but excluding:" />
-                                                                            <ItemsControl Margin="16 0 0 6" x:Name="Exc1" ItemsSource="{Binding Exclusions}">
-                                                                                <ItemsControl.ItemTemplate>
-                                                                                    <DataTemplate DataType="{x:Type descriptor:PsfFileRedirectionDescriptor}">
-                                                                                        <TextBlock x:Name="txt" ToolTip="{Binding RegularExpression}" Text="{Binding DisplayName, StringFormat='{}&#x2022; {0}'}" />
-                                                                                        <DataTemplate.Triggers>
-                                                                                            <DataTrigger Binding="{Binding DisplayName}" Value="{x:Null}">
-                                                                                                <Setter TargetName="txt" Property="Text" Value="{Binding RegularExpression, StringFormat='{}&#x2022; {0}'}" />
-                                                                                                <Setter TargetName="txt" Property="ToolTip" Value="{x:Null}" />
-                                                                                            </DataTrigger>
-                                                                                        </DataTemplate.Triggers>
-                                                                                    </DataTemplate>
-                                                                                </ItemsControl.ItemTemplate>
-                                                                            </ItemsControl>
-                                                                        </StackPanel>
-                                                                    </Border>
-
-                                                                </view:BulletItemControl>
-
-                                                                <DataTemplate.Resources>
-                                                                    <system:Int32 x:Key="Int0">0</system:Int32>
-                                                                </DataTemplate.Resources>
-                                                                <DataTemplate.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Inclusions.Count}" Value="{StaticResource Int0}">
-                                                                        <Setter Property="Visibility" TargetName="Inc0" Value="Collapsed" />
-                                                                        <Setter Property="Visibility" TargetName="Inc1" Value="Collapsed" />
-                                                                    </DataTrigger>
-                                                                    <DataTrigger Binding="{Binding Path=Exclusions.Count}" Value="{StaticResource Int0}">
-                                                                        <Setter Property="Visibility" TargetName="Exc0" Value="Collapsed" />
-                                                                        <Setter Property="Visibility" TargetName="Exc1" Value="Collapsed" />
-                                                                    </DataTrigger>
-                                                                </DataTemplate.Triggers>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
-
                                                     <Border x:Name="HeaderScripts" Visibility="Collapsed">
                                                         <StackPanel>
                                                             <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
@@ -390,14 +298,10 @@
                                                     <DataTrigger Binding="{Binding HasPsf}" Value="{StaticResource False}">
                                                         <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
                                                         <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
-                                                        <Setter TargetName="Tracing" Property="Visibility" Value="Collapsed" />
-                                                        <Setter TargetName="FileRedirections" Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Psf}" Value="{x:Null}">
                                                         <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
                                                         <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
-                                                        <Setter TargetName="Tracing" Property="Visibility" Value="Collapsed" />
-                                                        <Setter TargetName="FileRedirections" Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Psf.HasWorkingDirectory}" Value="{StaticResource False}">
                                                         <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
@@ -405,36 +309,12 @@
                                                     <DataTrigger Binding="{Binding Psf.HasArguments}" Value="{StaticResource False}">
                                                         <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Psf.HasTracing}" Value="{StaticResource False}">
-                                                        <Setter TargetName="Tracing" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Psf.HasFileRedirections}" Value="{StaticResource False}">
-                                                        <Setter TargetName="FileRedirections" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
                                                     <DataTrigger Binding="{Binding HasEntryPoint}" Value="{StaticResource False}">
                                                         <Setter TargetName="EntryPoint" Property="Visibility" Value="Collapsed" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
                                                         <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
                                                     </DataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding HasPsf}" Value="{StaticResource True}" />
-                                                            <Condition Binding="{Binding Psf.HasFileRedirections}" Value="{StaticResource True}" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter TargetName="HeaderFixups" Property="Visibility" Value="Visible" />
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding HasPsf}" Value="{StaticResource True}" />
-                                                            <Condition Binding="{Binding Psf.HasTracing}" Value="{StaticResource True}" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter TargetName="HeaderFixups" Property="Visibility" Value="Visible" />
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding HasPsf}" Value="{StaticResource True}" />

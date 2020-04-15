@@ -1,26 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Common.PsfContent.View;
 
 namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
 {
-    public class PsfContentProcessViewModel : PsfContentRegexpViewModel
+    public abstract class PsfContentProcessViewModel : PsfContentRegexpViewModel
     {
         private readonly ChangeableProperty<bool> is64Bit;
 
-        public PsfContentProcessViewModel(string processRegularExpression, string fixupName, PsfRedirectedPathConfig redirectionPsfFixup) : base(processRegularExpression)
+        protected PsfContentProcessViewModel(string processRegularExpression, string fixupName) : base(processRegularExpression)
         {
             this.is64Bit = new ChangeableProperty<bool>(fixupName.IndexOf("64", StringComparison.Ordinal) != -1);
-            this.Rules = new ChangeableCollection<PsfContentFolderViewModel>(this.SetRules(redirectionPsfFixup));
-            this.Rules.Commit();
-
-            this.AddChildren(this.is64Bit, this.Rules);
+            this.AddChildren(this.is64Bit);
         }
-
-        public ChangeableCollection<PsfContentFolderViewModel> Rules { get; }
 
         public bool Is64Bit
         {
@@ -69,86 +62,6 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
                     this.TextAfter = null;
                     break;
             }
-        }
-
-        private IEnumerable<PsfContentFolderViewModel> SetRules(PsfRedirectedPathConfig redirectionPsfFixup)
-        {
-            if (redirectionPsfFixup == null)
-            {
-                yield break;
-            }
-
-            if (redirectionPsfFixup.KnownFolders != null)
-            {
-                foreach (var knownGroup in redirectionPsfFixup.KnownFolders.GroupBy(kf => kf.Id))
-                {
-                    foreach (var relativeGroup in knownGroup.SelectMany(k => k.RelativePaths).GroupBy(pdr => pdr.Base))
-                    {
-                        yield return new PsfContentFolderViewModel(knownGroup.Key, relativeGroup.Key, GetRules(relativeGroup));
-                    }
-                }
-            }
-
-
-            if (redirectionPsfFixup.PackageDriveRelative != null)
-            {
-                foreach (var relativeGroup in redirectionPsfFixup.PackageDriveRelative.GroupBy(pdr => pdr.Base))
-                {
-                    yield return new PsfContentFolderViewModel(PsfContentFolderRelationTo.Drive, relativeGroup.Key, GetRules(relativeGroup));
-                }
-            }
-
-            if (redirectionPsfFixup.PackageRelative != null)
-            {
-                foreach (var relativeGroup in redirectionPsfFixup.PackageRelative.GroupBy(pr => pr.Base))
-                {
-                    yield return new PsfContentFolderViewModel(PsfContentFolderRelationTo.PackageRoot, relativeGroup.Key, GetRules(relativeGroup));
-                }
-            }
-        }
-
-        private static IEnumerable<PsfContentRuleViewModel> GetRules(IEnumerable<PsfRedirectedPathEntryConfig> rawRules)
-        {
-            var list = new List<PsfContentRuleViewModel>();
-
-            var exclusions = new List<string>();
-
-            foreach (var group in rawRules.GroupBy(r => new { r.RedirectTargetBase, r.IsReadOnly, r.IsExclusion }))
-            {
-                var files = new List<PsfContentFileViewModel>();
-                
-                foreach (var item in group.SelectMany(g => g.Patterns))
-                {
-                    if (!group.Key.IsExclusion)
-                    {
-                        files.Add(new PsfContentFileViewModel(item, false));
-                    }
-                    else
-                    {
-                        exclusions.Add(item);
-                    }
-                }
-
-                if (files.Any())
-                {
-                    list.Add(new PsfContentRuleViewModel(files.Where(f => !f.IsExclusion), files.Where(f => f.IsExclusion), group.Key.RedirectTargetBase, group.Key.IsReadOnly));
-                }
-            }
-
-            if (exclusions.Any())
-            {
-                foreach (var item in list)
-                {
-                    foreach (var exclusion in exclusions)
-                    {
-                        item.Exclude.Add(new PsfContentFileViewModel(exclusion, true));
-                    }
-
-                    item.Commit();
-                }
-            }
-            
-            return list;
         }
     }
 }

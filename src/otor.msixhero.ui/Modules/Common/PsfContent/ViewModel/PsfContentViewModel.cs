@@ -2,6 +2,8 @@
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace;
 
 namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
 {
@@ -9,15 +11,19 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
     {
         public PsfContentViewModel(PsfConfig psfConfig)
         {
-            this.RedirectionRules = new ChangeableCollection<PsfContentProcessViewModel>();
+            this.RedirectionRules = new ChangeableCollection<PsfContentProcessRedirectionViewModel>();
+            this.TraceRules = new ChangeableCollection<PsfContentProcessTraceViewModel>();
 
             this.Setup(psfConfig);
 
             this.RedirectionRules.Commit();
+            this.TraceRules.Commit();
             this.AddChild(this.RedirectionRules);
         }
 
-        public ChangeableCollection<PsfContentProcessViewModel> RedirectionRules { get; }
+        public ChangeableCollection<PsfContentProcessRedirectionViewModel> RedirectionRules { get; }
+
+        public ChangeableCollection<PsfContentProcessTraceViewModel> TraceRules { get; }
 
         private void Setup(PsfConfig psfConfig)
         {
@@ -28,16 +34,18 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
 
             foreach (var process in psfConfig.Processes)
             {
-                foreach (var item in process.Fixups.Where(f => f.Config != null && f.Config is PsfRedirectionFixupConfig))
+                foreach (var item in process.Fixups.Where(f => f.Config != null))
                 {
-                    var config = (PsfRedirectionFixupConfig) item.Config;
-                    if (config == null)
+                    if (item.Config is PsfRedirectionFixupConfig redirectionConfig)
                     {
-                        continue;
+                        var psfContentProcessViewModel = new PsfContentProcessRedirectionViewModel(process.Executable, item.Dll, redirectionConfig.RedirectedPaths);
+                        this.RedirectionRules.Add(psfContentProcessViewModel);
                     }
-
-                    var psfContentProcessViewModel = new PsfContentProcessViewModel(process.Executable, item.Dll, config.RedirectedPaths);
-                    this.RedirectionRules.Add(psfContentProcessViewModel);
+                    else if (item.Config is PsfTraceFixupConfig traceConfig)
+                    {
+                        var psfContentProcessViewModel = new PsfContentProcessTraceViewModel(process.Executable, item.Dll, traceConfig);
+                        this.TraceRules.Add(psfContentProcessViewModel);
+                    }
                 }
             }
         }

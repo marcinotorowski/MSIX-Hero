@@ -2,7 +2,7 @@
 using System.Linq;
 using otor.msixhero.ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
+namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection
 {
     public enum PsfContentFolderRelationTo
     {
@@ -11,7 +11,7 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
         KnownFolder
     }
 
-    public class PsfContentFolderViewModel : ChangeableContainer
+    public class PsfContentFolderRedirectionViewModel : ChangeableContainer
     {
         private readonly ChangeableProperty<string> knownDir;
 
@@ -19,21 +19,21 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
         
         private readonly ChangeableProperty<PsfContentFolderRelationTo> relationTo;
 
-        public PsfContentFolderViewModel(PsfContentFolderRelationTo relation, string baseDir, IEnumerable<PsfContentRuleViewModel> rules) : this(relation, null, baseDir, rules)
+        public PsfContentFolderRedirectionViewModel(PsfContentFolderRelationTo relation, string baseDir, IEnumerable<PsfContentRuleRedirectionViewModel> rules) : this(relation, null, baseDir, rules)
         {
         }
 
-        public PsfContentFolderViewModel(string knownDir, string baseDir, IEnumerable<PsfContentRuleViewModel> rules) : this(PsfContentFolderRelationTo.KnownFolder, knownDir, baseDir, rules)
+        public PsfContentFolderRedirectionViewModel(string knownDir, string baseDir, IEnumerable<PsfContentRuleRedirectionViewModel> rules) : this(PsfContentFolderRelationTo.KnownFolder, knownDir, baseDir, rules)
         {
         }
 
-        private PsfContentFolderViewModel(PsfContentFolderRelationTo relation, string knownDir, string baseDir, IEnumerable<PsfContentRuleViewModel> rules)
+        private PsfContentFolderRedirectionViewModel(PsfContentFolderRelationTo relation, string knownDir, string baseDir, IEnumerable<PsfContentRuleRedirectionViewModel> rules)
         {
             this.knownDir = new ChangeableProperty<string>(knownDir);
             this.baseDir = new ChangeableProperty<string>(baseDir);
             this.relationTo = new ChangeableProperty<PsfContentFolderRelationTo>(relation);
             
-            this.Rules = new ChangeableCollection<PsfContentRuleViewModel>(rules.OrderBy(r => r.Exclude.Any() ? 1 : 0));
+            this.Rules = new ChangeableCollection<PsfContentRuleRedirectionViewModel>(rules.OrderBy(r => r.Exclude.Any() ? 1 : 0));
             this.Rules.Commit();
             this.AddChildren(this.Rules, this.knownDir, this.relationTo, this.baseDir);
 
@@ -114,7 +114,7 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
             }
         }
 
-        public ChangeableCollection<PsfContentRuleViewModel> Rules { get; }
+        public ChangeableCollection<PsfContentRuleRedirectionViewModel> Rules { get; }
 
         private void DirectoryOnValueChanged(object sender, ValueChangedEventArgs e)
         {

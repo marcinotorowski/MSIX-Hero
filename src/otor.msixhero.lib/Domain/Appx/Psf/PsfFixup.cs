@@ -42,6 +42,12 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
             {
                 this.Config = JsonConvert.DeserializeObject<PsfTraceFixupConfig>(this.rawValues["config"].ToString(Formatting.None));
             }
+            else
+            {
+                this.Config = new CustomPsfFixupConfig(this.rawValues["config"].ToString(Formatting.Indented));
+            }
+
+            this.rawValues.Remove("config");
         }
 
         public override string ToString()
