@@ -236,6 +236,56 @@ namespace otor.msixhero.ui.Domain
             this.AddChildren(item);
         }
 
+        public void RemoveChild(IChangeable child)
+        {
+            this.RemoveChildren(child);
+        }
+
+        public void RemoveChildren(params IChangeable[] childrenToRemove)
+        {
+            foreach (var item in childrenToRemove)
+            {
+                if (!this.children.Remove(item))
+                {
+                    continue;
+                }
+
+                item.IsDirtyChanged -= this.OnSubItemDirtyChanged;
+                item.IsTouchedChanged -= this.OnSubItemTouchedChanged;
+
+                item.IsDirtyChanged += this.OnSubItemDirtyChanged;
+                item.IsTouchedChanged += this.OnSubItemTouchedChanged;
+
+                if (item is IValidatedChangeable changeableValue)
+                {
+                    changeableValue.ValidationStatusChanged -= this.OnSubItemValidationStatusChanged;
+                }
+
+                this.touchedChildren.Remove(item);
+                this.dirtyChildren.Remove(item);
+
+                // ReSharper disable once InvertIf
+                if (item is IValidatedChangeable validatedItem)
+                {
+                    if (this.invalidChildren.Remove(validatedItem))
+                    {
+                        var otherInvalid = this.invalidChildren.FirstOrDefault();
+                        if (otherInvalid == null)
+                        {
+                            this.ValidationMessage = null;
+                        }
+                        else
+                        {
+                            this.ValidationMessage = otherInvalid.ValidationMessage;
+                        }
+                    }
+                }
+            }
+
+            this.IsDirty = this.dirtyChildren.Any();
+            this.IsTouched = this.touchedChildren.Any();
+        }
+
         public void AddChildren(params IChangeable[] childrenToAdd)
         {
             foreach (var item in childrenToAdd)
@@ -244,6 +294,9 @@ namespace otor.msixhero.ui.Domain
                 {
                     continue;
                 }
+
+                item.IsDirtyChanged -= this.OnSubItemDirtyChanged;
+                item.IsTouchedChanged -= this.OnSubItemTouchedChanged;
 
                 item.IsDirtyChanged += this.OnSubItemDirtyChanged;
                 item.IsTouchedChanged += this.OnSubItemTouchedChanged;
@@ -281,7 +334,7 @@ namespace otor.msixhero.ui.Domain
 
                     if (wasValidated != this.isValidated)
                     {
-                        this.OnPropertyChanged(nameof(isValidated));
+                        this.OnPropertyChanged(nameof(IsValidated));
                     }
                 }
             }

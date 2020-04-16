@@ -53,19 +53,29 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.View
                 this.EditText = regex.Substring(1);
                 this.Result = InterpretationResult.StartsWith;
             }
-            else if (Regex.IsMatch(regex, @"^[a-zA-Z0-9_]\$$"))
+            else if (Regex.IsMatch(regex, @"^\^?[a-zA-Z0-9_]\$$"))
             {
-                this.DisplayText = regex.Substring(0, regex.Length - 1);
-                this.EditText = regex.Substring(0, regex.Length - 1);
-                this.Result = InterpretationResult.EndsWith;
+                if (regex[0] == '^')
+                {
+                    this.DisplayText = regex.Substring(1, regex.Length - 2);
+                    this.EditText = regex.Substring(1, regex.Length - 2);
+                    this.Result = InterpretationResult.Name;
+                }
+                else
+                {
+                    this.DisplayText = regex.Substring(0, regex.Length - 1);
+                    this.EditText = regex.Substring(0, regex.Length - 1);
+                    this.Result = InterpretationResult.EndsWith;
+                }
             }
             else if (this.treatAsFileName)
             {
-                var match = Regex.Match(regex, @"^\^?(\w+)\\.(\w+)\$?$");
+                var match = Regex.Match(regex, @"^\^?\.*\\.([a-z0-9]+)");
+                
                 if (match.Success)
                 {
-                    this.DisplayText = match.Groups[1].Value + "." + match.Groups[2].Value;
-                    this.EditText = match.Groups[2].Value;
+                    this.DisplayText = "*." + match.Groups[1].Value;
+                    this.EditText = match.Groups[1].Value;
                     this.Result = InterpretationResult.Extension;
                 }
                 else
@@ -86,12 +96,21 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.View
                     }
                     else
                     {
-                        match = Regex.Match(regex, @"^\^?\.*\\.([a-z0-9]+)");
+                        match = Regex.Match(regex, @"^\^?([^\\?*\.\^\$\(\)\[\]]+)\\.([^\\?*\.\^\$\(\)\[\]]+)\$$");
                         if (match.Success)
                         {
-                            this.DisplayText = "*." + match.Groups[1].Value;
-                            this.EditText = match.Groups[1].Value;
-                            this.Result = InterpretationResult.Extension;
+                            if (match.Value[0] == '^')
+                            {
+                                this.DisplayText = match.Groups[1].Value + "." + match.Groups[2].Value;
+                                this.EditText = this.DisplayText;
+                                this.Result = InterpretationResult.Name;
+                            }
+                            else
+                            {
+                                this.DisplayText = match.Groups[1].Value + "." + match.Groups[2].Value;
+                                this.EditText = this.DisplayText;
+                                this.Result = InterpretationResult.EndsWith;
+                            }
                         }
                     }
                 }

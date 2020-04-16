@@ -7,13 +7,12 @@
              xmlns:dialogs="http://prismlibrary.com/"
              xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel"
-             xmlns:model="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PsfExpert.Model"
+             xmlns:model="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <dialogs:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="ResizeMode" Value="NoResize" />
-            <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="570" />
             <Setter Property="SizeToContent" Value="Height" />
             <Setter Property="MinWidth" Value="500" />

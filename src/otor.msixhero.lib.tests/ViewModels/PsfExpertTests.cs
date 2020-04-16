@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using NUnit.Framework;
 using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items;
 
 namespace otor.msixhero.lib.tests.ViewModels
 {
@@ -19,8 +14,6 @@ namespace otor.msixhero.lib.tests.ViewModels
             var json = File.ReadAllText(@"E:\temp\msix-psf\fixed-rayeval\config.json");
             var config = serializer.Deserialize(json);
 
-            var builder = new PsfExpertRedirectionViewModelBuilder(config);
-            var b = builder.Build();
         }
     }
 }

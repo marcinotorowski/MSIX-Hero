@@ -10,15 +10,13 @@ using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
 {
     public class PsfExpertViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private PsfExpertRedirectionsViewModel redirections;
-
         public PsfExpertViewModel(IInteractionService interactionService, IDialogService dialogService, IApplicationStateManager stateManager, IConfigurationService configurationService) : base("MSIX Hero - PSF Expert", interactionService)
         {
             this.CommandHandler = new PsfExpertCommandHandler(dialogService);
@@ -26,19 +24,20 @@ namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
 
         public PsfExpertCommandHandler CommandHandler { get; }
 
-        public PsfExpertRedirectionsViewModel Redirections
-        {
-            get => this.redirections;
-            private set => this.SetField(ref this.redirections, value);
-        }
+        public PsfContentViewModel Content { get; private set; }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
             var psfSerializer = new PsfConfigSerializer();
             var json = File.ReadAllText(@"E:\temp\msix-psf\fixed-rayeval\config.json");
+            if (this.Content != null)
+            {
+                this.RemoveChild(this.Content);
+            }
 
-            var viewModelBuilder = new PsfExpertRedirectionViewModelBuilder(psfSerializer.Deserialize(json));
-            this.Redirections = viewModelBuilder.Build();
+            this.Content = new PsfContentViewModel(psfSerializer.Deserialize(json));
+            this.OnPropertyChanged(nameof(this.Content));
+            this.AddChild(this.Content);
         }
 
         protected override Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)

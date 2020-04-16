@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Model;
+using otor.msixhero.ui.Modules.Common.PsfContent.View;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel
@@ -29,7 +29,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel
                 return;
             }
 
-            var interpreter = new RegexpInterpreter(value);
+            var interpreter = new RegexpInterpreter(value, true);
             this.Interpretation = interpreter.Result;
 
             switch (this.interpretation)

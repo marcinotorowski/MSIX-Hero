@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel.Items;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
 using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
@@ -21,28 +20,33 @@ namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
 
         private void EditExecute(object target)
         {
-            if (target is PsfExpertFilePatternViewModel)
+            if (target is PsfContentFileRedirectionViewModel redirectionFile)
             {
-                this.EditExecute(((PsfExpertFilePatternViewModel)target));
+                this.EditExecute(redirectionFile);
             }
         }
 
-        private void EditExecute(PsfExpertFilePatternViewModel rule)
+        private void EditExecute(PsfContentFileRedirectionViewModel rule)
         {
             var param = new DialogParameters();
-            param.Add("value", rule.Pattern);
+            param.Add("value", rule.RegularExpression);
 
             this.dialogService.ShowDialog(Constants.PathPackageExpertFileRule, param, this.OnDialogClosed);
         }
 
         private bool CanEditExecute(object target)
         {
-            if (target is PsfExpertFilePatternViewModel)
+            if (target is PsfContentFileRedirectionViewModel redirectionFile)
             {
-                return true;
+                return this.CanEditExecute(redirectionFile);
             }
 
             return false;
+        }
+
+        private bool CanEditExecute(PsfContentFileRedirectionViewModel target)
+        {
+            return true;
         }
 
         private void OnDialogClosed(IDialogResult obj)
