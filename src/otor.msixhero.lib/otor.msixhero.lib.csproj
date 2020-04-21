@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.5" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.6" />
     <PackageReference Include="ControlzEx" Version="4.2.2" />
     <PackageReference Include="DiscUtils.Ntfs" Version="0.15.1-ci0002" />
     <PackageReference Include="DiscUtils.Vhd" Version="0.15.1-ci0002" />
