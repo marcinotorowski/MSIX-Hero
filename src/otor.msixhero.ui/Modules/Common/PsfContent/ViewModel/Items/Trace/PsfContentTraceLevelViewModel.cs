@@ -3,7 +3,7 @@ using otor.msixhero.ui.Domain;
 
 namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace
 {
-    public class PsfContentTraveLevelViewModel : ChangeableContainer
+    public class PsfContentTraceLevelViewModel : ChangeableContainer
     {
         private readonly ChangeableProperty<TraceLevel> defaultLevel;
         private readonly ChangeableProperty<TraceLevel> filesystemLevel;
@@ -11,7 +11,7 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace
         private readonly ChangeableProperty<TraceLevel> processAndThreadLevel;
         private readonly ChangeableProperty<TraceLevel> dynamicLinkLibraryLevel;
 
-        public PsfContentTraveLevelViewModel(PsfTraceFixupLevels levels)
+        public PsfContentTraceLevelViewModel(PsfTraceFixupLevels levels)
         {
             this.defaultLevel = new ChangeableProperty<TraceLevel>(levels.Default);
             this.filesystemLevel = new ChangeableProperty<TraceLevel>(levels.Filesystem);

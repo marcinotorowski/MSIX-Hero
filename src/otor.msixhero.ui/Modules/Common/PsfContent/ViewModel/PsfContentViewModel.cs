@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Specialized;
+using System.Linq;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Electron;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace;
 
@@ -13,41 +14,88 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
         {
             this.RedirectionRules = new ChangeableCollection<PsfContentProcessRedirectionViewModel>();
             this.TraceRules = new ChangeableCollection<PsfContentProcessTraceViewModel>();
+            this.ElectronRules = new ChangeableCollection<PsfContentProcessElectronViewModel>();
 
             this.Setup(psfConfig);
 
             this.RedirectionRules.Commit();
             this.TraceRules.Commit();
-            this.AddChild(this.RedirectionRules);
+            this.ElectronRules.Commit();
+            this.AddChildren(this.RedirectionRules, this.TraceRules, this.ElectronRules);
+
+            this.RedirectionRules.CollectionChanged += this.RedirectionRulesOnCollectionChanged;
+            this.ElectronRules.CollectionChanged += this.ElectronRulesOnCollectionChanged;
+            this.TraceRules.CollectionChanged += this.TraceRulesOnCollectionChanged;
         }
 
         public ChangeableCollection<PsfContentProcessRedirectionViewModel> RedirectionRules { get; }
 
         public ChangeableCollection<PsfContentProcessTraceViewModel> TraceRules { get; }
 
+        public ChangeableCollection<PsfContentProcessElectronViewModel> ElectronRules { get; }
+
+        public bool HasTraceRules => this.TraceRules.Any();
+
+        public bool HasRedirectionRules => this.RedirectionRules.Any();
+
+        public bool HasElectronRules => this.RedirectionRules.Any();
+
+        public bool HasPsf { get; private set; }
+
         private void Setup(PsfConfig psfConfig)
         {
-            if (psfConfig?.Processes == null)
-            {
-                return;
-            }
+            var hadPsf = this.HasPsf;
 
-            foreach (var process in psfConfig.Processes)
+            if (psfConfig?.Processes != null)
             {
-                foreach (var item in process.Fixups.Where(f => f.Config != null))
+                foreach (var process in psfConfig.Processes)
                 {
-                    if (item.Config is PsfRedirectionFixupConfig redirectionConfig)
+                    foreach (var item in process.Fixups.Where(f => f.Config != null))
                     {
-                        var psfContentProcessViewModel = new PsfContentProcessRedirectionViewModel(process.Executable, item.Dll, redirectionConfig.RedirectedPaths);
-                        this.RedirectionRules.Add(psfContentProcessViewModel);
-                    }
-                    else if (item.Config is PsfTraceFixupConfig traceConfig)
-                    {
-                        var psfContentProcessViewModel = new PsfContentProcessTraceViewModel(process.Executable, item.Dll, traceConfig);
-                        this.TraceRules.Add(psfContentProcessViewModel);
+                        if (item.Config is PsfRedirectionFixupConfig redirectionConfig)
+                        {
+                            var psfContentProcessViewModel = new PsfContentProcessRedirectionViewModel(process.Executable, item.Dll, redirectionConfig.RedirectedPaths);
+                            this.RedirectionRules.Add(psfContentProcessViewModel);
+                            this.HasPsf = true;
+                        }
+                        else if (item.Config is PsfTraceFixupConfig traceConfig)
+                        {
+                            var psfContentProcessViewModel = new PsfContentProcessTraceViewModel(process.Executable, item.Dll, traceConfig);
+                            this.TraceRules.Add(psfContentProcessViewModel);
+                            this.HasPsf = true;
+                        }
+                        else if (item.Config is PsfElectronFixupConfig electronConfig)
+                        {
+                            var psfContentProcessViewModel = new PsfContentProcessElectronViewModel(process.Executable, item.Dll, electronConfig);
+                            this.ElectronRules.Add(psfContentProcessViewModel);
+                            this.HasPsf = true;
+                        }
                     }
                 }
             }
+
+            if (hadPsf != this.HasPsf)
+            {
+                this.OnPropertyChanged(nameof(HasPsf));
+            }
+        }
+
+        private void RedirectionRulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(HasRedirectionRules));
+            this.OnPropertyChanged(nameof(HasPsf));
+        }
+
+        private void TraceRulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(HasTraceRules));
+            this.OnPropertyChanged(nameof(HasPsf));
+        }
+
+        private void ElectronRulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(HasElectronRules));
+            this.OnPropertyChanged(nameof(HasPsf));
         }
     }
 }

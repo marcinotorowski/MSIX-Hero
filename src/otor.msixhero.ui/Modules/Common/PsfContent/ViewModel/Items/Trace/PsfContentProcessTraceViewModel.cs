@@ -12,12 +12,12 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace
         {
             this.breakOn = new ChangeableProperty<TraceLevel>(traceFixup.BreakOn);
             this.traceMethod = new ChangeableProperty<string>(traceFixup.TraceMethod);
-            this.TraceLevel = new PsfContentTraveLevelViewModel(traceFixup.TraceLevels);
+            this.TraceLevel = new PsfContentTraceLevelViewModel(traceFixup.TraceLevels);
 
             this.AddChildren(this.breakOn, this.traceMethod, this.TraceLevel);
         }
 
-        public PsfContentTraveLevelViewModel TraceLevel { get; }
+        public PsfContentTraceLevelViewModel TraceLevel { get; }
 
         public string TraceMethod
         {

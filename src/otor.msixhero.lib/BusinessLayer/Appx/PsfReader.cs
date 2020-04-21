@@ -205,11 +205,16 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         case "tracefixup64.dll":
                         { 
                             if (fixup.Config is PsfTraceFixupConfig psfFixupConfig)
-
                             {
                                 psfDef.Tracing = new PsfTracingRedirectionDescriptor(psfFixupConfig ?? new PsfTraceFixupConfig(), PsfBitness.x64);
                             }
 
+                            break;
+                        }
+
+                        case "electronfixup.dll":
+                        {
+                            psfDef.Electron = new PsfElectronDescriptor();
                             break;
                         }
 

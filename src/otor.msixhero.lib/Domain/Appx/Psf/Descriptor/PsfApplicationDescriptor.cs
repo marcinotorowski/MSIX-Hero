@@ -18,6 +18,8 @@ namespace otor.msixhero.lib.Domain.Appx.Psf.Descriptor
 
         public PsfTracingRedirectionDescriptor Tracing { get; set; }
 
+        public PsfElectronDescriptor Electron { get; set; }
+
         public List<string> OtherFixups { get; set; }
     }
 }

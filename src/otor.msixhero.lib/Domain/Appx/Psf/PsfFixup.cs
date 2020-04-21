@@ -42,6 +42,10 @@ namespace otor.msixhero.lib.Domain.Appx.Psf
             {
                 this.Config = JsonConvert.DeserializeObject<PsfTraceFixupConfig>(this.rawValues["config"].ToString(Formatting.None));
             }
+            else if (this.Dll?.StartsWith("ElectronFixup", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                this.Config = JsonConvert.DeserializeObject<PsfElectronFixupConfig>(this.rawValues["config"].ToString(Formatting.None));
+            }
             else
             {
                 this.Config = new CustomPsfFixupConfig(this.rawValues["config"].ToString(Formatting.Indented));

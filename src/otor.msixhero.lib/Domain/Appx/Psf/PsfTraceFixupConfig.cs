@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.Serialization;
-using Windows.Foundation.Metadata;
 using Newtonsoft.Json;
 
 namespace otor.msixhero.lib.Domain.Appx.Psf
