@@ -44,11 +44,35 @@
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                                        <Button x:Name="PART_ButtonOK" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
+                                        <Button Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" x:Name="PART_ButtonOK" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
                                             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                 <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
                                                 <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding OkButtonLabel}" />
                                             </StackPanel>
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Tag" Value="{StaticResource True}">
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation To="0.3" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" Storyboard.TargetProperty="Opacity" />
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                            <Trigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation To="1.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" Storyboard.TargetProperty="Opacity" />
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.ExitActions>
+                                                            <Setter Property="IsHitTestVisible" Value="False" />
+                                                            <Setter Property="Focusable" Value="False" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
                                         </Button>
                                         <Button Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="Close" />
                                     </StackPanel>
@@ -192,7 +216,7 @@
                             <Setter Property="Visibility" Value="Hidden" TargetName="PART_ButtonOK" />
                         </Trigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" Value="{StaticResource True}">
-                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ButtonOK" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

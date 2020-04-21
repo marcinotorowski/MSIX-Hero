@@ -106,11 +106,15 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
 
         protected virtual bool CanSave()
         {
+            if (this.State?.IsSaved == true)
+            {
+                return false;
+            }
+
             return this.IsValid || this.ValidationMode == ValidationMode.Silent;
         }
 
         public event Action<IDialogResult> RequestClose;
-
 
         private void OkExecute(bool closeWindow)
         {
@@ -144,6 +148,9 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
                     this.State.IsSaved = false;
                     progress.ProgressChanged -= handler;
                     this.State.IsSaving = false;
+
+                    CommandManager.InvalidateRequerySuggested();
+
                     if (t.IsCanceled)
                     {
                         return;
@@ -201,7 +208,7 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
         // ReSharper disable once UnusedParameter.Local
         private bool CanOkExecute(bool closeWindow)
         {
-            return this.CanSave();
+            return this.State?.IsSaved != true && this.CanSave();
         }
 
         private void CloseExecute(ButtonResult button)
