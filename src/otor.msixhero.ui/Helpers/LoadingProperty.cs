@@ -45,8 +45,7 @@ namespace otor.msixhero.ui.Helpers
                         // this is an observable collection, use events
                         if (this.CurrentValue == null)
                         {
-                            this.CurrentValue = (T) Activator.CreateInstance(
-                                typeof(ObservableCollection<>).MakeGenericType(typeof(T).GetGenericArguments()[0]));
+                            this.CurrentValue = (T) Activator.CreateInstance(typeof(ObservableCollection<>).MakeGenericType(typeof(T).GetGenericArguments()[0]));
                         }
                         else
                         {

@@ -577,11 +577,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 // <build:Item Name="OperatingSystem" Version="6.2.9200.0" /><build:Item Name="Raynet.RaySuite.Common.Appx" Version="6.2.5306.1168" /></build:Metadata>
                 if (buildValues.TryGetValue("Raynet.RaySuite.Common.Appx", out var rayPack))
                 {
-                    buildInfo = new BuildInfo
+                    if (Version.TryParse(rayPack, out var parsedVersion))
                     {
-                        ProductName = "RayPack " + Version.Parse(rayPack).ToString(2),
-                        ProductVersion = rayPack
-                    };
+                        buildInfo = new BuildInfo
+                        {
+                            ProductName = $"RayPack {parsedVersion.Major}.{parsedVersion.Minor}",
+                            ProductVersion = $"(MSIX builder v{parsedVersion})"
+                        };
+                    }
+                    else
+                    {
+                        buildInfo = new BuildInfo
+                        {
+                            ProductName = "RayPack",
+                            ProductVersion = $"(MSIX builder v{rayPack})"
+                        };
+                    }
 
                     if (buildValues.TryGetValue("OperatingSystem", out var os))
                     {
