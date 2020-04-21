@@ -62,15 +62,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
 
                 try
                 {
-                    long minimumSize;
-                    if (vhdSize <= 0)
-                    {
-                        minimumSize = Math.Max(25 * 1024 * 1024, await GetVhdSize(packagePath, 0.5, cancellationToken).ConfigureAwait(false));
-                    }
-                    else
-                    {
-                        minimumSize = 1024 * 1024 * vhdSize;
-                    }
+                    var minimumSize = vhdSize > 0 ? 1024 * 1024 * vhdSize : await GetVhdSize(packagePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     var requiresRestart = await StopService(cancellationToken, progressStopService).ConfigureAwait(false);
                     
@@ -299,6 +291,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
 
         private static Task<long> GetVhdSize(string packagePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
         {
+            const long reserved = 16 * 1024 * 1024;
+            const long minSize = 32 * 1024 * 1024;
+
             var total = 0L;
             using (var archive = ZipFile.OpenRead(packagePath))
             {
@@ -306,10 +301,23 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     total += item.Length;
+
+                    if (item.Length <= 512)
+                    {
+                        //Small files are contained in MFT
+                        continue;
+                    }
+
+                    var surplus = item.Length % 4096;
+                    if (surplus != 0)
+                    {
+                        total += 4096 - surplus;
+                    }
+
                 }
             }
 
-            return Task.FromResult((long)(total * (1 + extraMargin)));
+            return Task.FromResult(Math.Max(minSize, (long)(total * (1 + extraMargin)) + reserved));
         }
     }
 }
