@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -43,6 +44,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private readonly IDialogService dialogService;
         private readonly IRegionManager regionManager;
         private readonly IBusyManager busyManager;
+        private readonly List<string> previousSelection = new List<string>();
         private bool isActive;
         private bool firstRun = true;
         private ICommand showSelectionDetails;
@@ -113,7 +115,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public string Header { get; } = "Packages";
 
         public Geometry Icon { get; } = VectorIcons.TabPackages;
-
+        
         private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
         {
             var countSelected = 0;
@@ -137,6 +139,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
 
             var selected = this.AllPackages.Where(p => p.IsSelected).Select(p => p.ManifestLocation).ToArray();
+
+            if (selected.SequenceEqual(this.previousSelection))
+            {
+                return;
+            }
+
+            this.previousSelection.Clear();
+            this.previousSelection.AddRange(selected);
+
             var navigation = new PackageListNavigation(selected);
             switch (selected.Length)
             {
