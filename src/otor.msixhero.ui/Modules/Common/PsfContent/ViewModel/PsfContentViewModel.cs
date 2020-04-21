@@ -2,6 +2,7 @@
 using System.Linq;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Domain;
+using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Custom;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Electron;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace;
@@ -15,17 +16,20 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
             this.RedirectionRules = new ChangeableCollection<PsfContentProcessRedirectionViewModel>();
             this.TraceRules = new ChangeableCollection<PsfContentProcessTraceViewModel>();
             this.ElectronRules = new ChangeableCollection<PsfContentProcessElectronViewModel>();
+            this.CustomRules = new ChangeableCollection<PsfContentProcessCustomViewModel>();
 
             this.Setup(psfConfig);
 
             this.RedirectionRules.Commit();
             this.TraceRules.Commit();
             this.ElectronRules.Commit();
-            this.AddChildren(this.RedirectionRules, this.TraceRules, this.ElectronRules);
+            this.CustomRules.Commit();
+            this.AddChildren(this.RedirectionRules, this.TraceRules, this.ElectronRules, this.CustomRules);
 
             this.RedirectionRules.CollectionChanged += this.RedirectionRulesOnCollectionChanged;
             this.ElectronRules.CollectionChanged += this.ElectronRulesOnCollectionChanged;
             this.TraceRules.CollectionChanged += this.TraceRulesOnCollectionChanged;
+            this.CustomRules.CollectionChanged += this.CustomRulesOnCollectionChanged;
         }
 
         public ChangeableCollection<PsfContentProcessRedirectionViewModel> RedirectionRules { get; }
@@ -34,11 +38,15 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
 
         public ChangeableCollection<PsfContentProcessElectronViewModel> ElectronRules { get; }
 
+        public ChangeableCollection<PsfContentProcessCustomViewModel> CustomRules { get; }
+
         public bool HasTraceRules => this.TraceRules.Any();
 
         public bool HasRedirectionRules => this.RedirectionRules.Any();
 
         public bool HasElectronRules => this.RedirectionRules.Any();
+
+        public bool HasCustomRules => this.CustomRules.Any();
 
         public bool HasPsf { get; private set; }
 
@@ -70,6 +78,12 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
                             this.ElectronRules.Add(psfContentProcessViewModel);
                             this.HasPsf = true;
                         }
+                        else if (item.Config is CustomPsfFixupConfig customConfig)
+                        {
+                            var psfContentProcessViewModel = new PsfContentProcessCustomViewModel(process.Executable, item.Dll, customConfig);
+                            this.CustomRules.Add(psfContentProcessViewModel);
+                            this.HasPsf = true;
+                        }
                     }
                 }
             }
@@ -89,6 +103,12 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
         private void TraceRulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(HasTraceRules));
+            this.OnPropertyChanged(nameof(HasPsf));
+        }
+
+        private void CustomRulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnPropertyChanged(nameof(HasCustomRules));
             this.OnPropertyChanged(nameof(HasPsf));
         }
 

@@ -11,6 +11,8 @@
              xmlns:trace="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace"
              xmlns:converters="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.Converters"
              xmlns:electron="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Electron"
+             xmlns:custom="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Custom"
+             xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PsfContentViewModel}">
 
@@ -179,8 +181,11 @@
 
                     </view:BulletItemControl>
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Is64Bit}" Value="{StaticResource True}">
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -241,7 +246,8 @@
                                         <ItemsControl Margin="24 0 0 6" ItemsSource="{Binding Rules}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <UniformGrid Columns="2" SizeChanged="FrameworkElement_OnSizeChanged" />
+                                                    <!--<UniformGrid Columns="2" SizeChanged="FrameworkElement_OnSizeChanged" />-->
+                                                    <StackPanel />
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
@@ -263,7 +269,9 @@
                                                                             </Border>
 
                                                                             <TextBlock TextWrapping="Wrap">
-                                                                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                                                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}"><Run 
+                                                                                     ToolTipService.ShowOnDisabled="True"
+                                                                                     ToolTip="{Binding RegularExpression, Mode=OneWay}" Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
                                                                             </TextBlock>
                                                                         </DockPanel>
                                                                     </DataTemplate>
@@ -286,7 +294,8 @@
                                                                             </Border>
 
                                                                             <TextBlock TextWrapping="Wrap">
-                                                                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                                                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}"><Run Text="{Binding DisplayText, Mode=OneWay}" ToolTipService.ShowOnDisabled="True"
+                                                                                                                                                                                                                                     ToolTip="{Binding RegularExpression, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
                                                                             </TextBlock>
                                                                         </DockPanel>
                                                                     </DataTemplate>
@@ -327,14 +336,16 @@
 
                     </view:BulletItemControl>
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Is64Bit}" Value="{StaticResource True}">
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
 
         <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
             <TextBlock Text="ELECTRON" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
@@ -380,6 +391,68 @@
                             </StackPanel>
                         </Border>
                     </view:BulletItemControl>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <ItemsControl ItemsSource="{Binding CustomRules}" Visibility="{Binding HasCustomRules, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type custom:PsfContentProcessCustomViewModel}">
+                    <StackPanel>
+
+                        <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Header}" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                        </Border>
+
+                        <view:BulletItemControl Height="10" />
+
+                        <view:BulletItemControl>
+                            <view:BulletItemControl.Header>
+                                <Viewbox Width="24" Height="24">
+                                    <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
+                                </Viewbox>
+                            </view:BulletItemControl.Header>
+
+                            <Border Height="32">
+                                <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+                                <Run Text="For" />
+                                <Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}">
+                                    <Run Text="32-bit" x:Name="PART_Bit" />
+                                </Hyperlink>
+                                <Run Text="{Binding TextBefore, Mode=OneWay}" /><Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}"><Run Text="{Binding DisplayText, Mode=OneWay}" /></Hyperlink><Run Text="{Binding TextAfter, Mode=OneWay}" />
+                                </TextBlock>
+                            </Border>
+
+                            <Border Height="32">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Style="{StaticResource PathSmall}" Data="{StaticResource VectorGear}" />
+                                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+                                        <Run Text="Inject a fixup with" />
+                                        <Hyperlink Style="{StaticResource Hyperlink}" Command="Properties" CommandParameter="{Binding}" ToolTipService.ShowOnDisabled="True" ToolTip="{Binding Json}">
+                                            <Run Text="a custom configuration" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </view:BulletItemControl>
+
+                    </StackPanel>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
+                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

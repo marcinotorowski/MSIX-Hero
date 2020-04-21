@@ -1,21 +1,45 @@
 ﻿using System;
-using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Common.PsfContent.View;
 
 namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
 {
+    public enum Bitness
+    {
+        // ReSharper disable once InconsistentNaming
+        x64,
+
+        // ReSharper disable once InconsistentNaming
+        x86,
+
+        Unknown
+    }
+
     public abstract class PsfContentProcessViewModel : PsfContentRegexpViewModel
     {
-        private readonly ChangeableProperty<bool> is64Bit;
+        private readonly ChangeableProperty<Bitness> is64Bit;
 
         protected PsfContentProcessViewModel(string processRegularExpression, string fixupName) : base(processRegularExpression)
         {
-            this.is64Bit = new ChangeableProperty<bool>(fixupName.IndexOf("64", StringComparison.Ordinal) != -1);
+            Bitness bitness;
+            if (fixupName.IndexOf("64", StringComparison.Ordinal) != -1)
+            {
+                bitness = Bitness.x64;
+            }
+            else if (fixupName.IndexOf("32", StringComparison.Ordinal) != -1 || fixupName.IndexOf("86", StringComparison.Ordinal) != -1)
+            {
+                bitness = Bitness.x86;
+            }
+            else
+            {
+                bitness = Bitness.Unknown;
+            }
+
+            this.is64Bit = new ChangeableProperty<Bitness>(bitness);
             this.AddChildren(this.is64Bit);
         }
 
-        public bool Is64Bit
+        public Bitness Is64Bit
         {
             get => this.is64Bit.CurrentValue;
             set
