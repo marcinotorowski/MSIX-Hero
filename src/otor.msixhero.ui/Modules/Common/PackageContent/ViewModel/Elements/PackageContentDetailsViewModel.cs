@@ -85,7 +85,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             {
                 this.TileColor = "#666666";
             }
+
+            this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
         }
+
+        public CapabilitiesViewModel Capabilities { get; }
 
         public string PackageFullName { get; }
 

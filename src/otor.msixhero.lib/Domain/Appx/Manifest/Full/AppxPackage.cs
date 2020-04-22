@@ -54,5 +54,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public List<AppxApplication> Applications { get; set; }
 
         public BuildInfo BuildInfo { get; set; }
+
+        public List<AppxCapability> Capabilities { get; set; }
     }
 }

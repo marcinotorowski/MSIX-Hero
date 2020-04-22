@@ -120,6 +120,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     var nodeApplicationsRoot = GetNode(nodePackage, "Applications", true);
 
                     cancellationToken.ThrowIfCancellationRequested();
+                    var nodeCapabilitiesRoot = GetNode(nodePackage, "Capabilities", true);
+
+                    cancellationToken.ThrowIfCancellationRequested();
                     var nodeDependenciesRoot = GetNode(nodePackage, "Dependencies", true);
 
                     cancellationToken.ThrowIfCancellationRequested();
@@ -418,6 +421,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     appxPackage.FamilyName = AppxPackaging.GetPackageFamilyName(appxPackage.Name, appxPackage.Publisher);
                     appxPackage.FullName = AppxPackaging.GetPackageFullName(appxPackage.Name, appxPackage.Publisher, appxPackage.ProcessorArchitecture, appxPackage.Version, appxPackage.ResourceId);
 
+                    appxPackage.Capabilities = this.GetCapabilities(nodeCapabilitiesRoot);
+
                     return appxPackage;
                 }
             }
@@ -428,6 +433,48 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     File.Delete(priFullPath);
                 }
             }
+        }
+
+        private List<AppxCapability> GetCapabilities(XmlNode nodeCapabilitiesRoot)
+        {
+            if (nodeCapabilitiesRoot == null || !nodeCapabilitiesRoot.HasChildNodes)
+            {
+                return new List<AppxCapability>();
+            }
+
+            var list = new List<AppxCapability>();
+
+            foreach (var node in nodeCapabilitiesRoot.ChildNodes.OfType<XmlNode>())
+            {
+                if (node.NodeType == XmlNodeType.Comment)
+                {
+                    continue;
+                }
+
+                var type = CapabilityType.Custom;
+                var name = node.Attributes?["Name"]?.Value;
+
+                if (node.NamespaceURI?.StartsWith("http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities", StringComparison.Ordinal) == true)
+                {
+                    type = CapabilityType.Restricted;
+                }
+                else
+                {
+                    switch (node.LocalName)
+                    {
+                        case "DeviceCapability":
+                            type = CapabilityType.Device;
+                            break;
+                        case "Capability":
+                            type = CapabilityType.General;
+                            break;
+                    }
+                }
+
+                list.Add(new AppxCapability { Name = name, Type = type });
+            }
+
+            return list;
         }
 
         private bool DetectVisualStudio(Dictionary<string, string> buildValues, out BuildInfo buildInfo)

@@ -148,199 +148,270 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Content" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <zeroOrAny:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
-                            <zeroOrAny:ZeroOrAny.Template>
-                                <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
-                                    <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
-                                </ControlTemplate>
-                            </zeroOrAny:ZeroOrAny.Template>
-                            <zeroOrAny:ZeroOrAny.AnyItemTemplate>
-                                <DataTemplate>
-                                    <DataTemplate.Resources>
-                                        <system:Boolean x:Key="True">True</system:Boolean>
-                                        <system:Boolean x:Key="False">False</system:Boolean>
-                                    </DataTemplate.Resources>
-                                    <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type elements1:AppxApplicationViewModel}">
-                                                <StackPanel Margin="0 0 0 24">
-                                                    <view:BulletItemControl>
-                                                        <view:BulletItemControl.Header>
-                                                            <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center">
-                                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                    <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                    <TabControl Margin="0 -7 0 0">
+                        <TabItem Style="{StaticResource Compact}">
+                            <TabItem.Header>
+                                <TextBlock>
+                                    <Run Text="Applications" />
+                                    <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count, Mode=OneWay}" Foreground="#777" />
+                                </TextBlock>
+                            </TabItem.Header>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <zeroOrAny:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Applications.Count}">
+                                    <zeroOrAny:ZeroOrAny.Template>
+                                        <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
+                                            <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
+                                        </ControlTemplate>
+                                    </zeroOrAny:ZeroOrAny.Template>
+                                    <zeroOrAny:ZeroOrAny.AnyItemTemplate>
+                                        <DataTemplate>
+                                            <DataTemplate.Resources>
+                                                <system:Boolean x:Key="True">True</system:Boolean>
+                                                <system:Boolean x:Key="False">False</system:Boolean>
+                                            </DataTemplate.Resources>
+                                            <ItemsControl ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Applications}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type elements1:AppxApplicationViewModel}">
+                                                        <StackPanel Margin="0 0 0 24">
+                                                            <view:BulletItemControl>
+                                                                <view:BulletItemControl.Header>
+                                                                    <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center">
+                                                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                                            <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                                        </Border>
+                                                                    </Border>
+                                                                </view:BulletItemControl.Header>
+                                                                <Border MinHeight="32">
+                                                                    <StackPanel VerticalAlignment="Center" Margin="0 2">
+                                                                        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
+                                                                        <TextBlock Text="{Binding DisplayType, Mode=OneTime}" />
+                                                                    </StackPanel>
                                                                 </Border>
-                                                            </Border>
-                                                        </view:BulletItemControl.Header>
-                                                        <Border MinHeight="32">
-                                                            <StackPanel VerticalAlignment="Center" Margin="0 2">
-                                                                <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
-                                                                <TextBlock Text="{Binding DisplayType, Mode=OneTime}" />
-                                                            </StackPanel>
-                                                        </Border>
-                                                    </view:BulletItemControl>
+                                                            </view:BulletItemControl>
 
-                                                    <view:BulletItemControl>
-                                                        <view:BulletItemControl.Header>
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorShortcut}" />
-                                                            </Viewbox>
-                                                        </view:BulletItemControl.Header>
+                                                            <view:BulletItemControl>
+                                                                <view:BulletItemControl.Header>
+                                                                    <Viewbox Width="24" Height="24">
+                                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorShortcut}" />
+                                                                    </Viewbox>
+                                                                </view:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Target" />
-                                                        <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" TextWrapping="Wrap" />
-                                                        <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" TextWrapping="Wrap">
+                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Target" />
+                                                                <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" TextWrapping="Wrap" />
+                                                                <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" TextWrapping="Wrap">
                                                                         <Run Text="{Binding Psf.Executable, Mode=OneTime}" />
                                                                         <Run Text="(launched by " Foreground="#777" /><Run Foreground="#777" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="#777" Text=")" />
-                                                        </TextBlock>
-                                                    </view:BulletItemControl>
+                                                                </TextBlock>
+                                                            </view:BulletItemControl>
 
-                                                    <view:BulletItemControl x:Name="EntryPoint">
-                                                        <view:BulletItemControl.Header>
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorBulb}" />
-                                                            </Viewbox>
-                                                        </view:BulletItemControl.Header>
+                                                            <view:BulletItemControl x:Name="EntryPoint">
+                                                                <view:BulletItemControl.Header>
+                                                                    <Viewbox Width="24" Height="24">
+                                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorBulb}" />
+                                                                    </Viewbox>
+                                                                </view:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Entry point" />
-                                                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding EntryPoint, Mode=OneTime}" TextWrapping="Wrap" />
-                                                    </view:BulletItemControl>
+                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Entry point" />
+                                                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding EntryPoint, Mode=OneTime}" TextWrapping="Wrap" />
+                                                            </view:BulletItemControl>
 
-                                                    <view:BulletItemControl x:Name="Arguments">
-                                                        <view:BulletItemControl.Header>
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
-                                                            </Viewbox>
-                                                        </view:BulletItemControl.Header>
+                                                            <view:BulletItemControl x:Name="Arguments">
+                                                                <view:BulletItemControl.Header>
+                                                                    <Viewbox Width="24" Height="24">
+                                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
+                                                                    </Viewbox>
+                                                                </view:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
-                                                        <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
-                                                    </view:BulletItemControl>
+                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
+                                                                <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
+                                                            </view:BulletItemControl>
 
-                                                    <view:BulletItemControl x:Name="WorkingDirectory">
-                                                        <view:BulletItemControl.Header>
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorOpen}" />
-                                                            </Viewbox>
-                                                        </view:BulletItemControl.Header>
+                                                            <view:BulletItemControl x:Name="WorkingDirectory">
+                                                                <view:BulletItemControl.Header>
+                                                                    <Viewbox Width="24" Height="24">
+                                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorOpen}" />
+                                                                    </Viewbox>
+                                                                </view:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
-                                                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
-                                                    </view:BulletItemControl>
+                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
+                                                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
+                                                            </view:BulletItemControl>
 
-                                                    <view:BulletItemControl x:Name="AppListEntry">
-                                                        <view:BulletItemControl.Header>
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path Style="{StaticResource Icon}" Data="{StaticResource VectorStartMenu}" />
-                                                            </Viewbox>
-                                                        </view:BulletItemControl.Header>
+                                                            <view:BulletItemControl x:Name="AppListEntry">
+                                                                <view:BulletItemControl.Header>
+                                                                    <Viewbox Width="24" Height="24">
+                                                                        <Path Style="{StaticResource Icon}" Data="{StaticResource VectorStartMenu}" />
+                                                                    </Viewbox>
+                                                                </view:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="App list entry" />
-                                                        <TextBlock x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Visible" TextWrapping="Wrap" />
-                                                    </view:BulletItemControl>
+                                                                <TextBlock Style="{StaticResource DataHeader}" Text="App list entry" />
+                                                                <TextBlock x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Visible" TextWrapping="Wrap" />
+                                                            </view:BulletItemControl>
 
-                                                    <Border x:Name="HeaderScripts" Visibility="Collapsed">
-                                                        <StackPanel>
-                                                            <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
-                                                                <TextBlock Text="POWERSHELL SCRIPTS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                                            <Border x:Name="HeaderScripts" Visibility="Collapsed">
+                                                                <StackPanel>
+                                                                    <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
+                                                                        <TextBlock Text="POWERSHELL SCRIPTS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                                                    </Border>
+                                                                    <view:BulletItemControl Height="10" />
+                                                                </StackPanel>
                                                             </Border>
-                                                            <view:BulletItemControl Height="10" />
-                                                        </StackPanel>
-                                                    </Border>
 
-                                                    <ItemsControl x:Name="Scripts" ItemsSource="{Binding Psf.Scripts, Mode=OneWay}">
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate DataType="{x:Type psf:AppxPsfScriptViewModel}">
-                                                                <view:BulletItemControl>
-                                                                    <view:BulletItemControl.Header>
-                                                                        <Viewbox Width="24" Height="24">
-                                                                            <Path Style="{StaticResource Icon}" Data="{StaticResource VectorPowerShell}" />
-                                                                        </Viewbox>
-                                                                    </view:BulletItemControl.Header>
+                                                            <ItemsControl x:Name="Scripts" ItemsSource="{Binding Psf.Scripts, Mode=OneWay}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate DataType="{x:Type psf:AppxPsfScriptViewModel}">
+                                                                        <view:BulletItemControl>
+                                                                            <view:BulletItemControl.Header>
+                                                                                <Viewbox Width="24" Height="24">
+                                                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource VectorPowerShell}" />
+                                                                                </Viewbox>
+                                                                            </view:BulletItemControl.Header>
 
-                                                                    <TextBlock Style="{StaticResource DataHeader}" x:Name="Header" Text="Before the application starts" />
-                                                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                                                            <TextBlock Style="{StaticResource DataHeader}" x:Name="Header" Text="Before the application starts" />
+                                                                            <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
                                                                         <Run x:Name="Caption2" Text="Start" />
                                                                         <Hyperlink Command="{x:Static psf:AppxPsfViewModel.EditScript}" CommandParameter="{Binding}">
                                                                             <Run Text="{Binding Name, Mode=OneWay}" />
                                                                         </Hyperlink>
-                                                                    </TextBlock>
+                                                                            </TextBlock>
 
-                                                                    <DockPanel Margin="32 0 0 0" VerticalAlignment="Center" Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                        <TextBlock Text="&#x2022; Arguments: " VerticalAlignment="Center" />
-                                                                        <TextBlock Text="{Binding Arguments, Mode=OneWay}" TextWrapping="Wrap" VerticalAlignment="Center" />
-                                                                    </DockPanel>
+                                                                            <DockPanel Margin="32 0 0 0" VerticalAlignment="Center" Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                                                <TextBlock Text="&#x2022; Arguments: " VerticalAlignment="Center" />
+                                                                                <TextBlock Text="{Binding Arguments, Mode=OneWay}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                                                            </DockPanel>
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Run only once" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run always" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Run only once" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run always" VerticalAlignment="Center" />
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Run in a virtual environment" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run outside of the virtual environment" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Run in a virtual environment" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run outside of the virtual environment" VerticalAlignment="Center" />
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Show window" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Show no window" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Show window" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Show no window" VerticalAlignment="Center" />
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Wait for finish" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run asynchronously" VerticalAlignment="Center" />
-                                                                </view:BulletItemControl>
-                                                                <DataTemplate.Triggers>
-                                                                    <DataTrigger Binding="{Binding Timing}" Value="{x:Static descriptor:PsfScriptDescriptorTiming.Finish}">
-                                                                        <Setter TargetName="Header" Property="Text" Value="After the application finishes" />
-                                                                    </DataTrigger>
-                                                                </DataTemplate.Triggers>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Wait for finish" VerticalAlignment="Center" />
+                                                                            <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run asynchronously" VerticalAlignment="Center" />
+                                                                        </view:BulletItemControl>
+                                                                        <DataTemplate.Triggers>
+                                                                            <DataTrigger Binding="{Binding Timing}" Value="{x:Static descriptor:PsfScriptDescriptorTiming.Finish}">
+                                                                                <Setter TargetName="Header" Property="Text" Value="After the application finishes" />
+                                                                            </DataTrigger>
+                                                                        </DataTemplate.Triggers>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
 
-                                                </StackPanel>
-                                                <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding HasPsf}" Value="{StaticResource False}">
-                                                        <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
-                                                        <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Psf}" Value="{x:Null}">
-                                                        <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
-                                                        <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Psf.HasWorkingDirectory}" Value="{StaticResource False}">
-                                                        <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Psf.HasArguments}" Value="{StaticResource False}">
-                                                        <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding HasEntryPoint}" Value="{StaticResource False}">
-                                                        <Setter TargetName="EntryPoint" Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
-                                                        <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
-                                                    </DataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding HasPsf}" Value="{StaticResource True}" />
-                                                            <Condition Binding="{Binding Psf.HasScripts}" Value="{StaticResource True}" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <MultiDataTrigger.Setters>
-                                                            <Setter TargetName="HeaderScripts" Property="Visibility" Value="Visible" />
-                                                        </MultiDataTrigger.Setters>
-                                                    </MultiDataTrigger>
-                                                    <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
-                                                        <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
-                                                    </DataTrigger>
-                                                </DataTemplate.Triggers>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
+                                                        </StackPanel>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding HasPsf}" Value="{StaticResource False}">
+                                                                <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
+                                                                <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Psf}" Value="{x:Null}">
+                                                                <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
+                                                                <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Psf.HasWorkingDirectory}" Value="{StaticResource False}">
+                                                                <Setter TargetName="WorkingDirectory" Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Psf.HasArguments}" Value="{StaticResource False}">
+                                                                <Setter TargetName="Arguments" Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding HasEntryPoint}" Value="{StaticResource False}">
+                                                                <Setter TargetName="EntryPoint" Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
+                                                                <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
+                                                            </DataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding HasPsf}" Value="{StaticResource True}" />
+                                                                    <Condition Binding="{Binding Psf.HasScripts}" Value="{StaticResource True}" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.Setters>
+                                                                    <Setter TargetName="HeaderScripts" Property="Visibility" Value="Visible" />
+                                                                </MultiDataTrigger.Setters>
+                                                            </MultiDataTrigger>
+                                                            <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
+                                                                <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </zeroOrAny:ZeroOrAny.AnyItemTemplate>
+                                    <zeroOrAny:ZeroOrAny.NoItemsTemplate>
+                                        <DataTemplate>
+                                            <msixHeroText:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
+                                        </DataTemplate>
+                                    </zeroOrAny:ZeroOrAny.NoItemsTemplate>
+                                </zeroOrAny:ZeroOrAny>
+                            </ScrollViewer>
+                        </TabItem>
+
+                        <TabItem Style="{StaticResource Compact}">
+                            <TabItem.Header>
+                                <TextBlock>
+                                    <Run Text="Capabilities" />
+                                    <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Capabilities.Count, Mode=OneWay}" Foreground="#777" />
+                                </TextBlock>
+                            </TabItem.Header>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel DataContext="{Binding SelectedPackageManifestInfo.CurrentValue.Capabilities}">
+                                    <StackPanel.Resources>
+                                        <DataTemplate x:Key="CapabilityTemplate" DataType="{x:Type elements1:CapabilityViewModel}">
+                                            <Border Margin="4" Width="160" Height="70" Background="#eeeeee">
+                                                <DockPanel>
+                                                    <Path VerticalAlignment="Center" Data="{Binding VectorIcon}" Margin="8 0" Style="{StaticResource MediumIcon}" />
+                                                    <TextBlock Margin="0 0 15 0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding DisplayName, Mode=OneTime}" />
+                                                </DockPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </StackPanel.Resources>
+                                    <TextBlock Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Text="General-use capabilities" Margin="0 0 0 8" />
+
+                                    <ItemsControl Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding General}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
                                     </ItemsControl>
-                                </DataTemplate>
-                            </zeroOrAny:ZeroOrAny.AnyItemTemplate>
-                            <zeroOrAny:ZeroOrAny.NoItemsTemplate>
-                                <DataTemplate>
-                                    <msixHeroText:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
-                                </DataTemplate>
-                            </zeroOrAny:ZeroOrAny.NoItemsTemplate>
-                        </zeroOrAny:ZeroOrAny>
-                    </ScrollViewer>
 
+                                    <TextBlock Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Peripherals and internal devices" Margin="0 0 0 8" />
+
+                                    <ItemsControl Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Device}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+
+                                    <TextBlock Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Restricted capabilities" Margin="0 0 0 8" />
+
+                                    <ItemsControl Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Restricted}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+
+                                    <TextBlock Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Custom capabilities" Margin="0 0 0 8" />
+
+                                    <ItemsControl Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Custom}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
                 </TabItem>
                 <TabItem Header="PSF" Tag="{Binding SelectedPackageJsonInfo.CurrentValue, TargetNullValue={x:Null}, FallbackValue={x:Null}}">
                     <TabItem.Style>

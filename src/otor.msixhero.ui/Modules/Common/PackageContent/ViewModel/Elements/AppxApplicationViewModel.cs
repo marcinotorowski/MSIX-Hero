@@ -32,7 +32,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
                     break;
             }
         }
-
+        
         public bool Visible => this.model.Visible;
 
         public bool HasPsf => this.model.Psf != null;
