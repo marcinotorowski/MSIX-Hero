@@ -29,7 +29,9 @@
         </Border>
         <Border Margin="10 15 0 0" Background="White" Width="76" Height="76" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Border Background="DarkGray" Width="64" Height="64" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Image Source="{Binding ElementName=PackageHeaderRoot, Path=Logo}" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" MaxWidth="64" MaxHeight="64" />
+                <Viewbox Height="64" Width="64" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly">
+                    <Image Source="{Binding ElementName=PackageHeaderRoot, Path=Logo}" Stretch="None"  />
+                </Viewbox>
             </Border>
         </Border>
 
