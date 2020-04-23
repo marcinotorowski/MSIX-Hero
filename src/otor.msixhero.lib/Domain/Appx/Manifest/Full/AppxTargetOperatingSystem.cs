@@ -2,6 +2,13 @@
 
 namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 {
+    public enum AppxTargetOperatingSystemType
+    {
+        MsixNativeSupported,
+        MsixCore,
+        Other
+    }
+
     [Serializable]
     public class AppxTargetOperatingSystem
     {
@@ -10,6 +17,8 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public string TechnicalVersion { get; set; }
         
         public string MarketingCodename { get; set; }
+
+        public AppxTargetOperatingSystemType IsNativeMsixPlatform { get; set; }
 
         public override string ToString()
         {

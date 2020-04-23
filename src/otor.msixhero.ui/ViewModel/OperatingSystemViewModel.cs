@@ -8,10 +8,13 @@ namespace otor.msixhero.ui.ViewModel
         {
             this.Name = target.MarketingCodename == null ? target.Name : $"{target.Name} ${target.MarketingCodename}";
             this.Version = target.TechnicalVersion;
+            this.IsMsixNativeSupported = target.IsNativeMsixPlatform;
         }
 
         public string Name { get; }
 
         public string Version { get; }
+
+        public AppxTargetOperatingSystemType IsMsixNativeSupported { get; }
     }
 }

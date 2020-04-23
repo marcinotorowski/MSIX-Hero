@@ -17,6 +17,7 @@
              xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel"
              xmlns:packageHeader="clr-namespace:otor.msixhero.ui.Controls.PackageHeader"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
+             xmlns:full="clr-namespace:otor.msixhero.lib.Domain.Appx.Manifest.Full;assembly=msixhero.lib"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}"
@@ -384,28 +385,37 @@
                                                 <view:BulletItemControl>
                                                     <view:BulletItemControl.Header>
                                                         <Viewbox Width="24" Height="24">
-                                                            <Path Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
+                                                            <Path x:Name="Icon1" Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
                                                         </Viewbox>
                                                     </view:BulletItemControl.Header>
-                                                    <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
+                                                    <TextBlock x:Name="Text1" Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
                                                     <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                    <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
-                                                    <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                                        <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
+                                                        <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                                     </TextBlock>
                                                 </view:BulletItemControl>
-                                                <view:BulletItemControl>
+                                                <view:BulletItemControl x:Name="Bullet2">
                                                     <view:BulletItemControl.Header>
                                                         <Viewbox Width="24" Height="24">
-                                                            <Path Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
+                                                            <Path x:Name="Icon2" Style="{StaticResource Icon}" Data="{StaticResource VectorTestPassed}" />
                                                         </Viewbox>
                                                     </view:BulletItemControl.Header>
-                                                    <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
+                                                    <TextBlock x:Name="Text2" Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
                                                     <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                     <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
                                                     <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                                     </TextBlock>
                                                 </view:BulletItemControl>
                                             </StackPanel>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding IsMsixNativeSupported}" Value="{x:Static full:AppxTargetOperatingSystemType.MsixCore}">
+                                                    <Setter TargetName="Text1" Property="Text" Value="[MSIX Core] Minimum required OS" />
+                                                    <Setter TargetName="Text2" Property="Text" Value="[MSIX Core] Tested on" />
+                                                    <Setter TargetName="Icon1" Property="Data" Value="{StaticResource VectorWindowsOld}" />
+                                                    <Setter TargetName="Icon2" Property="Data" Value="{StaticResource VectorWindowsOld}" />
+                                                    <Setter TargetName="Bullet2" Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
