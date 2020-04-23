@@ -361,9 +361,9 @@
                                 <StackPanel DataContext="{Binding SelectedPackageManifestInfo.CurrentValue.Capabilities}">
                                     <StackPanel.Resources>
                                         <DataTemplate x:Key="CapabilityTemplate" DataType="{x:Type elements1:CapabilityViewModel}">
-                                            <Border Margin="4" Width="160" Height="70" Background="#eeeeee">
+                                            <Border Margin="4" Width="180" Height="60" Background="#fafafa">
                                                 <DockPanel>
-                                                    <Path VerticalAlignment="Center" Data="{Binding VectorIcon}" Margin="8 0" Style="{StaticResource MediumIcon}" />
+                                                    <Path VerticalAlignment="Center" Data="{Binding VectorIcon}" Margin="8 0" Style="{StaticResource LargeIcon}" />
                                                     <TextBlock Margin="0 0 15 0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding DisplayName, Mode=OneTime}" />
                                                 </DockPanel>
                                             </Border>
