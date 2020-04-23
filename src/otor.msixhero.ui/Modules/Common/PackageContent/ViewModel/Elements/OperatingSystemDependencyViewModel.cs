@@ -12,6 +12,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             this.model = model;
         }
 
+        public AppxTargetOperatingSystemType IsMsixNativeSupported
+        {
+            get => this.model.Minimum?.IsNativeMsixPlatform ?? AppxTargetOperatingSystemType.Other;
+        }
+
         public string MinimumDisplayName
         {
             get
