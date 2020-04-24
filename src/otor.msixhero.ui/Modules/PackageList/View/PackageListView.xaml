@@ -18,6 +18,7 @@
              xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
              xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
              xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
+             xmlns:fluent="urn:fluent-ribbon"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <UserControl.Resources>
@@ -154,7 +155,7 @@
         <Border x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
             <Grid>
                 <TextBox 
-                    Padding="26 0 0 0" 
+                    Padding="26 0 20 0" 
                     x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
                 <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
                     <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
@@ -185,6 +186,26 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </DockPanel>
+                <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" FontFamily="Webdings" Height="26" MinHeight="26" Margin="2" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Content="&#x72;">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                            <Condition.Value>
+                                                <system:Int32>0</system:Int32>
+                                            </Condition.Value>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
         </Border>
 
@@ -207,7 +228,7 @@
                 ContextMenu="{StaticResource PackageContextMenu}"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                 ItemsSource="{Binding AllPackagesView}">
-               
+
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Padding" Value="10" />
