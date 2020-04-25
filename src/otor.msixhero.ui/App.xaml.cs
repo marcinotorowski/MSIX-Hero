@@ -155,7 +155,7 @@ namespace otor.msixhero.ui
             moduleCatalog.AddModule<MainModule>();
             moduleCatalog.AddModule<SettingsModule>();
             moduleCatalog.AddModule<PackageListModule>();
-            moduleCatalog.AddModule<VolumeManagerModule>();
+            // moduleCatalog.AddModule<VolumeManagerModule>();
             moduleCatalog.AddModule<DialogsModule>();
             moduleCatalog.AddModule<CommonModule>();
         }
