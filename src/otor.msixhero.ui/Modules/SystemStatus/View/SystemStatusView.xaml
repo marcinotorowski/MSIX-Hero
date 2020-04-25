@@ -36,7 +36,7 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="8" />
-                    <Setter Property="Width" Value="300" />
+                    <Setter Property="Width" Value="320" />
                     <Setter Property="Margin" Value="8" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="Cursor" Value="Hand" />
@@ -137,7 +137,7 @@
             <Label Style="{StaticResource Label}" Margin="0 0 0 4"  DockPanel.Dock="Top">Make most out of MSIX</Label>
             <TextBlock DockPanel.Dock="Top" Opacity="0.5" Margin="0 0 0 16" Text="See what's happening with MSIX, important services and related programs on your device and take any actions needed." />
             <StackPanel Margin="-8" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-                <ToggleButton IsEnabled="False">
+                <ToggleButton x:Name="Button1" IsChecked="True">
                     <DockPanel VerticalAlignment="Center">
 
                         <Viewbox Width="48" Height="48" Margin="0 0 8 0" VerticalAlignment="Center">
@@ -159,7 +159,55 @@
                         </StackPanel>
                     </DockPanel>
                 </ToggleButton>
-                <ToggleButton x:Name="Button1">
+
+                <Border Style="{StaticResource BorderEase}" Tag="{Binding ElementName=Button1, Path=IsChecked}">
+                    <StackPanel>
+                        <DockPanel Margin="0 8">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Installing and debugging apps from outside of Microsoft Store" TextWrapping="Wrap" Margin="0 0 0 0" Foreground="Black" />
+                                <RadioButton IsChecked="True" Margin="0 12 0 4" Content="Only install apps from Microsoft Store"></RadioButton>
+                                <RadioButton Margin="0 4" Content="Install all trusted apps (Microsoft Store and sideloading)"></RadioButton>
+                                <RadioButton Margin="0 4" Content="Install all (developer mode)"></RadioButton>
+
+                                <Button HorizontalAlignment="Left" Margin="0 8 0 8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Go to Windows Settings" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+                            </StackPanel>
+                        </DockPanel>
+                        <!--<DockPanel Margin="0 8">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Allow installing apps from outside of Microsoft Store (sideloading)" TextWrapping="Wrap" Margin="0 0 0 0" Foreground="Black" />
+                                <TextBlock Foreground="Green" Visibility="Visible">
+                                    <Run Text="Installing trusted apps from outside of the store is allowed." />
+                                    <Hyperlink>Click here to disallow it</Hyperlink>
+                                </TextBlock>
+                                <Button Visibility="Collapsed" x:Name="PART_Button" HorizontalAlignment="Left" Margin="0 8 0 8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Margin="-2 -3 3 -3" UseLayoutRounding="True" SnapsToDevicePixels="True" Source="{x:Static helpers:ShieldIcon.Source}" VerticalAlignment="Center" />
+                                        <TextBlock Text="Stop" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel Margin="0 8">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Developer mode" TextWrapping="Wrap" Margin="0 0 0 0" Foreground="Black" />
+                                <TextBlock Opacity="0.6" TextWrapping="Wrap" Text="When the developer mode is enabled, can debug your apps on that device. You can also sideload any apps if you choose developer mode, even ones that you have not developed on the device. You just have to install the .appx with its certificate for sideloading." Margin="0 0 0 0" Foreground="Black" />
+                                <Button HorizontalAlignment="Left" Margin="0 8 0 8">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Margin="-2 -3 3 -3" UseLayoutRounding="True" SnapsToDevicePixels="True" Source="{x:Static helpers:ShieldIcon.Source}" VerticalAlignment="Center" />
+                                        <TextBlock Text="Enable developer mode" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>-->
+                    </StackPanel>
+                </Border>
+
+                <ToggleButton x:Name="Button2">
                     <DockPanel>
 
                         <Viewbox Width="48" Height="48" Margin="0 0 8 0" VerticalAlignment="Center">
@@ -176,13 +224,13 @@
                         </Viewbox>
 
                         <StackPanel VerticalAlignment="Center" Margin="0 0 0 0">
-                            <TextBlock Text="Services" TextWrapping="Wrap" Margin="0 0 0 2" Padding="0" FontSize="15"/>
+                            <TextBlock Text="Repackaging on this machine" TextWrapping="Wrap" Margin="0 0 0 2" Padding="0" FontSize="15"/>
                             <TextBlock Opacity="0.7" Text="No action required" />
                         </StackPanel>
                     </DockPanel>
                 </ToggleButton>
 
-                <Border Style="{StaticResource BorderEase}" Tag="{Binding ElementName=Button1, Path=IsChecked}">
+                <Border Style="{StaticResource BorderEase}" Tag="{Binding ElementName=Button2, Path=IsChecked}">
                     <ItemsControl ItemsSource="{Binding ServiceRecommendations.CurrentValue}" Margin="0 -8">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type viewModel:ServiceRecommendationViewModel}">

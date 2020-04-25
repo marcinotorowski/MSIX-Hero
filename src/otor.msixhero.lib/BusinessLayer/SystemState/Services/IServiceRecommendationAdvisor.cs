@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ServiceProcess;
+using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.lib.Domain.SystemState;
 using otor.msixhero.lib.Domain.SystemState.Services;
 
@@ -8,10 +9,19 @@ namespace otor.msixhero.lib.BusinessLayer.SystemState.Services
     public interface IServiceRecommendationAdvisor
     {
         IEnumerable<IServiceRecommendation> Advise(AdvisorMode mode, params string[] ignoredServiceNames);
+
+        SideloadingStatus GetSideloadingStatus();
     }
 
     public class ServiceRecommendationAdvisor : IServiceRecommendationAdvisor
     {
+        protected readonly ISideloadingChecker SideloadingChecker = new RegistrySideloadingChecker();
+
+        public SideloadingStatus GetSideloadingStatus()
+        {
+            return this.SideloadingChecker.GetStatus();
+        }
+
         public IEnumerable<IServiceRecommendation> Advise(AdvisorMode mode, params string[] ignoredServiceNames)
         {
             // PLRestartMgrService","DPS","CscService","WSearch","wuauserv","CcmExec
@@ -29,7 +39,7 @@ namespace otor.msixhero.lib.BusinessLayer.SystemState.Services
                         case "wsearch":
                             yield return new ServiceRecommendation(serviceController.DisplayName, "Indexing of files in the background can cause unnecessary noise. It is recommended to disable this service during the repackaging of a software. ", false, serviceController.Status != ServiceControllerStatus.Stopped);
                             break;
-
+                            
                         case "wuauserv":
                             yield return new ServiceRecommendation(serviceController.DisplayName, "Windows Update may periodically check and download a content which is not relevant for a repackaged app. It is recommended to disable this service during the repackaging of a software.", false, serviceController.Status != ServiceControllerStatus.Stopped);
                             break;
