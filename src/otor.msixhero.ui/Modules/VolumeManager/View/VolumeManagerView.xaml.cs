@@ -4,24 +4,19 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using otor.msixhero.lib.BusinessLayer.Appx.Builder;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Volumes;
-using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Domain.State;
-using otor.msixhero.ui.Modules.PackageList;
 using Prism.Events;
-using Prism.Regions;
 
 namespace otor.msixhero.ui.Modules.VolumeManager.View
 {
     /// <summary>
-    /// Interaction logic for VolumeManager.xaml
+    /// Interaction logic for Volume Manager.
     /// </summary>
-    public partial class VolumeManagerView : UserControl
+    public partial class VolumeManagerView
     {
         private readonly IApplicationStateManager stateManager;
         private readonly IEventAggregator eventAggregator;

@@ -1,0 +1,343 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.SystemStatus.View.SystemStatusView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.SystemStatus.ViewModel"
+             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:SystemStatusViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <ScrollViewer Margin="16 16 0 16" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <DockPanel Margin="0 0 16 0">
+            <DockPanel.Resources>
+                <Style TargetType="Hyperlink" x:Key="PassiveHyperlink">
+                    <Setter Property="Foreground" Value="#888" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="ToggleButton">
+                    <Setter Property="HorizontalAlignment" Value="Left" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="8" />
+                    <Setter Property="Width" Value="300" />
+                    <Setter Property="Margin" Value="8" />
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                    <DockPanel Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                        <Path 
+                                            x:Name="PART_Path"
+                                            Visibility="{TemplateBinding IsChecked, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                                            DockPanel.Dock="Right" 
+                                            Margin="16 0 0 0" 
+                                            VerticalAlignment="Center" 
+                                            Style="{StaticResource MediumIcon}" 
+                                            Data="M 4.21875 10.78125 L 2.78125 12.21875 L 15.28125 24.71875 L 16 25.40625 L 16.71875 24.71875 L 29.21875 12.21875 L 27.78125 10.78125 L 16 22.5625 Z" />
+                                        <ContentPresenter />
+                                    </DockPanel>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter Property="Opacity" Value="0" TargetName="PART_Path" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#BEE6FD" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="Border" x:Key="BorderEase">
+                    <Setter Property="Padding" Value="72 8 8 8 " />
+                    <Setter Property="Background" Value="#efefef" />
+                    <Setter Property="Opacity" Value="0.0" />
+                    <Setter Property="LayoutTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleY="0.0" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="Tag">
+                            <Trigger.Value>
+                                <system:Boolean>True</system:Boolean>
+                            </Trigger.Value>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="LayoutTransform.ScaleY">
+                                            <DoubleAnimationUsingKeyFrames.KeyFrames>
+                                                <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00" />
+                                                <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:0.2" />
+                                                <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:0.4" />
+                                            </DoubleAnimationUsingKeyFrames.KeyFrames>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                            <DoubleAnimationUsingKeyFrames.KeyFrames>
+                                                <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00" />
+                                                <SplineDoubleKeyFrame Value="0" KeyTime="00:00:0.2" />
+                                                <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:0.4" />
+                                            </DoubleAnimationUsingKeyFrames.KeyFrames>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="LayoutTransform.ScaleY">
+                                            <DoubleAnimationUsingKeyFrames.KeyFrames>
+                                                <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
+                                                <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:0.2" />
+                                                <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:0.4" />
+                                            </DoubleAnimationUsingKeyFrames.KeyFrames>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                            <DoubleAnimationUsingKeyFrames.KeyFrames>
+                                                <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00" />
+                                                <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:0.2" />
+                                                <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:0.4" />
+                                            </DoubleAnimationUsingKeyFrames.KeyFrames>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Resources>
+            <!--<Label DockPanel.Dock="Top" Style="{StaticResource Label}">Recommendation profile</Label>
+        <ComboBox DockPanel.Dock="Top" Margin="0 0 0 32">
+            <ComboBoxItem IsSelected="True">MSIX Consumer</ComboBoxItem>
+            <ComboBoxItem IsSelected="True">MSIX Repackaging</ComboBoxItem>
+        </ComboBox>-->
+            <Label Style="{StaticResource Label}" Margin="0 0 0 4"  DockPanel.Dock="Top">Make most out of MSIX</Label>
+            <TextBlock DockPanel.Dock="Top" Opacity="0.5" Margin="0 0 0 16" Text="See what's happening with MSIX, important services and related programs on your device and take any actions needed." />
+            <StackPanel Margin="-8" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                <ToggleButton IsEnabled="False">
+                    <DockPanel VerticalAlignment="Center">
+
+                        <Viewbox Width="48" Height="48" Margin="0 0 8 0" VerticalAlignment="Center">
+                            <Canvas Width="32" Height="32">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDebugging}" />
+                                <Ellipse Fill="Green" Width="12" Height="12" Canvas.Right="2" Canvas.Bottom="2" />
+
+                                <Path Width="32" Height="32" StrokeThickness="3" Stroke="White" Canvas.Right="3.5" Canvas.Bottom="3.5" Data="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" Fill="White">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.25" ScaleY="0.25" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center" Margin="0 0 0 0">
+                            <TextBlock Text="Developer and sideloading" TextWrapping="Wrap" Margin="0 0 0 2" Padding="0" FontSize="15"/>
+                            <TextBlock Opacity="0.7" Text="No action required" />
+                        </StackPanel>
+                    </DockPanel>
+                </ToggleButton>
+                <ToggleButton x:Name="Button1">
+                    <DockPanel>
+
+                        <Viewbox Width="48" Height="48" Margin="0 0 8 0" VerticalAlignment="Center">
+                            <Canvas Width="32" Height="32">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorServices}" />
+                                <Ellipse Fill="Green" Width="12" Height="12" Canvas.Right="2" Canvas.Bottom="2" />
+
+                                <Path Width="32" Height="32" StrokeThickness="3" Stroke="White" Canvas.Right="3.5" Canvas.Bottom="3.5" Data="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" Fill="White">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.25" ScaleY="0.25" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center" Margin="0 0 0 0">
+                            <TextBlock Text="Services" TextWrapping="Wrap" Margin="0 0 0 2" Padding="0" FontSize="15"/>
+                            <TextBlock Opacity="0.7" Text="No action required" />
+                        </StackPanel>
+                    </DockPanel>
+                </ToggleButton>
+
+                <Border Style="{StaticResource BorderEase}" Tag="{Binding ElementName=Button1, Path=IsChecked}">
+                    <ItemsControl ItemsSource="{Binding ServiceRecommendations.CurrentValue}" Margin="0 -8">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type viewModel:ServiceRecommendationViewModel}">
+                                <DockPanel Margin="0 8">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" Margin="0 0 0 0" Foreground="Black" />
+                                        <TextBlock Visibility="Collapsed" x:Name="PART_Description" Opacity="0.6" TextWrapping="Wrap" Text="{Binding Recommendation}" Margin="0 0 0 0" Foreground="Black" />
+                                        <TextBlock x:Name="PART_Ok"  Foreground="Green" Visibility="Visible">
+                                            <Run Text="This service is stopped." />
+                                            <Hyperlink>Click here to start it</Hyperlink>
+                                        </TextBlock>
+                                        <Button Visibility="Collapsed" x:Name="PART_Button" HorizontalAlignment="Left" Margin="0 8 0 8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Margin="-2 -3 3 -3" UseLayoutRounding="True" SnapsToDevicePixels="True" Source="{x:Static helpers:ShieldIcon.Source}" VerticalAlignment="Center" />
+                                                <TextBlock Text="Stop" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </DockPanel>
+                                <DataTemplate.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsRunning}">
+                                                <Condition.Value>
+                                                    <system:Boolean>True</system:Boolean>
+                                                </Condition.Value>
+                                            </Condition>
+                                            <Condition Binding="{Binding ShouldRun}">
+                                                <Condition.Value>
+                                                    <system:Boolean>False</system:Boolean>
+                                                </Condition.Value>
+                                            </Condition>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter TargetName="PART_Button" Property="Visibility" Value="Visible" />
+                                            <Setter TargetName="PART_Ok" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="PART_Description" Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsRunning}">
+                                                <Condition.Value>
+                                                    <system:Boolean>False</system:Boolean>
+                                                </Condition.Value>
+                                            </Condition>
+                                            <Condition Binding="{Binding ShouldRun}">
+                                                <Condition.Value>
+                                                    <system:Boolean>True</system:Boolean>
+                                                </Condition.Value>
+                                            </Condition>
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter TargetName="PART_Button" Property="Visibility" Value="Visible" />
+                                            <Setter TargetName="PART_Ok" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="PART_Description" Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+
+                <ToggleButton IsEnabled="False">
+                    <DockPanel>
+
+                        <Viewbox VerticalAlignment="Center" Width="48" Height="48" Margin="0 0 8 0">
+                            <Canvas Width="32" Height="32">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUpdates}" />
+                                <Ellipse Fill="Orange" Width="12" Height="12" Canvas.Right="2" Canvas.Bottom="2" />
+
+                                <Path Width="32" Height="32" StrokeThickness="3" Stroke="White" Canvas.Right="3.5" Canvas.Bottom="3.5" Data="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" Fill="White">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.25" ScaleY="0.25" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock TextWrapping="Wrap" Text="Updates" Margin="0 0 0 2" Padding="0" FontSize="15"/>
+                            <TextBlock Opacity="0.7" Text="Recommendation available" />
+                        </StackPanel>
+                    </DockPanel>
+                </ToggleButton>
+                <ToggleButton x:Name="Button4">
+                    <DockPanel>
+
+                        <Viewbox Width="48" Height="48" Margin="0 0 8 0">
+                            <Canvas Width="32" Height="32">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPlugin}" />
+                                <Ellipse Fill="Green" Width="12" Height="12" Canvas.Right="2" Canvas.Bottom="2" />
+
+                                <Path Width="32" Height="32" StrokeThickness="3" Stroke="White" Canvas.Right="3.5" Canvas.Bottom="3.5" Data="M 28.28125 6.28125 L 11 23.5625 L 3.71875 16.28125 L 2.28125 17.71875 L 10.28125 25.71875 L 11 26.40625 L 11.71875 25.71875 L 29.71875 7.71875 Z" Fill="White">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.25" ScaleY="0.25" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="MSIX Tooling" TextWrapping="Wrap" Margin="0 0 0 2" Padding="0" FontSize="15"/>
+                            <TextBlock Opacity="0.7" Text="{Binding DiscoveredAppsCaption}" />
+                        </StackPanel>
+                    </DockPanel>
+                </ToggleButton>
+                <Border Style="{StaticResource BorderEase}" Tag="{Binding ElementName=Button4, Path=IsChecked}">
+                    <StackPanel>
+                        <ItemsControl Margin="-8" HorizontalAlignment="Left" ItemsSource="{Binding DiscoveredApps.CurrentValue}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type viewModel:DiscoveredAppViewModel}">
+                                    <DockPanel Margin="8">
+                                        <Image x:Name="PART_Logo" Source="Logos/Square44x44Logo.png" SnapsToDevicePixels="True" UseLayoutRounding="True" Width="32" Height="32" Margin="0 0 8 0" VerticalAlignment="Center" />
+
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Margin="0 0 0 0" Foreground="Black">
+                                                <Run Text="{Binding Mode=OneTime, Path=Name}" />
+                                                <Run Text="{Binding Mode=OneTime, Path=Version}" />
+                                            </TextBlock>
+                                            <TextBlock Visibility="Collapsed" Opacity="0.6" Text="{Binding Mode=OneTime, Path=Publisher}" Margin="0 0 0 0" Foreground="Black" />
+                                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <Hyperlink Style="{StaticResource PassiveHyperlink}" Tag="{Binding Website}" Click="OpenLink">
+                                                    <Run Text="{Binding Publisher, Mode=OneTime}" />
+                                                </Hyperlink>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IconId}" Value="ADVINST">
+                                            <Setter TargetName="PART_Logo" Property="Source" Value="Logos/AdvancedInstaller17Square44x44Logo.targetsize-32.png" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IconId}" Value="MSIXPKGTOOL">
+                                            <Setter TargetName="PART_Logo" Property="Source" Value="Logos/AppPackage.png" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IconId}" Value="RAYPACK">
+                                            <Setter TargetName="PART_Logo" Property="Source" Value="Logos/Square44x44Logo.targetsize-48.png" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Margin="0 8">
+                            <Hyperlink Click="OpenLink" Tag="https://docs.microsoft.com/en-us/windows/msix/partners">Discover more tools...</Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </DockPanel>
+    </ScrollViewer>
+</UserControl>

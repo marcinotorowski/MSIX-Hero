@@ -7,6 +7,7 @@
         public const string RegionPackageSidebar = "PackageSidebar";
 
         public const string PathVolumeManager = "VolumeManager";
+        public const string PathSystemStatus = "SystemStatus";
         public const string PathSettings = "Settings";
 
         public const string PathPackagesList = "PackageList";

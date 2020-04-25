@@ -24,6 +24,10 @@
     <None Remove="Modules\PackageList\View\icons8-sugar-cube-48.png" />
     <None Remove="Modules\Settings\View\Images\no-sidebar.png" />
     <None Remove="Modules\Settings\View\Images\sidebar.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\AppPackage.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
     <None Remove="Resources\Images\help.png" />
     <None Remove="Resources\Images\msix-hero-64-1.png" />
     <None Remove="Resources\Images\msix-hero-64-dark.png" />
@@ -52,6 +56,14 @@
     <Resource Include="Modules\PackageList\View\icons8-sugar-cube-48.png" />
     <Resource Include="Modules\Settings\View\Images\no-sidebar.png" />
     <Resource Include="Modules\Settings\View\Images\sidebar.png" />
+    <Resource Include="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\SystemStatus\View\Logos\AppPackage.png" />
+    <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
     <Resource Include="Resources\Images\help.png" />
     <Resource Include="Resources\Images\msix-hero-64-dark.png" />
     <Resource Include="Resources\Images\msix-hero-64.png" />

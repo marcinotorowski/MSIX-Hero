@@ -899,7 +899,6 @@
                                                 DockPanel.Dock="Left"
                                                 x:Name="HeaderPanel"
                                                 Panel.ZIndex="1"
-                                                Width="0"
                                                 Margin="{TemplateBinding Padding}"
                                                 IsItemsHost="True"
                                                 KeyboardNavigation.TabIndex="1"

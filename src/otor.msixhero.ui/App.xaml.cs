@@ -11,6 +11,8 @@ using otor.msixhero.lib.BusinessLayer.Appx.Packer;
 using otor.msixhero.lib.BusinessLayer.Appx.Signing;
 using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.BusinessLayer.SystemState.Services;
+using otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
@@ -23,6 +25,7 @@ using otor.msixhero.ui.Modules.Dialogs;
 using otor.msixhero.ui.Modules.Main;
 using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.Settings;
+using otor.msixhero.ui.Modules.SystemStatus;
 using otor.msixhero.ui.Modules.VolumeManager;
 using otor.msixhero.ui.Services;
 using Prism.Ioc;
@@ -107,6 +110,8 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
             containerRegistry.RegisterSingleton<IProcessManager, ProcessManager>();
+            containerRegistry.Register<IThirdPartyDetector, ThirdPartyDetector>();
+            containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
         }
         
         protected override void OnStartup(StartupEventArgs startupEventArgs)
@@ -156,6 +161,7 @@ namespace otor.msixhero.ui
             moduleCatalog.AddModule<SettingsModule>();
             moduleCatalog.AddModule<PackageListModule>();
             moduleCatalog.AddModule<VolumeManagerModule>();
+            moduleCatalog.AddModule<SystemStatusModule>();
             moduleCatalog.AddModule<DialogsModule>();
             moduleCatalog.AddModule<CommonModule>();
         }
