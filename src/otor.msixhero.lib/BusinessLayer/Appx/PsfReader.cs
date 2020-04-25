@@ -96,13 +96,16 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         else if (psfDef.Executable.StartsWith("[{", StringComparison.OrdinalIgnoreCase))
                         {
                             var indexOfClosing = psfDef.Executable.IndexOf("}]", StringComparison.OrdinalIgnoreCase);
-                            var middlePart = psfDef.Executable.Substring(2, indexOfClosing - 2);
-                            var testedPath = "VFS\\" + middlePart + psfDef.Executable.Substring(indexOfClosing + 2);
-
-                            if (fileReader.FileExists(testedPath))
+                            if (indexOfClosing != -1)
                             {
-                                // this is to make sure that a path like [{ProgramFilesX86}]\test is replaced to VFS\ProgramFilesX86\test if present
-                                psfDef.Executable = testedPath;
+                                var middlePart = psfDef.Executable.Substring(2, indexOfClosing - 2);
+                                var testedPath = "VFS\\" + middlePart + psfDef.Executable.Substring(indexOfClosing + 2);
+
+                                if (fileReader.FileExists(testedPath))
+                                {
+                                    // this is to make sure that a path like [{ProgramFilesX86}]\test is replaced to VFS\ProgramFilesX86\test if present
+                                    psfDef.Executable = testedPath;
+                                }
                             }
                         }
 

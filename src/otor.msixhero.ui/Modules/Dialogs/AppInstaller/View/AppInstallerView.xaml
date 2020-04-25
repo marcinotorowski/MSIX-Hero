@@ -79,7 +79,7 @@
                                 <TextBlock Foreground="#666" Text="When to check for updates?" Margin="0 0 0 6" />
                                 <ComboBox SelectedValue="{Binding AppInstallerUpdateCheckingMethod.CurrentValue}" SelectedValuePath="Tag" Margin="0 0 0 0">
                                     <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
-                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On lauch</ComboBoxItem>
+                                    <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On launch</ComboBoxItem>
                                     <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}">Every 8 hours</ComboBoxItem>
                                     <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and every 8 hours</ComboBoxItem>
                                 </ComboBox>
