@@ -47,12 +47,6 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (eventRequired)
-            {
-                var eventToSend = new PackagesFilterChangedPayload(newFilter, oldFilter, newSearchKey, oldSearchKey);
-                this.StateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Publish(eventToSend);
-            }
-
             var toHide = new List<InstalledPackage>();
             var toShow = new List<InstalledPackage>();
 
@@ -136,8 +130,15 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 }
             }
 
+            var selectionRemoved = new List<InstalledPackage>();
+
             foreach (var item in toHide)
             {
+                if (state.Packages.SelectedItems.Remove(item))
+                {
+                    selectionRemoved.Add(item);
+                }
+
                 state.Packages.VisibleItems.Remove(item);
                 state.Packages.HiddenItems.Add(item);
             }
@@ -146,6 +147,18 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 state.Packages.VisibleItems.Add(item);
                 state.Packages.HiddenItems.Remove(item);
+            }
+
+            if (eventRequired)
+            {
+                var eventToSend = new PackagesFilterChangedPayload(newFilter, oldFilter, newSearchKey, oldSearchKey);
+                this.StateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Publish(eventToSend);
+            }
+            
+            if (selectionRemoved.Any())
+            {
+                var eventToSend = new PackagesSelectionChangedPayLoad(new List<InstalledPackage>(), selectionRemoved);
+                this.StateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(eventToSend);
             }
 
             if (toHide.Any() || toShow.Any()) 
