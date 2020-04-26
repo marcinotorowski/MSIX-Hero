@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace otor.msixhero.lib.Domain.SystemState.Services
+﻿namespace otor.msixhero.lib.Domain.SystemState.Services
 {
     public interface IServiceRecommendation
     {
-        string Name { get; }
+        string ServiceName { get; }
+
+        string DisplayName { get; }
 
         string ActionPrompt { get; }
 

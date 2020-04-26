@@ -14,14 +14,14 @@ namespace otor.msixhero.lib.BusinessLayer.State
         private readonly IList<IBusyContext> contexts = new List<IBusyContext>();
         private readonly object lockObject = new object();
 
-        public IBusyContext Begin()
+        public IBusyContext Begin(OperationType type = OperationType.Other)
         {
             Logger.Trace("Starting a context...");
             lock (lockObject)
             {
-                var context = new ProgressBusyContext(this);
+                var context = new ProgressBusyContext(this, type);
                 this.contexts.Add(context);
-                this.RefreshStatus();
+                this.RefreshStatus(type);
                 Logger.Trace("Context started...");
                 return context;
             }
@@ -33,14 +33,14 @@ namespace otor.msixhero.lib.BusinessLayer.State
             lock (lockObject)
             {
                 contexts.Remove(context);
-                this.RefreshStatus();
+                this.RefreshStatus(context.Type);
                 Logger.Trace("Context ended...");
             }
         }
 
-        public void ExecuteAsync(Action<IBusyContext> action)
+        public void ExecuteAsync(Action<IBusyContext> action, OperationType type = OperationType.Other)
         {
-            var context = this.Begin();
+            var context = this.Begin(type);
 
             try
             {
@@ -52,9 +52,9 @@ namespace otor.msixhero.lib.BusinessLayer.State
             }
         }
 
-        public async Task ExecuteAsync(Func<IBusyContext, Task> taskFactory)
+        public async Task ExecuteAsync(Func<IBusyContext, Task> taskFactory, OperationType type = OperationType.Other)
         {
-            var context = this.Begin();
+            var context = this.Begin(type);
 
             try
             {
@@ -68,7 +68,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
 
         public event EventHandler<IBusyStatusChange> StatusChanged;
 
-        private void RefreshStatus()
+        private void RefreshStatus(OperationType operationType)
         {
             var sc = this.StatusChanged;
             if (sc == null)
@@ -81,12 +81,12 @@ namespace otor.msixhero.lib.BusinessLayer.State
             if (context != null)
             {
                 Logger.Trace($@"Notifying ({{true}}, {context.Message}, {context.Progress}%");
-                sc(this, new BusyStatusChange(true, context.Message, context.Progress));
+                sc(this, new BusyStatusChange(operationType, true, context.Message, context.Progress));
             }
             else
             {
                 Logger.Trace($@"Notifying ({{false}}, 100%");
-                sc(this, new BusyStatusChange(false, null, 100));
+                sc(this, new BusyStatusChange(operationType, false, null, 100));
             }
         }
 
@@ -96,10 +96,13 @@ namespace otor.msixhero.lib.BusinessLayer.State
             private string message;
             private int progress = -1;
 
-            public ProgressBusyContext(BusyManager manager)
+            public ProgressBusyContext(BusyManager manager, OperationType operationType)
             {
                 this.manager = manager;
+                this.Type = operationType;
             }
+
+            public OperationType Type { get; }
 
             public string Message
             {
@@ -111,7 +114,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
                 set
                 {
                     this.message = value;
-                    this.manager.RefreshStatus();
+                    this.manager.RefreshStatus(this.Type);
                 }
             }
 
@@ -125,7 +128,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
                 set
                 {
                     this.progress = value;
-                    this.manager.RefreshStatus();
+                    this.manager.RefreshStatus(this.Type);
                 }
             }
 
@@ -133,7 +136,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
             {
                 this.message = value.Message;
                 this.progress = value.Progress;
-                this.manager.RefreshStatus();
+                this.manager.RefreshStatus(this.Type);
             }
         }
     }

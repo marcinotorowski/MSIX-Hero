@@ -156,7 +156,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private async void RefreshExecute()
         {
-            var context = this.busyManager.Begin();
+            var context = this.busyManager.Begin(OperationType.PackageLoading);
             try
             {
                 await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);

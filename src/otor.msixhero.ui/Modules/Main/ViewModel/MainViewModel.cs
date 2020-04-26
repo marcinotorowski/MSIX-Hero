@@ -216,6 +216,11 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
+            if (e.Type == OperationType.PackageLoading)
+            {
+                return;
+            }
+
             this.IsLoading = e.IsBusy;
             this.LoadingMessage = e.Message;
             this.LoadingProgress = e.Progress;

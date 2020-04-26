@@ -34,6 +34,7 @@ namespace otor.msixhero.ui.Commands
             AppAttach = new RoutedUICommand { Text = "Opens a wizard for app attach generation" };
             Settings = new RoutedUICommand { Text = "Opens settings" };
             PackageExpert = new RoutedUICommand { Text = "Open Package Expert"};
+            ServiceManager = new RoutedUICommand { Text = "Open Service Manager"};
         }
 
         public static RoutedUICommand SetVolumeAsDefault { get; }
@@ -91,5 +92,7 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand AppAttach { get; }
 
         public static RoutedUICommand Settings { get; }
+
+        public static RoutedUICommand ServiceManager { get; }
     }
 }

@@ -4,6 +4,8 @@
     {
         Packages,
 
-        VolumeManager
+        VolumeManager,
+
+        SystemStatus
     }
 }

@@ -2,12 +2,13 @@
 {
     public class ServiceRecommendation : IServiceRecommendation
     {
-        public ServiceRecommendation(string name, string actionPrompt, bool expectedToRun, bool actual)
+        public ServiceRecommendation(string serviceName, string displayName, string actionPrompt, bool expectedToRun, bool actual)
         {
             this.ActionPrompt = actionPrompt;
             this.Actual = actual;
             this.ExpectedToRun = expectedToRun;
-            this.Name = name;
+            this.DisplayName = displayName;
+            this.ServiceName = serviceName;
         }
 
         public string ActionPrompt { get; }
@@ -16,6 +17,8 @@
 
         public bool ExpectedToRun { get; }
 
-        public string Name { get; }
+        public string DisplayName { get; }
+
+        public string ServiceName { get; }
     }
 }

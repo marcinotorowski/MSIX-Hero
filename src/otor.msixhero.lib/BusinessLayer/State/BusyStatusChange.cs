@@ -4,12 +4,15 @@ namespace otor.msixhero.lib.BusinessLayer.State
 {
     public class BusyStatusChange : IBusyStatusChange
     {
-        public BusyStatusChange(bool isBusy, string message, int progress)
+        public BusyStatusChange(OperationType type, bool isBusy, string message, int progress)
         {
-            IsBusy = isBusy;
-            Message = message;
-            Progress = progress;
+            this.Type = type;
+            this.IsBusy = isBusy;
+            this.Message = message;
+            this.Progress = progress;
         }
+
+        public OperationType Type { get; }
 
         public bool IsBusy { get; private set; }
 

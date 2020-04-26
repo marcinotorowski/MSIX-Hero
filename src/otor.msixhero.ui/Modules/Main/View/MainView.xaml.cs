@@ -63,8 +63,12 @@ namespace otor.msixhero.ui.Modules.Main.View
                     this.RibbonTabVolumesHome.Visibility = Visibility.Collapsed;
                     this.RibbonTabVolumesManagement.Visibility = Visibility.Collapsed;
 
+                    this.RibbonTabSystemHome.Visibility = Visibility.Collapsed;
+
                     this.SelectedPackage.Visibility = this.appStateManager.CurrentState.Packages.SelectedItems.Any() ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedVolume.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabSystemHome.IsSelected = true;
                     // this.Ribbon.ContextualGroups[0]
                     break;
                 case ApplicationMode.VolumeManager:
@@ -78,8 +82,30 @@ namespace otor.msixhero.ui.Modules.Main.View
                     this.RibbonTabVolumesHome.Visibility = Visibility.Visible;
                     this.RibbonTabVolumesManagement.Visibility = Visibility.Visible;
 
+                    this.RibbonTabSystemHome.Visibility = Visibility.Collapsed;
+
                     this.SelectedPackage.Visibility = Visibility.Collapsed;
                     this.SelectedVolume.Visibility = Visibility.Visible;
+
+                    this.RibbonTabVolumesHome.IsSelected = true;
+                    break;
+                case ApplicationMode.SystemStatus:
+                    this.RibbonTabHome.Visibility = Visibility.Collapsed;
+                    this.RibbonTabEdit.Visibility = Visibility.Collapsed;
+                    this.RibbonTabCertificates.Visibility = Visibility.Collapsed;
+                    this.RibbonTabManagement.Visibility = Visibility.Collapsed;
+                    this.RibbonTabDeveloper.Visibility = Visibility.Collapsed;
+                    this.RibbonTabView.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabVolumesHome.Visibility = Visibility.Collapsed;
+                    this.RibbonTabVolumesManagement.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabSystemHome.Visibility = Visibility.Visible;
+
+                    this.SelectedPackage.Visibility = Visibility.Collapsed;
+                    this.SelectedVolume.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabSystemHome.IsSelected = true;
                     break;
             }
         }

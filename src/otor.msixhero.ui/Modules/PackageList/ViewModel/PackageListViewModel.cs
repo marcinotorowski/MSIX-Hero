@@ -16,6 +16,7 @@ using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
@@ -48,6 +49,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private bool isActive;
         private bool firstRun = true;
         private ICommand showSelectionDetails;
+        private bool isLoading;
+        private int loadingProgress;
+        private string loadingMessage;
 
         public PackageListViewModel(
             IApplicationStateManager stateManager,
@@ -73,6 +77,38 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
             stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnGroupAndSortChanged, ThreadOption.UIThread);
+
+            this.busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
+        }
+
+        private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
+        {
+            if (e.Type != OperationType.PackageLoading)
+            {
+                return;
+            }
+
+            this.IsLoading = e.IsBusy;
+            this.LoadingMessage = e.Message;
+            this.LoadingProgress = e.Progress;
+        }
+
+        public bool IsLoading
+        {
+            get => this.isLoading;
+            private set => this.SetField(ref this.isLoading, value);
+        }
+
+        public int LoadingProgress
+        {
+            get => this.loadingProgress;
+            private set => this.SetField(ref this.loadingProgress, value);
+        }
+
+        public string LoadingMessage
+        {
+            get => this.loadingMessage;
+            private set => this.SetField(ref this.loadingMessage, value);
         }
 
         public PackageListCommandHandler CommandHandler => new PackageListCommandHandler(this.interactionService, this.configurationService, this.stateManager, this.dialogService, this.busyManager);
@@ -98,7 +134,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     {
                         firstRun = false;
 
-                        var context = this.busyManager.Begin();
+                        var context = this.busyManager.Begin(OperationType.PackageLoading);
                         this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ContinueWith(
                             t =>
                             {
