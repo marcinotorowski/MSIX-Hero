@@ -32,15 +32,15 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode
             {
                 case SideloadingStatus.NotAllowed:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "Loading of apps outside of MS Store is disabled";
+                    this.Summary = "Only apps from Microsoft Store can be installed.";
                     break;
                 case SideloadingStatus.Sideloading:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "No action required.";
+                    this.Summary = "Sideloading of apps is enabled.";
                     break;
                 case SideloadingStatus.DeveloperMode:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "No action required.";
+                    this.Summary = "Developer mode is enabled.";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -1,11 +1,14 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.lib.BusinessLayer.SystemState.Services;
 using otor.msixhero.lib.Domain.SystemState;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 
 namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging
 {
@@ -14,12 +17,29 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging
         protected readonly IServiceRecommendationAdvisor ServiceAdvisor;
         private readonly IInteractionService interactionService;
 
-        public RepackagingRecommendationViewModel(IServiceRecommendationAdvisor serviceAdvisor, IInteractionService interactionService)
+        public RepackagingRecommendationViewModel(
+            IServiceRecommendationAdvisor serviceAdvisor, 
+            IInteractionService interactionService,
+            AutoDownloadRecommendationViewModel autoDownloadRecommendation)
         {
             this.ServiceAdvisor = serviceAdvisor;
             this.interactionService = interactionService;
+            this.AutoDownloadRecommendation = autoDownloadRecommendation;
             this.Items = new ObservableCollection<ServiceRecommendationViewModel>();
+            this.AutoDownloadRecommendation.PropertyChanged += AutoDownloadRecommendationOnPropertyChanged;
         }
+
+        private void AutoDownloadRecommendationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == null || e.PropertyName == nameof(AutoDownloadRecommendationViewModel.AutoDownloadStatus))
+            {
+#pragma warning disable 4014
+                this.Refresh();
+#pragma warning restore 4014
+            }
+        }
+
+        public AutoDownloadRecommendationViewModel AutoDownloadRecommendation { get; }
 
         public override string Title { get; } = "Repackaging on this machine";
         
@@ -37,27 +57,33 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging
             this.OnPropertyChanged(nameof(Items));
 
             var suggestedActions = this.Items.Count(c => c.IsRunning != c.ShouldRun);
+
+            if (this.AutoDownloadRecommendation.AutoDownloadStatus != WindowsStoreAutoDownload.Never)
+            {
+                suggestedActions++;
+            }
+
             switch (suggestedActions)
             {
                 case 0:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "No suggestions available";
+                    this.Summary = "No recommendations available";
                     break;
                 case 1:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "One suggestion available";
+                    this.Summary = "One recommendations available";
                     break;
                 case 2:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "Two suggestions available";
+                    this.Summary = "Two recommendations available";
                     break;
                 case 3:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "Three suggestions available";
+                    this.Summary = "Three recommendations available";
                     break;
                 default:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = suggestedActions + " suggestions available";
+                    this.Summary = suggestedActions + " recommendations available";
                     break;
             }
         }

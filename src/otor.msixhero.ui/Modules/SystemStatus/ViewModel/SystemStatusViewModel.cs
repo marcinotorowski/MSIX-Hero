@@ -14,6 +14,7 @@ using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling;
+using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Regions;
@@ -22,6 +23,7 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
 {
     public class SystemStatusViewModel : NotifyPropertyChanged, IHeaderViewModel, INavigationAware, IActiveAware
     {
+        protected readonly ISideloadingChecker SideLoadCheck = new RegistrySideloadingChecker();
         private readonly IApplicationStateManager stateManager;
         private bool isActive;
         private bool isLoading;
@@ -34,9 +36,16 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
         {
             this.stateManager = stateManager;
             this.Items = new ObservableCollection<BaseRecommendationViewModel>();
-            this.Items.Add(new DeveloperAndSideloadingRecommendationViewModel(new RegistrySideloadingChecker()));
-            this.Items.Add(new RepackagingRecommendationViewModel(serviceAdvisor, interactionService));
-            this.Items.Add(new ToolingRecommendationViewModel(thirdPartyDetector));
+
+            var item4 = new ToolingRecommendationViewModel(thirdPartyDetector);
+            var item3 = new AutoDownloadRecommendationViewModel(this.SideLoadCheck);
+            var item2 = new RepackagingRecommendationViewModel(serviceAdvisor, interactionService, item3);
+            var item1 = new DeveloperAndSideloadingRecommendationViewModel(this.SideLoadCheck);
+
+            this.Items.Add(item1);
+            this.Items.Add(item2);
+            this.Items.Add(item3);
+            this.Items.Add(item4);
         }
 
         public SystemStatusCommandHandler CommandHandler { get; } = new SystemStatusCommandHandler();

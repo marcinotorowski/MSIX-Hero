@@ -16,7 +16,7 @@ namespace otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty
                 new RayPackDetector()
             };
 
-            return detectors.SelectMany(d => d.DetectApps()).OrderBy(a => a.AppId == "MSIXHERO" ? "#" : a.Name);
+            return detectors.SelectMany(d => d.DetectApps()).Where(a => a.AppId != "MSIXHERO").OrderBy(a => a.AppId == "MSIXHERO" ? "#" : a.Name);
         }
     }
 }

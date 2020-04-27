@@ -2,9 +2,11 @@
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
+using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 
 namespace otor.msixhero.ui.Modules.SystemStatus.View
 {
@@ -39,7 +41,12 @@ namespace otor.msixhero.ui.Modules.SystemStatus.View
             }
             else if (sourceViewModel is RepackagingRecommendationViewModel)
             {
-                var process = new ProcessStartInfo("services.msc") { UseShellExecute = true };
+                var process = new ProcessStartInfo("services.msc") { UseShellExecute = true, Verb = "runas" };
+                Process.Start(process);
+            }
+            else if (sourceViewModel is AutoDownloadRecommendationViewModel)
+            {
+                var process = new ProcessStartInfo("gpedit.msc") { UseShellExecute = true, Verb = "runas"};
                 Process.Start(process);
             }
         }
@@ -59,6 +66,18 @@ namespace otor.msixhero.ui.Modules.SystemStatus.View
         {
             var serviceItem = (ServiceRecommendationViewModel)e.Parameter;
             serviceItem.Stop();
+        }
+
+        private void DisableUpdatesClick(object sender, RoutedEventArgs e)
+        {
+            var dataContext = (AutoDownloadRecommendationViewModel)((FrameworkElement)sender).DataContext;
+            dataContext.AutoDownloadStatus = WindowsStoreAutoDownload.Never;
+        }
+
+        private void RestoreUpdatesClick(object sender, RoutedEventArgs e)
+        {
+            var dataContext = (AutoDownloadRecommendationViewModel) ((FrameworkElement) sender).DataContext;
+            dataContext.AutoDownloadStatus = WindowsStoreAutoDownload.Default;
         }
     }
 }

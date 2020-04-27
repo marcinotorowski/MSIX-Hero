@@ -1,6 +1,6 @@
 ﻿using otor.msixhero.lib.Domain.SystemState.ThirdParty;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
+namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling
 {
     public class DiscoveredAppViewModel
     {

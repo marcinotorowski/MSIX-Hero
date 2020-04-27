@@ -5,5 +5,9 @@
         SideloadingStatus GetStatus();
 
         bool SetStatus(SideloadingStatus status);
+
+        WindowsStoreAutoDownload GetStoreAutoDownloadStatus();
+
+        bool SetStoreAutoDownloadStatus(WindowsStoreAutoDownload status);
     }
 }

@@ -38,16 +38,24 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling
             switch (this.Items.Count)
             {
                 case 0:
-                    this.Summary = "No discovered app found.";
+                    this.Summary = "No MSIX authoring tool detected on this machine.";
                     this.Status = RecommendationStatus.Warning;
                     break;
                 case 1:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "One discovered app found.";
+                    this.Summary = "One MSIX authoring tool has been discovered.";
+                    break;
+                case 2:
+                    this.Status = RecommendationStatus.Success;
+                    this.Summary = "Two MSIX authoring tools have been discovered.";
+                    break;
+                case 3:
+                    this.Status = RecommendationStatus.Success;
+                    this.Summary = "Three MSIX authoring tools have been discovered.";
                     break;
                 default:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = $"{this.Items.Count} discovered apps found.";
+                    this.Summary = $"{this.Items.Count} MSIX authoring tools have been discovered.";
                     break;
             }
         }
