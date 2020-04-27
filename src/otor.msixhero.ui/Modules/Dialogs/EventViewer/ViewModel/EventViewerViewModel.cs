@@ -72,7 +72,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
             {
                 this.IsLoading = true;
 
-                var action = new GetLogs(50);
+                var action = new GetLogs(150);
                 var result = await this.stateManager.CommandExecutor.GetExecuteAsync(action).ConfigureAwait(false);
                 return new ObservableCollection<Log>(result);
             }

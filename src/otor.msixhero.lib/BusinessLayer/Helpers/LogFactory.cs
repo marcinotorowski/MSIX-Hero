@@ -27,7 +27,7 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                         var reg = Regex.Match(log.Message ?? string.Empty, @"\b([\w\.]+)_[a-z0-9]{13}\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
                         if (reg.Success)
                         {
-                            log.PackageName = reg.Groups[1].Value;
+                            log.PackageName = reg.Groups[1].Value.TrimEnd('_');
                         }
 
                         break;
