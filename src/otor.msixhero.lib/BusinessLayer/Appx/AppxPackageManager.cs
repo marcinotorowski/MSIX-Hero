@@ -496,6 +496,23 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return this.GetInstalledPackages(null, mode, cancellationToken, progress);
         }
 
+        public async Task<List<InstalledPackage>> GetPackagesByFamilyName(string packageFamilyName, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        {
+            var pkgMan = new PackageManager();
+            var allPackages = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty, packageFamilyName).ToList(), cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var result = new List<InstalledPackage>();
+            foreach (var item in allPackages)
+            {
+                var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
+                converted.Context = PackageContext.CurrentUser;
+                result.Add(converted);
+            }
+
+            return result;
+        }
+
         public async Task<InstalledPackage> GetInstalledPackages(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var pkgMan = new PackageManager();

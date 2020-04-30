@@ -3,8 +3,8 @@ using otor.msixhero.lib.Domain.SystemState.ThirdParty;
 
 namespace otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty
 {
-    public interface IThirdPartyDetector
+    public interface IThirdPartyAppProvider
     {
-        IEnumerable<ThirdPartyDetectedApp> DetectApps();
+        IEnumerable<IThirdPartyApp> ProvideApps();
     }
 }

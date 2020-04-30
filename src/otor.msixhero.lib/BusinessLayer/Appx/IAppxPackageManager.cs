@@ -47,6 +47,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
         Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
+        Task<List<InstalledPackage>> GetPackagesByFamilyName(string packageFamilyName, CancellationToken cancellationToken, IProgress<ProgressData> progress = default);
+
         Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);

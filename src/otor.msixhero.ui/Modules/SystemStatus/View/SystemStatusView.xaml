@@ -52,7 +52,7 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="VerticalContentAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="8" />
-                    <Setter Property="Width" Value="360" />
+                    <Setter Property="Width" Value="390" />
                     <Setter Property="Margin" Value="8" />
                     <Setter Property="BorderThickness" Value="0" />
                     <Setter Property="Cursor" Value="Hand" />
@@ -457,13 +457,20 @@
                                         ItemsSource="{Binding Items}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <UniformGrid />
+                                                <StackPanel />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type tooling:DiscoveredAppViewModel}">
                                                 <DockPanel Margin="10">
                                                     <Image x:Name="PART_Logo" Source="Logos/Square44x44Logo.png" SnapsToDevicePixels="True" UseLayoutRounding="True" Width="32" Height="32" Margin="0 0 8 0" VerticalAlignment="Center" />
+
+                                                    <Button DockPanel.Dock="Right" x:Name="PART_StoreButton" Content="Get from Microsoft Store" Margin="24 8 0 8" Click="OpenLink" />
+                                                    
+                                                    <StackPanel Opacity="0.8" DockPanel.Dock="Right" Visibility="Collapsed" HorizontalAlignment="Right" x:Name="PART_StoreButtonInstalled" Margin="24 8 0 8" Orientation="Horizontal">
+                                                        <Path Margin="-4 -4 0 -4" Data="{StaticResource VectorCheckmark}" Style="{StaticResource MediumIcon}" VerticalAlignment="Center" />
+                                                        <TextBlock Text="Already installed" VerticalAlignment="Center" Margin="4 0" />
+                                                    </StackPanel>
 
                                                     <StackPanel VerticalAlignment="Center">
                                                         <TextBlock Margin="0 0 0 0" Foreground="Black">
@@ -487,6 +494,16 @@
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding IconId}" Value="RAYPACK">
                                                         <Setter TargetName="PART_Logo" Property="Source" Value="Logos/Square44x44Logo.targetsize-48.png" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static tooling:DiscoveredAppViewModelStatus.Unknown}">
+                                                        <Setter TargetName="PART_StoreButton" Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static tooling:DiscoveredAppViewModelStatus.NotInstalled}">
+                                                        <Setter TargetName="PART_StoreButton" Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="{x:Static tooling:DiscoveredAppViewModelStatus.Installed}">
+                                                        <Setter TargetName="PART_StoreButton" Property="Visibility" Value="Collapsed" />
+                                                        <Setter TargetName="PART_StoreButtonInstalled" Property="Visibility" Value="Visible" />
                                                     </DataTrigger>
                                                 </DataTemplate.Triggers>
                                             </DataTemplate>

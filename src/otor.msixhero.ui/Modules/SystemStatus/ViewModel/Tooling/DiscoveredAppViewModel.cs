@@ -2,16 +2,39 @@
 
 namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling
 {
+    public enum DiscoveredAppViewModelStatus
+    {
+        Installed,
+        
+        NotInstalled,
+
+        Available,
+
+        Unknown
+    }
+
     public class DiscoveredAppViewModel
     {
-        public DiscoveredAppViewModel(ThirdPartyDetectedApp app)
+        public DiscoveredAppViewModel(IThirdPartyApp app, DiscoveredAppViewModelStatus status = DiscoveredAppViewModelStatus.Unknown)
         {
+            this.Status = status;
+            this.IconId = app.AppId;
+            this.Name = app.Name;
+            this.Publisher = app.Publisher;
+            this.Website = app.Website;
+        }
+
+        public DiscoveredAppViewModel(IThirdPartyDetectedApp app, DiscoveredAppViewModelStatus status = DiscoveredAppViewModelStatus.Unknown)
+        {
+            this.Status = status;
             this.IconId = app.AppId;
             this.Name = app.Name;
             this.Publisher = app.Publisher;
             this.Website = app.Website;
             this.Version = app.Version;
         }
+
+        public DiscoveredAppViewModelStatus Status { get; }
 
         public string IconId { get; }
 

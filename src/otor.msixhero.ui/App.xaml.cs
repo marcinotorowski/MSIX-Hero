@@ -110,7 +110,7 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
             containerRegistry.RegisterSingleton<IProcessManager, ProcessManager>();
-            containerRegistry.Register<IThirdPartyDetector, ThirdPartyDetector>();
+            containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
         }
         

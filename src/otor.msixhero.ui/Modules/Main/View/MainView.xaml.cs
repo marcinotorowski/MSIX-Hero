@@ -67,9 +67,6 @@ namespace otor.msixhero.ui.Modules.Main.View
 
                     this.SelectedPackage.Visibility = this.appStateManager.CurrentState.Packages.SelectedItems.Any() ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedVolume.Visibility = Visibility.Collapsed;
-
-                    this.RibbonTabSystemHome.IsSelected = true;
-                    // this.Ribbon.ContextualGroups[0]
                     break;
                 case ApplicationMode.VolumeManager:
                     this.RibbonTabHome.Visibility = Visibility.Collapsed;

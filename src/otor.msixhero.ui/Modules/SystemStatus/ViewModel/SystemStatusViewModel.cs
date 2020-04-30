@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using otor.msixhero.lib.BusinessLayer.Appx;
 using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.BusinessLayer.SystemState.Services;
@@ -15,6 +16,7 @@ using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
+using otor.msixhero.ui.Themes;
 using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Regions;
@@ -30,7 +32,7 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
 
         public SystemStatusViewModel(
             IApplicationStateManager stateManager,
-            IThirdPartyDetector thirdPartyDetector,
+            IThirdPartyAppProvider thirdPartyDetector,
             IServiceRecommendationAdvisor serviceAdvisor,
             IInteractionService interactionService)
         {
@@ -54,7 +56,7 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
 
         public string Header { get; } = "System status";
 
-        public Geometry Icon { get; } = Geometry.Parse("M 2 6 L 2 24 L 15 24 L 15 26 L 10 26 L 10 28 L 22 28 L 22 26 L 17 26 L 17 24 L 30 24 L 30 6 Z M 4 8 L 28 8 L 28 22 L 4 22 Z M 13.125 8.5 L 10.375 14 L 5 14 L 5 16 L 11.625 16 L 12.875 13.5 L 15.0625 19.34375 L 15.71875 21.0625 L 16.8125 19.59375 L 19.5 16 L 24 16 L 24 14 L 18.5 14 L 18.1875 14.40625 L 16.28125 16.9375 L 13.9375 10.65625 Z");
+        public Geometry Icon { get; } = VectorIcons.TabSystemStatus;
 
         public bool IsLoading
         {
