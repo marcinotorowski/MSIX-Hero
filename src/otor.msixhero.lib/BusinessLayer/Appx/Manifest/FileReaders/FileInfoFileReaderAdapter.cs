@@ -21,8 +21,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             this.appxManifestFile = appxManifestFile;
         }
 
-        public FileInfoFileReaderAdapter(string appxManifestFile) : this(new FileInfo(appxManifestFile))
+        public FileInfoFileReaderAdapter(string appxManifestFile)
         {
+            if (string.IsNullOrEmpty(appxManifestFile))
+            {
+                this.RootDirectory = null;
+                this.appxManifestFile = null;
+            }
+            else
+            {
+                var fileInfo = new FileInfo(appxManifestFile);
+                this.RootDirectory = fileInfo.DirectoryName;
+                this.appxManifestFile = fileInfo;
+            }
         }
 
         public string RootDirectory { get; }
@@ -89,6 +100,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
         public bool FileExists(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
+            {
+                return false;
+            }
+
+            if (this.appxManifestFile?.Directory?.FullName == null)
             {
                 return false;
             }
