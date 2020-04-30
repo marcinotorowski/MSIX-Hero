@@ -39,15 +39,15 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
             this.stateManager = stateManager;
             this.Items = new ObservableCollection<BaseRecommendationViewModel>();
 
-            var item4 = new ToolingRecommendationViewModel(thirdPartyDetector);
-            var item3 = new AutoDownloadRecommendationViewModel(this.SideLoadCheck);
-            var item2 = new RepackagingRecommendationViewModel(serviceAdvisor, interactionService, item3);
-            var item1 = new DeveloperAndSideloadingRecommendationViewModel(this.SideLoadCheck);
+            var sideloading = new DeveloperAndSideloadingRecommendationViewModel(this.SideLoadCheck);
+            var storeAutoDownload = new AutoDownloadRecommendationViewModel(this.SideLoadCheck);
+            var repackaging = new RepackagingRecommendationViewModel(serviceAdvisor, interactionService, storeAutoDownload);
+            var tooling = new ToolingRecommendationViewModel(thirdPartyDetector);
 
-            this.Items.Add(item1);
-            this.Items.Add(item2);
-            this.Items.Add(item3);
-            this.Items.Add(item4);
+            this.Items.Add(sideloading);
+            this.Items.Add(storeAutoDownload);
+            this.Items.Add(repackaging);
+            this.Items.Add(tooling);
         }
 
         public SystemStatusCommandHandler CommandHandler { get; } = new SystemStatusCommandHandler();
