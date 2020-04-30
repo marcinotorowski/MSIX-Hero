@@ -75,18 +75,26 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode
 #endif
             };
 
-            var p = Process.Start(psi);
-            if (p == null)
+            try
             {
-                return false;
-            }
+                var p = Process.Start(psi);
+                if (p == null)
+                {
+                    return false;
+                }
 
-            if (!p.WaitForExit(2000))
-            {
-                return false;
-            }
+                if (!p.WaitForExit(2000))
+                {
+                    return false;
+                }
 
-            if (p.ExitCode != 0)
+                if (p.ExitCode != 0)
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -114,18 +122,26 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode
 #endif
             };
 
-            var p = Process.Start(psi);
-            if (p == null)
+            try
             {
-                return false;
-            }
+                var p = Process.Start(psi);
+                if (p == null)
+                {
+                    return false;
+                }
 
-            if (!p.WaitForExit(2000))
-            {
-                return false;
-            }
+                if (!p.WaitForExit(2000))
+                {
+                    return false;
+                }
 
-            if (p.ExitCode != 0)
+                if (p.ExitCode != 0)
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception)
             {
                 return false;
             }

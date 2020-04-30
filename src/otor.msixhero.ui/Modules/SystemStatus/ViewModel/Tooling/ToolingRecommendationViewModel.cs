@@ -47,7 +47,7 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling
 
             this.OnPropertyChanged(nameof(this.Items));
 
-            switch (this.Items.Count)
+            switch (this.Items.Count(item => item.Status == DiscoveredAppViewModelStatus.Installed))
             {
                 case 0:
                     this.Summary = "No MSIX authoring tool detected on this machine.";

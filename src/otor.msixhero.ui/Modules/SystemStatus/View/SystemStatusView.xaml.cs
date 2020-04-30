@@ -76,7 +76,8 @@ namespace otor.msixhero.ui.Modules.SystemStatus.View
 
         private void RestoreUpdatesClick(object sender, RoutedEventArgs e)
         {
-            var dataContext = (AutoDownloadRecommendationViewModel) ((FrameworkElement) sender).DataContext;
+            var hyperlink = (Hyperlink) sender;
+            var dataContext = (AutoDownloadRecommendationViewModel)hyperlink.DataContext;
             dataContext.AutoDownloadStatus = WindowsStoreAutoDownload.Default;
         }
     }

@@ -23,7 +23,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.View
 
         private void HyperlinkMsdn_OnClick(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo("https://docs.microsoft.com/en-us/azure/virtual-desktop/app-attach#prepare-powershell-scripts-for-msix-app-attach");
+            var psi = new ProcessStartInfo("https://msixhero.net/redirect/msix-app-attach/prepare-ps");
             psi.UseShellExecute = true;
             Process.Start(psi);
         }

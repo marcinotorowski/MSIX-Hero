@@ -518,7 +518,7 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                     <TextBlock Margin="0 16 0 0">
-                                        <Hyperlink Click="OpenLink" Tag="https://docs.microsoft.com/en-us/windows/msix/partners">Discover more tools...</Hyperlink>
+                                        <Hyperlink Click="OpenLink" Tag="https://msixhero.net/redirect/msix-partners">Discover more tools...</Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
                             </HeaderedContentControl>

@@ -178,27 +178,27 @@ namespace otor.msixhero.lib.BusinessLayer.SystemState.Services
                     switch (serviceController.ServiceName.ToLowerInvariant())
                     {
                         case "cscservice":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service performs maintenance activities on the Offline Files cache. This operation may cause unrelevant system changes to be captured.", false, serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.StartPending);
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service performs maintenance activities on the Offline Files cache. This operation may cause unrelevant system changes to be captured.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
                             break;
 
                         case "wsearch":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service is responsible for background indexing of files and their content. This operation may cause irrelevant system changes to be captured.", false, serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.StartPending);
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service is responsible for background indexing of files and their content. This operation may cause irrelevant system changes to be captured.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
                             break;
                             
                         case "wuauserv":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service may update, install and uninstall software which is not related to a repackaging task.", false, serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.StartPending);
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service may update, install and uninstall software which is not related to a repackaging task.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
                             break;
 
                         case "dps":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "Disabling this service may improve performance and quality of repackaged packages.", false, serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.StartPending);
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "Disabling this service may improve performance and quality of repackaged packages.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
                             break;
 
                         //case "windefend":
-                        //    yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "Background anti-virus activities may decrease the performance and reliability. Additionally, anti-virus tasks may cause irrelevant system changes to be captured.", false, serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.StartPending, ServiceRecommendationType.WindowsDefender);
+                        //    yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "Background anti-virus activities may decrease the performance and reliability. Additionally, anti-virus tasks may cause irrelevant system changes to be captured.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName), ServiceRecommendationType.WindowsDefender);
                         //    break;
 
                         case "ccmexec":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "System Center Configuration Manager Agent is responsible for managed installation, maintenance and removal of software. These activities may cause irrelevant system changes to be captured.", false, serviceController.Status == ServiceControllerStatus.Running || serviceController.Status == ServiceControllerStatus.StartPending);
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "System Center Configuration Manager Agent is responsible for managed installation, maintenance and removal of software. These activities may cause irrelevant system changes to be captured.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
                             break;
                     }
                 }
