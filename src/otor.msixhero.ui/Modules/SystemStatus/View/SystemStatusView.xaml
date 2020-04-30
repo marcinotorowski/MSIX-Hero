@@ -16,6 +16,7 @@
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
              xmlns:windowsStoreUpdates="clr-namespace:otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates"
+             xmlns:services="clr-namespace:otor.msixhero.lib.Domain.SystemState.Services;assembly=msixhero.lib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:SystemStatusViewModel}">
     <UserControl.Resources>
@@ -357,12 +358,19 @@
                                                     </TextBlock>
                                                     <Button IsEnabled="{Binding IsFixing, Converter={StaticResource NegativeConverter}}" Command="Stop" CommandParameter="{Binding}" Visibility="Collapsed" x:Name="PART_Button" HorizontalAlignment="Left" Margin="0 8 0 8">
                                                         <StackPanel Orientation="Horizontal">
-                                                            <Image Margin="-2 -3 3 -3" UseLayoutRounding="True" SnapsToDevicePixels="True" Source="{x:Static helpers:ShieldIcon.Source}" VerticalAlignment="Center" />
-                                                            <TextBlock Text="Disable" VerticalAlignment="Center" />
+                                                            <Image x:Name="PART_Shield" Margin="-2 -3 3 -3" UseLayoutRounding="True" SnapsToDevicePixels="True" Source="{x:Static helpers:ShieldIcon.Source}" VerticalAlignment="Center" />
+                                                            <TextBlock x:Name="PART_ButtonDisable" Text="Disable" VerticalAlignment="Center" />
                                                         </StackPanel>
                                                     </Button>
                                                 </StackPanel>
                                                 <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static services:ServiceRecommendationType.OneTime}">
+                                                        <Setter TargetName="PART_ButtonDisable" Property="Text" Value="Kill process" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static services:ServiceRecommendationType.WindowsDefender}">
+                                                        <Setter TargetName="PART_Shield" Property="Visibility" Value="Collapsed" />
+                                                        <Setter TargetName="PART_ButtonDisable" Property="Text" Value="Open Windows Defender Settings" />
+                                                    </DataTrigger>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding IsRunning}">
@@ -406,7 +414,7 @@
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
 
-                                    <StackPanel DataContext="{Binding Path=AutoDownloadRecommendation}" Margin="0 8" VerticalAlignment="Center">
+                                    <StackPanel DataContext="{Binding Path=AutoDownloadRecommendation}" Margin="0 16 0 8" VerticalAlignment="Center">
                                         <TextBlock Text="Automatic updates of Microsoft Store apps" Margin="0 0 0 0" Foreground="Black" />
                                         <TextBlock x:Name="PART_AutoUpdateDescription" Opacity="0.6" TextWrapping="Wrap" Text="Microsoft Store may occasionally update your apps managed by Store. This can create unrelated noise for packaging purposes. It is recommended to disable automatic updates on repackaging machines." Margin="0 0 0 0" Foreground="Black" />
                                         <TextBlock x:Name="PART_AutoUpdateOk" Foreground="Green" Visibility="Collapsed">

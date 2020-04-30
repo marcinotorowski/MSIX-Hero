@@ -16,12 +16,12 @@ namespace otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty
 
             if (pkg == null)
             {
-                yield return new ThirdPartyStoreApp("MSIXPKGTOOL", "MSIX Packaging Tool", "Microsoft",  "https://msixhero.net/redirect/ms-store/msix-packaging-tool", "Microsoft.MsixPackagingTool_8wekyb3d8bbwe");
+                yield return new ThirdPartyStoreApp("MSIXPKGTOOL", "MSIX Packaging Tool", "Microsoft Corporation",  "https://msixhero.net/redirect/ms-store/msix-packaging-tool", "Microsoft.MsixPackagingTool_8wekyb3d8bbwe");
             }
             else
             {
                 var ver = $"{pkg.Id.Version.Major}.{pkg.Id.Version.Minor}.{pkg.Id.Version.Build}.{pkg.Id.Version.Revision}";
-                yield return new ThirdPartyDetectedStoreApp("MSIXPKGTOOL", "MSIX Packaging Tool", "Microsoft", ver, "https://msixhero.net/redirect/ms-store/msix-packaging-tool", "Microsoft.MsixPackagingTool_8wekyb3d8bbwe");
+                yield return new ThirdPartyDetectedStoreApp("MSIXPKGTOOL", "MSIX Packaging Tool", "Microsoft Corporation", ver, "https://msixhero.net/redirect/ms-store/msix-packaging-tool", "Microsoft.MsixPackagingTool_8wekyb3d8bbwe");
             }
         }
     }

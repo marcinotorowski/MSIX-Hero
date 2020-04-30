@@ -11,5 +11,7 @@
         bool ExpectedToRun { get; }
 
         bool Actual { get; }
+
+        ServiceRecommendationType Type { get; }
     }
 }

@@ -31,7 +31,10 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging
             this.IsRunning = model.Actual;
             this.ShouldRun = model.ExpectedToRun;
             this.Recommendation = model.ActionPrompt;
+            this.Type = model.Type;
         }
+
+        public ServiceRecommendationType Type { get; }
 
         public string ServiceName { get; }
 
