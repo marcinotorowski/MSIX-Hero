@@ -482,7 +482,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             var startInfo = new ProcessStartInfo
             {
                 UseShellExecute = true,
-                Verb = "runas",
                 FileName = entryPoint
             };
 
