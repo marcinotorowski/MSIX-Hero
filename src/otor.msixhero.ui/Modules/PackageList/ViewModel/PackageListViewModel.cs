@@ -160,11 +160,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 if (selectionInfo.Selected.Contains(item.Model))
                 {
-                    item.IsSelected = true;
+                    if (!item.IsSelected)
+                    {
+                        item.IsSelected = true;
+                    }
                 }
                 else if (selectionInfo.Unselected.Contains(item.Model))
                 {
-                    item.IsSelected = false;
+                    if (item.IsSelected)
+                    {
+                        item.IsSelected = false;
+                    }
                 }
 
                 if (item.IsSelected && countSelected < 2)
@@ -172,7 +178,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     countSelected++;
                 }
             }
-
 
             var selected = this.AllPackages.Where(p => p.IsSelected).Select(p => p.ManifestLocation).ToArray();
 

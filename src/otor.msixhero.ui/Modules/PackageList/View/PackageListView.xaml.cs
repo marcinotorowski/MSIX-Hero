@@ -130,87 +130,19 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             this.UpdateSidebarVisibility();
         }
 
-        private async void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.disableSelectionNotification)
+            if (e.AddedItems?.Count > 0)
             {
-                return;
-            }
-
-            try
-            {
-                this.disableSelectionNotification = true;
-                await this.applicationStateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.ListView.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model))).ConfigureAwait(true);
-                
-                if (this.PanelListBox.Visibility == Visibility.Collapsed)
-                {
-                    if (e.AddedItems != null)
-                    {
-                        foreach (var item in e.AddedItems)
-                        {
-                            this.ListBox.SelectedItems.Add(item);
-                        }
-                    }
-
-                    if (e.RemovedItems != null)
-                    {
-                        foreach (var item in e.RemovedItems)
-                        {
-                            this.ListBox.SelectedItems.Remove(item);
-                        }
-                    }
-
-                    if (e.AddedItems?.Count > 0)
-                    {
-                        this.ListBox.ScrollIntoView(e.AddedItems[0]);
-                    }
-                }
-            }
-            finally
-            {
-                this.disableSelectionNotification = false;
+                this.ListView.ScrollIntoView(e.AddedItems[0]);
             }
         }
 
-        private async void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.disableSelectionNotification)
+            if (e.AddedItems?.Count > 0)
             {
-                return;
-            }
-
-            try
-            {
-                this.disableSelectionNotification = true;
-                await this.applicationStateManager.CommandExecutor.ExecuteAsync(new SelectPackages(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(s => s.Model))).ConfigureAwait(false);
-
-                if (this.PanelListView.Visibility == Visibility.Collapsed)
-                {
-                    if (e.AddedItems != null)
-                    {
-                        foreach (var item in e.AddedItems)
-                        {
-                            this.ListView.SelectedItems.Add(item);
-                        }
-                    }
-
-                    if (e.RemovedItems != null)
-                    {
-                        foreach (var item in e.RemovedItems)
-                        {
-                            this.ListView.SelectedItems.Remove(item);
-                        }
-                    }
-
-                    if (e.AddedItems?.Count > 0)
-                    {
-                        this.ListView.ScrollIntoView(e.AddedItems[0]);
-                    }
-                }
-            }
-            finally
-            {
-                this.disableSelectionNotification = false;
+                this.ListView.ScrollIntoView(e.AddedItems[0]);
             }
         }
 

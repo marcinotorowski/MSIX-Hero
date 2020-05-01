@@ -228,21 +228,21 @@
                 x:Name="PanelListView"
                 Visibility="Collapsed">
                     <ListView 
-                    FocusVisualStyle="{x:Null}"
-                    IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
-                    MouseDoubleClick="ListOnMouseDoubleClick"
-                    IsSynchronizedWithCurrentItem="False"
-                    VirtualizingPanel.IsVirtualizing="True"
-                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                    x:Name="ListView"
-                    Foreground="Black"
-                    BorderThickness="0"
-                    Padding="0"
-                    SelectionChanged="OnListViewSelectionChanged"
-                    ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                    ContextMenu="{StaticResource PackageContextMenu}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                    ItemsSource="{Binding AllPackagesView}">
+                        FocusVisualStyle="{x:Null}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
+                        MouseDoubleClick="ListOnMouseDoubleClick"
+                        IsSynchronizedWithCurrentItem="False"
+                        VirtualizingPanel.IsVirtualizing="True"
+                        VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                        x:Name="ListView"
+                        Foreground="Black"
+                        BorderThickness="0"
+                        Padding="0"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ContextMenu="{StaticResource PackageContextMenu}"
+                        SelectionChanged="OnListViewSelectionChanged"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                        ItemsSource="{Binding AllPackagesView}">
 
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
@@ -251,6 +251,7 @@
                                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                                 <Setter Property="BorderBrush" Value="Transparent" />
                                 <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListViewItem">
