@@ -62,9 +62,13 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             Application.Current.Dispatcher.BeginInvoke(
                 (Action)(() =>
                 {
-                    FocusManager.SetFocusedElement(this, this.ListBox);
-                    Keyboard.Focus(this.ListBox);
-                    this.ListBox.Focus();
+                    var focusable = this.PanelListBox.Visibility == Visibility.Collapsed ? this.ListView : this.ListBox;
+
+                    FocusManager.SetFocusedElement(this, focusable);
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    FocusManager.SetFocusedElement(Application.Current.MainWindow, focusable);
+                    Keyboard.Focus(focusable);
+                    focusable.Focus();
                 }), 
                 DispatcherPriority.ApplicationIdle);
             this.SetSorting(this.applicationStateManager.CurrentState.Packages.Sort, this.applicationStateManager.CurrentState.Packages.SortDescending);

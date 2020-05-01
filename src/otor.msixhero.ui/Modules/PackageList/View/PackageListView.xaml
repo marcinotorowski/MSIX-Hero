@@ -222,12 +222,12 @@
             Grid.Column="0"
             Grid.Row="1">
 
-        <Grid
+            <Grid
             FocusVisualStyle="{x:Null}">
-            <AdornerDecorator
+                <AdornerDecorator
                 x:Name="PanelListView"
                 Visibility="Collapsed">
-                <ListView 
+                    <ListView 
                     FocusVisualStyle="{x:Null}"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                     MouseDoubleClick="ListOnMouseDoubleClick"
@@ -244,179 +244,180 @@
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                     ItemsSource="{Binding AllPackagesView}">
 
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Padding" Value="10" />
-                            <Setter Property="BorderThickness" Value="4 0 0 0" />
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                            <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
-                                                <GridViewRowPresenter Margin="{TemplateBinding Padding}"  />
-                                            </Border>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsProvisioned}" Value="{StaticResource True}">
-                                    <Setter Property="Background" Value="#CCFFD1" />
-                                </DataTrigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                    <Setter Property="Background" Value="#E6F2FA" />
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                    <Setter Property="Background" Value="#CDE6F7" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.View>
-                        <GridView x:Name="GridView">
-                            <GridView.Columns>
-                                <GridViewColumn Width="48">
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader IsHitTestVisible="False" Content="Icon" />
-                                    </GridViewColumn.Header>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                            <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                    <Image Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="10" />
+                                <Setter Property="BorderThickness" Value="4 0 0 0" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                                <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
+                                                    <GridViewRowPresenter Margin="{TemplateBinding Padding}"  />
                                                 </Border>
                                             </Border>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader Content="Name" Tag="{x:Static enums:PackageSort.Name}" Click="ColumnClicked" />
-                                    </GridViewColumn.Header>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayName}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader Content="Version" Tag="{x:Static enums:PackageSort.Version}" Click="ColumnClicked" />
-                                    </GridViewColumn.Header>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding Version}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
-                                    </GridViewColumn.Header>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPublisherName}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader Content="Package type" Tag="{x:Static enums:PackageSort.PackageType}" Click="ColumnClicked" />
-                                    </GridViewColumn.Header>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPackageType}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                    <ListView.GroupStyle>
-                        <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
-                    </ListView.GroupStyle>
-                </ListView>
-            </AdornerDecorator>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsProvisioned}" Value="{StaticResource True}">
+                                        <Setter Property="Background" Value="#CCFFD1" />
+                                    </DataTrigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                        <Setter Property="Background" Value="#E6F2FA" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                        <Setter Property="Background" Value="#CDE6F7" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView x:Name="GridView">
+                                <GridView.Columns>
+                                    <GridViewColumn Width="48">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader IsHitTestVisible="False" Content="Icon" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                        <Image Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                    </Border>
+                                                </Border>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Content="Name" Tag="{x:Static enums:PackageSort.Name}" Click="ColumnClicked" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayName}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Content="Version" Tag="{x:Static enums:PackageSort.Version}" Click="ColumnClicked" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding Version}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPublisherName}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Content="Package type" Tag="{x:Static enums:PackageSort.PackageType}" Click="ColumnClicked" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding DisplayPackageType}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.GroupStyle>
+                            <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                        </ListView.GroupStyle>
+                    </ListView>
+                </AdornerDecorator>
 
-            <Border
+                <Border
                 Visibility="Collapsed"
                 x:Name="PanelListBox"
-                Grid.Column="0" Grid.Row="1" >
-                <ListBox 
+                Grid.Column="0">
+                    <ListBox 
                     FocusVisualStyle="{x:Null}"
                     IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                     x:Name="ListBox"
                     SelectionMode="Extended"
+                    SelectionChanged="OnListBoxSelectionChanged"
                     MouseDoubleClick="ListOnMouseDoubleClick"
                     ContextMenu="{StaticResource PackageContextMenu}"
                     ItemsSource="{Binding AllPackagesView}">
-                    <ListBox.GroupStyle>
-                        <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
-                    </ListBox.GroupStyle>
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="10" />
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                            <Setter Property="BorderThickness" Value="4 0 0 0" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                            <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
-                                                <ContentPresenter Margin="{TemplateBinding Padding}" />
+                        <ListBox.GroupStyle>
+                            <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
+                        </ListBox.GroupStyle>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="10" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="BorderThickness" Value="4 0 0 0" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                                <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
+                                                    <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                                </Border>
                                             </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsProvisioned}" Value="{StaticResource True}">
+                                        <Setter Property="Background" Value="#CCFFD1" />
+                                    </DataTrigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                        <Setter Property="Background" Value="#E6F2FA" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                        <Setter Property="Background" Value="#CDE6F7" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                <DockPanel>
+                                    <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                         </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsProvisioned}" Value="{StaticResource True}">
-                                    <Setter Property="Background" Value="#CCFFD1" />
-                                </DataTrigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                    <Setter Property="Background" Value="#E6F2FA" />
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                    <Setter Property="Background" Value="#CDE6F7" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                            <DockPanel>
-                                <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                     </Border>
-                                </Border>
 
-                                <StackPanel DockPanel.Dock="Right">
-                                    <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                    <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
-                                </StackPanel>
+                                    <StackPanel DockPanel.Dock="Right">
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                                    </StackPanel>
 
-                                <StackPanel Margin="10 0">
-                                    <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
-                                    <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
-                                </StackPanel>
+                                    <StackPanel Margin="10 0">
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPublisherName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                    </StackPanel>
 
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Border>
-        </Grid>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </Grid>
 
         </progressOverlay:ProgressOverlay>
         <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
