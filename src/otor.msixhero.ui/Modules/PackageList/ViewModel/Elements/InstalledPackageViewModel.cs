@@ -80,8 +80,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
             get => this.Model.UserDataPath;
         }
 
-        public ObservableCollection<OperatingSystemViewModel> TargetOperatingSystems { get; }
-
         
         public static explicit operator InstalledPackage(InstalledPackageViewModel installedPackageViewModel)
         {
