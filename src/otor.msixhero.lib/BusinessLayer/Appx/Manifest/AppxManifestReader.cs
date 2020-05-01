@@ -30,10 +30,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 return this.ReadMsix(fileReader, cancellationToken);
             }
 
-            var isAppxBundle = fileReader.FileExists("AppxMetaData\\AppxBundleManigest.xml");
+            var isAppxBundle = fileReader.FileExists("AppxMetaData\\AppxBundleManifest.xml");
             if (isAppxBundle)
             {
-                return this.ReadBundle(fileReader, cancellationToken);
+                throw new NotImplementedException("Reading of bundle manifests is not supported yet.");
             }
 
             throw new NotSupportedException("Required package source is not supported.");
@@ -62,12 +62,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
             
             return result;
         }
-
-        private Task<AppxPackage> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException("Reading of bundle manifests is not supported yet.");
-        }
-
+        
         private async Task<AppxPackage> ReadMsix(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
             var xmlDocument = new XmlDocument();
@@ -140,7 +135,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     {
                         appxPackage.Name = GetNodeAttribute(nodeIdentity, "Name");
 
-                        if (Enum.TryParse(typeof(AppxPackageArchitecture), GetNodeAttribute(nodeIdentity, "ProcessorArchitecture"), true, out object parsedArchitecture))
+                        if (Enum.TryParse(typeof(AppxPackageArchitecture), GetNodeAttribute(nodeIdentity, "ProcessorArchitecture"), true, out object parsedArchitecture) && parsedArchitecture != null)
                         {
                             appxPackage.ProcessorArchitecture = (AppxPackageArchitecture)parsedArchitecture;
                         }
@@ -163,8 +158,8 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                                 {
                                     using (var memoryStream = new MemoryStream())
                                     {
-                                        resourceStream.CopyTo(memoryStream);
-                                        memoryStream.Flush();
+                                        await resourceStream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+                                        await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
                                         appxPackage.Logo = memoryStream.ToArray();
                                     }
                                 }
