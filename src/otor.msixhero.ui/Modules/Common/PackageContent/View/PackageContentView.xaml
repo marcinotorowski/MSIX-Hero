@@ -80,7 +80,14 @@
             </Border>-->
 
             <Border VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Top" Background="IndianRed" Padding="10" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="{Binding SelectedPackageManifestInfo.Error}" Foreground="White" TextWrapping="Wrap" Margin="12 6" />
+                <DockPanel>
+                    <Path Width="32" Height="32" Fill="White" Data="{StaticResource VectorError}" VerticalAlignment="Center" Margin="6 -3 0 -3" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                        <Path.LayoutTransform>
+                            <ScaleTransform ScaleX="0.75" ScaleY="0.75" />
+                        </Path.LayoutTransform>
+                    </Path>
+                    <TextBlock Text="{Binding SelectedPackageManifestInfo.Error}" Foreground="White" TextWrapping="Wrap" VerticalAlignment="Center" Margin="6 6 12 6" />
+                </DockPanel>
             </Border>
 
             <TabControl DockPanel.Dock="Top" Margin="0 0 0 0" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
