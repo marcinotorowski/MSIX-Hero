@@ -460,6 +460,20 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type elements1:OperatingSystemDependencyViewModel}">
                                             <StackPanel>
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="Hyperlink">
+                                                        <Setter Property="Foreground" Value="Black" />
+                                                        <Setter Property="Tag" Value="https://msixhero.net/redirect/windows-10-version-history" />
+                                                        <Setter Property="ToolTip" Value="Click to open Windows 10 version history in Wikipedia" />
+                                                        <Setter Property="TextDecorations" Value="None" />
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="true">
+                                                                <Setter Property="Foreground" Value="Black" />
+                                                                <Setter Property="TextDecorations" Value="Underline" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </StackPanel.Resources>
                                                 <view:BulletItemControl>
                                                     <view:BulletItemControl.Header>
                                                         <Viewbox Width="24" Height="24">
@@ -468,7 +482,9 @@
                                                     </view:BulletItemControl.Header>
                                                     <TextBlock x:Name="Text1" Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
                                                     <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                        <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
+                                                        <Hyperlink Click="HyperlinkOnClick">
+                                                            <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
+                                                        </Hyperlink>
                                                         <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                                     </TextBlock>
                                                 </view:BulletItemControl>
@@ -480,13 +496,15 @@
                                                     </view:BulletItemControl.Header>
                                                     <TextBlock x:Name="Text2" Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
                                                     <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                    <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
-                                                    <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
+                                                        <Hyperlink Click="HyperlinkOnClick">
+                                                            <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
+                                                        </Hyperlink>
+                                                        <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                                     </TextBlock>
                                                 </view:BulletItemControl>
                                             </StackPanel>
                                             <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding IsMsixNativeSupported}" Value="{x:Static full:AppxTargetOperatingSystemType.MsixCore}">
+                                                <DataTrigger Binding="{Binding FamilyName}" Value="MSIXCore.Desktop">
                                                     <Setter TargetName="Text1" Property="Text" Value="[MSIX Core] Minimum required OS" />
                                                     <Setter TargetName="Text2" Property="Text" Value="[MSIX Core] Tested on" />
                                                     <Setter TargetName="Icon1" Property="Data" Value="{StaticResource VectorWindowsOld}" />

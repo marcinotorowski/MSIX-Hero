@@ -13,6 +13,8 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
     public class AppxTargetOperatingSystem
     {
         public string Name { get; set; }
+        
+        public string NativeFamilyName { get; set; }
 
         public string TechnicalVersion { get; set; }
         

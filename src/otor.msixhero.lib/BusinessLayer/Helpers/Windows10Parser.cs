@@ -7,21 +7,31 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
     {
         public static AppxTargetOperatingSystem GetOperatingSystemFromNameAndVersion(string name, string version)
         {
+            AppxTargetOperatingSystem result;
+
             switch (name)
             {
                 case "Windows.Desktop":
-                    return GetWindowsDesktop(version);
+                    result = GetWindowsDesktop(version);
+                    break;
                 case "Windows.Universal":
-                    return GetWindowsDesktop(version);
+                    result = GetWindowsDesktop(version);
+                    break;
                 case "MSIXCore.Desktop":
-                    return GetMsixCoreDesktop(version);
+                    result = GetMsixCoreDesktop(version);
+                    break;
                 default:
-                    return new AppxTargetOperatingSystem
+                    result= new AppxTargetOperatingSystem
                     {
-                        IsNativeMsixPlatform = AppxTargetOperatingSystemType.Other, Name = name,
+                        IsNativeMsixPlatform = AppxTargetOperatingSystemType.Other, 
+                        Name = name,
                         TechnicalVersion = version
                     };
+                    break;
             }
+
+            result.NativeFamilyName = name;
+            return result;
         }
         public static AppxTargetOperatingSystem GetOperatingSystemFromNameAndVersion(string version)
         {
