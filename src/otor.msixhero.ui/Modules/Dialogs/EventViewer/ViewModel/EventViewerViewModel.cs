@@ -9,6 +9,7 @@ using otor.msixhero.lib;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Logs;
 using otor.msixhero.lib.Domain.Commands.Packages.Developer;
+using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.ViewModel;
@@ -19,13 +20,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
     public class EventViewerViewModel : NotifyPropertyChanged, IDialogAware, IDataErrorInfo
     {
         private readonly IApplicationStateManager stateManager;
+        private readonly IInteractionService interactionService;
         private int progress;
         private string progressMessage;
         private bool isLoading;
 
-        public EventViewerViewModel(IApplicationStateManager stateManager)
+        public EventViewerViewModel(IApplicationStateManager stateManager, IInteractionService interactionService)
         {
             this.stateManager = stateManager;
+            this.interactionService = interactionService;
             var col = new ObservableCollection<Log>();
             this.LogsView = CollectionViewSource.GetDefaultView(col);
             this.Logs = new AsyncProperty<ObservableCollection<Log>>(col);
@@ -72,9 +75,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
             {
                 this.IsLoading = true;
 
-                var action = new GetLogs(150);
+                var action = new GetLogs(250);
                 var result = await this.stateManager.CommandExecutor.GetExecuteAsync(action).ConfigureAwait(false);
                 return new ObservableCollection<Log>(result);
+            }
+            catch (Exception e)
+            {
+                this.interactionService.ShowError("Could not get last 250 logs.", e);
+                return new ObservableCollection<Log>();
             }
             finally
             {
