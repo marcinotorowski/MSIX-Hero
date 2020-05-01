@@ -1,8 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
+using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
@@ -15,19 +19,48 @@ namespace otor.msixhero.ui.Modules.SystemStatus.View
     /// </summary>
     public partial class SystemStatusView
     {
-        public SystemStatusView()
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(SystemStatusView));
+
+        private readonly IInteractionService interactionService;
+
+        public SystemStatusView(IInteractionService interactionService)
         {
+            this.interactionService = interactionService;
             this.InitializeComponent();
         }
 
         private void OpenLink(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo((string) ((Hyperlink) sender).Tag)
+            string url;
+
+
+            if (sender is Hyperlink link)
+            {
+                url = (string) link.Tag;
+            }
+            else if (sender is Button button)
+            {
+                url = (string) button.Tag;
+            }
+            else
+            {
+                return;
+            }
+
+            var psi = new ProcessStartInfo(url)
             {
                 UseShellExecute = true
             };
 
-            Process.Start(psi);
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                this.interactionService.ShowError($"Could not open the URL {url}", exception);
+            }
         }
 
         private void WindowsSettingsExecuted(object sender, ExecutedRoutedEventArgs e)
