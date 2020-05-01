@@ -155,7 +155,9 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
+        <Border 
+            IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
+            x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
             <Grid>
                 <TextBox 
                     Padding="26 0 20 0" 
@@ -213,16 +215,21 @@
         </Border>
 
         <progressOverlay:ProgressOverlay
+            FocusVisualStyle="{x:Null}"
             IsShown="{Binding IsLoading}"
             Message="{Binding LoadingMessage}"
+            Progress="{Binding LoadingProgress}"
             Grid.Column="0"
             Grid.Row="1">
 
-        <Grid>
+        <Grid
+            FocusVisualStyle="{x:Null}">
             <AdornerDecorator
                 x:Name="PanelListView"
                 Visibility="Collapsed">
                 <ListView 
+                    FocusVisualStyle="{x:Null}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                     MouseDoubleClick="ListOnMouseDoubleClick"
                     IsSynchronizedWithCurrentItem="False"
                     VirtualizingPanel.IsVirtualizing="True"
@@ -241,6 +248,7 @@
                         <Style TargetType="ListViewItem">
                             <Setter Property="Padding" Value="10" />
                             <Setter Property="BorderThickness" Value="4 0 0 0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                             <Setter Property="BorderBrush" Value="Transparent" />
                             <Setter Property="Background" Value="Transparent" />
                             <Setter Property="Template">
@@ -340,6 +348,8 @@
                 x:Name="PanelListBox"
                 Grid.Column="0" Grid.Row="1" >
                 <ListBox 
+                    FocusVisualStyle="{x:Null}"
+                    IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                     x:Name="ListBox"
                     SelectionMode="Extended"
                     MouseDoubleClick="ListOnMouseDoubleClick"
@@ -351,6 +361,7 @@
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="10" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                             <Setter Property="BorderThickness" Value="4 0 0 0" />
                             <Setter Property="BorderBrush" Value="Transparent" />
                             <Setter Property="Background" Value="Transparent" />
