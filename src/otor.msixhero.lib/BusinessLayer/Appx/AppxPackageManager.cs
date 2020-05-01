@@ -665,7 +665,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             var pkgMan = new PackageManager();
 
 
-            progress?.Report(new ProgressData(0, "Getting packages..."));
+            progress?.Report(new ProgressData(0, "Reading packages..."));
 
             if (isAdmin)
             {
@@ -702,39 +702,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                         File.Delete(tempFile);
                     }
                 }
-
-                /*
-                pkgMan = new PackageManager();
-
-
-                try
-                {
-                    using (var ps = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false))
-                    {
-                        Logger.Info("Getting provisioned packages...");
-                        var cmd = ps.AddCommand("Get-AppxProvisionedPackage");
-                        cmd.AddParameter("Online");
-
-                        var provisionedPackages = await ps.InvokeAsync(progress).ConfigureAwait(false);
-                        foreach (var pp in provisionedPackages.ReadAll())
-                        {
-                            var props1 = pp.Properties["PackageName"];
-                            if (props1?.Value == null)
-                            {
-                                continue;
-                            }
-
-                            provisioned.Add(props1.Value.ToString());
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    
-                }*/
             }
 
-            progress?.Report(new ProgressData(5, "Getting packages..."));
+            progress?.Report(new ProgressData(25, "Reading packages..."));
 
             IList<Windows.ApplicationModel.Package> allPackages;
 
@@ -777,17 +747,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
             }
 
-            progress?.Report(new ProgressData(10, "Getting packages..."));
+            progress?.Report(new ProgressData(30, "Reading packages..."));
 
-            const double weight = 0.9;
+            var total = 30.0;
+            var single = allPackages.Count == 0 ? 0.0 : 70.0 / allPackages.Count;
 
-            var total = (1.0 - weight) * 100.0;
-            var single = allPackages.Count == 0 ? 0.0 : 100.0 * weight / allPackages.Count;
+            var cnt = 0;
+            var all = allPackages.Count;
 
             foreach (var item in allPackages)
             {
+                cnt += 1;
                 total += single;
-                progress?.Report(new ProgressData((int)total, "Getting packages..."));
+                progress?.Report(new ProgressData((int)total, $"Reading package {cnt} out of {all}..."));
 
                 var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
                 if (converted != null)

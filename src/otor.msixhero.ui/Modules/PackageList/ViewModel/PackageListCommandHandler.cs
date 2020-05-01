@@ -208,8 +208,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 using (var wrappedProgress = new WrappedProgress(context))
                 {
-                    var p1 = wrappedProgress.GetChildProgress(50);
-                    var p2 = wrappedProgress.GetChildProgress(50);
+                    var p1 = wrappedProgress.GetChildProgress(90);
+                    var p2 = wrappedProgress.GetChildProgress(10);
                     await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
 
                     AppxManifestSummary appxReader;
@@ -285,8 +285,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 var command = new Deprovision(selection.First().PackageFamilyName);
                 using (var pw = new WrappedProgress(context))
                 {
-                    var p1 = pw.GetChildProgress(30);
-                    var p2 = pw.GetChildProgress(30);
+                    var p1 = pw.GetChildProgress(80);
+                    var p2 = pw.GetChildProgress(20);
 
                     await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
                     await this.stateManager.CommandExecutor.ExecuteAsync(SelectPackages.CreateEmpty(), CancellationToken.None).ConfigureAwait(false);
