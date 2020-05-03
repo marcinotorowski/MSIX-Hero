@@ -33,7 +33,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 case SelectionMode.SelectAll:
                 {
-                    select = state.Volumes.VisibleItems.Except(this.StateManager.CurrentState.Volumes.SelectedItems).ToList();
+                    select = state.Volumes.VisibleItems.Where(a => a != null).Except(this.StateManager.CurrentState.Volumes.SelectedItems).ToList();
                     deselect = new AppxVolume[0];
                     break;
                 }
@@ -46,20 +46,20 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 }
 
                 case SelectionMode.AddToSelection:
-                    select = this.action.Selection.Except(state.Volumes.SelectedItems).ToList();
+                    select = this.action.Selection.Where(a => a != null).Except(state.Volumes.SelectedItems).ToList();
                     deselect = new AppxVolume[0];
                     break;
 
                 case SelectionMode.RemoveFromSelection:
                 {
                     select = new AppxVolume[0];
-                    deselect = this.action.Selection.Intersect(state.Volumes.SelectedItems).ToList();
+                    deselect = this.action.Selection.Where(a => a != null).Intersect(state.Volumes.SelectedItems).ToList();
                     break;
                 }
 
                 case SelectionMode.ReplaceSelection:
                 {
-                    select = this.action.Selection.Except(state.Volumes.SelectedItems).ToList();
+                    select = this.action.Selection.Where(a => a != null).Except(state.Volumes.SelectedItems).ToList();
                     deselect = state.Volumes.SelectedItems.Except(this.action.Selection).ToList();
                     break;
                 }
@@ -70,13 +70,13 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             if (select.Any() || deselect.Any())
             {
-                state.Volumes.SelectedItems.AddRange(select);
+                state.Volumes.SelectedItems.AddRange(select.Where(a => a != null));
                 foreach (var item in deselect)
                 {
                     state.Volumes.SelectedItems.Remove(item);
                 }
 
-                StateManager.EventAggregator.GetEvent<VolumesSelectionChanged>().Publish(new VolumesSelectionChangedPayLoad(@select, deselect));
+                StateManager.EventAggregator.GetEvent<VolumesSelectionChanged>().Publish(new VolumesSelectionChangedPayLoad(@select, deselect, this.action.IsExplicit));
             }
 
             return Task.FromResult(state.Volumes.SelectedItems);

@@ -11,14 +11,14 @@ using otor.msixhero.lib.Infrastructure.Progress;
 namespace otor.msixhero.lib.BusinessLayer.Reducers
 {
     // ReSharper disable once IdentifierTypo
-    internal class UnmountRegistryReducer : SelfElevationReducer
+    internal class DismountRegistryReducer : SelfElevationReducer
     {
-        private readonly UnmountRegistry action;
+        private readonly DismountRegistry action;
         private readonly IAppxPackageManager packageManager;
 
         // ReSharper disable once IdentifierTypo
-        public UnmountRegistryReducer(
-            UnmountRegistry action,
+        public DismountRegistryReducer(
+            DismountRegistry action,
             IElevatedClient elevatedClient,
             IAppxPackageManager packageManager,
             IWritableApplicationStateManager stateManager) : base(action, elevatedClient, stateManager)
@@ -30,7 +30,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
         protected override async Task ReduceAsCurrentUser(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             progress?.Report(new ProgressData(0, "Un-mounting registry..."));
-            await this.packageManager.UnmountRegistry(this.action.PackageName, cancellationToken, progress).ConfigureAwait(false);
+            await this.packageManager.DismountRegistry(this.action.PackageName, cancellationToken, progress).ConfigureAwait(false);
         }
     }
 }

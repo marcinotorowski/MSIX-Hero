@@ -13,6 +13,8 @@
              xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
              xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
+             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements"
+             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -20,6 +22,8 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding CommandHandler.New}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.Delete}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.SetVolumeAsDefault}" Command="{Binding CommandHandler.SetVolumeAsDefault}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountVolume}" Command="{Binding CommandHandler.MountVolume}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.DismountVolume}" Command="{Binding CommandHandler.DismountVolume}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
     <Grid Margin="5">
@@ -28,8 +32,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -65,60 +67,170 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </DockPanel>
+
+                <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" FontFamily="Webdings" Height="26" MinHeight="26" Margin="2" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Content="&#x72;">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                            <Condition.Value>
+                                                <system:Int32>0</system:Int32>
+                                            </Condition.Value>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
         </Border>
 
-        <ListBox 
-            x:Name="ListBox"
-            SelectionMode="Extended"
-            Grid.Column="0" 
-            Grid.Row="1" 
-            BorderBrush="#ccc" 
-            SnapsToDevicePixels="True" 
-            UseLayoutRounding="True" 
-            ItemsSource="{Binding AllVolumesView}">
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Command="Delete" Header="Remove">
-                        <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.SetVolumeAsDefault}" Header="Set as default" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource NegativeConverter}}">
-                        <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ListBox.ContextMenu>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type volume:AppxVolume}">
-                    <DataTemplate.Resources>
-                        <system:Boolean x:Key="True">True</system:Boolean>
-                    </DataTemplate.Resources>
-                    <DockPanel>
-                        <Path x:Name="PART_Path" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDisk}" VerticalAlignment="Center" Margin="0 0 6 0" />
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding PackageStorePath}" />
-                            <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Name}" Opacity="0.65" />
-                        </StackPanel>
-                    </DockPanel>
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding IsDefault}" Value="{StaticResource True}">
-                            <!--<Setter TargetName="PART_Path" Property="Data" Value="{StaticResource VectorBulb}" />-->
-                            <Setter TargetName="PART_Path" Property="Fill" Value="Green" />
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
 
-        <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+        <progressOverlay:ProgressOverlay
+            FocusVisualStyle="{x:Null}"
+            IsShown="{Binding IsLoading}"
+            Message="{Binding LoadingMessage}"
+            Progress="{Binding LoadingProgress}"
+            Grid.Column="0"
+            Grid.Row="1">
 
+            <ListBox 
+                x:Name="ListBox"
+                SelectionMode="Extended"
+                BorderBrush="#ccc" 
+                SnapsToDevicePixels="True" 
+                UseLayoutRounding="True" 
+                ItemsSource="{Binding AllVolumesView}">
+                <ListBox.Resources>
+                    <system:Boolean x:Key="True">True</system:Boolean>
+                </ListBox.Resources>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="Delete" Header="Remove">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="{x:Static commands:MsixHeroCommands.DismountVolume}" Header="Dismount" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDisconnect}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Command="{x:Static commands:MsixHeroCommands.MountVolume}" Header="Mount" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorConnect}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Command="{x:Static commands:MsixHeroCommands.SetVolumeAsDefault}" Header="Set as default" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource NegativeConverter}}">
+                            <MenuItem.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsOffline}" Value="{StaticResource True}">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type elements:VolumeViewModel}">
+                        <DataTemplate.Resources>
+                            <system:Boolean x:Key="True">True</system:Boolean>
+                        </DataTemplate.Resources>
+                        <DockPanel>
+                            <Border 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center" 
+                                Margin="0 0 6 0"
+                                Background="#2B579A" 
+                                Width="32" 
+                                Height="32" >
+                                <Path 
+                                    x:Name="PART_Path" 
+                                    Fill="White"
+                                    Style="{StaticResource LargeIcon}" 
+                                    Data="{StaticResource VectorDisk}" 
+                                    VerticalAlignment="Center" 
+                                    HorizontalAlignment="Center">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Border>
+
+                            <Border
+                                DockPanel.Dock="Right"
+                                Width="32" Height="32" CornerRadius="16" Background="Green" 
+                                Visibility="{Binding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                Margin="8 0 0 0" 
+                                VerticalAlignment="Center" 
+                                ToolTip="This is the default volume">
+                                <Path 
+                                    Data="{StaticResource VectorCheckmark}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <Border.LayoutTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
+                                    </TransformGroup>
+                                </Border.LayoutTransform>
+                            </Border>
+
+                            <Border
+                                DockPanel.Dock="Right"
+                                Width="32" Height="32" CornerRadius="16" Background="Gray" 
+                                Visibility="{Binding IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                Margin="8 0 0 0" 
+                                VerticalAlignment="Center" 
+                                ToolTip="This volume is not mounted">
+                                <Path 
+                                    Data="{StaticResource VectorCancel}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <Border.LayoutTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
+                                    </TransformGroup>
+                                </Border.LayoutTransform>
+                            </Border>
+
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" />
+
+                                <ProgressBar
+                                    UseLayoutRounding="True"
+                                    SnapsToDevicePixels="True"
+                                    Margin="0 3 0 1" 
+                                    BorderThickness="1"
+                                    BorderBrush="#BCBCBC"
+                                    Height="11"
+                                    x:Name="PART_Progress"
+                                    Foreground="#26A0DA" 
+                                    Minimum="0" 
+                                    Maximum="100"
+                                    Value="{Binding OccupiedPercent, Mode=OneTime}" />
+
+                                <TextBlock Foreground="Gray" Text="{Binding CapacityLabel, Mode=OneTime}" />
+
+                            </StackPanel>
+                        </DockPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsThresholdReached}" Value="{StaticResource True}">
+                                <Setter Property="Foreground" TargetName="PART_Progress" Value="#DA2626" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </progressOverlay:ProgressOverlay>
     </Grid>
 </UserControl>

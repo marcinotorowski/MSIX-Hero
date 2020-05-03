@@ -19,8 +19,18 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.VolumeManager
 
         Task Delete(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
+        Task Mount(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
+        Task Dismount(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
+        Task Mount(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
+        Task Dismount(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
         Task SetDefault(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
         Task SetDefault(string drivePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
+        Task<List<AppxVolume>> GetAvailableDrivesForAppxVolume(bool onlyUnused, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

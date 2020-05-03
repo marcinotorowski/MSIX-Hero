@@ -27,13 +27,26 @@ namespace otor.msixhero.ui.Modules.VolumeManager.View
             this.stateManager = stateManager;
             this.eventAggregator = eventAggregator;
             InitializeComponent();
-
             FocusManager.SetFocusedElement(this, this.ListBox);
-            Keyboard.Focus(this.ListBox);
-            this.ListBox.Focus();
-            this.Loaded += this.OnLoaded;
+            this.IsVisibleChanged += OnIsVisibleChanged;
         }
 
+        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(bool) e.NewValue)
+            {
+                return;
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                FocusManager.SetFocusedElement(Application.Current.MainWindow, this.ListBox);
+                FocusManager.SetFocusedElement(this, this.ListBox);
+                this.ListBox.Focus();
+                Keyboard.Focus(this.ListBox);
+            }, DispatcherPriority.ApplicationIdle);
+        }
 
         private void ListBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -54,22 +67,17 @@ namespace otor.msixhero.ui.Modules.VolumeManager.View
             }
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            Application.Current.Dispatcher.BeginInvoke(
-                (Action)(() =>
-                {
-                    FocusManager.SetFocusedElement(this, this.ListBox);
-                    Keyboard.Focus(this.ListBox);
-                    this.ListBox.Focus();
-                }),
-                DispatcherPriority.ApplicationIdle);
-        }
-
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
+        }
+
+        private void ClearSearchField(object sender, RoutedEventArgs e)
+        {
+            this.SearchBox.Text = string.Empty;
+            this.SearchBox.Focus();
+            FocusManager.SetFocusedElement(this, this.SearchBox);
+            Keyboard.Focus(this.SearchBox);
         }
     }
 }

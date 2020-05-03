@@ -216,7 +216,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
-            if (e.Type == OperationType.PackageLoading)
+            if (e.Type < 0)
             {
                 return;
             }

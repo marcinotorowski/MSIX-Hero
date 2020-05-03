@@ -5,18 +5,18 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 {
     [Serializable]
-    public class UnmountRegistry : SelfElevatedCommand
+    public class DismountRegistry : SelfElevatedCommand
     {
-        public UnmountRegistry()
+        public DismountRegistry()
         {
         }
 
-        public UnmountRegistry(string packageName)
+        public DismountRegistry(string packageName)
         {
             this.PackageName = packageName;
         }
 
-        public UnmountRegistry(InstalledPackage package)
+        public DismountRegistry(InstalledPackage package)
         {
             this.PackageName = package.Name;
         }

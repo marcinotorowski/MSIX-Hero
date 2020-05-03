@@ -66,6 +66,6 @@ namespace otor.msixhero.lib.Infrastructure
 
         InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close);
 
-        int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null);
+        int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = 0);
     }
 }

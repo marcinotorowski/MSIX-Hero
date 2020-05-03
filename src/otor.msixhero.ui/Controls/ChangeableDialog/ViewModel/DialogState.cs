@@ -6,6 +6,7 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
     {
         private bool isSaving;
         private bool isSaved;
+        private bool wasSaved;
         private string progressMessage;
         private int progressValue;
         
@@ -13,6 +14,12 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
         {
             get => this.isSaved;
             set => this.SetField(ref this.isSaved, value);
+        }
+
+        public bool WasSaved
+        {
+            get => this.IsSaved || this.wasSaved;
+            set => this.SetField(ref this.wasSaved, value);
         }
 
         public bool IsSaving

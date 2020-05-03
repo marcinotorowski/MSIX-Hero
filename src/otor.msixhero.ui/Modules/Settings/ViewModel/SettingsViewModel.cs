@@ -35,6 +35,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.CertificateOutputPath = new ChangeableFolderProperty(interactionService, config.Signing?.DefaultOutFolder?.Resolved),
                 this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
+                this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
                 this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManager, config.Signing, false),
                 this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
                 this.ManifestEditorPath = new ChangeableFileProperty(interactionService, config.Editing.ManifestEditor.Resolved),
@@ -89,6 +90,8 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
         public ChangeableProperty<bool> PackerSignByDefault { get; }
         
         public ChangeableProperty<bool> SidebarDefaultState { get; }
+
+        public ChangeableProperty<bool> SwitchToContextualTabAfterSelection { get; }
 
         public string EntryPoint
         {
@@ -149,6 +152,11 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             if (this.SidebarDefaultState.IsTouched)
             {
                 newConfiguration.List.Sidebar.Visible = this.SidebarDefaultState.CurrentValue;
+            }
+
+            if (this.SwitchToContextualTabAfterSelection.IsTouched)
+            {
+                newConfiguration.UiConfiguration.SwitchToContextTabAfterSelection = this.SwitchToContextualTabAfterSelection.CurrentValue;
             }
 
             if (this.CertificateSelector.IsTouched)

@@ -16,7 +16,9 @@ namespace otor.msixhero.ui.Commands
             RunTool = new RoutedUICommand { Text = "Run tool in package context" };
             OpenPowerShell = new RoutedUICommand { Text = "Open PowerShell console" };
             MountRegistry = new RoutedUICommand { Text = "Mount registry" };
-            UnmountRegistry = new RoutedUICommand { Text = "Unmount registry" };
+            DismountRegistry = new RoutedUICommand { Text = "Dismount registry" };
+            MountVolume = new RoutedUICommand { Text = "Mount volume" };
+            DismountVolume = new RoutedUICommand { Text = "Dismount volume" };
             CreateSelfSign = new RoutedUICommand { Text = "Create new self-signed certificate "};
             OpenLogs = new RoutedUICommand { Text = "Show event viewer", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
             RemovePackage = new RoutedUICommand { Text = "Remove package" };
@@ -73,7 +75,11 @@ namespace otor.msixhero.ui.Commands
 
         public static RoutedUICommand MountRegistry { get; }
 
-        public static RoutedUICommand UnmountRegistry { get; }
+        public static RoutedUICommand DismountRegistry { get; }
+
+        public static RoutedUICommand MountVolume { get; }
+
+        public static RoutedUICommand DismountVolume { get; }
 
         public static RoutedUICommand OpenLogs { get; }
 

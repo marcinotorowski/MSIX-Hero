@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -14,7 +12,6 @@ using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using Prism.Events;
 using Prism.Regions;
 
@@ -26,15 +23,13 @@ namespace otor.msixhero.ui.Modules.PackageList.View
     public partial class PackageListView
     {
         private readonly IApplicationStateManager applicationStateManager;
-        private readonly IRegionManager regionManager;
-        private bool disableSelectionNotification;
 
+        // ReSharper disable once IdentifierTypo
         private SortAdorner sortAdorner;
 
         public PackageListView(IApplicationStateManager applicationStateManager = null, IRegionManager regionManager = null)
         {
             this.applicationStateManager = applicationStateManager;
-            this.regionManager = regionManager;
             InitializeComponent();
             Debug.Assert(applicationStateManager != null);
             Debug.Assert(regionManager != null);
@@ -47,30 +42,34 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
             // Set up defaults
             this.UpdateSidebarVisibility();
-            this.Loaded += OnLoaded;
 
-            FocusManager.SetFocusedElement(this, this.ListBox);
-            Keyboard.Focus(this.ListBox);
-            this.ListBox.Focus();
-
+            var focusable = this.PanelListView.IsVisible ? this.ListView : this.ListBox;
+            FocusManager.SetFocusedElement(this, focusable);
             this.Loaded += this.OnLoaded;
+            this.IsVisibleChanged += OnIsVisibleChanged;
         }
+
+        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(bool)e.NewValue)
+            {
+                return;
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                // ReSharper disable once AssignNullToNotNullAttribute
+                FocusManager.SetFocusedElement(Application.Current.MainWindow, this.ListBox);
+                FocusManager.SetFocusedElement(this, this.ListBox);
+                this.ListBox.Focus();
+                Keyboard.Focus(this.ListBox);
+            }, DispatcherPriority.ApplicationIdle);
+        }
+
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // ReSharper disable once PossibleNullReferenceException
-            Application.Current.Dispatcher.BeginInvoke(
-                (Action)(() =>
-                {
-                    var focusable = this.PanelListBox.Visibility == Visibility.Collapsed ? this.ListView : this.ListBox;
-
-                    FocusManager.SetFocusedElement(this, focusable);
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    FocusManager.SetFocusedElement(Application.Current.MainWindow, focusable);
-                    Keyboard.Focus(focusable);
-                    focusable.Focus();
-                }), 
-                DispatcherPriority.ApplicationIdle);
+            this.Loaded -= OnLoaded;
             this.SetSorting(this.applicationStateManager.CurrentState.Packages.Sort, this.applicationStateManager.CurrentState.Packages.SortDescending);
         }
 
@@ -81,6 +80,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void SetSorting(PackageSort sorting, bool descending)
         {
+            // ReSharper disable once IdentifierTypo
             SortAdorner newSortAdorner = null;
 
             foreach (var item in this.GridView.Columns.Select(c => c.Header).OfType<GridViewColumnHeader>().Where(c => c.Tag is PackageSort))
@@ -132,7 +132,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems?.Count > 0)
+            if (e.AddedItems?.Count > 0 && e.AddedItems[0] != null)
             {
                 this.ListView.ScrollIntoView(e.AddedItems[0]);
             }
@@ -140,7 +140,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems?.Count > 0)
+            if (e.AddedItems?.Count > 0 && e.AddedItems[0] != null)
             {
                 this.ListView.ScrollIntoView(e.AddedItems[0]);
             }

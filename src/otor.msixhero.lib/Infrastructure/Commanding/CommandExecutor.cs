@@ -146,7 +146,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     $"Go to developer settings{Environment.NewLine}Open Developer Settings page in Modern Control Panel and ensure that side-loading and/or the developer mode is enabled.."
                 };
 
-                var result = this.interactionService.ShowMessage(e.Message, buttons);
+                var result = this.interactionService.ShowMessage(e.Message, buttons, systemButtons: InteractionResult.Close);
                 if (result == 0)
                 {
                     var process = new ProcessStartInfo("ms-settings:developers") { UseShellExecute = true };
@@ -387,20 +387,22 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.reducerFactories[typeof(GetUsersOfPackage)] = action => new GetUsersOfPackageReducer((GetUsersOfPackage)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageSidebarVisibility)] = action => new SetPackageSidebarVisibilityReducer((SetPackageSidebarVisibility)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(MountRegistry)] = action => new MountRegistryReducer((MountRegistry)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
-            this.reducerFactories[typeof(UnmountRegistry)] = action => new UnmountRegistryReducer((UnmountRegistry)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(DismountRegistry)] = action => new DismountRegistryReducer((DismountRegistry)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageSorting)] = action => new SetPackageSortingReducer((SetPackageSorting)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetPackageGrouping)] = action => new SetPackageGroupingReducer((SetPackageGrouping)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetLogs)] = action => new GetLogsReducer((GetLogs)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(AddPackage)] = action => new AddPackageReducer((AddPackage)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsReducer((GetPackageDetails)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(InstallCertificate)] = action => new InstallCertificateReducer((InstallCertificate)action, this.elevatedClient, this.appxPackageManager, this.writableApplicationStateManager);
-
             this.reducerFactories[typeof(SelectVolumes)] = action => new SelectVolumesReducer((SelectVolumes)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetMode)] = action => new SetModeReducer((SetMode)action, this.writableApplicationStateManager);
             this.reducerFactories[typeof(AddVolume)] = action => new AddVolumeReducer((AddVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
             this.reducerFactories[typeof(RemoveVolume)] = action => new RemoveVolumeReducer((RemoveVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
             this.reducerFactories[typeof(GetVolumes)] = action => new GetVolumesReducer((GetVolumes)action, this.appxVolumeManager, this.writableApplicationStateManager);
             this.reducerFactories[typeof(SetVolumeFilter)] = action => new SetVolumeFilterReducer((SetVolumeFilter)action, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(SetDefaultVolume)] = action => new SetDefaultVolumeReducer((SetDefaultVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(DismountVolume)] = action => new DismountVolumeReducer((DismountVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
+            this.reducerFactories[typeof(MountVolume)] = action => new MountVolumeReducer((MountVolume)action, this.appxVolumeManager, this.elevatedClient, this.writableApplicationStateManager);
         }
     }
 }

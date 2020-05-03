@@ -18,6 +18,8 @@ using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.View;
 using otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.NewVolume.View;
+using otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.View;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.View;
@@ -40,12 +42,12 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(Constants.PathCertificateExport);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(Constants.PathUnpack);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(Constants.PathPack);
+            containerRegistry.RegisterDialog<NewVolumeView, NewVolumeViewModel>(Constants.PathNewVolume);
             containerRegistry.RegisterDialog<HelpView, HelpViewModel>(Constants.PathHelp);
             containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(Constants.PathAppAttach);
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(Constants.PathModificationPackage);
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(Constants.PathAppInstaller);
             containerRegistry.RegisterDialog<PackageExpertView, PackageExpertViewModel>(Constants.PathPackageExpert);
-
 
             containerRegistry.RegisterDialog<FileRuleView, FileRuleViewModel>(Constants.PathPackageExpertFileRule);
         }

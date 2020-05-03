@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
@@ -35,6 +39,11 @@ namespace otor.msixhero.lib.BusinessLayer.State
                 contexts.Remove(context);
                 this.RefreshStatus(context.Type);
                 Logger.Trace("Context ended...");
+            }
+
+            if (Application.Current?.Dispatcher != null)
+            {
+                Application.Current.Dispatcher.BeginInvoke(CommandManager.InvalidateRequerySuggested, DispatcherPriority.ApplicationIdle);
             }
         }
 

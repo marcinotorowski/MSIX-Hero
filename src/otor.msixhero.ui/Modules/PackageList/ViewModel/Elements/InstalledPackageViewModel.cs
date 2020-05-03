@@ -90,7 +90,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         {
             if (!this.StateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
             {
-                this.StateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.AddToSelection));
+                this.StateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.AddToSelection) { IsExplicit = true });
                 return true;
             }
 

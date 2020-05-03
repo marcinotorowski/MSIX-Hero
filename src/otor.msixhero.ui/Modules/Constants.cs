@@ -26,6 +26,7 @@
         public const string PathAppInstaller = "AppInstaller";
         public const string PathPackageExpert = "PackageExpert";
         public const string PathPack = "Pack";
+        public const string PathNewVolume = "NewVolume";
         public const string PathAppAttach = "AppAttach";
         public const string PathModificationPackage = "ModificationPackage";
         public const string PathHelp = "Help";

@@ -45,6 +45,8 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
         {
         }
 
+        public bool IsExplicit { get; set; }
+
         public List<InstalledPackage> Selection { get; set; }
 
         public SelectionMode SelectionMode { get; set; }

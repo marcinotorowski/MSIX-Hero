@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
@@ -23,9 +22,79 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
             get => this.Model.Name;
         }
 
+        public bool IsOffline
+        {
+            get => this.Model.IsOffline;
+        }
+
+        public int OccupiedPercent
+        {
+            get
+            {
+                if (this.Model.Capacity == 0)
+                {
+                    return 100;
+                }
+
+                return 100 - (int) (100.0 * this.Model.AvailableFreeSpace / this.Model.Capacity);
+            }
+        }
+
+        public string CapacityLabel
+        {
+            get
+            {
+                if (!this.Model.IsDriveReady)
+                {
+                    return "Drive not ready";
+                }
+
+                if (this.Model.Capacity == 0)
+                {
+                    return "Capacity unknown";
+                }
+
+                var sizeFree = FormatSize(this.Model.AvailableFreeSpace);
+                var sizeTotal = FormatSize(this.Model.Capacity);
+                return $"{sizeFree} free of {sizeTotal}";
+            }
+        }
+
+        private static string FormatSize(long sizeInBytes)
+        {
+            if (sizeInBytes < 1000)
+            {
+                return sizeInBytes + " B";
+            }
+
+            var units = new[] {"TB", "GB", "MB", "KB"};
+
+            for (var i = units.Length - 1; i >= 0; i--)
+            {
+                sizeInBytes /= 1024;
+
+                if (sizeInBytes < 1024)
+                {
+                    return sizeInBytes + " " + units[i];
+                }
+            }
+
+            return sizeInBytes + " " + units[0];
+        }
+
+        public string DisplayName
+        {
+            get => string.IsNullOrWhiteSpace(this.Model.Caption) ? this.Model.PackageStorePath : $"[{this.Model.Caption}] {this.Model.PackageStorePath}";
+        }
+
         public string PackageStorePath
         {
             get => this.Model.PackageStorePath;
+        }
+
+        public bool IsThresholdReached
+        {
+            get => this.Model.Capacity > 0 && this.OccupiedPercent >= 90;
         }
 
         protected override bool TrySelect()
@@ -35,7 +104,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
                 return false;
             }
 
-            this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.AddToSelection));
+            this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.AddToSelection) { IsExplicit = true });
             return true;
         }
 

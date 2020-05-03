@@ -8,16 +8,16 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
         {
         }
 
-        public SetDefaultVolume(string volumeName)
+        public SetDefaultVolume(string drivePath)
         {
-            this.Name = volumeName;
+            this.DrivePath = drivePath;
         }
 
-        public SetDefaultVolume(AppxVolume volume) : this(volume.Name)
+        public SetDefaultVolume(AppxVolume volume) : this(volume.PackageStorePath)
         {
         }
 
-        public string Name { get; set; }
+        public string DrivePath { get; set; }
 
         public override SelfElevationType RequiresElevation { get; } = SelfElevationType.RequireAdministrator;
     }

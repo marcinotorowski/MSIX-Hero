@@ -51,7 +51,10 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             {
                 if (!string.IsNullOrEmpty(action.SearchKey))
                 {
-                    if (item.Name.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && item.PackageStorePath.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                    if (
+                        item.Name.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
+                        item.PackageStorePath.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
+                        item.Caption?.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
                     {
                         toHide.Add(item);
                     }
@@ -60,7 +63,11 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             foreach (var item in state.Volumes.HiddenItems)
             {
-                if (!string.IsNullOrEmpty(action.SearchKey) && item.PackageStorePath.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && item.Name.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                if (
+                    !string.IsNullOrEmpty(action.SearchKey) && 
+                    item.PackageStorePath.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
+                    item.Name.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
+                    item.Caption?.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
                 {
                     continue;
                 }

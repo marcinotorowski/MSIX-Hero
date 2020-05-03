@@ -117,6 +117,13 @@
                     </UniformGrid>
                 </ScrollViewer>
             </TabItem>
+            <TabItem Header="UI">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <CheckBox IsChecked="{Binding SwitchToContextualTabAfterSelection.CurrentValue}" Content="After changing selection switch to the contextual tab" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
             <TabItem Header="Signing">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>

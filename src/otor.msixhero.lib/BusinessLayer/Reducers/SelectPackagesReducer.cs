@@ -45,20 +45,20 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
                 }
 
                 case SelectionMode.AddToSelection:
-                    select = this.action.Selection.Except(state.Packages.SelectedItems).ToList();
+                    select = this.action.Selection.Where(a => a != null).Except(state.Packages.SelectedItems).ToList();
                     deselect = new InstalledPackage[0];
                     break;
 
                 case SelectionMode.RemoveFromSelection:
                 {
                     select = new InstalledPackage[0];
-                    deselect = this.action.Selection.Intersect(state.Packages.SelectedItems).ToList();
+                    deselect = this.action.Selection.Where(a => a != null).Intersect(state.Packages.SelectedItems).ToList();
                     break;
                 }
 
                 case SelectionMode.ReplaceSelection:
                 {
-                    select = this.action.Selection.Except(state.Packages.SelectedItems).ToList();
+                    select = this.action.Selection.Where(a => a != null).Except(state.Packages.SelectedItems).ToList();
                     deselect = state.Packages.SelectedItems.Except(this.action.Selection).ToList();
                     break;
                 }
@@ -69,13 +69,13 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
 
             if (select.Any() || deselect.Any())
             {
-                state.Packages.SelectedItems.AddRange(select);
+                state.Packages.SelectedItems.AddRange(select.Where(a => a != null));
                 foreach (var item in deselect)
                 {
                     state.Packages.SelectedItems.Remove(item);
                 }
 
-                StateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(new PackagesSelectionChangedPayLoad(@select, deselect));
+                StateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(new PackagesSelectionChangedPayLoad(@select, deselect, this.action.IsExplicit));
             }
 
             return Task.FromResult(state.Packages.SelectedItems);

@@ -30,7 +30,8 @@ namespace otor.msixhero.ui.Services
             return (InteractionResult)(int)result;
         }
 
-        public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null)
+
+        public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = InteractionResult.None)
         {
             var taskDialog = new TaskDialog
             {
@@ -44,7 +45,17 @@ namespace otor.msixhero.ui.Services
                 taskDialog.Buttons.Add(btn);
             }
 
-            taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Ok));
+            if (systemButtons != InteractionResult.None)
+            {
+                var bts = new[] { InteractionResult.Yes, InteractionResult.No, InteractionResult.OK, InteractionResult.Cancel, InteractionResult.Close };
+                foreach (var bt in bts)
+                {
+                    if ((systemButtons & bt) == bt)
+                    {
+                        taskDialog.Buttons.Add(new TaskDialogButton((ButtonType)(int)bt));
+                    }
+                }
+            }
 
             taskDialog.CenterParent = true;
             taskDialog.Content = body;

@@ -14,7 +14,7 @@ namespace otor.msixhero.lib.Domain.Commands
     [XmlInclude(typeof(RunPackage))]
     [XmlInclude(typeof(SetPackageSidebarVisibility))]
     [XmlInclude(typeof(MountRegistry))]
-    [XmlInclude(typeof(UnmountRegistry))]
+    [XmlInclude(typeof(DismountRegistry))]
     [XmlInclude(typeof(GetUsersOfPackage))]
     [XmlInclude(typeof(FindUsers))]
     [XmlInclude(typeof(RemovePackages))]

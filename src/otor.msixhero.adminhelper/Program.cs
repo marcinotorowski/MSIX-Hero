@@ -177,7 +177,7 @@ namespace otor.msixhero.adminhelper
                 return InteractionResult.OK;
             }
 
-            public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null)
+            public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = InteractionResult.None)
             {
                 return -1;
             }

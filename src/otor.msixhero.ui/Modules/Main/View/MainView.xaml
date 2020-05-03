@@ -576,28 +576,33 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabManagement"
                 ReduceOrder="
+                    RibbonManagementStart,RibbonManagementStart,RibbonManagementStart
                     RibbonManagementNavi,RibbonManagementNavi,RibbonManagementNavi,
                     RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
                 Header="Management" Group="{Binding Source={x:Reference SelectedPackage}}">
-                <Fluent:RibbonGroupBox Visibility="Collapsed" IsEnabled="{Binding HasSingleSelection}">
-                    <Fluent:SplitButton Header="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" Size="Middle">
-                        <Fluent:SplitButton.Icon>
-                            <Path Data="{StaticResource VectorCopy}" Style="{StaticResource MediumIcon}" />
-                        </Fluent:SplitButton.Icon>
-                        <Fluent:Button Header="Name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" />
-                        <Fluent:Button Header="Full name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.FullName}" />
-                        <Fluent:Button Header="Version" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Version}"/>
-                        <Fluent:Button Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Publisher}" />
-                        <Fluent:Button Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Subject}" />
-                        <Fluent:Button Header="Install path" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.InstallPath}" />
-                    </Fluent:SplitButton>
+
+                <Fluent:RibbonGroupBox x:Name="RibbonManagementStart" Header="Start">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                    </Fluent:RibbonGroupBox.Icon>
+
+                    <Fluent:Button Header="Start app" MinWidth="48" IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.RunPackage}">
+                        <Fluent:Button.CommandParameter>
+                            <system:Boolean>False</system:Boolean>
+                        </Fluent:Button.CommandParameter>
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox IsEnabled="{Binding HasSelection}" x:Name="RibbonManagementNavi" Header="Navigation">
-                    <Fluent:RibbonGroupBox>
-                        <Fluent:RibbonGroupBox.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                        </Fluent:RibbonGroupBox.Icon>
-                    </Fluent:RibbonGroupBox>
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                    </Fluent:RibbonGroupBox.Icon>
                     <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open install location" Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" CommandParameter="{Binding SelectedPackage}">
                         <Fluent:Button.SizeDefinition>
                             <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
@@ -668,16 +673,16 @@
                             <Path Style="{StaticResource MediumIcon}" Data="M 21.75 4 C 20.078125 4 18.492188 4.660156 17.3125 5.84375 L 15.84375 7.3125 C 14.660156 8.496094 14 10.078125 14 11.75 C 14 12.542969 14.152344 13.316406 14.4375 14.03125 L 16.0625 12.40625 C 15.859375 11.109375 16.253906 9.714844 17.25 8.71875 L 18.71875 7.25 C 19.523438 6.445313 20.613281 6 21.75 6 C 22.886719 6 23.945313 6.445313 24.75 7.25 C 26.410156 8.910156 26.410156 11.621094 24.75 13.28125 L 24.03125 14 C 24.886719 14.003906 25.710938 14.109375 26.5 14.3125 C 27.476563 13.179688 28 11.761719 28 10.25 C 28 8.578125 27.339844 7.027344 26.15625 5.84375 C 24.976563 4.660156 23.421875 4 21.75 4 Z M 19.28125 11.28125 L 11.28125 19.28125 L 12.71875 20.71875 L 20.71875 12.71875 Z M 11.75 14 C 10.078125 14 8.492188 14.660156 7.3125 15.84375 L 5.84375 17.3125 C 4.660156 18.496094 4 20.078125 4 21.75 C 4 23.421875 4.660156 24.972656 5.84375 26.15625 C 7.023438 27.339844 8.578125 28 10.25 28 C 11.761719 28 13.179688 27.476563 14.3125 26.5 C 14.109375 25.707031 14.003906 24.886719 14 24.03125 L 13.28125 24.75 C 12.476563 25.554688 11.386719 26 10.25 26 C 9.113281 26 8.054688 25.554688 7.25 24.75 C 5.589844 23.089844 5.589844 20.378906 7.25 18.71875 L 8.71875 17.25 C 9.523438 16.445313 10.613281 16 11.75 16 C 11.972656 16 12.191406 16.023438 12.40625 16.0625 L 14.03125 14.4375 C 13.316406 14.152344 12.542969 14 11.75 14 Z M 24 16 C 19.59375 16 16 19.59375 16 24 C 16 28.40625 19.59375 32 24 32 C 28.40625 32 32 28.40625 32 24 C 32 19.59375 28.40625 16 24 16 Z M 24 18 C 27.324219 18 30 20.675781 30 24 C 30 27.324219 27.324219 30 24 30 C 20.675781 30 18 27.324219 18 24 C 18 20.675781 20.675781 18 24 18 Z M 21.71875 20.28125 L 20.28125 21.71875 L 22.5625 24 L 20.28125 26.28125 L 21.71875 27.71875 L 24 25.4375 L 26.28125 27.71875 L 27.71875 26.28125 L 25.4375 24 L 27.71875 21.71875 L 26.28125 20.28125 L 24 22.5625 Z" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-
-                    <Fluent:Button Header="Start" IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.RunPackage}">
-                        <Fluent:Button.CommandParameter>
-                            <system:Boolean>False</system:Boolean>
-                        </Fluent:Button.CommandParameter>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox x:Name="RibbonManagementOther" Header="Other" IsEnabled="{Binding HasSelection}">
+                    <Fluent:Button Header="Change volume...">
                         <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorRight}" />
+                            </uac:UACControl>
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRight}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -687,7 +692,7 @@
                 x:Name="RibbonTabVolumesManagement"
                 Header="Management" 
                 Group="{Binding Source={x:Reference SelectedVolume}}">
-                <Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Operations">
                     <Fluent:Button Header="Remove" Command="Delete">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
@@ -709,15 +714,26 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Separator />
-                    <Fluent:Button Header="Unmount">
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Mounting">
+                    <Fluent:Button Header="Dismount" Command="{x:Static commands:MsixHeroCommands.DismountVolume}">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
-                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDeleteUser}" />
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDisconnect}" />
                             </uac:UACControl>
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDeleteUser}" />
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDisconnect}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Mount" Command="{x:Static commands:MsixHeroCommands.MountVolume}">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorConnect}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorConnect}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -903,7 +919,7 @@
                             <Path Data="{StaticResource VectorRegistry}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Unload registry" Command="{x:Static commands:MsixHeroCommands.UnmountRegistry}">
+                    <Fluent:Button Header="Unload registry" Command="{x:Static commands:MsixHeroCommands.DismountRegistry}">
                         <Fluent:Button.SizeDefinition>
                             <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                         </Fluent:Button.SizeDefinition>

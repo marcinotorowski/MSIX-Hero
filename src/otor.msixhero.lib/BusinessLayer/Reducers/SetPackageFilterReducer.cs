@@ -157,7 +157,7 @@ namespace otor.msixhero.lib.BusinessLayer.Reducers
             
             if (selectionRemoved.Any())
             {
-                var eventToSend = new PackagesSelectionChangedPayLoad(new List<InstalledPackage>(), selectionRemoved);
+                var eventToSend = new PackagesSelectionChangedPayLoad(new List<InstalledPackage>(), selectionRemoved, false);
                 this.StateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(eventToSend);
             }
 

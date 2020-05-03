@@ -85,7 +85,7 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
 
         public ICommand OkCommand => this.okCommand ??= new DelegateCommand(param => this.OkExecute(param is bool bp && bp), param => this.CanOkExecute(param is bool bp && bp));
 
-        public DelegateCommand CloseCommand => this.closeCommand ??= new DelegateCommand(param => this.CloseExecute(param is ButtonResult result ? result : ButtonResult.Cancel), param => this.CanCloseExecute(param is ButtonResult result ? result : ButtonResult.Cancel));
+        public DelegateCommand CloseCommand => this.closeCommand ??= new DelegateCommand(param => this.CloseExecute(param is ButtonResult result ? result : default(ButtonResult?)), param => this.CanCloseExecute(param is ButtonResult result ? result : default(ButtonResult?)));
         
         string IDataErrorInfo.this[string columnName] => null;
 
@@ -168,12 +168,13 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
                         return;
                     }
 
-                    this.State.IsSaved = t.IsCompleted;
-
                     if (!t.Result)
                     {
                         return;
                     }
+
+                    this.State.IsSaved = t.IsCompleted;
+                    this.State.WasSaved |= this.State.IsSaved;
 
                     if (closeWindow)
                     {
@@ -211,18 +212,29 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
             return this.State?.IsSaved != true && this.CanSave();
         }
 
-        private void CloseExecute(ButtonResult button)
+        private void CloseExecute(ButtonResult? button)
         {
             if (this.RequestClose == null)
             {
                 throw new NotSupportedException("This dialog does not support closing itself.");
             }
-
-            this.RequestClose(new DialogResult(button));
+            
+            if (button.HasValue)
+            {
+                this.RequestClose(new DialogResult(button.Value));
+            }
+            else if (this.State.WasSaved)
+            {
+                this.RequestClose(new DialogResult(ButtonResult.OK));
+            }
+            else
+            {
+                this.RequestClose(new DialogResult(ButtonResult.Cancel));
+            }
         }
 
         // ReSharper disable once UnusedParameter.Local
-        private bool CanCloseExecute(ButtonResult button)
+        private bool CanCloseExecute(ButtonResult? button)
         {
             return true;
         }

@@ -80,7 +80,7 @@ assign";
             }
         }
         
-        public async Task UnmountVhd(string vhdPath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task DismountVhd(string vhdPath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var tempFile = Path.Combine(Path.GetTempPath(), "msix-hero-vhd-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".cfg");
 

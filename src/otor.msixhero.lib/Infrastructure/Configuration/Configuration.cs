@@ -13,10 +13,14 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
             this.Packer = new PackerConfiguration();
             this.AppInstaller = new AppInstallerConfiguration();
             this.Editing = new EditingConfiguration();
+            this.UiConfiguration = new UiConfiguration();
         }
 
         [DataMember(Name = "editing")]
         public EditingConfiguration Editing { get; set; }
+
+        [DataMember(Name = "ui")]
+        public UiConfiguration UiConfiguration { get; set; }
 
         [DataMember(Name = "list")]
         public ListConfiguration List { get; set; }

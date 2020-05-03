@@ -457,12 +457,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return Task.FromResult(hasRegistry);
         }
 
-        public Task UnmountRegistry(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task DismountRegistry(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.UnmountRegistry(package.Name, cancellationToken, progress);
+            return this.DismountRegistry(package.Name, cancellationToken, progress);
         }
 
-        public Task UnmountRegistry(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task DismountRegistry(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             return Task.Run(() =>
             {

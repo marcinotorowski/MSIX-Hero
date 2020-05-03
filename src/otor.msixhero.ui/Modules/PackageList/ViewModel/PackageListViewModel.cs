@@ -335,7 +335,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 case CollectionChangeType.Reset:
                     this.AllPackages.Clear();
                     var visibleItems = this.stateManager.CurrentState.Packages.VisibleItems.ToArray();
-                    foreach (var item in visibleItems)
+                    foreach (var item in visibleItems.Where(visibleItem => visibleItem != null))
                     {
                         var isSelected = item.ManifestLocation != null && selectedItems.Contains(item.ManifestLocation);
                         this.AllPackages.Add(new InstalledPackageViewModel(item, this.stateManager, isSelected));

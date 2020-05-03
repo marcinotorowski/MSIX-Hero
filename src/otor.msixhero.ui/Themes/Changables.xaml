@@ -4,7 +4,8 @@
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
                     xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
-                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers">
+                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
+                    xmlns:dialogs="http://prismlibrary.com/">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
@@ -74,7 +75,7 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
-                                        <Button Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="Close" />
+                                        <Button x:Name="PART_Close"  Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="Close" />
                                     </StackPanel>
                                 </DockPanel>
                             </Border>
@@ -217,6 +218,9 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" Value="{StaticResource True}">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ButtonOK" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.WasSaved}" Value="{StaticResource True}">
+                            <Setter Property="CommandParameter" Value="{x:Static dialogs:ButtonResult.OK}" TargetName="PART_Close" />
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

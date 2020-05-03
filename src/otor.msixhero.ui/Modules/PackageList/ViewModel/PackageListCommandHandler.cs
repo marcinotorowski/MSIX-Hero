@@ -70,7 +70,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanExecuteOpenPowerShell());
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanExecuteSingleSelection());
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanExecuteMountRegistry());
-            this.UnmountRegistry = new DelegateCommand(param => this.UnmountRegistryExecute(), param => this.CanExecuteUnmountRegistry());
+            this.DismountRegistry = new DelegateCommand(param => this.DismountRegistryExecute(), param => this.CanExecuteDismountRegistry());
 
             // General APPX
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
@@ -102,7 +102,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public ICommand OpenPowerShell { get; }
 
-        public ICommand UnmountRegistry { get; }
+        public ICommand DismountRegistry { get; }
 
         public ICommand RemovePackage { get; }
 
@@ -227,7 +227,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     if (appxReader != null)
                     {
                         var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
-                        await this.stateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected)).ConfigureAwait(false);
+                        await this.stateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected) { IsExplicit = true }).ConfigureAwait(false);
                     }
                 }
             }
@@ -299,7 +299,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
-        private void UnmountRegistryExecute()
+        private void DismountRegistryExecute()
         {
             var selection = this.stateManager.CurrentState.Packages.SelectedItems;
             if (selection.Count != 1)
@@ -312,7 +312,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new UnmountRegistry(selection.First()));
+            this.stateManager.CommandExecutor.ExecuteAsync(new DismountRegistry(selection.First()));
         }
         
         private bool CanExecuteMountRegistry()
@@ -324,7 +324,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
 
             var selected = selection.First();
-            if (selected.InstallLocation == null)
+            if (selected?.InstallLocation == null)
             {
                 return false;
             }
@@ -340,7 +340,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
-        private bool CanExecuteUnmountRegistry()
+        private bool CanExecuteDismountRegistry()
         {
             var selection = this.stateManager.CurrentState.Packages.SelectedItems;
             if (selection.Count != 1)

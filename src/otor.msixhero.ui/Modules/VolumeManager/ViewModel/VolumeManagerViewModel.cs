@@ -11,6 +11,7 @@ using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements;
 using otor.msixhero.ui.Themes;
@@ -18,6 +19,7 @@ using otor.msixhero.ui.ViewModel;
 using Prism;
 using Prism.Events;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
 {
@@ -27,8 +29,16 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
         private readonly IBusyManager busyManager;
         private bool isActive;
         private bool firstRun = true;
+        private bool isLoading;
+        private int loadingProgress;
+        private string loadingMessage;
 
-        public VolumeManagerViewModel(IApplicationStateManager stateManager, IEventAggregator eventAggregator, IBusyManager busyManager)
+        public VolumeManagerViewModel(
+            IApplicationStateManager stateManager,
+            IInteractionService interactionService,
+            IDialogService dialogService,
+            IEventAggregator eventAggregator, 
+            IBusyManager busyManager)
         {
             this.stateManager = stateManager;
             this.busyManager = busyManager;
@@ -37,7 +47,38 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             eventAggregator.GetEvent<VolumesFilterChanged>().Subscribe(this.OnVolumesFilterChanged, ThreadOption.UIThread);
             eventAggregator.GetEvent<VolumesVisibilityChanged>().Subscribe(this.OnVolumesVisibilityChanged, ThreadOption.UIThread);
             this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
-            this.CommandHandler = new VolumeManagerCommandHandler(stateManager, busyManager);
+            this.CommandHandler = new VolumeManagerCommandHandler(stateManager, interactionService, dialogService, busyManager);
+            this.busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
+        }
+
+        private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
+        {
+            if (e.Type != OperationType.VolumeLoading)
+            {
+                return;
+            }
+
+            this.IsLoading = e.IsBusy;
+            this.LoadingMessage = e.Message;
+            this.LoadingProgress = e.Progress;
+        }
+
+        public bool IsLoading
+        {
+            get => this.isLoading;
+            private set => this.SetField(ref this.isLoading, value);
+        }
+
+        public int LoadingProgress
+        {
+            get => this.loadingProgress;
+            private set => this.SetField(ref this.loadingProgress, value);
+        }
+
+        public string LoadingMessage
+        {
+            get => this.loadingMessage;
+            private set => this.SetField(ref this.loadingMessage, value);
         }
 
         public VolumeManagerCommandHandler CommandHandler { get; }
@@ -63,7 +104,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                     {
                         this.firstRun = false;
 
-                        var context = this.busyManager.Begin();
+                        var context = this.busyManager.Begin(OperationType.VolumeLoading);
                         this.stateManager.CommandExecutor.GetExecuteAsync(new GetVolumes()).ContinueWith(
                             t =>
                             {

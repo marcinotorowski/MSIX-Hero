@@ -6,11 +6,14 @@ namespace otor.msixhero.lib.Domain.Events.PackageList
 {
     public class PackagesSelectionChangedPayLoad
     {
-        public PackagesSelectionChangedPayLoad(IReadOnlyCollection<InstalledPackage> selected, IReadOnlyCollection<InstalledPackage> unselected)
+        public PackagesSelectionChangedPayLoad(IReadOnlyCollection<InstalledPackage> selected, IReadOnlyCollection<InstalledPackage> unselected, bool isExplicit)
         {
             this.Selected = selected;
             this.Unselected = unselected;
+            this.IsExplicit = isExplicit;
         }
+
+        public bool IsExplicit { get; }
 
         public IReadOnlyCollection<InstalledPackage> Selected { get; }
 

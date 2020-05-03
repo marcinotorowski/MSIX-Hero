@@ -91,7 +91,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.AppAttach
                     }
                     finally
                     {
-                        await wrapper.UnmountVhd(tmpPath, cancellationToken).ConfigureAwait(false);
+                        await wrapper.DismountVhd(tmpPath, cancellationToken).ConfigureAwait(false);
 
                         if (requiresRestart)
                         {

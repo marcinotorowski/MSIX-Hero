@@ -37,6 +37,8 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
         {
         }
 
+        public bool IsExplicit { get; set; }
+
         public List<AppxVolume> Selection { get; set; }
 
         public SelectionMode SelectionMode { get; set; }
