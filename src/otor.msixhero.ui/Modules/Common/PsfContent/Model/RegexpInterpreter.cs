@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.View
+namespace otor.msixhero.ui.Modules.Common.PsfContent.Model
 {
     public enum InterpretationResult
     {

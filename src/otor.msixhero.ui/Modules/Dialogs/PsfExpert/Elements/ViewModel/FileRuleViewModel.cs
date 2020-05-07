@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
+using otor.msixhero.ui.Modules.Common.PsfContent.Model;
 using otor.msixhero.ui.Modules.Common.PsfContent.View;
 using Prism.Services.Dialogs;
 

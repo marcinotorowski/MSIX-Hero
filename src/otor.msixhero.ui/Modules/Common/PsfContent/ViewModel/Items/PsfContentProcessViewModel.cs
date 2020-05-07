@@ -1,5 +1,6 @@
 ﻿using System;
 using otor.msixhero.ui.Domain;
+using otor.msixhero.ui.Modules.Common.PsfContent.Model;
 using otor.msixhero.ui.Modules.Common.PsfContent.View;
 
 namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
