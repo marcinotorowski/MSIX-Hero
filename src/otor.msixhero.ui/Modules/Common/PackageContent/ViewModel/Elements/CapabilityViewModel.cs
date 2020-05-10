@@ -317,7 +317,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
                 case "internetClientServer":
                     return "Internet and public networks (client + server)";
                 case "privateNetworkClientServer":
-                    return "Homes and work networks";
+                    return "Home and work networks";
                 case "phoneCall":
                     return "Phone calls";
                 case "phoneCallHistoryPublic":
