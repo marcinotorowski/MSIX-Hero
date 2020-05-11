@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
+using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Interop;
+using otor.msixhero.lib.Infrastructure.Ipc;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.lib.Infrastructure.Wrappers;
 
 namespace otor.msixhero.lib.tests
@@ -20,7 +23,7 @@ namespace otor.msixhero.lib.tests
             BundleHelper.MsixMgrPath = @"E:\Visual\Playground\MSIX-Hero\artifacts\redistr\msixmgr";
             BundleHelper.TemplatesPath = @"E:\Visual\Playground\MSIX-Hero\artifacts\templates";
 
-            var appAttach = new AppAttach();
+            var appAttach = new AppAttachManager(new SelfElevationManagerFactory(new Client(new ProcessManager())));
             appAttach.CreateVolume(
                 @"E:\temp\MSIX.Commander_1.0.6.0-x64.msix", 
                 @"C:\temp\my-disk.vhd",

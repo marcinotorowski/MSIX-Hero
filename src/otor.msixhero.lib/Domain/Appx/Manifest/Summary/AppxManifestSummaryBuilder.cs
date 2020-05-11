@@ -57,7 +57,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Summary
                     throw new FileNotFoundException("Manifest file not found.");
                 }
 
-                await using (var stream = entry.Open())
+                using (var stream = entry.Open())
                 {
                     return await FromManifest(stream, mode).ConfigureAwait(false);
                 }

@@ -9,7 +9,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
     {
         IApplicationState CurrentState { get; }
 
-        ICommandExecutor CommandExecutor { get; }
+        ICommandBus CommandExecutor { get; }
 
         IEventAggregator EventAggregator { get; }
     }

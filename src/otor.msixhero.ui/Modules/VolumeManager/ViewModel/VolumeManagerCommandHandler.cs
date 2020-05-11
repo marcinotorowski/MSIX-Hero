@@ -70,7 +70,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                 {
                     var selection = SelectVolumes.CreateSingle(this.stateManager.CurrentState.Volumes.SelectedItems.First());
                     selection.IsExplicit = true;
-                    await this.stateManager.CommandExecutor.ExecuteAsync(selection, CancellationToken.None, context);
+                    await this.stateManager.CommandExecutor.ExecuteAsync(selection, CancellationToken.None, context).ConfigureAwait(false); ;
                 }
 
             }
@@ -254,7 +254,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             var context = this.busyManager.Begin(OperationType.VolumeLoading);
             try
             {
-                await this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes(), CancellationToken.None, context);
+                await this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes(), CancellationToken.None, context).ConfigureAwait(false); ;
             }
             finally
             {

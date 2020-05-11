@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Users;
 
 namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 {
-    public class FindUsers : SelfElevatedCommand<List<User>>
+    public class FindUsers : CommandWithOutput<List<User>>
     {
         public FindUsers()
         {
@@ -28,14 +28,5 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 
         [XmlElement]
         public bool ForceElevation { get; set; }
-
-        [XmlIgnore]
-        public override SelfElevationType RequiresElevation
-        {
-            get
-            {
-                return this.ForceElevation ? SelfElevationType.RequireAdministrator : SelfElevationType.HighestAvailable;
-            }
-        }
     }
 }

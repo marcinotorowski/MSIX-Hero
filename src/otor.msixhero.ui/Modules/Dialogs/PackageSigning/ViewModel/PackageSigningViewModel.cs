@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
@@ -19,16 +20,16 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
 {
     public class PackageSigningViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly IAppxSigningManager signingManager;
+        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
         private readonly IInteractionService interactionService;
         private ICommand openSuccessLink, reset;
 
-        public PackageSigningViewModel(IAppxSigningManager signingManager, IInteractionService interactionService, IConfigurationService configurationService) : base("Package Signing", interactionService)
+        public PackageSigningViewModel(ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, IInteractionService interactionService, IConfigurationService configurationService) : base("Package Signing", interactionService)
         {
-            this.signingManager = signingManager;
+            this.signingManagerFactory = signingManagerFactory;
             this.interactionService = interactionService;
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, configurationService?.GetCurrentConfiguration()?.Signing, true);
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService?.GetCurrentConfiguration()?.Signing, true);
             this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
 
             this.AddChildren(this.Files, this.SelectedCertificate, this.IncreaseVersion);
@@ -72,15 +73,20 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
             foreach (var file in this.Files)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (this.SelectedCertificate.Store.CurrentValue == CertificateSource.Pfx)
                 {
-                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    await manager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.signingManager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    await manager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
             }
 

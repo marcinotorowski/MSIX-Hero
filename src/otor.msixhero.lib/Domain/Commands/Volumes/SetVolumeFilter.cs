@@ -3,7 +3,7 @@
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
     [Serializable]
-    public class SetVolumeFilter : BaseCommand
+    public class SetVolumeFilter : VoidCommand
     {
         public SetVolumeFilter()
         {

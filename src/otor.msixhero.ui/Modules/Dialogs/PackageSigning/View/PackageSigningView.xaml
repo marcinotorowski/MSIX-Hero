@@ -9,7 +9,7 @@
              xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PackageSigning.View"
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
-             xmlns:signing="clr-namespace:otor.msixhero.lib.BusinessLayer.Appx.Signing;assembly=msixhero.lib"
+             xmlns:signing="clr-namespace:otor.msixhero.lib.BusinessLayer.Managers.Signing;assembly=msixhero.lib"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel1:PackageSigningViewModel}">

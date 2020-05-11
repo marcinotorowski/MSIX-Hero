@@ -25,102 +25,106 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
             return this.processManager.CheckIfRunning(cancellationToken);
         }
 
-        public async Task Execute(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Execute(VoidCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             await this.processManager.Connect(cancellationToken).ConfigureAwait(false);
 
             // ReSharper disable once StringLiteralTypo
-            await using var pipeClient = new NamedPipeClientStream("msixhero");
-            await pipeClient.ConnectAsync(4000, cancellationToken).ConfigureAwait(false);
-            var stream = pipeClient;
-
-            var binaryProcessor = new BinaryStreamProcessor(stream);
-            // ReSharper disable once RedundantCast
-            await binaryProcessor.Write((BaseCommand)command, cancellationToken);
-            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-
-            while (true)
+            using (var pipeClient = new NamedPipeClientStream("msixhero"))
             {
-                var response = (ResponseType)await binaryProcessor.ReadInt32(cancellationToken).ConfigureAwait(false);
-                
-                switch (response)
+                await pipeClient.ConnectAsync(4000, cancellationToken).ConfigureAwait(false);
+                var stream = pipeClient;
+
+                var binaryProcessor = new BinaryStreamProcessor(stream);
+                // ReSharper disable once RedundantCast
+                await binaryProcessor.Write((VoidCommand)command, cancellationToken).ConfigureAwait(false);
+                await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+
+                while (true)
                 {
-                    case ResponseType.Exception:
-                        var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                        var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                        await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                        throw new ForwardedException(msg);
+                    var response = (ResponseType)await binaryProcessor.ReadInt32(cancellationToken).ConfigureAwait(false);
+                    
+                    switch (response)
+                    {
+                        case ResponseType.Exception:
+                            var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                            var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                            throw new ForwardedException(msg);
 
-                    case ResponseType.Progress:
-                        var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
-                        if (progress != null)
-                        {
-                            progress.Report(deserializedProgress);
-                        }
+                        case ResponseType.Progress:
+                            var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
+                            if (progress != null)
+                            {
+                                progress.Report(deserializedProgress);
+                            }
 
-                        break;
+                            break;
 
-                    case ResponseType.Result:
-                        if (progress != null)
-                        {
-                            progress.Report(new ProgressData(100, null));
-                        }
+                        case ResponseType.Result:
+                            if (progress != null)
+                            {
+                                progress.Report(new ProgressData(100, null));
+                            }
 
-                        return;
+                            return;
 
-                    default:
-                        throw new NotSupportedException();
+                        default:
+                            throw new NotSupportedException();
+                    }
                 }
             }
         }
 
         // ReSharper disable once MemberCanBeMadeStatic.Global
-        public async Task<TOutput> GetExecuted<TOutput>(BaseCommand<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task<TOutput> GetExecuted<TOutput>(CommandWithOutput<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             await this.processManager.Connect(cancellationToken).ConfigureAwait(false);
 
             // ReSharper disable once StringLiteralTypo
-            await using var pipeClient = new NamedPipeClientStream("msixhero");
-            await pipeClient.ConnectAsync(4000, cancellationToken).ConfigureAwait(false);
-            var stream = pipeClient;
-
-            var binaryProcessor = new BinaryStreamProcessor(stream);
-            await binaryProcessor.Write((BaseCommand)command, cancellationToken);
-            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-
-            while (true)
+            using (var pipeClient = new NamedPipeClientStream("msixhero"))
             {
-                var response = (ResponseType) await binaryProcessor.ReadInt32(cancellationToken).ConfigureAwait(false);
+                await pipeClient.ConnectAsync(4000, cancellationToken).ConfigureAwait(false);
+                var stream = pipeClient;
 
-                switch (response)
+                var binaryProcessor = new BinaryStreamProcessor(stream);
+                await binaryProcessor.Write((VoidCommand)command, cancellationToken).ConfigureAwait(false);
+                await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                
+                while (true)
                 {
-                    case ResponseType.Exception:
-                        var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                        // ReSharper disable once UnusedVariable
-                        var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
-                        await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                        throw new ForwardedException(msg);
+                    var response = (ResponseType) await binaryProcessor.ReadInt32(cancellationToken).ConfigureAwait(false);
 
-                    case ResponseType.Result:
-                        var deserializedObject = await binaryProcessor.Read<TOutput>(cancellationToken).ConfigureAwait(false);
-                        if (progress != null)
-                        {
-                            progress.Report(new ProgressData(100, null));
-                        }
+                    switch (response)
+                    {
+                        case ResponseType.Exception:
+                            var msg = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                            // ReSharper disable once UnusedVariable
+                            var stack = await binaryProcessor.ReadString(cancellationToken).ConfigureAwait(false);
+                            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                            throw new ForwardedException(msg);
 
-                        return deserializedObject;
+                        case ResponseType.Result:
+                            var deserializedObject = await binaryProcessor.Read<TOutput>(cancellationToken).ConfigureAwait(false);
+                            if (progress != null)
+                            {
+                                progress.Report(new ProgressData(100, null));
+                            }
 
-                    case ResponseType.Progress:
-                        var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
-                        if (progress != null)
-                        {
-                            progress.Report(deserializedProgress);
-                        }
+                            return deserializedObject;
 
-                        break;
+                        case ResponseType.Progress:
+                            var deserializedProgress = await binaryProcessor.Read<ProgressData>(cancellationToken).ConfigureAwait(false);
+                            if (progress != null)
+                            {
+                                progress.Report(deserializedProgress);
+                            }
 
-                    default:
-                        throw new NotSupportedException();
+                            break;
+
+                        default:
+                            throw new NotSupportedException();
+                    }
                 }
             }
         }

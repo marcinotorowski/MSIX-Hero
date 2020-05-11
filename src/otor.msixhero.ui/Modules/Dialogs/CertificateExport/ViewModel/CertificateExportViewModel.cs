@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
@@ -13,13 +14,13 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 {
     public class CertificateExportViewModel : ChangeableDialogViewModel
     {
-        private readonly IAppxSigningManager signingManager;
+        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
 
         private ChangeableContainer customValidationContainer;
 
-        public CertificateExportViewModel(IAppxSigningManager signingManager, IInteractionService interactionService) : base("Extract certificate", interactionService)
+        public CertificateExportViewModel(ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, IInteractionService interactionService) : base("Extract certificate", interactionService)
         {
-            this.signingManager = signingManager;
+            this.signingManagerFactory = signingManagerFactory;
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
@@ -75,14 +76,17 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+
             if (this.SaveToFile.CurrentValue)
             {
-                await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                await manager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             if (this.SaveToStore.CurrentValue)
             {
-                await this.signingManager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                await manager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
             }
 
             return true;
@@ -90,7 +94,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
         {
-            var result = await this.signingManager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var result = await manager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
 
             // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
             if (this.customValidationContainer.ValidationMode == ValidationMode.Silent)

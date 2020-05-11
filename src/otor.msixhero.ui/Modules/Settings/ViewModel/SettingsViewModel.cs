@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
@@ -24,7 +25,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             IEventAggregator eventAggregator,
             IConfigurationService configurationService, 
             IInteractionService interactionService, 
-            IAppxSigningManager signingManager)
+            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory)
         {
             this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
@@ -36,7 +37,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
                 this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
-                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManager, config.Signing, false),
+                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, false),
                 this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
                 this.ManifestEditorPath = new ChangeableFileProperty(interactionService, config.Editing.ManifestEditor.Resolved),
                 this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),

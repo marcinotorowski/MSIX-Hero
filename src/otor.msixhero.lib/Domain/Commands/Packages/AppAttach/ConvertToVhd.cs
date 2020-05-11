@@ -1,6 +1,6 @@
 ﻿namespace otor.msixhero.lib.Domain.Commands.Packages.AppAttach
 {
-    public class ConvertToVhd : SelfElevatedCommand
+    public class ConvertToVhd : VoidCommand
     {
         public ConvertToVhd(string packagePath, string vhdPath)
         {
@@ -21,7 +21,5 @@
         public bool GenerateScripts { get; set; }
 
         public bool ExtractCertificate { get; set; }
-
-        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

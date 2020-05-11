@@ -2,7 +2,7 @@
 
 namespace otor.msixhero.lib.Domain.Commands.Generic
 {
-    public class SetMode : BaseCommand
+    public class SetMode : VoidCommand
     {
         public SetMode()
         {

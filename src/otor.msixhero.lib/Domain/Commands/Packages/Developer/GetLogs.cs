@@ -3,7 +3,7 @@ using otor.msixhero.lib.Domain.Appx.Logs;
 
 namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 {
-    public class GetLogs : SelfElevatedCommand<List<Log>>
+    public class GetLogs : CommandWithOutput<List<Log>>
     {
         public GetLogs()
         {

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
 
@@ -15,15 +16,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 {
     public class CertificateSelectorViewModel : ChangeableContainer
     {
-        private readonly IAppxSigningManager signingManager;
+        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
 
         public CertificateSelectorViewModel(
-            IInteractionService interactionService, 
-            IAppxSigningManager signingManager,
+            IInteractionService interactionService,
+            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory,
             SigningConfiguration configuration,
             bool showPassword)
         {
-            this.signingManager = signingManager;
+            this.signingManagerFactory = signingManagerFactory;
             var signConfig = configuration ?? new SigningConfiguration();
 
             this.TimeStamp = new ValidatedChangeableProperty<string>(signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll", this.ValidateTimestamp);
@@ -58,8 +59,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(string thumbprint = null, bool onlyValid = true, CancellationToken cancellationToken = default)
         {
+            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, CancellationToken.None).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
             var needsCommit = this.SelectedPersonalCertificate.CurrentValue == null;
-            var certs = await this.signingManager.GetCertificatesFromStore(CertificateStoreType.MachineUser, onlyValid, cancellationToken).ConfigureAwait(false);
+            var certs = await manager.GetCertificatesFromStore(CertificateStoreType.MachineUser, onlyValid, cancellationToken).ConfigureAwait(false);
             var result = new ObservableCollection<CertificateViewModel>(certs.Select(c => new CertificateViewModel(c)));
             this.SelectedPersonalCertificate.CurrentValue = result.FirstOrDefault(c => thumbprint == null || c.Model.Thumbprint == thumbprint) ?? result.FirstOrDefault();
 

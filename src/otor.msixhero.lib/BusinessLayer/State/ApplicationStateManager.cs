@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
 
         public ApplicationStateManager(
             IEventAggregator eventAggregator,
-            ICommandExecutor commandExecutor,
+            ICommandBus commandExecutor,
             IConfigurationService configurationService)
         {
             this.configurationService = configurationService;
@@ -31,7 +31,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
 
         IApplicationState IApplicationStateManager.CurrentState => this.CurrentState;
 
-        public ICommandExecutor CommandExecutor { get; }
+        public ICommandBus CommandExecutor { get; }
 
         public IEventAggregator EventAggregator { get; }
 

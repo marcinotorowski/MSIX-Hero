@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
+using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Infrastructure;

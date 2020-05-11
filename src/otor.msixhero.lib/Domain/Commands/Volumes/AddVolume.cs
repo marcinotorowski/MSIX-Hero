@@ -4,7 +4,7 @@ using otor.msixhero.lib.Domain.Appx.Volume;
 
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
-    public class AddVolume : SelfElevatedCommand<AppxVolume>
+    public class AddVolume : CommandWithOutput<AppxVolume>
     {
         public AddVolume()
         {
@@ -16,7 +16,5 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
         }
 
         public string DrivePath { get; set; }
-
-        public override SelfElevationType RequiresElevation { get; } = SelfElevationType.RequireAdministrator;
     }
 }

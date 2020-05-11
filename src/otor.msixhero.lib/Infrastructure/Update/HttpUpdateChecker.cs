@@ -38,17 +38,18 @@ namespace otor.msixhero.lib.Infrastructure.Update
         {
             var webRequest = WebRequest.CreateHttp("https://msixhero.net/update.json");
             using var webResponse = await webRequest.GetResponseAsync().ConfigureAwait(false);
-            await using var stream = webResponse.GetResponseStream();
-
-            if (stream == null)
+            using (var stream = webResponse.GetResponseStream())
             {
-                throw new InvalidOperationException("Could not get information about the update.");
-            }
+                if (stream == null)
+                {
+                    throw new InvalidOperationException("Could not get information about the update.");
+                }
 
-            using var stringReader = new StreamReader(stream);
-            var json = await stringReader.ReadToEndAsync().ConfigureAwait(false);
-            var deserialized = JsonConvert.DeserializeObject<UpdateDefinition>(json);
-            return deserialized;
+                using var stringReader = new StreamReader(stream);
+                var json = await stringReader.ReadToEndAsync().ConfigureAwait(false);
+                var deserialized = JsonConvert.DeserializeObject<UpdateDefinition>(json);
+                return deserialized;
+            }
         }
     }
 }

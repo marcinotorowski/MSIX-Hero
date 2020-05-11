@@ -4,7 +4,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 {
     [Serializable]
-    public class SetPackageFilter : BaseCommand
+    public class SetPackageFilter : VoidCommand
     {
         public SetPackageFilter()
         {

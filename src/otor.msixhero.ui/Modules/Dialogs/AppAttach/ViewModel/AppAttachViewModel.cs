@@ -2,13 +2,14 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
+using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Packages.AppAttach;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
 
@@ -23,14 +24,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
     public class AppAttachViewModel : ChangeableDialogViewModel
     {
         private readonly IApplicationStateManager appState;
-        private readonly IAppAttach appAttach;
         private readonly IInteractionService interactionService;
         private readonly IProcessManager processManager;
+        private readonly ISelfElevationManagerFactory<IAppAttachManager> appAttachManagerFactory;
 
-        public AppAttachViewModel(IApplicationStateManager appState, IAppAttach appAttach, IProcessManager processManager, IInteractionService interactionService) : base("Prepare VHD for app attach", interactionService)
+        public AppAttachViewModel(IApplicationStateManager appState, ISelfElevationManagerFactory<IAppAttachManager> appAttachManagerFactory, IProcessManager processManager, IInteractionService interactionService) : base("Prepare VHD for app attach", interactionService)
         {
             this.appState = appState;
-            this.appAttach = appAttach;
+            this.appAttachManagerFactory = appAttachManagerFactory;
             this.processManager = processManager;
             this.interactionService = interactionService;
             this.InputPath = new ChangeableFileProperty(interactionService)
@@ -43,8 +44,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
             this.InputPath.Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence };
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
-            this.ExtractCertificate = new ChangeableProperty<bool>(false);
-            this.SizeMode = new ChangeableProperty<AppAttachSizeMode>(AppAttachSizeMode.Auto);
+            this.ExtractCertificate = new ChangeableProperty<bool>();
+            this.SizeMode = new ChangeableProperty<AppAttachSizeMode>();
             this.FixedSize = new ValidatedChangeableProperty<string>("100")
             {
                 Validators = new Func<string, string>[] { this.ValidateFixedSize }
@@ -85,7 +86,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
 
             if (this.appState.CurrentState.IsElevated)
             {
-                await this.appAttach.CreateVolume(
+                var appAttach = await this.appAttachManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await appAttach.CreateVolume(
                     this.InputPath.CurrentValue, 
                     output, 
                     sizeInMegabytes, 
@@ -103,8 +107,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
                     SizeInMegaBytes = sizeInMegabytes
                 };
 
-                var client = new Client(this.processManager);
-                await client.Execute(cmd, cancellationToken, progress).ConfigureAwait(false);
+                var mgr = await this.appAttachManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                await mgr.CreateVolume(this.InputPath.CurrentValue, output, sizeInMegabytes, this.ExtractCertificate.CurrentValue, this.GenerateScripts.CurrentValue, cancellationToken).ConfigureAwait(false);
             }
 
             return true;

@@ -65,7 +65,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Help.ViewModel
 
         private async void CheckExecute(object obj)
         {
-            await this.UpdateCheck.Load(this.updateChecker.CheckForNewVersion());
+            await this.UpdateCheck.Load(this.updateChecker.CheckForNewVersion()).ConfigureAwait(false);
         }
     }
 }

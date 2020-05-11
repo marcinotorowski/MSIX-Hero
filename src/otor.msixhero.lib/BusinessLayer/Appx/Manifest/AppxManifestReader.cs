@@ -290,7 +290,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                                             using (var memoryStream = new MemoryStream())
                                             {
                                                 await stream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-                                                await memoryStream.FlushAsync(cancellationToken);
+                                                await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
                                                 appxApplication.Logo = memoryStream.ToArray();
                                             }
                                         }

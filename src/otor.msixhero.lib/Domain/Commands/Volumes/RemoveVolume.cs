@@ -3,7 +3,7 @@ using otor.msixhero.lib.Domain.Appx.Volume;
 
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
-    public class RemoveVolume : SelfElevatedCommand
+    public class RemoveVolume : VoidCommand
     {
         public RemoveVolume()
         {
@@ -19,7 +19,5 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
         }
 
         public string Name { get; set; }
-
-        public override SelfElevationType RequiresElevation { get; } = SelfElevationType.RequireAdministrator;
     }
 }

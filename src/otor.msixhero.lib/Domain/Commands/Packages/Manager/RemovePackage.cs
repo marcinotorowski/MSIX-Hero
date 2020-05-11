@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
 {
     [Serializable]
-    public class RemovePackages : SelfElevatedCommand
+    public class RemovePackages : VoidCommand
     {
         public RemovePackages()
         {
@@ -35,7 +35,5 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
         public PackageContext Context { get; set;  }
 
         public bool RemoveAppData { get; set; }
-        
-        public override SelfElevationType RequiresElevation => this.Context == PackageContext.AllUsers ? SelfElevationType.RequireAdministrator : SelfElevationType.HighestAvailable;
     }
 }

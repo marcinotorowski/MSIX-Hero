@@ -7,7 +7,7 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 {
 
     [Serializable]
-    public class GetPackages : SelfElevatedCommand<List<InstalledPackage>>
+    public class GetPackages : CommandWithOutput<List<InstalledPackage>>
     {
         public GetPackages()
         {
@@ -21,7 +21,5 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 
         [XmlElement]
         public PackageContext Context { get; set; }
-
-        public override SelfElevationType RequiresElevation => this.Context == PackageContext.AllUsers ? SelfElevationType.RequireAdministrator : SelfElevationType.HighestAvailable;
     }
 }

@@ -7,12 +7,12 @@ using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
 using Prism.Events;
-using ICommandExecutor = otor.msixhero.lib.Infrastructure.Commanding.ICommandExecutor;
 
 namespace otor.msixhero.lib.tests
 {
@@ -39,7 +39,7 @@ namespace otor.msixhero.lib.tests
             Assert.AreEqual("ABC", t2.Result[0].Name);
         }
 
-        private class DummyCommandExecutor : ICommandExecutor
+        private class DummyCommandExecutor : ICommandBus
         {
             private readonly object result;
 
@@ -52,26 +52,26 @@ namespace otor.msixhero.lib.tests
             {
             }
 
-            public void Execute(BaseCommand action)
+            public void Execute(VoidCommand action)
             {
             }
 
-            public T GetExecute<T>(BaseCommand<T> action)
+            public T GetExecute<T>(CommandWithOutput<T> action)
             {
                 return default;
             }
 
-            public Task ExecuteAsync(BaseCommand action, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+            public Task ExecuteAsync(VoidCommand action, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
             {
                 return Task.FromResult(true);
             }
 
-            public Task<T> GetExecuteAsync<T>(BaseCommand<T> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+            public Task<T> GetExecuteAsync<T>(CommandWithOutput<T> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
             {
                 return Task.FromResult(default(T));
             }
 
-            public Task<object> GetExecuteAsync(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+            public Task<object> GetExecuteAsync(VoidCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
             {
                 return Task.FromResult(result);
             }

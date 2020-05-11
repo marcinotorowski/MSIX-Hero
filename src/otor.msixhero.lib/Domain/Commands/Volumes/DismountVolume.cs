@@ -2,7 +2,7 @@
 
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
-    public class DismountVolume : SelfElevatedCommand
+    public class DismountVolume : VoidCommand
     {
         public DismountVolume()
         {
@@ -18,7 +18,5 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
         }
 
         public string Name { get; set; }
-
-        public override SelfElevationType RequiresElevation { get; } = SelfElevationType.RequireAdministrator;
     }
 }

@@ -125,24 +125,37 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
                 this.isActive = value;
                 this.IsActiveChanged?.Invoke(this, new EventArgs());
-
+                
                 if (value)
                 {
-                    this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
-
-                    if (this.firstRun)
-                    {
-                        firstRun = false;
-
-                        var context = this.busyManager.Begin(OperationType.PackageLoading);
-                        this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ContinueWith(
-                            t =>
-                            {
-                                this.busyManager.End(context);
-                            }, 
-                            TaskContinuationOptions.AttachedToParent);
-                    }
+                    var task = this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
+#pragma warning disable 4014
+                    this.EnsureFirstTimeOperation();
+#pragma warning restore 4014
                 }
+            }
+        }
+
+        private async Task EnsureFirstTimeOperation()
+        {
+            if (!this.firstRun)
+            {
+                return;
+            }
+
+            firstRun = false;
+
+            var context = this.busyManager.Begin(OperationType.PackageLoading);
+
+            try
+            {
+                context.Message = "Reading packages...";
+                await Task.Delay(200).ConfigureAwait(false);
+                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context)).ConfigureAwait(false); ;
+            }
+            finally
+            {
+                this.busyManager.End(context);
             }
         }
 

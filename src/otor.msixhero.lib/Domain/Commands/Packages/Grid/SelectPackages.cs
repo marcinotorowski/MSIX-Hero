@@ -15,7 +15,7 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
     }
 
     [Serializable]
-    public class SelectPackages : BaseCommand<List<InstalledPackage>>
+    public class SelectPackages : CommandWithOutput<List<InstalledPackage>>
     {
         public SelectPackages()
         {

@@ -5,12 +5,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
@@ -20,18 +21,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
 {
     public class NewSelfSignedViewModel : ChangeableDialogViewModel
     {
-        private readonly IAppxSigningManager signingManager;
+        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
         private readonly IApplicationStateManager stateManager;
         private bool isSubjectTouched;
         private ICommand importNewCertificate;
 
         public NewSelfSignedViewModel(
-            IAppxSigningManager signingManager, 
+            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, 
             IInteractionService interactionService, 
             IApplicationStateManager stateManager,
             IConfigurationService configurationService) : base("New self signed certificate", interactionService)
         {
-            this.signingManager = signingManager;
+            this.signingManagerFactory = signingManagerFactory;
             this.stateManager = stateManager;
             
             this.OutputPath = new ChangeableFolderProperty(interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
@@ -64,15 +65,20 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             get => this.importNewCertificate ??= new DelegateCommand(param => this.ImportNewCertificateExecute());
         }
 
-        protected override Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            return this.signingManager.CreateSelfSignedCertificate(
+            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await manager.CreateSelfSignedCertificate(
                 new DirectoryInfo(this.OutputPath.CurrentValue),
                 this.PublisherName.CurrentValue,
                 this.PublisherFriendlyName.CurrentValue,
                 this.Password.CurrentValue,
                 cancellationToken,
                 progress);
+
+            return true;
         }
 
         private static string ValidatePublisherName(string newValue)

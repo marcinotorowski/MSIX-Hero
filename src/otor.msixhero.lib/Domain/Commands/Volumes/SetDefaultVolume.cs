@@ -2,7 +2,7 @@
 
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
-    public class SetDefaultVolume : SelfElevatedCommand
+    public class SetDefaultVolume : VoidCommand
     {
         public SetDefaultVolume()
         {
@@ -18,7 +18,5 @@ namespace otor.msixhero.lib.Domain.Commands.Volumes
         }
 
         public string DrivePath { get; set; }
-
-        public override SelfElevationType RequiresElevation { get; } = SelfElevationType.RequireAdministrator;
     }
 }

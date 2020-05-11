@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 {
     [Serializable]
-    public class DismountRegistry : SelfElevatedCommand
+    public class DismountRegistry : VoidCommand
     {
         public DismountRegistry()
         {
@@ -23,8 +23,5 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 
         [XmlElement]
         public string PackageName { get; set; }
-
-        [XmlIgnore]
-        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

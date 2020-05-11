@@ -10,8 +10,8 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
     {
         Task<bool> Test(CancellationToken cancellationToken = default);
 
-        Task Execute(BaseCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Execute(VoidCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<TOutput> GetExecuted<TOutput>(BaseCommand<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task<TOutput> GetExecuted<TOutput>(CommandWithOutput<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

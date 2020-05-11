@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Appx;
-using otor.msixhero.lib.BusinessLayer.Appx.AppAttach;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
-using otor.msixhero.lib.BusinessLayer.Appx.VolumeManager;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Commands;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Logging;
+using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using Prism.Events;
 
 namespace otor.msixhero.adminhelper
@@ -34,6 +34,7 @@ namespace otor.msixhero.adminhelper
 
         private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
+            // ReSharper disable once PossibleNullReferenceException
             var ex = e.Exception.GetBaseException();
 
             if (ex is OperationCanceledException)
@@ -57,6 +58,7 @@ namespace otor.msixhero.adminhelper
             }
         }
 
+
         public static void Main(string[] args)
         {
             try
@@ -69,16 +71,23 @@ namespace otor.msixhero.adminhelper
                     IInteractionService interactionService = new SilentInteractionService();
                     IBusyManager busyManager = new BusyManager();
                     IEventAggregator eventAggregator = new EventAggregator();
-                    IAppAttach appAttach = new AppAttach();
-                    IAppxVolumeManager volumeManager = new AppxVolumeManager();
                     IProcessManager processManager = new ProcessManager();
 
-                    var commandExecutor = new CommandExecutor(new AppxPackageManager(new AppxSigningManager()), volumeManager, interactionService, new Client(processManager), appAttach);
-                    var applicationStateManager = new ApplicationStateManager(eventAggregator, commandExecutor, configurationService);
+                    var client = new Client();
+                    var factory = new SelfElevationManagerFactory(client);
+
+                    var serverBus = new ServerCommandBus(
+                        interactionService,
+                        client,
+                        factory,
+                        factory,
+                        factory,
+                        factory, 
+                        factory);
+                    
+                    var applicationStateManager = new ApplicationStateManager(eventAggregator, serverBus, configurationService);
                     var server = new Server(applicationStateManager);
-
                     server.Start(busyManager: busyManager).GetAwaiter().GetResult();
-
                     Console.ReadKey();
                 }
                 else
@@ -180,6 +189,24 @@ namespace otor.msixhero.adminhelper
             public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = InteractionResult.None)
             {
                 return -1;
+            }
+        }
+
+        private class Client : IElevatedClient
+        {
+            public Task<bool> Test(CancellationToken cancellationToken = default)
+            {
+                return Task.FromResult(true);
+            }
+
+            public Task Execute(VoidCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task<TOutput> GetExecuted<TOutput>(CommandWithOutput<TOutput> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+            {
+                throw new NotImplementedException();
             }
         }
     }

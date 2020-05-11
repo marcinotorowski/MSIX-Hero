@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 {
     [Serializable]
-    public class MountRegistry : SelfElevatedCommand
+    public class MountRegistry : VoidCommand
     {
         public MountRegistry()
         {
@@ -33,8 +33,5 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 
         [XmlElement]
         public bool StartRegedit { get; set; }
-
-        [XmlIgnore]
-        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

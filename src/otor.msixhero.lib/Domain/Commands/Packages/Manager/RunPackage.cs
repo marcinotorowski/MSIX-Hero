@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
 {
     [Serializable]
-    public class RunPackage : BaseCommand
+    public class RunPackage : VoidCommand
     {
         public RunPackage()
         {

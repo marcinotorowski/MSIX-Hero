@@ -7,7 +7,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
     [Serializable]
-    public class SelectVolumes : BaseCommand<List<AppxVolume>>
+    public class SelectVolumes : CommandWithOutput<List<AppxVolume>>
     {
         public SelectVolumes()
         {

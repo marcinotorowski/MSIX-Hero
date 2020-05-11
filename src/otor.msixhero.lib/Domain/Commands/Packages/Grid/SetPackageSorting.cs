@@ -4,7 +4,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 {
     [Serializable]
-    public class SetPackageSorting : BaseCommand<PackageSort>
+    public class SetPackageSorting : CommandWithOutput<PackageSort>
     {
         public SetPackageSorting()
         {

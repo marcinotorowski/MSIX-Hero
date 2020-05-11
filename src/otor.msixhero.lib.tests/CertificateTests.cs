@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+﻿using NUnit.Framework;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Domain.Appx.Signing;
 
 namespace otor.msixhero.lib.tests
@@ -14,7 +10,7 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void TestReader()
         {
-            IAppxSigningManager signManager = new AppxSigningManager();
+            ISigningManager signManager = new SigningManager();
             var certs = signManager.GetCertificatesFromStore(CertificateStoreType.MachineUser).GetAwaiter().GetResult();
         }
     }

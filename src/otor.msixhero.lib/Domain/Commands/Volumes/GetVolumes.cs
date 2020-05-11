@@ -3,7 +3,7 @@ using otor.msixhero.lib.Domain.Appx.Volume;
 
 namespace otor.msixhero.lib.Domain.Commands.Volumes
 {
-    public class GetVolumes : BaseCommand<List<AppxVolume>>
+    public class GetVolumes : CommandWithOutput<List<AppxVolume>>
     {
     }
 }

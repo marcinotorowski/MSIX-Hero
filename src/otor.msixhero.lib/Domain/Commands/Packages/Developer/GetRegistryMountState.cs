@@ -5,7 +5,7 @@ using otor.msixhero.lib.Domain.Appx.Packages;
 namespace otor.msixhero.lib.Domain.Commands.Packages.Developer
 {
     [Serializable]
-    public class GetRegistryMountState : BaseCommand<RegistryMountState>
+    public class GetRegistryMountState : CommandWithOutput<RegistryMountState>
     {
         public GetRegistryMountState()
         {

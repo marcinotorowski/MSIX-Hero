@@ -1,6 +1,6 @@
 ﻿namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
 {
-    public class AddPackage : SelfElevatedCommand
+    public class AddPackage : VoidCommand
     {
         public AddPackage()
         {
@@ -20,7 +20,5 @@
         public bool AllowDowngrade { get; set; }
 
         public bool KillRunningApps { get; set; }
-
-        public override SelfElevationType RequiresElevation => this.AllUsers ? SelfElevationType.RequireAdministrator : SelfElevationType.AsInvoker;
     }
 }

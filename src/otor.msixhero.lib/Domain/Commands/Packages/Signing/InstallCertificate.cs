@@ -1,6 +1,6 @@
 ﻿namespace otor.msixhero.lib.Domain.Commands.Packages.Signing
 {
-    public class InstallCertificate : SelfElevatedCommand
+    public class InstallCertificate : VoidCommand
     {
         public InstallCertificate(string filePath)
         {
@@ -12,7 +12,5 @@
         }
 
         public string FilePath { get; set; }
-
-        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

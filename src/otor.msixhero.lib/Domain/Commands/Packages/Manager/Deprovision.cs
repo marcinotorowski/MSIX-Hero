@@ -3,7 +3,7 @@
 namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
 {
     [Serializable]
-    public class Deprovision : SelfElevatedCommand
+    public class Deprovision : VoidCommand
     {
         public Deprovision()
         {
@@ -15,7 +15,5 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Manager
         }
 
         public string PackageFamilyName { get; set;  }
-
-        public override SelfElevationType RequiresElevation => SelfElevationType.RequireAdministrator;
     }
 }

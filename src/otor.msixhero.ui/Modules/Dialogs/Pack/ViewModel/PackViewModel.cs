@@ -5,10 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
-using otor.msixhero.lib.BusinessLayer.Appx.Signing;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
@@ -19,18 +20,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
     public class PackViewModel : ChangeableDialogViewModel
     {
         private readonly IAppxPacker appxPacker;
-        private readonly IAppxSigningManager signingManager;
+        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
         private ICommand openSuccessLink;
         private ICommand reset;
 
         public PackViewModel(
-            IAppxPacker appxPacker, 
-            IAppxSigningManager signingManager,
+            IAppxPacker appxPacker,
+            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory,
             IConfigurationService configurationService,
             IInteractionService interactionService) : base("Pack MSIX package", interactionService)
         {
             this.appxPacker = appxPacker;
-            this.signingManager = signingManager;
+            this.signingManagerFactory = signingManagerFactory;
             var signConfig = configurationService.GetCurrentConfiguration().Signing ?? new SigningConfiguration();
             var signByDefault = configurationService.GetCurrentConfiguration().Packer?.SignByDefault == true;
 
@@ -52,7 +53,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             this.Compress = new ChangeableProperty<bool>(true);
             this.Validate = new ChangeableProperty<bool>(true);
 
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManager, signConfig, true);
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig, true);
             
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.Sign.ValueChanged += this.SignOnValueChanged;
@@ -105,13 +106,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
 
                 if (this.Sign.CurrentValue)
                 {
+                    var manager = await this.signingManagerFactory.Get(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+
                     switch (this.SelectedCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Personal:
-                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.Pfx:
-                            await this.signingManager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                     }
                 }

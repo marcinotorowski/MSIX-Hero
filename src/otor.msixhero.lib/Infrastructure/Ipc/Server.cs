@@ -63,14 +63,14 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                         try
                         {
                             Logger.Debug("Waiting for a client connection...");
-                            await stream.WaitForConnectionAsync(cancellationToken);
+                            await stream.WaitForConnectionAsync(cancellationToken).ConfigureAwait(false); ;
 
                             // using var stream = client.GetStream();
                             var binaryWriter = new BinaryStreamProcessor(stream);
                             var binaryReader = new BinaryStreamProcessor(stream);
 
                             Logger.Debug("Reading command from stream...");
-                            var command = await binaryReader.Read<BaseCommand>(cancellationToken);
+                            var command = await binaryReader.Read<VoidCommand>(cancellationToken).ConfigureAwait(false); ;
 
                             var success = false;
                             var isDone = false;
@@ -115,13 +115,13 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                 try
                                 {
                                     var commandType = command.GetType();
-                                    Console.WriteLine($"Requested: {commandType.Name}...");
-                                    var returnedType = GenericArgumentResolver.GetResultType(commandType, typeof(BaseCommand<>));
+                                    var returnedType = GenericArgumentResolver.GetResultType(commandType, typeof(CommandWithOutput<>));
 
                                     returnsValue = returnedType != null;
                                     
                                     if (!returnsValue)
                                     {
+                                        Console.WriteLine($"Requested: {commandType.Name} with no returned value...");
                                         var p = busyManager?.Begin();
                                         try
                                         {
@@ -139,6 +139,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
                                     }
                                     else
                                     {
+                                        Console.WriteLine($"Requested: {commandType.Name} with return value of type {returnedType.Name}...");
                                         var p = busyManager?.Begin();
                                         try
                                         {
