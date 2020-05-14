@@ -159,7 +159,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
             switch (this.Create.CurrentValue)
             {
                 case ModificationPackageBuilderAction.Manifest:
-                    this.Result = Path.Combine(selectedPath, "AppxManifest.xml");
+                    this.Result = selectedPath;
                     break;
                 case ModificationPackageBuilderAction.Msix:
                     this.Result = selectedPath;
