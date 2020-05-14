@@ -187,6 +187,12 @@ namespace otor.msixhero.ui.Modules.Main.View
             var wasVisible = this.SelectedVolume.Items.Any(item => item.IsSelected);
             this.ChangeTabVisibility();
 
+            if (!obj.IsExplicit)
+            {
+                // The selection was not invoked by the user, so do not change the tab selection
+                return;
+            }
+
             if (!wasVisible && this.SelectedVolume.IsVisible)
             {
                 var config = this.configurationService.GetCurrentConfiguration();

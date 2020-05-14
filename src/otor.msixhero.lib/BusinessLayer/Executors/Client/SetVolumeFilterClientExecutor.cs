@@ -54,7 +54,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
                     if (
                         item.Name.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
                         item.PackageStorePath.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
-                        item.Caption?.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                        item.DiskLabel?.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
                     {
                         toHide.Add(item);
                     }
@@ -67,7 +67,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
                     !string.IsNullOrEmpty(action.SearchKey) && 
                     item.PackageStorePath.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
                     item.Name.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1 && 
-                    item.Caption?.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                    item.DiskLabel?.IndexOf(action.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
                 {
                     continue;
                 }

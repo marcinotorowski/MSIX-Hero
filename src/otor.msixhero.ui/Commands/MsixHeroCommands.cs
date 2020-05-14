@@ -18,6 +18,7 @@ namespace otor.msixhero.ui.Commands
             MountRegistry = new RoutedUICommand { Text = "Mount registry" };
             DismountRegistry = new RoutedUICommand { Text = "Dismount registry" };
             MountVolume = new RoutedUICommand { Text = "Mount volume" };
+            ChangeVolume = new RoutedUICommand { Text = "Change volume" };
             DismountVolume = new RoutedUICommand { Text = "Dismount volume" };
             CreateSelfSign = new RoutedUICommand { Text = "Create new self-signed certificate "};
             OpenLogs = new RoutedUICommand { Text = "Show event viewer", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
@@ -78,6 +79,8 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand DismountRegistry { get; }
 
         public static RoutedUICommand MountVolume { get; }
+
+        public static RoutedUICommand ChangeVolume { get; }
 
         public static RoutedUICommand DismountVolume { get; }
 

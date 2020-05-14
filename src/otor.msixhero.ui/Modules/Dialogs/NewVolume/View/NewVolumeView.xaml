@@ -14,6 +14,7 @@
              xmlns:reader="clr-namespace:System.Diagnostics.Eventing.Reader;assembly=System.Diagnostics.EventLog"
              xmlns:volume="clr-namespace:otor.msixhero.lib.Domain.Appx.Volume;assembly=msixhero.lib"
              xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel.Items"
+             xmlns:volume1="clr-namespace:otor.msixhero.ui.Controls.Volume"
              d:DataContext="{d:DesignInstance viewModel:NewVolumeViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -22,6 +23,7 @@
                 <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
                 <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Controls/Volume/VolumeControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -60,46 +62,15 @@
                         <ComboBox HorizontalContentAlignment="Stretch" SelectedValuePath="PackageStorePath" SelectedValue="{Binding SelectedLetter.CurrentValue}" ItemsSource="{Binding Letters.CurrentValue}" IsEnabled="{Binding Letters.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
-                                    <DockPanel>
-                                        <Border 
-                                            VerticalAlignment="Center" 
-                                            HorizontalAlignment="Center" 
-                                            Margin="0 0 6 0"
-                                            Background="#2B579A" 
-                                            Width="32" 
-                                            Height="32" >
-                                            <Path 
-                                                x:Name="PART_Path" 
-                                                Fill="White"
-                                                Style="{StaticResource LargeIcon}" 
-                                                Data="{StaticResource VectorDisk}" 
-                                                VerticalAlignment="Center" 
-                                                HorizontalAlignment="Center">
-                                                <Path.LayoutTransform>
-                                                    <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
-                                                </Path.LayoutTransform>
-                                            </Path>
-                                        </Border>
-
-                                        <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding PackageStorePath, Mode=OneTime}" />
-
-                                            <ProgressBar
-                                                UseLayoutRounding="True"
-                                                SnapsToDevicePixels="True"
-                                                Margin="0 3 0 1" 
-                                                BorderThickness="1"
-                                                BorderBrush="#BCBCBC"
-                                                Height="11"
-                                                x:Name="PART_Progress"
-                                                Foreground="#26A0DA" 
-                                                Minimum="0" 
-                                                Maximum="100"
-                                                Value="{Binding OccupiedPercent, Mode=OneTime}" />
-
-                                            <TextBlock Foreground="Gray" Text="{Binding CapacityLabel, Mode=OneTime}" />
-                                        </StackPanel>
-                                    </DockPanel>
+                                    <volume1:VolumeControl
+                                        Margin="2"
+                                        IsDefault="False"
+                                        UseShortPaths="True"
+                                        Path="{Binding PackageStorePath}"
+                                        Label="{Binding DiskLabel}"
+                                        IsOffline="{Binding IsOffline}"
+                                        OccupiedSize="{Binding SizeTaken}"
+                                        TotalSize="{Binding TotalSize}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>

@@ -15,8 +15,16 @@
              xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
              xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements"
              xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+             xmlns:volume1="clr-namespace:otor.msixhero.ui.Controls.Volume"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/Volume/VolumeControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding CommandHandler.New}" />
@@ -147,87 +155,13 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type elements:VolumeViewModel}">
-                        <DataTemplate.Resources>
-                            <system:Boolean x:Key="True">True</system:Boolean>
-                        </DataTemplate.Resources>
-                        <DockPanel>
-                            <Border 
-                                VerticalAlignment="Center" 
-                                HorizontalAlignment="Center" 
-                                Margin="0 0 6 0"
-                                Background="#2B579A" 
-                                Width="32" 
-                                Height="32" >
-                                <Path 
-                                    x:Name="PART_Path" 
-                                    Fill="White"
-                                    Style="{StaticResource LargeIcon}" 
-                                    Data="{StaticResource VectorDisk}" 
-                                    VerticalAlignment="Center" 
-                                    HorizontalAlignment="Center">
-                                    <Path.LayoutTransform>
-                                        <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
-                                    </Path.LayoutTransform>
-                                </Path>
-                            </Border>
-
-                            <Border
-                                DockPanel.Dock="Right"
-                                Width="32" Height="32" CornerRadius="16" Background="Green" 
-                                Visibility="{Binding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                Margin="8 0 0 0" 
-                                VerticalAlignment="Center" 
-                                ToolTip="This is the default volume">
-                                <Path 
-                                    Data="{StaticResource VectorCheckmark}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                <Border.LayoutTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
-                                    </TransformGroup>
-                                </Border.LayoutTransform>
-                            </Border>
-
-                            <Border
-                                DockPanel.Dock="Right"
-                                Width="32" Height="32" CornerRadius="16" Background="Gray" 
-                                Visibility="{Binding IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                                Margin="8 0 0 0" 
-                                VerticalAlignment="Center" 
-                                ToolTip="This volume is not mounted">
-                                <Path 
-                                    Data="{StaticResource VectorCancel}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                <Border.LayoutTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
-                                    </TransformGroup>
-                                </Border.LayoutTransform>
-                            </Border>
-
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayName, Mode=OneTime}" />
-
-                                <ProgressBar
-                                    UseLayoutRounding="True"
-                                    SnapsToDevicePixels="True"
-                                    Margin="0 3 0 1" 
-                                    BorderThickness="1"
-                                    BorderBrush="#BCBCBC"
-                                    Height="11"
-                                    x:Name="PART_Progress"
-                                    Foreground="#26A0DA" 
-                                    Minimum="0" 
-                                    Maximum="100"
-                                    Value="{Binding OccupiedPercent, Mode=OneTime}" />
-
-                                <TextBlock Foreground="Gray" Text="{Binding CapacityLabel, Mode=OneTime}" />
-
-                            </StackPanel>
-                        </DockPanel>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding IsThresholdReached}" Value="{StaticResource True}">
-                                <Setter Property="Foreground" TargetName="PART_Progress" Value="#DA2626" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
+                        <volume1:VolumeControl
+                            OccupiedSize="{Binding SpaceTaken}"
+                            TotalSize="{Binding Capacity}"
+                            Path="{Binding PackageStorePath}"
+                            Label="{Binding Label}"
+                            IsDefault="{Binding IsDefault}"
+                            IsOffline="{Binding IsOffline}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

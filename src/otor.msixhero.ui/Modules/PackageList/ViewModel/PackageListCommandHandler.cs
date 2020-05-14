@@ -71,6 +71,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanExecuteSingleSelection());
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanExecuteMountRegistry());
             this.DismountRegistry = new DelegateCommand(param => this.DismountRegistryExecute(), param => this.CanExecuteDismountRegistry());
+            this.ChangeVolume = new DelegateCommand(param => this.ChangeVolumeExecute(), param => this.CanExecuteChangeVolume());
 
             // General APPX
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
@@ -137,6 +138,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ICommand Deprovision { get; }
 
         public ICommand OpenExplorerUser { get; }
+
+        public ICommand ChangeVolume { get; }
 
         public ICommand OpenManifest { get; }
 
@@ -363,6 +366,59 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 return false;
             }
+        }
+
+        private void ChangeVolumeExecute()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            var selected = selection.First();
+            if (selected.InstallLocation == null)
+            {
+                return;
+            }
+
+            this.dialogService.ShowDialog(Constants.PathChangeVolume, new DialogParameters
+                {
+                    {
+                        "path", selected.InstallLocation
+                    }
+                },
+                result =>
+                {
+                    if (result.Result == ButtonResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    if (!this.Refresh.CanExecute(null))
+                    {
+                        return;
+                    }
+
+                    this.Refresh.Execute(null);
+                });
+        }
+
+        private bool CanExecuteChangeVolume()
+        {
+            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            var selected = selection.First();
+            if (selected.InstallLocation == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private bool CanExecuteOpenPowerShell()

@@ -19,7 +19,7 @@ namespace otor.msixhero.lib.Domain.Appx.Volume
         public long Capacity { get; set; }
 
         [XmlAttribute]
-        public string Caption { get; set; }
+        public string DiskLabel { get; set; }
 
         [XmlAttribute]
         public long AvailableFreeSpace { get; set; }

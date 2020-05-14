@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
@@ -17,15 +16,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
 {
     public class NewVolumeViewModel : ChangeableDialogViewModel
     {
-        private readonly IApplicationStateManager manager;
-        private readonly IAppxVolumeManager volumeManager;
+        private readonly ISelfElevationManagerFactory<IAppxVolumeManager> volumeManager;
 
         public NewVolumeViewModel(
-            IApplicationStateManager manager,
             IInteractionService interactionService, 
-            IAppxVolumeManager volumeManager) : base("New volume", interactionService)
+            ISelfElevationManagerFactory<IAppxVolumeManager> volumeManager) : base("New volume", interactionService)
         {
-            this.manager = manager;
             this.volumeManager = volumeManager;
             this.Path = new ChangeableProperty<string>("WindowsApps");
 
@@ -75,7 +71,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
             var drivePath = System.IO.Path.Combine(this.SelectedLetter.CurrentValue ?? "C:\\", this.Path.CurrentValue ?? string.Empty);
 
             progress.Report(new ProgressData(20, "Adding a volume..."));
-            var volume = await this.manager.CommandExecutor.GetExecuteAsync(new AddVolume { DrivePath = drivePath }, cancellationToken, progress).ConfigureAwait(false);
+
+            var mgr = await this.volumeManager.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var volume = await mgr.Add(drivePath, cancellationToken, progress).ConfigureAwait(false);
             if (volume == null)
             {
                 return false;
@@ -84,7 +84,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
             if (this.SetAsDefault.CurrentValue)
             {
                 progress.Report(new ProgressData(80, "Changing the default volume..."));
-                await this.manager.CommandExecutor.ExecuteAsync(new SetDefaultVolume { DrivePath = volume.PackageStorePath }, cancellationToken).ConfigureAwait(false);
+                await mgr.SetDefault(drivePath, cancellationToken).ConfigureAwait(false);
             }
 
             return true;
@@ -92,7 +92,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetLetters()
         {
-            var disks = await this.volumeManager.GetAvailableDrivesForAppxVolume(true).ConfigureAwait(false);
+            var mgr = await this.volumeManager.Get().ConfigureAwait(false);
+            var disks = await mgr.GetAvailableDrivesForAppxVolume(true).ConfigureAwait(false);
             return disks.Select(r => new VolumeCandidateViewModel(r)).ToList();
         }
 

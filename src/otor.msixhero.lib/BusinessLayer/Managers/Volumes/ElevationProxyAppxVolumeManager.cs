@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Volume;
+using otor.msixhero.lib.Domain.Commands.Packages.Manager;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Infrastructure.Ipc;
 using otor.msixhero.lib.Infrastructure.Progress;
@@ -25,6 +27,13 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Volumes
         {
             var cmd = new GetVolumes();
             return this.client.GetExecuted(cmd, cancellationToken, progress);
+        }
+
+        public async Task<AppxVolume> GetVolumeForPath(string path, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var manager = await this.volumeManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            return await manager.GetVolumeForPath(path, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task<AppxVolume> GetDefault(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -129,6 +138,26 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Volumes
             var manager = await this.volumeManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             return await manager.GetAvailableDrivesForAppxVolume(onlyUnused, cancellationToken, progress).ConfigureAwait(false);
+        }
+
+        public Task MovePackageToVolume(string volumePackagePath, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            return this.client.Execute(new ChangeVolume(volumePackagePath, packageFullName), cancellationToken, progress);
+        }
+
+        public Task MovePackageToVolume(AppxVolume volume, AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (volume == null)
+            {
+                throw new ArgumentNullException(nameof(volume));
+            }
+            
+            if (package == null)
+            {
+                throw new ArgumentNullException(nameof(package));
+            }
+
+            return this.MovePackageToVolume(volume.Name, package.FullName, cancellationToken, progress);
         }
     }
 }

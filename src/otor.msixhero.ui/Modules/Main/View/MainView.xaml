@@ -675,7 +675,7 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox x:Name="RibbonManagementOther" Header="Other" IsEnabled="{Binding HasSelection}">
-                    <Fluent:Button Header="Change volume...">
+                    <Fluent:Button Header="Change volume..." Command="{x:Static commands:MsixHeroCommands.ChangeVolume}">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorRight}" />

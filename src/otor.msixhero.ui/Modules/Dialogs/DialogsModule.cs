@@ -4,6 +4,8 @@ using otor.msixhero.ui.Modules.Dialogs.AppInstaller.View;
 using otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.View;
+using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
 using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Help.View;
@@ -43,6 +45,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(Constants.PathUnpack);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(Constants.PathPack);
             containerRegistry.RegisterDialog<NewVolumeView, NewVolumeViewModel>(Constants.PathNewVolume);
+            containerRegistry.RegisterDialog<ChangeVolumeView, ChangeVolumeViewModel>(Constants.PathChangeVolume);
             containerRegistry.RegisterDialog<HelpView, HelpViewModel>(Constants.PathHelp);
             containerRegistry.RegisterDialog<AppAttachView, AppAttachViewModel>(Constants.PathAppAttach);
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(Constants.PathModificationPackage);

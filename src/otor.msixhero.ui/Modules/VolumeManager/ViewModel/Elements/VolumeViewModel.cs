@@ -12,90 +12,19 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
         {
         }
 
-        public bool IsDefault
-        {
-            get => this.Model.IsDefault;
-        }
+        public bool IsDefault => this.Model.IsDefault;
 
-        public string Name
-        {
-            get => this.Model.Name;
-        }
+        public string Name => this.Model.Name;
 
-        public bool IsOffline
-        {
-            get => this.Model.IsOffline;
-        }
+        public bool IsOffline => this.Model.IsOffline;
 
-        public int OccupiedPercent
-        {
-            get
-            {
-                if (this.Model.Capacity == 0)
-                {
-                    return 100;
-                }
+        public long SpaceTaken => this.Model.Capacity - this.Model.AvailableFreeSpace;
 
-                return 100 - (int) (100.0 * this.Model.AvailableFreeSpace / this.Model.Capacity);
-            }
-        }
+        public long Capacity => this.Model.Capacity;
 
-        public string CapacityLabel
-        {
-            get
-            {
-                if (!this.Model.IsDriveReady)
-                {
-                    return "Drive not ready";
-                }
-
-                if (this.Model.Capacity == 0)
-                {
-                    return "Capacity unknown";
-                }
-
-                var sizeFree = FormatSize(this.Model.AvailableFreeSpace);
-                var sizeTotal = FormatSize(this.Model.Capacity);
-                return $"{sizeFree} free of {sizeTotal}";
-            }
-        }
-
-        private static string FormatSize(long sizeInBytes)
-        {
-            if (sizeInBytes < 1000)
-            {
-                return sizeInBytes + " B";
-            }
-
-            var units = new[] {"TB", "GB", "MB", "KB"};
-
-            for (var i = units.Length - 1; i >= 0; i--)
-            {
-                sizeInBytes /= 1024;
-
-                if (sizeInBytes < 1024)
-                {
-                    return sizeInBytes + " " + units[i];
-                }
-            }
-
-            return sizeInBytes + " " + units[0];
-        }
-
-        public string DisplayName
-        {
-            get => string.IsNullOrWhiteSpace(this.Model.Caption) ? this.Model.PackageStorePath : $"[{this.Model.Caption}] {this.Model.PackageStorePath}";
-        }
-
-        public string PackageStorePath
-        {
-            get => this.Model.PackageStorePath;
-        }
-
-        public bool IsThresholdReached
-        {
-            get => this.Model.Capacity > 0 && this.OccupiedPercent >= 90;
-        }
+        public string Label => this.Model.DiskLabel;
+        
+        public string PackageStorePath => this.Model.PackageStorePath;
 
         protected override bool TrySelect()
         {

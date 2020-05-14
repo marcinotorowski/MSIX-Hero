@@ -1,7 +1,7 @@
 ﻿using otor.msixhero.lib.Domain.Appx.Volume;
 using otor.msixhero.ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel.Items
+namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel.Items
 {
     public class VolumeCandidateViewModel : NotifyPropertyChanged
     {
@@ -13,6 +13,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel.Items
         public AppxVolume Model { get; }
 
         public string PackageStorePath => this.Model.PackageStorePath;
+
+        public string Name => this.Model.Name;
         
         public long SizeTaken => this.Model.Capacity - this.Model.AvailableFreeSpace;
 

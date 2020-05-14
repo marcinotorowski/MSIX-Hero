@@ -1,0 +1,114 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.ChangeVolume.View.ChangeVolumeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewVolume.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel"
+             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+             xmlns:reader="clr-namespace:System.Diagnostics.Eventing.Reader;assembly=System.Diagnostics.EventLog"
+             xmlns:volume="clr-namespace:otor.msixhero.lib.Domain.Appx.Volume;assembly=msixhero.lib"
+             xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel.Items"
+             xmlns:volume1="clr-namespace:otor.msixhero.ui.Controls.Volume"
+             xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel"
+             d:DataContext="{d:DesignInstance viewModel1:ChangeVolumeViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Controls/Volume/VolumeControl.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="550" />
+            <Setter Property="Height" Value="550" />
+            <Setter Property="MinWidth" Value="500" />
+            <Setter Property="MinHeight" Value="350" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
+    <changeableDialog:ChangeableDialog
+        Dialog="{Binding}"
+        OkButtonLabel="Move to selected volume"
+        ShowShield="True"
+        Icon="{StaticResource VectorRight}">
+        <changeableDialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="Packages were moved to a selected volume." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock TextAlignment="Center">
+                    <!--<Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing packed files</Hyperlink>-->
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center">
+                    <!--<Hyperlink Command="{Binding Reset}">Pack another package</Hyperlink>-->
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.SuccessContentTemplate>
+        <changeableDialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <progressOverlay:ProgressOverlay IsShown="{Binding AllVolumes.IsLoading}" Message="Getting available drives...">
+                    <StackPanel>
+                        <TextBlock Foreground="#666" Text="Current volume" Margin="0 16 0 6" />
+                        <progressOverlay:ProgressOverlay IsShown="{Binding CurrentVolume.IsLoading}">
+                            <Border SnapsToDevicePixels="True" UseLayoutRounding="True" DataContext="{Binding CurrentVolume.CurrentValue}">
+                                <volume1:VolumeControl HorizontalAlignment="Stretch"
+                                   IsDefault="False"
+                                   Path="{Binding PackageStorePath}"
+                                   Label="{Binding DiskLabel}"
+                                   IsOffline="{Binding IsOffline}"
+                                   OccupiedSize="{Binding SizeTaken}"
+                                   TotalSize="{Binding TotalSize}" />
+                            </Border>
+                        </progressOverlay:ProgressOverlay>
+
+                        <TextBlock Foreground="#666" Text="Target volume" Margin="0 16 0 6" />
+                        <ComboBox 
+                            HorizontalContentAlignment="Stretch" 
+                            SelectedValuePath="Name" 
+                            SelectedValue="{Binding TargetVolume.CurrentValue}" 
+                            ItemsSource="{Binding AllVolumes.CurrentValue}" 
+                            IsEnabled="{Binding AllVolumes.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
+                                    <DockPanel>
+                                        <Border Height="30" Visibility="Collapsed" x:Name="PART_New">
+                                            <TextBlock VerticalAlignment="Center">
+                                                <Hyperlink Click="CreateNew">Create new volume...</Hyperlink>
+                                            </TextBlock>
+                                        </Border>
+                                        <volume1:VolumeControl
+                                            x:Name="PART_Existing"
+                                            Margin="2"
+                                            IsDefault="False"
+                                            Path="{Binding PackageStorePath}"
+                                            Label="{Binding DiskLabel}"
+                                            IsOffline="{Binding IsOffline}"
+                                            OccupiedSize="{Binding SizeTaken}"
+                                            TotalSize="{Binding TotalSize}" />
+                                    </DockPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Path=PackageStorePath}" Value="{x:Null}">
+                                            <Setter TargetName="PART_Existing" Property="Visibility" Value="Collapsed" />
+                                            <Setter TargetName="PART_New" Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </progressOverlay:ProgressOverlay>
+            </DataTemplate>
+        </changeableDialog:ChangeableDialog.DialogContentTemplate>
+    </changeableDialog:ChangeableDialog>
+</UserControl>

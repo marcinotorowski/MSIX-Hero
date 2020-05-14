@@ -53,6 +53,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.CommandExecutorFactories[typeof(SetDefaultVolume)] = action => new SetDefaultVolumeCommandExecutor((SetDefaultVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(DismountVolume)] = action => new DismountVolumeCommandExecutor((DismountVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(MountVolume)] = action => new MountVolumeCommandExecutor((MountVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
+            this.CommandExecutorFactories[typeof(ChangeVolume)] = action => new ChangeVolumeCommandExecutor((ChangeVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
         }
     }
 }

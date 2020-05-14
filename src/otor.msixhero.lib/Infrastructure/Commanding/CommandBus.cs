@@ -115,6 +115,8 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
+
+                throw;
             }
             catch (DeveloperModeException e)
             {
@@ -141,7 +143,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 {
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+                    return;
                 }
+
+                throw;
             }
         }
 
@@ -217,7 +222,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
-                return default;
+                throw;
             }
             catch (Exception e)
             {
@@ -229,7 +234,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
-                return default;
+                throw;
             }
         }
 
@@ -271,7 +276,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
-                return default;
+                throw;
             }
             catch (Exception e)
             {
@@ -283,7 +288,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
-                return default;
+                throw;
             }
         }
 
