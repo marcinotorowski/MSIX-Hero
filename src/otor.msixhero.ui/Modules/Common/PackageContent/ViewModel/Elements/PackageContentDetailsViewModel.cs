@@ -87,7 +87,10 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             }
 
             this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
+            this.PackageIntegrity = model.PackageIntegrity;
         }
+
+        public bool PackageIntegrity { get; }
 
         public CapabilitiesViewModel Capabilities { get; }
 

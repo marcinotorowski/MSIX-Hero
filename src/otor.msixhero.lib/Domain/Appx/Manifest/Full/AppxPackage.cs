@@ -56,5 +56,7 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
         public BuildInfo BuildInfo { get; set; }
 
         public List<AppxCapability> Capabilities { get; set; }
+
+        public bool PackageIntegrity { get; set; }
     }
 }

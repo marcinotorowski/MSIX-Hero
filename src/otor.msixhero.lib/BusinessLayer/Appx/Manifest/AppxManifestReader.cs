@@ -147,26 +147,59 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     cancellationToken.ThrowIfCancellationRequested();
                     if (nodeProperties != null)
                     {
-                        appxPackage.PublisherDisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "PublisherDisplayName", true));
-                        appxPackage.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "DisplayName", true));
-                        var logo = GetNodeValue(nodeProperties, "Logo", true);
-                        if (!string.IsNullOrEmpty(logo))
+                        foreach (var node in nodeProperties.ChildNodes.OfType<XmlNode>())
                         {
-                            using (var resourceStream = fileReader.GetResource(logo))
+                            switch (node.LocalName)
                             {
-                                if (resourceStream != null)
-                                {
-                                    using (var memoryStream = new MemoryStream())
+                                case "Logo":
+                                    var logo = node.InnerText;
+                                    if (!string.IsNullOrEmpty(logo))
                                     {
-                                        await resourceStream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-                                        await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                                        appxPackage.Logo = memoryStream.ToArray();
+                                        using (var resourceStream = fileReader.GetResource(logo))
+                                        {
+                                            if (resourceStream != null)
+                                            {
+                                                using (var memoryStream = new MemoryStream())
+                                                {
+                                                    await resourceStream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+                                                    await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                                                    appxPackage.Logo = memoryStream.ToArray();
+                                                }
+                                            }
+                                        }
                                     }
-                                }
+
+                                    break;
+
+                                case "DisplayName":
+                                    appxPackage.DisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, node.InnerText);
+                                    break;
+
+                                case "PublisherDisplayName":
+                                    appxPackage.PublisherDisplayName = StringLocalizer.Localize(priFullPath, appxPackage.Name, node.InnerText);
+                                    break;
+
+                                case "PackageIntegrity":
+                                    var packageIntegrityContent = GetNode(node, "Content", true);
+                                    if (packageIntegrityContent != null)
+                                    {
+                                        var attribute = packageIntegrityContent.Attributes["Enforcement"];
+                                        if (attribute != null)
+                                        {
+                                            appxPackage.PackageIntegrity = attribute.Value == "on";
+                                        }
+                                    }
+                                    break;
+
+                                case "Framework":
+                                    appxPackage.IsFramework = string.Equals(node.InnerText ?? "false", "true", StringComparison.OrdinalIgnoreCase);
+                                    break;
+
+                                case "Description":
+                                    appxPackage.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, node.InnerText);
+                                    break;
                             }
                         }
-                        appxPackage.Description = StringLocalizer.Localize(priFullPath, appxPackage.Name, GetNodeValue(nodeProperties, "Description", true));
-                        appxPackage.IsFramework = string.Equals(GetNodeValue(nodeProperties, "Framework", true) ?? "false", "true", StringComparison.OrdinalIgnoreCase);
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
@@ -303,7 +336,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                                     {
                                         if (stream != null)
                                         {
-                                            stream.Dispose();
+                                            await stream.DisposeAsync().ConfigureAwait(false);
                                         }
                                     }
                                 }
@@ -649,11 +682,6 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
             return false;
         }
 
-        private static string GetNodeValue(XmlNode node, string nodeName, bool withNamespace = false)
-        {
-            return GetNode(node, nodeName, withNamespace)?.InnerText;
-        }
-
         private static IEnumerable<XmlNode> GetNodes(XmlNode node, string nodeName)
         {
             if (node == null)
@@ -681,14 +709,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
             {
                 return node[nodeName];
             }
-            else
+
+            for (var i = 0; i < node.ChildNodes.Count; i++)
             {
-                for (var i = 0; i < node.ChildNodes.Count; i++)
+                if (node.ChildNodes[i].LocalName == nodeName)
                 {
-                    if (node.ChildNodes[i].LocalName == nodeName)
-                    {
-                        return node.ChildNodes[i];
-                    }
+                    return node.ChildNodes[i];
                 }
             }
 
@@ -697,13 +723,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
 
         private static string GetNodeAttribute(XmlNode node, string attributeName)
         {
-            if (node?.Attributes == null)
-            {
-                return null;
-            }
-
-            var attr = node.Attributes[attributeName];
-            return attr?.Value;
+            return node?.Attributes?[attributeName]?.Value;
         }
     }
 }
