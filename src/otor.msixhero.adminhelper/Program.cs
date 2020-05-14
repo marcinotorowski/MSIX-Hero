@@ -113,7 +113,7 @@ namespace otor.msixhero.adminhelper
         {
             public InteractionResult Confirm(string body, string title = null, InteractionType type = InteractionType.Asterisk, InteractionButton buttons = InteractionButton.OK)
             {
-                return InteractionResult.OK;
+                return InteractionResult.None;
             }
 
             public bool SelectFile(string initialFile, string filterString, out string selectedFile)
@@ -178,12 +178,12 @@ namespace otor.msixhero.adminhelper
 
             public InteractionResult ShowError(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null)
             {
-                return InteractionResult.OK;
+                return InteractionResult.None;
             }
 
             public InteractionResult ShowError(string body, Exception exception,  InteractionResult buttons = InteractionResult.Close)
             {
-                return InteractionResult.OK;
+                return InteractionResult.None;
             }
 
             public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = InteractionResult.None)

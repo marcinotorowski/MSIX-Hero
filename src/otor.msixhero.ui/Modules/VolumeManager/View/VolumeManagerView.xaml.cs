@@ -6,9 +6,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Volumes;
-using otor.msixhero.lib.Domain.State;
 using Prism.Events;
 
 namespace otor.msixhero.ui.Modules.VolumeManager.View
@@ -65,11 +63,6 @@ namespace otor.msixhero.ui.Modules.VolumeManager.View
             {
                 this.ignoreSelectionChanged = false;
             }
-        }
-
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
         }
 
         private void ClearSearchField(object sender, RoutedEventArgs e)

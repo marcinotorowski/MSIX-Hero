@@ -138,7 +138,7 @@
                         <Separator />
                         <MenuItem Command="{x:Static commands:MsixHeroCommands.SetVolumeAsDefault}" Header="Set as default" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource NegativeConverter}}">
                             <MenuItem.Icon>
-                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBulb}" />
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </ContextMenu>

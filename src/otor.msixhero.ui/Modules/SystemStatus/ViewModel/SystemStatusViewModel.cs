@@ -11,6 +11,7 @@ using otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty;
 using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
 using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
@@ -79,7 +80,15 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
 
                 if (value)
                 {
-                    this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.SystemStatus));
+                    try
+                    {
+                        this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.SystemStatus));
+                    }
+                    catch (UserHandledException)
+                    {
+                        return;
+                    }
+
                     this.Refresh();
                 }
             }

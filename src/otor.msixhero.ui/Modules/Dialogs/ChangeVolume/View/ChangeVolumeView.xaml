@@ -57,33 +57,33 @@
         </changeableDialog:ChangeableDialog.SuccessContentTemplate>
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
-                <progressOverlay:ProgressOverlay IsShown="{Binding AllVolumes.IsLoading}" Message="Getting available drives...">
+                <progressOverlay:ProgressOverlay IsShown="{Binding CurrentVolume.IsLoading}" Message="Getting available volumes...">
                     <StackPanel>
                         <TextBlock Foreground="#666" Text="Current volume" Margin="0 16 0 6" />
-                        <progressOverlay:ProgressOverlay IsShown="{Binding CurrentVolume.IsLoading}">
-                            <Border SnapsToDevicePixels="True" UseLayoutRounding="True" DataContext="{Binding CurrentVolume.CurrentValue}">
-                                <volume1:VolumeControl HorizontalAlignment="Stretch"
-                                   IsDefault="False"
-                                   Path="{Binding PackageStorePath}"
-                                   Label="{Binding DiskLabel}"
-                                   IsOffline="{Binding IsOffline}"
-                                   OccupiedSize="{Binding SizeTaken}"
-                                   TotalSize="{Binding TotalSize}" />
-                            </Border>
-                        </progressOverlay:ProgressOverlay>
+                        <Border MinHeight="57" SnapsToDevicePixels="True" UseLayoutRounding="True" DataContext="{Binding CurrentVolume.CurrentValue}">
+                            <volume1:VolumeControl HorizontalAlignment="Stretch"
+                               IsDefault="False"
+                               Path="{Binding PackageStorePath}"
+                               Label="{Binding DiskLabel}"
+                               IsOffline="{Binding IsOffline}"
+                               OccupiedSize="{Binding SizeTaken}"
+                               TotalSize="{Binding TotalSize}" />
+                        </Border>
 
                         <TextBlock Foreground="#666" Text="Target volume" Margin="0 16 0 6" />
                         <ComboBox 
+                            MinHeight="57" 
                             HorizontalContentAlignment="Stretch" 
                             SelectedValuePath="Name" 
                             SelectedValue="{Binding TargetVolume.CurrentValue}" 
+                            SelectionChanged="Selector_OnSelectionChanged"
                             ItemsSource="{Binding AllVolumes.CurrentValue}" 
                             IsEnabled="{Binding AllVolumes.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
                                     <DockPanel>
                                         <Border Height="30" Visibility="Collapsed" x:Name="PART_New">
-                                            <TextBlock VerticalAlignment="Center">
+                                            <TextBlock VerticalAlignment="Center" IsHitTestVisible="False" Focusable="False">
                                                 <Hyperlink Click="CreateNew">Create new volume...</Hyperlink>
                                             </TextBlock>
                                         </Border>

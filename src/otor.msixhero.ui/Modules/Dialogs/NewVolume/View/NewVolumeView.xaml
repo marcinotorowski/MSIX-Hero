@@ -59,7 +59,7 @@
                 <progressOverlay:ProgressOverlay IsShown="{Binding Letters.IsLoading}" Message="Getting available drives...">
                     <StackPanel>
                         <TextBlock Foreground="#666" Text="Drive" Margin="0 16 0 6" />
-                        <ComboBox HorizontalContentAlignment="Stretch" SelectedValuePath="PackageStorePath" SelectedValue="{Binding SelectedLetter.CurrentValue}" ItemsSource="{Binding Letters.CurrentValue}" IsEnabled="{Binding Letters.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ComboBox MinHeight="57" HorizontalContentAlignment="Stretch" SelectedValuePath="PackageStorePath" SelectedValue="{Binding SelectedLetter.CurrentValue}" ItemsSource="{Binding Letters.CurrentValue}" IsEnabled="{Binding Letters.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
                                     <volume1:VolumeControl

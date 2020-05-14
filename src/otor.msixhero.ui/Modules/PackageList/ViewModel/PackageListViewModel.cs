@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -15,6 +14,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
@@ -128,16 +128,23 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 
                 if (value)
                 {
-                    var task = this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
 #pragma warning disable 4014
-                    this.EnsureFirstTimeOperation();
+                    this.SetTabActive();
 #pragma warning restore 4014
                 }
             }
         }
 
-        private async Task EnsureFirstTimeOperation()
+        private async Task SetTabActive()
         {
+            try
+            {
+                await this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages)).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
+            }
+
             if (!this.firstRun)
             {
                 return;
@@ -151,7 +158,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 context.Message = "Reading packages...";
                 await Task.Delay(200).ConfigureAwait(false);
-                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context)).ConfigureAwait(false); ;
+                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context)).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
             }
             finally
             {
@@ -386,7 +396,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
+            try
+            {
+                this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
+            }
+            catch (UserHandledException)
+            {
+            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

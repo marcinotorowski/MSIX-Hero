@@ -6,9 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.lib.Infrastructure.SelfElevation;
@@ -22,18 +21,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
     public class NewSelfSignedViewModel : ChangeableDialogViewModel
     {
         private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
-        private readonly IApplicationStateManager stateManager;
         private bool isSubjectTouched;
         private ICommand importNewCertificate;
 
         public NewSelfSignedViewModel(
             ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, 
             IInteractionService interactionService, 
-            IApplicationStateManager stateManager,
             IConfigurationService configurationService) : base("New self signed certificate", interactionService)
         {
             this.signingManagerFactory = signingManagerFactory;
-            this.stateManager = stateManager;
             
             this.OutputPath = new ChangeableFolderProperty(interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
             
@@ -107,7 +103,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
             return string.IsNullOrEmpty(currentValue) ? "The password may not be empty." : null;
         }
 
-        private void ImportNewCertificateExecute()
+        private async void ImportNewCertificateExecute()
         {
             var file = Directory.EnumerateFiles(this.OutputPath.CurrentValue, "*.cer").OrderByDescending(d => new FileInfo(d).LastWriteTimeUtc).FirstOrDefault();
             if (file == null)
@@ -115,7 +111,16 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(file));
+            try
+            {
+                var mgr = await this.signingManagerFactory.Get(SelfElevationLevel.HighestAvailable).ConfigureAwait(false);
+                await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
+                return;
+            }
+
             this.CloseCommand.Execute(ButtonResult.OK);
         }
         

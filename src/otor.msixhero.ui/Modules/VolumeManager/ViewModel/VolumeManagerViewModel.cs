@@ -11,6 +11,8 @@ using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Domain.Events.Volumes;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Modules.PackageList.ViewModel;
 using otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements;
@@ -36,6 +38,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
         public VolumeManagerViewModel(
             IApplicationStateManager stateManager,
             IInteractionService interactionService,
+            IConfigurationService configurationService,
             IDialogService dialogService,
             IEventAggregator eventAggregator, 
             IBusyManager busyManager)
@@ -47,7 +50,7 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             eventAggregator.GetEvent<VolumesFilterChanged>().Subscribe(this.OnVolumesFilterChanged, ThreadOption.UIThread);
             eventAggregator.GetEvent<VolumesVisibilityChanged>().Subscribe(this.OnVolumesVisibilityChanged, ThreadOption.UIThread);
             this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
-            this.CommandHandler = new VolumeManagerCommandHandler(stateManager, interactionService, dialogService, busyManager);
+            this.CommandHandler = new VolumeManagerCommandHandler(stateManager, configurationService, interactionService, dialogService, busyManager);
             this.busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
         }
 
@@ -98,7 +101,14 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
 
                 if (value)
                 {
-                    this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.VolumeManager));
+                    try
+                    {
+                        this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.VolumeManager));
+                    }
+                    catch (UserHandledException)
+                    {
+                        return;
+                    }
 
                     if (this.firstRun)
                     {
@@ -120,7 +130,13 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.VolumeManager));
+            try
+            {
+                this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.VolumeManager));
+            }
+            catch (UserHandledException)
+            {
+            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

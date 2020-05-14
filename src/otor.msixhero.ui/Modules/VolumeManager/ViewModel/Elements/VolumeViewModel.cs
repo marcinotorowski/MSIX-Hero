@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Volumes;
+using otor.msixhero.lib.Infrastructure.Commanding;
 
 namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
 {
@@ -33,7 +35,15 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
                 return false;
             }
 
-            this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.AddToSelection) { IsExplicit = true });
+            try
+            {
+                this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.AddToSelection) { IsExplicit = true });
+            }
+            catch (UserHandledException)
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -44,7 +54,15 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
                 return false;
             }
 
-            this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.RemoveFromSelection));
+            try
+            {
+                this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.RemoveFromSelection));
+            }
+            catch (UserHandledException)
+            {
+                return false;
+            }
+
             return true;
         }
     }

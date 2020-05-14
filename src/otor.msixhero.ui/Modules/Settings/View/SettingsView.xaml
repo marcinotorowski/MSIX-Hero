@@ -121,6 +121,7 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
                         <CheckBox IsChecked="{Binding SwitchToContextualTabAfterSelection.CurrentValue}" Content="After changing selection switch to the contextual tab" />
+                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="Confirm deletion of items" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

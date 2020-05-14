@@ -116,6 +116,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     await this.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
+                if (result != InteractionResult.None)
+                {
+                    throw new UserHandledException(e);
+                }
+
                 throw;
             }
             catch (DeveloperModeException e)
@@ -144,6 +149,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     Logger.Info("Retrying...");
                     await this.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                     return;
+                }
+                
+                if (result != InteractionResult.None && !(e is UserHandledException))
+                {
+                    throw new UserHandledException(e);
                 }
 
                 throw;
@@ -204,10 +214,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 this.WritableApplicationStateManager.CurrentState.IsSelfElevated = await this.elevatedClient.Test(cancellationToken).ConfigureAwait(false);
                 return result;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
                 Logger.Warn("Operation cancelled by the user.");
-                throw;
+                throw new UserHandledException(e);
             }
             catch (Win32Exception e)
             {
@@ -222,6 +232,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
+                if (result != InteractionResult.None)
+                {
+                    throw new UserHandledException(e);
+                }
+
                 throw;
             }
             catch (Exception e)
@@ -232,6 +247,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 {
                     Logger.Info("Retrying..");
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+                }
+
+                if (result != InteractionResult.None && !(e is UserHandledException))
+                {
+                    throw new UserHandledException(e);
                 }
 
                 throw;
@@ -258,10 +278,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 this.WritableApplicationStateManager.CurrentState.IsSelfElevated = await this.elevatedClient.Test(cancellationToken).ConfigureAwait(false);
                 return result;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
                 Logger.Warn("Operation cancelled by the user.");
-                throw;
+
+                throw new UserHandledException(e);
             }
             catch (Win32Exception e)
             {
@@ -276,6 +297,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 }
 
+                if (result != InteractionResult.None)
+                {
+                    throw new UserHandledException(e);
+                }
+
                 throw;
             }
             catch (Exception e)
@@ -286,6 +312,11 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
                 {
                     Logger.Info("Retrying..");
                     return await this.GetExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+                }
+
+                if (result != InteractionResult.None && !(e is UserHandledException))
+                {
+                    throw new UserHandledException(e);
                 }
 
                 throw;

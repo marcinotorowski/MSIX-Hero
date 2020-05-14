@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using NLog;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Appx.Packages;
@@ -14,6 +16,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Domain.Commands.Packages.Manager;
 using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Progress;
@@ -164,6 +167,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
             }
+            catch (UserHandledException)
+            {
+            }
             finally
             {
                 this.busyManager.End(context);
@@ -213,8 +219,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 {
                     var p1 = wrappedProgress.GetChildProgress(90);
                     var p2 = wrappedProgress.GetChildProgress(10);
-                    await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
 
+                    await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
+                   
                     AppxManifestSummary appxReader;
 
                     var allPackages = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, p2).ConfigureAwait(false);
@@ -233,6 +240,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                         await this.stateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected) { IsExplicit = true }).ConfigureAwait(false);
                     }
                 }
+            }
+            catch (UserHandledException)
+            {
             }
             finally
             {
@@ -266,7 +276,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new MountRegistry(selection.First(), true));
+            try
+            {
+                this.stateManager.CommandExecutor.ExecuteAsync(new MountRegistry(selection.First(), true));
+            }
+            catch (UserHandledException)
+            {
+            }
         }
         private async void DeprovisionExecute()
         {
@@ -296,6 +312,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     await this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, p2).ConfigureAwait(false);
                 }
             }
+            catch (UserHandledException)
+            {
+            }
             finally
             {
                 this.busyManager.End(context);
@@ -315,7 +334,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new DismountRegistry(selection.First()));
+            try
+            {
+                this.stateManager.CommandExecutor.ExecuteAsync(new DismountRegistry(selection.First()));
+            }
+            catch (UserHandledException)
+            {
+            }
         }
         
         private bool CanExecuteMountRegistry()
@@ -336,6 +361,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 var regState = this.stateManager.CommandExecutor.GetExecute(new GetRegistryMountState(selected.InstallLocation, selected.Name));
                 return regState == RegistryMountState.NotMounted;
+            }
+            catch (UserHandledException)
+            {
+                return false;
             }
             catch (Exception)
             {
@@ -361,6 +390,10 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 var regState = this.stateManager.CommandExecutor.GetExecute(new GetRegistryMountState(selected.InstallLocation, selected.Name));
                 return regState == RegistryMountState.Mounted;
+            }
+            catch (UserHandledException)
+            {
+                return false;
             }
             catch (Exception)
             {
@@ -516,7 +549,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            this.stateManager.CommandExecutor.ExecuteAsync(new RunPackage(package.PackageFamilyName, package.ManifestLocation));
+            try
+            {
+                this.stateManager.CommandExecutor.ExecuteAsync(new RunPackage(package.PackageFamilyName, package.ManifestLocation));
+            }
+            catch (UserHandledException)
+            {
+            }
         }
 
         private async void RemovePackageExecute(bool allUsersRemoval)
@@ -527,10 +566,53 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
+            var config = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+            if (config.UiConfiguration.ConfirmDeletion)
+            {
+                var options = new List<string>
+                {
+                    selection.Count == 1 ? "Remove selected package" : $"Remove selected {selection.Count} packages",
+                    "Do not remove"
+                };
+
+                var caption = new StringBuilder();
+                caption.Append("Are you sure tou want to remove ");
+
+                if (selection.Count == 1)
+                {
+                    caption.Append("'");
+                    caption.Append(selection.First().DisplayName);
+                    caption.Append("'");
+                }
+                else
+                {
+                    caption.AppendFormat("{0} apps", selection.Count);
+                }
+
+                if (allUsersRemoval)
+                {
+                    caption.Append(" from your computer for all user accounts? ");
+                }
+                else
+                {
+                    caption.Append(" from your user account? ");
+                }
+
+                caption.Append(" This operation is irreversible.");
+
+                if (this.interactionService.ShowMessage(caption.ToString(), options) != 0)
+                {
+                    return;
+                }
+            }
+
             var context = this.busyManager.Begin();
             try
             {
                 await this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection), CancellationToken.None, context).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
             }
             finally
             {
@@ -551,6 +633,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             try
             {
                 await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
             }
             finally
             {
@@ -575,7 +660,20 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            await this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(selectedFile)).ConfigureAwait(false);
+            var context = this.busyManager.Begin();
+            context.Message = "Installing certificate...";
+
+            try
+            {
+                await this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(selectedFile)).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private void NewSelfSignedCertExecute()

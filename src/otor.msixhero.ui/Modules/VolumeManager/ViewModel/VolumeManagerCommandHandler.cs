@@ -5,6 +5,8 @@ using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using Prism.Services.Dialogs;
@@ -14,17 +16,20 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
     public class VolumeManagerCommandHandler
     {
         private readonly IApplicationStateManager stateManager;
+        private readonly IConfigurationService configurationService;
         private readonly IInteractionService interactionService;
         private readonly IDialogService dialogService;
         private readonly IBusyManager busyManager;
 
         public VolumeManagerCommandHandler(
             IApplicationStateManager stateManager, 
+            IConfigurationService configurationService,
             IInteractionService interactionService,
             IDialogService dialogService, 
             IBusyManager busyManager)
         {
             this.stateManager = stateManager;
+            this.configurationService = configurationService;
             this.interactionService = interactionService;
             this.dialogService = dialogService;
             this.busyManager = busyManager;
@@ -49,15 +54,19 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                 return;
             }
 
-            var options = new List<string>
+            var config = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+            if (config.UiConfiguration?.ConfirmDeletion == true)
             {
-                "Remove the volume",
-                "Do not remove"
-            };
+                var options = new List<string>
+                {
+                    "Remove selected volume",
+                    "Do not remove"
+                };
 
-            if (this.interactionService.ShowMessage($"Are you sure you want to permanently remove volume '{selected.PackageStorePath}'? This operation only removes the volume information but otherwise and does not remove the data.", options) != 0)
-            {
-                return;
+                if (this.interactionService.ShowMessage($"Are you sure you want to remove volume '{selected.PackageStorePath}'? Removing of volumes affects only registration and does not delete any physical files.", options) != 0)
+                {
+                    return;
+                }
             }
 
             var context = this.busyManager.Begin(OperationType.VolumeLoading);
@@ -72,7 +81,9 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                     selection.IsExplicit = true;
                     await this.stateManager.CommandExecutor.ExecuteAsync(selection, CancellationToken.None, context).ConfigureAwait(false); ;
                 }
-
+            }
+            catch (UserHandledException)
+            {
             }
             finally
             {
@@ -96,9 +107,11 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             try
             {
                 context.Message = "Setting the default volume...";
-                await this.stateManager.CommandExecutor
-                    .ExecuteAsync(new SetDefaultVolume(this.stateManager.CurrentState.Volumes.SelectedItems.First()
-                        .PackageStorePath)).ConfigureAwait(false);
+                await this.stateManager.CommandExecutor.ExecuteAsync(new SetDefaultVolume(this.stateManager.CurrentState.Volumes.SelectedItems.First().PackageStorePath)).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
+                return;
             }
             finally
             {
@@ -133,6 +146,10 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
                 context.Message = "Mounting volume...";
                 await this.stateManager.CommandExecutor.ExecuteAsync(new MountVolume(this.stateManager.CurrentState.Volumes.SelectedItems.First())).ConfigureAwait(false);
             }
+            catch (UserHandledException)
+            {
+                return;
+            }
             finally
             {
                 this.busyManager.End(context);
@@ -165,6 +182,10 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             {
                 context.Message = "Dismounting volume...";
                 await this.stateManager.CommandExecutor.ExecuteAsync(new DismountVolume(this.stateManager.CurrentState.Volumes.SelectedItems.First())).ConfigureAwait(false);
+            }
+            catch (UserHandledException)
+            {
+                return;
             }
             finally
             {
@@ -255,6 +276,9 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel
             try
             {
                 await this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes(), CancellationToken.None, context).ConfigureAwait(false); ;
+            }
+            catch (UserHandledException)
+            {
             }
             finally
             {

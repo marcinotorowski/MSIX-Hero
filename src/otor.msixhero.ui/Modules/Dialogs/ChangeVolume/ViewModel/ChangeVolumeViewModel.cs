@@ -19,6 +19,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
 {
     public class ChangeVolumeViewModel : ChangeableDialogViewModel, IDialogAware
     {
+        private readonly IInteractionService interactionService;
         private readonly IDialogService dialogService;
         private readonly ISelfElevationManagerFactory<IAppxVolumeManager> volumeManagerFactory;
         private string packageInstallLocation;
@@ -28,6 +29,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
             IDialogService dialogService,
             ISelfElevationManagerFactory<IAppxVolumeManager> volumeManagerFactory) : base("Change volume", interactionService)
         {
+            this.interactionService = interactionService;
             this.dialogService = dialogService;
             this.volumeManagerFactory = volumeManagerFactory;
 
@@ -68,6 +70,76 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
+            if (!this.CurrentVolume.HasValue)
+            {
+                return false;
+            }
+
+            if (!this.AllVolumes.HasValue)
+            {
+                return false;
+            }
+
+            if (string.Equals(this.CurrentVolume.CurrentValue?.Name, this.TargetVolume.CurrentValue, StringComparison.OrdinalIgnoreCase))
+            {
+                if (this.AllVolumes.CurrentValue.Count - 1 == 1)
+                {
+                    var buttons = new List<string>
+                    {
+                        "Create a new volume",
+                        "Go back"
+                    };
+
+                    var option = this.interactionService.ShowMessage("You cannot move a package to the same volume. Currently, there is only a single volume available, did you mean to create a new one first?", buttons);
+
+                    if (option == 0)
+                    {
+                        this.CreateNew();
+                    }
+
+                    return false;
+                }
+
+                if (this.AllVolumes.CurrentValue.Count - 1 == 2)
+                {
+                    var suggestion = this.AllVolumes.CurrentValue.FirstOrDefault(v => v?.Name != this.CurrentVolume.CurrentValue?.Name);
+                    var buttons = new List<string>
+                    {
+                        "Use " + suggestion?.PackageStorePath,
+                        "Create a new volume",
+                        "Cancel"
+                    };
+
+                    var option = this.interactionService.ShowMessage("You cannot move a package to the same volume. Did you mean another volume?", buttons);
+
+                    if (option == 1)
+                    {
+                        this.CreateNew();
+                        return false;
+                    }
+
+                    this.TargetVolume.CurrentValue = suggestion?.Name;
+                }
+                else
+                {
+                    var buttons = new List<string>
+                    {
+                        "Select another volume",
+                        "Create a new volume",
+                        "Cancel"
+                    };
+
+                    var option = this.interactionService.ShowMessage("You cannot move a package to the same volume. Did you mean another volume?", buttons);
+
+                    if (option == 1)
+                    {
+                        this.CreateNew();
+                    }
+                    
+                    return false;
+                }
+            }
+
             progress.Report(new ProgressData(20, "Moving to the selected volume..."));
             var mgr = await this.volumeManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();

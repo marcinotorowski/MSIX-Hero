@@ -8,8 +8,13 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
         public UiConfiguration()
         {
             this.SwitchToContextTabAfterSelection = true;
+            this.ConfirmDeletion = true;
         }
 
+        [DataMember(Name = "switchToContextTabAfterSelection")]
         public bool SwitchToContextTabAfterSelection { get; set; }
+
+        [DataMember(Name = "confirmDeletion")]
+        public bool ConfirmDeletion { get; set; }
     }
 }
