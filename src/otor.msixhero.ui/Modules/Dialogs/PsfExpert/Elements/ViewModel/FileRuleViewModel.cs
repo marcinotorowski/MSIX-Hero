@@ -75,9 +75,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel
             set => this.SetField(ref this.interpretation, value);
         }
 
-        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            return true;
+            return Task.FromResult(true);
         }
     }
 }

@@ -157,31 +157,6 @@ namespace otor.msixhero.ui.Helpers
             var image = LoadImage(IntPtr.Zero, "#106", 1, (int)SystemParameters.SmallIconWidth, (int)SystemParameters.SmallIconHeight, 0);
             var imageSource = Imaging.CreateBitmapSourceFromHIcon(image, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             return imageSource;
-
-            if (Environment.OSVersion.Version.Major >= 6)
-            {
-                SHSTOCKICONINFO sii = new SHSTOCKICONINFO();
-                sii.cbSize = (UInt32)Marshal.SizeOf(typeof(SHSTOCKICONINFO));
-
-                Marshal.ThrowExceptionForHR(SHGetStockIconInfo(SHSTOCKICONID.SIID_SHIELD,
-                    SHGSI.SHGSI_ICON | SHGSI.SHGSI_SMALLICON,
-                    ref sii));
-
-                var shieldSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                    sii.hIcon,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
-
-                DestroyIcon(sii.hIcon);
-                return shieldSource;
-            }
-            else
-            {
-                return System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                    System.Drawing.SystemIcons.Shield.Handle,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
-            }
         }
     }
 }

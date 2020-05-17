@@ -94,43 +94,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
 
         public ICollectionView LogsView { get; }
         
-        public async Task Save()
+        public Task Save()
         {
-            var token = new Progress();
-
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                this.Progress = data.Progress;
-                this.ProgressMessage = data.Message;
-            };
-
-            this.IsLoading = true;
-            try
-            {
-                token.ProgressChanged += handler;
-            }
-            finally
-            {
-                token.ProgressChanged -= handler;
-                this.IsLoading = false;
-                this.Progress = 100;
-                this.ProgressMessage = null;
-            }
+            return Task.FromResult(true);
         }
 
         public string Error => null;
 
-        public string this[string columnName]
-        {
-            get
-            {
-                switch (columnName)
-                {
-                }
-
-                return null;
-            }
-        }
+        public string this[string columnName] => null;
 
         public bool CanSave()
         {
@@ -148,6 +119,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel
         {
             this.LogsView.SortDescriptions.Clear();
             this.LogsView.SortDescriptions.Add(new SortDescription(columnName, descending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+        }
+
+        protected void OnRequestClose(IDialogResult obj)
+        {
+            this.RequestClose?.Invoke(obj);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
         private readonly IAppxPacker appxPacker;
         private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
         private ICommand openSuccessLink;
-        private ICommand reset;
+        private ICommand resetCommand;
 
         public PackViewModel(
             IAppxPacker appxPacker,
@@ -71,9 +71,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
-        public ICommand Reset
+        public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this.resetCommand ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public CertificateSelectorViewModel SelectedCertificate { get; }

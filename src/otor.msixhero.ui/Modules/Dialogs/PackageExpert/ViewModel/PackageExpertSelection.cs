@@ -52,7 +52,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel
 
         public NavigationParameters ToNavigationParameters()
         {
-            return new DialogParameters
+            return new NavigationParameters()
             {
                 {"Source", this.Source}
             };

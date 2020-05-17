@@ -14,6 +14,7 @@ namespace otor.msixhero.lib.tests
         [Test]
         public void Test()
         {
+#pragma warning disable 219
             var json = @"
 {
     ""applications"": [
@@ -101,6 +102,7 @@ namespace otor.msixhero.lib.tests
     ]
 }
 ";
+#pragma warning restore 219
 
             //var stringReader = new StringReader(json);
 

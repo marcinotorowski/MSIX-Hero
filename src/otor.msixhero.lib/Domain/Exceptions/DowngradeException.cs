@@ -8,7 +8,7 @@ namespace otor.msixhero.lib.Domain.Exceptions
         {
         }
 
-        public DowngradeException(string? message) : base(message)
+        public DowngradeException(string message) : base(message)
         {
         }
     }

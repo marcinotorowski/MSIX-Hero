@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using CommonServiceLocator;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
 using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
@@ -130,7 +129,7 @@ namespace otor.msixhero.ui
 
             if (this.arguments.Any())
             {
-                var dlg = ServiceLocator.Current.GetInstance<IDialogService>();
+                var dlg = this.Container.Resolve<IDialogService>();
                 var handler = new ExplorerHandler(dlg, true);
                 handler.Handle(this.arguments.First());
             }
@@ -143,7 +142,7 @@ namespace otor.msixhero.ui
                 return null;
             }
 
-            var shell = ServiceLocator.Current.GetInstance<MainWindow>();
+            var shell = this.Container.Resolve<MainWindow>();
             return shell;
         }
 
@@ -154,7 +153,7 @@ namespace otor.msixhero.ui
                 appStateManager.Dispose();
             }
 
-            var processManager = ServiceLocator.Current.GetInstance<IProcessManager>();
+            var processManager = this.Container.Resolve<IProcessManager>();
             processManager.Dispose();
             base.OnExit(e);
         }
@@ -177,7 +176,7 @@ namespace otor.msixhero.ui
 
         public void Dispose()
         {
-            var processManager = ServiceLocator.Current.GetInstance<IProcessManager>();
+            var processManager = this.Container.Resolve<IProcessManager>();
             processManager.Dispose();
         }
     }

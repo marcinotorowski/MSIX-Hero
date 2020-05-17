@@ -80,7 +80,7 @@ namespace otor.msixhero.ui.Domain
             }
         }
 
-        private void OnIsTouchedChanged(object? sender, ValueChangedEventArgs<bool> e)
+        private void OnIsTouchedChanged(object sender, ValueChangedEventArgs<bool> e)
         {
             if (e.NewValue)
             {
@@ -180,7 +180,7 @@ namespace otor.msixhero.ui.Domain
             }
         }
 
-        private void OnItemValueChanged(object? sender, ValueChangedEventArgs e)
+        private void OnItemValueChanged(object sender, ValueChangedEventArgs e)
         {
             if (!this.monitorChildren)
             {

@@ -41,7 +41,7 @@
                     <Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing packed files</Hyperlink>
                     </TextBlock>
                     <TextBlock TextAlignment="Center">
-                    <Hyperlink Command="{Binding Reset}">Pack another package</Hyperlink>
+                    <Hyperlink Command="{Binding ResetCommand}">Pack another package</Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

@@ -10,7 +10,7 @@ namespace otor.msixhero.lib.Infrastructure.Ipc
         {
         }
 
-        public ForwardedException(string? message) : base(message)
+        public ForwardedException(string message) : base(message)
         {
         }
 

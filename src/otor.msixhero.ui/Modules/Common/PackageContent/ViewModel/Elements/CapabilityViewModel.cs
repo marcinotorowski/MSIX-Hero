@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -8,57 +6,9 @@ using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 
 namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
 {
-    public class CapabilitiesViewModel
-    {
-        public CapabilitiesViewModel(IEnumerable<AppxCapability> capabilities)
-        {
-            this.Count = 0;
-            foreach (var c in capabilities.GroupBy(c => c.Type))
-            {
-                switch (c.Key)
-                {
-                    case CapabilityType.General:
-                        this.General = new List<CapabilityViewModel>(c.Select(cap => new CapabilityViewModel(cap)));
-                        this.Count += this.General.Count;
-                        break;
-                    case CapabilityType.Restricted:
-                        this.Restricted = new List<CapabilityViewModel>(c.Select(cap => new CapabilityViewModel(cap)));
-                        this.Count += this.Restricted.Count;
-                        break;
-                    case CapabilityType.Device:
-                        this.Device = new List<CapabilityViewModel>(c.Select(cap => new CapabilityViewModel(cap)));
-                        this.Count += this.Device.Count;
-                        break;
-                    default:
-                        this.Custom = new List<CapabilityViewModel>(c.Select(cap => new CapabilityViewModel(cap)));
-                        this.Count += this.Custom.Count;
-                        break;
-                }
-            }
-        }
-
-        public int Count { get; }
-
-        public IReadOnlyCollection<CapabilityViewModel> General { get; }
-
-        public IReadOnlyCollection<CapabilityViewModel> Restricted { get; }
-
-        public IReadOnlyCollection<CapabilityViewModel> Device { get; }
-
-        public IReadOnlyCollection<CapabilityViewModel> Custom { get; }
-
-        public bool HasGeneral => this.General?.Any() == true;
-
-        public bool HasDevice => this.Device?.Any() == true;
-
-        public bool HasCustom => this.Custom?.Any() == true;
-
-        public bool HasRestricted => this.Restricted?.Any() == true;
-    }
-
     public class CapabilityViewModel
     {
-        private static readonly Lazy<System.Windows.Media.Geometry> DefaultIcon = new Lazy<System.Windows.Media.Geometry>(() => System.Windows.Media.Geometry.Parse("M 16 2.71875 L 12.5625 5.46875 L 8.9375 5.3125 L 8.125 5.25 L 7.9375 6.03125 L 7.03125 9.5 L 4.03125 11.46875 L 3.375 11.90625 L 3.65625 12.65625 L 4.9375 16 L 3.65625 19.34375 L 3.375 20.09375 L 4.03125 20.53125 L 7.03125 22.5 L 7.9375 25.96875 L 8.125 26.75 L 8.9375 26.6875 L 12.5625 26.53125 L 16 29.28125 L 19.4375 26.53125 L 23.0625 26.6875 L 23.875 26.75 L 24.0625 25.96875 L 24.96875 22.5 L 27.96875 20.53125 L 28.625 20.09375 L 28.34375 19.34375 L 27.0625 16 L 28.34375 12.65625 L 28.625 11.90625 L 27.96875 11.46875 L 24.96875 9.5 L 24.0625 6.03125 L 23.875 5.25 L 23.0625 5.3125 L 19.4375 5.46875 Z M 16 5.28125 L 18.46875 7.28125 L 18.78125 7.53125 L 19.15625 7.5 L 22.34375 7.34375 L 23.125 10.34375 L 23.21875 10.71875 L 23.53125 10.9375 L 26.1875 12.6875 L 25.0625 15.65625 L 24.9375 16 L 25.0625 16.34375 L 26.1875 19.3125 L 23.53125 21.0625 L 23.21875 21.28125 L 23.125 21.65625 L 22.34375 24.65625 L 19.15625 24.5 L 18.78125 24.46875 L 18.46875 24.71875 L 16 26.71875 L 13.53125 24.71875 L 13.21875 24.46875 L 12.84375 24.5 L 9.65625 24.65625 L 8.875 21.65625 L 8.78125 21.28125 L 8.46875 21.0625 L 5.8125 19.3125 L 6.9375 16.34375 L 7.0625 16 L 6.9375 15.65625 L 5.8125 12.6875 L 8.46875 10.9375 L 8.78125 10.71875 L 8.875 10.34375 L 9.65625 7.34375 L 12.84375 7.5 L 13.21875 7.53125 L 13.53125 7.28125 Z M 21.28125 12.28125 L 15 18.5625 L 11.71875 15.28125 L 10.28125 16.71875 L 14.28125 20.71875 L 15 21.40625 L 15.71875 20.71875 L 22.71875 13.71875 Z"));
+        private static readonly Lazy<Geometry> DefaultIcon = new Lazy<System.Windows.Media.Geometry>(() => System.Windows.Media.Geometry.Parse("M 16 2.71875 L 12.5625 5.46875 L 8.9375 5.3125 L 8.125 5.25 L 7.9375 6.03125 L 7.03125 9.5 L 4.03125 11.46875 L 3.375 11.90625 L 3.65625 12.65625 L 4.9375 16 L 3.65625 19.34375 L 3.375 20.09375 L 4.03125 20.53125 L 7.03125 22.5 L 7.9375 25.96875 L 8.125 26.75 L 8.9375 26.6875 L 12.5625 26.53125 L 16 29.28125 L 19.4375 26.53125 L 23.0625 26.6875 L 23.875 26.75 L 24.0625 25.96875 L 24.96875 22.5 L 27.96875 20.53125 L 28.625 20.09375 L 28.34375 19.34375 L 27.0625 16 L 28.34375 12.65625 L 28.625 11.90625 L 27.96875 11.46875 L 24.96875 9.5 L 24.0625 6.03125 L 23.875 5.25 L 23.0625 5.3125 L 19.4375 5.46875 Z M 16 5.28125 L 18.46875 7.28125 L 18.78125 7.53125 L 19.15625 7.5 L 22.34375 7.34375 L 23.125 10.34375 L 23.21875 10.71875 L 23.53125 10.9375 L 26.1875 12.6875 L 25.0625 15.65625 L 24.9375 16 L 25.0625 16.34375 L 26.1875 19.3125 L 23.53125 21.0625 L 23.21875 21.28125 L 23.125 21.65625 L 22.34375 24.65625 L 19.15625 24.5 L 18.78125 24.46875 L 18.46875 24.71875 L 16 26.71875 L 13.53125 24.71875 L 13.21875 24.46875 L 12.84375 24.5 L 9.65625 24.65625 L 8.875 21.65625 L 8.78125 21.28125 L 8.46875 21.0625 L 5.8125 19.3125 L 6.9375 16.34375 L 7.0625 16 L 6.9375 15.65625 L 5.8125 12.6875 L 8.46875 10.9375 L 8.78125 10.71875 L 8.875 10.34375 L 9.65625 7.34375 L 12.84375 7.5 L 13.21875 7.53125 L 13.53125 7.28125 Z M 21.28125 12.28125 L 15 18.5625 L 11.71875 15.28125 L 10.28125 16.71875 L 14.28125 20.71875 L 15 21.40625 L 15.71875 20.71875 L 22.71875 13.71875 Z"));
 
         public CapabilityViewModel(AppxCapability capability)
         {
@@ -423,10 +373,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
                     }
 
                     return trimmed.Substring(0, 1).ToUpperInvariant() + trimmed.Substring(1);
-
             }
-
-            return name;
         }
     }
 }
