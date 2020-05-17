@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using NLog;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Appx.Packages;
@@ -71,7 +70,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanExecuteSingleSelectionOnManifest());
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolListConfiguration), param => this.CanRunTool(param as ToolListConfiguration));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanExecuteOpenPowerShell());
-            this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool &&(bool)param), param => this.CanExecuteSingleSelection());
+            this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool b && b), param => this.CanExecuteSingleSelection());
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanExecuteMountRegistry());
             this.DismountRegistry = new DelegateCommand(param => this.DismountRegistryExecute(), param => this.CanExecuteDismountRegistry());
             this.ChangeVolume = new DelegateCommand(param => this.ChangeVolumeExecute(), param => this.CanExecuteChangeVolume());
@@ -565,7 +564,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 };
 
                 var caption = new StringBuilder();
-                caption.Append("Are you sure tou want to remove ");
+                caption.Append("Are you sure you want to remove ");
 
                 if (selection.Count == 1)
                 {
