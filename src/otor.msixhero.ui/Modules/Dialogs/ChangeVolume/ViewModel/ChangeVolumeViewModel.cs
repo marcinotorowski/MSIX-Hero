@@ -176,7 +176,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
         {
             var mgr = await this.volumeManagerFactory.Get().ConfigureAwait(false);
             var disks = await mgr.GetAll().ConfigureAwait(false);
-            return disks.Select(r => new VolumeCandidateViewModel(r)).Concat(new[] { new VolumeCandidateViewModel(new AppxVolume()) }).ToList();
+            return disks.Where(d => !d.IsOffline).Select(r => new VolumeCandidateViewModel(r)).Concat(new[] { new VolumeCandidateViewModel(new AppxVolume()) }).ToList();
         }
 
         private async Task<VolumeCandidateViewModel> GetCurrentVolume(string packagePath)
