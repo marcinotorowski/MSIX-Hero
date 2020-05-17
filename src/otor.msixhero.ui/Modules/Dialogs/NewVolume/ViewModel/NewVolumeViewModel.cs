@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
+using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Commands.Volumes;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.lib.Infrastructure.SelfElevation;
@@ -16,12 +18,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
 {
     public class NewVolumeViewModel : ChangeableDialogViewModel
     {
+        private readonly IApplicationStateManager stateManager;
         private readonly ISelfElevationManagerFactory<IAppxVolumeManager> volumeManager;
 
         public NewVolumeViewModel(
+            IApplicationStateManager stateManager,
             IInteractionService interactionService, 
             ISelfElevationManagerFactory<IAppxVolumeManager> volumeManager) : base("New volume", interactionService)
         {
+            this.stateManager = stateManager;
             this.volumeManager = volumeManager;
             this.Path = new ChangeableProperty<string>("WindowsApps");
 
@@ -86,6 +91,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
                 progress.Report(new ProgressData(80, "Changing the default volume..."));
                 await mgr.SetDefault(drivePath, cancellationToken).ConfigureAwait(false);
             }
+
+            progress.Report(new ProgressData(90, "Reading volumes..."));
+            await this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes(), cancellationToken).ConfigureAwait(false);
 
             return true;
         }

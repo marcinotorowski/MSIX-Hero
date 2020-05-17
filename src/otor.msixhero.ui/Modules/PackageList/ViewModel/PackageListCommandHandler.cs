@@ -423,17 +423,6 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 },
                 result =>
                 {
-                    if (result.Result == ButtonResult.Cancel)
-                    {
-                        return;
-                    }
-
-                    if (!this.Refresh.CanExecute(null))
-                    {
-                        return;
-                    }
-
-                    this.Refresh.Execute(null);
                 });
         }
 

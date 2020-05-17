@@ -24,6 +24,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.View
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.AddedItems.Count == 0)
+            {
+                return;
+            }
+
             var oldValue = e.RemovedItems?.OfType<VolumeCandidateViewModel>().FirstOrDefault();
             var newValue = e.AddedItems?.OfType<VolumeCandidateViewModel>().FirstOrDefault();
 

@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
+using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Volume;
+using otor.msixhero.lib.Domain.Commands.Packages.Grid;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.lib.Infrastructure.SelfElevation;
@@ -19,16 +21,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
 {
     public class ChangeVolumeViewModel : ChangeableDialogViewModel, IDialogAware
     {
+        private readonly IApplicationStateManager appStateManager;
         private readonly IInteractionService interactionService;
         private readonly IDialogService dialogService;
         private readonly ISelfElevationManagerFactory<IAppxVolumeManager> volumeManagerFactory;
         private string packageInstallLocation;
 
         public ChangeVolumeViewModel(
+            IApplicationStateManager appStateManager,
             IInteractionService interactionService, 
             IDialogService dialogService,
             ISelfElevationManagerFactory<IAppxVolumeManager> volumeManagerFactory) : base("Change volume", interactionService)
         {
+            this.appStateManager = appStateManager;
             this.interactionService = interactionService;
             this.dialogService = dialogService;
             this.volumeManagerFactory = volumeManagerFactory;
@@ -90,7 +95,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
                         "Go back"
                     };
 
-                    var option = this.interactionService.ShowMessage("You cannot move a package to the same volume. Currently, there is only a single volume available, did you mean to create a new one first?", buttons);
+                    var option = this.interactionService.ShowMessage("The selected package is already available on the required volume. Currently, there is only a single volume available, did you mean to create a new one first?", buttons);
 
                     if (option == 0)
                     {
@@ -110,11 +115,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
                         "Cancel"
                     };
 
-                    var option = this.interactionService.ShowMessage("You cannot move a package to the same volume. Did you mean another volume?", buttons);
+                    var option = this.interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
 
                     if (option == 1)
                     {
                         this.CreateNew();
+                        return false;
+                    }
+                    else if (option == 2)
+                    {
                         return false;
                     }
 
@@ -129,7 +138,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
                         "Cancel"
                     };
 
-                    var option = this.interactionService.ShowMessage("You cannot move a package to the same volume. Did you mean another volume?", buttons);
+                    var option = this.interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
 
                     if (option == 1)
                     {
@@ -146,6 +155,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
 
             var id = Path.GetFileName(this.packageInstallLocation);
             await mgr.MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
+
+            progress.Report(new ProgressData(100, "Reading packages..."));
+            await this.appStateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.appStateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
+
             return true;
         }
 
@@ -189,18 +202,19 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
                     return;
                 }
 
-                var t = this.GetAllVolumes();
-                this.AllVolumes.Load(t).ConfigureAwait(false);
+                var t1 = this.GetAllVolumes();
+                var t2 = this.AllVolumes.Load(t1);
 
-                t.ContinueWith(res =>
+                t2.ContinueWith(res =>
                 {
-                    if (res.IsCanceled || res.IsFaulted || res.Result == null)
+                    if (res.IsCanceled || res.IsFaulted)
                     {
                         return;
                     }
 
-                    var newVolume = res.Result.FirstOrDefault(d => !current.Contains(d.PackageStorePath)) ?? res.Result.FirstOrDefault();
-                    this.TargetVolume.CurrentValue = newVolume?.PackageStorePath;
+                    var result = this.AllVolumes.CurrentValue;
+                    var newVolume = result.FirstOrDefault(d => !current.Contains(d.PackageStorePath)) ?? result.FirstOrDefault();
+                    this.TargetVolume.CurrentValue = newVolume?.Name;
                 });
             });
         }

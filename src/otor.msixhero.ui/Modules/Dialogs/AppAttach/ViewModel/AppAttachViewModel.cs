@@ -109,7 +109,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
 
                 var mgr = await this.appAttachManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
-                await mgr.CreateVolume(this.InputPath.CurrentValue, output, sizeInMegabytes, this.ExtractCertificate.CurrentValue, this.GenerateScripts.CurrentValue, cancellationToken).ConfigureAwait(false);
+                await mgr.CreateVolume(this.InputPath.CurrentValue, output, sizeInMegabytes, this.ExtractCertificate.CurrentValue, this.GenerateScripts.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
             }
 
             return true;
