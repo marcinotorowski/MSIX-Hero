@@ -100,6 +100,9 @@
     <Compile Update="Modules\Dialogs\Unpack\View\UnpackView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\Dialogs\Winget\View\WingetView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Main\View\BackStageOpenView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -137,6 +140,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\Unpack\View\UnpackView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Winget\View\WingetView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Main\View\BackStageOpenView.xaml">

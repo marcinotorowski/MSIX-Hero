@@ -109,6 +109,17 @@
                 </DockPanel>
             </Button>
 
+            <Button Command="{x:Static commands:MsixHeroCommands.Winget}" Click="BackstageButtonClicked">
+                <DockPanel>
+                    <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+
+                    <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <TextBlock FontWeight="Light" Text="Winget manifest" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                        <TextBlock Opacity="0.66" Text="Creates a small YAML file used for feeding winget with package information." Margin="0 0 0 0" TextWrapping="Wrap" />
+                    </StackPanel>
+                </DockPanel>
+            </Button>
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

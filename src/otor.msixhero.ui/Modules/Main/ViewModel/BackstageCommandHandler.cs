@@ -19,6 +19,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             this.Pack = new DelegateCommand(param => this.PackExecute());
             this.AppAttach = new DelegateCommand(param => this.AppAttachExecute());
             this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is bool boolParam && boolParam));
+            this.Winget = new DelegateCommand(param => this.WingetExecute(param is bool boolParam && boolParam));
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute());
             this.Settings = new DelegateCommand(param => this.SettingsExecute(param as string));
             this.PackageExpert = new DelegateCommand(param => this.PackageExpertExecute());
@@ -27,6 +28,8 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
         public ICommand Settings { get; }
 
         public ICommand AppInstaller { get; }
+
+        public ICommand Winget { get; }
 
         public ICommand PackageExpert { get; }
 
@@ -72,6 +75,26 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             else
             {
                 this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
+            }
+        }
+
+        private void WingetExecute(bool browse)
+        {
+            if (browse)
+            {
+                if (this.interactionService.SelectFile("YAML files|*.yaml", out var selected))
+                {
+                    var parameters = new DialogParameters
+                    {
+                        { "yaml", selected }
+                    };
+
+                    this.dialogService.ShowDialog(Constants.PathWinget, parameters, this.OnDialogClosed);
+                }
+            }
+            else
+            {
+                this.dialogService.ShowDialog(Constants.PathWinget, new DialogParameters(), this.OnDialogClosed);
             }
         }
 

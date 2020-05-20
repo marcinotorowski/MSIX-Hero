@@ -117,6 +117,7 @@
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.PackageExpert}" Command="{Binding BackstageCommandHandler.PackageExpert}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding BackstageCommandHandler.ModificationPackage}" />
                         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding BackstageCommandHandler.AppAttach}" />
+                        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Winget}" Command="{Binding BackstageCommandHandler.Winget}" />
                     </routedCommand:RoutedCommandHandlers.Commands>
                     <Fluent:BackstageTabControl>
                         <Fluent:BackstageTabItem Header="New">
@@ -469,6 +470,18 @@
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
+                    <Fluent:Button Header="Winget manifest (YAML)" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.Winget}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                        </Fluent:Button.SizeDefinition>
+                    </Fluent:Button>
+
                     <Fluent:Button Visibility="Collapsed" Header="Generate bundle...">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorBundle}" Style="{StaticResource LargeIcon}" />
@@ -768,6 +781,17 @@
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                        </Fluent:Button.SizeDefinition>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Winget manifest (YAML)..." Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
                             <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />

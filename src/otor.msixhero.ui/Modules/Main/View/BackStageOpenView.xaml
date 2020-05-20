@@ -57,6 +57,18 @@
 
         <TextBlock Text="Open" FontFamily="{StaticResource SourceSansPro}" FontWeight="Light" FontSize="30" Margin="0 0 0 20" />
 
+        <Button Command="{x:Static commands:MsixHeroCommands.PackageExpert}" Click="BackstageButtonClicked" CommandParameter="{x:Static viewModel1:PackageExpertCommandParameter.Browse}">
+
+            <DockPanel>
+                <Path Data="{StaticResource VectorOpen}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+
+                <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <TextBlock FontWeight="Light" Text="Manifest or MSIX package" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                    <TextBlock Opacity="0.66" Text="Opens manifest or an MSIX package in Package Expert." Margin="0 0 0 0" TextWrapping="Wrap" />
+                </StackPanel>
+            </DockPanel>
+        </Button>
+
         <Button Command="{x:Static commands:MsixHeroCommands.AppInstaller}" Click="BackstageButtonClicked">
             <Button.CommandParameter>
                 <system:Boolean>True</system:Boolean>
@@ -70,14 +82,17 @@
                 </StackPanel>
             </DockPanel>
         </Button>
-        <Button Command="{x:Static commands:MsixHeroCommands.PackageExpert}" Click="BackstageButtonClicked" CommandParameter="{x:Static viewModel1:PackageExpertCommandParameter.Browse}">
 
+        <Button Command="{x:Static commands:MsixHeroCommands.Winget}" Click="BackstageButtonClicked">
+            <Button.CommandParameter>
+                <system:Boolean>True</system:Boolean>
+            </Button.CommandParameter>
             <DockPanel>
-                <Path Data="{StaticResource VectorOpen}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
+                <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" VerticalAlignment="Center" />
 
                 <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                    <TextBlock FontWeight="Light" Text="Manifest or MSIX package" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
-                    <TextBlock Opacity="0.66" Text="Opens manifest or an MSIX package in Package Expert." Margin="0 0 0 0" TextWrapping="Wrap" />
+                    <TextBlock FontWeight="Light" Text="Winget manifest (YAML)" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
+                    <TextBlock Opacity="0.66" Text="Opens YAML file containing a definition of a package downloadable via winget" Margin="0 0 0 0" TextWrapping="Wrap" />
                 </StackPanel>
             </DockPanel>
         </Button>

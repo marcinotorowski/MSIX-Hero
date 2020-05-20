@@ -25,6 +25,7 @@
         public const string PathUnpack = "Unpack";
         public const string PathAppInstaller = "AppInstaller";
         public const string PathPackageExpert = "PackageExpert";
+        public const string PathWinget = "Winget";
         public const string PathPack = "Pack";
         public const string PathNewVolume = "NewVolume";
         public const string PathChangeVolume = "ChangeVolume";

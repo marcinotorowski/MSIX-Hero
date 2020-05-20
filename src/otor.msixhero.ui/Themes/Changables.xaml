@@ -41,7 +41,7 @@
                             </Border>
                             <Border Background="#eee" DockPanel.Dock="Bottom">
                                 <DockPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
+                                    <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
                                         <ContentPresenter Content="{TemplateBinding Footer}" />
                                     </StackPanel>
 

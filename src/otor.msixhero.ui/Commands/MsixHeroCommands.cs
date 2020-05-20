@@ -38,6 +38,7 @@ namespace otor.msixhero.ui.Commands
             Settings = new RoutedUICommand { Text = "Opens settings" };
             PackageExpert = new RoutedUICommand { Text = "Open Package Expert"};
             ServiceManager = new RoutedUICommand { Text = "Open Service Manager"};
+            Winget = new RoutedUICommand { Text = "Create winget manifest"};
         }
 
         public static RoutedUICommand SetVolumeAsDefault { get; }
@@ -91,6 +92,8 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand Pack { get; }
         
         public static RoutedUICommand Unpack { get; }
+
+        public static RoutedUICommand Winget { get; }
 
         public static RoutedUICommand AppInstaller { get; }
 

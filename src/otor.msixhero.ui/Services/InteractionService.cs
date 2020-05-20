@@ -211,12 +211,10 @@ namespace otor.msixhero.ui.Services
 
         public bool SaveFile(string initialFile, string filterString, out string selectedFile)
         {
-            var dlg = new SaveFileDialog();
-
-            if (!string.IsNullOrEmpty(filterString))
+            var dlg = new SaveFileDialog
             {
-                dlg.Filter = filterString;
-            }
+                Filter = PrepareFilterString(filterString)
+            };
 
             if (initialFile != null)
             {
@@ -252,7 +250,7 @@ namespace otor.msixhero.ui.Services
 
         public bool SelectFile(out string selectedFile)
         {
-            return this.SelectFile(null, "*.*|All files (*.*)", out selectedFile);
+            return this.SelectFile(null, "All files (*.*)|*.*", out selectedFile);
         }
 
         public bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles)
@@ -286,57 +284,7 @@ namespace otor.msixhero.ui.Services
         {
             var dlg = new OpenFileDialog();
 
-            if (!string.IsNullOrEmpty(filterString))
-            {
-                var items = filterString.Split('|');
-                if (items.Length > 2)
-                {
-                    var sb = new StringBuilder();
-                    var supportedPatterns = new List<string>();
-
-                    var hasAll = false;
-                    for (var i = 0; i + 1 < items.Length; i += 2)
-                    {
-                        var first = items[i]; // the caption
-                        var second = items[i + 1]; // the filter
-
-                        if (!supportedPatterns.Contains(second) && second != "*.*")
-                        {
-                            supportedPatterns.Add(second);
-                        }
-
-                        if (sb.Length > 0)
-                        {
-                            sb.Append('|');
-                        }
-
-                        if (second.Contains("*.*"))
-                        {
-                            hasAll = true;
-                        }
-
-                        sb.Append(first);
-                        sb.Append('|');
-                        sb.Append(second);
-                    }
-
-                    if (!hasAll)
-                    {
-                        sb.Append("|All files|*.*");
-                    }
-
-                    if (supportedPatterns.Count > 1)
-                    {
-                        var supported = string.Join(";", supportedPatterns);
-                        sb.Insert(0, "All supported files|" + supported + "|");
-                    }
-
-                    filterString = sb.ToString();
-                }
-
-                dlg.Filter = filterString;
-            }
-
+            dlg.Filter = PrepareFilterString(filterString);
             if (initialFile != null)
             {
                 var fileInfo = new FileInfo(initialFile);
@@ -354,6 +302,74 @@ namespace otor.msixhero.ui.Services
             var result = dlg.ShowDialog() == DialogResult.OK;
             selectedFiles = dlg.FileNames;
             return result;
+        }
+
+        private static string PrepareFilterString(string filterString)
+        {
+            if (string.IsNullOrEmpty(filterString))
+            {
+                return "All files (*.*)|*.*";
+            }
+
+            var items = filterString.Split('|');
+            if (items.Length > 2)
+            {
+                var sb = new StringBuilder();
+                var supportedPatterns = new List<string>();
+
+                var hasAll = false;
+                for (var i = 0; i + 1 < items.Length; i += 2)
+                {
+                    var first = items[i]; // the caption
+                    var second = items[i + 1]; // the filter
+
+                    if (!supportedPatterns.Contains(second) && second != "*.*")
+                    {
+                        supportedPatterns.Add(second);
+                    }
+
+                    if (sb.Length > 0)
+                    {
+                        sb.Append('|');
+                    }
+
+                    if (second.Contains("*.*"))
+                    {
+                        hasAll = true;
+                    }
+
+                    sb.Append(first);
+                    sb.Append('|');
+                    sb.Append(second);
+                }
+
+                if (!hasAll)
+                {
+                    sb.Append("|All files|*.*");
+                }
+
+                if (supportedPatterns.Count > 1)
+                {
+                    var supported = string.Join(";", supportedPatterns);
+                    sb.Insert(0, "All supported files|" + supported + "|");
+                }
+
+                filterString = sb.ToString();
+            }
+            else if (items.Length == 1 && items[0].StartsWith("*.", StringComparison.Ordinal))
+            {
+                if (items[0] == "*.*")
+                {
+                    filterString = "All files|*.*";
+                }
+                else
+                {
+                    var fileExt = items[0].Substring(2);
+                    filterString = $"{fileExt.ToUpperInvariant()} files ({filterString})|{filterString}|All files|*.*";
+                }
+            }
+
+            return filterString;
         }
     }
 }
