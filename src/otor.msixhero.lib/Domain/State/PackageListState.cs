@@ -10,7 +10,7 @@ namespace otor.msixhero.lib.Domain.State
         {
             this.Context = UserHelper.IsAdministrator() ? PackageContext.AllUsers : PackageContext.CurrentUser;
             this.Filter = PackageFilter.Developer;
-            this.Group = PackageGroup.Publisher;
+            this.Group = PackageGroup.None;
             this.ShowSidebar = true;
 
             this.VisibleItems = new List<InstalledPackage>();
