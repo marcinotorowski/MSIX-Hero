@@ -1041,12 +1041,5 @@
                 </TabControl>
             </progressOverlay:ProgressOverlay>
         </Border>
-        <Fluent:StatusBar Grid.Row="3">
-            <Fluent:StatusBarItem 
-                    Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Title="Second left placed item"
-                    Content="{Binding LoadingMessage}"
-                    HorizontalAlignment="Right" />
-        </Fluent:StatusBar>
     </Grid>
 </UserControl>

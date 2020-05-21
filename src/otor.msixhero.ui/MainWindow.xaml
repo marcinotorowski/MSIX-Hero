@@ -8,6 +8,8 @@
      Title="MSIX Hero" 
      MinWidth="400"
      MinHeight="350"
+     TitleBarHeight="28"
      Width="980" 
      Height="768">
+
 </Fluent:RibbonWindow>
