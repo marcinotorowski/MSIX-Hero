@@ -88,13 +88,13 @@
                 <Fluent:RibbonContextualTabGroup 
                     x:Name="SelectedPackage"
                     Header="Selected package" 
-                    Background="GreenYellow" 
-                    BorderBrush="LightGreen" />
+                    Background="#005A9E" 
+                    BorderBrush="#005A9E" />
                 <Fluent:RibbonContextualTabGroup 
                     x:Name="SelectedVolume"
-                    Header="Selected volume" 
-                    Background="GreenYellow" 
-                    BorderBrush="LightGreen" />
+                    Header="Selection" 
+                    Background="#005A9E" 
+                    BorderBrush="#005A9E" />
             </Fluent:Ribbon.ContextualGroups>
 
             <Fluent:Ribbon.ToolBarItems>
@@ -385,10 +385,9 @@
 
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabEdit"
-                Header="Edit" 
+                Header="Tools" 
                 ReduceOrder=",
                             RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
-                            RibbonCodeSigning,RibbonCodeSigning,RibbonCodeSigning
                             RibbonToolsCreate,RibbonToolsCreate,RibbonToolsCreate,">
                 <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
                     <Fluent:RibbonGroupBox.Icon>
@@ -415,19 +414,6 @@
                         <Fluent:Button.Icon>
                             <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
-                    </Fluent:Button>
-                </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonCodeSigning">
-                    <Fluent:RibbonGroupBox.Icon>
-                        <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
-                    </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Sign package..." Command="{x:Static commands:MsixHeroCommands.OpenResign}">
-                        <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
-                        </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Other editors and generators" x:Name="RibbonToolsCreate">
@@ -526,15 +512,15 @@
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorSelfSign}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Create self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                    <Fluent:Button Header="Sign package..." Command="{x:Static commands:MsixHeroCommands.OpenResign}">
                         <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.SizeDefinition>
                             <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
-                    <Fluent:Button Header="Extract certificate from MSIX..." Command="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}">
+                    <Fluent:Button Header="Extract certificate from package..." Command="{x:Static commands:MsixHeroCommands.ExtractCertificate}">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                         </Fluent:Button.LargeIcon>
@@ -547,6 +533,14 @@
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorSign}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:Button Header="Create self-signed..." Command="{x:Static commands:MsixHeroCommands.CreateSelfSign}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                        </Fluent:Button.SizeDefinition>
+                    </Fluent:Button>
                     <Fluent:Button Header="Install certificate..." Command="{x:Static commands:MsixHeroCommands.InstallCertificate}">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorImport}" />
@@ -961,108 +955,139 @@
         </Fluent:Ribbon>
         <Border Background="#FFFFFF" Grid.Row="2">
             <progressOverlay:ProgressOverlay IsShown="{Binding IsLoading}" Progress="{Binding LoadingProgress}" Message="{Binding LoadingMessage}">
-                <TabControl 
-                    x:Name="TabControl"
-                    regions:RegionManager.RegionName="{x:Static modules:Constants.RegionContent}">
-                    <TabControl.Resources>
-                        <Style TargetType="{x:Type TabItem}">
-                            <Setter Property="Header" Value="{Binding DataContext.Header}"/>
-                        </Style>
-                    </TabControl.Resources>
-                    <TabControl.Style>
-                        <Style TargetType="{x:Type TabControl}">
-                            <Setter Property="OverridesDefaultStyle" Value="True" />
-                            <Setter Property="SnapsToDevicePixels" Value="True" />
-                            <Setter Property="BorderBrush" Value="#D2D2D2" />
-                            <Setter Property="VerticalAlignment" Value="Stretch" />
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Padding" Value="0 5 0 0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type TabControl}">
-                                        <DockPanel>
-                                            <StackPanel 
-                                                DockPanel.Dock="Left"
-                                                x:Name="HeaderPanel"
-                                                Panel.ZIndex="1"
-                                                Margin="{TemplateBinding Padding}"
-                                                IsItemsHost="True"
-                                                KeyboardNavigation.TabIndex="1"
-                                                Background="Transparent" />
-                                            <!--<Border Width="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Stretch" />-->
-                                            <Border x:Name="Border"
-                                                KeyboardNavigation.TabNavigation="Local"
-                                                KeyboardNavigation.DirectionalNavigation="Contained"
-                                                KeyboardNavigation.TabIndex="2">
-                                                <ContentPresenter x:Name="PART_SelectedContentHost"
-                                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                  ContentSource="SelectedContent" />
-                                            </Border>
-                                        </DockPanel>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="ItemContainerStyle">
-                                <Setter.Value>
-                                    <Style TargetType="{x:Type TabItem}">
-                                        <Setter Property="Header" Value="{Binding DataContext.Header}" />
-                                        <Setter Property="Tag" Value="{Binding DataContext.Icon}" />
-                                        <Setter Property="Width" Value="42" />
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="Height" Value="42" />
-                                        <!--<Setter Property="VerticalContentAlignment" Value="Center" />
-                                        <Setter Property="HorizontalContentAlignment" Value="Center" />-->
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type TabItem}">
-                                                    <Border Background="{TemplateBinding Background}" ToolTip="{TemplateBinding Header}">
-                                                        <StackPanel 
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center">
-                                                            <Viewbox Width="24" Height="24">
-                                                                <Path 
-                                                                Width="32"
-                                                                Height="32"
-                                                                Fill="{StaticResource Otor.MsixHero.Brushes.Accent}"
-                                                                IsHitTestVisible="False"
-                                                                x:Name="ContentIcon"
-                                                                Data="{TemplateBinding Tag}"/>
-                                                            </Viewbox>
-                                                            <ContentPresenter 
-                                                                Visibility="Collapsed"
-                                                                IsHitTestVisible="False"
-                                                                x:Name="ContentSite"
-                                                                ContentSource="Header"
-                                                                TextBlock.FontSize="8"
-                                                                RecognizesAccessKey="True" />
-                                                        </StackPanel>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="Tag" Value="{x:Null}">
-                                                            <Setter Property="Visibility" TargetName="ContentIcon" Value="Collapsed" />
-                                                            <Setter Property="Visibility" TargetName="ContentSite" Value="Visible" />
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#CDE6F7" />
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter Property="Background" Value="#B1D6F0" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TabControl.Style>
-                </TabControl>
+                <Grid>
+
+                    <TabControl 
+                        x:Name="TabControl"
+                        regions:RegionManager.RegionName="{x:Static modules:Constants.RegionContent}">
+                        <TabControl.Resources>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Header" Value="{Binding DataContext.Header}"/>
+                            </Style>
+                        </TabControl.Resources>
+                        <TabControl.Style>
+                            <Style TargetType="{x:Type TabControl}">
+                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                <Setter Property="SnapsToDevicePixels" Value="True" />
+                                <Setter Property="BorderBrush" Value="#D2D2D2" />
+                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="0 0 0 0" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TabControl}">
+                                            <DockPanel>
+                                                <StackPanel 
+                                                    DockPanel.Dock="Left"
+                                                    x:Name="HeaderPanel"
+                                                    Panel.ZIndex="1"
+                                                    Margin="{TemplateBinding Padding}"
+                                                    IsItemsHost="True"
+                                                    KeyboardNavigation.TabIndex="1"
+                                                    Background="Transparent" />
+
+                                                <Border SnapsToDevicePixels="True" UseLayoutRounding="True" Margin="0 0 0 0" Width="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Stretch" />
+                                                <Border x:Name="Border"
+                                                    KeyboardNavigation.TabNavigation="Local"
+                                                    KeyboardNavigation.DirectionalNavigation="Contained"
+                                                    KeyboardNavigation.TabIndex="2">
+                                                    <ContentPresenter x:Name="PART_SelectedContentHost"
+                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                      ContentSource="SelectedContent" />
+                                                </Border>
+                                            </DockPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="ItemContainerStyle">
+                                    <Setter.Value>
+                                        <Style TargetType="{x:Type TabItem}">
+                                            <Setter Property="Header" Value="{Binding DataContext.Header}" />
+                                            <Setter Property="Tag" Value="{Binding DataContext.Icon}" />
+                                            <Setter Property="Width" Value="46" />
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Height" Value="46" />
+                                            <!--<Setter Property="VerticalContentAlignment" Value="Center" />
+                                            <Setter Property="HorizontalContentAlignment" Value="Center" />-->
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type TabItem}">
+                                                        <Border Background="{TemplateBinding Background}" ToolTip="{TemplateBinding Header}">
+                                                            <StackPanel 
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center">
+                                                                <Viewbox Width="24" Height="24">
+                                                                    <Path 
+                                                                    Width="32"
+                                                                    Height="32"
+                                                                    Fill="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                                                                    IsHitTestVisible="False"
+                                                                    x:Name="ContentIcon"
+                                                                    Data="{TemplateBinding Tag}"/>
+                                                                </Viewbox>
+                                                                <ContentPresenter 
+                                                                    Visibility="Collapsed"
+                                                                    IsHitTestVisible="False"
+                                                                    x:Name="ContentSite"
+                                                                    ContentSource="Header"
+                                                                    TextBlock.FontSize="8"
+                                                                    RecognizesAccessKey="True" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="Tag" Value="{x:Null}">
+                                                                <Setter Property="Visibility" TargetName="ContentIcon" Value="Collapsed" />
+                                                                <Setter Property="Visibility" TargetName="ContentSite" Value="Visible" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#CDE6F7" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#B1D6F0" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TabControl.Style>
+                    </TabControl>
+                    <Button ToolTip="Settings" Command="{x:Static commands:MsixHeroCommands.Settings}" Padding="0" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="MinHeight" Value="46" />
+                                <Setter Property="Background" Value="Transparent"></Setter>
+                                <Setter Property="Width" Value="46" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#CDE6F7" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <Viewbox 
+                            Width="24" 
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                            <Path 
+                                Width="32"
+                                Height="32"
+                                Fill="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                                IsHitTestVisible="False"
+                                x:Name="ContentIcon"
+                                Data="{StaticResource VectorGear}"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
             </progressOverlay:ProgressOverlay>
         </Border>
     </Grid>

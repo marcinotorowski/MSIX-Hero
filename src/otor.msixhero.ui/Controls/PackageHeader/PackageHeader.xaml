@@ -20,24 +20,24 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border Background="#2B579A" Height="55" VerticalAlignment="Top" ClipToBounds="True">
-            <Border Margin="10 15 0 0" Background="Black" Width="76" VerticalAlignment="Top" HorizontalAlignment="Left" Height="40">
+        <Border Background="#2B579A" Height="46" VerticalAlignment="Top" ClipToBounds="True">
+            <Border Margin="6 16 0 0" Background="Black" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" RenderingBias="Performance" Direction="-45" Color="Black" Opacity="0.5" />
+                    <DropShadowEffect ShadowDepth="5" BlurRadius="15" RenderingBias="Performance" Direction="-45" Color="Black" Opacity="0.5" />
                 </Border.Effect>
             </Border>
         </Border>
-        <Border Margin="10 15 0 0" Background="White" Width="76" Height="76" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Border Background="DarkGray" Width="64" Height="64" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Viewbox Height="64" Width="64" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly">
+        <Border Margin="6 16 0 0" Background="White" Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Border Background="DarkGray" Width="48" Height="48" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Viewbox Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly">
                     <Image Source="{Binding ElementName=PackageHeaderRoot, Path=Logo}" Stretch="None"  />
                 </Viewbox>
             </Border>
         </Border>
 
-        <Border Height="34" Margin="100 21 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <DockPanel Height="34">
-                <Border DockPanel.Dock="Right" Background="#44ffffff" Height="34" Margin="10 0">
+        <Border Height="30" Margin="80 16 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <DockPanel Height="30">
+                <Border DockPanel.Dock="Right" Background="#44ffffff" Height="30" Margin="10 0">
                     <Label Content="{Binding ElementName=PackageHeaderRoot, Path=Version}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="White" Margin="10 0" Padding="0" />
                 </Border>
 
@@ -62,8 +62,8 @@
             </DockPanel>
         </Border>
 
-        <Border Margin="80 55 0 0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30">
-            <StackPanel VerticalAlignment="Center" Margin="15 0 0 0" Orientation="Horizontal">
+        <Border Margin="80 45 0 0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="30">
+            <StackPanel VerticalAlignment="Center" Margin="0 0 0 0" Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="Path">
                         <Setter Property="Width" Value="32" />

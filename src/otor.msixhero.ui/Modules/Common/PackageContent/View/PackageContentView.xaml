@@ -62,8 +62,8 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static psf:AppxPsfViewModel.EditScript}" Command="{Binding CommandHandler.EditScript}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
-    <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}" Margin="-5">
-        <DockPanel Margin="5 5 0 0">
+    <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+        <DockPanel>
             <packageHeader:PackageHeader
                 Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
                 DataContext="{Binding SelectedPackageManifestInfo}"
@@ -72,14 +72,14 @@
                 PackageName="{Binding CurrentValue.DisplayName}" 
                 Logo="{Binding CurrentValue.Logo, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" 
                 TileColor="{Binding CurrentValue.TileColor, TargetNullValue={x:Static Brushes.Gray}, FallbackValue={x:Static Brushes.Gray}}"
-                DockPanel.Dock="Top" Margin="-5 -5 0 0" />
+                DockPanel.Dock="Top" />
 
             <!--
             <Border Height="31" Margin="0 0 0 -11" DockPanel.Dock="Top" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <Label VerticalAlignment="Center" Style="{StaticResource Label}" Content="{Binding SelectedPackageManifestInfo.CurrentValue.DisplayName}" />
             </Border>-->
 
-            <Border VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Top" Background="IndianRed" Padding="10" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Margin="12 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" DockPanel.Dock="Top" Background="IndianRed" Padding="10" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <DockPanel>
                     <Path Width="32" Height="32" Fill="White" Data="{StaticResource VectorError}" VerticalAlignment="Center" Margin="6 -3 0 -3" SnapsToDevicePixels="True" UseLayoutRounding="True">
                         <Path.LayoutTransform>
@@ -90,7 +90,7 @@
                 </DockPanel>
             </Border>
 
-            <TabControl DockPanel.Dock="Top" Margin="0 0 0 0" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <TabControl DockPanel.Dock="Top" Margin="12 0 0 0" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                 <TabItem Header="Properties">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>

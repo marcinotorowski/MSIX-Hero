@@ -34,32 +34,76 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.DismountVolume}" Command="{Binding CommandHandler.DismountVolume}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <Border x:Name="Search" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
-            <Grid>
-                <TextBox Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
-                <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
-                    <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
-                        <Path.LayoutTransform>
-                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                        </Path.LayoutTransform>
-                    </Path>
-                    <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in volume list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed" />
+    <progressOverlay:ProgressOverlay
+        FocusVisualStyle="{x:Null}"
+        IsShown="{Binding IsLoading}"
+        Message="{Binding LoadingMessage}"
+        Progress="{Binding LoadingProgress}">
+        <Grid Margin="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border x:Name="Search" DockPanel.Dock="Top" Grid.Column="0" Height="46" Grid.Row="0" Margin="0">
+
+                <Grid Margin="5 0">
+                    <TextBox 
+                        Padding="26 0 20 0" 
+                        BorderThickness="0"
+                        x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#efefef" />
+                                    </Trigger>
+                                    <Trigger Property="IsFocused" Value="True">
+                                        <Setter Property="Background" Value="#fafafa" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                    <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+                        <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                            </Path.LayoutTransform>
+                        </Path>
+                        <TextBlock TextTrimming="CharacterEllipsis" Text="Search volumes..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
+                                                <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                    <Condition.Value>
+                                                        <system:Int32>0</system:Int32>
+                                                    </Condition.Value>
+                                                </Condition>
+                                            </MultiDataTrigger.Conditions>
+                                            <MultiDataTrigger.Setters>
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </MultiDataTrigger.Setters>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </DockPanel>
+                    <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" FontFamily="Webdings" Height="26" MinHeight="26" Margin="2" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Content="&#x72;">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
                                             <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
                                                 <Condition.Value>
                                                     <system:Int32>0</system:Int32>
@@ -67,48 +111,19 @@
                                             </Condition>
                                         </MultiDataTrigger.Conditions>
                                         <MultiDataTrigger.Setters>
-                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Setter Property="Visibility" Value="Collapsed" />
                                         </MultiDataTrigger.Setters>
                                     </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </DockPanel>
-
-                <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" FontFamily="Webdings" Height="26" MinHeight="26" Margin="2" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Content="&#x72;">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
-                                            <Condition.Value>
-                                                <system:Int32>0</system:Int32>
-                                            </Condition.Value>
-                                        </Condition>
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </Grid>
-        </Border>
-
-
-        <progressOverlay:ProgressOverlay
-            FocusVisualStyle="{x:Null}"
-            IsShown="{Binding IsLoading}"
-            Message="{Binding LoadingMessage}"
-            Progress="{Binding LoadingProgress}"
-            Grid.Column="0"
-            Grid.Row="1">
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
 
             <ListBox 
+                Grid.Column="0"
+                Grid.Row="1"
                 x:Name="ListBox"
                 SelectionMode="Extended"
                 BorderBrush="#ccc" 
@@ -146,16 +161,38 @@
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                         <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        <Setter Property="BorderThickness" Value="0 0 0 0" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                        <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
+                                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                        </Border>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsOffline}" Value="{StaticResource True}">
                                 <Setter Property="Opacity" Value="0.5" />
                             </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                <Setter Property="Background" Value="#E6F2FA" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                <Setter Property="Background" Value="#CDE6F7" />
+                            </Trigger>
                         </Style.Triggers>
                     </Style>
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type elements:VolumeViewModel}">
                         <volume1:VolumeControl
+                            SearchKey="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}"
                             OccupiedSize="{Binding SpaceTaken}"
                             TotalSize="{Binding Capacity}"
                             Path="{Binding PackageStorePath}"
@@ -165,6 +202,6 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-        </progressOverlay:ProgressOverlay>
-    </Grid>
+        </Grid>
+    </progressOverlay:ProgressOverlay>
 </UserControl>

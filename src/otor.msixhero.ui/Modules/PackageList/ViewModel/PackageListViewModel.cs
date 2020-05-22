@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -52,6 +53,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private bool isLoading;
         private int loadingProgress;
         private string loadingMessage;
+        private PackageContext? tempContext;
 
         public PackageListViewModel(
             IApplicationStateManager stateManager,
@@ -349,8 +351,46 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
+        public PackageContext Context
+        {
+            get
+            {
+                if (this.tempContext.HasValue)
+                {
+                    return this.tempContext.Value;
+                }
+
+                return this.stateManager.CurrentState.Packages.Context;
+            }
+            set
+            {
+                if (this.Context == value)
+                {
+                    return;
+                }
+
+                this.tempContext = value;
+                this.OnPropertyChanged();
+
+                var context = this.busyManager.Begin(OperationType.PackageLoading);
+
+                this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(value), CancellationToken.None, context).ContinueWith(
+                    t =>
+                    {
+                        this.busyManager.End(context);
+                        this.tempContext = null;
+                        this.OnPropertyChanged(nameof(this.Context));
+                    },
+                    CancellationToken.None,
+                    TaskContinuationOptions.AttachedToParent,
+                    TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
         private void OnPackagesLoaded(PackagesCollectionChangedPayLoad payload)
         {
+            this.OnPropertyChanged(nameof(Context));
+
             var selectedItems = this.AllPackages.Where(a => a.IsSelected).Select(a => a.Model.ManifestLocation).ToList();
 
             switch (payload.Type)
@@ -417,7 +457,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public string SearchKey
         {
             get => this.stateManager.CurrentState.Packages.SearchKey;
-            set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(value));
+            set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(this.stateManager.CurrentState.Packages.Filter, value));
         }
 
         public ObservableCollection<InstalledPackageViewModel> AllPackages { get; }

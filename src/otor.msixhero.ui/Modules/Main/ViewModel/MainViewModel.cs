@@ -108,7 +108,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                 this.tempContext = value;
                 this.OnPropertyChanged();
 
-                var context = this.busyManager.Begin();
+                var context = this.busyManager.Begin(OperationType.PackageLoading);
 
                 this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(value), CancellationToken.None, context).ContinueWith(
                     t =>
@@ -142,7 +142,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.Developer;
                 }
 
-                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
             }
         }
 
@@ -173,7 +173,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.Store;
                 }
 
-                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
             }
         }
 
@@ -192,7 +192,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.System;
                 }
 
-                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
             }
         }
 

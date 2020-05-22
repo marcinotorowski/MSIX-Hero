@@ -222,6 +222,7 @@
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
+
     </Style>
 
     <Style TargetType="ComboBoxItem" x:Key="{x:Type ComboBoxItem}">

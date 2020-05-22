@@ -12,7 +12,6 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
-             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
              xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
@@ -20,15 +19,18 @@
              xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
              xmlns:fluent="urn:fluent-ribbon"
              xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+             xmlns:checkedContent="clr-namespace:otor.msixhero.ui.Controls.CheckedContent"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Themes/Vectors.xaml" />
+                <ResourceDictionary Source="/Controls/CheckedContent/CheckedContent.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="DummyLogo" UriSource="icons8-sugar-cube-48.png" />
+            <view:PackageContextDisplayNameConverter x:Key="PackageContextDisplayNameConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <routedCommand:RoutedCommandHandlers.Commands>
@@ -50,7 +52,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.DismountRegistry}" Command="{Binding CommandHandler.DismountRegistry}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CreateSelfSign}" Command="{Binding CommandHandler.NewSelfSignedCert}" />
-        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ExtractCertifiacte}" Command="{Binding CommandHandler.ExtractCert}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ExtractCertificate}" Command="{Binding CommandHandler.ExtractCert}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.InstallCertificate}" Command="{Binding CommandHandler.InstallCertificate}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenResign}" Command="{Binding CommandHandler.OpenResign}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CertManager}" Command="{Binding CommandHandler.CertManager}" />
@@ -66,7 +68,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Winget}" Command="{Binding CommandHandler.Winget}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
     </routedCommand:RoutedCommandHandlers.Commands>
-    <Grid Margin="5" x:Name="Grid">
+    <Grid Margin="0" x:Name="Grid">
         <Grid.Resources>
             <system:Boolean x:Key="True">True</system:Boolean>
             <Style TargetType="{x:Type GroupItem}" x:Key="GroupStyle">
@@ -147,88 +149,250 @@
                 </MenuItem>
             </ContextMenu>
         </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Border 
-            IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
-            x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Grid.Row="0" Margin="0 0 0 5">
-            <Grid>
-                <TextBox 
-                    Padding="26 0 20 0" 
-                    x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" />
-                <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
-                    <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
-                        <Path.LayoutTransform>
-                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                        </Path.LayoutTransform>
-                    </Path>
-                    <TextBlock TextTrimming="CharacterEllipsis" Text="Type here to search in application list..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
-                                            <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
-                                                <Condition.Value>
-                                                    <system:Int32>0</system:Int32>
-                                                </Condition.Value>
-                                            </Condition>
-                                        </MultiDataTrigger.Conditions>
-                                        <MultiDataTrigger.Setters>
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </MultiDataTrigger.Setters>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </DockPanel>
-                <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" FontFamily="Webdings" Height="26" MinHeight="26" Margin="2" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Content="&#x72;">
-                    <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                            <Style.Triggers>
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
-                                            <Condition.Value>
-                                                <system:Int32>0</system:Int32>
-                                            </Condition.Value>
-                                        </Condition>
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-            </Grid>
-        </Border>
-
         <progressOverlay:ProgressOverlay
             FocusVisualStyle="{x:Null}"
+            Grid.Row="0"
+            Grid.Column="0"
             IsShown="{Binding IsLoading}"
             Message="{Binding LoadingMessage}"
-            Progress="{Binding LoadingProgress}"
-            Grid.Column="0"
-            Grid.Row="1">
+            Progress="{Binding LoadingProgress}">
+            <Grid Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border 
+                IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
+                x:Name="Search" SizeChanged="OnViewListSizeChanged" DockPanel.Dock="Top" Grid.Column="0" Height="46" Grid.Row="0" Margin="0">
 
-            <Grid
-                FocusVisualStyle="{x:Null}">
+                    <DockPanel>
+
+                        <!--<ToggleButton 
+                    Visibility="Collapsed"
+                    Background="Transparent"
+                    IsHitTestVisible="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Converter={StaticResource NegativeConverter}}"
+                    x:Name="ToggleSort" DockPanel.Dock="Right" Width="30" Padding="0" Height="30" BorderThickness="0" Margin="0 0 0 0">
+                    <Path SnapsToDevicePixels="True" UseLayoutRounding="True" Data="{StaticResource VectorSort}" Style="{StaticResource MediumIcon}" />
+                </ToggleButton>
+                <Popup 
+                    IsOpen="{Binding ElementName=ToggleSort, Path=IsChecked}" AllowsTransparency="True"
+                    PopupAnimation="Fade"
+                    StaysOpen="False"
+                    Focusable="False"
+                    HorizontalOffset="-10"
+                    VerticalOffset="-7"
+                    PlacementTarget="{Binding ElementName=ToggleSort}" Placement="Bottom">
+                    <Border Focusable="False"  MinWidth="170">
+                        <Border Background="White" BorderBrush="#ccc" BorderThickness="1" Margin="10">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" Opacity="0.2"  ShadowDepth="0" Direction="-90" RenderingBias="Quality" />
+                            </Border.Effect>
+                            <StackPanel Margin="0">
+                                <StackPanel.Resources>
+                                    <Style TargetType="RadioButton">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="RadioButton">
+                                                    <Border Background="{TemplateBinding Background}">
+                                                        <checkedContent:CheckedContent Content="{TemplateBinding Content}" IsChecked="{TemplateBinding IsChecked}" ShowGlyph="True" ShowShield="False" />
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#CDE6F7" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <RadioButton Focusable="False" Content="By name" Margin="0 0 0 4" />
+                                <RadioButton Focusable="False" Content="By publisher" Margin="0 0 0 4" />
+                                <RadioButton Focusable="False" Content="By version" Margin="0 0 0 4" />
+                                <RadioButton Focusable="False" Content="By type" Margin="0 0 0 8" />
+                                <CheckBox Focusable="False" Content="Descending" />
+                            </StackPanel>
+                        </Border>
+                    </Border>
+                </Popup>-->
+                        <ToggleButton 
+                    Visibility="Collapsed"
+                    Background="Transparent"
+                    Unchecked="ToggleContext_OnUnchecked"
+                    IsHitTestVisible="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked, Converter={StaticResource NegativeConverter}}"
+                    x:Name="ToggleContext" DockPanel.Dock="Right" Padding="0" Height="30" BorderThickness="0" Margin="0 0 6 0">
+                            <Border>
+                                <checkedContent:CheckedContent Focusable="False" ShowShield="False" ShowGlyph="False" IsHitTestVisible="False">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Context, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0" />
+                                        <Path 
+                                    Data="F1 M 0,0 L 2.667,2.66665 L 5.3334,0 L 5.3334,-1.78168 L 2.6667,0.88501 L0,-1.78168 L0,0 Z"
+                                    Height="3" Width="6"
+                                    Fill="#FF606060" 
+                                    HorizontalAlignment="Center" Margin="0 5 0 0" 
+                                    VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </checkedContent:CheckedContent>
+                            </Border>
+                        </ToggleButton>
+                        <RadioButton Visibility="Collapsed" DockPanel.Dock="Right" GroupName="g2a" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="8 0 4 0">
+                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="0 0 0 0" />
+                            <RadioButton.Tag>
+                                <system:Boolean>False</system:Boolean>
+                            </RadioButton.Tag>
+                        </RadioButton>
+                        <RadioButton Visibility="Collapsed" DockPanel.Dock="Right" GroupName="g1a" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="4 0 0 0">
+                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="0 0 0 0" />
+                        </RadioButton>
+                        <Popup 
+                    Visibility="Collapsed"
+                    HorizontalOffset="-10"
+                    VerticalOffset="-7"
+                    StaysOpen="False"
+                    IsOpen="{Binding ElementName=ToggleContext, Path=IsChecked}" AllowsTransparency="True"
+                    PopupAnimation="Fade"
+                    Focusable="False"
+                    PlacementTarget="{Binding ElementName=ToggleContext}" Placement="Bottom">
+                            <Border Focusable="False" MinWidth="150">
+                                <Border Background="White" BorderBrush="#ccc" BorderThickness="1" Margin="10" Focusable="False">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" Opacity="0.2"  ShadowDepth="0" Direction="-90" RenderingBias="Quality" />
+                                    </Border.Effect>
+                                    <StackPanel Margin="0" Focusable="False">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="RadioButton">
+                                                <Setter Property="Focusable" Value="False" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="RadioButton">
+                                                            <Border Focusable="False" Background="{TemplateBinding Background}">
+                                                                <checkedContent:CheckedContent Focusable="False" x:Name="PART_Content" Content="{TemplateBinding Content}" IsChecked="{TemplateBinding IsChecked}" ShowGlyph="True" />
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="Tag">
+                                                                    <Trigger.Value>
+                                                                        <system:Boolean>True</system:Boolean>
+                                                                    </Trigger.Value>
+                                                                    <Setter TargetName="PART_Content" Property="ShowShield" Value="True" />
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#CDE6F7" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <RadioButton PreviewMouseDown="UIElement_OnPreviewMouseDown" GroupName="g1" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="0 0 0 4">
+                                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0 0 0" />
+                                        </RadioButton>
+                                        <RadioButton PreviewMouseDown="UIElement_OnPreviewMouseDown" GroupName="g2" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="0 0 0 4">
+                                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0 0 0" />
+                                            <RadioButton.Tag>
+                                                <system:Boolean>False</system:Boolean>
+                                            </RadioButton.Tag>
+                                        </RadioButton>
+                                    </StackPanel>
+                                </Border>
+                            </Border>
+                        </Popup>
+                        <!--<ComboBox 
+                    Visibility="Collapsed"
+                    x:Name="ComboBoxContext"
+                    Template="{DynamicResource ComboBoxTemplate}" SelectedValue="{Binding Context}" SelectedValuePath="Tag" DockPanel.Dock="Right" Background="Transparent" BorderThickness="0" Height="30">
+                    <ComboBoxItem Tag="{x:Static enums:PackageContext.CurrentUser}">Current user</ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static enums:PackageContext.AllUsers}">
+                        <uac:UACControl ShowShield="True" Padding="0 0 6 0">
+                            <TextBlock Text="All users" Margin="0 0 15 0" />
+                        </uac:UACControl>
+                    </ComboBoxItem>
+                </ComboBox>-->
+
+                        <Grid Margin="5 0">
+                            <TextBox 
+                        Padding="26 0 20 0" 
+                        BorderThickness="0"
+                        x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#efefef" />
+                                            </Trigger>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter Property="Background" Value="#fafafa" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                            <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+                                <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                                <TextBlock TextTrimming="CharacterEllipsis" Text="Search applications..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
+                                                        <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                            <Condition.Value>
+                                                                <system:Int32>0</system:Int32>
+                                                            </Condition.Value>
+                                                        </Condition>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DockPanel>
+                            <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" FontFamily="Webdings" Height="26" MinHeight="26" Margin="2" BorderThickness="0" Background="Transparent" HorizontalAlignment="Right" Content="&#x72;">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                        <Condition.Value>
+                                                            <system:Int32>0</system:Int32>
+                                                        </Condition.Value>
+                                                    </Condition>
+                                                </MultiDataTrigger.Conditions>
+                                                <MultiDataTrigger.Setters>
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </MultiDataTrigger.Setters>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </DockPanel>
+                </Border>
+
                 <AdornerDecorator
-                x:Name="PanelListView"
-                Visibility="Collapsed">
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        x:Name="PanelListView"
+                        Visibility="Collapsed">
                     <ListView 
                         FocusVisualStyle="{x:Null}"
                         IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
@@ -258,7 +422,7 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListViewItem">
                                             <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                                <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
+                                                <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
                                                     <GridViewRowPresenter Margin="{TemplateBinding Padding}"  />
                                                 </Border>
                                             </Border>
@@ -345,20 +509,20 @@
                         </ListView.GroupStyle>
                     </ListView>
                 </AdornerDecorator>
-
                 <Border
-                Visibility="Collapsed"
-                x:Name="PanelListBox"
-                Grid.Column="0">
+                    Visibility="Collapsed"
+                    x:Name="PanelListBox"
+                    Grid.Row="1"
+                    Grid.Column="0">
                     <ListBox 
-                    FocusVisualStyle="{x:Null}"
-                    IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
-                    x:Name="ListBox"
-                    SelectionMode="Extended"
-                    SelectionChanged="OnListBoxSelectionChanged"
-                    MouseDoubleClick="ListOnMouseDoubleClick"
-                    ContextMenu="{StaticResource PackageContextMenu}"
-                    ItemsSource="{Binding AllPackagesView}">
+                        FocusVisualStyle="{x:Null}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
+                        x:Name="ListBox"
+                        SelectionMode="Extended"
+                        SelectionChanged="OnListBoxSelectionChanged"
+                        MouseDoubleClick="ListOnMouseDoubleClick"
+                        ContextMenu="{StaticResource PackageContextMenu}"
+                        ItemsSource="{Binding AllPackagesView}">
                         <ListBox.GroupStyle>
                             <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
                         </ListBox.GroupStyle>
@@ -366,7 +530,7 @@
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Padding" Value="10" />
                                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                <Setter Property="BorderThickness" Value="4 0 0 0" />
+                                <Setter Property="BorderThickness" Value="0 0 0 0" />
                                 <Setter Property="BorderBrush" Value="Transparent" />
                                 <Setter Property="Background" Value="Transparent" />
                                 <Setter Property="IsSelected" Value="{Binding IsSelected}" />
@@ -374,7 +538,7 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListBoxItem">
                                             <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                                <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 1">
+                                                <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
                                                     <ContentPresenter Margin="{TemplateBinding Padding}" />
                                                 </Border>
                                             </Border>
@@ -399,12 +563,37 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
                                 <DockPanel>
-                                    <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+                                    <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <!--<Ellipse Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush>
+                                                        <ImageBrush.ImageSource>
+                                                            <BitmapImage DecodePixelHeight="32" DecodePixelWidth="32" UriSource="{Binding Image}" />
+                                                        </ImageBrush.ImageSource>
+                                                    </ImageBrush>
+                                                </Ellipse.Fill>
+                                            </Ellipse>-->
                                             <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+
+                                            <Border.OpacityMask>
+                                                <!--<RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                                                        <GradientStop Color="White" Offset="0"/>
+                                                        <GradientStop Color="Black" Offset="0.0"/>
+                                                        <GradientStop Color="Black" Offset="0"/>
+                                                        <GradientStop Color="Black" Offset="1"/>
+                                                    </RadialGradientBrush>
+                                                    <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                                        <LinearGradientBrush.GradientStops>
+                                                            <GradientStop Color="White" Offset="0" />
+                                                            <GradientStop Color="Black" Offset="1" />
+                                                        </LinearGradientBrush.GradientStops>
+                                                    </LinearGradientBrush>-->
+                                                <ImageBrush ImageSource="/Resources/32pxOpacityMask.png" />
+                                            </Border.OpacityMask>
                                         </Border>
                                     </Border>
-
                                     <StackPanel DockPanel.Dock="Right">
                                         <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
                                         <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
@@ -421,12 +610,15 @@
                     </ListBox>
                 </Border>
             </Grid>
-
         </progressOverlay:ProgressOverlay>
-        <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
 
-        <Border x:Name="PackageDetails" Margin="0 5 5 5" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2">
+        <Border x:Name="Separator" SnapsToDevicePixels="True" HorizontalAlignment="Left" UseLayoutRounding="True" Grid.Row="0" Grid.RowSpan="2" Margin="0 0 0 0" Width="1" Grid.Column="1" Background="#ddd" VerticalAlignment="Stretch" />
+
+        <Border x:Name="PackageDetails" Margin="0 0" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2">
             <ContentControl mvvm:RegionManager.RegionName="{x:Static modules:Constants.RegionPackageSidebar}" />
         </Border>
+
+        <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
+
     </Grid>
 </UserControl>

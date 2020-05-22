@@ -42,14 +42,17 @@
             </StackPanel>
         </Border>
 
-        <Border Background="#2B579A" DockPanel.Dock="Top" Margin="0 0 0 -50" Height="55">
-            <!--<DockPanel Margin="16">
+        <!--<Border Background="Transparent" DockPanel.Dock="Top" Margin="0 0 0 -50" Height="55">
+            <DockPanel Margin="16">
                 <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorOpen}" />
                 <Label Margin="8 0 0 0" VerticalContentAlignment="Center" Style="{StaticResource Label}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="24">Package Expert</Label>
-            </DockPanel>-->
-        </Border>
+            </DockPanel
+        </Border>>-->
 
-        <view:PackageContentView Margin="10 0 10 10" DataContext="{Binding Path=Content}" x:Name="PackageContentView" DockPanel.Dock="Top" />
+        <Grid>
+            <Border VerticalAlignment="Top" Height="46" Background="#2B579A" />
+            <view:PackageContentView Margin="6 0" DataContext="{Binding Path=Content}" x:Name="PackageContentView" DockPanel.Dock="Top" />
+        </Grid>
     </DockPanel>
     <!--<changeableDialog:ChangeableDialog
         Dialog="{Binding}"

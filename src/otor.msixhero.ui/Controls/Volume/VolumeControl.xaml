@@ -10,25 +10,31 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:VolumeControl">
                     <DockPanel>
+                        <!--<Border
+                            Margin="-2 -2 6 -2" CornerRadius="20" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2">-->
+
                         <Border 
-                            VerticalAlignment="Center" 
-                            HorizontalAlignment="Center" 
-                            Margin="0 0 6 0"
-                            Background="{TemplateBinding Background}" 
-                            Width="32" 
-                            Height="32" >
-                            <Path 
-                                x:Name="PART_Path" 
-                                Fill="White"
-                                Style="{StaticResource LargeIcon}" 
-                                Data="{StaticResource VectorDisk}" 
+                                DockPanel.Dock="Left"
                                 VerticalAlignment="Center" 
-                                HorizontalAlignment="Center">
+                                HorizontalAlignment="Center" 
+                                Margin="0 0 6 0"
+                                CornerRadius="20"
+                                Background="{TemplateBinding Background}" 
+                                Width="32" 
+                                Height="32" >
+                            <Path 
+                                    x:Name="PART_Path" 
+                                    Fill="White"
+                                    Style="{StaticResource LargeIcon}" 
+                                    Data="{StaticResource VectorDisk}" 
+                                    VerticalAlignment="Center" 
+                                    HorizontalAlignment="Center">
                                 <Path.LayoutTransform>
                                     <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
                                 </Path.LayoutTransform>
                             </Path>
                         </Border>
+
 
                         <Border
                             DockPanel.Dock="Right"

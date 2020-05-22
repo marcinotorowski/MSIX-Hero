@@ -13,6 +13,18 @@
 
             <Style TargetType="{x:Type Fluent:RibbonTabItem}" BasedOn="{StaticResource {x:Type Fluent:RibbonTabItem}}">
                 <Setter Property="HeaderPadding" Value="14 7" />
+
+                <Style.Triggers>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsContextual" Value="True" />
+                            <Condition Property="IsSelected" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Background" Value="#005A9E" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="Fluent:Button" BasedOn="{StaticResource {x:Type Fluent:Button}}">

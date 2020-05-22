@@ -9,10 +9,11 @@
 
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonWindow.TitleBackground" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" />
     <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonTabControl.TabsGrid.Background" Color="{StaticResource Fluent.Ribbon.Colors.AccentBaseColor}" />
+    <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.Background" Color="#005A9E" />
 
     <LinearGradientBrush x:Key="Fluent.Ribbon.Brushes.RibbonContextualTabGroup.Background.OpacityMask" StartPoint="0 0" EndPoint="0 1">
-        <GradientStop Color="#66ffffff" Offset="0" />
-        <GradientStop Color="#14ffffff" Offset="1" />
+        <GradientStop Color="#ffffff" Offset="0" />
+        <GradientStop Color="#ffffff" Offset="1" />
     </LinearGradientBrush>
 
     <Color x:Key="Fluent.Ribbon.Colors.Button.MouseOver.BorderBrush">#B1D6F0</Color>

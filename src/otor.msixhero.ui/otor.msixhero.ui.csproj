@@ -28,6 +28,7 @@
     <None Remove="Modules\SystemStatus\View\Logos\AppPackage.png" />
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.png" />
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
+    <None Remove="Resources\32pxOpacityMask.png" />
     <None Remove="Resources\Images\help.png" />
     <None Remove="Resources\Images\msix-hero-64-1.png" />
     <None Remove="Resources\Images\msix-hero-64-dark.png" />
@@ -64,6 +65,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
+    <Resource Include="Resources\32pxOpacityMask.png" />
     <Resource Include="Resources\Images\help.png" />
     <Resource Include="Resources\Images\msix-hero-64-dark.png" />
     <Resource Include="Resources\Images\msix-hero-64.png" />

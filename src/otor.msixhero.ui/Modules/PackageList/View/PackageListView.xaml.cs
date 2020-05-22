@@ -1,8 +1,11 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -110,6 +113,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
         {
             this.PackageDetails.Visibility = this.applicationStateManager.CurrentState.Packages.ShowSidebar ? Visibility.Visible : Visibility.Collapsed;
             this.GridSplitter.Visibility = this.PackageDetails.Visibility;
+            this.Separator.Visibility = this.PackageDetails.Visibility;
 
             if (this.applicationStateManager.CurrentState.Packages.ShowSidebar)
             {
@@ -193,5 +197,59 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             FocusManager.SetFocusedElement(this, this.SearchBox);
             Keyboard.Focus(this.SearchBox);
         }
+
+        private void Popup_OnClosed(object sender, EventArgs e)
+        {
+            var toFocus = this.ListBox.IsVisible ? this.ListBox : this.ListView;
+            toFocus.Focus();
+            Keyboard.Focus(toFocus);
+            FocusManager.SetFocusedElement(this, toFocus);
+        }
+
+        private void ToggleContext_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(
+                () =>
+                {
+                    this.ToggleContext.Focus();
+                    Keyboard.Focus(this.ToggleContext);
+                    FocusManager.SetFocusedElement(this, this.ToggleContext);
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    FocusManager.SetFocusedElement(Window.GetWindow(this), this);
+                },
+                DispatcherPriority.ApplicationIdle);
+        }
+
+        private void UIElement_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.ToggleContext.IsChecked = false;
+            ((RadioButton) sender).IsChecked = true;
+            e.Handled = true;
+        }
     }
+
+    internal class PackageContextDisplayNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is PackageContext context)
+            {
+                switch (context)
+                {
+                    case PackageContext.CurrentUser:
+                        return "Current user";
+                    case PackageContext.AllUsers:
+                        return "All users";
+                }
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
