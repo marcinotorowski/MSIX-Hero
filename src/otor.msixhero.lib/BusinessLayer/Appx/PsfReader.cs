@@ -13,7 +13,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
     public class PsfReader
     {
-        public PsfApplicationDescriptor Read(string applicationId, string packageRootFolder)
+        public PsfApplicationDescriptor Read(string applicationId, string originalEntryPoint, string packageRootFolder)
         {
             if (!Directory.Exists(packageRootFolder))
             {
@@ -22,104 +22,119 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
             using (IAppxFileReader fileReader = new DirectoryInfoFileReaderAdapter(new DirectoryInfo(packageRootFolder)))
             {
-                return this.Read(applicationId, fileReader);
+                return this.Read(applicationId, originalEntryPoint, fileReader);
             }
         }
-
-        public PsfApplicationDescriptor Read(string applicationId, IAppxFileReader fileReader)
+        public PsfApplicationDescriptor Read(string applicationId, string packageRootFolder)
         {
+            if (!Directory.Exists(packageRootFolder))
+            {
+                throw new ArgumentException("Package folder does not exist.");
+            }
+
+            return this.Read(applicationId, null, packageRootFolder);
+        }
+
+        public PsfApplicationDescriptor Read(string applicationId, string originalEntryPoint, IAppxFileReader fileReader)
+        {
+            if (
+                string.Equals(originalEntryPoint, @"AI_STUBS\AiStub.exe", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(originalEntryPoint, @"AI_STUBS\AiStubElevated.exe", StringComparison.OrdinalIgnoreCase))
+            {
+
+                if (fileReader.FileExists(@"AI_STUBS\AiStub.exe") || fileReader.FileExists(@"AI_STUBS\AiStubElevated.exe"))
+                {
+                    // This is an old Advanced Installer stuff
+                    if (fileReader.FileExists("Registry.dat"))
+                    {
+                        RegistryHiveOnDemand reg;
+                        using (var stream = fileReader.GetFile("Registry.dat"))
+                        {
+                            if (stream is FileStream fileStream)
+                            {
+                                reg = new RegistryHiveOnDemand(fileStream.Name);
+                            }
+                            else
+                            {
+                                using (var memoryStream = new MemoryStream())
+                                {
+                                    stream.CopyTo(memoryStream);
+                                    memoryStream.Flush();
+                                    reg = new RegistryHiveOnDemand(memoryStream.ToArray(), "Registry.dat");
+                                }
+                            }
+                        }
+
+                        var key = reg.GetKey(@"root\registry\machine\software\caphyon\advanced installer\" + applicationId);
+                        if (key?.Values != null)
+                        {
+                            var psfDef = new PsfApplicationDescriptor();
+
+                            foreach (var item in key.Values.Where(item => item.ValueName != null))
+                            {
+                                switch (item.ValueName.ToLowerInvariant())
+                                {
+                                    case "path":
+                                        psfDef.Executable = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                        break;
+                                    case "pathai":
+                                        psfDef.Executable = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                        break;
+                                    case "workingdirectory":
+                                        psfDef.WorkingDirectory = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                        break;
+                                    case "workingdirectoryai":
+                                        psfDef.WorkingDirectory = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
+                                        break;
+                                    case "args":
+                                        psfDef.Arguments = item.ValueData;
+                                        break;
+                                }
+                            }
+
+                            if (string.IsNullOrWhiteSpace(psfDef.Executable))
+                            {
+                                psfDef.Executable = null;
+                            }
+                            else if (psfDef.Executable.StartsWith("[{", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var indexOfClosing = psfDef.Executable.IndexOf("}]", StringComparison.OrdinalIgnoreCase);
+                                if (indexOfClosing != -1)
+                                {
+                                    var middlePart = psfDef.Executable.Substring(2, indexOfClosing - 2);
+                                    var testedPath = "VFS\\" + middlePart + psfDef.Executable.Substring(indexOfClosing + 2);
+
+                                    if (fileReader.FileExists(testedPath))
+                                    {
+                                        // this is to make sure that a path like [{ProgramFilesX86}]\test is replaced to VFS\ProgramFilesX86\test if present
+                                        psfDef.Executable = testedPath;
+                                    }
+                                }
+                            }
+
+                            if (string.IsNullOrWhiteSpace(psfDef.WorkingDirectory))
+                            {
+                                psfDef.WorkingDirectory = null;
+                            }
+
+                            if (string.IsNullOrWhiteSpace(psfDef.Arguments))
+                            {
+                                psfDef.Arguments = null;
+                            }
+                            
+                            return psfDef;
+                        }
+                    }
+                }
+            }
+
             if (fileReader.FileExists("config.json"))
             {
                 using (var stream = fileReader.GetFile("config.json"))
                 {
                     using (var streamReader = new StreamReader(stream))
                     {
-                        return this.Read(applicationId, fileReader, streamReader);
-                    }
-                }
-            }
-
-            if (fileReader.FileExists(@"AI_STUBS\AiStub.exe") || fileReader.FileExists(@"AI_STUBS\AiStubElevated.exe"))
-            {
-                // This is an old Advanced Installer stuff
-                if (fileReader.FileExists("Registry.dat"))
-                {
-                    RegistryHiveOnDemand reg;
-                    using (var stream = fileReader.GetFile("Registry.dat"))
-                    {
-                        if (stream is FileStream fileStream)
-                        {
-                            reg = new RegistryHiveOnDemand(fileStream.Name);
-                        }
-                        else
-                        {
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                stream.CopyTo(memoryStream);
-                                memoryStream.Flush();
-                                reg = new RegistryHiveOnDemand(memoryStream.ToArray(), "Registry.dat");
-                            }
-                        }
-                    }
-                    
-                    var key = reg.GetKey(@"root\registry\machine\software\caphyon\advanced installer\" + applicationId);
-                    if (key?.Values != null)
-                    {
-                        var psfDef = new PsfApplicationDescriptor();
-
-                        foreach (var item in key.Values.Where(item => item.ValueName != null))
-                        {
-                            switch (item.ValueName.ToLowerInvariant())
-                            {
-                                case "path":
-                                    psfDef.Executable = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
-                                    break;
-                                case "pathai":
-                                    psfDef.Executable = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
-                                    break;
-                                case "workingdirectory":
-                                    psfDef.WorkingDirectory = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
-                                    break;
-                                case "workingdirectoryai":
-                                    psfDef.WorkingDirectory = (item.ValueData ?? string.Empty).Replace("[{AppVPackageRoot}]\\", string.Empty);
-                                    break;
-                                case "args":
-                                    psfDef.Arguments = item.ValueData;
-                                    break;
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(psfDef.Executable))
-                        {
-                            psfDef.Executable = null;
-                        }
-                        else if (psfDef.Executable.StartsWith("[{", StringComparison.OrdinalIgnoreCase))
-                        {
-                            var indexOfClosing = psfDef.Executable.IndexOf("}]", StringComparison.OrdinalIgnoreCase);
-                            if (indexOfClosing != -1)
-                            {
-                                var middlePart = psfDef.Executable.Substring(2, indexOfClosing - 2);
-                                var testedPath = "VFS\\" + middlePart + psfDef.Executable.Substring(indexOfClosing + 2);
-
-                                if (fileReader.FileExists(testedPath))
-                                {
-                                    // this is to make sure that a path like [{ProgramFilesX86}]\test is replaced to VFS\ProgramFilesX86\test if present
-                                    psfDef.Executable = testedPath;
-                                }
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(psfDef.WorkingDirectory))
-                        {
-                            psfDef.WorkingDirectory = null;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(psfDef.Arguments))
-                        {
-                            psfDef.Arguments = null;
-                        }
-
-                        return psfDef;
+                        return this.Read(applicationId, originalEntryPoint, streamReader);
                     }
                 }
             }
@@ -127,7 +142,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
             return null;
         }
 
-        private PsfApplicationDescriptor Read(string applicationId, IAppxFileReader fileReader, TextReader configJson)
+        private PsfApplicationDescriptor Read(string applicationId, string originalEntryPoint, TextReader configJson)
         {
             var jsonSerializer = new PsfConfigSerializer();
             var config = jsonSerializer.Deserialize(configJson.ReadToEnd());
