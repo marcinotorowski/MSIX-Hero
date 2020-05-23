@@ -353,7 +353,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             foreach (var psfApp in psfApps)
                             {
                                 cancellationToken.ThrowIfCancellationRequested();
-                                psfApp.Psf = this.PsfReader.Read(psfApp.Id, fileReader);
+                                psfApp.Psf = this.PsfReader.Read(psfApp.Id, psfApp.Executable, fileReader);
                             }
                         }
                     }

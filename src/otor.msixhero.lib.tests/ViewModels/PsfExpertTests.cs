@@ -8,6 +8,7 @@ namespace otor.msixhero.lib.tests.ViewModels
     public class PsfExpertTests
     {
         [Test]
+        [Ignore("integration")]
         public void TestBuild()
         {
             var serializer = new PsfConfigSerializer();
