@@ -1,14 +1,12 @@
-﻿using otor.msixhero.ui.ViewModel;
+﻿using otor.msixhero.ui.Controls.Progress;
+using otor.msixhero.ui.ViewModel;
 
 namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
 {
     public class DialogState : NotifyPropertyChanged
     {
-        private bool isSaving;
         private bool isSaved;
         private bool wasSaved;
-        private string progressMessage;
-        private int progressValue;
         
         public bool IsSaved
         {
@@ -22,22 +20,6 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
             set => this.SetField(ref this.wasSaved, value);
         }
 
-        public bool IsSaving
-        {
-            get => this.isSaving;
-            set => this.SetField(ref this.isSaving, value);
-        }
-
-        public string Message
-        {
-            get => this.progressMessage;
-            set => this.SetField(ref this.progressMessage, value);
-        }
-
-        public int Progress
-        {
-            get => this.progressValue;
-            set => this.SetField(ref this.progressValue, value);
-        }
+        public ProgressProperty Progress { get; } = new ProgressProperty();
     }
 }

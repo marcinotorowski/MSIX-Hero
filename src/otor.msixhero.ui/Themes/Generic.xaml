@@ -27,16 +27,21 @@
             <Setter.Value>
                 <ControlTemplate TargetType="progressOverlay:ProgressOverlay">
                     <Grid>
-                        <ContentPresenter x:Name="PART_Content" />
-                        <Border IsHitTestVisible="False" Background="{TemplateBinding Background}">
+                        <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+                        <Border 
+                            x:Name="PART_ProgressReport"
+                            Background="{TemplateBinding Background}" IsHitTestVisible="False">
                             <StackPanel 
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
-                                <TextBlock x:Name="PART_Overlay" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0">
+                                <TextBlock 
+                                    x:Name="PART_Overlay"
+                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0">
                                     <TextBlock.RenderTransform>
                                         <TranslateTransform Y="40" />
                                     </TextBlock.RenderTransform>
                                 </TextBlock>
+
                                 <ProgressBar
                                     Opacity="0.0"
                                     UseLayoutRounding="True"
@@ -48,13 +53,32 @@
                                         <TranslateTransform Y="40" />
                                     </ProgressBar.RenderTransform>
                                 </ProgressBar>
+
+                                <Button 
+                                    Opacity="0.0"
+                                    UseLayoutRounding="True"
+                                    SnapsToDevicePixels="True"
+                                    Visibility="{TemplateBinding SupportsCancelling, ConverterParameter={StaticResource BooleanToVisibilityConverter}}" 
+                                    x:Name="PART_CancelButton" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0 8 0 0" 
+                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
+                                    Content="Cancel">
+                                    <Button.RenderTransform>
+                                        <TranslateTransform Y="40" />
+                                    </Button.RenderTransform>
+                                </Button>
                             </StackPanel>
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="CancelCommand" Value="{x:Null}">
+                            <Setter TargetName="PART_CancelButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
                         <Trigger Property="IsShown" Value="True">
                             <Setter TargetName="PART_Content" Property="IsHitTestVisible" Value="False" />
                             <Setter TargetName="PART_Content" Property="Focusable" Value="False" />
+                            <Setter TargetName="PART_ProgressReport" Property="IsHitTestVisible" Value="True" />
                             <!--<Setter TargetName="PART_Content" Property="Opacity" Value="0.33" />-->
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
@@ -64,11 +88,23 @@
                                             <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.15" />
                                             <SplineDoubleKeyFrame Value="0.2" KeyTime="00:00:00.5" />
                                         </DoubleAnimationUsingKeyFrames>
+
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="Opacity">
                                             <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
                                             <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.5" />
                                             <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.7" />
                                         </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.6" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.8" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.7" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.9" />
+                                        </DoubleAnimationUsingKeyFrames>
+
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="RenderTransform.Y">
                                             <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
                                             <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.5" />
@@ -79,17 +115,19 @@
                                             <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.6" />
                                             <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.8" />
                                         </DoubleAnimationUsingKeyFrames>
-                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity">
-                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.6" />
-                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.8" />
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="RenderTransform.Y">
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.7" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.9" />
                                         </DoubleAnimationUsingKeyFrames>
+
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
                             <Trigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
+                                        <DoubleAnimation Duration="00:00:0.4" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="Opacity" />
                                         <DoubleAnimation Duration="00:00:0.4" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity" />
                                         <DoubleAnimation Duration="00:00:0.4" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="Opacity" />
                                         <DoubleAnimation Duration="00:00:0.4" To="1.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_Content" Storyboard.TargetProperty="Opacity" />

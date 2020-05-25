@@ -6,6 +6,7 @@ using System.Windows.Input;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Controls.Progress;
 using otor.msixhero.ui.Domain;
 using Prism.Services.Dialogs;
 
@@ -132,22 +133,15 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
             }
 
             var progress = new Progress<ProgressData>();
+            var cancellationTokenSource = new CancellationTokenSource();
 
-            EventHandler<ProgressData> handler = (sender, data) =>
-            {
-                this.State.Message = data.Message;
-                this.State.Progress = data.Progress;
-            };
-
-            progress.ProgressChanged += handler;
-            this.State.IsSaving = true;
-            var task = this.Save(CancellationToken.None, progress);
+            var task = this.Save(cancellationTokenSource.Token, progress);
+            this.State.Progress.MonitorProgress(task, cancellationTokenSource, progress);
 
             task.ContinueWith(t =>
                 {
+                    cancellationTokenSource.Dispose();
                     this.State.IsSaved = false;
-                    progress.ProgressChanged -= handler;
-                    this.State.IsSaving = false;
 
                     CommandManager.InvalidateRequerySuggested();
 
@@ -156,7 +150,7 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
                         return;
                     }
 
-                    if (t.IsFaulted)
+                    if (t.IsFaulted && t.Exception != null)
                     {
                         var exception = t.Exception.GetBaseException();
                         var result = this.interactionService.ShowError(exception.Message, exception);

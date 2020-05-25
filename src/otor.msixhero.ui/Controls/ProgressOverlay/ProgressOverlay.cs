@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace otor.msixhero.ui.Controls.ProgressOverlay
 {
@@ -15,7 +16,23 @@ namespace otor.msixhero.ui.Controls.ProgressOverlay
         public static readonly DependencyProperty MessageProperty =  DependencyProperty.Register("Message", typeof(string), typeof(ProgressOverlay), new PropertyMetadata("Please wait..."));
 
         public static readonly DependencyProperty IsShownProperty =  DependencyProperty.Register("IsShown", typeof(bool), typeof(ProgressOverlay), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty CancelCommandProperty = DependencyProperty.Register("CancelCommand", typeof(ICommand), typeof(ProgressOverlay), new PropertyMetadata(null));
+
+        public static readonly DependencyProperty SupportsCancellingProperty =  DependencyProperty.Register("SupportsCancelling", typeof(bool), typeof(ProgressOverlay), new PropertyMetadata(false));
         
+        public ICommand CancelCommand
+        {
+            get => (ICommand)GetValue(CancelCommandProperty);
+            set => SetValue(CancelCommandProperty, value);
+        }
+
+        public bool SupportsCancelling
+        {
+            get => (bool)GetValue(SupportsCancellingProperty);
+            set => SetValue(SupportsCancellingProperty, value);
+        }
+
         public double Progress
         {
             get => (double)this.GetValue(ProgressProperty);
