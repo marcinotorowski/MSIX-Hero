@@ -68,7 +68,13 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                 return false;
             }
 
-            if (!this.interactionService.SaveFile("*.yaml", out var selected))
+            string selected;
+            var userSelected = 
+                string.IsNullOrEmpty(this.yamlPath) || !File.Exists(this.yamlPath)
+                    ? this.interactionService.SaveFile("*.yaml", out selected)
+                    : this.interactionService.SaveFile(this.yamlPath, "*.yaml", out selected);
+
+            if (!userSelected)
             {
                 return false;
             }
@@ -83,15 +89,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                     return false;
                 }
 
-                progress.Report(new ProgressData(100, "Validating with winget CLI..."));
-                await Task.Delay(TimeSpan.FromMilliseconds(1000), cancellationToken).ConfigureAwait(false);
-
                 var yamlReader = new YamlReader();
                 var pkgManager = await this.packageManager.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                 var validationDetails = await yamlReader.ValidateAsync(tempPath, pkgManager, false, cancellationToken).ConfigureAwait(false);
 
                 if (validationDetails != null)
                 {
+                    progress.Report(new ProgressData(100, "Validating with winget CLI..."));
+                    await Task.Delay(TimeSpan.FromMilliseconds(1000), cancellationToken).ConfigureAwait(false);
+
                     if (validationDetails.IndexOf("Manifest validation succeeded.", StringComparison.OrdinalIgnoreCase) == -1)
                     {
                         var msg = string.Join(Environment.NewLine, validationDetails.Split(Environment.NewLine).Skip(1));
@@ -123,13 +129,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (parameters.TryGetValue("yaml", out string yamlPath))
+            if (parameters.TryGetValue("yaml", out string yamlSelectedPath))
             {
+                this.yamlPath = Path.ChangeExtension(yamlSelectedPath, ".yaml");
 #pragma warning disable 4014
-                this.GeneralProgress.MonitorProgress(this.Definition.LoadFromYaml(yamlPath));
+                this.GeneralProgress.MonitorProgress(this.Definition.LoadFromYaml(yamlSelectedPath));
             }
             else if (parameters.TryGetValue("msix", out string msixPath))
             {
+                this.yamlPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(msixPath), ".yaml");
                 this.GeneralProgress.MonitorProgress(this.Definition.LoadFromMsix(msixPath));
             }
             else
@@ -160,6 +168,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                 return;
             }
 
+            this.yamlPath = selectedFile;
             var task = this.Definition.LoadFromYaml(selectedFile);
             this.GeneralProgress.MonitorProgress(task);
             await task.ConfigureAwait(false);

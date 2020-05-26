@@ -18,6 +18,29 @@ namespace otor.msixhero.ui.Domain
             };
         }
 
+        public static Func<string, string> ValidateInteger(bool required = false, string prompt = null)
+        {
+            return value =>
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    if (!required)
+                    {
+                        return null;
+                    }
+
+                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                }
+
+                if (!int.TryParse(value, out _))
+                {
+                    return prompt == null ? "This value must be an integer" : $"{prompt} is not an integer";
+                }
+
+                return null;
+            };
+        }
+
         public static Func<string, string> ValidateUrl(bool required, string prompt = null)
         {
             return value =>

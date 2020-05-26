@@ -27,7 +27,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.AddChildren(
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
                 this.Url = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateUrl(true, "Installer URL")),
-                this.Language = new ChangeableProperty<string>(),
                 this.Sha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(true, "Installer hash")),
                 this.SignatureSha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(false, "Signature hash")),
                 this.Scope = new ChangeableProperty<YamlScope?>(),
@@ -47,7 +46,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.Model = installer;
             this.Architecture.CurrentValue = installer?.Arch ?? YamlArchitecture.none;
             this.Url.CurrentValue = installer?.Url;
-            this.Language.CurrentValue = installer?.Language;
             this.Sha256.CurrentValue = installer?.Sha256;
             this.SignatureSha256.CurrentValue = installer?.SignatureSha256;
             this.Scope.CurrentValue = installer?.Scope ?? YamlScope.none;
@@ -56,6 +54,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.InstallerType.CurrentValue = installer?.InstallerType ?? YamlInstallerType.none;
             this.SilentCommandWithProgress.CurrentValue = installer?.Switches?.SilentWithProgress;
             this.Commit();
+
             this.SetValidationMode(ValidationMode.Silent, true);
         }
 
@@ -64,8 +63,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
         public ChangeableProperty<YamlInstallerType> InstallerType { get; }
 
         public ChangeableProperty<string> Url { get; }
-        
-        public ChangeableProperty<string> Language { get; }
         
         public ChangeableProperty<YamlScope?> Scope { get; }
         
@@ -161,7 +158,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError($"The file could not be downloaded. {e.Message}.", e);
+                this.interactionService.ShowError(e.Message, e);
             }
         }
 
@@ -201,7 +198,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
 
         public ProgressProperty HashingProgressSignature { get; } = new ProgressProperty();
 
-        public bool IsMsix => this.InstallerType.CurrentValue == YamlInstallerType.msix;
+        public bool IsMsix => this.InstallerType.CurrentValue == YamlInstallerType.msix || this.InstallerType.CurrentValue == YamlInstallerType.appx;
 
         public bool IsCommand
         {
@@ -213,6 +210,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                     case YamlInstallerType.exe:
                     case YamlInstallerType.inno:
                     case YamlInstallerType.nullsoft:
+                    case YamlInstallerType.wix:
                         return true;
                     default:
                         return false;
@@ -225,7 +223,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             base.Commit();
 
             this.Model.Url = this.Url.CurrentValue;
-            this.Model.Language = this.Language.CurrentValue;
 
             if (this.Architecture.CurrentValue == YamlArchitecture.none)
             {

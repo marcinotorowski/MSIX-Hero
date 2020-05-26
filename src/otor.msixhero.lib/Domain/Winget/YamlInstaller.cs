@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace otor.msixhero.lib.Domain.Winget
 {
@@ -22,21 +24,33 @@ Installers:
      */
     public class YamlInstaller
     {
+        [YamlMember(Order = 1)]
         public YamlArchitecture? Arch { get; set; }
 
+        [YamlMember(Order = 2)]
         public string Url { get; set; }
 
+        [YamlMember(Order = 3)]
         public string Sha256 { get; set; }
-        
-        public string Language { get; set; }
 
+        [YamlMember(Order = 4)]
         public string SignatureSha256 { get; set; }
-        
-        public YamlInstallerType? InstallerType { get; set; } 
 
+        [YamlMember(Order = 5)]
+        public YamlInstallerType? InstallerType { get; set; }
+
+        [YamlMember(Order = 6)]
         public YamlScope? Scope { get; set; }
 
+        [YamlMember(Order = 7)]
         public YamlSwitches Switches { get; set; }
+
+        [YamlMember(Order = int.MaxValue)]
+        public string SystemAppId { get; set; }
+
+        [YamlMember(Order = int.MaxValue)]
+        [Obsolete("Probably should not be used.")]
+        public string Language { get; set; }
     }
 
     /*

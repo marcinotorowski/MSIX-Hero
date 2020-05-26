@@ -183,7 +183,9 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                 return;
             }
 
+#pragma warning disable 618
             // determine installer type from any child
+            /* This is according to the docu wrong!
             if (!definition.InstallerType.HasValue)
             {
                 if (definition.Installers.Any())
@@ -214,7 +216,7 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                         }
                     }
                 }
-            }
+            }*/
 
             // propagate installer type from parent to all children without the type
             if (definition.Installers != null && definition.InstallerType != null)
@@ -225,10 +227,11 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                 }
             }
 
-            if (definition.Id != null && !string.IsNullOrEmpty(definition.Publisher) && !string.IsNullOrEmpty(definition.Name))
+            if (definition.Id == null && !string.IsNullOrEmpty(definition.Publisher) && !string.IsNullOrEmpty(definition.Name))
             {
                 definition.Id = (definition.Publisher + "." + definition.Name).Replace(" ", string.Empty);
             }
+#pragma warning restore 618
         }
     }
 }

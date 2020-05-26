@@ -129,8 +129,22 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             }
 
             var fileStream = File.OpenRead(msixPackagePath);
-            this.msixPackage = new ZipArchive(fileStream);
-            this.disposableStreams = new IDisposable[] { this.msixPackage, fileStream };
+
+            try
+            {
+                this.msixPackage = new ZipArchive(fileStream);
+                this.disposableStreams = new IDisposable[] {this.msixPackage, fileStream};
+            }
+            catch (InvalidDataException e)
+            {
+                this.disposableStreams = new IDisposable[] { fileStream };
+                throw new InvalidDataException("This file is not an MSIX/APPX package, or the content of the package is damaged.", e);
+            }
+            catch (Exception)
+            {
+                this.disposableStreams = new IDisposable[] { fileStream };
+                throw;
+            }
         }
     }
 }

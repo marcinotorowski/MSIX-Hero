@@ -7,6 +7,8 @@
         msi,
         msix,
         inno,
-        nullsoft
+        wix,
+        nullsoft,
+        appx
     }
 }

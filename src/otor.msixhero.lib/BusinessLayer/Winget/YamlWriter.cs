@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using otor.msixhero.lib.Domain.Winget;
@@ -31,17 +32,31 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
             return stringBuilder.ToString();
         }
 
-        public Task WriteAsync(YamlDefinition definition, TextWriter textWriter, CancellationToken cancellationToken = default)
+        public async Task WriteAsync(YamlDefinition definition, TextWriter textWriter, CancellationToken cancellationToken = default)
         {
-            return Task.Run(() =>
+            var serializerBuilder = new SerializerBuilder().WithEmissionPhaseObjectGraphVisitor(args => new DefaultExclusiveObjectGraphVisitor(args.InnerVisitor));
+            var serializer = serializerBuilder.Build();
+            
+            var stringBuilder = new StringBuilder();
+            using (var stringWriter = new StringWriter(stringBuilder))
             {
-                var serializerBuilder = new SerializerBuilder().WithEmissionPhaseObjectGraphVisitor(args => new DefaultExclusiveObjectGraphVisitor(args.InnerVisitor));
-                var serializer = serializerBuilder.Build();
-                serializer.Serialize(textWriter, definition);
-                textWriter.WriteLine();
-                textWriter.Write("# Edited with MSIX Hero");
-            },
-            cancellationToken);
+                serializer.Serialize(stringWriter, definition);
+            }
+            
+            cancellationToken.ThrowIfCancellationRequested();
+            if (definition.ManifestVersion == null)
+            {
+                stringBuilder.AppendLine();
+                stringBuilder.Append("ManifestVersion: 0.1.0");
+            }
+
+            stringBuilder.AppendLine();
+            stringBuilder.Append("# Edited with MSIX Hero");
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var serialized = stringBuilder.ToString();
+            serialized = Regex.Replace(serialized, @"[\r\n]{2,}", Environment.NewLine);
+            await textWriter.WriteAsync(serialized).ConfigureAwait(false);
         }
 
         public void Write(YamlDefinition definition, Stream stream)
@@ -54,25 +69,31 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
 
         public void Write(YamlDefinition definition, TextWriter textWriter)
         {
-            var serializer = new Serializer();
-            serializer.Serialize(textWriter, definition);
-            textWriter.WriteLine();
-            textWriter.Write("# Edited with MSIX Hero");
+            textWriter.Write(this.Write(definition));
         }
 
         public string Write(YamlDefinition definition)
         {
+            var serializer = new Serializer();
             var stringBuilder = new StringBuilder();
-            var serializerBuilder = new SerializerBuilder().WithEmissionPhaseObjectGraphVisitor(args => new DefaultExclusiveObjectGraphVisitor(args.InnerVisitor));
             using (var stringWriter = new StringWriter(stringBuilder))
             {
-                var serializer = serializerBuilder.Build();
                 serializer.Serialize(stringWriter, definition);
-                stringWriter.WriteLine();
-                stringWriter.Write("# Edited with MSIX Hero");
             }
 
-            return stringBuilder.ToString();
+            if (definition.ManifestVersion == null)
+            {
+                stringBuilder.AppendLine();
+                stringBuilder.Append("ManifestVersion: 0.1.0");
+            }
+
+            stringBuilder.AppendLine();
+            stringBuilder.Append("# Edited with MSIX Hero");
+
+            var serialized = stringBuilder.ToString();
+            serialized = Regex.Replace(serialized, @"[\r\n]{2,}", Environment.NewLine);
+
+            return serialized;
         }
     }
 }
