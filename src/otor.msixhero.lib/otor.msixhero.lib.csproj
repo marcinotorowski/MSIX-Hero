@@ -8,9 +8,6 @@
     <Company>Marcin Otorowski</Company>
     <Product>MSIX Hero</Product>
     <OutputPath>$(SolutionDir)src\bin\</OutputPath>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
