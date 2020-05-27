@@ -73,7 +73,7 @@
                                                 <Rectangle Height="1" VerticalAlignment="Center" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="20" Margin="0 0 8 0" />
                                             </StackPanel>
 
-                                            <Button Grid.Column="2" Content="From MSIX file..." Command="{Binding LoadIdentityFromMsix}" VerticalAlignment="Center" />
+                                            <Button Grid.Column="2" Content="Load data from MSI/MSIX/EXE..." Command="{Binding LoadFromSetup}" VerticalAlignment="Center" />
                                         </Grid>
 
                                         <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Package identifier" Margin="0 16 0 6" />
@@ -96,7 +96,7 @@
                                         <StackPanel>
 
                                             <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="AppMoniker" Margin="0 0 0 6" />
-                                            <TextBox Text="{Binding Homepage.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                                            <TextBox Text="{Binding AppMoniker.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                             <TextBlock Text="The common name someone may use to search for the package" Margin="0 2 0 0" TextWrapping="Wrap" />
 
                                             <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Tags" Margin="0 16 0 6" />

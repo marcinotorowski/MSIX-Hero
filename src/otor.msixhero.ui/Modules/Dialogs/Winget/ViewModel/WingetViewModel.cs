@@ -138,7 +138,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             else if (parameters.TryGetValue("msix", out string msixPath))
             {
                 this.yamlPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(msixPath), ".yaml");
-                this.GeneralProgress.MonitorProgress(this.Definition.LoadFromMsix(msixPath));
+                this.GeneralProgress.MonitorProgress(this.Definition.LoadFromFile(msixPath));
             }
             else
             {

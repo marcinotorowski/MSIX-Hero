@@ -30,6 +30,14 @@ namespace otor.msixhero.lib.tests.Winget
         }
 
         [Test]
+        public void ReadMsi()
+        {
+            var msi = @"C:\Users\marci\Downloads\ssl\marcinotorowski\doublecmd-0.9.8.x86_64-win64.msi";
+            var m = new Msi();
+            var props = m.GetProperties(msi);
+        }
+
+        [Test]
         public void TestWebHashing()
         {
             var url = "https://msixhero.net/msix-hero.appinstaller";

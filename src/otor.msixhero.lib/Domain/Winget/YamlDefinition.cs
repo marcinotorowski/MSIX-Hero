@@ -17,8 +17,8 @@ namespace otor.msixhero.lib.Domain.Winget
         [YamlMember(Order = 1)]
         public string Id { get; set; }
 
-        [YamlMember(Order = 2, SerializeAs = typeof(string))]
-        public Version Version { get; set; }
+        [YamlMember(Order = 2)]
+        public string Version { get; set; }
 
         [YamlMember(Order = 3)]
         public string Name { get; set; }

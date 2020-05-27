@@ -208,9 +208,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                 {
                     case YamlInstallerType.none:
                     case YamlInstallerType.exe:
-                    case YamlInstallerType.inno:
-                    case YamlInstallerType.nullsoft:
-                    case YamlInstallerType.wix:
                         return true;
                     default:
                         return false;

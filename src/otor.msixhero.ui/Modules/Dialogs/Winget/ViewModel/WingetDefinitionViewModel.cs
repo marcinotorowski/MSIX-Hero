@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
-using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.BusinessLayer.Winget;
-using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Winget;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Logging;
@@ -31,7 +26,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
         private bool isLoading;
         private YamlDefinition model;
         private bool autoId = true;
-        private ICommand loadIdentityFromMsix;
+        private ICommand loadFromSetup;
 
         public WingetDefinitionViewModel(IInteractionService interactionService)
         {
@@ -112,9 +107,9 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             set => this.SetField(ref this.isLoading, value);
         }
 
-        public ICommand LoadIdentityFromMsix
+        public ICommand LoadFromSetup
         {
-            get => this.loadIdentityFromMsix ??= new DelegateCommand(this.OnLoadIdentityFromMsix);
+            get => this.loadFromSetup ??= new DelegateCommand(this.OnLoadFromSetup);
         }
 
         public async Task LoadFromYaml(string file, CancellationToken cancellationToken = default)
@@ -135,126 +130,30 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                 this.IsLoading = false;
             }
         }
-        
-        public async Task LoadFromMsix(string file, CancellationToken cancellationToken = default)
+
+        public async Task LoadFromFile(string file, CancellationToken cancellationToken = default)
         {
             try
             {
                 this.IsLoading = true;
-                
-                if (string.Equals(Path.GetExtension(file), ".xml", StringComparison.OrdinalIgnoreCase))
-                {
-                    using (IAppxFileReader src = new FileInfoFileReaderAdapter(file))
-                    {
-                        var appxManifestReader = new AppxManifestReader();
-                        var manifest = await appxManifestReader.Read(src, cancellationToken).ConfigureAwait(false);
-
-                        var hashSignature = await this.YamlUtils.CalculateSignatureHashAsync(new FileInfo(file), cancellationToken).ConfigureAwait(false);
-                        await this.LoadFromMsix(manifest, null, hashSignature).ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    using (IAppxFileReader src = new ZipArchiveFileReaderAdapter(file))
-                    {
-                        var appxManifestReader = new AppxManifestReader();
-                        var manifest = await appxManifestReader.Read(src, cancellationToken).ConfigureAwait(false);
-
-                        var hash = await this.YamlUtils.CalculateHashAsync(new FileInfo(file), cancellationToken).ConfigureAwait(false);
-
-                        if (src.FileExists("AppxSignature.p7x"))
-                        {
-                            using (var appxSignature = src.GetFile("AppxSignature.p7x"))
-                            {
-                                string sha256Signature = null;
-
-                                if (appxSignature != null)
-                                {
-                                    using (var sha256 = SHA256.Create())
-                                    {
-                                        var byteHash = sha256.ComputeHash(appxSignature);
-
-                                        var builder = new StringBuilder();
-                                        foreach (var b in byteHash)
-                                        {
-                                            cancellationToken.ThrowIfCancellationRequested();
-                                            builder.Append(b.ToString("X2"));
-                                        }
-
-                                        sha256Signature = builder.ToString();
-                                    }
-                                }
-
-                                await this.LoadFromMsix(manifest, hash, sha256Signature).ConfigureAwait(false);
-                            }
-                        }
-                    }
-                }
+                var yaml = await this.YamlUtils.CreateFromFile(file, cancellationToken).ConfigureAwait(false);
+                this.SetData(yaml);
             }
             catch (Exception e)
             {
-                var fileName = Path.GetFileName(file);
-                this.interactionService.ShowError($"MSIX file '{fileName}' could not be opened. {e.Message}", e);
+                Logger.Error(e);
+                this.interactionService.ShowError("Could not load the details from the selected file.", e);
             }
             finally
             {
                 this.IsLoading = false;
             }
         }
-
-        private Task LoadFromMsix(AppxPackage package, string hashSha256 = null, string hashSha256Signature = null)
-        {
-            var yaml = new YamlDefinition
-            {
-                Publisher = package.PublisherDisplayName,
-                Name = package.DisplayName,
-                Id = package.Publisher + "." + package.Name,
-                // Author = package.PublisherDisplayName,
-                MinOperatingSystemVersion = System.Version.Parse("10.0.0"),
-                Version = System.Version.TryParse(package.Version ?? "1.0", out var versionParsed) ? versionParsed : null, 
-                Description = package.Description,
-                Installers = new List<YamlInstaller>()
-            };
-
-            var installer = new YamlInstaller
-            {
-                InstallerType = YamlInstallerType.msix,
-                Scope = YamlScope.user,
-                Sha256 = hashSha256,
-                SignatureSha256 = hashSha256Signature
-            };
-
-            switch (package.ProcessorArchitecture)
-            {
-                case AppxPackageArchitecture.x86:
-                    installer.Arch = YamlArchitecture.x86;
-                    break;
-                case AppxPackageArchitecture.Arm:
-                    installer.Arch = YamlArchitecture.arm;
-                    break;
-                case AppxPackageArchitecture.x64:
-                    installer.Arch = YamlArchitecture.x64;
-                    break;
-                case AppxPackageArchitecture.Neutral:
-                    installer.Arch = YamlArchitecture.Neutral;
-                    break;
-                case AppxPackageArchitecture.Arm64:
-                    installer.Arch = YamlArchitecture.arm64;
-                    break;
-            }
-
-            yaml.Installers.Add(installer);
-
-            this.YamlUtils.FillGaps(yaml);
-            this.SetData(yaml);
-            return Task.FromResult(true);
-        }
-
+        
         public Task NewManifest(CancellationToken cancellationToken)
         {
             var newItem = new YamlDefinition
             {
-                Version = System.Version.Parse("1.0.0"),
                 ManifestVersion = System.Version.Parse("0.1.0"),
             };
 
@@ -290,73 +189,26 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             Logger.Debug($"Package ID is not touched manually and will not auto update...");
             this.autoId = false;
         }
-
-        private async void OnLoadIdentityFromMsix(object obj)
+        
+        private async void OnLoadFromSetup(object obj)
         {
-            if (!this.interactionService.SelectFile("MSIX packages|*.msix|MSIX manifests|AppxManifest.xml", out var selected))
+            if (!this.interactionService.SelectFile("MSIX packages|*.msix|MSIX manifests|AppxManifest.xml|Executables|*.exe|Windows Installer|*.msi", out var selected))
             {
                 return;
             }
-            
-            IAppxFileReader fileReader = null;
-            try
-            {
-                var packageManager = new AppxManifestReader();
-                var extension = Path.GetExtension(selected)?.ToLowerInvariant();
 
-                switch (extension)
-                {
-                    case ".xml":
-                        Logger.Info($"Loading manifest file from {selected}...");
-                        fileReader = new FileInfoFileReaderAdapter(selected);
-                        break;
-                    default:
-                        Logger.Info($"Loading MSIX package from {selected}...");
-                        fileReader = new ZipArchiveFileReaderAdapter(selected);
-                        break;
-                }
-
-                var manifest = await packageManager.Read(fileReader, CancellationToken.None).ConfigureAwait(false);
-                this.Name.CurrentValue = manifest.DisplayName;
-                this.Publisher.CurrentValue = manifest.PublisherDisplayName;
-                this.Version.CurrentValue = manifest.Version;
-                this.Description.CurrentValue = manifest.Description;
-                this.Installer.InstallerType.CurrentValue = YamlInstallerType.msix;
-                this.Installer.Scope.CurrentValue = YamlScope.user;
-                
-                var reader = new YamlUtils();
-                if (fileReader is ZipArchiveFileReaderAdapter)
-                {
-                    this.Installer.Sha256.CurrentValue = await reader.CalculateHashAsync(new FileInfo(selected), CancellationToken.None).ConfigureAwait(false);
-
-                    try
-                    {
-                        this.Installer.SignatureSha256.CurrentValue = await reader.CalculateSignatureHashAsync(new FileInfo(selected), CancellationToken.None).ConfigureAwait(false);
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Logger.Warn("SHA256 could not be calculated. This is going to be ignored by the dialog.", e);
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                Logger.Warn(exception);
-                this.interactionService.ShowError(@$"Could not open MSIX file '{selected}'.", exception);
-            }
-            finally
-            {
-                fileReader?.Dispose();
-            }
+            await this.LoadFromFile(selected, CancellationToken.None).ConfigureAwait(false);
         }
 
         private void SetData(YamlDefinition definition)
         {
             this.autoId = true;
             this.model = definition;
+            
+            this.License.CurrentValue = definition.License;
             this.LicenseUrl.CurrentValue = definition.LicenseUrl;
             this.Name.CurrentValue = definition.Name;
-            this.Version.CurrentValue = definition.Version?.ToString();
+            this.Version.CurrentValue = definition.Version;
             this.Publisher.CurrentValue = definition.Publisher;
             this.License.CurrentValue = definition.License;
             this.AppMoniker.CurrentValue = definition.AppMoniker;
@@ -365,7 +217,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.Homepage.CurrentValue = definition.Homepage;
             this.MinOSVersion.CurrentValue = definition.MinOperatingSystemVersion?.ToString();
             this.Id.CurrentValue = definition.Id;
-
+            
             if (definition.ManifestVersion != null)
             {
                 this.ManifestVersion1.CurrentValue = definition.ManifestVersion.Major.ToString("0");
@@ -414,7 +266,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.model.Publisher = this.Publisher.CurrentValue;
             this.model.MinOperatingSystemVersion = string.IsNullOrEmpty(this.MinOSVersion.CurrentValue) ? null : System.Version.Parse(this.MinOSVersion.CurrentValue);
             this.model.Tags = this.Tags.CurrentValue;
-            this.model.Version = string.IsNullOrEmpty(this.Version.CurrentValue) ? null : System.Version.Parse(this.Version.CurrentValue);
+            this.model.Version = this.Version.CurrentValue;
             this.model.LicenseUrl = this.LicenseUrl.CurrentValue;
 
             if (!string.IsNullOrEmpty(this.ManifestVersion1.CurrentValue) || !string.IsNullOrEmpty(this.ManifestVersion2.CurrentValue) || !string.IsNullOrEmpty(this.ManifestVersion3.CurrentValue))
