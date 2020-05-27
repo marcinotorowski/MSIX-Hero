@@ -54,6 +54,7 @@ namespace otor.msixhero.lib.Domain.Winget
         public Version MinOperatingSystemVersion { get; set; }
 
         [YamlMember(Order = 14)]
+        [Obsolete("This property should probably be not used...")]
         public string Language { get; set; }
 
         [YamlMember(Order = 15, SerializeAs = typeof(string))]

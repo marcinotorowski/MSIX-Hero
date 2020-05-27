@@ -242,7 +242,7 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                 Description = msiProps.TryGetValue("ARPCOMMENTS", out var arpc) ? arpc : null,
                 License = msiProps.TryGetValue("ARPCONTACT", out var arpcont) ? arpcont : null,
                 LicenseUrl = msiProps.TryGetValue("ARPURLINFOABOUT", out var arpurl) || msiProps.TryGetValue("ARPHELPLINK", out arpurl) ? arpurl : null,
-                Language = msiProps.TryGetValue("ProductLanguage", out var pl) ? pl : null,
+                // Language = msiProps.TryGetValue("ProductLanguage", out var pl) ? pl : null,
                 Installers = new List<YamlInstaller>
                 {
                     new YamlInstaller
@@ -283,7 +283,7 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                 Publisher = fileVersionInfo.CompanyName?.Trim(),
                 Description = fileVersionInfo.FileDescription?.Trim(),
                 License = fileVersionInfo.LegalCopyright ?? fileVersionInfo.LegalTrademarks,
-                Language = fileVersionInfo.Language?.Trim(),
+                // Language = fileVersionInfo.Language?.Trim(),
                 Installers = new List<YamlInstaller>
                 {
                     new YamlInstaller
