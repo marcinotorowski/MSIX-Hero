@@ -19,6 +19,7 @@ using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
+using otor.msixhero.ui.Modules.Common;
 using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
 using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
@@ -31,13 +32,6 @@ using Prism.Services.Dialogs;
 
 namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 {
-    public interface IHeaderViewModel
-    {
-        string Header { get; }
-
-        Geometry Icon { get; }
-    }
-
     public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware, IHeaderViewModel
     {
         private readonly IApplicationStateManager stateManager;

@@ -84,7 +84,7 @@
     <Compile Update="Modules\Dialogs\Common\CertificateSelector\View\CertificateSelectorView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml.cs">
+    <Compile Update="Modules\EventViewer\View\EventViewerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\Dialogs\AppInstaller\View\AppInstallerView.xaml.cs">
@@ -126,7 +126,7 @@
     <Page Update="Modules\Dialogs\Common\CertificateSelector\View\CertificateSelectorView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\Dialogs\EventViewer\View\EventViewerView.xaml">
+    <Page Update="Modules\EventViewer\View\EventViewerView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\AppInstaller\View\AppInstallerView.xaml">

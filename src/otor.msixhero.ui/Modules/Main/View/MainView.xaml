@@ -21,6 +21,7 @@
     xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
     xmlns:viewModel11="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
     xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
+    xmlns:eventViewer="clr-namespace:otor.msixhero.lib.Domain.Commands.EventViewer;assembly=msixhero.lib"
     d:DesignWidth="600"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -62,11 +63,6 @@
                             <BeginStoryboard Storyboard="{StaticResource Animation}" />
                         </Trigger.EnterActions>
                     </Trigger>
-                    <!--<EventTrigger RoutedEvent="Loaded">
-                        <EventTrigger.Actions>
-                            <BeginStoryboard Storyboard="{StaticResource Animation}" />
-                        </EventTrigger.Actions>
-                    </EventTrigger>-->
                 </Style.Triggers>
                 <Setter Property="RenderTransform">
                     <Setter.Value>
@@ -146,6 +142,59 @@
                     </Fluent:BackstageTabControl>
                 </Fluent:Backstage>
             </Fluent:Ribbon.Menu>
+
+
+            <Fluent:RibbonTabItem 
+                x:Name="RibbonTabEventViewerHome"
+                Header="Home">
+
+                <Fluent:RibbonGroupBox Header="Actions">
+                    <Fluent:Button Size="Large" Header="Refresh view" Command="Refresh" SizeDefinition="Large, Large, Small">
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Header="Open Event viewer">
+                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Deployment operational" CommandParameter="{x:Static eventViewer:EventLogType.AppXDeploymentOperational}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorBulb}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorBundle}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
+                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Server operational" CommandParameter="{x:Static eventViewer:EventLogType.AppXDeploymentServerOperational}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorServices}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorServices}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
+                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Server restricted" CommandParameter="{x:Static eventViewer:EventLogType.AppXDeploymentServerRestricted}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorCancel}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCancel}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
 
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabVolumesHome"
@@ -292,15 +341,6 @@
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSelfSign}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                    <Separator />
-                    <Fluent:Button Header="MSIX event logs" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Medium, Medium">
-                        <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorLogs}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorLogs}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -593,7 +633,7 @@
                         <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
                     </Fluent:RibbonGroupBox.Icon>
 
-                    <Fluent:Button Header="Start app" MinWidth="48" IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.RunPackage}">
+                    <Fluent:Button Header="Start app" IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.RunPackage}">
                         <Fluent:Button.CommandParameter>
                             <system:Boolean>False</system:Boolean>
                         </Fluent:Button.CommandParameter>

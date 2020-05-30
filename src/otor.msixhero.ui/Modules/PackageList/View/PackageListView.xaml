@@ -413,7 +413,7 @@
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Padding" Value="10" />
-                                <Setter Property="BorderThickness" Value="4 0 0 0" />
+                                <Setter Property="BorderThickness" Value="0 0 0 0" />
                                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                                 <Setter Property="BorderBrush" Value="Transparent" />
                                 <Setter Property="Background" Value="Transparent" />
@@ -577,21 +577,9 @@
                                             </Ellipse>-->
                                             <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
 
-                                            <Border.OpacityMask>
-                                                <!--<RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
-                                                        <GradientStop Color="White" Offset="0"/>
-                                                        <GradientStop Color="Black" Offset="0.0"/>
-                                                        <GradientStop Color="Black" Offset="0"/>
-                                                        <GradientStop Color="Black" Offset="1"/>
-                                                    </RadialGradientBrush>
-                                                    <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
-                                                        <LinearGradientBrush.GradientStops>
-                                                            <GradientStop Color="White" Offset="0" />
-                                                            <GradientStop Color="Black" Offset="1" />
-                                                        </LinearGradientBrush.GradientStops>
-                                                    </LinearGradientBrush>-->
+                                            <!--<Border.OpacityMask>
                                                 <ImageBrush ImageSource="/Resources/32pxOpacityMask.png" />
-                                            </Border.OpacityMask>
+                                            </Border.OpacityMask>-->
                                         </Border>
                                     </Border>
                                     <StackPanel DockPanel.Dock="Right">

@@ -6,8 +6,6 @@ using otor.msixhero.ui.Modules.Dialogs.CertificateExport.View;
 using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.View;
 using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.EventViewer.View;
-using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Help.View;
 using otor.msixhero.ui.Modules.Dialogs.Help.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.ModificationPackage.View;
@@ -41,7 +39,6 @@ namespace otor.msixhero.ui.Modules.Dialogs
         {
             containerRegistry.RegisterDialog<NewSelfSignedView, NewSelfSignedViewModel>(Constants.PathNewSelfSigned);
             containerRegistry.RegisterDialog<PsfExpertView, PsfExpertViewModel>(Constants.PathPsfExpert);
-            containerRegistry.RegisterDialog<EventViewerView, EventViewerViewModel>(Constants.PathEventViewer);
             containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(Constants.PathPackageSigning);
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(Constants.PathCertificateExport);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(Constants.PathUnpack);

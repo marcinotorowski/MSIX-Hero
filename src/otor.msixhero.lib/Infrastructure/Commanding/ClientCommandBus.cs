@@ -5,6 +5,7 @@ using otor.msixhero.lib.BusinessLayer.Managers.Packages;
 using otor.msixhero.lib.BusinessLayer.Managers.Registry;
 using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
+using otor.msixhero.lib.Domain.Commands.EventViewer;
 using otor.msixhero.lib.Domain.Commands.Generic;
 using otor.msixhero.lib.Domain.Commands.Packages.AppAttach;
 using otor.msixhero.lib.Domain.Commands.Packages.Developer;
@@ -44,6 +45,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.CommandExecutorFactories[typeof(SetMode)] = action => new SetModeClientExecutor((SetMode)action, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(GetVolumes)] = action => new GetVolumesClientExecutor((GetVolumes)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(SetVolumeFilter)] = action => new SetVolumeFilterClientExecutor((SetVolumeFilter)action, this.WritableApplicationStateManager);
+            this.CommandExecutorFactories[typeof(OpenEventViewer)] = action => new OpenEventViewerClientExecutor((OpenEventViewer)action, this.WritableApplicationStateManager);
 
             this.CommandExecutorFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateCommandExecutor((GetRegistryMountState)action, this.RegistryManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RunPackage)] = action => new RunPackageCommandExecutor((RunPackage)action, this.PackageManagerFactory, this.WritableApplicationStateManager);

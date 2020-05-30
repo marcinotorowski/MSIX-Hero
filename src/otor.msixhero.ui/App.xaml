@@ -31,6 +31,7 @@
                 <Style.Triggers>
                     <Trigger Property="Size" Value="Large">
                         <Setter Property="Padding" Value="5 0" />
+                        <Setter Property="MinWidth" Value="64" />
                     </Trigger>
                 </Style.Triggers>
             </Style>

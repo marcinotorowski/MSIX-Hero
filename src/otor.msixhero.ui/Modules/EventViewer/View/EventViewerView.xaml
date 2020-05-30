@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="otor.msixhero.ui.Modules.EventViewer.View.EventViewerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
+             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.EventViewer.ViewModel"
+             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
+             xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
+             mc:Ignorable="d" 
+             Background="#ffffff"
+             d:DesignWidth="600"
+             d:DesignHeight="200"
+             d:DataContext="{d:DesignInstance viewModel:EventViewerViewModel}">
+    <routedCommand:RoutedCommandHandlers.Commands>
+        <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
+    </routedCommand:RoutedCommandHandlers.Commands>
+
+    <progressOverlay:ProgressOverlay IsShown="{Binding Progress.IsLoading}" Message="{Binding Progress.Message}" Progress="{Binding Progress.Progress}">
+        <AdornerDecorator>
+            <ListView Margin="10" ItemsSource="{Binding LogsView}">
+                <ListView.View>
+                    <GridView x:Name="GridView">
+                        <GridView.Columns>
+                            <GridViewColumn DisplayMemberBinding="{Binding DateTime}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="DateTime" Content="Created" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Level}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Level" Content="Level" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding PackageName}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="PackageName" Content="App" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding ActivityId}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ActivityId" Content="ActivityId" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Message}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Message" Content="Message" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding User}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="User" Content="User" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding ThreadId}">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ThreadId" Content="ThreadId" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </AdornerDecorator>
+    </progressOverlay:ProgressOverlay>
+</UserControl>

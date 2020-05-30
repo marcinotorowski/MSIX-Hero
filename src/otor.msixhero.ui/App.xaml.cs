@@ -23,6 +23,7 @@ using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.Modules.Common;
 using otor.msixhero.ui.Modules.Dialogs;
+using otor.msixhero.ui.Modules.EventViewer;
 using otor.msixhero.ui.Modules.Main;
 using otor.msixhero.ui.Modules.PackageList;
 using otor.msixhero.ui.Modules.Settings;
@@ -167,6 +168,7 @@ namespace otor.msixhero.ui
             moduleCatalog.AddModule<SystemStatusModule>();
             moduleCatalog.AddModule<DialogsModule>();
             moduleCatalog.AddModule<CommonModule>();
+            moduleCatalog.AddModule<EventViewerModule>();
         }
         
         protected override void ConfigureViewModelLocator()

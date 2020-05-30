@@ -74,6 +74,10 @@ namespace otor.msixhero.ui.Modules.Main.View
             {
                 currentHomeTab = ApplicationMode.SystemStatus;
             }
+            else if (this.RibbonTabEventViewerHome.IsSelected && this.RibbonTabEventViewerHome.IsVisible)
+            {
+                currentHomeTab = ApplicationMode.EventViewer;
+            }
             else
             {
                 currentHomeTab = this.appStateManager.CurrentState.Mode;
@@ -100,7 +104,9 @@ namespace otor.msixhero.ui.Modules.Main.View
                     this.SelectedPackage.Visibility = this.appStateManager.CurrentState.Packages.SelectedItems.Any() ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedVolume.Visibility = Visibility.Collapsed;
 
-                    if (currentHomeTab != mode || (wasVisible && !this.SelectedPackage.IsVisible))
+                    this.RibbonTabEventViewerHome.Visibility = Visibility.Collapsed;
+
+                        if (currentHomeTab != mode || (wasVisible && !this.SelectedPackage.IsVisible))
                     {
                         this.RibbonTabHome.IsSelected = true;
                     }
@@ -126,7 +132,9 @@ namespace otor.msixhero.ui.Modules.Main.View
                         this.SelectedVolume.Visibility = this.appStateManager.CurrentState.Volumes.SelectedItems.Any() ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedPackage.Visibility = Visibility.Collapsed;
 
-                    if (currentHomeTab != mode || (wasVisible && !this.SelectedVolume.IsVisible))
+                    this.RibbonTabEventViewerHome.Visibility = Visibility.Collapsed;
+
+                        if (currentHomeTab != mode || (wasVisible && !this.SelectedVolume.IsVisible))
                     {
                         this.RibbonTabVolumesHome.IsSelected = true;
                     }
@@ -151,7 +159,31 @@ namespace otor.msixhero.ui.Modules.Main.View
                     this.SelectedPackage.Visibility = Visibility.Collapsed;
                     this.SelectedVolume.Visibility = Visibility.Collapsed;
 
-                    this.RibbonTabSystemHome.IsSelected = true;
+                    this.RibbonTabEventViewerHome.Visibility = Visibility.Collapsed;
+
+                        this.RibbonTabSystemHome.IsSelected = true;
+                    break;
+                }
+
+                case ApplicationMode.EventViewer:
+                {
+                    this.RibbonTabHome.Visibility = Visibility.Collapsed;
+                    this.RibbonTabEdit.Visibility = Visibility.Collapsed;
+                    this.RibbonTabCertificates.Visibility = Visibility.Collapsed;
+                    this.RibbonTabManagement.Visibility = Visibility.Collapsed;
+                    this.RibbonTabDeveloper.Visibility = Visibility.Collapsed;
+                    this.RibbonTabView.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabVolumesHome.Visibility = Visibility.Collapsed;
+                    this.RibbonTabVolumesManagement.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabSystemHome.Visibility = Visibility.Collapsed;
+
+                    this.SelectedPackage.Visibility = Visibility.Collapsed;
+                    this.SelectedVolume.Visibility = Visibility.Collapsed;
+
+                    this.RibbonTabEventViewerHome.Visibility = Visibility.Visible;
+                    this.RibbonTabEventViewerHome.IsSelected = true;
                     break;
                 }
             }
@@ -217,6 +249,9 @@ namespace otor.msixhero.ui.Modules.Main.View
                     break;
                 case ApplicationMode.Packages:
                     this.RibbonTabHome.IsSelected = true;
+                    break;
+                case ApplicationMode.EventViewer:
+                    this.RibbonTabEventViewerHome.IsSelected = true;
                     break;
             }
         }

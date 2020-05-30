@@ -6,6 +6,8 @@
 
         VolumeManager,
 
-        SystemStatus
+        SystemStatus,
+
+        EventViewer
     }
 }

@@ -3,11 +3,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Input;
 using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Dialogs.EventViewer.ViewModel;
+using otor.msixhero.ui.Modules.EventViewer.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.View
+namespace otor.msixhero.ui.Modules.EventViewer.View
 {
     /// <summary>
     /// Interaction logic for EventViewerView.
@@ -21,24 +20,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.View
         public EventViewerView()
         {
             this.InitializeComponent();
-        }
-
-        private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            ((EventViewerViewModel)this.DataContext).Save().ContinueWith(t =>
-            {
-                if (t.Exception == null && !t.IsCanceled && t.IsCompleted)
-                {
-                    // ReSharper disable once PossibleNullReferenceException
-                    Window.GetWindow(this).Close();
-                }
-            });
-        }
-
-        private void CloseExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            Window.GetWindow(this).Close();
         }
 
         private void SetSorting(string columnName, bool descending)
@@ -67,13 +48,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.EventViewer.View
 
             this.sortAdorner = newSortAdorner;
             ((EventViewerViewModel) this.DataContext).Sort(columnName, descending);
-        }
-
-        private void CanSave(object sender, CanExecuteRoutedEventArgs e)
-        {
-            var dataContext = ((EventViewerViewModel) this.DataContext);
-            e.CanExecute = dataContext.CanCloseDialog() && dataContext.CanSave();
-            e.ContinueRouting = !e.CanExecute;
         }
         
         private void GridHeaderOnClick(object sender, RoutedEventArgs e)
