@@ -116,6 +116,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 {
                     appxPackage.RootFolder = diskReader.RootDirectory;
                 }
+                else if (fileReader is ZipArchiveFileReaderAdapter zipArchiveReader)
+                {
+                    appxPackage.RootFolder = Path.GetDirectoryName(zipArchiveReader.PackagePath);
+                }
 
                 cancellationToken.ThrowIfCancellationRequested();
                 if (nodeIdentity != null)

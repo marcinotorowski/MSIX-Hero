@@ -84,6 +84,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             this.PackageExpert = new DelegateCommand(param => this.PackageExpertExecute(), param => this.CanExecutePackageExpert());
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.Unpack = new DelegateCommand(param => this.UnpackExecute());
+            this.UpdateImpact = new DelegateCommand(param => this.UpdateImpactExecute());
             this.Winget = new DelegateCommand(param => this.WingetExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
 
             // Certificates
@@ -129,6 +130,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public ICommand ModificationPackage { get; }
 
         public ICommand Unpack { get; }
+
+        public ICommand UpdateImpact { get; }
 
         public ICommand Winget { get; }
         
@@ -686,6 +689,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         private void UnpackExecute()
         {
             this.dialogService.ShowDialog(Constants.PathUnpack, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void UpdateImpactExecute()
+        {
+            this.dialogService.ShowDialog(Constants.PathUpdateImpact, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void PackExecute()

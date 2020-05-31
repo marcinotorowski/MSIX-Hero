@@ -67,6 +67,7 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                 throw;
             }
         }
+        
         public async Task SignPackageWithPersonal(string filePath, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder();
@@ -108,6 +109,19 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
 
                 throw;
             }
+        }
+
+        public async Task ComparePackages(string file1, string file2, string pathToSaveXml, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            var comparePackage = GetSdkPath("ComparePackage.exe", BundleHelper.SdkPath);
+            if (comparePackage == null)
+            {
+                throw new FileNotFoundException("ComparePackage.exe not found.");
+            }
+
+            var arguments = $@"""{file1}"" ""{file2}"" -o -XML ""{pathToSaveXml}""";
+
+            await RunAsync(comparePackage, arguments, cancellationToken, null, 0).ConfigureAwait(false);
         }
 
         public Task UnpackPackage(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

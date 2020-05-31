@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
+using otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact;
 using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Managers.Packages;
 using otor.msixhero.lib.BusinessLayer.Managers.Registry;
@@ -113,6 +114,7 @@ namespace otor.msixhero.ui
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
+            containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
             containerRegistry.RegisterSingleton<IProcessManager, ProcessManager>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();

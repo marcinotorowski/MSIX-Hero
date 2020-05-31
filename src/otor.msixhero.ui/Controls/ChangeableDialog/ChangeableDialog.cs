@@ -43,6 +43,22 @@ namespace otor.msixhero.ui.Controls.ChangeableDialog
             get => (ChangeableDialogViewModel)this.GetValue(DialogProperty);
             set => this.SetValue(DialogProperty, value);
         }
+
+        public T FindDialogTemplateName<T>(string name)
+        {
+            if (this.DialogContentTemplate == null)
+            {
+                return default;
+            }
+
+            var contentControl = this.GetTemplateChild("PART_ContentPresenter") as ContentPresenter;
+            if (contentControl == null)
+            {
+                return default;
+            }
+
+            return (T)this.DialogContentTemplate.FindName(name, contentControl);
+        }
         
         public bool ShowShield
         {

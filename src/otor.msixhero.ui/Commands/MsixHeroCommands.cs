@@ -31,6 +31,7 @@ namespace otor.msixhero.ui.Commands
             ExtractCertificate = new RoutedUICommand { Text = "Extract certificate from an .MSIX file" };
             CertManager = new RoutedUICommand { Text = "Open certificate manager" };
             Pack = new RoutedUICommand { Text = "Packs a package to a directory" };
+            UpdateImpact = new RoutedUICommand { Text = "Analyzes update impact" };
             Unpack = new RoutedUICommand { Text = "Unpacks a package to a directory" };
             AppInstaller = new RoutedUICommand { Text = "Opens a wizard for .appinstaller generation" };
             ModificationPackage = new RoutedUICommand { Text = "Opens a wizard for modification package generation" };
@@ -92,6 +93,8 @@ namespace otor.msixhero.ui.Commands
         public static RoutedUICommand Pack { get; }
         
         public static RoutedUICommand Unpack { get; }
+
+        public static RoutedUICommand UpdateImpact { get; }
 
         public static RoutedUICommand Winget { get; }
 

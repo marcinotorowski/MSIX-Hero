@@ -23,6 +23,7 @@
         public const string PathPackageSigning = "PackageSigning";
         public const string PathCertificateExport = "CertificateExport";
         public const string PathUnpack = "Unpack";
+        public const string PathUpdateImpact = "UpdateImpact";
         public const string PathAppInstaller = "AppInstaller";
         public const string PathPackageExpert = "PackageExpert";
         public const string PathWinget = "Winget";

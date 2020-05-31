@@ -469,6 +469,17 @@
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:Button Header="Update impact analyzer" Command="{x:Static commands:MsixHeroCommands.UpdateImpact}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                        </Fluent:Button.SizeDefinition>
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorInfo}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorInfo}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
                     <Fluent:Button Header="Modification package stub generator" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />

@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              x:Name="PackageHeaderRoot"
              mc:Ignorable="d" 
+
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -20,7 +20,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border Background="#2B579A" Height="46" VerticalAlignment="Top" ClipToBounds="True">
+        <Border Background="{Binding ElementName=PackageHeaderRoot, Path=HeaderBackground, TargetNullValue='#2B579A'}" Height="46" VerticalAlignment="Top" ClipToBounds="True">
             <Border Margin="6 16 0 0" Background="Black" Width="60" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30">
                 <Border.Effect>
                     <DropShadowEffect ShadowDepth="5" BlurRadius="15" RenderingBias="Performance" Direction="-45" Color="Black" Opacity="0.5" />
@@ -40,10 +40,10 @@
         <Border Height="30" Margin="80 16 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <DockPanel Height="30">
                 <Border DockPanel.Dock="Right" Background="#44ffffff" Height="30" Margin="10 0">
-                    <Label Content="{Binding ElementName=PackageHeaderRoot, Path=Version}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="White" Margin="10 0" Padding="0" />
+                    <Label Content="{Binding ElementName=PackageHeaderRoot, Path=Version}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="{Binding ElementName=PackageHeaderRoot, Path=HeaderForeground}" Margin="10 0" Padding="0" />
                 </Border>
 
-                <Label Content="{Binding ElementName=PackageHeaderRoot, Path=PackageName}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="White" FontSize="20" Margin="0" Padding="0">
+                <Label Content="{Binding ElementName=PackageHeaderRoot, Path=PackageName}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="{Binding ElementName=PackageHeaderRoot, Path=HeaderForeground}" FontSize="20" Margin="0" Padding="0">
                     <Label.Style>
                         <Style TargetType="Label" BasedOn="{StaticResource Label}">
                             <Setter Property="Template">

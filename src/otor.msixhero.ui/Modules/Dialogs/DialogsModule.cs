@@ -26,6 +26,8 @@ using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.View;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.View;
 using otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel;
+using otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View;
+using otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel;
 using otor.msixhero.ui.Modules.Dialogs.Winget.View;
 using otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel;
 using Prism.Ioc;
@@ -42,6 +44,7 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<PackageSigningView, PackageSigningViewModel>(Constants.PathPackageSigning);
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(Constants.PathCertificateExport);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(Constants.PathUnpack);
+            containerRegistry.RegisterDialog<UpdateImpactView, UpdateImpactViewModel>(Constants.PathUpdateImpact);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(Constants.PathPack);
             containerRegistry.RegisterDialog<NewVolumeView, NewVolumeViewModel>(Constants.PathNewVolume);
             containerRegistry.RegisterDialog<ChangeVolumeView, ChangeVolumeViewModel>(Constants.PathChangeVolume);

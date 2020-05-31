@@ -19,9 +19,26 @@ namespace otor.msixhero.ui.Controls.PackageHeader
         
         public static readonly DependencyProperty TileColorProperty = DependencyProperty.Register("TileColor", typeof(Brush), typeof(PackageHeader), new PropertyMetadata(Brushes.DarkGray));
 
+        public static readonly DependencyProperty HeaderBackgroundProperty = DependencyProperty.Register("HeaderBackground", typeof(Brush), typeof(PackageHeader), new PropertyMetadata(null));
+        
+        public static readonly DependencyProperty HeaderForegroundProperty = DependencyProperty.Register("HeaderForeground", typeof(Brush), typeof(PackageHeader), new PropertyMetadata(Brushes.White));
+
+
         public PackageHeader()
         {
             InitializeComponent();
+        }
+
+        public Brush HeaderBackground
+        {
+            get => (Brush)GetValue(HeaderBackgroundProperty);
+            set => SetValue(HeaderBackgroundProperty, value);
+        }
+
+        public Brush HeaderForeground
+        {
+            get => (Brush)GetValue(HeaderForegroundProperty);
+            set => SetValue(HeaderForegroundProperty, value);
         }
 
         public ImageSource Logo

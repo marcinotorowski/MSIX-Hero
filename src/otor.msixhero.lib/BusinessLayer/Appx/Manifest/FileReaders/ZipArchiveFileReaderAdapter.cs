@@ -12,15 +12,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
         private ZipArchive msixPackage;
         private IDisposable[] disposableStreams;
 
-        public ZipArchiveFileReaderAdapter(ZipArchive msixPackage)
+        public ZipArchiveFileReaderAdapter(ZipArchive msixPackage, string msixPackagePath = null)
         {
+            this.PackagePath = msixPackagePath;
             this.msixPackage = msixPackage;
         }
 
         public ZipArchiveFileReaderAdapter(string msixPackagePath)
         {
+            this.PackagePath = msixPackagePath;
             this.msixPackagePath = msixPackagePath;
         }
+
+        public string PackagePath { get; private set; }
 
         public Stream GetFile(string filePath)
         {

@@ -1,0 +1,475 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ComparePackage>
+  <Original Name="AppxBlockMap.xml" Version="0.0.0.0" />
+  <New Name="AppxBlockMap.xml" Version="0.0.0.0" />
+  <Package SizeDifference="713881" AddedSize="499584" DeletedSize="66144" UpdateImpact="1523045" Size="69182977">
+    <ChangedFiles SizeDifference="280441" UpdateImpact="1331111">
+      <File Name="msixhero.dll" SizeDifference="115712" UpdateImpact="319595" />
+      <File Name="NLog.dll" SizeDifference="10240" UpdateImpact="298979" />
+      <File Name="msixhero.lib.dll" SizeDifference="93696" UpdateImpact="182392" />
+      <File Name="ControlzEx.dll" SizeDifference="53760" UpdateImpact="117757" />
+      <File Name="Prism.Wpf.dll" SizeDifference="-12288" UpdateImpact="58741" />
+      <File Name="Unity.Container.dll" SizeDifference="2048" UpdateImpact="58657" />
+      <File Name="External.EricZimmerman.Registry.dll" SizeDifference="0" UpdateImpact="57857" />
+      <File Name="msixhero-uac.exe" SizeDifference="0" UpdateImpact="40366" />
+      <File Name="msixhero.exe" SizeDifference="0" UpdateImpact="40307" />
+      <File Name="Prism.dll" SizeDifference="9216" UpdateImpact="39192" />
+      <File Name="Unity.Abstractions.dll" SizeDifference="0" UpdateImpact="25917" />
+      <File Name="msixhero.deps.json" SizeDifference="545" UpdateImpact="19446" />
+      <File Name="msixhero-uac.dll" SizeDifference="1024" UpdateImpact="18721" />
+      <File Name="msixhero.lib.deps.json" SizeDifference="1196" UpdateImpact="17735" />
+      <File Name="msixhero-uac.deps.json" SizeDifference="1196" UpdateImpact="17642" />
+      <File Name="Prism.Unity.Wpf.dll" SizeDifference="4096" UpdateImpact="16339" />
+      <File Name="AppxManifest.xml" SizeDifference="0" UpdateImpact="1018" />
+      <File Name="External.EricZimmerman.Registry.deps.json" SizeDifference="0" UpdateImpact="450" />
+    </ChangedFiles>
+    <AddedFiles Size="499584" UpdateImpact="191934">
+      <File Name="System.Text.Json.dll" Size="294784" UpdateImpact="108523" />
+      <File Name="YamlDotNet.dll" Size="204800" UpdateImpact="83411" />
+    </AddedFiles>
+    <DeletedFiles Size="66144" UpdateImpact="0">
+      <File Name="System.Windows.Interactivity.dll" Size="55904" UpdateImpact="0" />
+      <File Name="CommonServiceLocator.dll" Size="10240" UpdateImpact="0" />
+    </DeletedFiles>
+    <UnchangedFiles Size="64379562" UpdateImpact="0">
+      <File Name="runtimes\win\lib\netcoreapp3.1\System.Management.Automation.dll" Size="7273344" UpdateImpact="0" />
+      <File Name="Windows.Foundation.UniversalApiContract.winmd" Size="5773312" UpdateImpact="0" />
+      <File Name="Microsoft.CodeAnalysis.CSharp.dll" Size="5354056" UpdateImpact="0" />
+      <File Name="Microsoft.CodeAnalysis.dll" Size="2550856" UpdateImpact="0" />
+      <File Name="BouncyCastle.Crypto.dll" Size="2378240" UpdateImpact="0" />
+      <File Name="System.Private.ServiceModel.dll" Size="2318920" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\msixmgr.exe" Size="1925704" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\opcservices.dll" Size="1707968" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\appxpackaging.dll" Size="1652168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\msixmgr.exe" Size="1514576" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\appxpackaging.dll" Size="1461192" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\makepri.exe" Size="1429656" UpdateImpact="0" />
+      <File Name="Fluent.dll" Size="1405952" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\makepri.exe" Size="1188296" UpdateImpact="0" />
+      <File Name="redistr\psf\x64\TraceFixup64.dll" Size="1149816" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\opcservices.dll" Size="1148872" UpdateImpact="0" />
+      <File Name="Xceed.Wpf.Toolkit.dll" Size="1128960" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll" Size="1023360" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\msix.dll" Size="918120" UpdateImpact="0" />
+      <File Name="redistr\psf\x86\TraceFixup32.dll" Size="876928" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.Commands.Utility.dll" Size="804432" UpdateImpact="0" />
+      <File Name="Newtonsoft.Json.dll" Size="693680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\msix.dll" Size="651856" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.Commands.Management.dll" Size="573824" UpdateImpact="0" />
+      <File Name="redistr\psf\x64\FileRedirectionFixup64.dll" Size="538488" UpdateImpact="0" />
+      <File Name="redistr\psf\x64\PsfLauncher64.exe" Size="528256" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\makeappx.exe" Size="483784" UpdateImpact="0" />
+      <File Name="redistr\psf\x64\PsfRuntime64.dll" Size="454016" UpdateImpact="0" />
+      <File Name="redistr\psf\x86\FileRedirectionFixup32.dll" Size="437120" UpdateImpact="0" />
+      <File Name="Xceed.Wpf.AvalonDock.dll" Size="432640" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\makeappx.exe" Size="422856" UpdateImpact="0" />
+      <File Name="redistr\psf\x86\PsfLauncher32.exe" Size="419704" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\signtool.exe" Size="410056" UpdateImpact="0" />
+      <File Name="Markdig.Signed.dll" Size="403456" UpdateImpact="0" />
+      <File Name="redistr\psf\x86\PsfRuntime32.dll" Size="365952" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netstandard2.0\System.Data.OleDb.dll" Size="355704" UpdateImpact="0" />
+      <File Name="Microsoft.ApplicationInsights.dll" Size="343144" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.ConsoleHost.dll" Size="331648" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\appxsip.dll" Size="329672" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\signtool.exe" Size="319944" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\wintrust.dll" Size="302528" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp2.0\System.Management.dll" Size="294984" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.WSMan.Management.dll" Size="287104" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\appxsip.dll" Size="282568" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.Management.Infrastructure.CimCmdlets.dll" Size="280144" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.AccountManagement.dll" Size="275528" UpdateImpact="0" />
+      <File Name="System.ComponentModel.Composition.dll" Size="268872" UpdateImpact="0" />
+      <File Name="System.Data.SqlClient.dll" Size="267136" UpdateImpact="0" />
+      <File Name="redistr\psf\x64\WaitForDebuggerFixup64.dll" Size="264056" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp2.0\System.Data.Odbc.dll" Size="260680" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\wintrust.dll" Size="247752" UpdateImpact="0" />
+      <File Name="runtimes\win10-x64\native\miutils.dll" Size="239616" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.Security.dll" Size="226688" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.Commands.Diagnostics.dll" Size="221560" UpdateImpact="0" />
+      <File Name="redistr\psf\x86\WaitForDebuggerFixup32.dll" Size="219520" UpdateImpact="0" />
+      <File Name="NJsonSchema.dll" Size="217600" UpdateImpact="0" />
+      <File Name="DiscUtils.Ntfs.dll" Size="196096" UpdateImpact="0" />
+      <File Name="runtimes\win10-x86\native\miutils.dll" Size="190464" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.CoreCLR.Eventing.dll" Size="182648" UpdateImpact="0" />
+      <File Name="DiscUtils.Core.dll" Size="174080" UpdateImpact="0" />
+      <File Name="windows.winmd" Size="174080" UpdateImpact="0" />
+      <File Name="runtimes\win-x64\native\sni.dll" Size="160040" UpdateImpact="0" />
+      <File Name="runtimes\win-x64\native\pwrshplugin.dll" Size="159104" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.MarkdownRender.dll" Size="155512" UpdateImpact="0" />
+      <File Name="Microsoft.Xaml.Behaviors.dll" Size="145280" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.WSMan.Runtime.dll" Size="143736" UpdateImpact="0" />
+      <File Name="runtimes\win10-x64\lib\netstandard1.6\Microsoft.Management.Infrastructure.Native.dll" Size="142336" UpdateImpact="0" />
+      <File Name="runtimes\win10-x86\lib\netstandard1.6\Microsoft.Management.Infrastructure.Native.dll" Size="140288" UpdateImpact="0" />
+      <File Name="runtimes\win-x86\native\sni.dll" Size="136488" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Microsoft.PowerShell.SDK.dll" Size="132608" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp2.0\System.DirectoryServices.Protocols.dll" Size="127560" UpdateImpact="0" />
+      <File Name="runtimes\win-x86\native\pwrshplugin.dll" Size="127056" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netstandard2.0\System.Net.Http.WinHttpHandler.dll" Size="125512" UpdateImpact="0" />
+      <File Name="runtimes\win10-x64\native\mi.dll" Size="123904" UpdateImpact="0" />
+      <File Name="System.ServiceModel.Syndication.dll" Size="119160" UpdateImpact="0" />
+      <File Name="System.Data.OleDb.dll" Size="115064" UpdateImpact="0" />
+      <File Name="runtimes\win10-x64\lib\netstandard1.6\Microsoft.Management.Infrastructure.dll" Size="114688" UpdateImpact="0" />
+      <File Name="runtimes\win10-x86\lib\netstandard1.6\Microsoft.Management.Infrastructure.dll" Size="114688" UpdateImpact="0" />
+      <File Name="runtimes\win10-x86\native\mi.dll" Size="102400" UpdateImpact="0" />
+      <File Name="Ookii.Dialogs.Wpf.dll" Size="101888" UpdateImpact="0" />
+      <File Name="runtimes\win-x64\native\PowerShell.Core.Instrumentation.dll" Size="101456" UpdateImpact="0" />
+      <File Name="runtimes\win-x86\native\PowerShell.Core.Instrumentation.dll" Size="100944" UpdateImpact="0" />
+      <File Name="redistr\psf\x64\PsfRunDll64.exe" Size="96120" UpdateImpact="0" />
+      <File Name="System.Data.Odbc.dll" Size="93768" UpdateImpact="0" />
+      <File Name="Xceed.Wpf.AvalonDock.Themes.Aero.dll" Size="88064" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\mssign32.dll" Size="88008" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll" Size="86088" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\applyacls.dll" Size="85576" UpdateImpact="0" />
+      <File Name="Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Size="84992" UpdateImpact="0" />
+      <File Name="redistr\psf\x86\PsfRunDll32.exe" Size="84344" UpdateImpact="0" />
+      <File Name="GongSolutions.WPF.DragDrop.dll" Size="84096" UpdateImpact="0" />
+      <File Name="System.Runtime.Caching.dll" Size="83528" UpdateImpact="0" />
+      <File Name="Xceed.Wpf.AvalonDock.Themes.Metro.dll" Size="80384" UpdateImpact="0" />
+      <File Name="DiscUtils.Streams.dll" Size="77824" UpdateImpact="0" />
+      <File Name="System.Reflection.Context.dll" Size="77688" UpdateImpact="0" />
+      <File Name="System.DirectoryServices.AccountManagement.dll" Size="72776" UpdateImpact="0" />
+      <File Name="System.DirectoryServices.Protocols.dll" Size="72776" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\mssign32.dll" Size="72648" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netstandard2.0\System.IO.Ports.dll" Size="72056" UpdateImpact="0" />
+      <File Name="System.Management.dll" Size="68168" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\en-US\AppxPackaging.dll.mui" Size="67584" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\en-US\AppxPackaging.dll.mui" Size="67584" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\applyacls.dll" Size="66632" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\makecert.exe" Size="62912" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netstandard2.0\System.ServiceProcess.ServiceController.dll" Size="59768" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\makecert.exe" Size="57288" UpdateImpact="0" />
+      <File Name="System.ComponentModel.Composition.Registration.dll" Size="45640" UpdateImpact="0" />
+      <File Name="DiscUtils.Vhd.dll" Size="45568" UpdateImpact="0" />
+      <File Name="Namotion.Reflection.dll" Size="42496" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\msisip.dll" Size="36288" UpdateImpact="0" />
+      <File Name="System.IO.Ports.dll" Size="34680" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\msisip.dll" Size="31688" UpdateImpact="0" />
+      <File Name="System.ServiceProcess.ServiceController.dll" Size="30584" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\pvk2pfx.exe" Size="30152" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\pvk2pfx.exe" Size="27072" UpdateImpact="0" />
+      <File Name="System.Net.Http.WinHttpHandler.dll" Size="26184" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\PSDiagnostics\PSDiagnostics.psm1" Size="25049" UpdateImpact="0" />
+      <File Name="Windows.Foundation.FoundationContract.winmd" Size="24064" UpdateImpact="0" />
+      <File Name="System.ServiceModel.dll" Size="23624" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.WSMan.Management\WSMan.format.ps1xml" Size="22576" UpdateImpact="0" />
+      <File Name="System.ServiceModel.Primitives.dll" Size="21576" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Diagnostics\Event.format.ps1xml" Size="19360" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Diagnostics\GetEvent.types.ps1xml" Size="19134" UpdateImpact="0" />
+      <File Name="runtimes\win10-x64\native\Microsoft.Management.Infrastructure.Native.Unmanaged.dll" Size="17920" UpdateImpact="0" />
+      <File Name="Assets\Logo.png" Size="17228" UpdateImpact="0" />
+      <File Name="Assets\Square310x310Logo.png" Size="17228" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Diagnostics\Diagnostics.format.ps1xml" Size="17140" UpdateImpact="0" />
+      <File Name="System.ServiceModel.Security.dll" Size="16456" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Utility\Microsoft.PowerShell.Utility.psd1" Size="15883" UpdateImpact="0" />
+      <File Name="System.ServiceModel.Http.dll" Size="15432" UpdateImpact="0" />
+      <File Name="System.ServiceModel.NetTcp.dll" Size="14920" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Management\Microsoft.PowerShell.Management.psd1" Size="14776" UpdateImpact="0" />
+      <File Name="System.ServiceModel.Duplex.dll" Size="14408" UpdateImpact="0" />
+      <File Name="runtimes\win10-x86\native\Microsoft.Management.Infrastructure.Native.Unmanaged.dll" Size="14336" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\CimCmdlets\CimCmdlets.psd1" Size="14223" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Security\Microsoft.PowerShell.Security.psd1" Size="13728" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.WSMan.Management\Microsoft.WSMan.Management.psd1" Size="13717" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\PSDiagnostics\PSDiagnostics.psd1" Size="13642" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Diagnostics\Microsoft.PowerShell.Diagnostics.psd1" Size="13567" UpdateImpact="0" />
+      <File Name="runtimes\win\lib\netcoreapp3.1\Modules\Microsoft.PowerShell.Host\Microsoft.PowerShell.Host.psd1" Size="13441" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\el-GR\msixmgr.exe.mui" Size="8192" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\el-GR\msixmgr.exe.mui" Size="8192" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\de-DE\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\es-ES\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\fr-FR\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\it-IT\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\de-DE\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\es-ES\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\fr-FR\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\it-IT\msixmgr.exe.mui" Size="7680" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\bg-BG\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\hu-HU\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\nl-NL\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\pl-PL\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\pt-BR\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\pt-PT\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\ro-RO\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\bg-BG\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\hu-HU\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\nl-NL\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\pl-PL\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\pt-BR\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\pt-PT\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\ro-RO\msixmgr.exe.mui" Size="7168" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\cs-CZ\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\da-DK\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\en-US\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\et-EE\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\fi-FI\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\hr-HR\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\id-ID\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\lt-LT\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\lv-LV\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\nb-NO\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\ru-RU\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\sk-SK\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\sl-SI\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\sr-Latn-RS\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\sv-SE\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\tr-TR\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\uk-UA\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\vi-VN\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\cs-CZ\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\da-DK\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\en-US\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\et-EE\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\fi-FI\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\hr-HR\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\id-ID\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\lt-LT\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\lv-LV\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\nb-NO\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\ru-RU\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\sk-SK\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\sl-SI\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\sr-Latn-RS\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\sv-SE\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\tr-TR\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\uk-UA\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\vi-VN\msixmgr.exe.mui" Size="6656" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\ar-SA\msixmgr.exe.mui" Size="6144" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\th-TH\msixmgr.exe.mui" Size="6144" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\ar-SA\msixmgr.exe.mui" Size="6144" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\th-TH\msixmgr.exe.mui" Size="6144" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\he-IL\msixmgr.exe.mui" Size="5632" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\he-IL\msixmgr.exe.mui" Size="5632" UpdateImpact="0" />
+      <File Name="Assets\Square310x150Logo.png" Size="4946" UpdateImpact="0" />
+      <File Name="Assets\Square150x150Logo.png" Size="4621" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\ja-JP\msixmgr.exe.mui" Size="4608" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\ja-JP\msixmgr.exe.mui" Size="4608" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\ko-KR\msixmgr.exe.mui" Size="4096" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\ko-KR\msixmgr.exe.mui" Size="4096" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\zh-CN\msixmgr.exe.mui" Size="3584" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x64\zh-TW\msixmgr.exe.mui" Size="3584" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\zh-CN\msixmgr.exe.mui" Size="3584" UpdateImpact="0" />
+      <File Name="redistr\msixmgr\x86\zh-TW\msixmgr.exe.mui" Size="3584" UpdateImpact="0" />
+      <File Name="scripts\create-certificate.ps1" Size="2286" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\wintrust.dll.ini" Size="2081" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\wintrust.dll.ini" Size="2081" UpdateImpact="0" />
+      <File Name="templates\AppAttachStage.ps1" Size="1806" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Appx.AppxPackaging.dll.manifest" Size="1755" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Appx.AppxPackaging.dll.manifest" Size="1755" UpdateImpact="0" />
+      <File Name="Assets\Square71x71Logo - Kopie.png" Size="1621" UpdateImpact="0" />
+      <File Name="Assets\Square71x71Logo.png" Size="1621" UpdateImpact="0" />
+      <File Name="scripts\extract-certificate-from-msix.ps1" Size="1530" UpdateImpact="0" />
+      <File Name="templates\logo.png" Size="1371" UpdateImpact="0" />
+      <File Name="Assets\Square44x44Logo.png" Size="1337" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\signtool.exe.manifest" Size="968" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\signtool.exe.manifest" Size="968" UpdateImpact="0" />
+      <File Name="templates\ModificationPackage.AppxManifest.xml" Size="945" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Appx.AppxSip.dll.manifest" Size="491" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Appx.AppxSip.dll.manifest" Size="491" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Appx.OpcServices.dll.manifest" Size="450" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Appx.OpcServices.dll.manifest" Size="450" UpdateImpact="0" />
+      <File Name="templates\AppAttachDestage.ps1" Size="292" UpdateImpact="0" />
+      <File Name="templates\AppAttachRegister.ps1" Size="285" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Signing.mssign32.dll.manifest" Size="238" UpdateImpact="0" />
+      <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Signing.wintrust.dll.manifest" Size="238" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Signing.mssign32.dll.manifest" Size="238" UpdateImpact="0" />
+      <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Signing.wintrust.dll.manifest" Size="238" UpdateImpact="0" />
+      <File Name="templates\AppAttachDeregister.ps1" Size="212" UpdateImpact="0" />
+      <File Name="msixhero-uac.runtimeconfig.json" Size="161" UpdateImpact="0" />
+      <File Name="msixhero.runtimeconfig.json" Size="161" UpdateImpact="0" />
+      <File Name="scripts\install-certificate.ps1" Size="153" UpdateImpact="0" />
+    </UnchangedFiles>
+    <DuplicateFiles PossibleSizeReduction="335503" PossibleImpactReduction="103374">
+      <Duplicate PossibleSizeReduction="67584" PossibleImpactReduction="8863">
+        <File Name="redistr\sdk\x64\en-US\AppxPackaging.dll.mui" Size="67584" DuplicateImpact="8863" />
+        <File Name="redistr\sdk\x86\en-US\AppxPackaging.dll.mui" Size="67584" DuplicateImpact="8863" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="17228" PossibleImpactReduction="17228">
+        <File Name="Assets\Logo.png" Size="17228" DuplicateImpact="17228" />
+        <File Name="Assets\Square310x310Logo.png" Size="17228" DuplicateImpact="17228" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="8192" PossibleImpactReduction="2386">
+        <File Name="redistr\msixmgr\x64\el-GR\msixmgr.exe.mui" Size="8192" DuplicateImpact="2386" />
+        <File Name="redistr\msixmgr\x86\el-GR\msixmgr.exe.mui" Size="8192" DuplicateImpact="2386" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7680" PossibleImpactReduction="2159">
+        <File Name="redistr\msixmgr\x64\de-DE\msixmgr.exe.mui" Size="7680" DuplicateImpact="2159" />
+        <File Name="redistr\msixmgr\x86\de-DE\msixmgr.exe.mui" Size="7680" DuplicateImpact="2159" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7680" PossibleImpactReduction="2085">
+        <File Name="redistr\msixmgr\x64\fr-FR\msixmgr.exe.mui" Size="7680" DuplicateImpact="2085" />
+        <File Name="redistr\msixmgr\x86\fr-FR\msixmgr.exe.mui" Size="7680" DuplicateImpact="2085" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7680" PossibleImpactReduction="1994">
+        <File Name="redistr\msixmgr\x64\it-IT\msixmgr.exe.mui" Size="7680" DuplicateImpact="1994" />
+        <File Name="redistr\msixmgr\x86\it-IT\msixmgr.exe.mui" Size="7680" DuplicateImpact="1994" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7680" PossibleImpactReduction="1985">
+        <File Name="redistr\msixmgr\x64\es-ES\msixmgr.exe.mui" Size="7680" DuplicateImpact="1985" />
+        <File Name="redistr\msixmgr\x86\es-ES\msixmgr.exe.mui" Size="7680" DuplicateImpact="1985" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="2155">
+        <File Name="redistr\msixmgr\x64\hu-HU\msixmgr.exe.mui" Size="7168" DuplicateImpact="2155" />
+        <File Name="redistr\msixmgr\x86\hu-HU\msixmgr.exe.mui" Size="7168" DuplicateImpact="2155" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="2153">
+        <File Name="redistr\msixmgr\x64\pl-PL\msixmgr.exe.mui" Size="7168" DuplicateImpact="2153" />
+        <File Name="redistr\msixmgr\x86\pl-PL\msixmgr.exe.mui" Size="7168" DuplicateImpact="2153" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="2142">
+        <File Name="redistr\msixmgr\x64\bg-BG\msixmgr.exe.mui" Size="7168" DuplicateImpact="2142" />
+        <File Name="redistr\msixmgr\x86\bg-BG\msixmgr.exe.mui" Size="7168" DuplicateImpact="2142" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="2056">
+        <File Name="redistr\msixmgr\x64\nl-NL\msixmgr.exe.mui" Size="7168" DuplicateImpact="2056" />
+        <File Name="redistr\msixmgr\x86\nl-NL\msixmgr.exe.mui" Size="7168" DuplicateImpact="2056" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="2051">
+        <File Name="redistr\msixmgr\x64\ro-RO\msixmgr.exe.mui" Size="7168" DuplicateImpact="2051" />
+        <File Name="redistr\msixmgr\x86\ro-RO\msixmgr.exe.mui" Size="7168" DuplicateImpact="2051" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="1996">
+        <File Name="redistr\msixmgr\x64\pt-PT\msixmgr.exe.mui" Size="7168" DuplicateImpact="1996" />
+        <File Name="redistr\msixmgr\x86\pt-PT\msixmgr.exe.mui" Size="7168" DuplicateImpact="1996" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="7168" PossibleImpactReduction="1953">
+        <File Name="redistr\msixmgr\x64\pt-BR\msixmgr.exe.mui" Size="7168" DuplicateImpact="1953" />
+        <File Name="redistr\msixmgr\x86\pt-BR\msixmgr.exe.mui" Size="7168" DuplicateImpact="1953" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2137">
+        <File Name="redistr\msixmgr\x64\cs-CZ\msixmgr.exe.mui" Size="6656" DuplicateImpact="2137" />
+        <File Name="redistr\msixmgr\x86\cs-CZ\msixmgr.exe.mui" Size="6656" DuplicateImpact="2137" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2109">
+        <File Name="redistr\msixmgr\x64\sk-SK\msixmgr.exe.mui" Size="6656" DuplicateImpact="2109" />
+        <File Name="redistr\msixmgr\x86\sk-SK\msixmgr.exe.mui" Size="6656" DuplicateImpact="2109" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2098">
+        <File Name="redistr\msixmgr\x64\ru-RU\msixmgr.exe.mui" Size="6656" DuplicateImpact="2098" />
+        <File Name="redistr\msixmgr\x86\ru-RU\msixmgr.exe.mui" Size="6656" DuplicateImpact="2098" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2082">
+        <File Name="redistr\msixmgr\x64\uk-UA\msixmgr.exe.mui" Size="6656" DuplicateImpact="2082" />
+        <File Name="redistr\msixmgr\x86\uk-UA\msixmgr.exe.mui" Size="6656" DuplicateImpact="2082" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2036">
+        <File Name="redistr\msixmgr\x64\lv-LV\msixmgr.exe.mui" Size="6656" DuplicateImpact="2036" />
+        <File Name="redistr\msixmgr\x86\lv-LV\msixmgr.exe.mui" Size="6656" DuplicateImpact="2036" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2029">
+        <File Name="redistr\msixmgr\x64\hr-HR\msixmgr.exe.mui" Size="6656" DuplicateImpact="2029" />
+        <File Name="redistr\msixmgr\x86\hr-HR\msixmgr.exe.mui" Size="6656" DuplicateImpact="2029" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="2024">
+        <File Name="redistr\msixmgr\x64\sr-Latn-RS\msixmgr.exe.mui" Size="6656" DuplicateImpact="2024" />
+        <File Name="redistr\msixmgr\x86\sr-Latn-RS\msixmgr.exe.mui" Size="6656" DuplicateImpact="2024" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1995">
+        <File Name="redistr\msixmgr\x64\lt-LT\msixmgr.exe.mui" Size="6656" DuplicateImpact="1995" />
+        <File Name="redistr\msixmgr\x86\lt-LT\msixmgr.exe.mui" Size="6656" DuplicateImpact="1995" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1993">
+        <File Name="redistr\msixmgr\x64\sl-SI\msixmgr.exe.mui" Size="6656" DuplicateImpact="1993" />
+        <File Name="redistr\msixmgr\x86\sl-SI\msixmgr.exe.mui" Size="6656" DuplicateImpact="1993" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1965">
+        <File Name="redistr\msixmgr\x64\sv-SE\msixmgr.exe.mui" Size="6656" DuplicateImpact="1965" />
+        <File Name="redistr\msixmgr\x86\sv-SE\msixmgr.exe.mui" Size="6656" DuplicateImpact="1965" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1964">
+        <File Name="redistr\msixmgr\x64\vi-VN\msixmgr.exe.mui" Size="6656" DuplicateImpact="1964" />
+        <File Name="redistr\msixmgr\x86\vi-VN\msixmgr.exe.mui" Size="6656" DuplicateImpact="1964" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1963">
+        <File Name="redistr\msixmgr\x64\et-EE\msixmgr.exe.mui" Size="6656" DuplicateImpact="1963" />
+        <File Name="redistr\msixmgr\x86\et-EE\msixmgr.exe.mui" Size="6656" DuplicateImpact="1963" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1962">
+        <File Name="redistr\msixmgr\x64\da-DK\msixmgr.exe.mui" Size="6656" DuplicateImpact="1962" />
+        <File Name="redistr\msixmgr\x86\da-DK\msixmgr.exe.mui" Size="6656" DuplicateImpact="1962" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1962">
+        <File Name="redistr\msixmgr\x64\tr-TR\msixmgr.exe.mui" Size="6656" DuplicateImpact="1962" />
+        <File Name="redistr\msixmgr\x86\tr-TR\msixmgr.exe.mui" Size="6656" DuplicateImpact="1962" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1952">
+        <File Name="redistr\msixmgr\x64\nb-NO\msixmgr.exe.mui" Size="6656" DuplicateImpact="1952" />
+        <File Name="redistr\msixmgr\x86\nb-NO\msixmgr.exe.mui" Size="6656" DuplicateImpact="1952" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1934">
+        <File Name="redistr\msixmgr\x64\fi-FI\msixmgr.exe.mui" Size="6656" DuplicateImpact="1934" />
+        <File Name="redistr\msixmgr\x86\fi-FI\msixmgr.exe.mui" Size="6656" DuplicateImpact="1934" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1889">
+        <File Name="redistr\msixmgr\x64\en-US\msixmgr.exe.mui" Size="6656" DuplicateImpact="1889" />
+        <File Name="redistr\msixmgr\x86\en-US\msixmgr.exe.mui" Size="6656" DuplicateImpact="1889" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6656" PossibleImpactReduction="1842">
+        <File Name="redistr\msixmgr\x64\id-ID\msixmgr.exe.mui" Size="6656" DuplicateImpact="1842" />
+        <File Name="redistr\msixmgr\x86\id-ID\msixmgr.exe.mui" Size="6656" DuplicateImpact="1842" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6144" PossibleImpactReduction="1920">
+        <File Name="redistr\msixmgr\x64\ar-SA\msixmgr.exe.mui" Size="6144" DuplicateImpact="1920" />
+        <File Name="redistr\msixmgr\x86\ar-SA\msixmgr.exe.mui" Size="6144" DuplicateImpact="1920" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="6144" PossibleImpactReduction="1913">
+        <File Name="redistr\msixmgr\x64\th-TH\msixmgr.exe.mui" Size="6144" DuplicateImpact="1913" />
+        <File Name="redistr\msixmgr\x86\th-TH\msixmgr.exe.mui" Size="6144" DuplicateImpact="1913" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="5632" PossibleImpactReduction="1846">
+        <File Name="redistr\msixmgr\x64\he-IL\msixmgr.exe.mui" Size="5632" DuplicateImpact="1846" />
+        <File Name="redistr\msixmgr\x86\he-IL\msixmgr.exe.mui" Size="5632" DuplicateImpact="1846" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="4608" PossibleImpactReduction="1755">
+        <File Name="redistr\msixmgr\x64\ja-JP\msixmgr.exe.mui" Size="4608" DuplicateImpact="1755" />
+        <File Name="redistr\msixmgr\x86\ja-JP\msixmgr.exe.mui" Size="4608" DuplicateImpact="1755" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="4096" PossibleImpactReduction="1700">
+        <File Name="redistr\msixmgr\x64\ko-KR\msixmgr.exe.mui" Size="4096" DuplicateImpact="1700" />
+        <File Name="redistr\msixmgr\x86\ko-KR\msixmgr.exe.mui" Size="4096" DuplicateImpact="1700" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="3584" PossibleImpactReduction="1615">
+        <File Name="redistr\msixmgr\x64\zh-TW\msixmgr.exe.mui" Size="3584" DuplicateImpact="1615" />
+        <File Name="redistr\msixmgr\x86\zh-TW\msixmgr.exe.mui" Size="3584" DuplicateImpact="1615" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="3584" PossibleImpactReduction="1567">
+        <File Name="redistr\msixmgr\x64\zh-CN\msixmgr.exe.mui" Size="3584" DuplicateImpact="1567" />
+        <File Name="redistr\msixmgr\x86\zh-CN\msixmgr.exe.mui" Size="3584" DuplicateImpact="1567" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="2081" PossibleImpactReduction="419">
+        <File Name="redistr\sdk\x64\wintrust.dll.ini" Size="2081" DuplicateImpact="419" />
+        <File Name="redistr\sdk\x86\wintrust.dll.ini" Size="2081" DuplicateImpact="419" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="1755" PossibleImpactReduction="628">
+        <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Appx.AppxPackaging.dll.manifest" Size="1755" DuplicateImpact="628" />
+        <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Appx.AppxPackaging.dll.manifest" Size="1755" DuplicateImpact="628" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="1621" PossibleImpactReduction="1621">
+        <File Name="Assets\Square71x71Logo - Kopie.png" Size="1621" DuplicateImpact="1621" />
+        <File Name="Assets\Square71x71Logo.png" Size="1621" DuplicateImpact="1621" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="968" PossibleImpactReduction="255">
+        <File Name="redistr\sdk\x64\signtool.exe.manifest" Size="968" DuplicateImpact="255" />
+        <File Name="redistr\sdk\x86\signtool.exe.manifest" Size="968" DuplicateImpact="255" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="491" PossibleImpactReduction="242">
+        <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Appx.AppxSip.dll.manifest" Size="491" DuplicateImpact="242" />
+        <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Appx.AppxSip.dll.manifest" Size="491" DuplicateImpact="242" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="450" PossibleImpactReduction="294">
+        <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Appx.OpcServices.dll.manifest" Size="450" DuplicateImpact="294" />
+        <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Appx.OpcServices.dll.manifest" Size="450" DuplicateImpact="294" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="238" PossibleImpactReduction="166">
+        <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Signing.mssign32.dll.manifest" Size="238" DuplicateImpact="166" />
+        <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Signing.mssign32.dll.manifest" Size="238" DuplicateImpact="166" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="238" PossibleImpactReduction="166">
+        <File Name="redistr\sdk\x64\Microsoft.Windows.Build.Signing.wintrust.dll.manifest" Size="238" DuplicateImpact="166" />
+        <File Name="redistr\sdk\x86\Microsoft.Windows.Build.Signing.wintrust.dll.manifest" Size="238" DuplicateImpact="166" />
+      </Duplicate>
+      <Duplicate PossibleSizeReduction="161" PossibleImpactReduction="125">
+        <File Name="msixhero-uac.runtimeconfig.json" Size="161" DuplicateImpact="125" />
+        <File Name="msixhero.runtimeconfig.json" Size="161" DuplicateImpact="125" />
+      </Duplicate>
+    </DuplicateFiles>
+  </Package>
+</ComparePackage>

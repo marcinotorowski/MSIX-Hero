@@ -12,6 +12,7 @@
   <ItemGroup>
     <None Remove="Resources\inno.exe" />
     <None Remove="Resources\nsis.exe" />
+    <None Remove="UpdateImpact\update.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\nsis.exe">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateImpact\update.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

@@ -65,6 +65,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ModificationPackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UpdateImpact}" Command="{Binding CommandHandler.UpdateImpact}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Winget}" Command="{Binding CommandHandler.Winget}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
     </routedCommand:RoutedCommandHandlers.Commands>

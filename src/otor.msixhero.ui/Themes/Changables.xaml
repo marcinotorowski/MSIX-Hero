@@ -88,15 +88,16 @@
                                         <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Error}" VerticalAlignment="Center" />
                                     </Border>
 
-                                    <ContentControl 
+                                    <ContentPresenter 
+                                        x:Name="PART_ContentPresenter"
                                         Margin="16 0 16 16" 
                                         Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
                                         Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
                                         ContentTemplate="{TemplateBinding DialogContentTemplate}" 
                                         ContentTemplateSelector="{TemplateBinding DialogContentTemplateSelector}">
 
-                                        <ContentControl.Style>
-                                            <Style TargetType="ContentControl">
+                                        <ContentPresenter.Style>
+                                            <Style TargetType="ContentPresenter">
                                                 <Style.Triggers>
                                                     <Trigger Property="Tag">
                                                         <Trigger.Value>
@@ -126,8 +127,8 @@
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </ContentControl.Style>
-                                    </ContentControl>
+                                        </ContentPresenter.Style>
+                                    </ContentPresenter>
                                 </DockPanel>
 
                                 <Border Margin="0" Visibility="Collapsed" Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}">
