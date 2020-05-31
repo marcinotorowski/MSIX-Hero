@@ -57,6 +57,25 @@ namespace otor.msixhero.ui.Modules.Dialogs
                         break;
                     }
 
+                    case ".yaml":
+                    {
+                        var parameters = new DialogParameters
+                        {
+                            { "yaml", file }
+                        };
+
+                        if (this.openAsModal)
+                        {
+                            this.dialogService.ShowDialog(Constants.PathWinget, parameters, result => { });
+                        }
+                        else
+                        {
+                            this.dialogService.Show(Constants.PathWinget, parameters, result => { });
+                        }
+
+                        break;
+                    }
+
                     default:
                     {
                         var parameters = new PackageExpertSelection(file).ToDialogParameters();
