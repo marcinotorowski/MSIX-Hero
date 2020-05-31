@@ -79,8 +79,8 @@
                                         <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Package identifier" Margin="0 16 0 6" />
                                         <TextBox Text="{Binding Id.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                        <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Manifest version" Margin="0 16 0 6" />
-                                        <StackPanel Orientation="Horizontal">
+                                        <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Manifest version" Margin="0 16 0 6" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <TextBox Width="60" Margin="0 0 8 0" Text="{Binding ManifestVersion1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                             <TextBox Width="60" Margin="0 0 8 0" Text="{Binding ManifestVersion2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                             <TextBox Width="60" Margin="0 0 0 0" Text="{Binding ManifestVersion3.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
