@@ -9,11 +9,6 @@ namespace otor.msixhero.lib.Domain.Winget
 {
     public class YamlDefinition
     {
-        public YamlDefinition()
-        {
-            this.ManifestVersion = new Version(0, 1, 0);
-        }
-
         [YamlMember(Order = 1)]
         public string Id { get; set; }
 

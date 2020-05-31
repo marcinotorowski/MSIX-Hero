@@ -44,14 +44,9 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
             }
             
             cancellationToken.ThrowIfCancellationRequested();
-            if (definition.ManifestVersion == null)
-            {
-                stringBuilder.AppendLine();
-                stringBuilder.Append("ManifestVersion: 0.1.0");
-            }
 
             stringBuilder.AppendLine();
-            stringBuilder.Append("# Edited with MSIX Hero");
+            stringBuilder.AppendLine("# Edited with MSIX Hero");
 
             cancellationToken.ThrowIfCancellationRequested();
             var serialized = stringBuilder.ToString();
@@ -81,14 +76,8 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                 serializer.Serialize(stringWriter, definition);
             }
 
-            if (definition.ManifestVersion == null)
-            {
-                stringBuilder.AppendLine();
-                stringBuilder.Append("ManifestVersion: 0.1.0");
-            }
-
             stringBuilder.AppendLine();
-            stringBuilder.Append("# Edited with MSIX Hero");
+            stringBuilder.AppendLine("# Edited with MSIX Hero");
 
             var serialized = stringBuilder.ToString();
             serialized = Regex.Replace(serialized, @"[\r\n]{2,}", Environment.NewLine);

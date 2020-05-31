@@ -84,6 +84,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
 
         public ValidatedChangeableProperty<string> ManifestVersion3 { get; }
 
+        public bool ShowManifestVersion { get; private set; }
+
         public ValidatedChangeableProperty<string> Version { get; }
         
         // ReSharper disable once InconsistentNaming
@@ -152,10 +154,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
         
         public Task NewManifest(CancellationToken cancellationToken)
         {
-            var newItem = new YamlDefinition
-            {
-                ManifestVersion = System.Version.Parse("0.1.0"),
-            };
+            var newItem = new YamlDefinition();
 
             this.SetData(newItem);
 
@@ -217,7 +216,10 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.Homepage.CurrentValue = definition.Homepage;
             this.MinOSVersion.CurrentValue = definition.MinOperatingSystemVersion?.ToString();
             this.Id.CurrentValue = definition.Id;
-            
+
+            this.ShowManifestVersion = definition.ManifestVersion != default;
+            this.OnPropertyChanged(nameof(ShowManifestVersion));
+
             if (definition.ManifestVersion != null)
             {
                 this.ManifestVersion1.CurrentValue = definition.ManifestVersion.Major.ToString("0");

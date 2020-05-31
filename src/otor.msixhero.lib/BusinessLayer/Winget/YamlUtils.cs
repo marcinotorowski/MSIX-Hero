@@ -220,8 +220,7 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
 
             yaml.Id = (yaml.Publisher + "." + yaml.Name).Replace(" ", string.Empty);
             yaml.Installers[0].Sha256 = await this.CalculateHashAsync(new FileInfo(filePath), cancellationToken).ConfigureAwait(false);
-            yaml.ManifestVersion = new Version(0, 1, 0);
-
+            
             if (yaml.License != null && yaml.License.IndexOf("Copy", StringComparison.OrdinalIgnoreCase) == -1 && yaml.License.IndexOf("(C)", StringComparison.OrdinalIgnoreCase) == -1 && yaml.License.IndexOf("http", StringComparison.OrdinalIgnoreCase) == -1)
             {
                 yaml.License = "Copyright (C) " + yaml.License;
@@ -375,7 +374,6 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
                 yamlDefinition.Name = details.DisplayName;
                 yamlDefinition.Publisher = details.PublisherDisplayName;
                 yamlDefinition.Version = details.Version;
-                yamlDefinition.ManifestVersion = new Version(0, 1, 0);
                 yamlDefinition.Description = details.Description;
 
                 if (details.Applications?.Any() == true)
