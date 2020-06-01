@@ -700,6 +700,11 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 InstallDate = installDate
             };
 
+            if (pkg.Architecture[0] == 'X')
+            {
+                pkg.Architecture = "x" + pkg.Architecture.Substring(1);
+            }
+
             if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))

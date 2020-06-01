@@ -126,6 +126,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     {
                         appxPackage.ProcessorArchitecture = (AppxPackageArchitecture)parsedArchitecture;
                     }
+                    else
+                    {
+                        appxPackage.ProcessorArchitecture = AppxPackageArchitecture.Neutral;
+                    }
 
                     appxPackage.Publisher = nodeIdentity.Attribute("Publisher")?.Value;
                     appxPackage.Version = nodeIdentity.Attribute("Version")?.Value;
@@ -418,7 +422,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
 
                 appxPackage.FamilyName = AppxPackaging.GetPackageFamilyName(appxPackage.Name, appxPackage.Publisher);
                 appxPackage.FullName = AppxPackaging.GetPackageFullName(appxPackage.Name, appxPackage.Publisher, appxPackage.ProcessorArchitecture, appxPackage.Version, appxPackage.ResourceId);
-
+                
                 appxPackage.Capabilities = this.GetCapabilities(nodeCapabilitiesRoot);
 
                 return await Translate(fileReader, appxPackage, cancellationToken).ConfigureAwait(false);
