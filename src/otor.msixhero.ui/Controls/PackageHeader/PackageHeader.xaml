@@ -28,10 +28,12 @@
             </Border>
         </Border>
         <Border Margin="6 16 0 0" Background="White" Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Border Background="DarkGray" Width="48" Height="48" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <Viewbox Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly">
-                    <Image Source="{Binding ElementName=PackageHeaderRoot, Path=Logo}" Stretch="None"  />
-                </Viewbox>
+            <Border Background="#2B579A" Width="48" Height="48" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Border Background="{Binding ElementName=PackageHeaderRoot, Path=TileColor}">
+                    <Viewbox Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly">
+                        <Image Source="{Binding ElementName=PackageHeaderRoot, Path=Logo}" Stretch="None"  />
+                    </Viewbox>
+                </Border>
             </Border>
         </Border>
 
