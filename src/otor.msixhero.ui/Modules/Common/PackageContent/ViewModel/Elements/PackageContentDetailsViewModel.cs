@@ -16,11 +16,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             this.Description = model.Description;
             this.Publisher = model.Publisher;
             this.FamilyName = model.FamilyName;
+            this.Architecture = model.ProcessorArchitecture.ToString();
             this.PackageFullName = model.FullName;
             this.PublisherDisplayName = model.PublisherDisplayName;
             this.Version = model.Version;
             this.Logo = model.Logo;
-            this.FamilyName = model.FamilyName;
 
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
@@ -109,6 +109,8 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
         public byte[] Logo { get; }
 
         public string FamilyName { get; }
+
+        public string Architecture { get; }
 
         public string Version { get; }
         
