@@ -483,6 +483,16 @@
                                     </GridViewColumn>
                                     <GridViewColumn>
                                         <GridViewColumn.Header>
+                                            <GridViewColumnHeader Content="Architecture" Tag="{x:Static enums:PackageSort.Architecture}" Click="ColumnClicked" />
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Opacity="0.7" Text="{Binding Architecture}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.Header>
                                             <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
@@ -584,7 +594,7 @@
                                     </Border>
                                     <StackPanel DockPanel.Dock="Right">
                                         <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding DisplayPackageType, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                                        <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
                                     </StackPanel>
 
                                     <StackPanel Margin="10 0">

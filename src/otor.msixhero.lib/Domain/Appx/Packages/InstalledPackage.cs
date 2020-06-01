@@ -24,6 +24,8 @@ namespace otor.msixhero.lib.Domain.Appx.Packages
 
         public Version Version { get; set; }
 
+        public string Architecture { get; set; }
+
         public MsixPackageType PackageType { get; set; }
 
         public string InstallLocation { get; set; }

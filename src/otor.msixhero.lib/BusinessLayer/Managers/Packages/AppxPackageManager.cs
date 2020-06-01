@@ -690,6 +690,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 Description = details.Description,
                 DisplayPublisherName = details.DisplayPublisherName,
                 Publisher = item.Id.Publisher,
+                Architecture = item.Id.Architecture.ToString(),
                 IsFramework = item.IsFramework,
                 TileColor = details.Color,
                 PackageType = details.PackageType,

@@ -26,6 +26,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 
         public string Version => this.Model.Version.ToString();
 
+        public string Architecture => this.Model.Architecture;
+
         public string DisplayPublisherName => this.Model.DisplayPublisherName;
 
         public string InstallLocation => this.Model.InstallLocation;
