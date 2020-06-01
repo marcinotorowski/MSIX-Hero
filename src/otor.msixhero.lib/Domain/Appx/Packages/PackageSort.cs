@@ -7,6 +7,7 @@
         PackageType,
         InstallDate,
         Type,
-        Version
+        Version,
+        Architecture
     }
 }

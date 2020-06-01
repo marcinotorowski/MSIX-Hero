@@ -255,6 +255,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     case PackageSort.Publisher:
                         sortProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
                         break;
+                    case PackageSort.Architecture:
+                        sortProperty = nameof(InstalledPackageViewModel.Architecture);
+                        break;
                     case PackageSort.InstallDate:
                         sortProperty = nameof(InstalledPackageViewModel.InstallDate);
                         break;
@@ -279,6 +282,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                         break;
                     case PackageGroup.Publisher:
                         groupProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
+                        break;
+                    case PackageGroup.Architecture:
+                        groupProperty = nameof(InstalledPackageViewModel.Architecture);
                         break;
                     case PackageGroup.Type:
                         groupProperty = nameof(InstalledPackageViewModel.Type);

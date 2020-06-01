@@ -388,8 +388,11 @@
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Group by" x:Name="RibbonViewGroupBy">
-                    <Fluent:InRibbonGallery Orientation="Horizontal" ItemWidth="64" ItemHeight="58" 
-                                                SelectedValue="{Binding Group}" SelectedValuePath="Tag" Size="Large">
+                    <Fluent:InRibbonGallery 
+                        Orientation="Horizontal" 
+                        ItemWidth="72" 
+                        ItemHeight="58" 
+                        SelectedValue="{Binding Group}" SelectedValuePath="Tag" Size="Large">
                         <Fluent:InRibbonGallery.SizeDefinition>
                             <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Large" Small="Middle" />
                         </Fluent:InRibbonGallery.SizeDefinition>
@@ -409,6 +412,12 @@
                             <StackPanel>
                                 <Path HorizontalAlignment="Center" Data="{StaticResource VectorBulb}" Style="{StaticResource LargeIcon}" />
                                 <TextBlock TextAlignment="Center" Text="Type" />
+                            </StackPanel>
+                        </Fluent:GalleryItem>
+                        <Fluent:GalleryItem Tag="{x:Static enums:PackageGroup.Architecture}">
+                            <StackPanel>
+                                <Path HorizontalAlignment="Center" Data="{StaticResource VectorProcessor}" Style="{StaticResource LargeIcon}" />
+                                <TextBlock TextAlignment="Center" Text="Architecture" />
                             </StackPanel>
                         </Fluent:GalleryItem>
                     </Fluent:InRibbonGallery>

@@ -7,5 +7,7 @@
         Publisher,
 
         Type,
+
+        Architecture
     }
 }
