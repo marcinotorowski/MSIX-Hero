@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Input;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.EventViewer.ViewModel;
 
@@ -20,6 +21,14 @@ namespace otor.msixhero.ui.Modules.EventViewer.View
         public EventViewerView()
         {
             this.InitializeComponent();
+        }
+        
+        private void ClearSearchField(object sender, RoutedEventArgs e)
+        {
+            this.SearchBox.Text = string.Empty;
+            this.SearchBox.Focus();
+            FocusManager.SetFocusedElement(this, this.SearchBox);
+            Keyboard.Focus(this.SearchBox);
         }
 
         private void SetSorting(string columnName, bool descending)

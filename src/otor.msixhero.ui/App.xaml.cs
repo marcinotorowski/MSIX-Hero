@@ -165,15 +165,10 @@ namespace otor.msixhero.ui
             moduleCatalog.AddModule<SettingsModule>();
             moduleCatalog.AddModule<PackageListModule>(); 
             moduleCatalog.AddModule<VolumeManagerModule>();
+            moduleCatalog.AddModule<EventViewerModule>();
             moduleCatalog.AddModule<SystemStatusModule>();
             moduleCatalog.AddModule<DialogsModule>();
             moduleCatalog.AddModule<CommonModule>();
-            moduleCatalog.AddModule<EventViewerModule>();
-        }
-        
-        protected override void ConfigureViewModelLocator()
-        {
-            base.ConfigureViewModelLocator();
         }
 
         public void Dispose()
