@@ -281,7 +281,6 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             catch (OperationCanceledException e)
             {
                 Logger.Warn("Operation cancelled by the user.");
-
                 throw new UserHandledException(e);
             }
             catch (Win32Exception e)

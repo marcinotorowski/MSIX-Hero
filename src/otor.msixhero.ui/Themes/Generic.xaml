@@ -289,9 +289,120 @@
         <Setter Property="Margin" Value="-1 0 0 8" />
     </Style>
 
+    <Style TargetType="{x:Type GroupItem}" x:Key="GroupStyle">
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <StackPanel>
+                        <Border DockPanel.Dock="Top" Background="#F0F0F0" Height="24">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10 0">
+                                    <Run Text="{Binding ItemCount, Mode=OneWay}" />
+                                </TextBlock>
+                                <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="10 0 0 0">
+                                    <Run Text="{Binding Name, Mode=OneWay}" />
+                                </TextBlock>
+                            </DockPanel>
+                        </Border>
+                        <ItemsPresenter />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ListViewItem">
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="BorderThickness" Value="0 0 0 0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListViewItem">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                        <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
+                            <GridViewRowPresenter Margin="{TemplateBinding Padding}"  />
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                <Setter Property="Background" Value="#E6F2FA" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="BorderBrush" Value="#B1D6F0" />
+                <Setter Property="Background" Value="#CDE6F7" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type GridViewColumnHeader}">
+        <Setter Property="Padding" Value="10 5" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Color="Transparent" Offset="0" />
+                        <GradientStop Color="#bbb" Offset="1" />
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                    <Border UseLayoutRounding="True" SnapsToDevicePixels="True" BorderThickness="0,0,1,1" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
+                        <Grid>
+                            <TextBlock
+                                TextTrimming="CharacterEllipsis"
+                                x:Name="ContentHeader" 
+                                Text="{TemplateBinding Content}"
+                                Margin="{TemplateBinding Padding}" 
+                                Width="{TemplateBinding Width}" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                            <Thumb x:Name="PART_HeaderGripper"
+                                   Width="10"
+                                   VerticalAlignment="Stretch"
+                                   BorderThickness="0"
+                                   HorizontalAlignment="Right"
+                                   Margin="-6 0 -4 0"
+                                   Background="Transparent">
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="Thumb">
+                                        <Border Background="{TemplateBinding Background}" />
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Foreground" Value="Black" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E6F2FA" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#CDE6F7" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="ListBoxItem" x:Key="{x:Type ListBoxItem}">
         <Setter Property="Padding" Value="10" />
-        <Setter Property="BorderThickness" Value="4 0 0 0" />
+        <Setter Property="BorderThickness" Value="0 0 0 0" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
@@ -324,7 +435,21 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+
+    <Style TargetType="{x:Type ListView}" x:Key="{x:Type ListView}">
+        <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
+        <Setter Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="True" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
     </Style>
 </ResourceDictionary>

@@ -72,28 +72,6 @@
     <Grid Margin="0" x:Name="Grid">
         <Grid.Resources>
             <system:Boolean x:Key="True">True</system:Boolean>
-            <Style TargetType="{x:Type GroupItem}" x:Key="GroupStyle">
-                <Setter Property="Margin" Value="0"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                            <StackPanel>
-                                <Border DockPanel.Dock="Top" Background="#F0F0F0" Height="24">
-                                    <DockPanel>
-                                        <TextBlock DockPanel.Dock="Right" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10 0">
-                                            <Run Text="{Binding ItemCount, Mode=OneWay}" />
-                                        </TextBlock>
-                                        <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="10 0 0 0">
-                                            <Run Text="{Binding Name, Mode=OneWay}" />
-                                        </TextBlock>
-                                    </DockPanel>
-                                </Border>
-                                <ItemsPresenter />
-                            </StackPanel>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
 
             <ContextMenu x:Key="PackageContextMenu">
                 <MenuItem Header="Copy...">
@@ -394,21 +372,25 @@
                         Grid.Row="1"
                         x:Name="PanelListView"
                         Visibility="Collapsed">
-                    <ListView 
-                        FocusVisualStyle="{x:Null}"
-                        IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
-                        MouseDoubleClick="ListOnMouseDoubleClick"
-                        IsSynchronizedWithCurrentItem="False"
-                        VirtualizingPanel.IsVirtualizing="True"
-                        VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                        x:Name="ListView"
+
+                    <!-- 
                         Foreground="Black"
                         BorderThickness="0"
                         Padding="0"
                         ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                        FocusVisualStyle="{x:Null}"
+                        IsSynchronizedWithCurrentItem="False"
+                        VirtualizingPanel.IsVirtualizing="True"
+                        VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                    -->
+
+                    <ListView 
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
+                        MouseDoubleClick="ListOnMouseDoubleClick"
+                        x:Name="ListView"
                         ContextMenu="{StaticResource PackageContextMenu}"
                         SelectionChanged="OnListViewSelectionChanged"
-                        ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                         ItemsSource="{Binding AllPackagesView}">
 
                         <ListView.ItemContainerStyle>

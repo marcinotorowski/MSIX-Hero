@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Logs;
 using otor.msixhero.lib.Domain.Commands.Generic;
@@ -12,6 +15,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Developer;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Commanding;
+using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Controls.Progress;
 using otor.msixhero.ui.Modules.Common;
 using otor.msixhero.ui.Themes;
@@ -27,6 +31,7 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
         private readonly IApplicationStateManager stateManager;
         private readonly IInteractionService interactionService;
         private bool firstRun = true;
+        private string searchKey;
 
         public EventViewerViewModel(IApplicationStateManager stateManager, IInteractionService interactionService)
         {
@@ -34,23 +39,56 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
             this.interactionService = interactionService;
             this.Logs = new ObservableCollection<Log>();
             this.LogsView = CollectionViewSource.GetDefaultView(this.Logs);
+            this.LogsView.Filter += Filter;
             this.Sort(nameof(Log.DateTime), false);
             this.CommandHandler = new EventViewerCommandHandler(this, stateManager);
+            this.MaxLogs = 250;
+            this.End = DateTime.Now;
+            this.Start = this.End.Subtract(TimeSpan.FromDays(5));
         }
-
+        
         public EventViewerCommandHandler CommandHandler { get; }
 
-        public ProgressProperty Progress { get; } = new ProgressProperty();
+        public string SearchKey
+        {
+            get => this.searchKey;
+            set
+            {
+                if (!this.SetField(ref this.searchKey, value))
+                {
+                    return;
+                }
 
-        public async Task<ObservableCollection<Log>> GetLogs()
+                this.LogsView.Refresh();
+            }
+        }
+
+        public ProgressProperty Progress { get; } = new ProgressProperty { SupportsCancelling = true };
+
+        public async Task<IList<Log>> GetLogs()
         {
             try
             {
                 this.Progress.IsLoading = true;
 
-                var action = new GetLogs(250);
-                var result = await this.stateManager.CommandExecutor.GetExecuteAsync(action).ConfigureAwait(false);
-                return new ObservableCollection<Log>(result);
+                var action = new GetLogs(this.MaxLogs);
+
+                using (var cts = new CancellationTokenSource())
+                {
+                    var p = new Progress<ProgressData>();
+                    var task = this.stateManager.CommandExecutor.GetExecuteAsync(action, cts.Token, p);
+                    this.Progress.MonitorProgress(task, cts, p);
+                    var result = await task.ConfigureAwait(false);
+                    return new List<Log>(result);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (UserHandledException)
+            {
+                throw;
             }
             catch (Exception e)
             {
@@ -70,7 +108,7 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
         public string Header { get; } = "Events and logs";
 
         public Geometry Icon { get; } = VectorIcons.TabEventViewer;
-
+        
         public bool IsActive
         {
             get => this.isActive;
@@ -104,6 +142,12 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
             }
         }
 
+        public DateTime Start { get; set; }
+
+        public DateTime End { get; set; }
+
+        public int MaxLogs { get; set; }
+
         public void Reload()
         {
             this.Progress.Progress = -1;
@@ -121,6 +165,7 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
                     {
                         this.Logs.Add(item);
                     }
+
                 },
                 CancellationToken.None,
                 TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously,
@@ -153,6 +198,45 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
         {
             this.LogsView.SortDescriptions.Clear();
             this.LogsView.SortDescriptions.Add(new SortDescription(columnName, descending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+        }
+
+        private bool Filter(object obj)
+        {
+            if (string.IsNullOrEmpty(this.searchKey))
+            {
+                return true;
+            }
+
+            var filtered = (Log)obj;
+
+            if (filtered.Message != null && filtered.Message.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (filtered.Level != null && filtered.Level.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (filtered.User != null && filtered.User.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (filtered.DateTime != default && filtered.DateTime.ToString(CultureInfo.CurrentUICulture).IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            if (
+                filtered.ActivityId.ToString(CultureInfo.CurrentUICulture).IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1 ||
+                filtered.ThreadId.ToString(CultureInfo.CurrentUICulture).IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

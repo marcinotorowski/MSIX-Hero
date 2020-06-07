@@ -42,7 +42,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
 
             if (index == 0)
             {
-                return (hasMinus ? "-" : string.Empty) + value + " " + units[index];
+                return value + " " + units[index];
             }
 
             return (hasMinus ? "-" : string.Empty) + (Math.Round(doubleValue * 10, 0) / 10.0).ToString("0.0") + " " + units[index];

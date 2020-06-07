@@ -393,21 +393,38 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
 
             //return allLogs.OrderBy(l => l.DateTime).Take(maxCount).ToList();
 
-
             using var ps = await PowerShellSession.CreateForModule().ConfigureAwait(false);
-            using var script = ps.AddScript("(Get-WinEvent -ListLog *Microsoft-Windows-*Appx* -ErrorAction SilentlyContinue).LogName");
+            using var script = ps.AddScript("(Get-WinEvent -ListLog *Microsoft-Windows-*Appx* -ErrorAction SilentlyContinue).ProviderNames");
             using var logs = await ps.InvokeAsync().ConfigureAwait(false);
 
             var logNames = logs.ToArray();
+            
+            var progresses = new IProgress<ProgressData>[logNames.Length];
 
-            foreach (var item in logNames)
+            using (var wrapperProgress = new WrappedProgress(progress ?? new Progress<ProgressData>()))
             {
-                using var psLocal = await PowerShellSession.CreateForModule().ConfigureAwait(false);
-                var logName = (string)item.BaseObject;
-                using var scriptLocal = psLocal.AddScript("Get-WinEvent -LogName " + logName + " -MaxEvents " + maxCount);
-                using var logItems = await psLocal.InvokeAsync().ConfigureAwait(false);
+                for (var index = 0; index < logNames.Length; index++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    progresses[index] = wrapperProgress.GetChildProgress(100.0);
+                }
 
-                allLogs.AddRange(logItems.Select(log => factory.CreateFromPowerShellObject(log)));
+                for (var index = 0; index < logNames.Length; index++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var item = logNames[index];
+                    var itemProgress = progresses[index];
+                    var logName = (string) item.BaseObject;
+                    itemProgress.Report(new ProgressData(80, "Reading " + logName + "..."));
+
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    using var psLocal = await PowerShellSession.CreateForModule().ConfigureAwait(false);
+                    using var scriptLocal = psLocal.AddScript("Get-WinEvent -ProviderName " + logName + " -MaxEvents " + maxCount + " -ErrorAction SilentlyContinue");
+                    using var logItems = await psLocal.InvokeAsync().ConfigureAwait(false);
+                    
+                    allLogs.AddRange(logItems.Select(log => factory.CreateFromPowerShellObject(log)));
+                }
             }
 
             return allLogs.OrderByDescending(l => l.DateTime).Take(maxCount).ToList();

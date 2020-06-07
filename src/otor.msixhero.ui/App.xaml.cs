@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Threading;
 using otor.msixhero.lib.BusinessLayer.Appx.Builder;
 using otor.msixhero.lib.BusinessLayer.Appx.Packer;
@@ -122,6 +124,7 @@ namespace otor.msixhero.ui
         
         protected override void OnStartup(StartupEventArgs startupEventArgs)
         {
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentUICulture.IetfLanguageTag)));
             this.arguments = startupEventArgs.Args;
             base.OnStartup(startupEventArgs);
         }

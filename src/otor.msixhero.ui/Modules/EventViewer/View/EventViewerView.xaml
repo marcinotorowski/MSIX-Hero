@@ -10,6 +10,9 @@
              xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
+             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DesignWidth="600"
@@ -20,7 +23,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
-    <progressOverlay:ProgressOverlay IsShown="{Binding Progress.IsLoading}" Message="{Binding Progress.Message}" Progress="{Binding Progress.Progress}">
+    <progressOverlay:ProgressOverlay IsShown="{Binding Progress.IsLoading}" Message="{Binding Progress.Message}" Progress="{Binding Progress.Progress}" CancelCommand="{Binding Progress.Cancel}" SupportsCancelling="{Binding Progress.SupportsCancelling}">
         <AdornerDecorator>
             <DockPanel>
 
@@ -30,6 +33,24 @@
                     Margin="0">
 
                     <DockPanel>
+                        <!--<ToggleButton Visibility="Collapsed" DockPanel.Dock="Right" Content="Range..." VerticalAlignment="Center" x:Name="PART_Toggle">
+
+                        </ToggleButton>
+                        <Popup Visibility="Collapsed" Placement="Bottom" PlacementTarget="{Binding ElementName=PART_Toggle}" AllowsTransparency="True" IsOpen="{Binding ElementName=PART_Toggle, Path=IsChecked}" StaysOpen="False" 
+                               Opened="Popup_OnOpened"
+                               Closed="Popup_OnClosed">
+                            <Border BorderThickness="2" BorderBrush="{StaticResource Otor.MsixHero.Brushes.Accent}" Background="White" Width="300">
+                                <StackPanel Margin="10">
+                                    <TextBlock Text="From:" Margin="0 0 0 6" />
+                                    <xctk:DateTimePicker x:Name="PART_Date1" VerticalAlignment="Center" DockPanel.Dock="Right" />
+                                    <TextBlock Text="To:" Margin="0 16 0 6" />
+                                    <xctk:DateTimePicker x:Name="PART_Date2" VerticalAlignment="Center" DockPanel.Dock="Right" />
+                                    <TextBlock Text="Fetch not more than:" Margin="0 16 0 6" />
+                                    <xctk:IntegerUpDown x:Name="PART_Max" AllowSpin="True" ButtonSpinnerLocation="Right" ShowButtonSpinner="True" Width="100" HorizontalAlignment="Left" />
+                                </StackPanel>
+                            </Border>
+                        </Popup>-->
+
                         <Grid Margin="5 0">
                             <TextBox 
                                 Padding="26 0 20 0" 
@@ -98,6 +119,7 @@
                                 </Button.Style>
                             </Button>
                         </Grid>
+
                     </DockPanel>
                 </Border>
                 <ListView  
@@ -145,40 +167,91 @@
                     <ListView.View>
                         <GridView x:Name="GridView">
                             <GridView.Columns>
-                                <GridViewColumn DisplayMemberBinding="{Binding DateTime}">
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="DateTime" Content="Created" />
-                                    </GridViewColumn.Header>
-                                </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding Level}">
+                                <GridViewColumn>
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Level" Content="Level" />
                                     </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border ToolTip="{Binding Level}" x:Name="Border" Margin="0 -8" Width="24" Height="24" Background="CornflowerBlue" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                                                <Path x:Name="Path" Data="M 16 4 C 13.800781 4 12 5.800781 12 8 C 12 10.199219 13.800781 12 16 12 C 18.199219 12 20 10.199219 20 8 C 20 5.800781 18.199219 4 16 4 Z M 16 6 C 17.117188 6 18 6.882813 18 8 C 18 9.117188 17.117188 10 16 10 C 14.882813 10 14 9.117188 14 8 C 14 6.882813 14.882813 6 16 6 Z M 11 13 L 11 18 L 13 18 L 13 23 L 11 23 L 11 28 L 21 28 L 21 23 L 19 23 L 19 13 Z M 13 15 L 17 15 L 17 25 L 19 25 L 19 26 L 13 26 L 13 25 L 15 25 L 15 16 L 13 16 Z" Fill="White" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Path.LayoutTransform>
+                                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                                    </Path.LayoutTransform>
+                                                </Path>
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Level}" Value="Warning">
+                                                    <Setter Property="Background" TargetName="Border" Value="DarkOrange" />
+                                                    <Setter TargetName="Path" Property="Data" Value="M 16 3.21875 L 15.125 4.71875 L 3.125 25.5 L 2.28125 27 L 29.71875 27 L 28.875 25.5 L 16.875 4.71875 Z M 16 7.21875 L 26.25 25 L 5.75 25 Z M 15 14 L 15 20 L 17 20 L 17 14 Z M 15 21 L 15 23 L 17 23 L 17 21 Z" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Level}" Value="Error">
+                                                    <Setter Property="Background" TargetName="Border" Value="IndianRed" />
+                                                    <Setter TargetName="Path" Property="Data" Value="M 9.4375 5 L 9.15625 5.5 L 3.15625 15.5 L 2.84375 16 L 3.15625 16.5 L 9.15625 26.5 L 9.4375 27 L 22.5625 27 L 22.84375 26.5 L 28.84375 16.5 L 29.15625 16 L 28.84375 15.5 L 22.84375 5.5 L 22.5625 5 Z M 10.53125 7 L 21.46875 7 L 26.84375 16 L 21.46875 25 L 10.53125 25 L 5.15625 16 Z M 15 10 L 15 18 L 17 18 L 17 10 Z M 15 20 L 15 22 L 17 22 L 17 20 Z" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding PackageName}">
+                                <GridViewColumn>
                                     <GridViewColumn.Header>
-                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="PackageName" Content="App" />
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="DateTime" Content="Created" />
                                     </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{helpers:CultureAwareBinding Path=DateTime}" highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding ActivityId}">
-                                    <GridViewColumn.Header>
-                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ActivityId" Content="ActivityId" />
-                                    </GridViewColumn.Header>
-                                </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding Message}">
+                                <GridViewColumn>
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Message" Content="Message" />
                                     </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding Message}" highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding User}">
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="PackageName" Content="App" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding PackageName}" highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ActivityId" Content="ActivityId" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{helpers:CultureAwareBinding Path=ActivityId}" highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Click="GridHeaderOnClick" Tag="User" Content="User" />
                                     </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding User}" highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding ThreadId}">
+                                <GridViewColumn>
                                     <GridViewColumn.Header>
                                         <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ThreadId" Content="ThreadId" />
                                     </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{helpers:CultureAwareBinding Path=ThreadId}" highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                             </GridView.Columns>
                         </GridView>
