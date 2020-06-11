@@ -28,18 +28,18 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
             var isMsix = fileReader.FileExists("AppxManifest.xml");
             if (isMsix)
             {
-                return this.ReadMsix(fileReader, cancellationToken);
+                return this.ReadMsix(fileReader, "AppxManifest.xml", cancellationToken);
             }
 
             var isAppxBundle = fileReader.FileExists("AppxMetaData\\AppxBundleManifest.xml");
             if (isAppxBundle)
             {
-                throw new NotImplementedException("Reading of bundle manifests is not supported yet.");
+                throw new NotSupportedException("Bundles are not supported.");
             }
 
             throw new NotSupportedException("Required package source is not supported.");
         }
-
+        
         public async Task<AppxPackage> Read(IAppxFileReader fileReader, bool resolveDependencies, CancellationToken cancellationToken = default)
         {
             var result = await this.Read(fileReader, cancellationToken).ConfigureAwait(false);
@@ -63,10 +63,39 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
             
             return result;
         }
-        
-        private async Task<AppxPackage> ReadMsix(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
+
+        public async Task<AppxBundle> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
-            using (var file = fileReader.GetFile("AppxManifest.xml"))
+            var bundle = new AppxBundle();
+            using (var file = fileReader.GetFile("AppxMetadata\\AppxBundleManifest.xml"))
+            {
+                var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+                if (document.Root == null)
+                {
+                    throw new FormatException("The manifest is malformed. There is no root element.");
+                }
+
+                var ns = XNamespace.Get("http://schemas.microsoft.com/appx/2013/bundle");
+                var b4 = XNamespace.Get("http://schemas.microsoft.com/appx/2018/bundle");
+                var b5 = XNamespace.Get("http://schemas.microsoft.com/appx/2019/bundle");
+
+                var identity = document.Root.Element(ns + "Identity");
+                if (identity == null)
+                {
+                    throw new FormatException("The manifest is malformed, missing <Identity />.");
+                }
+
+                bundle.Version = identity.Attribute("Version")?.Value;
+                bundle.Name = identity.Attribute("Name")?.Value;
+                bundle.Publisher = identity.Attribute("Publisher")?.Value;
+            }
+
+            return bundle;
+        }
+
+        private async Task<AppxPackage> ReadMsix(IAppxFileReader fileReader, string manifestFileName, CancellationToken cancellationToken = default)
+        {
+            using (var file = fileReader.GetFile(manifestFileName))
             {
                 var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
                 if (document.Root == null)

@@ -47,6 +47,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact
                         return await comparer.Analyze(appxBlock1, appxBlock2, cancellationToken).ConfigureAwait(false);
                     }
 
+                    case PackageType.Bundle:
+                    {
+                        var comparer = new BundleUpdateImpactAnalyzer(new MsixSdkWrapper());
+                        return await comparer.Analyze(package1Path, package2Path, cancellationToken).ConfigureAwait(false);
+                        }
+
                     case PackageType.AppxBlockMap:
                     {
                         var comparer = new AppxBlockMapUpdateImpactAnalyzer(new MsixSdkWrapper(), this.BlockReader);
@@ -56,6 +62,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact
             }
             else
             {
+                if (type2 == PackageType.Bundle || type1 == PackageType.Bundle)
+                {
+                    throw new NotSupportedException("A bundle can be only compared to another bundle.");
+                }
+
                 string appxBlock1 = null;
                 string appxBlock2 = null;
 
@@ -189,9 +200,10 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact
             {
                 case ".msix":
                 case ".appx":
+                    return PackageType.Msix;
                 case ".msixbundle":
                 case ".appxbundle":
-                    return PackageType.Msix;
+                    return PackageType.Bundle;
 
                 case ".xml":
                     switch (Path.GetFileNameWithoutExtension(filePath).ToLowerInvariant())
@@ -213,6 +225,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact
             Msix,
             Manifest,
             AppxBlockMap,
+            Bundle,
             Unsupported
         }
     }

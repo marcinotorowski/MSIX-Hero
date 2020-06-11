@@ -105,7 +105,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
                 return true;
             }
 
-            return this.msixPackage.Entries.Any(e => string.Equals(filePath, e.Name, StringComparison.OrdinalIgnoreCase));
+            return this.msixPackage.Entries.Any(e => string.Equals(filePath, e.FullName, StringComparison.OrdinalIgnoreCase));
         }
 
         public void Dispose()

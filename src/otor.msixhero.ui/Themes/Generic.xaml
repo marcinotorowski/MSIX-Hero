@@ -12,7 +12,7 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Vectors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="TextBox" x:Key="TextBlock">
+    <Style TargetType="{x:Type TextBox}" x:Key="TextBlock">
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Padding" Value="0" />
@@ -175,14 +175,14 @@
         </Grid>
     </ControlTemplate>
 
-    <Style TargetType="TextBox" x:Key="{x:Type TextBox}">
+    <Style TargetType="{x:Type TextBox}" x:Key="{x:Type TextBox}">
         <Setter Property="MinHeight" Value="30" />
         <Setter Property="BorderBrush" Value="#ccc" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
         <Style.Triggers>
-            <Trigger Property="IsReadOnly" Value="true">
+            <Trigger Property="IsReadOnly" Value="True">
                 <Setter Property="Background" Value="#eeeeee" />
             </Trigger>
         </Style.Triggers>

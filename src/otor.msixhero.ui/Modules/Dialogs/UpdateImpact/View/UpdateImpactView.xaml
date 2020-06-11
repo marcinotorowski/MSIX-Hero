@@ -159,15 +159,15 @@
                             </Grid.RowDefinitions>
 
                             <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="0" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
-                                <Label Margin="0" Padding="-20" FontSize="42" Style="{StaticResource Label}" Content="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Border>
 
                             <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="1" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
-                                <Label Margin="0" Padding="-20" FontSize="42" Style="{StaticResource Label}" Content="2" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="2" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Border>
 
                             <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="2" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
-                                <Label Margin="0" Padding="-20" FontSize="42" Style="{StaticResource Label}" Content="3" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="3" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Border>
 
                             <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 8">

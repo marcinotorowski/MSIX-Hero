@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact;
 using otor.msixhero.lib.Infrastructure;
+using otor.msixhero.lib.Infrastructure.Commanding;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.ui.Commands.RoutedCommand;
 using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
@@ -75,9 +76,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel
                     await this.Results.Load(Task.FromResult(new ComparisonViewModel(result))).ConfigureAwait(false);
                 }
             }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (UserHandledException)
+            {
+            }
             catch (Exception e)
             {
-                this.interactionService.ShowError("Could not compare selected packages", e);
+                this.interactionService.ShowError("Could not compare selected packages. " + e.Message, e);
             }
             finally
             {
