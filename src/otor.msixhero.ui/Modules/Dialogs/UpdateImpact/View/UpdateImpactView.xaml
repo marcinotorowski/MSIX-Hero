@@ -44,7 +44,7 @@
         Dialog="{Binding}"
         OkButtonVisibility="Collapsed"
         OkButtonLabel="Analyze update impact"
-        Icon="{StaticResource VectorInfo}">
+        Icon="{StaticResource VectorCompare}">
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
                 <progressOverlay:ProgressOverlay
@@ -145,7 +145,7 @@
                             </Border>
                         </Grid>
 
-                        <TextBlock DockPanel.Dock="Top" Text="This tool analyzes the differences between two versions of a package and determines how the changes and addition can impact the process of updating." TextWrapping="Wrap" Visibility="{Binding Results.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Margin="0 16" />
+                        <TextBlock DockPanel.Dock="Top" Text="This tool analyzes the differences between two versions of a package and determines how the changes and additions can impact the process of updating." TextWrapping="Wrap" Visibility="{Binding Results.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Margin="0 16" />
 
                         <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" Visibility="{Binding Results.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" DockPanel.Dock="Top">
                             <Grid.ColumnDefinitions>
@@ -171,7 +171,7 @@
                             </Border>
 
                             <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 8">
-                                <TextBlock Text="Select the previous version of the package to be compared..." />
+                                <TextBlock Text="Select the previous version of the MSIX package to be compared..." />
                                 <DockPanel Margin="0 6 0 0">
                                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path1.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                                     <TextBox TabIndex="4" Text="{Binding Path1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
@@ -179,7 +179,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0 8">
-                                <TextBlock Text="Select the newer version of the package to be compared..." />
+                                <TextBlock Text="Select the newer version of the MSIX package to be compared..." />
                                 <DockPanel Margin="0 6 0 0">
                                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path2.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                                     <TextBox TabIndex="4" Text="{Binding Path2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
@@ -187,8 +187,8 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="0 8">
-                                <TextBlock Text="Press the button to start compating selected packages..." />
-                                <Button DockPanel.Dock="Top" Command="{Binding Compare}" Content="Analyze the upgrade impact" Margin="0 6 0 0" HorizontalAlignment="Left" />
+                                <TextBlock Text="Press the button to start comparing selected packages..." />
+                                <Button DockPanel.Dock="Top" Command="{Binding Compare}" Content="Analyze the update impact" Margin="0 6 0 0" HorizontalAlignment="Left" />
                             </StackPanel>
                         </Grid>
 
@@ -204,12 +204,20 @@
                                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="24 12">
                                                             <TextBlock Foreground="#666" Text="Net size difference" HorizontalAlignment="Center"  />
                                                             <Label HorizontalAlignment="Center" Margin="0" Style="{StaticResource Label}" FontSize="40" Content="{Binding Results.CurrentValue.NetSizeDifference, Converter={StaticResource SizeConverter}}" />
-                                                            <view:RelativeIndicator HorizontalAlignment="Center" ToolTip="The relation between the total size of the new package files compared to the total size of the old package (uncompressed)." OldValue="{Binding Results.CurrentValue.OldTotalSize}" NewValue="{Binding Results.CurrentValue.NewTotalSize}" />
+                                                            <view:RelativeIndicator ToolTipService.ShowDuration="40000" ToolTipService.InitialShowDelay="0" HorizontalAlignment="Center" OldValue="{Binding Results.CurrentValue.OldTotalSize}" NewValue="{Binding Results.CurrentValue.NewTotalSize}">
+                                                                <view:RelativeIndicator.ToolTip>
+                                                                    <ToolTip Width="200" Placement="Bottom">
+                                                                        <Border Padding="4">
+                                                                            <TextBlock Text="The relation between the total size of the new package files compared to the total size of the old package (uncompressed)." TextWrapping="Wrap"></TextBlock>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </view:RelativeIndicator.ToolTip>
+                                                            </view:RelativeIndicator>
                                                         </StackPanel>
                                                     </Border>
 
                                                     <Border Padding="8" Margin="16 0 0 0" VerticalAlignment="Center">
-                                                        <TextBlock TextWrapping="Wrap" Text="The difference between the size of installed apps. The number is positive if the new package requires more space than the updated one." TextAlignment="Center"></TextBlock>
+                                                        <TextBlock TextWrapping="Wrap" Text="The difference between the old and the new size (all uncompressed files). The number is positive if the new package requires more space than the old one." TextAlignment="Center"></TextBlock>
                                                     </Border>
                                                 </DockPanel>
                                             </Border>
@@ -220,11 +228,19 @@
                                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="24 12">
                                                             <TextBlock HorizontalAlignment="Center" Foreground="#666" Text="Update impact" />
                                                             <Label HorizontalAlignment="Center" Margin="0" Style="{StaticResource Label}" FontSize="40" Content="{Binding Results.CurrentValue.RequiredDownload, Converter={StaticResource SizeConverter}}" />
-                                                            <view:RelativeIndicator HorizontalAlignment="Center" ToolTip="The relation between the required download size compared to the new total package size (compressed)." IsReversed="True" OldValue="{Binding Results.CurrentValue.NewCompressedSize}" NewValue="{Binding Results.CurrentValue.RequiredDownload}" />
+                                                            <view:RelativeIndicator ToolTipService.ShowDuration="40000" ToolTipService.InitialShowDelay="0" HorizontalAlignment="Center" IsReversed="True" OldValue="{Binding Results.CurrentValue.NewCompressedSize}" NewValue="{Binding Results.CurrentValue.RequiredDownload}">
+                                                                <view:RelativeIndicator.ToolTip>
+                                                                    <ToolTip Width="200" Placement="Bottom">
+                                                                        <Border Padding="4">
+                                                                            <TextBlock Text="The relation between the required download size compared to the new total package size (compressed). Negative values are expected, the less the number is the more the user benefits from the differential update." TextWrapping="Wrap"></TextBlock>
+                                                                        </Border>
+                                                                    </ToolTip>
+                                                                </view:RelativeIndicator.ToolTip>
+                                                            </view:RelativeIndicator>
                                                         </StackPanel>
                                                     </Border>
                                                     <Border Padding="8" Margin="16 0 0 0" VerticalAlignment="Center">
-                                                        <TextBlock TextWrapping="Wrap" Text="The approximated size of data that needs to be downloaded to perform an update." TextAlignment="Center"></TextBlock>
+                                                        <TextBlock TextWrapping="Wrap" Text="The approximated size of the data that needs to be downloaded to perform an update." TextAlignment="Center"></TextBlock>
                                                     </Border>
                                                 </DockPanel>
                                             </Border>

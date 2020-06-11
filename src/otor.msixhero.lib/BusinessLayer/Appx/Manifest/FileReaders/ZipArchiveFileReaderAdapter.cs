@@ -38,7 +38,11 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders
             var entry = msixPackage.GetEntry(filePath.Replace("\\", "/"));
             if (entry == null)
             {
-                throw new FileNotFoundException($"File {filePath} not found in MSIX package.");
+                entry = msixPackage.Entries.FirstOrDefault(e => string.Equals(e.FullName, filePath.Replace("\\", "/"), StringComparison.OrdinalIgnoreCase));
+                if (entry == null)
+                {
+                    throw new FileNotFoundException($"File {filePath} not found in MSIX package.");
+                }
             }
 
             return entry.Open();

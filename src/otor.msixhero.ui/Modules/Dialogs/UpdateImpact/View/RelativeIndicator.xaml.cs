@@ -58,7 +58,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
                 return;
             }
 
-            that.PART_Text.Text = $"-{100.0 - Math.Round((that.OldValue - that.NewValue) / that.OldValue, 2):0.00}%";
+            that.PART_Text.Text = $"-{Math.Round(100.0 * (that.OldValue - that.NewValue) / that.OldValue, 2):0.00}%";
             that.PART_Icon.Visibility = Visibility.Visible;
             that.PART_Icon.Fill = that.IsReversed ? Brushes.Green : Brushes.Red;
             ((RotateTransform) that.PART_Icon.RenderTransform).Angle = 180;
