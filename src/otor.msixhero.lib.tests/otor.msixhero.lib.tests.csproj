@@ -10,9 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix" />
     <None Remove="Resources\inno.exe" />
     <None Remove="Resources\nsis.exe" />
     <None Remove="UpdateImpact\update.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

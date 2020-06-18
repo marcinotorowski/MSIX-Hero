@@ -22,8 +22,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel
         {   
             var parsedParams = new PackageExpertSelection(parameters);
 #pragma warning disable 4014
-            this.Content.SelectedPackageManifestInfo.Load(this.Content.LoadPackage(parsedParams.Source, CancellationToken.None));
-            this.Content.SelectedPackageJsonInfo.Load(this.Content.LoadPackageJson(parsedParams.Source, CancellationToken.None));
+            var task = this.Content.LoadPackage(parsedParams.Source, CancellationToken.None);
+            this.Content.SelectedPackageManifestInfo.Load(task);
+
+            task.ContinueWith(t =>
+            {
+                if (t.IsFaulted || t.IsCanceled)
+                {
+                    return;
+                }
+
+                this.Content.SelectedPackageJsonInfo.Load(this.Content.LoadPackageJson(parsedParams.Source, task.Result.Model, CancellationToken.None));
+            });
 #pragma warning restore 4014
         }
 

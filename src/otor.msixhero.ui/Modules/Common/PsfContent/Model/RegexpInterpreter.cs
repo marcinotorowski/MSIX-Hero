@@ -47,24 +47,33 @@ namespace otor.msixhero.ui.Modules.Common.PsfContent.Model
             //    this.EditText = "";
             //    this.Result = InterpretationResult.Any;
             //}
-            else if (Regex.IsMatch(regex, @"^\^[a-zA-Z0-9_]$"))
+            else if (Regex.IsMatch(regex, @"^\^[a-zA-Z0-9_]+$\$?"))
             {
-                this.DisplayText = regex.Substring(1);
-                this.EditText = regex.Substring(1);
-                this.Result = InterpretationResult.StartsWith;
+                if (regex[regex.Length - 1] == '$')
+                {
+                    this.DisplayText = regex.Substring(1, regex.Length - 2);
+                    this.EditText = this.DisplayText;
+                    this.Result = InterpretationResult.Name;
+                }
+                else
+                {
+                    this.DisplayText = regex.Substring(1);
+                    this.EditText = this.DisplayText;
+                    this.Result = InterpretationResult.StartsWith;
+                }
             }
-            else if (Regex.IsMatch(regex, @"^\^?[a-zA-Z0-9_]\$$"))
+            else if (Regex.IsMatch(regex, @"^\^?[a-zA-Z0-9_]+\$$"))
             {
                 if (regex[0] == '^')
                 {
                     this.DisplayText = regex.Substring(1, regex.Length - 2);
-                    this.EditText = regex.Substring(1, regex.Length - 2);
+                    this.EditText = this.DisplayText;
                     this.Result = InterpretationResult.Name;
                 }
                 else
                 {
                     this.DisplayText = regex.Substring(0, regex.Length - 1);
-                    this.EditText = regex.Substring(0, regex.Length - 1);
+                    this.EditText = this.DisplayText;
                     this.Result = InterpretationResult.EndsWith;
                 }
             }

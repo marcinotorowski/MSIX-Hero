@@ -185,7 +185,7 @@
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
-                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
+                            <Setter TargetName="PART_Bit" Property="Text" Value="all" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -340,7 +340,7 @@
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
-                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
+                            <Setter TargetName="PART_Bit" Property="Text" Value="all" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -396,7 +396,7 @@
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
-                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
+                            <Setter TargetName="PART_Bit" Property="Text" Value="all" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
@@ -450,7 +450,7 @@
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.Unknown}">
-                            <Setter TargetName="PART_Bit" Property="Text" Value="any" />
+                            <Setter TargetName="PART_Bit" Property="Text" Value="all" />
                         </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using otor.msixhero.lib.Domain.Appx.Packages;
 
 namespace otor.msixhero.lib.BusinessLayer.Helpers
@@ -58,18 +59,15 @@ namespace otor.msixhero.lib.BusinessLayer.Helpers
                 {
                     case "Windows.FullTrustApplication":
 
-                        if (!string.IsNullOrEmpty(executable))
+                        if (!string.IsNullOrEmpty(executable) && string.Equals(".exe", Path.GetExtension(executable).ToLowerInvariant()))
                         {
-                            if (string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psflauncher64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psflauncher32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psflauncher.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psfrundll64.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psfrundll32.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psfrundll.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("ai_stubs\\aistub.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("ai_stubs\\aistubelevated.exe", executable, StringComparison.OrdinalIgnoreCase) ||
-                                string.Equals("psfmonitor.exe", executable, StringComparison.OrdinalIgnoreCase))
+                            executable = "\\" + executable; // to make sure we have a backslash for checking
+
+                            if (
+                                executable.IndexOf("\\psflauncher", StringComparison.OrdinalIgnoreCase) != -1 ||
+                                executable.IndexOf("\\psfrundll", StringComparison.OrdinalIgnoreCase) != -1 ||
+                                executable.IndexOf("\\ai_stubs", StringComparison.OrdinalIgnoreCase) != -1 ||
+                                executable.IndexOf("\\psfmonitor", StringComparison.OrdinalIgnoreCase) != -1)
                             {
                                 return MsixPackageType.BridgePsf;
                             }

@@ -128,9 +128,20 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
                 }
             }
 
-            if (fileReader.FileExists("config.json"))
+            var dir = Path.GetDirectoryName(originalEntryPoint);
+            string configJson;
+            if (string.IsNullOrEmpty(dir))
             {
-                using (var stream = fileReader.GetFile("config.json"))
+                configJson = "config.json";
+            }
+            else
+            {
+                configJson = Path.Combine(dir, "config.json");
+            }
+
+            if (fileReader.FileExists(configJson))
+            {
+                using (var stream = fileReader.GetFile(configJson))
                 {
                     using (var streamReader = new StreamReader(stream))
                     {
@@ -219,7 +230,12 @@ namespace otor.msixhero.lib.BusinessLayer.Appx
 
                 if (!regex.IsMatch(executable))
                 {
-                    continue;
+                    executable = Path.GetFileNameWithoutExtension(executable);
+
+                    if (!regex.IsMatch(executable))
+                    {
+                        continue;
+                    }
                 }
 
                 foreach (var fixup in p.Fixups ?? Enumerable.Empty<PsfFixup>())

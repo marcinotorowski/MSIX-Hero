@@ -10,8 +10,11 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
     {
         private AppxApplicationViewModel selectedFixup;
 
+        public AppxPackage Model { get; private set; }
+
         public PackageContentDetailsViewModel(AppxPackage model)
         {
+            this.Model = model;
             this.DisplayName = model.DisplayName;
             this.Description = model.Description;
             this.Publisher = model.Publisher;

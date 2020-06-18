@@ -4,6 +4,10 @@ using System.IO;
 using System.Text;
 using NUnit.Framework;
 using otor.msixhero.lib.BusinessLayer.Appx;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
+using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
+using otor.msixhero.lib.BusinessLayer.Helpers;
+using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Psf;
 
 namespace otor.msixhero.lib.tests
@@ -117,6 +121,25 @@ namespace otor.msixhero.lib.tests
             //Assert.AreEqual(0, read.OtherFixups.Count);
 
 
+        }
+
+        [Test]
+        public void ReadFromFile()
+        {
+            var file = Path.Combine("Resources", "ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix");
+
+            using (IAppxFileReader appxFileReader = new ZipArchiveFileReaderAdapter(file))
+            {
+                var manifestReader = new AppxManifestReader();
+                var manifest = manifestReader.Read(appxFileReader).GetAwaiter().GetResult();
+
+                var app = manifest.Applications[0];
+                var type = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, manifest.IsFramework);
+                Assert.AreEqual(MsixPackageType.BridgePsf, type);
+
+                Assert.AreEqual(app.Psf.Executable, "VFS\\AppVPackageDrive\\ConEmuPack\\ConEmu64.exe");
+                Assert.AreEqual("VFS\\AppVPackageDrive\\ConEmuPack\\PsfLauncher1.exe", app.Executable);
+            }
         }
     }
 }

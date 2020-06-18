@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
+using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.BusinessLayer.State;
+using otor.msixhero.lib.Domain.Appx.Manifest.Full;
+using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Psf;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
@@ -93,19 +96,30 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
-        public async Task<PsfContentViewModel> LoadPackageJson(IAppxFileReader source, CancellationToken cancellationToken = default)
+        public async Task<PsfContentViewModel> LoadPackageJson(IAppxFileReader source, AppxPackage manifest, CancellationToken cancellationToken = default)
         {
-            if (!source.FileExists("config.json"))
+            var paths = manifest.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, manifest.IsFramework) == MsixPackageType.BridgePsf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
+            paths.Add(string.Empty);
+
+            foreach (var items in paths)
             {
-                return null;
+                var configJsonPath = string.IsNullOrWhiteSpace(items)
+                    ? "config.json"
+                    : Path.Combine(items, "config.json");
+                if (!source.FileExists(configJsonPath))
+                {
+                    continue;
+                }
+
+                using var stringReader = new StreamReader(source.GetFile(configJsonPath));
+                var all = await stringReader.ReadToEndAsync().ConfigureAwait(false);
+                var psfSerializer = new PsfConfigSerializer();
+
+                var configJson = psfSerializer.Deserialize(all);
+                return new PsfContentViewModel(configJson);
             }
 
-            using var stringReader = new StreamReader(source.GetFile("config.json"));
-            var all = await stringReader.ReadToEndAsync().ConfigureAwait(false);
-            var psfSerializer = new PsfConfigSerializer();
-
-            var configJson = psfSerializer.Deserialize(all);
-            return new PsfContentViewModel(configJson);
+            return null;
         }
 
         async void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
@@ -118,8 +132,10 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 
             var manifest = navigation.SelectedManifests.First();
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
-            await this.SelectedPackageManifestInfo.Load(this.LoadPackage(fileReader, CancellationToken.None)).ConfigureAwait(false);
-            await this.SelectedPackageJsonInfo.Load(this.LoadPackageJson(fileReader, CancellationToken.None)).ConfigureAwait(false);
+            var task = this.LoadPackage(fileReader, CancellationToken.None);
+            await this.SelectedPackageManifestInfo.Load(task).ConfigureAwait(false);
+            var details = await task.ConfigureAwait(false);
+            await this.SelectedPackageJsonInfo.Load(this.LoadPackageJson(fileReader, details.Model, CancellationToken.None)).ConfigureAwait(false);
         }
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
