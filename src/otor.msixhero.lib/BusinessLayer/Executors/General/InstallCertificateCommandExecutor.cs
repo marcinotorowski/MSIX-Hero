@@ -26,7 +26,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.General
 
         public override async Task Execute(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             await manager.InstallCertificate(this.command.FilePath, cancellationToken, progress).ConfigureAwait(false);
         }
