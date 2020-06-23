@@ -66,6 +66,132 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                 cancellationToken);
         }
 
+        public async Task<TrustStatus> IsTrusted(string certificateFileOrSignedFile, CancellationToken cancellationToken = default)
+        {
+            X509Certificate2Collection certObject = null;
+            X509Certificate2 preferredCertObject = null;
+
+            try
+            {
+                switch (Path.GetExtension(certificateFileOrSignedFile).ToLowerInvariant())
+                {
+                    case ".msix":
+                    case ".appx":
+                    case ".exe":
+                    case ".dll":
+                    case ".appxbundle":
+                    case ".msixbundle":
+                        Logger.Info("Verifying certificate from a signable file {0}...", certificateFileOrSignedFile);
+
+                        try
+                        {
+                            // certObject = X509Certificate.CreateFromSignedFile(certificateFileOrSignedFile);
+                            certObject = new X509Certificate2Collection();
+                            certObject.Import(certificateFileOrSignedFile);
+                            if (certObject.Count > 1)
+                            {
+                                preferredCertObject = new X509Certificate2(X509Certificate.CreateFromSignedFile(certificateFileOrSignedFile));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile, e);
+                            return new TrustStatus();
+                        }
+                        break;
+                    case ".cer":
+                    case ".p12":
+                    case ".pfx":
+                    case ".p7x":
+                        Logger.Info("Verifying certificate file {0}...", certificateFileOrSignedFile);
+
+                        try
+                        {
+                            // certObject = X509Certificate.CreateFromCertFile(certificateFileOrSignedFile);
+                            certObject = new X509Certificate2Collection();
+                            certObject.Import(certificateFileOrSignedFile);
+                            if (certObject.Count > 1)
+                            {
+                                preferredCertObject = new X509Certificate2(X509Certificate.CreateFromCertFile(certificateFileOrSignedFile));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile, e);
+                            return new TrustStatus();
+                        }
+
+                        break;
+                    default:
+                        try
+                        {
+                            Logger.Info("Trying to verify the certificate from a potentially signable file {0}...", certificateFileOrSignedFile);
+                            // certObject = X509Certificate.CreateFromSignedFile(certificateFileOrSignedFile);
+                            certObject = new X509Certificate2Collection();
+                            certObject.Import(certificateFileOrSignedFile);
+                            if (certObject.Count > 1)
+                            {
+                                preferredCertObject = new X509Certificate2(X509Certificate.CreateFromSignedFile(certificateFileOrSignedFile));
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Logger.Warn("The file {0} does not seem to be signed.", certificateFileOrSignedFile);
+                            Logger.Info("Trying to verify the certificate from a potential certificate file {0}...", certificateFileOrSignedFile);
+
+                            try
+                            {
+                                // certObject = X509Certificate.CreateFromCertFile(certificateFileOrSignedFile);
+                                certObject = new X509Certificate2Collection();
+                                certObject.Import(certificateFileOrSignedFile);
+                                if (certObject.Count > 1)
+                                {
+                                    preferredCertObject = new X509Certificate2(X509Certificate.CreateFromCertFile(certificateFileOrSignedFile));
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile, e);
+                                return new TrustStatus();
+                            }
+                        }
+
+                        break;
+                }
+
+                if (certObject.Count == 0)
+                {
+                    Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile + " because the list of certificates was empty.");
+                    return new TrustStatus();
+                }
+
+                // var cert5092 = new X509Certificate2(certObject);
+                cancellationToken.ThrowIfCancellationRequested();
+                // ReSharper disable once AccessToDisposedClosure
+                
+                var validated = await Task.Run(() => certObject.OfType<X509Certificate2>().FirstOrDefault(c => c.Verify()), cancellationToken).ConfigureAwait(false);
+                if (validated != null)
+                {
+                    Logger.Info("The certificate seems to be valid.");
+                    return new TrustStatus(true, (preferredCertObject ?? validated).GetNameInfo(X509NameType.SimpleName, false));
+                }
+                else
+                {
+                    Logger.Info("The certificate seems to be invalid.");
+                    return new TrustStatus(false, (preferredCertObject ?? certObject[0]).GetNameInfo(X509NameType.SimpleName, false));
+                }
+            }
+            finally
+            {
+                foreach (var item in certObject?.OfType<X509Certificate2>() ?? Enumerable.Empty<X509Certificate2>())
+                {
+                    item.Dispose();
+                }
+
+                preferredCertObject?.Dispose();
+            }
+        }
+
         public async Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certStoreType, bool onlyValid = true, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             StoreLocation loc;
@@ -124,6 +250,30 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
 
             store.Close();
             return list;
+        }
+
+        public async Task Trust(string certificateFileOrSignedFile, CancellationToken cancellationToken = default)
+        {
+            switch (Path.GetExtension(certificateFileOrSignedFile.ToLowerInvariant()))
+            {
+                case ".msix":
+                case ".appx":
+                case ".exe":
+                case ".dll":
+                case ".appxbundle":
+                case ".msixbundle":
+                    await this.ImportCertificateFromMsix(certificateFileOrSignedFile, cancellationToken).ConfigureAwait(false);
+                    break;
+
+                case ".cer":
+                case ".p12":
+                case ".pfx":
+                case ".p7x":
+                    await this.InstallCertificate(certificateFileOrSignedFile, cancellationToken).ConfigureAwait(false);
+                    break;
+                default:
+                    throw new NotSupportedException("This file is not supported.");
+            }
         }
 
         public async Task InstallCertificate(string certificateFile, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

@@ -22,6 +22,7 @@ namespace otor.msixhero.lib.Domain.Commands
     [XmlInclude(typeof(SetPackageGrouping))]
     [XmlInclude(typeof(GetPackageDetails))]
     [XmlInclude(typeof(InstallCertificate))]
+    [XmlInclude(typeof(TrustPublisher))]
     public abstract class VoidCommand
     {
     }

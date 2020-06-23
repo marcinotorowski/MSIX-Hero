@@ -1,0 +1,139 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:otor.msixhero.ui.Modules.Common.SignatureStatus"
+                    xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
+                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers">
+    <Style TargetType="local:SignatureStatusControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:SignatureStatusControl">
+                    <ControlTemplate.Resources>
+                        <Style TargetType="Hyperlink" x:Key="Hyperlink">
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="TextDecorations" Value="None" />
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                    <Setter Property="Cursor" Value="Hand" />
+                                    <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ControlTemplate.Resources>
+                    <Border Background="{TemplateBinding Background}" Padding="6">
+                        <DockPanel>
+                            <Canvas Width="16" Height="16" VerticalAlignment="Center" Margin="0 0 4 0">
+                                <Ellipse x:Name="PART_Loading" Width="14" Height="14" Canvas.Top="1" />
+                                <TextBlock x:Name="PART_Glyph" Text="&#x2713;" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-2" Foreground="White" Width="14" Canvas.Left="2" TextAlignment="Center" Canvas.Top="4" FontSize="9" />
+                            </Canvas>
+
+                            <Button Padding="4 2" x:Name="PART_TrustMe" Margin="4 -4 -4 0" Command="{TemplateBinding TrustMeCommand}" DockPanel.Dock="Right" VerticalAlignment="Center" VerticalContentAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+
+                                    <Image VerticalAlignment="Center" 
+                                           Margin="0 -2"
+                                           Source="{x:Static helpers:ShieldIcon.Source}" 
+                                           Stretch="None" 
+                                           UseLayoutRounding="True" 
+                                           SnapsToDevicePixels="True">
+                                    </Image>
+
+                                    <TextBlock Text="Trust this publisher" Margin="4 0 0 0" VerticalAlignment="Center" />
+
+                                </StackPanel>
+                            </Button>
+
+                            <TextBlock x:Name="SignedBy" VerticalAlignment="Center">
+                                <Run x:Name="PART_IsSigned" Text="Signed by" />
+                                <Hyperlink Command="{TemplateBinding ViewPropertiesCommand}" Style="{StaticResource Hyperlink}" x:Name="PART_Hyperlink">
+                                    <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Trustee, Mode=OneWay}" />
+                                </Hyperlink>
+                                <Run x:Name="PART_IsTrusted" Text="(untrusted publisher)" />
+                            </TextBlock>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ViewPropertiesCommand" Value="{x:Null}">
+                            <Setter TargetName="PART_Hyperlink" Property="IsEnabled" Value="False" />
+                        </Trigger>
+                        <Trigger Property="IsChainLoaded" Value="False">
+                            <Setter TargetName="PART_Hyperlink" Property="IsEnabled" Value="False" />
+                        </Trigger>
+                        <Trigger Property="Trustee" Value="{x:Null}">
+                            <Setter TargetName="PART_Hyperlink" Property="IsEnabled" Value="False" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsTrusted" Value="True" />
+                                <Condition Property="IsChainLoaded" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Text" TargetName="PART_IsSigned" Value="Signed by" />
+                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="(trusted publisher)" />
+                                <Setter Property="Fill" TargetName="PART_Loading" Value="Green" />
+                                <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+
+                        <Trigger Property="TrustMeCommand" Value="{x:Null}">
+                            <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsTrusted" Value="False" />
+                                <Condition Property="IsChainLoaded" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Text" TargetName="PART_IsSigned" Value="Signed by" />
+                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="(untrusted publisher)" />
+                                <Setter Property="Fill" TargetName="PART_Loading" Value="IndianRed" />
+                                <Setter Property="Text" TargetName="PART_Glyph" Value="&#10799;" />
+                                <Setter Property="FontSize" TargetName="PART_Glyph" Value="11" />
+                                <Setter Property="Canvas.Top" TargetName="PART_Glyph" Value="1" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Trustee" Value="{x:Null}" />
+                                <Condition Property="IsChainLoaded" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter Property="Text" TargetName="PART_IsSigned" Value="Unsigned" />
+                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="" />
+                                <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
+                                <Setter Property="Text" TargetName="PART_Glyph" Value="&#10799;" />
+                                <Setter Property="FontSize" TargetName="PART_Glyph" Value="11" />
+                                <Setter Property="Canvas.Top" TargetName="PART_Glyph" Value="1" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+
+                        <Trigger Property="IsChainLoaded" Value="False">
+                            <Setter Property="Background" Value="#efefef" />
+                            <Setter Property="Fill" TargetName="PART_Loading" Value="#ccc" />
+                            <Setter Property="Text" TargetName="PART_IsSigned" Value="Getting certificate details..." />
+                            <Setter Property="Text" TargetName="PART_IsTrusted" Value="" />
+                            <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.4" />
+            </Trigger>
+            <Trigger Property="IsTrusted" Value="True">
+                <Setter Property="Background" Value="#eeffee" />
+            </Trigger>
+            <Trigger Property="IsTrusted" Value="False">
+                <Setter Property="Background" Value="LightYellow" />
+            </Trigger>
+            <Trigger Property="IsChainLoaded" Value="False">
+                <Setter Property="Background" Value="#efefef" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

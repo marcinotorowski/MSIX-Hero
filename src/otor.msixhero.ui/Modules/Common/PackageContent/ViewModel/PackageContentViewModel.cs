@@ -8,16 +8,21 @@ using System.Windows.Input;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
 using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
 using otor.msixhero.lib.BusinessLayer.Helpers;
+using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Psf;
+using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Commands.Packages.Grid;
+using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Helpers;
+using otor.msixhero.ui.Modules.Common.PackageContent.Helpers;
 using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
@@ -30,12 +35,26 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
     public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware
     {
         private readonly IApplicationStateManager stateManager;
+        private readonly ISelfElevationManagerFactory<ISigningManager> signManager;
+        private readonly IInteractionService interactionService;
         private ICommand findUsers;
+        private ICommand trustMe;
+        private ICommand showPropertiesCommand;
         private string fullPackageName;
+        private bool isTrusting;
 
-        public PackageContentViewModel(IApplicationStateManager stateManager, IInteractionService interactionService, IConfigurationService configurationService)
+        private string certificateFile;
+        private IAppxFileReader packageSource;
+
+        public PackageContentViewModel(
+            IApplicationStateManager stateManager,
+            ISelfElevationManagerFactory<ISigningManager> signManager,
+            IInteractionService interactionService, 
+            IConfigurationService configurationService)
         {
             this.stateManager = stateManager;
+            this.signManager = signManager;
+            this.interactionService = interactionService;
             this.CommandHandler = new PackageContentCommandHandler(configurationService, interactionService);
         }
 
@@ -47,6 +66,52 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 
         public AsyncProperty<PsfContentViewModel> SelectedPackageJsonInfo { get; } = new AsyncProperty<PsfContentViewModel>();
         
+        public AsyncProperty<TrustStatus> TrustStatus { get; } = new AsyncProperty<TrustStatus>();
+
+        public bool IsTrusting
+        {
+            get => this.isTrusting;
+            set => this.SetField(ref this.isTrusting, value);
+        }
+        
+        public ICommand TrustMeCommand
+        {
+            get
+            {
+                return this.trustMe ??= new DelegateCommand(async () =>
+                {
+                    if (this.interactionService.Confirm("Are you sure you want to add this publisher to the list of trusted publishers (machine-wide)?", type: InteractionType.Question, buttons:InteractionButton.YesNo) != InteractionResult.Yes)
+                    {
+                        return;
+                    }
+
+                    try
+                    {
+                        this.IsTrusting = true;
+
+                        await this.stateManager.CommandExecutor.ExecuteAsync(new TrustPublisher(this.certificateFile), CancellationToken.None).ConfigureAwait(false);
+                        await this.TrustStatus.Load(this.LoadSignature(this.packageSource, CancellationToken.None)).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        this.IsTrusting = false;
+                    }
+                },
+                () => this.certificateFile != null);
+            }
+        }
+        
+        public ICommand ShowPropertiesCommand
+        {
+            get
+            {
+                return this.showPropertiesCommand ??= new DelegateCommand(() =>
+                {
+                    WindowsExplorerCertificateHelper.ShowFileSecurityProperties(this.certificateFile, IntPtr.Zero);
+                }, () => this.certificateFile != null);
+            }
+        }
+
         public ICommand FindUsers
         {
             get
@@ -65,13 +130,44 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                     });
             }
         }
-        
+
+        private async Task<TrustStatus> LoadSignature(IAppxFileReader source, CancellationToken cancellationToken)
+        {
+            if (source is ZipArchiveFileReaderAdapter zipFileReader)
+            {
+                this.certificateFile = zipFileReader.PackagePath;
+                var manager = await this.signManager.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                var signTask = manager.IsTrusted(zipFileReader.PackagePath, cancellationToken);
+                await this.TrustStatus.Load(signTask);
+                return await signTask.ConfigureAwait(false);
+            }
+
+            if (source is IAppxDiskFileReader fileReader)
+            {
+                var file = new FileInfo(Path.Combine(fileReader.RootDirectory, "AppxSignature.p7x"));
+                if (file.Exists)
+                {
+                    this.certificateFile = file.FullName;
+                    var manager = await this.signManager.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                    var signTask = manager.IsTrusted(file.FullName, cancellationToken);
+                    await this.TrustStatus.Load(signTask);
+                    return await signTask.ConfigureAwait(false);
+                }
+            }
+
+            return new TrustStatus();
+        }
+
         public async Task<PackageContentDetailsViewModel> LoadPackage(IAppxFileReader source, CancellationToken cancellationToken = default)
         {
+            this.certificateFile = null;
+            this.packageSource = source;
             if (!source.FileExists("AppxManifest.xml"))
             {
                 throw new FileNotFoundException("Could not find AppxManifest.xml");
             }
+
+            var signatureTask = this.LoadSignature(source, cancellationToken);
 
             var appxReader = new AppxManifestReader();
             var appxManifest = await appxReader.Read(source, cancellationToken).ConfigureAwait(false);
@@ -93,6 +189,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                 }
             }
 
+            await signatureTask.ConfigureAwait(false);
             return new PackageContentDetailsViewModel(appxManifest);
         }
 

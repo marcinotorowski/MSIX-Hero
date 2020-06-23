@@ -12,7 +12,9 @@
   <ItemGroup>
     <None Remove="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix" />
     <None Remove="Resources\inno.exe" />
+    <None Remove="Resources\MSIX.Commander_1.0.7.5-x64.msix" />
     <None Remove="Resources\nsis.exe" />
+    <None Remove="Resources\wintrust.dll.ini" />
     <None Remove="UpdateImpact\update.xml" />
   </ItemGroup>
 
@@ -20,15 +22,18 @@
     <Content Include="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\wintrust.dll.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\inno.exe">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\nsis.exe">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Content Include="Resources\inno.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\nsis.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="UpdateImpact\update.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -50,6 +55,12 @@
 
   <ItemGroup>
     <Folder Include="SetupDetector\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\MSIX.Commander_1.0.7.5-x64.msix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

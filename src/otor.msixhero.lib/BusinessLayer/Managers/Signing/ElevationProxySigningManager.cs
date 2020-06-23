@@ -28,6 +28,11 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
             return client.Execute(new InstallCertificate(certificateFilePath), cancellationToken, progress);
         }
 
+        public Task Trust(string certificateOrSignedFilePath, CancellationToken cancellationToken = default)
+        {
+            return client.Execute(new TrustPublisher(certificateOrSignedFilePath), cancellationToken);
+        }
+
         public async Task ImportCertificateFromMsix(string msixFile, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var manager = await this.managerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
@@ -40,6 +45,13 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
             var manager = await this.managerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             await manager.CreateSelfSignedCertificate(outputDirectory, publisherName, publisherDisplayName, password, cancellationToken, progress).ConfigureAwait(false);
+        }
+
+        public async Task<TrustStatus> IsTrusted(string certificateFileOrSignedFile, CancellationToken cancellationToken = default)
+        {
+            var manager = await this.managerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            return await manager.IsTrusted(certificateFileOrSignedFile, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<List<PersonalCertificate>> GetCertificatesFromStore(CertificateStoreType certificateStoreType, bool onlyValid = true, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

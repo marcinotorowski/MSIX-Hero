@@ -59,6 +59,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
             this.CommandExecutorFactories[typeof(AddPackage)] = action => new AddPackageCommandExecutor((AddPackage)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(GetPackageDetails)] = action => new GetPackageDetailsCommandExecutor((GetPackageDetails)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(InstallCertificate)] = action => new InstallCertificateCommandExecutor((InstallCertificate)action, this.SigningManagerFactory, this.WritableApplicationStateManager);
+            this.CommandExecutorFactories[typeof(TrustPublisher)] = action => new TrustPublisherCommandExecutor((TrustPublisher)action, this.SigningManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(AddVolume)] = action => new AddVolumeCommandExecutor((AddVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(SetDefaultVolume)] = action => new SetDefaultVolumeCommandExecutor((SetDefaultVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(DismountVolume)] = action => new DismountVolumeCommandExecutor((DismountVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
