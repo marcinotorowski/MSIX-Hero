@@ -17,7 +17,7 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixSdkWrapper));
         
-        public async Task SignPackageWithPfx(string filePath, string algorithmType, string pfxPath, string password, string timestampUrl, CancellationToken cancellationToken = default)
+        public async Task SignPackageWithPfx(IEnumerable<string> filePaths, string algorithmType, string pfxPath, string password, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var remove = -1;
             var removeLength = 0;
@@ -42,7 +42,10 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                 signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
             }
 
-            signToolArguments.AppendFormat(" \"{0}\"", filePath);
+            foreach (var filePath in filePaths)
+            {
+                signToolArguments.AppendFormat(" \"{0}\"", filePath);
+            }
 
             var args = signToolArguments.ToString();
             var maskedArgs = remove < 0 ? args : args.Remove(remove, removeLength).Insert(remove, "<removed-from-log>");
@@ -61,14 +64,19 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                 var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
                 if (line != null)
                 {
-                    throw new InvalidOperationException($"The package could not be signed (exit code = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}");
+                    throw new SdkException($"The package could not be signed (exit code = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                }
+
+                if (e.ExitCode != 0)
+                {
+                    throw new SdkException(e.Message, e.ExitCode, e);
                 }
 
                 throw;
             }
         }
         
-        public async Task SignPackageWithPersonal(string filePath, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
+        public async Task SignPackageWithPersonal(IEnumerable<string> filePaths, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder();
             
@@ -87,7 +95,11 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
 
             signToolArguments.Append(" /a /s MY ");
             signToolArguments.AppendFormat(" /sha1 \"{0}\"", thumbprint);
-            signToolArguments.AppendFormat(" \"{0}\"", filePath);
+
+            foreach (var filePath in filePaths)
+            {
+                signToolArguments.AppendFormat(" \"{0}\"", filePath);
+            }
 
             var args = signToolArguments.ToString();
             var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
@@ -104,7 +116,12 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                 var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
                 if (line != null)
                 {
-                    throw new InvalidOperationException($"The package could not be signed (exit code = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}");
+                    throw new SdkException($"The package could not be signed (exit code = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                }
+
+                if (e.ExitCode != 0)
+                {
+                    throw new SdkException(e.Message, e.ExitCode, e);
                 }
 
                 throw;
@@ -340,7 +357,7 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                         }
                     }
 
-                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
+                    throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", e.ExitCode);
                 }
 
                 throw;

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.adminhelper",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{FEA96B7F-E9D5-449F-83EE-789116B1BD9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "External.EricZimmerman.Registry", "src\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj", "{EA08C739-61A2-402A-9621-590DBF78C04A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "External.EricZimmerman.Registry", "src\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj", "{EA08C739-61A2-402A-9621-590DBF78C04A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otor.msixhero.cmd", "src\otor.msixhero.cmd\otor.msixhero.cmd.csproj", "{6C71D451-F783-4ADA-94AB-BCEE370F57AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{EA08C739-61A2-402A-9621-590DBF78C04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA08C739-61A2-402A-9621-590DBF78C04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA08C739-61A2-402A-9621-590DBF78C04A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

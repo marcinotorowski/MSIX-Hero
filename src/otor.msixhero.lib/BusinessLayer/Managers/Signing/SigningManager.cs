@@ -173,12 +173,22 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                 if (validated != null)
                 {
                     Logger.Info("The certificate seems to be valid.");
-                    return new TrustStatus(true, (preferredCertObject ?? validated).GetNameInfo(X509NameType.SimpleName, false));
+                    return new TrustStatus(true, (preferredCertObject ?? validated).GetNameInfo(X509NameType.SimpleName, false))
+                    {
+                        Expires = (preferredCertObject ?? validated).NotAfter,
+                        Issuer = (preferredCertObject ?? validated).IssuerName.Name,
+                        Thumbprint = (preferredCertObject ?? validated).Thumbprint
+                    };
                 }
                 else
                 {
                     Logger.Info("The certificate seems to be invalid.");
-                    return new TrustStatus(false, (preferredCertObject ?? certObject[0]).GetNameInfo(X509NameType.SimpleName, false));
+                    return new TrustStatus(false, (preferredCertObject ?? certObject[0]).GetNameInfo(X509NameType.SimpleName, false))
+                    {
+                        Expires = (preferredCertObject ?? certObject[0]).NotAfter,
+                        Issuer = (preferredCertObject ?? certObject[0]).IssuerName.Name,
+                        Thumbprint = (preferredCertObject ?? certObject[0]).Thumbprint
+                    };
                 }
             }
             finally
@@ -376,7 +386,8 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
 
                 var sdk = new MsixSdkWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
-                await sdk.SignPackageWithPersonal(localCopy, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
+
+                await sdk.SignPackageWithPersonal(new[] { localCopy }, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
 
                 progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
@@ -442,7 +453,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
 
                 var sdk = new MsixSdkWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
-                await sdk.SignPackageWithPfx(localCopy, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
+                await sdk.SignPackageWithPfx(new [] { localCopy  }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
                 progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
@@ -523,8 +534,25 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                 cmd.AddParameter("ImportToStore");
             }
 
-            using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
-            return true;
+            try
+            {
+                using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
+                return true;
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                if (importToStore)
+                {
+                    if (e.InnerException != null)
+                    {
+                        throw new UnauthorizedAccessException(e.Message + ". Did you start MSIX Hero as administrator?", e.InnerException);
+                    }
+
+                    throw new UnauthorizedAccessException(e.Message + ". Did you start MSIX Hero as administrator?");
+                }
+
+                throw;
+            }
         }
 
         private static PersonalCertificate CreateFromX509(X509Certificate2 certificate, CertificateStoreType certStoreType)
@@ -606,7 +634,8 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                     {
                         var xmlDocument = new XmlDocument();
                         xmlDocument.Load(stream);
-                        var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
+                        var identity =
+                            xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
 
                         var publisher = identity.Attributes["Publisher"];
                         if (publisher == null)
@@ -623,29 +652,39 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                             var version = identity.Attributes["Version"];
                             if (version == null)
                             {
-                                throw new FormatException("The attribute Version does not exist in the package identity element. The manifest seems to be corrupted.");
+                                throw new FormatException(
+                                    "The attribute Version does not exist in the package identity element. The manifest seems to be corrupted.");
                             }
                             else
                             {
                                 var content = version.InnerText;
                                 if (!Version.TryParse(content, out var parsedVersion))
                                 {
-                                    throw new FormatException($"Version {content} is not a valid version string. The manifest seems to be corrupted.");
+                                    throw new FormatException(
+                                        $"Version {content} is not a valid version string. The manifest seems to be corrupted.");
                                 }
 
                                 switch (increaseVersion)
                                 {
                                     case IncreaseVersionMethod.Major:
-                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major) + 1, Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build), Math.Max(0, parsedVersion.Revision));
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major) + 1,
+                                            Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build),
+                                            Math.Max(0, parsedVersion.Revision));
                                         break;
                                     case IncreaseVersionMethod.Minor:
-                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major), Math.Max(0, parsedVersion.Minor) + 1, Math.Max(0, parsedVersion.Build), Math.Max(0, parsedVersion.Revision));
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major),
+                                            Math.Max(0, parsedVersion.Minor) + 1, Math.Max(0, parsedVersion.Build),
+                                            Math.Max(0, parsedVersion.Revision));
                                         break;
                                     case IncreaseVersionMethod.Build:
-                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major), Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build) + 1, Math.Max(0, parsedVersion.Revision));
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major),
+                                            Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build) + 1,
+                                            Math.Max(0, parsedVersion.Revision));
                                         break;
                                     case IncreaseVersionMethod.Revision:
-                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major), Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build), Math.Max(0, parsedVersion.Revision) + 1);
+                                        parsedVersion = new Version(Math.Max(0, parsedVersion.Major),
+                                            Math.Max(0, parsedVersion.Minor), Math.Max(0, parsedVersion.Build),
+                                            Math.Max(0, parsedVersion.Revision) + 1);
                                         break;
                                 }
 
@@ -673,7 +712,8 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                     File.Delete(manifestFilePath);
 
                     cancellationToken.ThrowIfCancellationRequested();
-                    await File.WriteAllTextAsync(manifestFilePath, newXmlContent, cancellationToken).ConfigureAwait(false);
+                    await File.WriteAllTextAsync(manifestFilePath, newXmlContent, cancellationToken)
+                        .ConfigureAwait(false);
 
                     if (File.Exists(localCopy))
                     {
@@ -683,6 +723,10 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                     Logger.Debug("Packing {0} to {1}.", tempDirectory, localCopy);
                     cancellationToken.ThrowIfCancellationRequested();
                     await sdk.PackPackageDirectory(tempDirectory, localCopy, true, true, cancellationToken).ConfigureAwait(false);
+                }
+                catch (SdkException e)
+                {
+                    throw new SdkException("Could not update the package manifest. " + e.Message, e.ExitCode, e);
                 }
                 finally
                 {

@@ -19,11 +19,13 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Detection
             if (!namespaceManager.HasNamespace("uap4"))
             {
                 namespaceManager.AddNamespace("uap4", "http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
+                modifiedDocument.DocumentElement.SetAttribute("xmlns:uap4", "http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
             }
 
             if (!namespaceManager.HasNamespace("build"))
             {
                 namespaceManager.AddNamespace("build", "http://schemas.microsoft.com/developer/appx/2015/build");
+                modifiedDocument.DocumentElement.SetAttribute("xmlns:build", "http://schemas.microsoft.com/developer/appx/2015/build");
             }
 
             if (!namespaceManager.HasNamespace(DefaultNamespacePrefix))
