@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Crypt;
 using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
@@ -38,7 +40,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
                 this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration.ConfirmDeletion),
-                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, false),
+                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true),
                 this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
                 this.ManifestEditorPath = new ChangeableFileProperty(interactionService, config.Editing.ManifestEditor.Resolved),
                 this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
@@ -173,6 +175,30 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                 if (this.CertificateSelector.PfxPath.IsTouched)
                 {
                     newConfiguration.Signing.PfxPath.Resolved = this.CertificateSelector.PfxPath.CurrentValue;
+                }
+
+                if (this.CertificateSelector.Password.IsTouched)
+                {
+                    if (this.CertificateSelector.Password?.CurrentValue == null || this.CertificateSelector.Password.CurrentValue.Length == 0)
+                    {
+                        newConfiguration.Signing.EncodedPassword = null;
+                    }
+                    else
+                    {
+                        var valuePtr = IntPtr.Zero;
+                        try
+                        {
+                            valuePtr = Marshal.SecureStringToGlobalAllocUnicode(this.CertificateSelector.Password.CurrentValue);
+
+                            var encoder = new Crypto();
+                            // newConfiguration.Signing.EncodedPassword = encoder.EncryptString(Marshal.PtrToStringUni(valuePtr), "$%!!ASddahs55839AA___ąółęńśSdcvv");
+                            newConfiguration.Signing.EncodedPassword = encoder.Protect(Marshal.PtrToStringUni(valuePtr));
+                        }
+                        finally
+                        {
+                            Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
+                        }
+                    }
                 }
 
                 if (this.CertificateSelector.Store.IsTouched)

@@ -31,5 +31,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name = "pfx")]
         public ResolvableFolder.ResolvablePath PfxPath { get; set; }
+
+        [DataMember(Name = "encodedPassword")]
+        public string EncodedPassword { get; set; }
     }
 }

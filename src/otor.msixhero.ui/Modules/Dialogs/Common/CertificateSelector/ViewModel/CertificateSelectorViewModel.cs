@@ -8,6 +8,8 @@ using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Domain.Appx.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Crypt;
+using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Domain;
 using otor.msixhero.ui.Helpers;
@@ -16,6 +18,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 {
     public class CertificateSelectorViewModel : ChangeableContainer
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(CertificateSelectorViewModel));
+
         private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
 
         public CertificateSelectorViewModel(
@@ -31,7 +35,29 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source );
             this.Store.ValueChanged += StoreOnValueChanged;
             this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};
-            this.Password = new ChangeableProperty<SecureString>();
+
+            var initialPassword = signConfig.EncodedPassword;
+            SecureString initialSecurePassword = null;
+            if (!string.IsNullOrEmpty(initialPassword))
+            {
+                var crypto = new Crypto();
+                try
+                {
+                    // initialPassword = crypto.DecryptString(initialPassword, "$%!!ASddahs55839AA___ąółęńśSdcvv");
+                    initialPassword = crypto.Unprotect(initialPassword);
+                    initialSecurePassword = new SecureString();
+                    foreach (var p in initialPassword ?? string.Empty)
+                    {
+                        initialSecurePassword.AppendChar(p);
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.Warn("The encrypted password from settings could not be decrypted.");
+                }
+            }
+
+            this.Password = new ChangeableProperty<SecureString>(initialSecurePassword);
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);

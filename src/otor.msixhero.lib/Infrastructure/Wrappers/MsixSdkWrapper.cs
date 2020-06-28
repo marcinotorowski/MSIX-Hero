@@ -173,7 +173,7 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                 path = Path.Combine(baseDir, localName);
                 if (!File.Exists(path))
                 {
-                    throw new FileNotFoundException($"Could not locale SDK part {path}.", path);
+                    throw new FileNotFoundException($"Could not locate SDK part {path}.", path);
                 }
             }
 
