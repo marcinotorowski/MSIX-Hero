@@ -172,12 +172,12 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
 
             if (this.CertificateSelector.IsTouched)
             {
-                if (this.CertificateSelector.PfxPath.IsTouched)
+                if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.PfxPath.IsTouched)
                 {
                     newConfiguration.Signing.PfxPath.Resolved = this.CertificateSelector.PfxPath.CurrentValue;
                 }
 
-                if (this.CertificateSelector.Password.IsTouched)
+                if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.Password.IsTouched)
                 {
                     if (this.CertificateSelector.Password?.CurrentValue == null || this.CertificateSelector.Password.CurrentValue.Length == 0)
                     {
@@ -201,14 +201,14 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
                     }
                 }
 
+                if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.SelectedPersonalCertificate.IsTouched)
+                {
+                    newConfiguration.Signing.Thumbprint = this.CertificateSelector.SelectedPersonalCertificate.CurrentValue?.Model?.Thumbprint;
+                }
+
                 if (this.CertificateSelector.Store.IsTouched)
                 {
                     newConfiguration.Signing.Source = this.CertificateSelector.Store.CurrentValue;
-                }
-
-                if (this.CertificateSelector.SelectedPersonalCertificate.IsTouched)
-                {
-                    newConfiguration.Signing.Thumbprint = this.CertificateSelector.SelectedPersonalCertificate.CurrentValue?.Model?.Thumbprint;
                 }
 
                 if (this.CertificateSelector.TimeStamp.IsTouched)

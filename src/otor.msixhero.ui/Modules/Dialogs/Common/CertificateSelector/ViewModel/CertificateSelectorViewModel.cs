@@ -36,24 +36,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.Store.ValueChanged += StoreOnValueChanged;
             this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};
 
-            var initialPassword = signConfig.EncodedPassword;
             SecureString initialSecurePassword = null;
-            if (!string.IsNullOrEmpty(initialPassword))
+            if (this.Store.CurrentValue == CertificateSource.Pfx)
             {
-                var crypto = new Crypto();
-                try
+                var initialPassword = signConfig.EncodedPassword;
+                if (!string.IsNullOrEmpty(initialPassword))
                 {
-                    // initialPassword = crypto.DecryptString(initialPassword, "$%!!ASddahs55839AA___ąółęńśSdcvv");
-                    initialPassword = crypto.Unprotect(initialPassword);
-                    initialSecurePassword = new SecureString();
-                    foreach (var p in initialPassword ?? string.Empty)
+                    var crypto = new Crypto();
+                    try
                     {
-                        initialSecurePassword.AppendChar(p);
+                        // initialPassword = crypto.DecryptString(initialPassword, "$%!!ASddahs55839AA___ąółęńśSdcvv");
+                        initialPassword = crypto.Unprotect(initialPassword);
+                        initialSecurePassword = new SecureString();
+                        foreach (var p in initialPassword ?? string.Empty)
+                        {
+                            initialSecurePassword.AppendChar(p);
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    Logger.Warn("The encrypted password from settings could not be decrypted.");
+                    catch (Exception)
+                    {
+                        Logger.Warn("The encrypted password from settings could not be decrypted.");
+                    }
                 }
             }
 
