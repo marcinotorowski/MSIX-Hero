@@ -474,7 +474,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
             return this.ExtractCertificateFromMsix(msixFile, true, null, progress);
         }
 
-        public async Task CreateSelfSignedCertificate(
+        public async Task<string> CreateSelfSignedCertificate(
             DirectoryInfo outputDirectory,
             string publisherName,
             string publisherDisplayName,
@@ -496,6 +496,8 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
             using var paramCreatePasswordFile = cmd.AddParameter("CreatePasswordFile");
 
             using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
+
+            return Path.Combine(outputDirectory.FullName, publisherDisplayName + ".pfx");
         }
 
         private async Task<bool> ExtractCertificateFromMsix(

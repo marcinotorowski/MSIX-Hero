@@ -166,6 +166,7 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
         }
         public static string GetSdkPath(string localName, string baseDirectory = null)
         {
+            // ReSharper disable once AssignNullToNotNullAttribute
             var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "sdk");
             var path = Path.Combine(baseDir, IntPtr.Size == 4 ? "x86" : "x64", localName);
             if (!File.Exists(path))
@@ -291,10 +292,10 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                     if (error.Success)
                     {
                         findSimilar = findSimilar.Substring(error.Length).Trim();
-                        throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}");
+                        throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", e.ExitCode);
                     }
 
-                    throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");
+                    throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", e.ExitCode);
                 }
 
                 findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
@@ -302,11 +303,41 @@ namespace otor.msixhero.lib.Infrastructure.Wrappers
                 {
                     findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
 
+                    int exitCode;
                     var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+) \\- ");
                     if (error.Success)
                     {
                         findSimilar = findSimilar.Substring(error.Length).Trim();
-                        throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error 0x{error.Groups[1].Value}. {findSimilar}");
+
+                        if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
+                        {
+                            throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", exitCode);
+                        }
+
+                        if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
+                        {
+                            exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
+                            if (exitCode != 0)
+                            {
+                                throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", exitCode);
+                            }
+                        }
+
+                        throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}");
+                    }
+
+                    if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
+                    {
+                        throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", exitCode);
+                    }
+
+                    if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
+                    {
+                        exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
+                        if (exitCode != 0)
+                        {
+                            throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", exitCode);
+                        }
                     }
 
                     throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}");

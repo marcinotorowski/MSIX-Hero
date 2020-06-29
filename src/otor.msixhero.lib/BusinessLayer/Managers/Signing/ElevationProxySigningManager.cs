@@ -40,11 +40,11 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
             await manager.ImportCertificateFromMsix(msixFile, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public async Task CreateSelfSignedCertificate(DirectoryInfo outputDirectory, string publisherName, string publisherDisplayName, string password, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task<string> CreateSelfSignedCertificate(DirectoryInfo outputDirectory, string publisherName, string publisherDisplayName, string password, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var manager = await this.managerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
-            await manager.CreateSelfSignedCertificate(outputDirectory, publisherName, publisherDisplayName, password, cancellationToken, progress).ConfigureAwait(false);
+            return await manager.CreateSelfSignedCertificate(outputDirectory, publisherName, publisherDisplayName, password, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task<TrustStatus> IsTrusted(string certificateFileOrSignedFile, CancellationToken cancellationToken = default)
