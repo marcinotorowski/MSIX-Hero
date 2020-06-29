@@ -85,3 +85,7 @@ $content = Get-Content "$PSScriptRoot\dist\AppxManifest.xml" -Raw;
 $replace = '<Identity Name="MSIXHero" Version="' + $version + '"';
 $content = $content -replace '<Identity Name="MSIXHero" Version="([0-9\.]+)"',$replace;
 Set-Content -Path "$PSScriptRoot\dist\AppxManifest.xml" -Value $content;
+
+# Create msix package
+.\dist\msixherocli.exe pack -d "$PSScriptRoot\dist" -p "$PSScriptRoot\msixhero-$version.msix"
+.\dist\msixherocli.exe sign "$PSScriptRoot\msixhero-$version.msix"

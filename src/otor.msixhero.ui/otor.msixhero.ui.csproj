@@ -6,6 +6,7 @@
     <RootNamespace>otor.msixhero.ui</RootNamespace>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyTitle>MSIX Hero</AssemblyTitle>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AssemblyName>msixhero</AssemblyName>
     <Product>MSIX Hero</Product>
@@ -13,10 +14,10 @@
     <Authors>Marcin Otorowski</Authors>
     <OutputPath>$(SolutionDir)src\bin\</OutputPath>
     <Company />
-	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	<PackageId>MSIX Hero</PackageId>
-	<PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
-	<PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <PackageId>MSIX Hero</PackageId>
+	  <PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
+	  <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
