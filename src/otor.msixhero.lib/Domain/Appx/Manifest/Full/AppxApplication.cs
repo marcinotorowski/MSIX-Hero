@@ -41,6 +41,8 @@ namespace otor.msixhero.lib.Domain.Appx.Manifest.Full
 
         public bool Visible { get; set; }
 
+        public IList<string> ExecutionAlias { get; set; }
+
         public PsfApplicationDescriptor Psf { get; set; }
 
         public List<AppxExtension> Extensions { get; set; }

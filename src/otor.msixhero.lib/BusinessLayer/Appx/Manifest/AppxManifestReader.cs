@@ -106,6 +106,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 var ns = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/foundation/windows10");
                 var uap = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10");
                 var uap10 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/10");
+                var uap5 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/5");
+                var uap3 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/3");
+                var desktop10 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10");
                 var desktop6 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/6");
                 var desktop2 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/2");
                 var build = XNamespace.Get("http://schemas.microsoft.com/developer/appx/2015/build");
@@ -270,36 +273,56 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                              */
 
                         appxApplication.Extensions = new List<AppxExtension>();
-                        var extensions = node.Elements(ns + "Extensions").ToList();
+                        var extNode = node.Element(ns + "Extensions");
+                        
+                        var extensions = extNode == null ? new List<XElement>() : extNode.Elements(ns + "Extension").Concat(extNode.Elements(desktop6 + "Extension")).Concat(extNode.Elements(desktop2 + "Extensions")).Concat(extNode.Elements(uap5 + "Extension")).Concat(extNode.Elements(uap3 + "Extension")).ToList();
 
-                        foreach (var extension in extensions.Elements(ns + "Extension").Union(extensions.Elements(desktop2 + "Extension").Union(extensions.Elements(desktop6 + "Extension"))))
+                        foreach (var extension in extensions)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             var category = extension.Attribute("Category")?.Value;
-                            if (category != "windows.service")
+
+                            switch (category)
                             {
-                                continue;
+                                case "windows.appExecutionAlias":
+                                    var aliasNode = extension.Element(uap3 + "AppExecutionAlias") ?? extension.Element(uap5 + "AppExecutionAlias");
+                                    if (aliasNode != null)
+                                    {
+                                        var desktopExecAliases = aliasNode.Elements(desktop10 + "ExecutionAlias").Concat(aliasNode.Elements(uap5 + "ExecutionAlias"));
+                                        foreach (var desktopExecAlias in desktopExecAliases)
+                                        {
+                                            if (appxApplication.ExecutionAlias == null)
+                                            {
+                                                appxApplication.ExecutionAlias = new List<string>();
+                                            }
+
+                                            appxApplication.ExecutionAlias.Add(desktopExecAlias.Attribute("Alias")?.Value);
+                                        }
+                                    }
+
+                                    break;
+                                case "windows.service":
+                                    var serviceNode = extension.Element(desktop6 + "Service");
+                                    if (serviceNode == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    var service = new AppxService
+                                    {
+                                        Category = "windows.service"
+                                    };
+
+                                    service.EntryPoint = extension.Attribute("EntryPoint")?.Value;
+                                    service.Executable = extension.Attribute("Executable")?.Value;
+
+                                    service.Name = extension.Attribute("Name")?.Value;
+                                    service.StartAccount = extension.Attribute("StartAccount")?.Value;
+                                    service.StartupType = extension.Attribute("StartupType")?.Value;
+
+                                    appxApplication.Extensions.Add(service);
+                                    break;
                             }
-
-                            var serviceNode = extension.Element(desktop6 + "Service");
-                            if (serviceNode == null)
-                            {
-                                continue;
-                            }
-
-                            var service = new AppxService
-                            {
-                                Category = "windows.service"
-                            };
-
-                            service.EntryPoint = extension.Attribute("EntryPoint")?.Value;
-                            service.Executable = extension.Attribute("Executable")?.Value;
-
-                            service.Name = extension.Attribute("Name")?.Value;
-                            service.StartAccount = extension.Attribute("StartAccount")?.Value;
-                            service.StartupType = extension.Attribute("StartupType")?.Value;
-
-                            appxApplication.Extensions.Add(service);
                         }
 
                         var visualElements = node.Element(uap + "VisualElements");
@@ -312,7 +335,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             appxApplication.Square150x150Logo = visualElements.Attribute("Square150x150Logo")?.Value; 
                             appxApplication.Square44x44Logo = visualElements.Attribute("Square44x44Logo")?.Value;
                             appxApplication.Visible = visualElements.Attribute("AppListEntry")?.Value != "none";
-
+                            
                             var defaultTile = visualElements.Element(uap + "DefaultTile");
                             if (defaultTile != null)
                             {

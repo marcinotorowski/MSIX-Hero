@@ -1,4 +1,7 @@
-﻿using otor.msixhero.lib.BusinessLayer.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using otor.msixhero.lib.BusinessLayer.Helpers;
 using otor.msixhero.lib.Domain.Appx.Manifest.Full;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
@@ -31,9 +34,13 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
                     this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(type, true);
                     break;
             }
+
+            this.Alias = this.model.ExecutionAlias?.Any() == true ? string.Join(", ", this.model.ExecutionAlias.Distinct(StringComparer.OrdinalIgnoreCase)) : null;
         }
         
         public bool Visible => this.model.Visible;
+
+        public string Alias { get; }
 
         public bool HasPsf => this.model.Psf != null;
         

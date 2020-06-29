@@ -279,15 +279,19 @@
                                                                 <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
                                                             </view:BulletItemControl>
 
-                                                            <view:BulletItemControl x:Name="AppListEntry">
+                                                            <view:BulletItemControl x:Name="AppListEntry" Margin="0 0 0 8">
                                                                 <view:BulletItemControl.Header>
                                                                     <Viewbox Width="24" Height="24">
                                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorStartMenu}" />
                                                                     </Viewbox>
                                                                 </view:BulletItemControl.Header>
 
-                                                                <TextBlock Style="{StaticResource DataHeader}" Text="App list entry" />
-                                                                <TextBlock x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Visible" TextWrapping="Wrap" />
+                                                                <TextBlock Style="{StaticResource DataHeader}" Text="Accessible via" />
+                                                                <TextBlock Margin="0" x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Start menu tile" TextWrapping="Wrap" />
+                                                                <TextBlock Margin="0" x:Name="AppAliasText" Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                                                    <Run Text="Execution alias:" />
+                                                                    <Run Text="{Binding Mode=OneWay, Path=Alias}" />
+                                                                </TextBlock>
                                                             </view:BulletItemControl>
 
                                                             <Border x:Name="HeaderScripts" Visibility="Collapsed">
@@ -363,7 +367,10 @@
                                                                 <Setter TargetName="EntryPoint" Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                             <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
-                                                                <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
+                                                                <Setter TargetName="AppListEntryText" Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Alias}" Value="{x:Null}">
+                                                                <Setter TargetName="AppAliasText" Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                             <MultiDataTrigger>
                                                                 <MultiDataTrigger.Conditions>
@@ -374,9 +381,15 @@
                                                                     <Setter TargetName="HeaderScripts" Property="Visibility" Value="Visible" />
                                                                 </MultiDataTrigger.Setters>
                                                             </MultiDataTrigger>
-                                                            <DataTrigger Binding="{Binding Visible}" Value="{StaticResource False}">
-                                                                <Setter TargetName="AppListEntryText" Property="Text" Value="Hidden" />
-                                                            </DataTrigger>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding Visible}" Value="{StaticResource False}" />
+                                                                    <Condition Binding="{Binding Alias}" Value="{x:Null}" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <MultiDataTrigger.Setters>
+                                                                    <Setter Property="Visibility" TargetName="AppListEntry" Value="Collapsed" />
+                                                                </MultiDataTrigger.Setters>
+                                                            </MultiDataTrigger>
                                                         </DataTemplate.Triggers>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
