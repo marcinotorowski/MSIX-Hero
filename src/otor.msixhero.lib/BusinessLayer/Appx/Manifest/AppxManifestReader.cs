@@ -108,6 +108,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 var uap10 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/10");
                 var desktop6 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/6");
                 var desktop2 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/2");
+                var build = XNamespace.Get("http://schemas.microsoft.com/developer/appx/2015/build");
 
                 if (document.Root == null)
                 {
@@ -137,7 +138,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 var nodeDependenciesRoot = nodePackage.Element(ns + "Dependencies");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var nodeBuild = nodePackage.Element(ns + "Metadata");
+                var nodeBuild = nodePackage.Element(build + "Metadata");
 
                 var appxPackage = new AppxPackage();
 
@@ -423,7 +424,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 {
                     var buildKeyValues = new Dictionary<string, string>();
 
-                    foreach (var buildNode in nodeBuild.Elements(ns + "Item"))
+                    foreach (var buildNode in nodeBuild.Elements(build + "Item"))
                     {
                         var attrName = buildNode.Attribute("Name")?.Value;
                         if (attrName == null)
