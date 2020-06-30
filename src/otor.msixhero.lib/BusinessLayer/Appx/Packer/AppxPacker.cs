@@ -3,9 +3,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
+using System.Xml.Linq;
 using otor.msixhero.lib.BusinessLayer.Appx.Detection;
-using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Progress;
 using otor.msixhero.lib.Infrastructure.Wrappers;
 
@@ -46,7 +45,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
 
                     var relativePath = Path.GetRelativePath(directory, item.FullName);
 
-                    if (relativePath == null)
+                    if (string.IsNullOrEmpty(relativePath))
                     {
                         continue;
                     }
@@ -69,23 +68,15 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Packer
                     stringBuilder.AppendLine($"\"{item.FullName}\"\t\"{relativePath}\"");
                 }
 
-                File.WriteAllText(tempFile, stringBuilder.ToString(), Encoding.UTF8);
+                await File.WriteAllTextAsync(tempFile, stringBuilder.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
 
-                var xmlDocument = new XmlDocument();
-                using (var fs = File.OpenRead(tempManifest))
-                {
-                    xmlDocument.Load(fs);
-
-                    var injector = new MsixHeroBrandingInjector();
-                    injector.Inject(xmlDocument);
-                }
+                var xmlDocument = XDocument.Load(tempManifest);
+                var injector = new MsixHeroBrandingInjector();
+                injector.Inject(xmlDocument);
 
                 cancellationToken.ThrowIfCancellationRequested();
-                using (var writer = new XmlTextWriter(tempManifest, Encoding.UTF8))
-                {
-                    writer.Formatting = Formatting.Indented;
-                    xmlDocument.Save(writer);
-                }
+
+                await File.WriteAllTextAsync(tempManifest, xmlDocument.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
