@@ -103,27 +103,33 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                     throw new FormatException("The manifest is malformed. There is no root element.");
                 }
 
-                var ns = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/foundation/windows10");
-                var uap = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10");
-                var uap10 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/10");
-                var uap5 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/5");
-                var uap3 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/3");
+                var ns =        XNamespace.Get("http://schemas.microsoft.com/appx/manifest/foundation/windows10");
+                var ns2 =       XNamespace.Get("http://schemas.microsoft.com/appx/2010/manifest");
+                var uap =       XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10");
+                var uap10 =     XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/10");
+                var uap5 =      XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/5");
+                var uap3 =      XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/3");
                 var desktop10 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10");
-                var desktop6 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/6");
-                var desktop2 = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/2");
-                var build = XNamespace.Get("http://schemas.microsoft.com/developer/appx/2015/build");
+                var desktop6 =  XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/6");
+                var desktop2 =  XNamespace.Get("http://schemas.microsoft.com/appx/manifest/desktop/windows10/2");
+                var build =     XNamespace.Get("http://schemas.microsoft.com/developer/appx/2015/build");
 
                 if (document.Root == null)
                 {
                     throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
                 }
 
-                var nodePackage = document.Root.Name.LocalName == "Package" && document.Root.Name.Namespace == ns ? document.Root : null;
-
-                if (nodePackage == null)
+                if (document.Root.Name.LocalName != "Package")
                 {
                     throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
                 }
+
+                if (document.Root.Name.Namespace != ns && document.Root.Name.Namespace != ns2)
+                {
+                    throw new FormatException("The manifest is malformed. The document root must be <Package /> element, belonging to a supported namespace.");
+                }
+
+                var nodePackage = document.Root;
 
                 cancellationToken.ThrowIfCancellationRequested();
                 var nodeIdentity = nodePackage.Element(ns + "Identity");
