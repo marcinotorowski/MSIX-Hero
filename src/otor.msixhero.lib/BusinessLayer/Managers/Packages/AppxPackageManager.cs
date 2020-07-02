@@ -20,6 +20,7 @@ using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
 using otor.msixhero.lib.Domain.Appx.Packages;
 using otor.msixhero.lib.Domain.Appx.Users;
 using otor.msixhero.lib.Domain.Exceptions;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Interop;
 using otor.msixhero.lib.Infrastructure.Logging;
@@ -36,10 +37,12 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
 
         private static readonly ILog Logger = LogManager.GetLogger();
         private readonly ISelfElevationManagerFactory<IRegistryManager> registryManagerFactory;
+        private readonly IConfigurationService configurationService;
 
-        public AppxPackageManager(ISelfElevationManagerFactory<IRegistryManager> registryManagerFactory)
+        public AppxPackageManager(ISelfElevationManagerFactory<IRegistryManager> registryManagerFactory, IConfigurationService configurationService)
         {
             this.registryManagerFactory = registryManagerFactory;
+            this.configurationService = configurationService;
         }
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, bool forceElevation, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -473,7 +476,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
 
         public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return GetInstalledPackages(null, mode, cancellationToken, progress);
+            return this.GetInstalledPackages(null, mode, cancellationToken, progress);
         }
 
         public async Task<InstalledPackage> GetInstalledPackages(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -574,7 +577,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 }
             }
 
-            progress?.Report(new ProgressData(25, "Reading packages..."));
+            progress?.Report(new ProgressData(5, "Reading packages..."));
 
             IList<Windows.ApplicationModel.Package> allPackages;
 
@@ -619,11 +622,31 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
 
             progress?.Report(new ProgressData(30, "Reading packages..."));
 
-            var total = 30.0;
-            var single = allPackages.Count == 0 ? 0.0 : 70.0 / allPackages.Count;
+            var total = 10.0;
+            var single = allPackages.Count == 0 ? 0.0 : 90.0 / allPackages.Count;
 
             var cnt = 0;
             var all = allPackages.Count;
+            
+            var tasks = new HashSet<Task<InstalledPackage>>();
+            var config = await this.configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
+
+            int maxThreads;
+            if (config.Advanced?.DisableMultiThreadingForGetPackages == false || config.Advanced?.MaxThreadsForGetPackages < 2)
+            {
+                maxThreads = 1;
+            }
+            else if (config.Advanced?.MaxThreadsForGetPackages == null)
+            {
+                maxThreads = Environment.ProcessorCount;
+            }
+            else
+            {
+                maxThreads = Math.Min(config.Advanced?.MaxThreadsForGetPackages ?? 1, Environment.ProcessorCount);
+            }
+
+            var sw = new Stopwatch();
+            sw.Start();
 
             foreach (var item in allPackages)
             {
@@ -631,11 +654,38 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 total += single;
                 progress?.Report(new ProgressData((int)total, $"Reading package {cnt} out of {all}..."));
 
-                var converted = await ConvertFrom(item, cancellationToken, progress).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                if (tasks.Count >= maxThreads) 
+                {
+                    var awaited = await Task.WhenAny(tasks).ConfigureAwait(false);
+                    tasks.Remove(awaited);
+
+                    var converted = await awaited.ConfigureAwait(false);
+                    if (converted != null)
+                    {
+                        converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
+                        if (provisioned.Contains(converted.PackageId))
+                        {
+                            converted.IsProvisioned = true;
+                        }
+
+                        list.Add(converted);
+                    }
+                }
+
+                tasks.Add(ConvertFrom(item, cancellationToken, progress));
+            }
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+            foreach (var item in tasks)
+            {
+                var converted = await item.ConfigureAwait(false);
+
                 if (converted != null)
                 {
                     converted.Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers;
-                    if (provisioned.Contains(item.Id.FullName))
+                    if (provisioned.Contains(converted.PackageId))
                     {
                         converted.IsProvisioned = true;
                     }
@@ -644,7 +694,9 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 }
             }
 
-            Logger.Info("Returning {0} packages...", list.Count);
+            sw.Stop();
+
+            Logger.Info("Returning {0} packages (the operation took {1})...", list.Count, sw.Elapsed);
             return list;
         }
 

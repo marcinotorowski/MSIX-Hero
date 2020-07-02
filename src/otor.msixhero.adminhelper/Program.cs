@@ -74,7 +74,7 @@ namespace otor.msixhero.adminhelper
                     IProcessManager processManager = new ProcessManager();
 
                     var client = new Client();
-                    var factory = new SelfElevationManagerFactory(client);
+                    var factory = new SelfElevationManagerFactory(client, configurationService);
 
                     var serverBus = new ServerCommandBus(
                         interactionService,

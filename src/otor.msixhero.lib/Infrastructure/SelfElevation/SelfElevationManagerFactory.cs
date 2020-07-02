@@ -6,6 +6,7 @@ using otor.msixhero.lib.BusinessLayer.Managers.Packages;
 using otor.msixhero.lib.BusinessLayer.Managers.Registry;
 using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
+using otor.msixhero.lib.Infrastructure.Configuration;
 using otor.msixhero.lib.Infrastructure.Helpers;
 using otor.msixhero.lib.Infrastructure.Ipc;
 
@@ -19,10 +20,12 @@ namespace otor.msixhero.lib.Infrastructure.SelfElevation
         ISelfElevationManagerFactory<IRegistryManager>
     {
         private readonly IElevatedClient client;
+        private readonly IConfigurationService configurationService;
 
-        public SelfElevationManagerFactory(IElevatedClient client)
+        public SelfElevationManagerFactory(IElevatedClient client, IConfigurationService configurationService)
         {
             this.client = client;
+            this.configurationService = configurationService;
         }
         
         async Task<ISigningManager> ISelfElevationManagerFactory<ISigningManager>.Get(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken)
@@ -127,11 +130,11 @@ namespace otor.msixhero.lib.Infrastructure.SelfElevation
             switch (selfElevationLevel)
             {
                 case SelfElevationLevel.AsInvoker:
-                    return new AppxPackageManager(this);
+                    return new AppxPackageManager(this, this.configurationService);
                 case SelfElevationLevel.AsAdministrator:
                     if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        return new AppxPackageManager(this);
+                        return new AppxPackageManager(this, this.configurationService);
                     }
 
                     return new ElevationProxyAppxPackageManager(this.client);

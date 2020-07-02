@@ -154,7 +154,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 context.Message = "Reading packages...";
                 await Task.Delay(200).ConfigureAwait(false);
-                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context)).ConfigureAwait(false);
+                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (UserHandledException)
             {
@@ -436,12 +436,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
+            var loading = this.busyManager.Begin(OperationType.PackageLoading);
             try
             {
-                this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages));
+                this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages), CancellationToken.None, loading);
             }
             catch (UserHandledException)
             {
+            }
+            finally
+            {
+                this.busyManager.End(loading);
             }
         }
 

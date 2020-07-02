@@ -91,34 +91,34 @@
 
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="Opacity">
                                             <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.5" />
-                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.7" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.1" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.3" />
                                         </DoubleAnimationUsingKeyFrames>
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity">
                                             <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.6" />
-                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.8" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.2" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.4" />
                                         </DoubleAnimationUsingKeyFrames>
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="Opacity">
                                             <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.7" />
-                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.9" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.3" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.5" />
                                         </DoubleAnimationUsingKeyFrames>
 
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="RenderTransform.Y">
                                             <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.5" />
-                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.7" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.1" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.3" />
                                         </DoubleAnimationUsingKeyFrames>
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="RenderTransform.Y">
                                             <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.6" />
-                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.8" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.2" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.4" />
                                         </DoubleAnimationUsingKeyFrames>
                                         <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="RenderTransform.Y">
                                             <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
-                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.7" />
-                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.9" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.3" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.5" />
                                         </DoubleAnimationUsingKeyFrames>
 
                                     </Storyboard>

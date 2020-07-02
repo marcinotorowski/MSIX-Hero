@@ -33,5 +33,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name ="appinstaller")]
         public AppInstallerConfiguration AppInstaller { get; set; }
+
+        [DataMember(Name = "advanced")]
+        public AdvancedConfiguration Advanced { get; set; }
     }
 }

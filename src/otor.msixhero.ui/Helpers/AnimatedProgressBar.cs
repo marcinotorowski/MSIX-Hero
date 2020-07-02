@@ -10,6 +10,8 @@ namespace otor.msixhero.ui.Helpers
 {
     public class AnimatedProgressBar : DependencyObject
     {
+        public static readonly DependencyProperty NonAnimatedProgressProperty = DependencyProperty.RegisterAttached("NonAnimatedProgress", typeof(int), typeof(AnimatedProgressBar), new PropertyMetadata(0));
+        
         public static readonly DependencyProperty ProgressProperty = DependencyProperty.RegisterAttached("Progress", typeof(int), typeof(AnimatedProgressBar), new PropertyMetadata(0, PropertyChangedCallback));
         
         public static int GetProgress(DependencyObject obj)
@@ -22,20 +24,32 @@ namespace otor.msixhero.ui.Helpers
             obj.SetValue(ProgressProperty, value);
         }
 
+        public static int GetNonAnimatedProgress(DependencyObject obj)
+        {
+            return (int)obj.GetValue(NonAnimatedProgressProperty);
+        }
+
+        public static void SetNonAnimatedProgress(DependencyObject obj, int value)
+        {
+            obj.SetValue(NonAnimatedProgressProperty, value);
+        }
+
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var objectParent = (ProgressBar)d;
 
-            var diff = (int) e.NewValue - objectParent.Value;
+            var diff = (int) e.NewValue - AnimatedProgressBar.GetNonAnimatedProgress(objectParent);
+            AnimatedProgressBar.SetNonAnimatedProgress(objectParent, (int)e.NewValue);
+
             if (diff < 0)
             {
                 objectParent.BeginAnimation(RangeBase.ValueProperty, null);
                 objectParent.Value = (int)e.NewValue;
             }
-            else if (Math.Abs(diff) < 5)
+            else if (Math.Abs(diff) < 4)
             {
-                // objectParent.BeginAnimation(RangeBase.ValueProperty, null);
-                // objectParent.Value = (int) e.NewValue;
+                objectParent.BeginAnimation(RangeBase.ValueProperty, null);
+                objectParent.Value = (int) e.NewValue;
             }
             else
             {
