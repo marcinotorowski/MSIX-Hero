@@ -21,7 +21,7 @@ namespace otor.msixhero.lib.tests.Winget
             {
                 File.WriteAllText(testFile, "abc");
                 var hash = new YamlUtils().CalculateHashAsync(new FileInfo(testFile)).Result;
-                Assert.AreEqual("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad", hash);
+                Assert.AreEqual("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad".ToUpperInvariant(), hash.ToUpperInvariant());
             }
             finally
             {
