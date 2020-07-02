@@ -197,15 +197,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             FocusManager.SetFocusedElement(this, this.SearchBox);
             Keyboard.Focus(this.SearchBox);
         }
-
-        private void Popup_OnClosed(object sender, EventArgs e)
-        {
-            var toFocus = this.ListBox.IsVisible ? this.ListBox : this.ListView;
-            toFocus.Focus();
-            Keyboard.Focus(toFocus);
-            FocusManager.SetFocusedElement(this, toFocus);
-        }
-
+        
         private void ToggleContext_OnUnchecked(object sender, RoutedEventArgs e)
         {
             Application.Current.Dispatcher.Invoke(
@@ -225,6 +217,13 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             this.ToggleContext.IsChecked = false;
             ((RadioButton) sender).IsChecked = true;
             e.Handled = true;
+        }
+        
+        private void SearchCommandBindingExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Keyboard.Focus(this.SearchBox);
+            FocusManager.SetFocusedElement(this, this.SearchBox);
+            this.SearchBox.Focus();
         }
     }
 

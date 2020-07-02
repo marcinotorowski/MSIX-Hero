@@ -18,6 +18,9 @@
              d:DesignWidth="600"
              d:DesignHeight="200"
              d:DataContext="{d:DesignInstance viewModel:EventViewerViewModel}">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Search" Executed="SearchCommandBindingExecuted" />
+    </UserControl.CommandBindings>
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
@@ -134,6 +137,9 @@
                     Padding="0"
                     ScrollViewer.VerticalScrollBarVisibility="Auto" 
                     ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+                    <ListView.InputBindings>
+                        <KeyBinding Modifiers="Control" Key="F" Command="Search" />
+                    </ListView.InputBindings>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Padding" Value="10" />

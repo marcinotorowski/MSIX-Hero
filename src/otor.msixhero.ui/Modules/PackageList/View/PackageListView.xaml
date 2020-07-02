@@ -33,6 +33,9 @@
             <view:PackageContextDisplayNameConverter x:Key="PackageContextDisplayNameConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Search" Executed="SearchCommandBindingExecuted" />
+    </UserControl.CommandBindings>
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
@@ -298,9 +301,9 @@
 
                         <Grid Margin="5 0">
                             <TextBox 
-                        Padding="26 0 20 0" 
-                        BorderThickness="0"
-                        x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}">
+                                Padding="26 0 20 0" 
+                                BorderThickness="0"
+                                x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
                                         <Style.Triggers>
@@ -373,18 +376,6 @@
                         x:Name="PanelListView"
                         Visibility="Collapsed">
 
-                    <!-- 
-                        Foreground="Black"
-                        BorderThickness="0"
-                        Padding="0"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                        ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                        FocusVisualStyle="{x:Null}"
-                        IsSynchronizedWithCurrentItem="False"
-                        VirtualizingPanel.IsVirtualizing="True"
-                        VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                    -->
-
                     <ListView 
                         IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                         MouseDoubleClick="ListOnMouseDoubleClick"
@@ -392,7 +383,9 @@
                         ContextMenu="{StaticResource PackageContextMenu}"
                         SelectionChanged="OnListViewSelectionChanged"
                         ItemsSource="{Binding AllPackagesView}">
-
+                        <ListView.InputBindings>
+                            <KeyBinding Modifiers="Control" Key="F" Command="Search" />
+                        </ListView.InputBindings>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="Padding" Value="10" />
@@ -516,6 +509,9 @@
                         MouseDoubleClick="ListOnMouseDoubleClick"
                         ContextMenu="{StaticResource PackageContextMenu}"
                         ItemsSource="{Binding AllPackagesView}">
+                        <ListBox.InputBindings>
+                            <KeyBinding Modifiers="Control" Key="F" Command="Search" />
+                        </ListBox.InputBindings>
                         <ListBox.GroupStyle>
                             <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
                         </ListBox.GroupStyle>

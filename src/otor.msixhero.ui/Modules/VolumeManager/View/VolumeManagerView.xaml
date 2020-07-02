@@ -25,6 +25,9 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Search" Executed="SearchCommandBindingExecuted" />
+    </UserControl.CommandBindings>
     <routedCommand:RoutedCommandHandlers.Commands>
         <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding CommandHandler.New}" />
@@ -130,6 +133,9 @@
                 SnapsToDevicePixels="True" 
                 UseLayoutRounding="True" 
                 ItemsSource="{Binding AllVolumesView}">
+                <ListBox.InputBindings>
+                    <KeyBinding Modifiers="Control" Key="F" Command="Search" />
+                </ListBox.InputBindings>
                 <ListBox.Resources>
                     <system:Boolean x:Key="True">True</system:Boolean>
                 </ListBox.Resources>

@@ -45,32 +45,20 @@ namespace otor.msixhero.ui.Modules.VolumeManager.View
                 Keyboard.Focus(this.ListBox);
             }, DispatcherPriority.ApplicationIdle);
         }
-
-        private void ListBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (this.ignoreSelectionChanged)
-            {
-                return;
-            }
-
-            try
-            {
-                this.ignoreSelectionChanged = true;
-                var command = new SelectVolumes(((ListBox) sender).SelectedItems?.OfType<AppxVolume>());
-                this.stateManager.CommandExecutor.Execute(command);
-            }
-            finally
-            {
-                this.ignoreSelectionChanged = false;
-            }
-        }
-
+        
         private void ClearSearchField(object sender, RoutedEventArgs e)
         {
             this.SearchBox.Text = string.Empty;
             this.SearchBox.Focus();
             FocusManager.SetFocusedElement(this, this.SearchBox);
             Keyboard.Focus(this.SearchBox);
+        }
+
+        private void SearchCommandBindingExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Keyboard.Focus(this.SearchBox);
+            FocusManager.SetFocusedElement(this, this.SearchBox);
+            this.SearchBox.Focus();
         }
     }
 }
