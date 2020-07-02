@@ -33,33 +33,33 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
                 case SelectionMode.SelectAll:
                 {
                     select = state.Packages.VisibleItems.Except(this.StateManager.CurrentState.Packages.SelectedItems).ToList();
-                    deselect = new InstalledPackage[0];
+                    deselect = state.Packages.HiddenItems;
                     break;
                 }
 
                 case SelectionMode.UnselectAll:
                 {
                     select = new InstalledPackage[0];
-                    deselect = state.Packages.SelectedItems.ToList();
+                    deselect = state.Packages.SelectedItems.Concat(state.Packages.HiddenItems).ToList();
                     break;
                 }
 
                 case SelectionMode.AddToSelection:
                     select = this.action.Selection.Where(a => a != null).Except(state.Packages.SelectedItems).ToList();
-                    deselect = new InstalledPackage[0];
+                    deselect = state.Packages.HiddenItems;
                     break;
 
                 case SelectionMode.RemoveFromSelection:
                 {
                     select = new InstalledPackage[0];
-                    deselect = this.action.Selection.Where(a => a != null).Intersect(state.Packages.SelectedItems).ToList();
+                    deselect = this.action.Selection.Concat(state.Packages.HiddenItems).Where(a => a != null).Intersect(state.Packages.SelectedItems).ToList();
                     break;
                 }
 
                 case SelectionMode.ReplaceSelection:
                 {
                     select = this.action.Selection.Where(a => a != null).Except(state.Packages.SelectedItems).ToList();
-                    deselect = state.Packages.SelectedItems.Except(this.action.Selection).ToList();
+                    deselect = state.Packages.SelectedItems.Concat(state.Packages.HiddenItems).Except(this.action.Selection).ToList();
                     break;
                 }
 
@@ -69,13 +69,19 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
 
             if (select.Any() || deselect.Any())
             {
+                var previousCounter = state.Packages.SelectedItems.Count;
                 state.Packages.SelectedItems.AddRange(select.Where(a => a != null));
+                var eventRequired = previousCounter != state.Packages.SelectedItems.Count;
+
                 foreach (var item in deselect)
                 {
-                    state.Packages.SelectedItems.Remove(item);
+                    eventRequired |= state.Packages.SelectedItems.Remove(item);
                 }
 
-                StateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(new PackagesSelectionChangedPayLoad(@select, deselect, this.action.IsExplicit));
+                if (eventRequired)
+                {
+                    StateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Publish(new PackagesSelectionChangedPayLoad(@select, deselect, this.action.IsExplicit));
+                }
             }
 
             return Task.FromResult(state.Packages.SelectedItems);
