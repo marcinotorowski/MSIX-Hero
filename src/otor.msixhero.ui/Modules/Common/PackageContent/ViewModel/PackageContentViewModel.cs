@@ -20,6 +20,7 @@ using otor.msixhero.lib.Domain.Commands.Packages.Signing;
 using otor.msixhero.lib.Domain.State;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.SelfElevation;
 using otor.msixhero.ui.Helpers;
 using otor.msixhero.ui.Modules.Common.PackageContent.Helpers;
@@ -34,6 +35,8 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 {
     public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(PsfContentViewModel));
+
         private readonly IApplicationStateManager stateManager;
         private readonly ISelfElevationManagerFactory<ISigningManager> signManager;
         private readonly IInteractionService interactionService;
@@ -230,9 +233,35 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             var manifest = navigation.SelectedManifests.First();
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
             var task = this.LoadPackage(fileReader, CancellationToken.None);
-            await this.SelectedPackageManifestInfo.Load(task).ConfigureAwait(false);
-            var details = await task.ConfigureAwait(false);
-            await this.SelectedPackageJsonInfo.Load(this.LoadPackageJson(fileReader, details.Model, CancellationToken.None)).ConfigureAwait(false);
+
+            try
+            {
+                await this.SelectedPackageManifestInfo.Load(task).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                Logger.Error($"The package {manifest} could not be loaded.");
+                await this.SelectedPackageJsonInfo.Load(Task.FromResult(default(PsfContentViewModel))).ConfigureAwait(false);
+                return;
+            }
+
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Logger.Error($"The package {manifest} could not be loaded.");
+                await this.SelectedPackageJsonInfo.Load(Task.FromResult(default(PsfContentViewModel))).ConfigureAwait(false);
+                return;
+            }
+
+            try
+            {
+                var details = await task.ConfigureAwait(false);
+                await this.SelectedPackageJsonInfo.Load(this.LoadPackageJson(fileReader, details.Model, CancellationToken.None)).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, $"The package {manifest} could not be loaded.");
+                await this.SelectedPackageJsonInfo.Load(Task.FromResult(default(PsfContentViewModel))).ConfigureAwait(false);
+            }
         }
 
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
