@@ -57,6 +57,7 @@ MSIX Hero uses the following third-party software and libraries.
 * Ookii Dialogs WPF (by Sven Groot)
 * Prism (by .NET Foundation)
 * Registry (by Eric Zimmerman)
+* YamlDotNet (by Antoine Aubry)
 * Windows 10 SDK (selected) (by Microsoft)
 
 See also https://msixhero.net/license/.";
