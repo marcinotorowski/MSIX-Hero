@@ -19,6 +19,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
 {
     public class AppAttachManager : IAppAttachManager
     {
+        private readonly ISigningManager signingManager;
         protected readonly MsixSdkWrapper MsixSdk = new MsixSdkWrapper();
         protected readonly MsixMgrWrapper MsixMgr = new MsixMgrWrapper();
 
@@ -28,6 +29,11 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
         public AppAttachManager(ISelfElevationManagerFactory<ISigningManager> managerFactory)
         {
             this.managerFactory = managerFactory;
+        }
+
+        public AppAttachManager(ISigningManager signingManager)
+        {
+            this.signingManager = signingManager;
         }
 
         public async Task CreateVolume(string packagePath, string volumePath, uint vhdSize, bool extractCertificate, bool generateScripts, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
@@ -72,7 +78,15 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
                 {
                     var minimumSize = vhdSize > 0 ? 1024 * 1024 * vhdSize : await GetVhdSize(packagePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                    var requiresRestart = await StopService(cancellationToken, progressStopService).ConfigureAwait(false);
+                    bool requiresRestart;
+                    try
+                    {
+                        requiresRestart = await StopService(cancellationToken, progressStopService).ConfigureAwait(false);
+                    }
+                    catch (Exception)
+                    {
+                        requiresRestart = false;
+                    }
                     
                     Guid volumeGuid;
                     var wrapper = new DiskPartWrapper();
@@ -123,7 +137,12 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
 
                         if (extractCertificate)
                         {
-                            var certMgr = await this.managerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                            ISigningManager certMgr = this.signingManager;
+                            if (certMgr == null)
+                            {
+                                certMgr = await this.managerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                            }
+                            
                             cancellationToken.ThrowIfCancellationRequested();
 
                             // ReSharper disable once AssignNullToNotNullAttribute

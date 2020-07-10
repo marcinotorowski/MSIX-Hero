@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using CommandLine;
 using otor.msixhero.cmd.Executors;
 using otor.msixhero.cmd.Verbs;
+using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
 using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.SelfElevation;
 
 namespace otor.msixhero.cmd
 {
@@ -14,12 +16,13 @@ namespace otor.msixhero.cmd
     {
         static async Task Main(string[] args)
         {
-            var p = Parser.Default.ParseArguments<SignVerb, PackVerb, UnpackVerb, NewCertVerb, TrustVerb>(args);
+            var p = Parser.Default.ParseArguments<SignVerb, PackVerb, UnpackVerb, NewCertVerb, TrustVerb, AppAttachVerb>(args);
             await p.WithParsedAsync<SignVerb>(Run);
             await p.WithParsedAsync<PackVerb>(Run);
             await p.WithParsedAsync<UnpackVerb>(Run);
             await p.WithParsedAsync<NewCertVerb>(Run);
             await p.WithParsedAsync<TrustVerb>(Run);
+            await p.WithParsedAsync<AppAttachVerb>(Run);
             await p.WithNotParsedAsync(Run);
         }
 
@@ -38,6 +41,16 @@ namespace otor.msixhero.cmd
         {
             var console = new ConsoleImpl(Console.Out, Console.Error);
             var executor = new PackVerbExecutor(arg, console);
+            var exitCode = await executor.Execute().ConfigureAwait(false);
+            Environment.ExitCode = exitCode;
+            return exitCode;
+        }
+
+        private static async Task<int> Run(AppAttachVerb arg)
+        {
+            var console = new ConsoleImpl(Console.Out, Console.Error);
+            IAppAttachManager appAttachManager = new AppAttachManager(new SigningManager());
+            var executor = new AppAttachVerbExecutor(arg, appAttachManager, console);
             var exitCode = await executor.Execute().ConfigureAwait(false);
             Environment.ExitCode = exitCode;
             return exitCode;
