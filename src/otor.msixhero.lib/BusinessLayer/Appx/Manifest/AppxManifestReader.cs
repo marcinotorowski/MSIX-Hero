@@ -20,7 +20,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
     public class AppxManifestReader : IAppxManifestReader
     {
         protected readonly PsfReader PsfReader = new PsfReader();
-        
+
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AppxManifestReader));
 
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
@@ -132,19 +132,19 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 var nodePackage = document.Root;
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var nodeIdentity = nodePackage.Element(ns + "Identity");
+                var nodeIdentity = nodePackage.Element(ns + "Identity") ?? nodePackage.Element(ns2 + "Identity");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var nodeProperties = nodePackage.Element(ns + "Properties");
+                var nodeProperties = nodePackage.Element(ns + "Properties") ?? nodePackage.Element(ns2 + "Properties");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var nodeApplicationsRoot = nodePackage.Element(ns + "Applications");
+                var nodeApplicationsRoot = nodePackage.Element(ns + "Applications") ?? nodePackage.Element(ns2 + "Applications");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var nodeCapabilitiesRoot = nodePackage.Element(ns + "Capabilities");
+                var nodeCapabilitiesRoot = nodePackage.Element(ns + "Capabilities") ?? nodePackage.Element(ns2 + "Capabilities");
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var nodeDependenciesRoot = nodePackage.Element(ns + "Dependencies");
+                var nodeDependenciesRoot = nodePackage.Element(ns + "Dependencies") ?? nodePackage.Element(ns2 + "Dependencies");
 
                 cancellationToken.ThrowIfCancellationRequested();
                 var nodeBuild = nodePackage.Element(build + "Metadata");
@@ -240,7 +240,7 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
 
                 if (nodeApplicationsRoot != null)
                 {
-                    foreach (var node in nodeApplicationsRoot.Elements(ns + "Application"))
+                    foreach (var node in nodeApplicationsRoot.Elements().Where(x => x.Name.LocalName == "Application" && (x.Name.Namespace == ns || x.Name.Namespace == ns2)))
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         /*
@@ -279,59 +279,60 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                              */
 
                         appxApplication.Extensions = new List<AppxExtension>();
-                        var extNode = node.Element(ns + "Extensions");
-                        
-                        var extensions = extNode == null ? new List<XElement>() : extNode.Elements(ns + "Extension").Concat(extNode.Elements(desktop6 + "Extension")).Concat(extNode.Elements(desktop2 + "Extensions")).Concat(extNode.Elements(uap5 + "Extension")).Concat(extNode.Elements(uap3 + "Extension")).ToList();
+                        var nodeExtensions = node.Elements().FirstOrDefault(e => e.Name.LocalName == "Extensions");
 
-                        foreach (var extension in extensions)
+                        if (nodeExtensions != null)
                         {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            var category = extension.Attribute("Category")?.Value;
-
-                            switch (category)
+                            foreach (var extension in nodeExtensions.Elements().Where(e => e.Name.LocalName == "Extension" && (e.Name.Namespace == ns || e.Name.Namespace == ns2 || e.Name.Namespace == desktop6 || e.Name.Namespace == desktop2 || e.Name.Namespace == uap5 || e.Name.Namespace == uap3)))
                             {
-                                case "windows.appExecutionAlias":
-                                    var aliasNode = extension.Element(uap3 + "AppExecutionAlias") ?? extension.Element(uap5 + "AppExecutionAlias");
-                                    if (aliasNode != null)
-                                    {
-                                        var desktopExecAliases = aliasNode.Elements(desktop10 + "ExecutionAlias").Concat(aliasNode.Elements(uap5 + "ExecutionAlias"));
-                                        foreach (var desktopExecAlias in desktopExecAliases)
+                                cancellationToken.ThrowIfCancellationRequested();
+                                var category = extension.Attribute("Category")?.Value;
+
+                                switch (category)
+                                {
+                                    case "windows.appExecutionAlias":
+                                        var aliasNode = extension.Element(uap3 + "AppExecutionAlias") ?? extension.Element(uap5 + "AppExecutionAlias");
+                                        if (aliasNode != null)
                                         {
-                                            if (appxApplication.ExecutionAlias == null)
+                                            var desktopExecAliases = aliasNode.Elements(desktop10 + "ExecutionAlias").Concat(aliasNode.Elements(uap5 + "ExecutionAlias"));
+                                            foreach (var desktopExecAlias in desktopExecAliases)
                                             {
-                                                appxApplication.ExecutionAlias = new List<string>();
+                                                if (appxApplication.ExecutionAlias == null)
+                                                {
+                                                    appxApplication.ExecutionAlias = new List<string>();
+                                                }
+
+                                                appxApplication.ExecutionAlias.Add(desktopExecAlias.Attribute("Alias")?.Value);
                                             }
-
-                                            appxApplication.ExecutionAlias.Add(desktopExecAlias.Attribute("Alias")?.Value);
                                         }
-                                    }
 
-                                    break;
-                                case "windows.service":
-                                    var serviceNode = extension.Element(desktop6 + "Service");
-                                    if (serviceNode == null)
-                                    {
-                                        continue;
-                                    }
+                                        break;
+                                    case "windows.service":
+                                        var serviceNode = extension.Element(desktop6 + "Service");
+                                        if (serviceNode == null)
+                                        {
+                                            continue;
+                                        }
 
-                                    var service = new AppxService
-                                    {
-                                        Category = "windows.service"
-                                    };
+                                        var service = new AppxService
+                                        {
+                                            Category = "windows.service"
+                                        };
 
-                                    service.EntryPoint = extension.Attribute("EntryPoint")?.Value;
-                                    service.Executable = extension.Attribute("Executable")?.Value;
+                                        service.EntryPoint = extension.Attribute("EntryPoint")?.Value;
+                                        service.Executable = extension.Attribute("Executable")?.Value;
 
-                                    service.Name = extension.Attribute("Name")?.Value;
-                                    service.StartAccount = extension.Attribute("StartAccount")?.Value;
-                                    service.StartupType = extension.Attribute("StartupType")?.Value;
+                                        service.Name = extension.Attribute("Name")?.Value;
+                                        service.StartAccount = extension.Attribute("StartAccount")?.Value;
+                                        service.StartupType = extension.Attribute("StartupType")?.Value;
 
-                                    appxApplication.Extensions.Add(service);
-                                    break;
+                                        appxApplication.Extensions.Add(service);
+                                        break;
+                                }
                             }
                         }
 
-                        var visualElements = node.Element(uap + "VisualElements");
+                        var visualElements = node.Elements().FirstOrDefault(e => e.Name.LocalName == "VisualElements");
                         if (visualElements != null)
                         {
                             cancellationToken.ThrowIfCancellationRequested();
