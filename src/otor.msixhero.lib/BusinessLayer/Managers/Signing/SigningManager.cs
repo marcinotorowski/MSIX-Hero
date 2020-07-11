@@ -172,7 +172,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                 var validated = await Task.Run(() => certObject.OfType<X509Certificate2>().FirstOrDefault(c => c.Verify()), cancellationToken).ConfigureAwait(false);
                 if (validated != null)
                 {
-                    Logger.Info("The certificate seems to be valid.");
+                    Logger.Debug("The certificate seems to be valid.");
                     return new TrustStatus(true, (preferredCertObject ?? validated).GetNameInfo(X509NameType.SimpleName, false))
                     {
                         Expires = (preferredCertObject ?? validated).NotAfter,
@@ -182,7 +182,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Signing
                 }
                 else
                 {
-                    Logger.Info("The certificate seems to be invalid.");
+                    Logger.Warn("The certificate seems to be invalid.");
                     return new TrustStatus(false, (preferredCertObject ?? certObject[0]).GetNameInfo(X509NameType.SimpleName, false))
                     {
                         Expires = (preferredCertObject ?? certObject[0]).NotAfter,
