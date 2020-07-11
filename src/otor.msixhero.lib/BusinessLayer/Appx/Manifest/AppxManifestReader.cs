@@ -147,6 +147,9 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                 var nodeDependenciesRoot = nodePackage.Element(ns + "Dependencies") ?? nodePackage.Element(ns2 + "Dependencies");
 
                 cancellationToken.ThrowIfCancellationRequested();
+                var nodePrerequisitesRoot = nodePackage.Element(ns + "Prerequisites") ?? nodePackage.Element(ns2 + "Prerequisites");
+
+                cancellationToken.ThrowIfCancellationRequested();
                 var nodeBuild = nodePackage.Element(build + "Metadata");
 
                 var appxPackage = new AppxPackage();
@@ -448,6 +451,18 @@ namespace otor.msixhero.lib.BusinessLayer.Appx.Manifest
                             }
                         }
                     }
+                }
+
+                if (nodePrerequisitesRoot != null)
+                {
+                    var min = nodePrerequisitesRoot.Element(ns2 + "OSMinVersion")?.Value;
+                    var max = nodePrerequisitesRoot.Element(ns2 + "OSMaxVersionTested")?.Value;
+                    
+                    appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
+                    {
+                        Minimum = min == null ? null : Windows10Parser.GetOperatingSystemFromNameAndVersion("Windows.Desktop", min),
+                        Tested = max == null ? null : Windows10Parser.GetOperatingSystemFromNameAndVersion("Windows.Desktop", max),
+                    });
                 }
 
                 if (nodeBuild != null)
