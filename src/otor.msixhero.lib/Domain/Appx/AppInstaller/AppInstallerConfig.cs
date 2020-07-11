@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
@@ -157,6 +158,13 @@ namespace otor.msixhero.lib.Domain.Appx.AppInstaller
         public static async Task<AppInstallerConfig> FromFile(string filePath)
         {
             var allText = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+
+            var hasBom = allText.Take(3).Select(b => (ushort)b).SequenceEqual(new[] {(ushort)0xEF, (ushort)0xBB, (ushort)0xBF });
+            if (hasBom)
+            {
+                allText = allText.Skip(3).ToArray();
+            }
+
             var xml = System.Text.Encoding.UTF8.GetString(allText);
 
             var doc = XDocument.Parse(xml);
