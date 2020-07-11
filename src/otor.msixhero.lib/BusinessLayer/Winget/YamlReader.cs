@@ -27,6 +27,11 @@ namespace otor.msixhero.lib.BusinessLayer.Winget
             var pkg = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
             if (pkg == null)
             {
+                pkg = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminal_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+            }
+
+            if (pkg == null)
+            {
                 if (throwIfWingetMissing)
                 {
                     throw new FileNotFoundException("winget not found.", "winget");
