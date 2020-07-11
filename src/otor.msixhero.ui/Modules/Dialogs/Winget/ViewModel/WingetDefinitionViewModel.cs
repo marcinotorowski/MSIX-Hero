@@ -139,7 +139,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             {
                 this.IsLoading = true;
                 var yaml = await this.YamlUtils.CreateFromFile(file, cancellationToken).ConfigureAwait(false);
-                this.SetData(yaml);
+                this.SetData(yaml, false);
             }
             catch (Exception e)
             {
@@ -199,23 +199,70 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             await this.LoadFromFile(selected, CancellationToken.None).ConfigureAwait(false);
         }
 
-        private void SetData(YamlDefinition definition)
+        private void SetData(YamlDefinition definition, bool useNullValues = true)
         {
             this.autoId = true;
             this.model = definition;
-            
-            this.License.CurrentValue = definition.License;
-            this.LicenseUrl.CurrentValue = definition.LicenseUrl;
-            this.Name.CurrentValue = definition.Name;
-            this.Version.CurrentValue = definition.Version;
-            this.Publisher.CurrentValue = definition.Publisher;
-            this.License.CurrentValue = definition.License;
-            this.AppMoniker.CurrentValue = definition.AppMoniker;
-            this.Tags.CurrentValue = definition.Tags;
-            this.Description.CurrentValue = definition.Description;
-            this.Homepage.CurrentValue = definition.Homepage;
-            this.MinOSVersion.CurrentValue = definition.MinOperatingSystemVersion?.ToString();
-            this.Id.CurrentValue = definition.Id;
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.License))
+            {
+                this.License.CurrentValue = definition.License;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.LicenseUrl))
+            {
+                this.LicenseUrl.CurrentValue = definition.LicenseUrl;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Name))
+            {
+                this.Name.CurrentValue = definition.Name;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Version))
+            {
+                this.Version.CurrentValue = definition.Version;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Publisher))
+            {
+                this.Publisher.CurrentValue = definition.Publisher;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.License))
+            {
+                this.License.CurrentValue = definition.License;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.AppMoniker))
+            {
+                this.AppMoniker.CurrentValue = definition.AppMoniker;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Tags))
+            {
+                this.Tags.CurrentValue = definition.Tags;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Description))
+            {
+                this.Description.CurrentValue = definition.Description;
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Homepage))
+            {
+                this.Homepage.CurrentValue = definition.Homepage;
+            }
+
+            if (useNullValues || definition.MinOperatingSystemVersion != default)
+            {
+                this.MinOSVersion.CurrentValue = definition.MinOperatingSystemVersion?.ToString();
+            }
+
+            if (useNullValues || !string.IsNullOrEmpty(definition.Id))
+            {
+                this.Id.CurrentValue = definition.Id;
+            }
 
             this.ShowManifestVersion = definition.ManifestVersion != default;
             this.OnPropertyChanged(nameof(ShowManifestVersion));
@@ -229,7 +276,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
 
             if (definition.Installers?.Any() == true)
             {
-                this.Installer.SetData(definition.Installers.First());
+                this.Installer.SetData(definition.Installers.First(), useNullValues);
             }
             else
             {

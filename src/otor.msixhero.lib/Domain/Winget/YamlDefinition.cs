@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using Version = System.Version;
 
 // https://docs.microsoft.com/en-us/windows/package-manager/package/manifest?tabs=minschema%2Ccompschema
+// https://github.com/microsoft/winget-cli/blob/master/doc/ManifestSpecv0.1.md
 namespace otor.msixhero.lib.Domain.Winget
 {
     public class YamlDefinition
@@ -70,6 +70,9 @@ namespace otor.msixhero.lib.Domain.Winget
 
         [YamlMember(Order = int.MaxValue)]
         public string Channel { get; set; }
+
+        [YamlMember(Order = int.MaxValue)]
+        public string Log { get; set; }
 
         [YamlMember(Order = int.MaxValue)]
         public string InstallLocation { get; set; }

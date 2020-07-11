@@ -45,7 +45,7 @@ Installers:
         [YamlMember(Order = 7)]
         public YamlSwitches Switches { get; set; }
 
-        [YamlMember(Order = int.MaxValue)]
+        [YamlMember(Order = 9)]
         public string SystemAppId { get; set; }
 
         [YamlMember(Order = int.MaxValue)]

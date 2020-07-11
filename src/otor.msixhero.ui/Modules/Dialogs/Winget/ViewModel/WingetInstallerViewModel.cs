@@ -28,6 +28,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
                 this.Url = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateUrl(true, "Installer URL")),
                 this.Sha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(true, "Installer hash")),
+                this.SystemAppId = new ValidatedChangeableProperty<string>((string)null, this.ValidateSystemAppId),
                 this.SignatureSha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(false, "Signature hash")),
                 this.Scope = new ChangeableProperty<YamlScope?>(),
                 this.SilentCommand = new ChangeableProperty<string>(),
@@ -41,20 +42,61 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             this.SetValidationMode(ValidationMode.Silent, true);
         }
 
-        public void SetData(YamlInstaller installer)
+        public void SetData(YamlInstaller installer, bool useNullValues = true)
         {
             this.Model = installer;
-            this.Architecture.CurrentValue = installer?.Arch ?? YamlArchitecture.none;
-            this.Url.CurrentValue = installer?.Url;
-            this.Sha256.CurrentValue = installer?.Sha256;
-            this.SignatureSha256.CurrentValue = installer?.SignatureSha256;
-            this.Scope.CurrentValue = installer?.Scope ?? YamlScope.none;
-            this.SilentCommand.CurrentValue = installer?.Switches?.Silent;
-            this.CustomCommand.CurrentValue = installer?.Switches?.Custom;
-            this.InstallerType.CurrentValue = installer?.InstallerType ?? YamlInstallerType.none;
-            this.SilentCommandWithProgress.CurrentValue = installer?.Switches?.SilentWithProgress;
-            this.Commit();
 
+            if (useNullValues || installer.Arch != null)
+            {
+                this.Architecture.CurrentValue = installer?.Arch ?? YamlArchitecture.none;
+            }
+
+            if (useNullValues || installer.Url != null)
+            {
+                this.Url.CurrentValue = installer?.Url;
+            }
+
+            if (useNullValues || installer.Sha256 != null)
+            {
+                this.Sha256.CurrentValue = installer?.Sha256;
+            }
+
+            if (useNullValues || installer.SystemAppId != null)
+            {
+                this.SystemAppId.CurrentValue = installer?.SystemAppId;
+            }
+
+            if (useNullValues || installer.SignatureSha256 != null)
+            {
+                this.SignatureSha256.CurrentValue = installer?.SignatureSha256;
+            }
+
+            if (useNullValues || installer.Scope != null)
+            {
+                this.Scope.CurrentValue = installer?.Scope ?? YamlScope.none;
+            }
+
+            if (useNullValues || installer.Switches?.Silent != null)
+            {
+                this.SilentCommand.CurrentValue = installer?.Switches?.Silent;
+            }
+
+            if (useNullValues || installer.Switches?.Custom != null)
+            {
+                this.CustomCommand.CurrentValue = installer?.Switches?.Custom;
+            }
+
+            if (useNullValues || installer.InstallerType != null)
+            {
+                this.InstallerType.CurrentValue = installer?.InstallerType ?? YamlInstallerType.none;
+            }
+
+            if (useNullValues || installer.Arch != null)
+            {
+                this.SilentCommandWithProgress.CurrentValue = installer?.Switches?.SilentWithProgress;
+            }
+
+            this.Commit();
             this.SetValidationMode(ValidationMode.Silent, true);
         }
 
@@ -67,6 +109,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
         public ChangeableProperty<YamlScope?> Scope { get; }
         
         public ChangeableProperty<string> Sha256 { get; }
+
+        public ChangeableProperty<string> SystemAppId { get; }
 
         public ValidatedChangeableProperty<string> SignatureSha256 { get; }
 
@@ -220,6 +264,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             base.Commit();
 
             this.Model.Url = this.Url.CurrentValue;
+            this.Model.SystemAppId = this.SystemAppId.CurrentValue;
 
             if (this.Architecture.CurrentValue == YamlArchitecture.none)
             {
@@ -256,7 +301,30 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
             }
 
             this.Model.Sha256 = this.Sha256.CurrentValue;
+            this.Model.SystemAppId = this.SystemAppId.CurrentValue;
             this.Model.SignatureSha256 = this.SignatureSha256.CurrentValue;
+        }
+        private string ValidateSystemAppId(string value)
+        {
+            return null;
+            // This must not return errors, because CLI of winget does not let this value...
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            switch (this.InstallerType.CurrentValue)
+            {
+                case YamlInstallerType.msi:
+                    if (!Guid.TryParse(value, out _))
+                    {
+                        return $"Value {value} is not a valid GUID.";
+                    }
+
+                    break;
+            }
+
+            return null;
         }
 
         private void InstallerTypeOnValueChanged(object sender, ValueChangedEventArgs e)

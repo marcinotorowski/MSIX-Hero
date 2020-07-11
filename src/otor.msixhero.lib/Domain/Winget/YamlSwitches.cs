@@ -13,6 +13,9 @@ namespace otor.msixhero.lib.Domain.Winget
         [YamlMember(Order = 3)]
         public string Custom { get; set; }
 
+        [YamlMember(Order = 4)]
+        public string Language { get; set; }
+
         [YamlMember(Order = int.MaxValue)]
         public string Interactive { get; set; }
     }
