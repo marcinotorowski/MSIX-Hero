@@ -31,6 +31,7 @@
 
     <changeableDialog:ChangeableDialog
         Icon="{StaticResource VectorExport}"
+        ShowShield="{Binding IsAdminRequired}"
         OkButtonLabel="Extract certificate"
         Dialog="{Binding}">
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
@@ -114,7 +115,7 @@
             <DataTemplate>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="Your certificate has been successfully extracted." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                    <TextBlock Visibility="{Binding SaveToFile}" TextAlignment="Center">
+                    <TextBlock Visibility="{Binding SaveToFile.CurrentValue}" TextAlignment="Center">
                         <Hyperlink Click="Hyperlink_OnClick">Open the folder containing your .cer file</Hyperlink>
                     </TextBlock>
                 </StackPanel>
