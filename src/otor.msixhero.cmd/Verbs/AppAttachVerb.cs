@@ -11,7 +11,7 @@ namespace otor.msixhero.cmd.Verbs
         [Option('d', "directory", HelpText = "Output directory folder.", Required = true)]
         public string Directory { get; set; }
 
-        [Option('n', "name", HelpText = "Base name used for the created files. If left empty, the MSIX file name without extension will be used.", Required = false)]
+        [Option('n', "name", HelpText = "File name for VHD output. If left empty, the MSIX file name without extension will be used.", Required = false)]
         public string Name { get; set; }
         
         [Option('s', "size", HelpText = "Size of VHD container (in MB). Leave empty for auto-selection.", Required = false)]

@@ -1,15 +1,14 @@
-#MSIX app attach registration sample
+$configFilePath = (Get-ChildItem $PSScriptRoot -Filter *.json | Select-Object -First 1).FullName;
+if ($null -eq $configFilePath)
+{
+    throw "Missing JSON config!";
+}
 
-#region variables
+$configFile = Get-Content $configFilePath -Raw | ConvertFrom-Json;
 
-$packageName = "<package name>"
-
-$path = "C:\Program Files\WindowsApps\" + $packageName + "\AppxManifest.xml"
-
-#endregion
-
-#region register
-
-Add-AppxPackage -Path $path -DisableDevelopmentMode -Register
-
-#endregion
+foreach ($package in $configFile)
+{
+    $packageName = $package.packageName;
+    $path = Join-Path $env:ProgramFiles ("WindowsApps\" + $packageName + "\AppxManifest.xml");
+    Add-AppxPackage -Path $path -DisableDevelopmentMode -Register;
+}

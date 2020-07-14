@@ -1,19 +1,22 @@
-#MSIX app attach de staging sample
+$configFilePath = (Get-ChildItem $PSScriptRoot -Filter *.json | Select-Object -First 1).FullName;
+if ($null -eq $configFilePath)
+{
+    throw "Missing JSON config!";
+}
 
-#region variables
+$configFile = Get-Content $configFilePath -Raw | ConvertFrom-Json;
 
-$packageName = "<package name>"
+foreach ($package in $configFile)
+{
+    $vhdSrc =  Join-Path $PSScriptRoot $package.vhdFileName;
+    $packageName = $package.packageName;    
+    $msixJunction = Join-Path $package.msixJunction $packageName;
+    
+    Remove-AppxPackage -AllUsers -Package $packageName;
+    Dismount-DiskImage -ImagePath $vhdSrc;
 
-$msixJunction = "C:\temp\AppAttach\"
-
-#endregion
-
-#region deregister
-
-Remove-AppxPackage -AllUsers -Package $packageName
-
-cd $msixJunction
-
-rmdir $packageName -Force -Verbose
-
-#endregion
+    if (Test-Path $msixJunction)
+    {
+        Remove-Item $msixJunction -Force -Recurse;
+    }
+}

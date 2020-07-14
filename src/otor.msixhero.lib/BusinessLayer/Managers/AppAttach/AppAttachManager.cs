@@ -8,6 +8,8 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using otor.msixhero.lib.BusinessLayer.Managers.Signing;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Logging;
@@ -135,6 +137,8 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
                             await CreateScripts(volumeFileInfo.FullName, Path.GetFileNameWithoutExtension(packagePath), volumeGuid, pkgFullName, cancellationToken, progressScripts).ConfigureAwait(false);
                         }
 
+                        await CreateJson(volumeFileInfo.FullName, Path.GetFileNameWithoutExtension(packagePath), volumeGuid, pkgFullName, cancellationToken, progressScripts).ConfigureAwait(false);
+
                         if (extractCertificate)
                         {
                             ISigningManager certMgr = this.signingManager;
@@ -216,6 +220,32 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
             return result.Name;
         }
 
+        private static async Task CreateJson(string targetVhdPath, string packageParentFolder, Guid volumeGuid, string pkgFullName, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
+        {
+            var vhdDir = Path.GetDirectoryName(targetVhdPath);
+
+            if (vhdDir == null)
+            {
+                throw new InvalidOperationException("The target path must contain a directory.");
+            }
+
+            var vhdFileName = Path.GetFileNameWithoutExtension(targetVhdPath);
+
+            var jsonObject = new JObject
+            {
+                ["vhdFileName"] = Path.GetFileName(targetVhdPath),
+                ["parentFolder"] = packageParentFolder,
+                ["packageName"] = pkgFullName,
+                ["volumeGuid"] = volumeGuid.ToString("D"),
+                ["msixJunction"] = @"C:\temp\AppAttach"
+            };
+
+            var jsonArray = new JArray { jsonObject };
+
+            var contentJson = jsonArray.ToString(Formatting.Indented);
+            await File.WriteAllTextAsync(Path.Combine(vhdDir, "app-attach.json"), contentJson, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+        }
+
         private static async Task CreateScripts(string targetVhdPath, string packageParentFolder, Guid volumeGuid, string pkgFullName, CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)
         {
             progressReporter?.Report(new ProgressData(0, "Creating PowerShell scripts..."));
@@ -248,17 +278,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
                 throw new FileNotFoundException($"Required template {templateDestage} was not found.", templateDestage);
             }
 
-            var contentStage = await File.ReadAllTextAsync(templateStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            var contentRegister = await File.ReadAllTextAsync(templateRegister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            var contentDeregister = await File.ReadAllTextAsync(templateDeregister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            var contentDestage = await File.ReadAllTextAsync(templateDestage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-
-            // Stage
-            // "<path to vhd>"
-            // "<package name>"
-            // "<package parent folder>"
-            // "<vol guid>"
-
+            
             var vhdDir = Path.GetDirectoryName(targetVhdPath);
 
             if (vhdDir == null)
@@ -268,20 +288,25 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.AppAttach
 
             var vhdFileName = Path.GetFileNameWithoutExtension(targetVhdPath);
 
-            contentStage =
-                contentStage.Replace("<path to vhd>", targetVhdPath.Replace("\"", "`\""))
-                    .Replace("<package parent folder>", packageParentFolder.Replace("\"", "`\""))
-                    .Replace("<package name>", pkgFullName.Replace("\"", "`\""))
-                    .Replace("<vol guid>", volumeGuid.ToString("B"));
-            
-            contentRegister = contentRegister.Replace("<package name>", pkgFullName.Replace("\"", "`\""));
-            contentDeregister = contentDeregister.Replace("<package name>", pkgFullName.Replace("\"", "`\""));
-            contentDestage = contentDestage.Replace("<package name>", pkgFullName.Replace("\"", "`\""));
-            
-            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".stage.ps1"), contentStage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".register.ps1"), contentRegister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".deregister.ps1"), contentDeregister, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-            await File.WriteAllTextAsync(Path.Combine(vhdDir, vhdFileName + ".destage.ps1"), contentDestage, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+            var files = new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>(templateStage, Path.Combine(vhdDir, "stage.ps1")),
+                new Tuple<string, string>(templateDestage, Path.Combine(vhdDir, "destage.ps1")),
+                new Tuple<string, string>(templateDeregister, Path.Combine(vhdDir, "deregister.ps1")),
+                new Tuple<string, string>(templateRegister, Path.Combine(vhdDir, "register.ps1")),
+            };
+
+            foreach (var file in files)
+            {
+                using (var source = File.OpenRead(file.Item1))
+                {
+                    using (var target = File.OpenWrite(file.Item2))
+                    {
+                        await source.CopyToAsync(target, cancellationToken).ConfigureAwait(false);
+                        await source.FlushAsync(cancellationToken).ConfigureAwait(false);
+                    }
+                }
+            }
         }
 
         private static Task StartService(CancellationToken cancellationToken, IProgress<ProgressData> progressReporter)

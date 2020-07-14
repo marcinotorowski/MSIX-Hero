@@ -81,6 +81,12 @@ foreach ($item in $allFiles) {
 
 & "$PSScriptRoot\dist\redistr\sdk\x64\signtool.exe" sign /n "Marcin Otorowski" /t http://time.certum.pl/ /fd sha256 /d "MSIX Hero" /v $allFiles.FullName
 
+$templates = (Get-ChildItem "$PSScriptRoot\dist\templates" -Filter "AppAttach*.ps1" -Recurse).FullName;
+Write-Host "Signing the following scripts:"
+Write-Host $templates;
+
+Set-AuthenticodeSignature -Certificate (Get-ChildItem "cert:\CurrentUser\My" -codesign) -TimestampServer http://time.certum.pl -HashAlgorithm sha256 -FilePath $templates;
+
 $content = Get-Content "$PSScriptRoot\dist\AppxManifest.xml" -Raw;
 $replace = '<Identity Name="MSIXHero" Version="' + $version + '"';
 $content = $content -replace '<Identity Name="MSIXHero" Version="([0-9\.]+)"',$replace;

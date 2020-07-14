@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Management.Automation;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using otor.msixhero.cmd.Verbs;
 using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
 using otor.msixhero.lib.Infrastructure.Helpers;
@@ -48,12 +52,20 @@ namespace otor.msixhero.cmd.Executors
 
                 await this.Console.WriteSuccess($"The volume has been created in {volumePath}");
 
-                if (this.Verb.ExtractCertificate)
+                await this.Console.WriteSuccess($" --> Created definition: app-attach.json with the following parameters:");
+
+                var json = await File.ReadAllTextAsync(Path.Combine(this.Verb.Directory, "app-attach.json")).ConfigureAwait(false);
+                var jsonArray = (JObject)(((JArray)JToken.Parse(json))[0]);
+
+                var maxPropNameLength = jsonArray.Properties().Select(p => p.Name.Length).Max() + " --> ".Length;
+                foreach (var prop in jsonArray)
                 {
-                    await this.Console.WriteSuccess($" --> Created script: {volumeName}.stage.ps1");
-                    await this.Console.WriteSuccess($" --> Created script: {volumeName}.register.ps1");
-                    await this.Console.WriteSuccess($" --> Created script: {volumeName}.deregister.ps1");
-                    await this.Console.WriteSuccess($" --> Created script: {volumeName}.destage.ps1");
+                    await this.Console.WriteSuccess("".PadLeft(" --> ".Length, ' ') + prop.Key.PadRight(maxPropNameLength, ' ') + " = " + prop.Value.Value<string>());
+                }
+
+                if (this.Verb.CreateScript)
+                {
+                    await this.Console.WriteSuccess($" --> Created script: stage.ps1, register.ps1, deregister.ps1, destage.ps1");
                 }
 
                 if (this.Verb.ExtractCertificate)
