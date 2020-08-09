@@ -22,6 +22,7 @@
     xmlns:viewModel11="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
     xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
     xmlns:eventViewer="clr-namespace:otor.msixhero.lib.Domain.Commands.EventViewer;assembly=msixhero.lib"
+    xmlns:updateNotification="clr-namespace:otor.msixhero.ui.Controls.UpdateNotification"
     d:DesignWidth="600"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -43,6 +44,7 @@
     </routedCommand:RoutedCommandHandlers.Commands>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -1013,7 +1015,13 @@
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
-        <Border Background="#FFFFFF" Grid.Row="2">
+
+        <updateNotification:UpdateNotificationControl 
+            IsUpdateAvailable="{Binding IsUpdateAvailable}"
+            Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Grid.Row="2" />
+
+        <Border Background="#FFFFFF" Grid.Row="3">
             <progressOverlay:ProgressOverlay IsShown="{Binding IsLoading}" Progress="{Binding LoadingProgress}" Message="{Binding LoadingMessage}">
                 <Grid>
 

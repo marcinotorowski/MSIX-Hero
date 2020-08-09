@@ -36,5 +36,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name = "advanced")]
         public AdvancedConfiguration Advanced { get; set; }
+
+        [DataMember(Name = "update")]
+        public UpdateConfiguration Update { get; set; }
     }
 }

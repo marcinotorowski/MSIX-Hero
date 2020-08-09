@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Fluent;
 using otor.msixhero.lib.BusinessLayer.State;
 using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
@@ -41,12 +39,10 @@ namespace otor.msixhero.ui.Modules.Main.View
             appStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
             appStateManager.EventAggregator.GetEvent<VolumesSelectionChanged>().Subscribe(this.OnVolumesSelectionChanged, ThreadOption.UIThread);
             appStateManager.EventAggregator.GetEvent<ApplicationModeChangedEvent>().Subscribe(this.OnModeChanged, ThreadOption.UIThread);
-
             this.ChangeTabVisibility();
-
             this.Loaded += OnLoaded;
         }
-
+        
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= this.OnLoaded;

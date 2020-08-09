@@ -20,7 +20,11 @@ namespace otor.msixhero.lib.Infrastructure.Update
                 throw new FormatException($"Version {lastDefinition.LastVersion} could not be parsed as a version string.");
             }
 
-            return new UpdateCheckResult(currentVersion, lastVersion, lastDefinition.Released);
+            return new UpdateCheckResult(currentVersion, lastVersion, lastDefinition.Released)
+            {
+                BlogUrl = lastDefinition.BlogUrl,
+                Changes = lastDefinition.Changes
+            };
         }
 
         public Task<UpdateCheckResult> CheckForNewVersion()

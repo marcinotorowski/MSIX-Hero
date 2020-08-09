@@ -117,14 +117,6 @@
                     </UniformGrid>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="UI">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
-                        <CheckBox IsChecked="{Binding SwitchToContextualTabAfterSelection.CurrentValue}" Content="After changing selection switch to the contextual tab" />
-                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="Confirm deletion of items" />
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
             <TabItem Header="Signing">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
@@ -138,7 +130,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Packer">
+            <TabItem Header="Packer" HorizontalAlignment="Left" Width="52">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
                         <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 6">
@@ -405,6 +397,14 @@
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
+            </TabItem>
+            <TabItem Header="UI">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <CheckBox IsChecked="{Binding SwitchToContextualTabAfterSelection.CurrentValue}" Content="After changing selection switch to the contextual tab" />
+                        <CheckBox Margin="0 4 0 0" IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="Confirm deletion of items" />
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Other">
                 <StackPanel>

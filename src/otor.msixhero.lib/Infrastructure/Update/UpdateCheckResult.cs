@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace otor.msixhero.lib.Infrastructure.Update
 {
@@ -21,5 +22,9 @@ namespace otor.msixhero.lib.Infrastructure.Update
         public Version AvailableVersion { get; private set; }
 
         public DateTime ReleaseDate { get; private set; }
+
+        public string BlogUrl { get; set; }
+
+        public List<ChangeLogItem> Changes { get; set; }
     }
 }

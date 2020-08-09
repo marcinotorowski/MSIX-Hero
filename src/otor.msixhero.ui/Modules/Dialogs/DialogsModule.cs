@@ -54,7 +54,6 @@ namespace otor.msixhero.ui.Modules.Dialogs
             containerRegistry.RegisterDialog<AppInstallerView, AppInstallerViewModel>(Constants.PathAppInstaller);
             containerRegistry.RegisterDialog<PackageExpertView, PackageExpertViewModel>(Constants.PathPackageExpert);
             containerRegistry.RegisterDialog<WingetView, WingetViewModel>(Constants.PathWinget);
-
             containerRegistry.RegisterDialog<FileRuleView, FileRuleViewModel>(Constants.PathPackageExpertFileRule);
         }
 

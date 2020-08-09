@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -10,34 +11,41 @@ using otor.msixhero.lib.Domain.Events;
 using otor.msixhero.lib.Domain.Events.PackageList;
 using otor.msixhero.lib.Infrastructure;
 using otor.msixhero.lib.Infrastructure.Configuration;
+using otor.msixhero.lib.Infrastructure.Logging;
 using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using otor.msixhero.lib.Infrastructure.Update;
 using otor.msixhero.ui.ViewModel;
 using Prism.Events;
 using Prism.Services.Dialogs;
+using LogManager = otor.msixhero.lib.Infrastructure.Logging.LogManager;
 using Path = System.IO.Path;
 
 namespace otor.msixhero.ui.Modules.Main.ViewModel
 {
     public class MainViewModel : NotifyPropertyChanged
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(MainViewModel));
         private readonly IInteractionService interactionService;
         private readonly IApplicationStateManager stateManager;
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
         private readonly IBusyManager busyManager;
+        private readonly UpdateConfigurationManager updateConfigurationManager;
         private bool isLoading;
         private string loadingMessage;
         private int loadingProgress;
         private PackageContext? tempContext;
+        private bool isUpdateAvailable;
 
         public MainViewModel(
+            IUpdateChecker updateChecker,
             IInteractionService interactionService,
             IApplicationStateManager stateManager, 
             IConfigurationService configurationService, 
             IDialogService dialogService,
             IBusyManager busyManager)
         {
+            this.updateConfigurationManager = new UpdateConfigurationManager(configurationService, updateChecker);
             this.interactionService = interactionService;
             this.stateManager = stateManager;
             this.configurationService = configurationService;
@@ -53,6 +61,14 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
             stateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(this.OnPackagesSidebarVisibilityChanged);
             stateManager.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.OnToolsChangedEvent, ThreadOption.UIThread);
             this.SetTools();
+
+            this.CheckReleaseNotes();
+        }
+
+        private async void CheckReleaseNotes()
+        {
+            var result = await this.updateConfigurationManager.ShouldShowReleaseNotes().ConfigureAwait(false);
+            this.IsUpdateAvailable = result;
         }
 
         private void OnToolsChangedEvent(IReadOnlyCollection<ToolListConfiguration> toolsCollection)
@@ -122,7 +138,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                 TaskScheduler.FromCurrentSynchronizationContext());
             }
         }
-
+        
         public bool HasSelection => this.stateManager.CurrentState.Packages.SelectedItems.Any();
 
         public bool HasSingleSelection => this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
@@ -144,6 +160,12 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
 
                 this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
             }
+        }
+
+        public bool IsUpdateAvailable
+        {
+            get => this.isUpdateAvailable;
+            set => this.SetField(ref this.isUpdateAvailable, value);
         }
 
         public bool ShowSidebar

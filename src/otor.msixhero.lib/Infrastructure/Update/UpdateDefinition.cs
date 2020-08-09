@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace otor.msixhero.lib.Infrastructure.Update
 {
     public class UpdateDefinition
     {
-        /*{
-    "lastVersion": "0.9.0.0",
-    "released": "2019-01-01"
-}*/
-
         public string LastVersion { get; set; }
 
         public DateTime Released { get; set; }
+
+        public string BlogUrl { get; set; }
+
+        public List<ChangeLogItem> Changes { get; set; }
     }
 }
