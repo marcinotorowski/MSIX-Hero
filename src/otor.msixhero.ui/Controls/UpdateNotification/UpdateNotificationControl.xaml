@@ -15,7 +15,7 @@
         <Button DockPanel.Dock="Right" VerticalAlignment="Center" Content="Dismiss" Margin="4 0" Padding="8 2" Click="OnCloseClick" />
         <Button DockPanel.Dock="Right" VerticalAlignment="Center" Content="Show release notes" Margin="4 0" Click="OnShowReleaseNotesClick" Padding="8 2" />
 
-        <TextBlock VerticalAlignment="Center" Margin="8 0 0 0">
+        <TextBlock VerticalAlignment="Center" Margin="8 0" TextWrapping="Wrap">
             <Run Text="MSIX Hero has been updated to version" />
             <Run Text="{Binding ElementName=root, Path=CurrentVersion, FallbackValue='a new version'}" FontWeight="Bold" />
         </TextBlock>

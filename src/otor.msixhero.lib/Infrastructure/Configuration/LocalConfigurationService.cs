@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -28,7 +29,15 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
             if (!File.Exists(file))
             {
-                return FixConfiguration(new Configuration());
+                var cfg = FixConfiguration(new Configuration());
+                cfg.Update = new UpdateConfiguration
+                {
+                    HideNewVersionInfo = false,
+                    // ReSharper disable once PossibleNullReferenceException
+                    LastShownVersion = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(3)
+                };
+
+                return cfg;
             }
 
             var fileContent = await File.ReadAllTextAsync(file, token).ConfigureAwait(false);

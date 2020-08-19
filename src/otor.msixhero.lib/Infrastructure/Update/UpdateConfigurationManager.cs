@@ -59,17 +59,9 @@ namespace otor.msixhero.lib.Infrastructure.Update
             }
 
             // current version not specified
-            var currentVersion = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version;
-            if (currentVersion == null)
-            {
-                if (markReleaseNotesAsShown)
-                {
-                    await this.SetLastVersion(null, cancellation).ConfigureAwait(false);
-                }
-
-                return false;
-            }
-
+            // ReSharper disable once PossibleNullReferenceException
+            var currentVersion = Version.Parse((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(3));
+            
             // last version was greater or equal than the current one
             if (currentVersion <= lastVersionParsed)
             {
