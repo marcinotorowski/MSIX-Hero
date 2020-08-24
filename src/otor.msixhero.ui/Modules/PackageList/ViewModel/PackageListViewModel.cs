@@ -462,7 +462,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public string SearchKey
         {
             get => this.stateManager.CurrentState.Packages.SearchKey;
-            set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(this.stateManager.CurrentState.Packages.Filter, value));
+            set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(this.stateManager.CurrentState.Packages.Filter, value, this.stateManager.CurrentState.Packages.AddonsFilter));
         }
 
         public ObservableCollection<InstalledPackageViewModel> AllPackages { get; }

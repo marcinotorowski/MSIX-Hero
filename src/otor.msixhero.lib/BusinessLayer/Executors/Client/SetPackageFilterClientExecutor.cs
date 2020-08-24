@@ -28,6 +28,8 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
             var newSearchKey = state.Packages.SearchKey;
             var oldFilter = state.Packages.Filter;
             var newFilter = state.Packages.Filter;
+            var oldAddonsFilter = state.Packages.AddonsFilter;
+            var newAddonsFilter = state.Packages.AddonsFilter;
 
             var eventRequired = false;
 
@@ -42,6 +44,13 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
             {
                 state.Packages.Filter = action.Filter;
                 newFilter = state.Packages.Filter;
+                eventRequired = true;
+            }
+
+            if (state.Packages.AddonsFilter != action.AddonsFilter)
+            {
+                state.Packages.AddonsFilter = action.AddonsFilter;
+                newAddonsFilter = state.Packages.AddonsFilter;
                 eventRequired = true;
             }
 
@@ -90,6 +99,16 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
 
                         break;
                 }
+
+                if (item.IsOptional && action.AddonsFilter == AddonsFilter.OnlyMain)
+                {
+                    toHide.Add(item);
+                }
+
+                if (!item.IsOptional && action.AddonsFilter == AddonsFilter.OnlyAddons)
+                {
+                    toHide.Add(item);
+                }
             }
 
             foreach (var item in state.Packages.HiddenItems)
@@ -104,6 +123,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
                     continue;
                 }
 
+                var packageFilterOk = false;
                 switch (item.SignatureKind)
                 {
                     case SignatureKind.Developer:
@@ -111,24 +131,38 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
                     case SignatureKind.Enterprise:
                         if ((action.Filter & PackageFilter.Developer) == PackageFilter.Developer)
                         {
-                            toShow.Add(item);
+                            packageFilterOk = true;
                         }
                         
                         break;
                     case SignatureKind.Store:
                         if ((action.Filter & PackageFilter.Store) == PackageFilter.Store)
                         {
-                            toShow.Add(item);
+                            packageFilterOk = true;
                         }
 
                         break;
                     case SignatureKind.System:
                         if ((action.Filter & PackageFilter.System) == PackageFilter.System)
                         {
-                            toShow.Add(item);
+                            packageFilterOk = true;
                         }
 
                         break;
+                }
+
+                if (!packageFilterOk)
+                {
+                    continue;
+                }
+
+                if (!item.IsOptional && action.AddonsFilter != AddonsFilter.OnlyAddons)
+                {
+                    toShow.Add(item);
+                }
+                else if (item.IsOptional && action.AddonsFilter != AddonsFilter.OnlyMain)
+                {
+                    toShow.Add(item);
                 }
             }
 
@@ -153,7 +187,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
 
             if (eventRequired)
             {
-                var eventToSend = new PackagesFilterChangedPayload(newFilter, oldFilter, newSearchKey, oldSearchKey);
+                var eventToSend = new PackagesFilterChangedPayload(newFilter, oldFilter, newAddonsFilter, oldAddonsFilter, newSearchKey, oldSearchKey);
                 this.StateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Publish(eventToSend);
             }
             

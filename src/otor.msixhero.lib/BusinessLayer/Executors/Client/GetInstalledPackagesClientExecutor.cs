@@ -63,7 +63,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.Client
 
             state.Packages.Context = this.command.Context;
             this.StateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Publish(new PackagesCollectionChangedPayLoad(state.Packages.Context, CollectionChangeType.Reset));
-            await this.StateManager.CommandExecutor.ExecuteAsync(new SetPackageFilter(state.Packages.Filter, state.Packages.SearchKey), cancellationToken).ConfigureAwait(false);
+            await this.StateManager.CommandExecutor.ExecuteAsync(new SetPackageFilter(state.Packages.Filter, state.Packages.SearchKey, state.Packages.AddonsFilter), cancellationToken).ConfigureAwait(false);
             await this.StateManager.CommandExecutor.ExecuteAsync(new SelectPackages(state.Packages.VisibleItems.Where(item => selectedPackageNames.Contains(item.PackageId)).ToList()), cancellationToken).ConfigureAwait(false);
 
             return packageSource;

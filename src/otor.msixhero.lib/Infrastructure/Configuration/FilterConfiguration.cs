@@ -12,5 +12,8 @@ namespace otor.msixhero.lib.Infrastructure.Configuration
 
         [DataMember(Name="showApps")]
         public PackageFilter ShowApps { get; set; }
+
+        [DataMember(Name = "addons")]
+        public AddonsFilter AddonsFilter { get; set; }
     }
 }

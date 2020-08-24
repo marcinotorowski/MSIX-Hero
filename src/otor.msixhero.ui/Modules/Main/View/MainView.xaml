@@ -384,9 +384,15 @@
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="App types">
-                    <Fluent:CheckBox IsChecked="{Binding ShowStoreApps, Converter={StaticResource NegativeConverter}}" Header="Hide Store apps" />
-                    <Fluent:CheckBox IsChecked="{Binding ShowSideLoadedApps, Converter={StaticResource NegativeConverter}}" Header="Hide Side-loaded apps" />
-                    <Fluent:CheckBox IsChecked="{Binding ShowSystemApps, Converter={StaticResource NegativeConverter}}" Header="Hide System apps" />
+                    <Fluent:CheckBox IsChecked="{Binding ShowStoreApps}" Header="Store apps" />
+                    <Fluent:CheckBox IsChecked="{Binding ShowSideLoadedApps}" Header="Side-loaded apps" />
+                    <Fluent:CheckBox IsChecked="{Binding ShowSystemApps}" Header="System apps" />
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Header="Add-ons">
+                    <Fluent:RadioButton IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:AddonsFilter.OnlyMain}}" Header="Only main apps" />
+                    <Fluent:RadioButton IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:AddonsFilter.OnlyAddons}}" Header="Only add-ons" />
+                    <Fluent:RadioButton IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static enums:AddonsFilter.Both}}" Header="Main apps + add-ons" />
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Group by" x:Name="RibbonViewGroupBy">

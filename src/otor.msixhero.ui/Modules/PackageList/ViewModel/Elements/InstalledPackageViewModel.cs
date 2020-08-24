@@ -16,6 +16,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
         {
         }
 
+        public bool IsAddon => this.Model.IsOptional;
+
         public string Description => this.Model.Description;
 
         public string DisplayName => this.Model.DisplayName;

@@ -11,6 +11,7 @@ namespace otor.msixhero.lib.Domain.State
             this.Context = UserHelper.IsAdministrator() ? PackageContext.AllUsers : PackageContext.CurrentUser;
             this.Filter = PackageFilter.Developer;
             this.Group = PackageGroup.None;
+            this.AddonsFilter = AddonsFilter.OnlyMain;
             this.ShowSidebar = true;
 
             this.VisibleItems = new List<InstalledPackage>();
@@ -19,6 +20,8 @@ namespace otor.msixhero.lib.Domain.State
         }
 
         public PackageFilter Filter { get; set; }
+
+        public AddonsFilter AddonsFilter { get; set; }
 
         public PackageContext Context { get; set; }
 

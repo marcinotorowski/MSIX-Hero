@@ -621,10 +621,10 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        allPackages = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty).ToList(), cancellationToken).ConfigureAwait(false);
+                        allPackages = await Task.Run(() => pkgMan.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                         break;
                     case PackageFindMode.AllUsers:
-                        allPackages = await Task.Run(() => pkgMan.FindPackages().ToList(), cancellationToken).ConfigureAwait(false);
+                        allPackages = await Task.Run(() => pkgMan.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -795,6 +795,7 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
                 Publisher = item.Id.Publisher,
                 Architecture = item.Id.Architecture.ToString(),
                 IsFramework = item.IsFramework,
+                IsOptional = item.IsOptional,
                 TileColor = details.Color,
                 PackageType = details.PackageType,
                 Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),

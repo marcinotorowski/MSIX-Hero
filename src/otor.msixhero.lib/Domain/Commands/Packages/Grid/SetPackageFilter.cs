@@ -10,11 +10,14 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
         {
         }
 
-        public SetPackageFilter(PackageFilter filter, string searchKey)
+        public SetPackageFilter(PackageFilter filter, string searchKey, AddonsFilter addons)
         {
             this.Filter = filter;
             this.SearchKey = searchKey;
+            this.AddonsFilter = addons;
         }
+
+        public AddonsFilter AddonsFilter { get; set; }
 
         /// <summary>
         /// The filter, or <c>null</c> if the filter is not to be changed by this action.
@@ -28,15 +31,15 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
 
         public static SetPackageFilter CreateFrom(string searchKey)
         {
-            return new SetPackageFilter(PackageFilter.All, searchKey);
+            return new SetPackageFilter(PackageFilter.All, searchKey, AddonsFilter.OnlyMain);
         }
 
-        public static SetPackageFilter CreateFrom(PackageFilter packageFilter, string searchKey = null)
+        public static SetPackageFilter CreateFrom(PackageFilter packageFilter, string searchKey = null, AddonsFilter addons = AddonsFilter.OnlyMain)
         {
-            return new SetPackageFilter(packageFilter, searchKey);
+            return new SetPackageFilter(packageFilter, searchKey, addons);
         }
 
-        public static SetPackageFilter CreateFrom(bool systemApps, bool storeApps, bool developerApps, string searchKey = null)
+        public static SetPackageFilter CreateFrom(bool systemApps, bool storeApps, bool developerApps, string searchKey = null, AddonsFilter addons = AddonsFilter.OnlyMain)
         {
             PackageFilter flags = 0;
 
@@ -55,7 +58,7 @@ namespace otor.msixhero.lib.Domain.Commands.Packages.Grid
                 flags |= PackageFilter.Developer;
             }
 
-            return CreateFrom(flags, searchKey);
+            return CreateFrom(flags, searchKey, addons);
         }
     }
 }

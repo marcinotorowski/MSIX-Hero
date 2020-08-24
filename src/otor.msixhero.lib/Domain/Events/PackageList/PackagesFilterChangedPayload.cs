@@ -4,17 +4,29 @@ namespace otor.msixhero.lib.Domain.Events.PackageList
 {
     public class PackagesFilterChangedPayload
     {
-        public PackagesFilterChangedPayload(PackageFilter newFilter, PackageFilter oldFilter, string newSearchKey, string oldSearchKey)
+        public PackagesFilterChangedPayload(
+            PackageFilter newFilter,
+            PackageFilter oldFilter,
+            AddonsFilter newAddonsFilter,
+            AddonsFilter oldAddonsFilter,
+            string newSearchKey, 
+            string oldSearchKey)
         {
-            NewFilter = newFilter;
-            OldFilter = oldFilter;
-            NewSearchKey = newSearchKey;
-            OldSearchKey = oldSearchKey;
+            this.NewFilter = newFilter;
+            this.OldFilter = oldFilter;
+            this.NewSearchKey = newSearchKey;
+            this.OldSearchKey = oldSearchKey;
+            this.NewAddonsFilter = newAddonsFilter;
+            this.OldAddonsFilter = oldAddonsFilter;
         }
 
         public PackageFilter NewFilter { get; private set; }
 
         public PackageFilter OldFilter { get; private set; }
+
+        public AddonsFilter NewAddonsFilter { get; private set; }
+
+        public AddonsFilter OldAddonsFilter { get; private set; }
 
         public string NewSearchKey { get; private set; }
 

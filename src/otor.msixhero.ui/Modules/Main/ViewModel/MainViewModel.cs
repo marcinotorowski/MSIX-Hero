@@ -158,7 +158,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.Developer;
                 }
 
-                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey, this.stateManager.CurrentState.Packages.AddonsFilter));
             }
         }
 
@@ -195,7 +195,7 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.Store;
                 }
 
-                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey, this.stateManager.CurrentState.Packages.AddonsFilter));
             }
         }
 
@@ -214,7 +214,16 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                     currentFilter &= ~PackageFilter.System;
                 }
 
-                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey));
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(currentFilter, this.stateManager.CurrentState.Packages.SearchKey, this.stateManager.CurrentState.Packages.AddonsFilter));
+            }
+        }
+
+        public AddonsFilter AddonsBehavior
+        { 
+            get => this.stateManager.CurrentState.Packages.AddonsFilter;
+            set
+            {
+                this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(this.stateManager.CurrentState.Packages.Filter, this.stateManager.CurrentState.Packages.SearchKey, value));
             }
         }
 
@@ -260,6 +269,11 @@ namespace otor.msixhero.ui.Modules.Main.ViewModel
                 this.OnPropertyChanged(nameof(ShowSystemApps));
                 this.OnPropertyChanged(nameof(ShowSideLoadedApps));
                 this.OnPropertyChanged(nameof(ShowStoreApps));
+            }
+
+            if (obj.NewAddonsFilter != obj.OldAddonsFilter)
+            {
+                this.OnPropertyChanged(nameof(AddonsBehavior));
             }
         }
 

@@ -44,6 +44,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
                 var configuration = configurationService.GetCurrentConfiguration();
                 this.CurrentState.Packages.ShowSidebar = configuration.List.Sidebar.Visible;
                 this.CurrentState.Packages.Filter = configuration.List.Filter.ShowApps;
+                this.CurrentState.Packages.AddonsFilter = configuration.List.Filter.AddonsFilter;
             }
             catch (Exception e)
             {
@@ -58,6 +59,7 @@ namespace otor.msixhero.lib.BusinessLayer.State
                 var config = this.configurationService.GetCurrentConfiguration();
                 config.List.Sidebar.Visible = this.CurrentState.Packages.ShowSidebar;
                 config.List.Filter.ShowApps = this.CurrentState.Packages.Filter;
+                config.List.Filter.AddonsFilter = this.CurrentState.Packages.AddonsFilter;
                 this.configurationService.SetCurrentConfiguration(config);
             }
             catch (Exception e)

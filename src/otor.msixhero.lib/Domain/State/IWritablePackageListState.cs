@@ -9,6 +9,8 @@ namespace otor.msixhero.lib.Domain.State
 
         PackageFilter Filter { get; set; }
 
+        AddonsFilter AddonsFilter { get; set; }
+
         PackageGroup Group { get; set; }
 
         PackageSort Sort { get; set; }
