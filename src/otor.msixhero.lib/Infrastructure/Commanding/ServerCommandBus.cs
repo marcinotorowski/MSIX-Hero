@@ -32,10 +32,10 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         protected override void RegisterReducers()
         {
             this.CommandExecutorFactories[typeof(GetPackages)] = action => new GetInstalledPackagesServerExecutor((GetPackages)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
+            this.CommandExecutorFactories[typeof(GetModificationPackages)] = action => new GetModificationPackagesExecutor((GetModificationPackages)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(GetVolumes)] = action => new GetVolumesServerExecutor((GetVolumes)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RemovePackages)] = action => new RemovePackageServerExecutor((RemovePackages)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RemoveVolume)] = action => new RemoveVolumeServerExecutor((RemoveVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
-
             this.CommandExecutorFactories[typeof(GetRegistryMountState)] = action => new GetRegistryMountStateCommandExecutor((GetRegistryMountState)action, this.RegistryManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RunPackage)] = action => new RunPackageCommandExecutor((RunPackage)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RunToolInPackage)] = action => new RunToolInPackageCommandExecutor((RunToolInPackage)action, this.PackageManagerFactory, this.WritableApplicationStateManager);

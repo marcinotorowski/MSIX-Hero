@@ -479,6 +479,40 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
             return this.GetInstalledPackages(null, mode, cancellationToken, progress);
         }
 
+        public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var pkgManager = new PackageManager();
+
+            if (mode == PackageFindMode.Auto)
+            {
+                mode = (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false)) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+            }
+
+            var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? pkgManager.FindPackageForUser(string.Empty, packageFullName) : pkgManager.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
+            if (find == null)
+            {
+                var packageIdentity = PackageIdentity.FromFullName(packageFullName);
+                find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? pkgManager.FindPackageForUser(string.Empty, packageIdentity.AppName) : pkgManager.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
+
+                if (find == null)
+                {
+                    return new List<InstalledPackage>();
+                }
+            }
+
+            var dependencies = find.Dependencies;
+
+            var list = new List<InstalledPackage>();
+
+            foreach (var dep in dependencies.Where(p => p.IsOptional))
+            {
+                var converted = await ConvertFrom(dep, cancellationToken).ConfigureAwait(false);
+                list.Add(converted);
+            }
+
+            return list;
+        }
+
         public async Task<InstalledPackage> GetInstalledPackages(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var pkgMan = new PackageManager();

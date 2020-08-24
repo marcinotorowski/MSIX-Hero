@@ -28,7 +28,6 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
             this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
-            this.Addons = new ObservableCollection<PackageContentDetailsViewModel>();
 
             if (model.OperatingSystemDependencies != null)
             {
@@ -73,15 +72,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
             
             // 2) plus additionally number of apps that have tracing
             this.FixupsCount += this.Applications.Count(a => a.HasPsf && a.Psf.HasTracing);
-
-            if (model.Addons != null)
-            {
-                foreach (var item in model.Addons)
-                {
-                    this.Addons.Add(new PackageContentDetailsViewModel(item));
-                }
-            }
-
+            
             this.BuildInfo = model.BuildInfo;
 
             if (string.IsNullOrEmpty(this.TileColor))
@@ -124,8 +115,6 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
         public bool HasPackageDependencies { get; }
 
         public ObservableCollection<PackageDependencyViewModel> PackageDependencies { get; }
-        
-        public ObservableCollection<PackageContentDetailsViewModel> Addons { get; }
         
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
 

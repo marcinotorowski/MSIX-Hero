@@ -19,6 +19,7 @@
              xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
              xmlns:full="clr-namespace:otor.msixhero.lib.Domain.Appx.Manifest.Full;assembly=msixhero.lib"
              xmlns:signatureStatus="clr-namespace:otor.msixhero.ui.Modules.Common.SignatureStatus"
+             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}"
@@ -605,12 +606,12 @@
                             <TabItem.Header>
                                 <TextBlock>
                             <Run Text="Modifications + Add-ons" />
-                            <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count, Mode=OneWay}"  Foreground="#777" />
+                            <Run Text="{Binding Addons.CurrentValue.Count, Mode=OneWay}"  Foreground="#777" />
                                 </TextBlock>
                             </TabItem.Header>
-                            <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+                            <progressOverlay:ProgressOverlay IsShown="{Binding Addons.IsLoading}">
 
-                                <zeroOrAny:ZeroOrAny ItemsCount="{Binding SelectedPackageManifestInfo.CurrentValue.Addons.Count}">
+                                <zeroOrAny:ZeroOrAny ItemsCount="{Binding Addons.CurrentValue.Count}">
                                     <zeroOrAny:ZeroOrAny.Template>
                                         <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
                                             <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
@@ -618,14 +619,14 @@
                                     </zeroOrAny:ZeroOrAny.Template>
                                     <zeroOrAny:ZeroOrAny.AnyItemTemplate>
                                         <DataTemplate>
-                                            <ListBox 
-                                                ItemsSource="{Binding SelectedPackageManifestInfo.CurrentValue.Addons}">
-                                                <ListBox.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type elements1:PackageContentDetailsViewModel}">
-                                                        <DockPanel>
+                                            <ItemsControl
+                                                ItemsSource="{Binding Addons.CurrentValue}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                        <DockPanel Margin="0 0 8 8">
                                                             <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                                 <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                    <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                                    <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                                 </Border>
                                                             </Border>
 
@@ -638,14 +639,14 @@
                                                                     <Run Text="{Binding DisplayName, Mode=OneTime}" />
                                                                 </TextBlock>
                                                                 <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
-                                                                    <Run Text="{Binding PublisherDisplayName, Mode=OneTime}" />
+                                                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
                                                                 </TextBlock>
                                                             </StackPanel>
 
                                                         </DockPanel>
                                                     </DataTemplate>
-                                                </ListBox.ItemTemplate>
-                                            </ListBox>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
                                         </DataTemplate>
                                     </zeroOrAny:ZeroOrAny.AnyItemTemplate>
                                     <zeroOrAny:ZeroOrAny.NoItemsTemplate>

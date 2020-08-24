@@ -35,6 +35,7 @@ namespace otor.msixhero.lib.Infrastructure.Commanding
         {
             this.CommandExecutorFactories[typeof(SetPackageFilter)] = action => new SetPackageFilterClientExecutor((SetPackageFilter)action, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(GetPackages)] = action => new GetInstalledPackagesClientExecutor((GetPackages)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
+            this.CommandExecutorFactories[typeof(GetModificationPackages)] = action => new GetModificationPackagesExecutor((GetModificationPackages)action, this.PackageManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RemoveVolume)] = action => new RemoveVolumeClientExecutor((RemoveVolume)action, this.VolumeManagerFactory, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(SelectPackages)] = action => new SelectPackagesClientExecutor((SelectPackages)action, this.WritableApplicationStateManager);
             this.CommandExecutorFactories[typeof(RemovePackages)] = action => new RemovePackageClientExecutor((RemovePackages)action, this.PackageManagerFactory, this.WritableApplicationStateManager);

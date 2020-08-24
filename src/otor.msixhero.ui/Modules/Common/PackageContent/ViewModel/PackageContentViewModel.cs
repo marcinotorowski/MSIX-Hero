@@ -27,6 +27,7 @@ using otor.msixhero.ui.Modules.Common.PackageContent.Helpers;
 using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
 using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel;
 using otor.msixhero.ui.Modules.PackageList.Navigation;
+using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
 using otor.msixhero.ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
@@ -64,6 +65,8 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
         public PackageContentCommandHandler CommandHandler { get; }
 
         public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
+        
+        public AsyncProperty<List<InstalledPackageViewModel>> Addons { get; } = new AsyncProperty<List<InstalledPackageViewModel>>();
 
         public AsyncProperty<PackageContentDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<PackageContentDetailsViewModel>();
 
@@ -170,29 +173,35 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                 throw new FileNotFoundException("Could not find AppxManifest.xml");
             }
 
-            var signatureTask = this.LoadSignature(source, cancellationToken);
+            var loadSignature = this.LoadSignature(source, cancellationToken);
 
             var appxReader = new AppxManifestReader();
-            var appxManifest = await appxReader.Read(source, cancellationToken).ConfigureAwait(false);
 
+            var taskToReadManifest = appxReader.Read(source, cancellationToken);
+            
+            var appxManifest = await taskToReadManifest.ConfigureAwait(false);
             this.fullPackageName = appxManifest.FullName;
+
+            Task loadUsers;
             if (!this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
             {
-                await this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired))).ConfigureAwait(false);
+                loadUsers = this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired)));
             }
             else
             {
                 try
                 {
-                    await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated)).ConfigureAwait(false);
+                    loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated));
                 }
                 catch (Exception)
                 {
-                    await this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(false)).ConfigureAwait(false);
+                    loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(false));
                 }
             }
 
-            await signatureTask.ConfigureAwait(false);
+            var getAddons = this.Addons.Load(this.GetAddons());
+
+            await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
@@ -272,6 +281,20 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
+        }
+
+        private async Task<List<InstalledPackageViewModel>> GetAddons()
+        {
+            var task = new GetModificationPackages(this.fullPackageName);
+            var results = await this.stateManager.CommandExecutor.GetExecuteAsync(task).ConfigureAwait(false);
+
+            var list = new List<InstalledPackageViewModel>();
+            foreach (var item in results)
+            {
+                list.Add(new InstalledPackageViewModel(item, stateManager));
+            }
+
+            return list;
         }
 
         private async Task<FoundUsersViewModel> GetSelectionDetails(bool forceElevation)

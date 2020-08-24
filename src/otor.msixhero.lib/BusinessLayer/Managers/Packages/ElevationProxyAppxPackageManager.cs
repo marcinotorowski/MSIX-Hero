@@ -129,6 +129,29 @@ namespace otor.msixhero.lib.BusinessLayer.Managers.Packages
             return this.client.GetExecuted(cmd, cancellationToken, progress);
         }
 
+        public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (mode == PackageFindMode.Auto)
+            {
+                if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    mode = PackageFindMode.AllUsers;
+                }
+                else
+                {
+                    mode = PackageFindMode.CurrentUser;
+                }
+            }
+
+            var cmd = new GetModificationPackages
+            {
+                FullPackageName = packageFullName,
+                Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers
+            };
+
+            return await this.client.GetExecuted(cmd, cancellationToken, progress);
+        }
+
         public Task<AppxPackage> GetByIdentity(string packageName, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var cmd = new GetPackageDetails
