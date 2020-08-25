@@ -4,27 +4,28 @@ using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.Domain.Appx.Signing;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Crypt;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Helpers;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Cryptography;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 {
     public class CertificateSelectorViewModel : ChangeableContainer
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(CertificateSelectorViewModel));
 
-        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
 
         public CertificateSelectorViewModel(
             IInteractionService interactionService,
-            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory,
+            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             SigningConfiguration configuration,
             bool showPassword)
         {
@@ -88,7 +89,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(string thumbprint = null, bool onlyValid = true, CancellationToken cancellationToken = default)
         {
-            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, CancellationToken.None).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, CancellationToken.None).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             var needsCommit = this.SelectedPersonalCertificate.CurrentValue == null;

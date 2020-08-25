@@ -1,7 +1,7 @@
-﻿using otor.msixhero.lib.Domain.Appx.Manifest.Full;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
 {
     public class AppxServiceViewModel : NotifyPropertyChanged
     {

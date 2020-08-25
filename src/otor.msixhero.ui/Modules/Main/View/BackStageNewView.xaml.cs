@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using Fluent;
 
-namespace otor.msixhero.ui.Modules.Main.View
+namespace Otor.MsixHero.Ui.Modules.Main.View
 {
     /// <summary>
     /// Interaction logic for BackStageNewView.xaml

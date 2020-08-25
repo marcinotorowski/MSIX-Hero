@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Domain
+namespace Otor.MsixHero.Ui.Domain
 {
     public class ChangeableContainer : NotifyPropertyChanged, IDisposable, IValidatedContainerChangeable
     {

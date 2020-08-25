@@ -1,6 +1,7 @@
 ﻿using System;
+using Otor.MsixHero.Infrastructure.Progress;
 
-namespace otor.msixhero.lib.Infrastructure.Progress
+namespace Otor.MsixHero.Lib.Infrastructure.Progress
 {
     public interface IBusyContext : IProgress<ProgressData>
     {

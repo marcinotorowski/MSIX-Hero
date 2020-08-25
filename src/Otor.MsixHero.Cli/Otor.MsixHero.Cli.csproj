@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>msixherocli</AssemblyName>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <AssemblyTitle>MSIX Hero Command Line Interface</AssemblyTitle>
+    <Company>Marcin Otorowski</Company>
+    <Authors>Marcin Otorowski</Authors>
+    <Product>MSIX Hero CLI</Product>
+    <Description>Command Line Interface for MSIX Hero</Description>
+    <Copyright>(C) 2020 by Marcin Otorowski</Copyright>
+    <PackageId>MSIX Hero Command Line Interface</PackageId>
+    <PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
+    <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\otor.msixhero.lib\Otor.MsixHero.Lib.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
+  </Target>
+
+</Project>

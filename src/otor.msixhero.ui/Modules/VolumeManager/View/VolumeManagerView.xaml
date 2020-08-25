@@ -1,21 +1,17 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.VolumeManager.View.VolumeManagerView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.VolumeManager.View.VolumeManagerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.VolumeManager"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:volume="clr-namespace:otor.msixhero.lib.Domain.Appx.Volume;assembly=msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel"
-             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
-             xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
-             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
-             xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
-             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements"
-             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
-             xmlns:volume1="clr-namespace:otor.msixhero.ui.Controls.Volume"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel"
+             xmlns:routedCommand="clr-namespace:Otor.MsixHero.Ui.Commands.RoutedCommand"
+             xmlns:commands="clr-namespace:Otor.MsixHero.Ui.Commands"
+             xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
+             xmlns:elements="clr-namespace:Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements"
+             xmlns:volume="clr-namespace:Otor.MsixHero.Ui.Controls.Volume"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:VolumeManagerViewModel}">
     <UserControl.Resources>
@@ -197,7 +193,7 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type elements:VolumeViewModel}">
-                        <volume1:VolumeControl
+                        <volume:VolumeControl
                             SearchKey="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}"
                             OccupiedSize="{Binding SpaceTaken}"
                             TotalSize="{Binding Capacity}"

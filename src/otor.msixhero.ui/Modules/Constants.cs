@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules
+﻿namespace Otor.MsixHero.Ui.Modules
 {
     public class Constants
     {

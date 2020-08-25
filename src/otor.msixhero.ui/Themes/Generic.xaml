@@ -1,10 +1,9 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:otor.msixhero.ui.Converters"
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                    xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers">
+                    xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
+                    xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Converters.xaml" />

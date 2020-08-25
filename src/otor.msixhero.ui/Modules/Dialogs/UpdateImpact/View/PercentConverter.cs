@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows.Data;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View
 {
     public class PercentConverter : IMultiValueConverter
     {

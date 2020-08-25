@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.PsfExpert.View.PsfExpertView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.Dialogs.PsfExpert.View.PsfExpertView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,10 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
     xmlns:mvvm="http://prismlibrary.com/"
-    xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel"
-    xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
-    xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
-    d:DataContext="{d:DesignInstance viewModel:PsfExpertViewModel}">
+             xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.PsfExpert.ViewModel"
+             xmlns:routedCommand="clr-namespace:Otor.MsixHero.Ui.Commands.RoutedCommand"
+             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.View"
+             d:DataContext="{d:DesignInstance viewModel:PsfExpertViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
@@ -38,7 +39,7 @@
         <TabItem Header="Applications"></TabItem>
         <TabItem Header="Fix-ups">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <view1:PsfContentView DataContext="{Binding Content}" />
+                <view:PsfContentView DataContext="{Binding Content}" />
             </ScrollViewer>
         </TabItem>
     </TabControl>

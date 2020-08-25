@@ -5,29 +5,30 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Managers.Packages;
-using otor.msixhero.lib.BusinessLayer.Winget;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Controls.Progress;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Controls.Progress;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Winget.Yaml;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 {
     public class WingetViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly IInteractionService interactionService;
-        private readonly ISelfElevationManagerFactory<IAppxPackageManager> packageManager;
+        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManager;
         private ICommand openSuccessLink;
         private ICommand reset;
         private ICommand open;
         private string yamlPath;
 
-        public WingetViewModel(IInteractionService interactionService, ISelfElevationManagerFactory<IAppxPackageManager> packageManager) : base("Create winget manifest", interactionService)
+        public WingetViewModel(IInteractionService interactionService, ISelfElevationProxyProvider<IAppxPackageManager> packageManager) : base("Create winget manifest", interactionService)
         {
             this.interactionService = interactionService;
             this.packageManager = packageManager;
@@ -90,7 +91,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
                 }
 
                 var yamlReader = new YamlReader();
-                var pkgManager = await this.packageManager.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                var pkgManager = await this.packageManager.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                 var validationDetails = await yamlReader.ValidateAsync(tempPath, pkgManager, false, cancellationToken).ConfigureAwait(false);
 
                 if (validationDetails != null)

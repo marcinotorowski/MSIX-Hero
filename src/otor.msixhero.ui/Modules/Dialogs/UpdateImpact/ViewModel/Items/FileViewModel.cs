@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using otor.msixhero.lib.Domain.Appx.UpdateImpact.ComparePackage;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Appx.Updates.Serialization.ComparePackage;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel.Items
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel.Items
 {
     public enum FileType
     {

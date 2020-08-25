@@ -1,7 +1,7 @@
-﻿using otor.msixhero.ui.Controls.Progress;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Ui.Controls.Progress;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
+namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
 {
     public class DialogState : NotifyPropertyChanged
     {

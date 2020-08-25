@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.View
 {
     /// <summary>
     /// Interaction logic for NewSelfSignedView.

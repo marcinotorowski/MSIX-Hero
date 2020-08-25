@@ -1,6 +1,6 @@
 ﻿using Xceed.Wpf.Toolkit;
 
-namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.View
 {
     /// <summary>
     /// Interaction logic for AppInstallerView.

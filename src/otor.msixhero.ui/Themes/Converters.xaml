@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:otor.msixhero.ui.Converters">
+                    xmlns:converters="clr-namespace:Otor.MsixHero.Ui.Converters">
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:NegativeConverter x:Key="NegativeConverter" />
     <converters:NegativeEnumToBooleanConverter x:Key="NegativeEnumToBooleanConverter" />

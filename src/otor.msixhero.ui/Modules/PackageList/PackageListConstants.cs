@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.PackageList
+﻿namespace Otor.MsixHero.Ui.Modules.PackageList
 {
     public class PackageListConstants
     {

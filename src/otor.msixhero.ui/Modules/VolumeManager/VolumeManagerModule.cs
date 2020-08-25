@@ -1,11 +1,11 @@
-﻿using otor.msixhero.ui.Modules.VolumeManager.View;
-using otor.msixhero.ui.Modules.VolumeManager.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.VolumeManager.View;
+using Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.VolumeManager
+namespace Otor.MsixHero.Ui.Modules.VolumeManager
 {
     public class VolumeManagerModule : IModule
     {

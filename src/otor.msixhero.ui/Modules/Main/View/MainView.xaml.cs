@@ -2,17 +2,19 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Events;
-using otor.msixhero.lib.Domain.Events.PackageList;
-using otor.msixhero.lib.Domain.Events.Volumes;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.ui.Modules.Dialogs;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Hero.Commands.Packages;
+using Otor.MsixHero.Ui.Hero.Commands.Volumes;
+using Otor.MsixHero.Ui.Hero.Events.Base;
+using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Modules.Dialogs;
 using Prism.Events;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Main.View
+namespace Otor.MsixHero.Ui.Modules.Main.View
 {
     /// <summary>
     /// Interaction logic for MainView.xaml
@@ -21,7 +23,7 @@ namespace otor.msixhero.ui.Modules.Main.View
     {
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
-        private readonly IApplicationStateManager appStateManager;
+        private readonly IMsixHeroApplication application;
 
         public MainView()
         {
@@ -31,18 +33,23 @@ namespace otor.msixhero.ui.Modules.Main.View
             this.TabControl.Focus();
         }
 
-        public MainView(IDialogService dialogService, IApplicationStateManager appStateManager, IConfigurationService configurationService) : this()
+        public MainView(
+            IDialogService dialogService, 
+            IMsixHeroApplication application,
+            IConfigurationService configurationService) : this()
         {
             this.dialogService = dialogService;
-            this.appStateManager = appStateManager;
+            this.application = application;
             this.configurationService = configurationService;
-            appStateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
-            appStateManager.EventAggregator.GetEvent<VolumesSelectionChanged>().Subscribe(this.OnVolumesSelectionChanged, ThreadOption.UIThread);
-            appStateManager.EventAggregator.GetEvent<ApplicationModeChangedEvent>().Subscribe(this.OnModeChanged, ThreadOption.UIThread);
+
+            application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages, ThreadOption.UIThread);
+            application.EventAggregator.GetEvent<UiExecutedEvent<SelectVolumesCommand>>().Subscribe(this.OnSelectVolumes, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetCurrentModeCommand>>().Subscribe(this.OnSetCurrentMode, ThreadOption.UIThread);
+
             this.ChangeTabVisibility();
             this.Loaded += OnLoaded;
         }
-        
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= this.OnLoaded;
@@ -76,10 +83,10 @@ namespace otor.msixhero.ui.Modules.Main.View
             }
             else
             {
-                currentHomeTab = this.appStateManager.CurrentState.Mode;
+                currentHomeTab = this.application.ApplicationState.CurrentMode;
             }
 
-            var mode = this.appStateManager.CurrentState.Mode;
+            var mode = this.application.ApplicationState.CurrentMode;
             switch (mode)
             {
                 case ApplicationMode.Packages:
@@ -97,7 +104,7 @@ namespace otor.msixhero.ui.Modules.Main.View
                     this.RibbonTabSystemHome.Visibility = Visibility.Collapsed;
 
                     var wasVisible = this.SelectedPackage.IsVisible && this.Ribbon.SelectedTabItem?.IsContextual == true;
-                    this.SelectedPackage.Visibility = this.appStateManager.CurrentState.Packages.SelectedItems.Any() ? Visibility.Visible : Visibility.Collapsed;
+                    this.SelectedPackage.Visibility = this.application.ApplicationState.Packages.SelectedPackages.Any() ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedVolume.Visibility = Visibility.Collapsed;
 
                     this.RibbonTabEventViewerHome.Visibility = Visibility.Collapsed;
@@ -125,7 +132,7 @@ namespace otor.msixhero.ui.Modules.Main.View
                     this.RibbonTabSystemHome.Visibility = Visibility.Collapsed;
 
                     var wasVisible = this.SelectedVolume.IsVisible && this.Ribbon.SelectedTabItem?.IsContextual == true;
-                        this.SelectedVolume.Visibility = this.appStateManager.CurrentState.Volumes.SelectedItems.Any() ? Visibility.Visible : Visibility.Collapsed;
+                    this.SelectedVolume.Visibility = this.application.ApplicationState.Volumes.SelectedVolumes != null ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedPackage.Visibility = Visibility.Collapsed;
 
                     this.RibbonTabEventViewerHome.Visibility = Visibility.Collapsed;
@@ -185,16 +192,17 @@ namespace otor.msixhero.ui.Modules.Main.View
             }
         }
 
-        private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad obj)
+        private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)
         {
             var wasVisible = this.SelectedPackage.Items.Any(item => item.IsSelected);
             this.ChangeTabVisibility();
 
-            if (!obj.IsExplicit)
+            if (obj.Sender is IMsixHeroCommandExecutor)
             {
-                // The selection was not invoked by the user, so do not change the tab selection
                 return;
             }
+
+            this.SelectedPackage.Visibility = this.application.ApplicationState.Packages.SelectedPackages.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             if (!wasVisible && this.SelectedPackage.IsVisible)
             {
@@ -210,16 +218,17 @@ namespace otor.msixhero.ui.Modules.Main.View
             }
         }
 
-        private void OnVolumesSelectionChanged(VolumesSelectionChangedPayLoad obj)
+        private void OnSelectVolumes(UiExecutedPayload<SelectVolumesCommand> obj)
         {
             var wasVisible = this.SelectedVolume.Items.Any(item => item.IsSelected);
             this.ChangeTabVisibility();
 
-            if (!obj.IsExplicit)
+            if (obj.Sender is IMsixHeroCommandExecutor)
             {
-                // The selection was not invoked by the user, so do not change the tab selection
                 return;
             }
+
+            this.SelectedVolume.Visibility = this.application.ApplicationState.Volumes.SelectedVolumes.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             if (!wasVisible && this.SelectedVolume.IsVisible)
             {
@@ -235,10 +244,10 @@ namespace otor.msixhero.ui.Modules.Main.View
             }
         }
 
-        private void OnModeChanged(ApplicationMode mode)
+        private void OnSetCurrentMode(UiExecutedPayload<SetCurrentModeCommand> mode)
         {
             this.ChangeTabVisibility();
-            switch (mode)
+            switch (this.application.ApplicationState.CurrentMode)
             {
                 case ApplicationMode.VolumeManager:
                     this.RibbonTabVolumesHome.IsSelected = true;

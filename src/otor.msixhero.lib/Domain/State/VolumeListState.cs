@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.Domain.Appx.Volume;
+using Otor.MsixHero.Appx.Volumes.Entities;
 
-namespace otor.msixhero.lib.Domain.State
+namespace Otor.MsixHero.Lib.Domain.State
 {
     public class VolumeListState : IVolumeListState, IWritableVolumeListState
     {

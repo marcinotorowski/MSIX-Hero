@@ -1,6 +1,6 @@
 ﻿using Prism.Events;
 
-namespace otor.msixhero.lib.Domain.Events.PackageList
+namespace Otor.MsixHero.Lib.Domain.Events.PackageList
 {
     public enum CollectionChangeType
     {

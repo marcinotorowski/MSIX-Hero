@@ -1,11 +1,11 @@
 ﻿using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Helpers;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 {
     public class PackageContentCommandHandler
     {

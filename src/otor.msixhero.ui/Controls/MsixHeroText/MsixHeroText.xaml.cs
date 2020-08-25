@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Controls.MsixHeroText
+namespace Otor.MsixHero.Ui.Controls.MsixHeroText
 {
     /// <summary>
     /// Interaction logic for MsixHeroText.xaml

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.View
 {
     internal class DropFileObject : DependencyObject
     {

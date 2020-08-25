@@ -1,6 +1,6 @@
 ﻿<UserControl 
     x:Name="root"
-    x:Class="otor.msixhero.ui.Controls.UpdateNotification.UpdateNotificationControl"
+    x:Class="Otor.MsixHero.Ui.Controls.UpdateNotification.UpdateNotificationControl"
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 

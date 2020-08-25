@@ -1,14 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:otor.msixhero.ui.Controls.Volume"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                    xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter">
+                    xmlns:volume="clr-namespace:Otor.MsixHero.Ui.Controls.Volume"
+                    xmlns:highlighter="clr-namespace:Otor.MsixHero.Ui.Controls.Highlighter">
 
-    <Style TargetType="local:VolumeControl">
+    <Style TargetType="volume:VolumeControl">
         <Setter Property="Background" Value="#2B579A" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:VolumeControl">
+                <ControlTemplate TargetType="volume:VolumeControl">
                     <DockPanel>
                         <!--<Border
                             Margin="-2 -2 6 -2" CornerRadius="20" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2">-->

@@ -2,12 +2,11 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.ui.Modules.PackageList.Navigation;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Ui.Modules.PackageList.Navigation;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.View
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.View
 {
     /// <summary>
     /// Interaction logic for PackageContentView.xaml

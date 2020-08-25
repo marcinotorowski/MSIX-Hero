@@ -2,14 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Modules.Common.PsfContent.Model;
-using otor.msixhero.ui.Modules.Common.PsfContent.View;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.Model;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PsfExpert.Elements.ViewModel
 {
     public class FileRuleViewModel : ChangeableDialogViewModel, IDialogAware
     {

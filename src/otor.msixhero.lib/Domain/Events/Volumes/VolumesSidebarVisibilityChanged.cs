@@ -1,6 +1,6 @@
 ﻿using Prism.Events;
 
-namespace otor.msixhero.lib.Domain.Events.Volumes
+namespace Otor.MsixHero.Lib.Domain.Events.Volumes
 {
     public class VolumesSidebarVisibilityChanged : PubSubEvent<bool>
     {

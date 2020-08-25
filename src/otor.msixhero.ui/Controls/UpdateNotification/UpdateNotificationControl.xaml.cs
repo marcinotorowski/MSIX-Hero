@@ -2,10 +2,9 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.lib.Infrastructure.Update;
+using Otor.MsixHero.Infrastructure.Logging;
 
-namespace otor.msixhero.ui.Controls.UpdateNotification
+namespace Otor.MsixHero.Ui.Controls.UpdateNotification
 {
     /// <summary>
     /// Interaction logic for UpdateNotificationControl.xaml

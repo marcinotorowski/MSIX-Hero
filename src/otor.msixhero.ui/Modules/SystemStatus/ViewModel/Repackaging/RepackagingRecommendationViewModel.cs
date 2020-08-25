@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
-using otor.msixhero.lib.BusinessLayer.SystemState.Services;
-using otor.msixhero.lib.Domain.SystemState;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
+using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.Services;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Repackaging
 {
     public class RepackagingRecommendationViewModel : BaseRecommendationViewModel
     {

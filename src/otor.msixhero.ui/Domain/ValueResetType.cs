@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Domain
+﻿namespace Otor.MsixHero.Ui.Domain
 {
     public enum ValueResetType
     {

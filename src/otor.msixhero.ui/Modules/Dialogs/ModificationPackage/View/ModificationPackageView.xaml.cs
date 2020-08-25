@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.View
+﻿namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.View
 {
     /// <summary>
     /// Interaction logic for ModificationPackageView.

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.SystemState.Services;
-using otor.msixhero.lib.Domain.SystemState.Services;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.Services;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Repackaging
 {
     public class ServiceRecommendationViewModel : NotifyPropertyChanged
     {

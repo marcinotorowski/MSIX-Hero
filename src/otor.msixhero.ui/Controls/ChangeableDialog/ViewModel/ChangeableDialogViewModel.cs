@@ -3,14 +3,13 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.Progress;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Domain;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Controls.ChangeableDialog.ViewModel
+namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
 {
     public abstract class ChangeableDialogViewModel : ChangeableContainer, IDataErrorInfo, IDialogAware
     {

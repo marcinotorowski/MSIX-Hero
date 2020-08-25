@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace otor.msixhero.lib.Domain.Commands.EventViewer
+﻿namespace Otor.MsixHero.Lib.Domain.Commands.EventViewer
 {
     public enum EventLogType
     {
@@ -9,7 +7,7 @@ namespace otor.msixhero.lib.Domain.Commands.EventViewer
         AppXDeploymentServerRestricted
     }
 
-    public class OpenEventViewer : VoidCommand
+    public class OpenEventViewer : ProxyObject
     {
         public OpenEventViewer()
         {

@@ -4,36 +4,37 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel.Items;
+using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Appx.Volumes.Entities;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Volumes;
+using Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.ViewModel.Items;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.ViewModel
 {
     public class ChangeVolumeViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly IApplicationStateManager appStateManager;
+        private readonly IMsixHeroApplication application;
         private readonly IInteractionService interactionService;
         private readonly IDialogService dialogService;
-        private readonly ISelfElevationManagerFactory<IAppxVolumeManager> volumeManagerFactory;
+        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerFactory;
         private string packageInstallLocation;
 
         public ChangeVolumeViewModel(
-            IApplicationStateManager appStateManager,
+            IMsixHeroApplication application,
             IInteractionService interactionService, 
             IDialogService dialogService,
-            ISelfElevationManagerFactory<IAppxVolumeManager> volumeManagerFactory) : base("Change volume", interactionService)
+            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerFactory) : base("Change volume", interactionService)
         {
-            this.appStateManager = appStateManager;
+            this.application = application;
             this.interactionService = interactionService;
             this.dialogService = dialogService;
             this.volumeManagerFactory = volumeManagerFactory;
@@ -150,14 +151,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
             }
 
             progress.Report(new ProgressData(20, "Moving to the selected volume..."));
-            var mgr = await this.volumeManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             var id = Path.GetFileName(this.packageInstallLocation);
             await mgr.MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
 
             progress.Report(new ProgressData(100, "Reading packages..."));
-            await this.appStateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.appStateManager.CurrentState.Packages.Context), cancellationToken).ConfigureAwait(false);
+
+            await this.application.CommandExecutor.Invoke(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
 
             return true;
         }
@@ -174,14 +176,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetAllVolumes()
         {
-            var mgr = await this.volumeManagerFactory.Get().ConfigureAwait(false);
+            var mgr = await this.volumeManagerFactory.GetProxyFor().ConfigureAwait(false);
             var disks = await mgr.GetAll().ConfigureAwait(false);
             return disks.Where(d => !d.IsOffline).Select(r => new VolumeCandidateViewModel(r)).Concat(new[] { new VolumeCandidateViewModel(new AppxVolume()) }).ToList();
         }
 
         private async Task<VolumeCandidateViewModel> GetCurrentVolume(string packagePath)
         {
-            var mgr = await this.volumeManagerFactory.Get().ConfigureAwait(false);
+            var mgr = await this.volumeManagerFactory.GetProxyFor().ConfigureAwait(false);
             var disk = await mgr.GetVolumeForPath(packagePath).ConfigureAwait(false);
             if (disk == null)
             {
@@ -195,7 +197,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
         {
             var current = this.AllVolumes.CurrentValue.Select(c => c.PackageStorePath).ToList();
 
-            this.dialogService.ShowDialog(Constants.PathNewVolume, new DialogParameters(), result =>
+            this.dialogService.ShowDialog(Constants.PathNewVolume, new DialogParameters(), async result =>
             {
                 if (result.Result == ButtonResult.Cancel)
                 {
@@ -203,19 +205,11 @@ namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel
                 }
 
                 var t1 = this.GetAllVolumes();
-                var t2 = this.AllVolumes.Load(t1);
+                await this.AllVolumes.Load(t1).ConfigureAwait(false);
 
-                t2.ContinueWith(res =>
-                {
-                    if (res.IsCanceled || res.IsFaulted)
-                    {
-                        return;
-                    }
-
-                    var result = this.AllVolumes.CurrentValue;
-                    var newVolume = result.FirstOrDefault(d => !current.Contains(d.PackageStorePath)) ?? result.FirstOrDefault();
-                    this.TargetVolume.CurrentValue = newVolume?.Name;
-                });
+                var allVolumes = this.AllVolumes.CurrentValue;
+                var newVolume = allVolumes.FirstOrDefault(d => !current.Contains(d.PackageStorePath)) ?? allVolumes.FirstOrDefault();
+                this.TargetVolume.CurrentValue = newVolume?.Name;
             });
         }
     }

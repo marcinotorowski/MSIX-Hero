@@ -2,24 +2,24 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands;
-using otor.msixhero.lib.Domain.Commands.EventViewer;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.Domain.Commands;
+using Otor.MsixHero.Lib.Domain.Commands.EventViewer;
 
-namespace otor.msixhero.lib.BusinessLayer.Executors.Client
+namespace Otor.MsixHero.Lib.BusinessLayer.Executors.Client
 {
     public class OpenEventViewerClientExecutor : CommandExecutor
     {
         private readonly OpenEventViewer command;
 
-        public OpenEventViewerClientExecutor(OpenEventViewer command, IWritableApplicationStateManager state) : base(command, state)
+        public OpenEventViewerClientExecutor(OpenEventViewer command) : base(command)
         {
             this.command = command;
         }
 
-        public OpenEventViewerClientExecutor(VoidCommand command, IWritableApplicationStateManager state) : base(command, state)
+        public OpenEventViewerClientExecutor(ProxyObject command) : base(command)
         {
         }
 

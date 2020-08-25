@@ -1,12 +1,11 @@
-﻿using otor.msixhero.ui.Modules.Main.View;
-using otor.msixhero.ui.Modules.Main.ViewModel;
-using otor.msixhero.ui.Modules.PackageList;
+﻿using Otor.MsixHero.Ui.Modules.Main.View;
+using Otor.MsixHero.Ui.Modules.Main.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.Main
+namespace Otor.MsixHero.Ui.Modules.Main
 {
     public class MainModule : IModule
     {

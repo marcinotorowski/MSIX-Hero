@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
+﻿namespace Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel
 {
     public enum NewVolumePathType
     {

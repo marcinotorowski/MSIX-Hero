@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Helpers
+namespace Otor.MsixHero.Ui.Helpers
 {
     public class AsyncProperty<T> : NotifyPropertyChanged
     {

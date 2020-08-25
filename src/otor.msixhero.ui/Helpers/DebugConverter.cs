@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Text;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace otor.msixhero.ui.Helpers
+namespace Otor.MsixHero.Ui.Helpers
 {
     public class DebugConverter : MarkupExtension, IValueConverter
     {

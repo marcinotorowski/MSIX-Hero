@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace otor.msixhero.ui.Helpers
+namespace Otor.MsixHero.Ui.Helpers
 {
     public class ShieldIcon
     {
@@ -135,7 +132,7 @@ namespace otor.msixhero.ui.Helpers
             SHGSI_SHELLICONSIZE = 0x000000004
         }
 
-        [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct SHSTOCKICONINFO
         {
             public UInt32 cbSize;

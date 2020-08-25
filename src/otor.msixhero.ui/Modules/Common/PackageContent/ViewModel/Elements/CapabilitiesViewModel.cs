@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using otor.msixhero.lib.Domain.Appx.Manifest.Full;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
 {
     public class CapabilitiesViewModel
     {

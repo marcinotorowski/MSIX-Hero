@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace otor.msixhero.ui.Themes
+namespace Otor.MsixHero.Ui.Themes
 {
     public static class VectorIcons
     {

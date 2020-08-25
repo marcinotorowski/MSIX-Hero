@@ -1,7 +1,7 @@
-﻿using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.ui.Domain;
+﻿using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Trace
 {
     public class PsfContentTraceLevelViewModel : ChangeableContainer
     {

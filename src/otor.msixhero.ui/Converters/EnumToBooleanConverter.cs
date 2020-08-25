@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace otor.msixhero.ui.Converters
+namespace Otor.MsixHero.Ui.Converters
 {
     public class EnumToBooleanConverter : IValueConverter
     {

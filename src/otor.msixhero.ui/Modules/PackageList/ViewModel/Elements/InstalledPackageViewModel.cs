@@ -1,19 +1,21 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
-using otor.msixhero.lib.BusinessLayer.Helpers;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Packages;
+using Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements
 {
     public class InstalledPackageViewModel : SelectableViewModel<InstalledPackage>
     {
-        public InstalledPackageViewModel(InstalledPackage package, IApplicationStateManager stateManager, bool isSelected = false) : base(package, stateManager, isSelected)
+        private readonly IMsixHeroApplication parent;
+
+        public InstalledPackageViewModel(IMsixHeroApplication parent, InstalledPackage package, bool isSelected = false) : base(package, isSelected)
         {
+            this.parent = parent;
         }
 
         public bool IsAddon => this.Model.IsOptional;
@@ -92,24 +94,18 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
 
         protected override bool TrySelect()
         {
-            if (!this.StateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
-            {
-                this.StateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.AddToSelection) { IsExplicit = true });
-                return true;
-            }
-
-            return false;
+            var selected = parent.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).Union(new [] { this.ManifestLocation });
+            this.parent.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected));
+            // this.parent.NavigateToSelection();
+            return true;
         }
 
         protected override bool TryUnselect()
         {
-            if (this.StateManager.CurrentState.Packages.SelectedItems.Contains(this.Model))
-            {
-                this.StateManager.CommandExecutor.Execute(new SelectPackages(this.Model, SelectionMode.RemoveFromSelection));
-                return true;
-            }
-
-            return false;
+            var selected = parent.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).Except(new[] { this.ManifestLocation });
+            this.parent.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected));
+            // this.parent.NavigateToSelection();
+            return true;
         }
     }
 }

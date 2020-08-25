@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Controls.CheckedContent
+namespace Otor.MsixHero.Ui.Controls.CheckedContent
 {
     public class CheckedContent : ContentControl
     {

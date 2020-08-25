@@ -5,27 +5,26 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
 {
     public class NewSelfSignedViewModel : ChangeableDialogViewModel
     {
-        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private bool isSubjectTouched;
         private ICommand importNewCertificate;
 
         public NewSelfSignedViewModel(
-            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, 
+            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, 
             IInteractionService interactionService, 
             IConfigurationService configurationService) : base("New self signed certificate", interactionService)
         {
@@ -63,7 +62,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             await manager.CreateSelfSignedCertificate(
@@ -111,15 +110,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 return;
             }
 
-            try
-            {
-                var mgr = await this.signingManagerFactory.Get(SelfElevationLevel.HighestAvailable).ConfigureAwait(false);
-                await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(false);
-            }
-            catch (UserHandledException)
-            {
-                return;
-            }
+            var mgr = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable).ConfigureAwait(false);
+            await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(false);
 
             this.CloseCommand.Execute(ButtonResult.OK);
         }

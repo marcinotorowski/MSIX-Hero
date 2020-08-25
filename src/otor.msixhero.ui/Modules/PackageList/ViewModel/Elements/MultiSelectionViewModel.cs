@@ -1,8 +1,8 @@
-﻿using otor.msixhero.ui.Modules.PackageList.Navigation;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.PackageList.Navigation;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements
 {
     public class MultiSelectionViewModel : NotifyPropertyChanged, INavigationAware
     {

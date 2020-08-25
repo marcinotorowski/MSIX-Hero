@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
 
-namespace otor.msixhero.lib.BusinessLayer.Executors
+namespace Otor.MsixHero.Lib.BusinessLayer.Executors
 {
     public interface ICommandExecutor
     {

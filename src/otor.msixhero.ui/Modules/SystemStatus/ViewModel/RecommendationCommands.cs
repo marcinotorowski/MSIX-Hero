@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel
 {
     public static class RecommendationCommands
     {

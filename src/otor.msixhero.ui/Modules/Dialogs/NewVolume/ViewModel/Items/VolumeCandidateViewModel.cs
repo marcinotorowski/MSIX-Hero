@@ -1,7 +1,7 @@
-﻿using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Appx.Volumes.Entities;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel.Items
+namespace Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel.Items
 {
     public class VolumeCandidateViewModel : NotifyPropertyChanged
     {

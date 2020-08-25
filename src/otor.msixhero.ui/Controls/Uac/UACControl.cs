@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Controls.Uac
+namespace Otor.MsixHero.Ui.Controls.Uac
 {
     // ReSharper disable once InconsistentNaming
     public class UACControl : ContentControl

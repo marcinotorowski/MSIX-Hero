@@ -1,7 +1,7 @@
-﻿using otor.msixhero.lib.Domain.Appx.Signing;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 {
     public class CertificateViewModel : NotifyPropertyChanged
     {

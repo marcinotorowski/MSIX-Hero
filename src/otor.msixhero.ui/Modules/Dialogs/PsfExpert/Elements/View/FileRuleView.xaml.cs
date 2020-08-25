@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.Elements.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PsfExpert.Elements.View
 {
     /// <summary>
     /// Interaction logic for File Rule Dialog.

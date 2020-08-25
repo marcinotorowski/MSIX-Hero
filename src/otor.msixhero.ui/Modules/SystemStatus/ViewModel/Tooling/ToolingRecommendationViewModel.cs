@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty;
-using otor.msixhero.lib.Domain.SystemState.ThirdParty;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.ThirdParty;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Tooling
 {
     public class ToolingRecommendationViewModel : BaseRecommendationViewModel
     {

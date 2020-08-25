@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace otor.msixhero.ui.Modules.Settings.View
+namespace Otor.MsixHero.Ui.Modules.Settings.View
 {
     public class SearchHelper : DependencyObject
     {

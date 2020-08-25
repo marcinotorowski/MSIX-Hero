@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Domain
+namespace Otor.MsixHero.Ui.Domain
 {
     public class ChangeableProperty<T> : NotifyPropertyChanged, IChangeable<T>
     {

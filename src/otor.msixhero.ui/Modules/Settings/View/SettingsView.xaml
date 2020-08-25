@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Settings.View.SettingsView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.Settings.View.SettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,15 +6,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Settings.View"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel"
-             xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
-             xmlns:configuration="clr-namespace:otor.msixhero.lib.Infrastructure.Configuration;assembly=msixhero.lib"
-             xmlns:tools="clr-namespace:otor.msixhero.ui.Modules.Settings.ViewModel.Tools"
-             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
              xmlns:dd="urn:gong-wpf-dragdrop"
-             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
-             xmlns:commands="clr-namespace:otor.msixhero.ui.Modules.Settings.Commands"
+             xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Settings.ViewModel"
+             xmlns:view2="clr-namespace:Otor.MsixHero.Ui.Modules.Settings.View"
+             xmlns:view3="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:routedCommand="clr-namespace:Otor.MsixHero.Ui.Commands.RoutedCommand"
+             xmlns:commands="clr-namespace:Otor.MsixHero.Ui.Modules.Settings.Commands"
+             xmlns:tools="clr-namespace:Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
              Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
@@ -47,7 +47,7 @@
             <DockPanel Margin="16">
                 <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{StaticResource VectorBulb}" />
                 <Grid Visibility="Collapsed" Width="200" DockPanel.Dock="Right" VerticalAlignment="Center">
-                    <TextBox Text="{Binding ElementName=MainContent, UpdateSourceTrigger=PropertyChanged, Path=(view:SearchHelper.SearchString), Delay=300, Mode=TwoWay}"  Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" />
+                    <TextBox Text="{Binding ElementName=MainContent, UpdateSourceTrigger=PropertyChanged, Path=(view2:SearchHelper.SearchString), Delay=300, Mode=TwoWay}"  Padding="26 0 0 0" x:Name="SearchBox" VerticalAlignment="Center" Height="22" HorizontalAlignment="Stretch" />
                     <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
                         <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
                             <Path.LayoutTransform>
@@ -98,7 +98,7 @@
             <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
         </Border>
 
-        <TabControl SelectedIndex="1" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
+        <TabControl SelectedIndex="1" Margin="16 0 16 16" x:Name="MainContent" view2:SearchHelper.SearchString="test">
             <TabItem Visibility="Collapsed" Header="General">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <UniformGrid HorizontalAlignment="Left" Rows="1" Columns="2">
@@ -126,7 +126,7 @@
                             <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <view1:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 16 0 0" />
+                        <view3:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 16 0 0" />
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

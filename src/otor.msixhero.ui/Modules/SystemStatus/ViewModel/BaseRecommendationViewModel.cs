@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel
 {
     public enum RecommendationStatus
     {

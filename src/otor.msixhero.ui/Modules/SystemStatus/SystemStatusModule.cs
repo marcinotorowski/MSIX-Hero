@@ -1,13 +1,11 @@
-﻿using otor.msixhero.ui.Modules.SystemStatus.View;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel;
-using otor.msixhero.ui.Modules.VolumeManager.View;
-using otor.msixhero.ui.Modules.VolumeManager.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.SystemStatus.View;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.SystemStatus
+namespace Otor.MsixHero.Ui.Modules.SystemStatus
 {
     public class SystemStatusModule : IModule
     {

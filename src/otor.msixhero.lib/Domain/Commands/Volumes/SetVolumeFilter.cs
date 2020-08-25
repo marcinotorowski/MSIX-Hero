@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace otor.msixhero.lib.Domain.Commands.Volumes
+namespace Otor.MsixHero.Lib.Domain.Commands.Volumes
 {
     [Serializable]
-    public class SetVolumeFilter : VoidCommand
+    public class SetVolumeFilter : ProxyObject
     {
         public SetVolumeFilter()
         {

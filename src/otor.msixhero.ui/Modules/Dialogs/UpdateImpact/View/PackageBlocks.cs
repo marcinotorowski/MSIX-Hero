@@ -5,9 +5,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using otor.msixhero.lib.Domain.Appx.UpdateImpact.Blocks;
+using Otor.MsixHero.Appx.Updates.Entities.Blocks;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View
 {
     public class PackageBlocksControl : FrameworkElement, IDisposable
     {

@@ -2,13 +2,13 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure.Update;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Infrastructure.Updates;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Help.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Help.ViewModel
 {
     public class HelpViewModel : NotifyPropertyChanged, IDialogAware
     {

@@ -1,29 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.lib.Domain.Commands.Volumes;
+using Otor.MsixHero.Lib.BusinessLayer.State;
 using Prism.Events;
 
-namespace otor.msixhero.ui.Modules.VolumeManager.View
+namespace Otor.MsixHero.Ui.Modules.VolumeManager.View
 {
     /// <summary>
     /// Interaction logic for Volume Manager.
     /// </summary>
     public partial class VolumeManagerView
     {
-        private readonly IApplicationStateManager stateManager;
-        private readonly IEventAggregator eventAggregator;
-        private bool ignoreSelectionChanged;
-
-        public VolumeManagerView(IApplicationStateManager stateManager, IEventAggregator eventAggregator)
+        public VolumeManagerView(IEventAggregator eventAggregator)
         {
-            this.stateManager = stateManager;
-            this.eventAggregator = eventAggregator;
             InitializeComponent();
             FocusManager.SetFocusedElement(this, this.ListBox);
             this.IsVisibleChanged += OnIsVisibleChanged;

@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Packages.Signing;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.ViewModel
 {
     public class CertificateExportViewModel : ChangeableDialogViewModel
     {
-        private readonly IApplicationStateManager stateManager;
-        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
 
         private readonly ChangeableContainer customValidationContainer;
 
-        public CertificateExportViewModel(IApplicationStateManager stateManager, ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, IInteractionService interactionService) : base("Extract certificate", interactionService)
+        public CertificateExportViewModel(ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, IInteractionService interactionService) : base("Extract certificate", interactionService)
         {
-            this.stateManager = stateManager;
             this.signingManagerFactory = signingManagerFactory;
 
             this.InputPath = new ChangeableFileProperty(interactionService)
@@ -52,7 +49,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
             this.SetValidationMode(ValidationMode.Silent, true);
         }
 
-        private void SaveToStoreOnValueChanged(object? sender, ValueChangedEventArgs e)
+        private void SaveToStoreOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(IsAdminRequired));
         }
@@ -90,15 +87,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
         {
             if (this.SaveToFile.CurrentValue)
             {
-                var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                 await manager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
             }
 
             if (this.SaveToStore.CurrentValue)
             {
-                var command = new TrustPublisher(this.InputPath.CurrentValue);
-                await this.stateManager.CommandExecutor.ExecuteAsync(command, cancellationToken, progress).ConfigureAwait(false);
+                var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                await manager.Trust(this.InputPath.CurrentValue, cancellationToken).ConfigureAwait(false);
             }
 
             return true;
@@ -106,7 +103,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel
 
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
         {
-            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             var result = await manager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);

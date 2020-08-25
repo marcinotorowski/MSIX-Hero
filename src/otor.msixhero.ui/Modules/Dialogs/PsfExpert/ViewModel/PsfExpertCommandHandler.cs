@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PsfExpert.ViewModel
 {
     public class PsfExpertCommandHandler
     {

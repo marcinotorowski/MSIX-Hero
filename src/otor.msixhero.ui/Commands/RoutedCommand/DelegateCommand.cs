@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace otor.msixhero.ui.Commands.RoutedCommand
+namespace Otor.MsixHero.Ui.Commands.RoutedCommand
 {
     public class DelegateCommand : ICommand
     {

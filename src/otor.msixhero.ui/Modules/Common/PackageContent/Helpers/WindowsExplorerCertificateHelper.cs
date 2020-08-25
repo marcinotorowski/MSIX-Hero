@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.Helpers
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.Helpers
 {
     public static class WindowsExplorerCertificateHelper
     {

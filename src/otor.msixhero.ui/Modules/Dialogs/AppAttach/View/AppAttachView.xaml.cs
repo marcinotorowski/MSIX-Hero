@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel;
 using Xceed.Wpf.Toolkit;
 
-namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.View
 {
     /// <summary>
     /// Interaction logic for App Attach View.

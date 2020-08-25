@@ -1,9 +1,8 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.ui.Domain;
+﻿using System.Text.RegularExpressions;
+using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Custom
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Custom
 {
     public class PsfContentProcessCustomViewModel : PsfContentProcessViewModel
     {

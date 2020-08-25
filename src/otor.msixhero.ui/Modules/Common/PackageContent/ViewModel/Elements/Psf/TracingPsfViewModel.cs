@@ -1,8 +1,8 @@
 ﻿using System;
-using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
+using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
 {
     public class TracingPsfViewModel
     {

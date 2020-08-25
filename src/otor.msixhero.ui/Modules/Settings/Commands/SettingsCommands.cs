@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace otor.msixhero.ui.Modules.Settings.Commands
+namespace Otor.MsixHero.Ui.Modules.Settings.Commands
 {
     public static class SettingsCommands
     {

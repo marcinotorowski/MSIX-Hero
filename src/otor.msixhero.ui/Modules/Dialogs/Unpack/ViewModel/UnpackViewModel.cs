@@ -4,14 +4,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Packer;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Appx.Packaging.Packer;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Unpack.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Unpack.ViewModel
 {
     public class UnpackViewModel : ChangeableDialogViewModel
     {

@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.ChangeVolume.ViewModel.Items;
+using Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.ViewModel.Items;
 
-namespace otor.msixhero.ui.Modules.Dialogs.ChangeVolume.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.View
 {
     /// <summary>
     /// Interaction logic for Change Volume View.

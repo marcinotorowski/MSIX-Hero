@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.Dialogs.Pack.View
+﻿namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.View
 {
     /// <summary>
     /// Interaction logic for PackView.

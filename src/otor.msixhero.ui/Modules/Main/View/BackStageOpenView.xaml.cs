@@ -1,10 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Fluent;
-using Xceed.Wpf.Toolkit.Core.Utilities;
 
-namespace otor.msixhero.ui.Modules.Main.View
+namespace Otor.MsixHero.Ui.Modules.Main.View
 {
     /// <summary>
     /// Interaction logic for BackStageOpenView.xaml

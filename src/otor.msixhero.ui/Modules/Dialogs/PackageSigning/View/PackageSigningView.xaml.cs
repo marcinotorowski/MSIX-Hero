@@ -2,10 +2,10 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.View
 {
     /// <summary>
     /// Interaction logic for PackageSigningView.

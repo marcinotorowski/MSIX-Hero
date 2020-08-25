@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Volume;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Commands.Volumes;
-using otor.msixhero.lib.Infrastructure.Commanding;
+﻿using System.Linq;
+using Otor.MsixHero.Appx.Volumes.Entities;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 
-namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements
 {
     public class VolumeViewModel : SelectableViewModel<AppxVolume>
     {
-        public VolumeViewModel(AppxVolume model, IApplicationStateManager stateManager, bool isSelected = false) : base(model, stateManager, isSelected)
+        private readonly IMsixHeroApplication app;
+
+        public VolumeViewModel(IMsixHeroApplication app, AppxVolume model, bool isSelected = false) : base(model, isSelected)
         {
+            this.app = app;
         }
 
         public bool IsDefault => this.Model.IsDefault;
@@ -30,39 +30,15 @@ namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
 
         protected override bool TrySelect()
         {
-            if (this.StateManager.CurrentState.Volumes.SelectedItems.Contains(this.Model))
-            {
-                return false;
-            }
-
-            try
-            {
-                this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.AddToSelection) { IsExplicit = true });
-            }
-            catch (UserHandledException)
-            {
-                return false;
-            }
-
+            var selected = this.app.ApplicationState.Volumes.SelectedVolumes.Select(p => p.PackageStorePath).Union(new[] { this.PackageStorePath });
+            this.app.CommandExecutor.Invoke(this, new SelectVolumesCommand(selected));
             return true;
         }
 
         protected override bool TryUnselect()
         {
-            if (!this.StateManager.CurrentState.Volumes.SelectedItems.Contains(this.Model))
-            {
-                return false;
-            }
-
-            try
-            {
-                this.StateManager.CommandExecutor.ExecuteAsync(new SelectVolumes(this.Model, SelectionMode.RemoveFromSelection));
-            }
-            catch (UserHandledException)
-            {
-                return false;
-            }
-
+            var selected = this.app.ApplicationState.Volumes.SelectedVolumes.Select(p => p.PackageStorePath).Except(new[] { this.PackageStorePath });
+            this.app.CommandExecutor.Invoke(this, new SelectVolumesCommand(selected));
             return true;
         }
     }

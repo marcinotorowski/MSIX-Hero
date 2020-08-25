@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace otor.msixhero.ui.Modules.Common.SignatureStatus
+namespace Otor.MsixHero.Ui.Modules.Common.SignatureStatus
 {
     public class SignatureStatusControl : Control
     {

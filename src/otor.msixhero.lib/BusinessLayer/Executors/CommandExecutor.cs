@@ -1,24 +1,18 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Domain.Commands;
 
-namespace otor.msixhero.lib.BusinessLayer.Executors
+namespace Otor.MsixHero.Lib.BusinessLayer.Executors
 {
     public abstract class CommandExecutor : ICommandExecutor
     {
-        // ReSharper disable once NotAccessedField.Local
-        protected readonly IWritableApplicationStateManager StateManager;
-
         protected CommandExecutor(
             // ReSharper disable once UnusedParameter.Local
-            VoidCommand command, 
-            IWritableApplicationStateManager state)
+            ProxyObject command)
         {
-            this.StateManager = state;
         }
 
         public abstract Task Execute(

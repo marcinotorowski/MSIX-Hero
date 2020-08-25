@@ -1,10 +1,10 @@
 ﻿using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Main.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Main.ViewModel
 {
     public class BackstageCommandHandler
     {

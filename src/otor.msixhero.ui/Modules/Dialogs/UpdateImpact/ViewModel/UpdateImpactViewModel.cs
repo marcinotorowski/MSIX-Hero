@@ -2,18 +2,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Controls.Progress;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel.Items;
+using Otor.MsixHero.Appx.Updates;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Controls.Progress;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel.Items;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel
 {
 
     public class UpdateImpactViewModel : ChangeableDialogViewModel
@@ -77,9 +76,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel
                 }
             }
             catch (OperationCanceledException)
-            {
-            }
-            catch (UserHandledException)
             {
             }
             catch (Exception e)

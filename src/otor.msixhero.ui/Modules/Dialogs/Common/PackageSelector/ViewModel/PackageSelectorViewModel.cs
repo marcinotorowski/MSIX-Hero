@@ -4,13 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
-using otor.msixhero.lib.Domain.Appx.AppInstaller;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.AppInstaller;
+using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Domain.Appx;
+using Otor.MsixHero.Ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 {
     [Flags]
     public enum PackageSelectorDisplayMode
@@ -45,7 +47,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             this.Name = new ValidatedChangeableProperty<string>(this.ValidateName);
             this.DisplayName = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull);
             this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion);
-            this.Architecture = new ChangeableProperty<AppInstallerPackageArchitecture>(AppInstallerPackageArchitecture.neutral);
+            this.Architecture = new ChangeableProperty<AppxPackageArchitecture>(AppxPackageArchitecture.Neutral);
 
             this.PackageType = new ChangeableProperty<PackageType>();
             this.PackageType.ValueChanged += this.PackageTypeOnValueChanged;
@@ -107,7 +109,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
         public bool AllowBrowsing { get; private set; }
         
-        public bool IsBundle => this.PackageType.CurrentValue == lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle;
+        public bool IsBundle => this.PackageType.CurrentValue == Otor.MsixHero.Lib.Domain.Appx.PackageType.Bundle;
 
         public ChangeableProperty<PackageType> PackageType { get; }
         
@@ -152,7 +154,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
         public ValidatedChangeableProperty<string> Version { get; }
 
-        public ChangeableProperty<AppInstallerPackageArchitecture> Architecture { get; }
+        public ChangeableProperty<AppxPackageArchitecture> Architecture { get; }
 
         public bool RequireFullIdentity { get; private set; }
 
@@ -163,18 +165,18 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 this.Name.CurrentValue = null;
                 this.Version.CurrentValue = null;
                 this.Publisher.CurrentValue = null;
-                this.Architecture.CurrentValue = AppInstallerPackageArchitecture.neutral;
+                this.Architecture.CurrentValue = AppxPackageArchitecture.Neutral;
             }
             else
             {
                 var extension = Path.GetExtension((string)e.NewValue);
                 if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.PackageType.CurrentValue = lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle;
+                    this.PackageType.CurrentValue = Otor.MsixHero.Lib.Domain.Appx.PackageType.Bundle;
                 }
                 else if (string.Equals(extension, ".appx", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msix", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.PackageType.CurrentValue = lib.BusinessLayer.Appx.AppInstaller.PackageType.Package;
+                    this.PackageType.CurrentValue = Otor.MsixHero.Lib.Domain.Appx.PackageType.Package;
                 }
 
                 try
@@ -186,7 +188,27 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                     this.Name.CurrentValue = config.MainPackage.Name;
                     this.Version.CurrentValue = config.MainPackage.Version;
                     this.Publisher.CurrentValue = config.MainPackage.Publisher;
-                    this.Architecture.CurrentValue = config.MainPackage.Architecture;
+
+                    switch (config.MainPackage.Architecture)
+                    {
+                        case AppInstallerPackageArchitecture.x86:
+                            this.Architecture.CurrentValue = AppxPackageArchitecture.x86;
+                            break;
+                        case AppInstallerPackageArchitecture.x64:
+                            this.Architecture.CurrentValue = AppxPackageArchitecture.x64;
+                            break;
+                        case AppInstallerPackageArchitecture.arm:
+                            this.Architecture.CurrentValue = AppxPackageArchitecture.Arm;
+                            break;
+                        case AppInstallerPackageArchitecture.arm64:
+                            this.Architecture.CurrentValue = AppxPackageArchitecture.Arm64;
+                            break;
+                        case AppInstallerPackageArchitecture.neutral:
+                            this.Architecture.CurrentValue = AppxPackageArchitecture.Neutral;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
                 catch (Exception)
                 {
@@ -249,7 +271,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
             if (allowPackages)
             {
-                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue ==  lib.BusinessLayer.Appx.AppInstaller.PackageType.Package)
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Otor.MsixHero.Lib.Domain.Appx.PackageType.Package)
                 {
                     extensions.Add("*.msix");
                     extensions.Add("*.appx");
@@ -260,7 +282,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
             if (allowBundles)
             {
-                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue ==  lib.BusinessLayer.Appx.AppInstaller.PackageType.Bundle)
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Otor.MsixHero.Lib.Domain.Appx.PackageType.Bundle)
                 {
                     extensions.Add("*.appxbundle");
                     names.Append("Bundles|*.appxbundle|");

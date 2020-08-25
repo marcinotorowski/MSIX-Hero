@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Controls.ZeroOrAny
+namespace Otor.MsixHero.Ui.Controls.ZeroOrAny
 {
     public class ZeroOrAny : Control
     {

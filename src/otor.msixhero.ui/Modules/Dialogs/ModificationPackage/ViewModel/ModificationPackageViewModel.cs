@@ -1,39 +1,40 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Builder;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.Domain.Appx.AppInstaller;
-using otor.msixhero.lib.Domain.Appx.ModificationPackage;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
+using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Packaging.ModificationPackages;
+using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 {
-    using System.Diagnostics;
-    using System.Text.RegularExpressions;
-
     public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly IAppxContentBuilder contentBuilder;
-        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private readonly IInteractionService interactionService;
         private ICommand openSuccessLink;
         private ICommand reset;
 
         public ModificationPackageViewModel(
             IAppxContentBuilder contentBuilder,
-            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory,
+            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             IConfigurationService configurationService,
             IInteractionService interactionService) : base("Create modification package stub", interactionService)
         {
@@ -60,7 +61,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                 PackageSelectorDisplayMode.ShowDisplayName);
 
             this.ModificationPackageDetails.Version.CurrentValue = "1.0.0.0";
-            this.ModificationPackageDetails.Architecture.CurrentValue = AppInstallerPackageArchitecture.neutral;
+            this.ModificationPackageDetails.Architecture.CurrentValue = (AppxPackageArchitecture)Enum.Parse(typeof(AppxPackageArchitecture), AppInstallerPackageArchitecture.neutral.ToString("G"), true);
             this.ModificationPackageDetails.Commit();
             
             this.Create = new ChangeableProperty<ModificationPackageBuilderAction>();
@@ -148,11 +149,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                 Name = Regex.Replace(this.ModificationPackageDetails.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
                 Publisher = "CN=" + Regex.Replace(this.ModificationPackageDetails.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
                 DisplayPublisher = this.ModificationPackageDetails.DisplayPublisher.CurrentValue,
-                Architecture = this.ModificationPackageDetails.Architecture.CurrentValue,
                 Version = this.ModificationPackageDetails.Version.CurrentValue,
                 ParentName = this.PackageSelection.Name.CurrentValue,
                 ParentPublisher = this.PackageSelection.Publisher.CurrentValue
             };
+
+            modificationPkgCreationRequest.Architecture = (AppxPackageArchitecture) Enum.Parse(typeof(AppxPackageArchitecture), modificationPkgCreationRequest.Architecture.ToString("G"), true);
 
             await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
 
@@ -166,7 +168,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.ModificationPackage.ViewModel
                     break;
                 case ModificationPackageBuilderAction.SignedMsix:
 
-                    var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     switch (this.SelectedCertificate.Store.CurrentValue)

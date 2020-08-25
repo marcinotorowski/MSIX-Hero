@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel;
+using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PsfExpert.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PsfExpert.ViewModel
 {
     public class PsfExpertViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        public PsfExpertViewModel(IInteractionService interactionService, IDialogService dialogService, IApplicationStateManager stateManager, IConfigurationService configurationService) : base("MSIX Hero - PSF Expert", interactionService)
+        public PsfExpertViewModel(IInteractionService interactionService, IDialogService dialogService) : base("MSIX Hero - PSF Expert", interactionService)
         {
             this.CommandHandler = new PsfExpertCommandHandler(dialogService);
         }

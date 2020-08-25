@@ -1,17 +1,14 @@
-﻿using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.VolumeManager.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements
 {
     public abstract class SelectableViewModel<T> : NotifyPropertyChanged
     {
-        protected readonly IApplicationStateManager StateManager;
         private bool isSelected;
 
-        protected SelectableViewModel(T model, IApplicationStateManager stateManager, bool isSelected = false)
+        protected SelectableViewModel(T model, bool isSelected = false)
         {
             this.Model = model;
-            this.StateManager = stateManager;
             this.isSelected = isSelected;
         }
 

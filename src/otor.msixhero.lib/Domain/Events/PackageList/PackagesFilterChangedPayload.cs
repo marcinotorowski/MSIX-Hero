@@ -1,6 +1,6 @@
-﻿using otor.msixhero.lib.Domain.Appx.Packages;
+﻿using Otor.MsixHero.Infrastructure.Configuration;
 
-namespace otor.msixhero.lib.Domain.Events.PackageList
+namespace Otor.MsixHero.Lib.Domain.Events.PackageList
 {
     public class PackagesFilterChangedPayload
     {

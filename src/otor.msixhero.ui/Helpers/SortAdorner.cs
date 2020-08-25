@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace otor.msixhero.ui.Helpers
+namespace Otor.MsixHero.Ui.Helpers
 {
     public class SortAdorner : Adorner
     {

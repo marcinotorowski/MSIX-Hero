@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace otor.msixhero.ui.ViewModel
+namespace Otor.MsixHero.Ui.ViewModel
 {
     public abstract class NotifyPropertyChanged : INotifyPropertyChanged
     {

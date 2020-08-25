@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Windows;
 
-namespace otor.msixhero.ui.Commands.RoutedCommand
+namespace Otor.MsixHero.Ui.Commands.RoutedCommand
 {
     /// <summary>
     ///  Holds a collection of <see cref="RoutedCommandHandler"/> that should be

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace otor.msixhero.ui.Commands.RoutedCommand
+namespace Otor.MsixHero.Ui.Commands.RoutedCommand
 {
     /// <summary>
     ///  Allows associated a routed command with a non-routed command.  Used by

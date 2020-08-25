@@ -7,41 +7,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Logs;
-using otor.msixhero.lib.Domain.Commands.Generic;
-using otor.msixhero.lib.Domain.Commands.Packages.Developer;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Controls.Progress;
-using otor.msixhero.ui.Modules.Common;
-using otor.msixhero.ui.Themes;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Ui.Controls.Progress;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Modules.Common;
+using Otor.MsixHero.Ui.Themes;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
+namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
 {
     public class EventViewerViewModel : NotifyPropertyChanged, INavigationAware, IHeaderViewModel, IActiveAware
     {
         private bool isActive;
-        private readonly IApplicationStateManager stateManager;
+        private readonly IMsixHeroApplication application;
+        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly IInteractionService interactionService;
         private bool firstRun = true;
         private string searchKey;
 
-        public EventViewerViewModel(IApplicationStateManager stateManager, IInteractionService interactionService)
+        public EventViewerViewModel(
+            IMsixHeroApplication application,
+            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            IInteractionService interactionService)
         {
-            this.stateManager = stateManager;
+            this.application = application;
+            this.packageManagerProvider = packageManagerProvider;
             this.interactionService = interactionService;
             this.Logs = new ObservableCollection<Log>();
             this.LogsView = CollectionViewSource.GetDefaultView(this.Logs);
             this.LogsView.Filter += Filter;
             this.Sort(nameof(Log.DateTime), false);
-            this.CommandHandler = new EventViewerCommandHandler(this, stateManager);
+            this.CommandHandler = new EventViewerCommandHandler(this, application);
             this.MaxLogs = 250;
             this.End = DateTime.Now;
             this.Start = this.End.Subtract(TimeSpan.FromDays(5));
@@ -69,24 +73,21 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
         {
             try
             {
+                // todo: rewrite to UiCommand
                 this.Progress.IsLoading = true;
 
-                var action = new GetLogs(this.MaxLogs);
-
+                var packageManager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+                
                 using (var cts = new CancellationTokenSource())
                 {
                     var p = new Progress<ProgressData>();
-                    var task = this.stateManager.CommandExecutor.GetExecuteAsync(action, cts.Token, p);
+                    var task = packageManager.GetLogs(this.MaxLogs, cts.Token, p);
                     this.Progress.MonitorProgress(task, cts, p);
                     var result = await task.ConfigureAwait(false);
                     return new List<Log>(result);
                 }
             }
             catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (UserHandledException)
             {
                 throw;
             }
@@ -124,20 +125,8 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
 
                 if (value)
                 {
-                    try
-                    {
-                        this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.EventViewer));
-                    }
-                    catch (UserHandledException)
-                    {
-                        return;
-                    }
-
-                    if (this.firstRun)
-                    {
-                        this.firstRun = false;
-                        this.Reload();
-                    }
+                    // todo: initial loading of events with Uicommand
+                    throw new NotImplementedException();
                 }
             }
         }
@@ -176,13 +165,7 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            try
-            {
-                this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.EventViewer));
-            }
-            catch (UserHandledException)
-            {
-            }
+            this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.EventViewer));
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

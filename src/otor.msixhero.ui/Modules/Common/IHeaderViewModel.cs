@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace otor.msixhero.ui.Modules.Common
+namespace Otor.MsixHero.Ui.Modules.Common
 {
     public interface IHeaderViewModel
     {

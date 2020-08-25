@@ -2,18 +2,15 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Packages.AppAttach;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Interop;
-using otor.msixhero.lib.Infrastructure.Ipc;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
 {
     public enum AppAttachSizeMode
     {
@@ -23,16 +20,12 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
 
     public class AppAttachViewModel : ChangeableDialogViewModel
     {
-        private readonly IApplicationStateManager appState;
         private readonly IInteractionService interactionService;
-        private readonly IProcessManager processManager;
-        private readonly ISelfElevationManagerFactory<IAppAttachManager> appAttachManagerFactory;
+        private readonly ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory;
 
-        public AppAttachViewModel(IApplicationStateManager appState, ISelfElevationManagerFactory<IAppAttachManager> appAttachManagerFactory, IProcessManager processManager, IInteractionService interactionService) : base("Prepare VHD for app attach", interactionService)
+        public AppAttachViewModel(ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory, IInteractionService interactionService) : base("Prepare VHD for app attach", interactionService)
         {
-            this.appState = appState;
             this.appAttachManagerFactory = appAttachManagerFactory;
-            this.processManager = processManager;
             this.interactionService = interactionService;
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
@@ -84,33 +77,17 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppAttach.ViewModel
 
             var sizeInMegabytes = this.SizeMode.CurrentValue == AppAttachSizeMode.Auto ? 0 : uint.Parse(this.FixedSize.CurrentValue);
 
-            if (this.appState.CurrentState.IsElevated)
-            {
-                var appAttach = await this.appAttachManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
+            var appAttach = await this.appAttachManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
 
-                await appAttach.CreateVolume(
-                    this.InputPath.CurrentValue, 
-                    output, 
-                    sizeInMegabytes, 
-                    this.ExtractCertificate.CurrentValue,
-                    this.GenerateScripts.CurrentValue, 
-                    cancellationToken, 
-                    progress).ConfigureAwait(false);
-            }
-            else
-            {
-                var cmd = new ConvertToVhd(this.InputPath.CurrentValue, output)
-                {
-                    GenerateScripts = this.GenerateScripts.CurrentValue,
-                    ExtractCertificate = this.ExtractCertificate.CurrentValue,
-                    SizeInMegaBytes = sizeInMegabytes
-                };
-
-                var mgr = await this.appAttachManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
-                await mgr.CreateVolume(this.InputPath.CurrentValue, output, sizeInMegabytes, this.ExtractCertificate.CurrentValue, this.GenerateScripts.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-            }
+            await appAttach.CreateVolume(
+                this.InputPath.CurrentValue,
+                output,
+                sizeInMegabytes,
+                this.ExtractCertificate.CurrentValue,
+                this.GenerateScripts.CurrentValue,
+                cancellationToken,
+                progress).ConfigureAwait(false);
 
             return true;
         }

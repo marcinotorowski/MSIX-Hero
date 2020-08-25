@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace otor.msixhero.ui.Domain
+namespace Otor.MsixHero.Ui.Domain
 {
     public interface IChangeable
     {

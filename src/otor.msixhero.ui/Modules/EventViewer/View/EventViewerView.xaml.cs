@@ -4,11 +4,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.EventViewer.ViewModel;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Modules.EventViewer.ViewModel;
 using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
 
-namespace otor.msixhero.ui.Modules.EventViewer.View
+namespace Otor.MsixHero.Ui.Modules.EventViewer.View
 {
     /// <summary>
     /// Interaction logic for EventViewerView.
@@ -51,7 +51,7 @@ namespace otor.msixhero.ui.Modules.EventViewer.View
         {
             SortAdorner newSortAdorner = null;
 
-            foreach (var item in this.GridView.Columns.Select(c => c.Header).OfType<GridViewColumnHeader>().Where(c => c.Tag is string))
+            foreach (var item in Enumerable.Select<GridViewColumn, object>(this.GridView.Columns, c => c.Header).OfType<GridViewColumnHeader>().Where(c => c.Tag is string))
             {
                 var layer = AdornerLayer.GetAdornerLayer(item);
                 if (layer == null)

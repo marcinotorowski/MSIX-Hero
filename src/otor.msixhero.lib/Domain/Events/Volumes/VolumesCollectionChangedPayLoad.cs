@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.Domain.Appx.Volume;
+using Otor.MsixHero.Appx.Volumes.Entities;
 
-namespace otor.msixhero.lib.Domain.Events.Volumes
+namespace Otor.MsixHero.Lib.Domain.Events.Volumes
 {
     public class VolumesCollectionChangedPayLoad
     {

@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Help.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Help.View
 {
     /// <summary>
     /// Interaction logic for HelpView.xaml

@@ -1,26 +1,24 @@
-﻿using otor.msixhero.lib.BusinessLayer.Appx.AppInstaller;
-using otor.msixhero.lib.Domain.Appx.AppInstaller;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Domain;
-using Prism.Services.Dialogs;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Builder;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
+using Otor.MsixHero.AppInstaller;
+using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
+using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
 {
     public class AppInstallerViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly IAppxContentBuilder appxContentBuilder;
+        private readonly AppInstallerBuilder appInstallerBuilder;
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
         private ICommand openSuccessLink;
@@ -29,15 +27,14 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         private string previousPath;
 
         public AppInstallerViewModel(
-            IAppxContentBuilder appxContentBuilder,
             IInteractionService interactionService,
             IConfigurationService configurationService) : base("Create .appinstaller", interactionService)
         {
-            this.appxContentBuilder = appxContentBuilder;
+            this.appInstallerBuilder = new AppInstallerBuilder();
             this.interactionService = interactionService;
             this.configurationService = configurationService;
 
-            this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(lib.BusinessLayer.Appx.AppInstaller.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
+            this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.BlockLaunching = new ChangeableProperty<bool>();
             this.Version = new ValidatedChangeableProperty<string>("1.0.0.0", this.ValidateVersion);
@@ -83,8 +80,8 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         }
 
         public bool ShowLaunchOptions =>
-            this.AppInstallerUpdateCheckingMethod.CurrentValue == lib.BusinessLayer.Appx.AppInstaller.AppInstallerUpdateCheckingMethod.LaunchAndBackground ||
-            this.AppInstallerUpdateCheckingMethod.CurrentValue == lib.BusinessLayer.Appx.AppInstaller.AppInstallerUpdateCheckingMethod.Launch;
+            this.AppInstallerUpdateCheckingMethod.CurrentValue == Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground ||
+            this.AppInstallerUpdateCheckingMethod.CurrentValue == Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.Launch;
 
         public ChangeableProperty<AppInstallerUpdateCheckingMethod> AppInstallerUpdateCheckingMethod { get; }
 
@@ -106,7 +103,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
         {
             get
             {
-                var minWin10 = this.appxContentBuilder.GetMinimumSupportedWindowsVersion(this.GetCurrentAppInstallerConfig());
+                var minWin10 = this.appInstallerBuilder.GetMinimumSupportedWindowsVersion(this.GetCurrentAppInstallerConfig());
                 return $"Windows 10 {minWin10.Item1}";
             }
         }
@@ -163,7 +160,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
 
             this.previousPath = selected;
             var appInstaller = this.GetCurrentAppInstallerConfig();
-            await this.appxContentBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
+            await this.appInstallerBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
             return true;
         }
 
@@ -264,7 +261,6 @@ namespace otor.msixhero.ui.Modules.Dialogs.AppInstaller.ViewModel
                 this.PackageSelection.PackageType.CurrentValue = builder.MainPackageType;
                 this.PackageSelection.Architecture.CurrentValue = builder.MainPackageArchitecture;
 
-                this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
                 this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
 
                 this.OnPropertyChanged(nameof(ShowLaunchOptions));

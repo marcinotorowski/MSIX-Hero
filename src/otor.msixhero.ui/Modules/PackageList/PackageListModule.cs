@@ -1,13 +1,12 @@
-﻿using otor.msixhero.ui.Modules.Common.PackageContent.View;
-using otor.msixhero.ui.Modules.PackageList.View;
-using otor.msixhero.ui.Modules.PackageList.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
+﻿using Otor.MsixHero.Ui.Modules.PackageList.View;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList
+namespace Otor.MsixHero.Ui.Modules.PackageList
 {
     public class PackageListModule : IModule
     {

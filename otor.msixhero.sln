@@ -3,21 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.ui", "src\otor.msixhero.ui\otor.msixhero.ui.csproj", "{40A4609E-D606-4037-BD91-66E2307B2B2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Ui", "src\Otor.MsixHero.Ui\Otor.MsixHero.Ui.csproj", "{40A4609E-D606-4037-BD91-66E2307B2B2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.lib", "src\otor.msixhero.lib\otor.msixhero.lib.csproj", "{86813830-4887-4BE2-BC0E-429A3769E0A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Lib", "src\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj", "{86813830-4887-4BE2-BC0E-429A3769E0A7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1353E27B-1F60-434E-AD0E-56631BE1CF3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.lib.tests", "src\otor.msixhero.lib.tests\otor.msixhero.lib.tests.csproj", "{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Tests", "src\Otor.MsixHero.Tests\Otor.MsixHero.Tests.csproj", "{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "otor.msixhero.adminhelper", "src\otor.msixhero.adminhelper\otor.msixhero.adminhelper.csproj", "{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.AdminHelper", "src\Otor.MsixHero.AdminHelper\Otor.MsixHero.AdminHelper.csproj", "{AFDFA263-2CF2-4ADE-8AE4-D0FC982DAF42}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{FEA96B7F-E9D5-449F-83EE-789116B1BD9B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "External.EricZimmerman.Registry", "src\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj", "{EA08C739-61A2-402A-9621-590DBF78C04A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otor.msixhero.cmd", "src\otor.msixhero.cmd\otor.msixhero.cmd.csproj", "{6C71D451-F783-4ADA-94AB-BCEE370F57AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Cli", "src\Otor.MsixHero.Cli\Otor.MsixHero.Cli.csproj", "{6C71D451-F783-4ADA-94AB-BCEE370F57AD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Winget", "src\Otor.MsixHero.Winget\Otor.MsixHero.Winget.csproj", "{C11701E4-D67C-4764-8BB8-1621CB241FB3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.AppInstaller", "src\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj", "{C5DA9E95-1C86-43F0-88A1-898ED33CA148}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Infrastructure", "src\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj", "{FBC2A089-3D9A-48E8-A672-A48AD501B206}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Appx", "src\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj", "{2C4C5957-1F57-4889-B331-24D59EAD743C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +56,22 @@ Global
 		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C71D451-F783-4ADA-94AB-BCEE370F57AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C11701E4-D67C-4764-8BB8-1621CB241FB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11701E4-D67C-4764-8BB8-1621CB241FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11701E4-D67C-4764-8BB8-1621CB241FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11701E4-D67C-4764-8BB8-1621CB241FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5DA9E95-1C86-43F0-88A1-898ED33CA148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5DA9E95-1C86-43F0-88A1-898ED33CA148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5DA9E95-1C86-43F0-88A1-898ED33CA148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5DA9E95-1C86-43F0-88A1-898ED33CA148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBC2A089-3D9A-48E8-A672-A48AD501B206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBC2A089-3D9A-48E8-A672-A48AD501B206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBC2A089-3D9A-48E8-A672-A48AD501B206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBC2A089-3D9A-48E8-A672-A48AD501B206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C4C5957-1F57-4889-B331-24D59EAD743C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C4C5957-1F57-4889-B331-24D59EAD743C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C4C5957-1F57-4889-B331-24D59EAD743C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C4C5957-1F57-4889-B331-24D59EAD743C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

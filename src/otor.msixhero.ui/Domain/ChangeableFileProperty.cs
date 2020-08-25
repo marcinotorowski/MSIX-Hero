@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.ui.Commands.RoutedCommand;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
 
-namespace otor.msixhero.ui.Domain
+namespace Otor.MsixHero.Ui.Domain
 {
     public class ChangeableFileProperty : ValidatedChangeableProperty<string>
     {

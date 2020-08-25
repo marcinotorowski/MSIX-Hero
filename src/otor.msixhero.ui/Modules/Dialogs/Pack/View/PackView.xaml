@@ -1,13 +1,14 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.Pack.View.PackView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.Dialogs.Pack.View.PackView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Pack.ViewModel"
-             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View"
-             xmlns:changeableDialog="clr-namespace:otor.msixhero.ui.Controls.ChangeableDialog"
+             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel"
+             xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
+             xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackViewModel}">
     <UserControl.Resources>
@@ -74,7 +75,7 @@
                             <StackPanel>
                                 <CheckBox IsChecked="{Binding Sign.CurrentValue}" Content="Sign this package" />
                                 <Border Visibility="{Binding Sign.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
-                                    <view:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
+                                    <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
                                 </Border>
                             </StackPanel>
                         </ScrollViewer>

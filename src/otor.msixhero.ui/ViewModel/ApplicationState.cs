@@ -1,6 +1,6 @@
-﻿using otor.msixhero.ui.Modules.PackageList.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.PackageList.ViewModel;
 
-namespace otor.msixhero.ui.ViewModel
+namespace Otor.MsixHero.Ui.ViewModel
 {
     public class ApplicationState : NotifyPropertyChanged
     {

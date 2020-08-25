@@ -1,9 +1,9 @@
-﻿using otor.msixhero.ui.Modules.Settings.View;
-using otor.msixhero.ui.Modules.Settings.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.Settings.View;
+using Otor.MsixHero.Ui.Modules.Settings.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 
-namespace otor.msixhero.ui.Modules.Settings
+namespace Otor.MsixHero.Ui.Modules.Settings
 {
     public class SettingsModule : IModule
     {

@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.ui.Modules.Settings.ViewModel;
-using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
-using Prism.Services.Dialogs;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Modules.Settings.ViewModel;
+using Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools;
 
-namespace otor.msixhero.ui.Modules.Settings.View
+namespace Otor.MsixHero.Ui.Modules.Settings.View
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml
@@ -42,7 +41,7 @@ namespace otor.msixhero.ui.Modules.Settings.View
                 return;
             }
 
-            foreach (var tab in this.MainContent.Items.OfType<TabItem>())
+            foreach (var tab in Enumerable.OfType<TabItem>(this.MainContent.Items))
             {
                 if (string.Equals(tab.Name, dataContextEntryPoint, StringComparison.Ordinal))
                 {

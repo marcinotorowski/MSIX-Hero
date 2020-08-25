@@ -7,23 +7,29 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Manifest.Summary;
-using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Domain.Commands.Packages.Developer;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Commands.Packages.Manager;
-using otor.msixhero.lib.Domain.Commands.Packages.Signing;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Helpers;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using Otor.MsixHero.Appx.Diagnostic.Registry;
+using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Hero.Commands.Packages;
+using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 {
     public enum AppInstallerCommandParameter
     {
@@ -40,23 +46,32 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
     public class PackageListCommandHandler
     {
+        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
+        private readonly ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider;
+        private readonly IMsixHeroApplication application;
         private readonly IInteractionService interactionService;
-        private readonly IApplicationStateManager stateManager;
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
         private readonly IBusyManager busyManager;
         private readonly FileInvoker fileInvoker;
 
         public PackageListCommandHandler(
+            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
+            ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider,
+            IMsixHeroApplication application,
             IInteractionService interactionService,
             IConfigurationService configurationService,
-            IApplicationStateManager stateManager, 
             IDialogService dialogService,
             IBusyManager busyManager)
         {
+            this.packageManagerProvider = packageManagerProvider;
+            this.signingManagerProvider = signingManagerProvider;
+            this.registryManagerProvider = registryManagerProvider;
+            this.application = application;
             this.interactionService = interactionService;
             this.configurationService = configurationService;
-            this.stateManager = stateManager;
             this.dialogService = dialogService;
             this.busyManager = busyManager;
             this.fileInvoker = new FileInvoker(interactionService);
@@ -167,18 +182,11 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private async void RefreshExecute()
         {
-            var context = this.busyManager.Begin(OperationType.PackageLoading);
-            try
-            {
-                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
-            }
-            catch (UserHandledException)
-            {
-            }
-            finally
-            {
-                this.busyManager.End(context);
-            }
+            var executor = this.application.CommandExecutor
+                .WithErrorHandling(this.interactionService, true)
+                .WithBusyManager(this.busyManager, OperationType.PackageLoading);
+
+            await executor.Invoke(this, new GetPackagesCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
         private bool CanRefresh()
@@ -210,13 +218,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 }
             }
 
-            var command = new AddPackage(selection)
+            AddPackageOptions options = 0;
+            if (forAllUsers)
             {
-                AllUsers = forAllUsers,
-                KillRunningApps = true,
-                AllowDowngrade = false
-            };
-            
+                options |= AddPackageOptions.AllUsers;
+            }
+
+            options |= AddPackageOptions.AllowDowngrade;
+            options |= AddPackageOptions.KillRunningApps;
+
             var context = this.busyManager.Begin();
             try
             {
@@ -225,11 +235,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     var p1 = wrappedProgress.GetChildProgress(90);
                     var p2 = wrappedProgress.GetChildProgress(10);
 
-                    await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
+                    var manager = await this.packageManagerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                    await manager.Add(selection, options, progress: p1).ConfigureAwait(false);
                    
                     AppxManifestSummary appxReader;
 
-                    var allPackages = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, p2).ConfigureAwait(false);
+                    await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                    var allPackages = this.application.ApplicationState.Packages.AllPackages;
+
                     if (!string.Equals(".appinstaller", Path.GetExtension(selection), StringComparison.OrdinalIgnoreCase))
                     {
                         appxReader = await AppxManifestSummaryBuilder.FromFile(selection, AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
@@ -242,12 +255,16 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     if (appxReader != null)
                     {
                         var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
-                        await this.stateManager.CommandExecutor.ExecuteAsync(new SelectPackages(selected) { IsExplicit = true }).ConfigureAwait(false);
+                        if (selected != null)
+                        {
+                            await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.ManifestLocation)).ConfigureAwait(false);
+                        }
                     }
                 }
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("The package could not be added.", exception);
             }
             finally
             {
@@ -273,9 +290,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             Process.Start(process);
         }
 
-        private void MountRegistryExecute()
+        private async void MountRegistryExecute()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return;
@@ -283,15 +300,17 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             try
             {
-                this.stateManager.CommandExecutor.ExecuteAsync(new MountRegistry(selection.First(), true));
+                var manager = await this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                await manager.MountRegistry(selection.First(), true).ConfigureAwait(false);
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("Could not mount the registry.", exception);
             }
         }
         private async void DeprovisionExecute()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return;
@@ -306,19 +325,19 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             var context = this.busyManager.Begin();
             try
             {
-                var command = new Deprovision(selection.First().PackageFamilyName);
                 using (var pw = new WrappedProgress(context))
                 {
                     var p1 = pw.GetChildProgress(80);
                     var p2 = pw.GetChildProgress(20);
 
-                    await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, p1).ConfigureAwait(false);
-                    await this.stateManager.CommandExecutor.ExecuteAsync(SelectPackages.CreateEmpty(), CancellationToken.None).ConfigureAwait(false);
-                    await this.stateManager.CommandExecutor.ExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, p2).ConfigureAwait(false);
+                    var appManager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                    await appManager.Deprovision(selection.First().PackageFamilyName, CancellationToken.None, p1).ConfigureAwait(false);
+                    await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), CancellationToken.None, p2).ConfigureAwait(false);
                 }
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("Could not deprovision the package.", exception);
             }
             finally
             {
@@ -326,9 +345,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
-        private void DismountRegistryExecute()
+        private async void DismountRegistryExecute()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return;
@@ -341,16 +360,18 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             try
             {
-                this.stateManager.CommandExecutor.ExecuteAsync(new DismountRegistry(selection.First()));
+                var manager = await this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                await manager.DismountRegistry(selection.First()).ConfigureAwait(false);
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("Could not dismount the registry.", exception);
             }
         }
         
         private bool CanExecuteMountRegistry()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return false;
@@ -364,12 +385,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             try
             {
-                var regState = this.stateManager.CommandExecutor.GetExecute(new GetRegistryMountState(selected.InstallLocation, selected.Name));
+                var manager = this.registryManagerProvider.GetProxyFor().GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.NotMounted;
-            }
-            catch (UserHandledException)
-            {
-                return false;
             }
             catch (Exception)
             {
@@ -379,7 +397,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private bool CanExecuteDismountRegistry()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return false;
@@ -393,12 +411,9 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             try
             {
-                var regState = this.stateManager.CommandExecutor.GetExecute(new GetRegistryMountState(selected.InstallLocation, selected.Name));
+                var manager = this.registryManagerProvider.GetProxyFor().GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.Mounted;
-            }
-            catch (UserHandledException)
-            {
-                return false;
             }
             catch (Exception)
             {
@@ -408,7 +423,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void ChangeVolumeExecute()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return;
@@ -433,7 +448,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private bool CanExecuteChangeVolume()
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
                 return false;
@@ -455,25 +470,25 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         private bool CanExecuteSingleSelection()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             return package != null;
         }
         
         private bool CanExecuteSingleSelectionOnManifest()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             return package?.InstallLocation != null;
         }
         
         private bool CanExecuteDeprovision()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             return package != null && package.IsProvisioned;
         }
 
         private void OpenExplorerExecute()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (package == null)
             {
                 return;
@@ -484,7 +499,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         
         private void OpenExplorerUserExecute()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (package == null)
             {
                 return;
@@ -495,13 +510,13 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private bool CanExecuteOpenExplorerUser()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             return package?.InstallLocation != null;
         }
 
         private void OpenManifestExecute()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (package == null)
             {
                 return;
@@ -513,7 +528,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void OpenConfigJsonExecute()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (package == null)
             {
                 return;
@@ -525,19 +540,19 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private bool CanExecuteOpenManifest()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             return package?.InstallLocation != null;
         }
 
         private bool CanExecuteOpenConfigJson()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             return package?.InstallLocation != null && File.Exists(package.PsfConfig);
         }
 
-        private void RunAppExecute()
+        private async void RunAppExecute()
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (package == null)
             {
                 return;
@@ -545,16 +560,19 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             try
             {
-                this.stateManager.CommandExecutor.ExecuteAsync(new RunPackage(package.PackageFamilyName, package.ManifestLocation));
+                var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+                await manager.Run(package.ManifestLocation, package.PackageFamilyName).ConfigureAwait(false);
             }
-            catch (UserHandledException)
+
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("Could not start the app.", exception);
             }
         }
 
         private async void RemovePackageExecute(bool allUsersRemoval)
         {
-            var selection = this.stateManager.CurrentState.Packages.SelectedItems;
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (!selection.Any())
             {
                 return;
@@ -603,10 +621,20 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             var context = this.busyManager.Begin();
             try
             {
-                await this.stateManager.CommandExecutor.ExecuteAsync(new RemovePackages(allUsersRemoval ? PackageContext.AllUsers : PackageContext.CurrentUser, selection), CancellationToken.None, context).ConfigureAwait(false);
+                using (var wrappedProgress = new WrappedProgress(context))
+                {
+                    var p1 = wrappedProgress.GetChildProgress(70);
+                    var p2 = wrappedProgress.GetChildProgress(30);
+
+                    var manager = await this.packageManagerProvider.GetProxyFor(allUsersRemoval ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                    await manager.Remove(selection, allUsersRemoval, progress: p1).ConfigureAwait(false);
+
+                    await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
+                }
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("Could not remove the package.", exception);
             }
             finally
             {
@@ -616,20 +644,21 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private async void RunToolExecute(ToolListConfiguration tool)
         {
-            var package = this.stateManager.CurrentState.Packages.SelectedItems.FirstOrDefault();
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
             if (package == null || tool == null)
             {
                 return;
             }
 
-            var command = new RunToolInPackage(package, tool.Path, tool.Arguments) {AsAdmin = tool.AsAdmin};
             var context = this.busyManager.Begin();
             try
             {
-                await this.stateManager.CommandExecutor.ExecuteAsync(command, CancellationToken.None, context).ConfigureAwait(false);
+                var manager = await this.packageManagerProvider.GetProxyFor(tool.AsAdmin ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                await manager.RunToolInContext(package, tool.Path, tool.Arguments, CancellationToken.None, context).ConfigureAwait(false);
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("The tool could not be started.", exception);
             }
             finally
             {
@@ -639,7 +668,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private bool CanRunTool(ToolListConfiguration tool)
         {
-            if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
             {
                 return false;
             }
@@ -659,10 +688,12 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
             try
             {
-                await this.stateManager.CommandExecutor.ExecuteAsync(new InstallCertificate(selectedFile)).ConfigureAwait(false);
+                var signing = await this.signingManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable).ConfigureAwait(false);
+                await signing.InstallCertificate(selectedFile, CancellationToken.None, context).ConfigureAwait(false);
             }
-            catch (UserHandledException)
+            catch (Exception exception)
             {
+                this.interactionService.ShowError("Could not install the selected certificate.", exception);
             }
             finally
             {
@@ -703,7 +734,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private bool CanExecuteSingleSelection(bool forSelection)
         {
-            return !forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
+            return !forSelection || this.application.ApplicationState.Packages.SelectedPackages.Count == 1;
         }
 
         private bool CanExecuteAppInstaller(AppInstallerCommandParameter param)
@@ -714,24 +745,24 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 case AppInstallerCommandParameter.Browse:
                     return true;
                 case AppInstallerCommandParameter.Selection:
-                    return this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
+                    return this.application.ApplicationState.Packages.SelectedPackages.Count == 1;
                 default:
                     return false;
             }
         }
         private bool CanExecutePackageExpert()
         {
-            return this.stateManager.CurrentState.Packages.SelectedItems.Count == 1;
+            return this.application.ApplicationState.Packages.SelectedPackages.Count == 1;
         }
 
         private void PackageExpertExecute()
         {
-            if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
             {
                 return;
             }
 
-            var parameters = new PackageExpertSelection(this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation).ToDialogParameters();
+            var parameters = new PackageExpertSelection(this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation).ToDialogParameters();
             this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, this.OnDialogClosed);
         }
 
@@ -743,7 +774,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     this.dialogService.ShowDialog(Constants.PathWinget, new DialogParameters(), this.OnDialogClosed);
                     break;
                 case AppInstallerCommandParameter.Selection:
-                    if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+                    if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
                     {
                         this.dialogService.ShowDialog(Constants.PathWinget, new DialogParameters(),
                             this.OnDialogClosed);
@@ -752,7 +783,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     {
                         var parameters = new DialogParameters
                         {
-                            { "msix", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation}
+                            { "msix", this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation}
                         };
 
                         this.dialogService.ShowDialog(Constants.PathWinget, parameters, this.OnDialogClosed);
@@ -785,7 +816,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
                     break;
                 case AppInstallerCommandParameter.Selection:
-                    if (this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+                    if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
                     {
                         this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
                     }
@@ -793,7 +824,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                     {
                         var parameters = new DialogParameters
                         {
-                            { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
+                            { "file", this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation }
                         };
 
                         this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, this.OnDialogClosed);
@@ -817,7 +848,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void ModificationPackageExecute(bool forSelection)
         {
-            if (!forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            if (!forSelection || this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
             {
                 this.dialogService.ShowDialog(Constants.PathModificationPackage, new DialogParameters(), this.OnDialogClosed);
             }
@@ -825,7 +856,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 var parameters = new DialogParameters
                 {
-                    { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
+                    { "file", this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation }
                 };
 
                 this.dialogService.ShowDialog(Constants.PathModificationPackage, parameters, this.OnDialogClosed);
@@ -834,7 +865,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void AppAttachExecute(bool forSelection)
         {
-            if (!forSelection || this.stateManager.CurrentState.Packages.SelectedItems.Count != 1)
+            if (!forSelection || this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
             {
                 this.dialogService.ShowDialog(Constants.PathAppAttach, new DialogParameters(), this.OnDialogClosed);
             }
@@ -842,7 +873,7 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             {
                 var parameters = new DialogParameters
                 {
-                    { "file", this.stateManager.CurrentState.Packages.SelectedItems.First().ManifestLocation }
+                    { "file", this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation }
                 };
 
                 this.dialogService.ShowDialog(Constants.PathAppAttach, parameters, this.OnDialogClosed);
@@ -881,14 +912,14 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         private void CopyExecute(PackageProperty param)
         {
-            if (!this.stateManager.CurrentState.Packages.SelectedItems.Any())
+            if (!this.application.ApplicationState.Packages.SelectedPackages.Any())
             {
                 return;
             }
 
             var sb = new StringBuilder();
 
-            foreach (var item in this.stateManager.CurrentState.Packages.SelectedItems)
+            foreach (var item in this.application.ApplicationState.Packages.SelectedPackages)
             {
                 if (sb.Length > 0)
                 {

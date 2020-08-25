@@ -2,11 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Controls.Progress
+namespace Otor.MsixHero.Ui.Controls.Progress
 {
     public class ProgressProperty : NotifyPropertyChanged
     {

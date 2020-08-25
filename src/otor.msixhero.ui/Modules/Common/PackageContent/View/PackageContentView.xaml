@@ -1,25 +1,24 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Common.PackageContent.View.PackageContentView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.Common.PackageContent.View.PackageContentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
-             xmlns:descriptor="clr-namespace:otor.msixhero.lib.Domain.Appx.Psf.Descriptor;assembly=msixhero.lib"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
-             xmlns:zeroOrAny="clr-namespace:otor.msixhero.ui.Controls.ZeroOrAny"
-             xmlns:msixHeroText="clr-namespace:otor.msixhero.ui.Controls.MsixHeroText"
-             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View"
-             xmlns:psf="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf"
-             xmlns:elements1="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.ViewModel"
-             xmlns:packageHeader="clr-namespace:otor.msixhero.ui.Controls.PackageHeader"
-             xmlns:view1="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.View"
-             xmlns:full="clr-namespace:otor.msixhero.lib.Domain.Appx.Manifest.Full;assembly=msixhero.lib"
-             xmlns:signatureStatus="clr-namespace:otor.msixhero.ui.Modules.Common.SignatureStatus"
-             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
+             xmlns:descriptor="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Descriptor;assembly=Otor.MsixHero.Appx"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel"
+             xmlns:view2="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PackageContent.View"
+             xmlns:routedCommand="clr-namespace:Otor.MsixHero.Ui.Commands.RoutedCommand"
+             xmlns:psf="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf"
+             xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
+             xmlns:packageHeader1="clr-namespace:Otor.MsixHero.Ui.Controls.PackageHeader"
+             xmlns:signatureStatus="clr-namespace:Otor.MsixHero.Ui.Modules.Common.SignatureStatus"
+             xmlns:zeroOrAny="clr-namespace:Otor.MsixHero.Ui.Controls.ZeroOrAny"
+             xmlns:elements1="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements"
+             xmlns:msixHeroText1="clr-namespace:Otor.MsixHero.Ui.Controls.MsixHeroText"
+             xmlns:view3="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.View"
+             xmlns:elements="clr-namespace:Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageContentViewModel}"
@@ -34,10 +33,10 @@
                 <ResourceDictionary Source="../../SignatureStatus/SignatureStatusControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="view:BulletItemControl">
+            <Style TargetType="view2:BulletItemControl">
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="view:BulletItemControl">
+                        <ControlTemplate TargetType="view2:BulletItemControl">
                             <DockPanel>
                                 <Border Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 0 0 10">
                                     <ContentPresenter Width="32" Content="{TemplateBinding Header}" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -67,7 +66,7 @@
 
     <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
         <DockPanel>
-            <packageHeader:PackageHeader
+            <packageHeader1:PackageHeader
                 Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
                 DataContext="{Binding SelectedPackageManifestInfo}"
                 Publisher="{Binding CurrentValue.PublisherDisplayName}" 
@@ -216,28 +215,28 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate DataType="{x:Type elements1:AppxApplicationViewModel}">
                                                         <StackPanel Margin="0 0 0 24">
-                                                            <view:BulletItemControl>
-                                                                <view:BulletItemControl.Header>
+                                                            <view2:BulletItemControl>
+                                                                <view2:BulletItemControl.Header>
                                                                     <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center">
                                                                         <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                                             <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                                         </Border>
                                                                     </Border>
-                                                                </view:BulletItemControl.Header>
+                                                                </view2:BulletItemControl.Header>
                                                                 <Border MinHeight="32">
                                                                     <StackPanel VerticalAlignment="Center" Margin="0 2">
                                                                         <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
                                                                         <TextBlock Text="{Binding DisplayType, Mode=OneTime}" />
                                                                     </StackPanel>
                                                                 </Border>
-                                                            </view:BulletItemControl>
+                                                            </view2:BulletItemControl>
 
-                                                            <view:BulletItemControl>
-                                                                <view:BulletItemControl.Header>
+                                                            <view2:BulletItemControl>
+                                                                <view2:BulletItemControl.Header>
                                                                     <Viewbox Width="24" Height="24">
                                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorShortcut}" />
                                                                     </Viewbox>
-                                                                </view:BulletItemControl.Header>
+                                                                </view2:BulletItemControl.Header>
 
                                                                 <TextBlock Style="{StaticResource DataHeader}" Text="Target" />
                                                                 <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" TextWrapping="Wrap" />
@@ -245,47 +244,47 @@
                                                                         <Run Text="{Binding Psf.Executable, Mode=OneTime}" />
                                                                         <Run Text="(launched by " Foreground="#777" /><Run Foreground="#777" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="#777" Text=")" />
                                                                 </TextBlock>
-                                                            </view:BulletItemControl>
+                                                            </view2:BulletItemControl>
 
-                                                            <view:BulletItemControl x:Name="EntryPoint">
-                                                                <view:BulletItemControl.Header>
+                                                            <view2:BulletItemControl x:Name="EntryPoint">
+                                                                <view2:BulletItemControl.Header>
                                                                     <Viewbox Width="24" Height="24">
                                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorBulb}" />
                                                                     </Viewbox>
-                                                                </view:BulletItemControl.Header>
+                                                                </view2:BulletItemControl.Header>
 
                                                                 <TextBlock Style="{StaticResource DataHeader}" Text="Entry point" />
                                                                 <TextBlock Style="{StaticResource DataValue}" Text="{Binding EntryPoint, Mode=OneTime}" TextWrapping="Wrap" />
-                                                            </view:BulletItemControl>
+                                                            </view2:BulletItemControl>
 
-                                                            <view:BulletItemControl x:Name="Arguments">
-                                                                <view:BulletItemControl.Header>
+                                                            <view2:BulletItemControl x:Name="Arguments">
+                                                                <view2:BulletItemControl.Header>
                                                                     <Viewbox Width="24" Height="24">
                                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                                                                     </Viewbox>
-                                                                </view:BulletItemControl.Header>
+                                                                </view2:BulletItemControl.Header>
 
                                                                 <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
                                                                 <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
-                                                            </view:BulletItemControl>
+                                                            </view2:BulletItemControl>
 
-                                                            <view:BulletItemControl x:Name="WorkingDirectory">
-                                                                <view:BulletItemControl.Header>
+                                                            <view2:BulletItemControl x:Name="WorkingDirectory">
+                                                                <view2:BulletItemControl.Header>
                                                                     <Viewbox Width="24" Height="24">
                                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorOpen}" />
                                                                     </Viewbox>
-                                                                </view:BulletItemControl.Header>
+                                                                </view2:BulletItemControl.Header>
 
                                                                 <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
                                                                 <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
-                                                            </view:BulletItemControl>
+                                                            </view2:BulletItemControl>
 
-                                                            <view:BulletItemControl x:Name="AppListEntry" Margin="0 0 0 8">
-                                                                <view:BulletItemControl.Header>
+                                                            <view2:BulletItemControl x:Name="AppListEntry" Margin="0 0 0 8">
+                                                                <view2:BulletItemControl.Header>
                                                                     <Viewbox Width="24" Height="24">
                                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorStartMenu}" />
                                                                     </Viewbox>
-                                                                </view:BulletItemControl.Header>
+                                                                </view2:BulletItemControl.Header>
 
                                                                 <TextBlock Style="{StaticResource DataHeader}" Text="Accessible via" />
                                                                 <TextBlock Margin="0" x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Start menu tile" TextWrapping="Wrap" />
@@ -293,26 +292,26 @@
                                                                     <Run Text="Execution alias:" />
                                                                     <Run Text="{Binding Mode=OneWay, Path=Alias}" />
                                                                 </TextBlock>
-                                                            </view:BulletItemControl>
+                                                            </view2:BulletItemControl>
 
                                                             <Border x:Name="HeaderScripts" Visibility="Collapsed">
                                                                 <StackPanel>
                                                                     <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
                                                                         <TextBlock Text="POWERSHELL SCRIPTS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                                                                     </Border>
-                                                                    <view:BulletItemControl Height="10" />
+                                                                    <view2:BulletItemControl Height="10" />
                                                                 </StackPanel>
                                                             </Border>
 
                                                             <ItemsControl x:Name="Scripts" ItemsSource="{Binding Psf.Scripts, Mode=OneWay}">
                                                                 <ItemsControl.ItemTemplate>
                                                                     <DataTemplate DataType="{x:Type psf:AppxPsfScriptViewModel}">
-                                                                        <view:BulletItemControl>
-                                                                            <view:BulletItemControl.Header>
+                                                                        <view2:BulletItemControl>
+                                                                            <view2:BulletItemControl.Header>
                                                                                 <Viewbox Width="24" Height="24">
                                                                                     <Path Style="{StaticResource Icon}" Data="{StaticResource VectorPowerShell}" />
                                                                                 </Viewbox>
-                                                                            </view:BulletItemControl.Header>
+                                                                            </view2:BulletItemControl.Header>
 
                                                                             <TextBlock Style="{StaticResource DataHeader}" x:Name="Header" Text="Before the application starts" />
                                                                             <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
@@ -338,7 +337,7 @@
 
                                                                             <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Wait for finish" VerticalAlignment="Center" />
                                                                             <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run asynchronously" VerticalAlignment="Center" />
-                                                                        </view:BulletItemControl>
+                                                                        </view2:BulletItemControl>
                                                                         <DataTemplate.Triggers>
                                                                             <DataTrigger Binding="{Binding Timing}" Value="{x:Static descriptor:PsfScriptDescriptorTiming.Finish}">
                                                                                 <Setter TargetName="Header" Property="Text" Value="After the application finishes" />
@@ -399,7 +398,7 @@
                                     </zeroOrAny:ZeroOrAny.AnyItemTemplate>
                                     <zeroOrAny:ZeroOrAny.NoItemsTemplate>
                                         <DataTemplate>
-                                            <msixHeroText:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
+                                            <msixHeroText1:MsixHeroText VerticalAlignment="Center" Tag="This package does not define applications." />
                                         </DataTemplate>
                                     </zeroOrAny:ZeroOrAny.NoItemsTemplate>
                                 </zeroOrAny:ZeroOrAny>
@@ -481,7 +480,7 @@
                     </TabItem.Style>
                     <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageJsonInfo.IsLoading}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <view1:PsfContentView IsEnabled="False" DataContext="{Binding SelectedPackageJsonInfo.CurrentValue}" />
+                            <view3:PsfContentView IsEnabled="False" DataContext="{Binding SelectedPackageJsonInfo.CurrentValue}" />
                         </ScrollViewer>
                     </progressOverlay:ProgressOverlay>
                 </TabItem>
@@ -500,7 +499,7 @@
                                         <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
                                             <TextBlock Text="DEVICE FAMILIES" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                                         </Border>
-                                        <view:BulletItemControl Height="10" />
+                                        <view2:BulletItemControl Height="10" />
                                     </StackPanel>
                                 </Border>
 
@@ -522,12 +521,12 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </StackPanel.Resources>
-                                                <view:BulletItemControl>
-                                                    <view:BulletItemControl.Header>
+                                                <view2:BulletItemControl>
+                                                    <view2:BulletItemControl.Header>
                                                         <Viewbox Width="24" Height="24">
                                                             <Path x:Name="Icon1" Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
                                                         </Viewbox>
-                                                    </view:BulletItemControl.Header>
+                                                    </view2:BulletItemControl.Header>
                                                     <TextBlock x:Name="Text1" Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
                                                     <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                         <Hyperlink Click="HyperlinkOnClick">
@@ -535,13 +534,13 @@
                                                         </Hyperlink>
                                                         <Run Text="{Binding Path=MinimumVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                                     </TextBlock>
-                                                </view:BulletItemControl>
-                                                <view:BulletItemControl x:Name="Bullet2">
-                                                    <view:BulletItemControl.Header>
+                                                </view2:BulletItemControl>
+                                                <view2:BulletItemControl x:Name="Bullet2">
+                                                    <view2:BulletItemControl.Header>
                                                         <Viewbox Width="24" Height="24">
                                                             <Path x:Name="Icon2" Style="{StaticResource Icon}" Data="{StaticResource VectorTestPassed}" />
                                                         </Viewbox>
-                                                    </view:BulletItemControl.Header>
+                                                    </view2:BulletItemControl.Header>
                                                     <TextBlock x:Name="Text2" Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
                                                     <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                         <Hyperlink Click="HyperlinkOnClick">
@@ -549,7 +548,7 @@
                                                         </Hyperlink>
                                                         <Run Text="{Binding Path=TestedVersion, Mode=OneWay}" Foreground="#b2b2b2" />
                                                     </TextBlock>
-                                                </view:BulletItemControl>
+                                                </view2:BulletItemControl>
                                             </StackPanel>
                                             <DataTemplate.Triggers>
                                                 <DataTrigger Binding="{Binding FamilyName}" Value="MSIXCore.Desktop">
@@ -569,7 +568,7 @@
                                         <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
                                             <TextBlock Text="PACKAGE DEPENDENCIES" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                                         </Border>
-                                        <view:BulletItemControl Height="10" />
+                                        <view2:BulletItemControl Height="10" />
                                     </StackPanel>
                                 </Border>
 
@@ -577,12 +576,12 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type elements1:PackageDependencyViewModel}">
 
-                                            <view:BulletItemControl>
-                                                <view:BulletItemControl.Header>
+                                            <view2:BulletItemControl>
+                                                <view2:BulletItemControl.Header>
                                                     <Viewbox Width="24" Height="24">
                                                         <Path Style="{StaticResource Icon}" Data="{StaticResource VectorCollection}" />
                                                     </Viewbox>
-                                                </view:BulletItemControl.Header>
+                                                </view2:BulletItemControl.Header>
                                                 <DockPanel>
                                                     <TextBlock Text="{Binding Version}" Margin="8 0" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right" />
 
@@ -591,7 +590,7 @@
                                                         <TextBlock Style="{StaticResource DataValue}" Text="{Binding DisplayName}" ToolTip="{Binding Name}" TextTrimming="CharacterEllipsis" />
                                                     </StackPanel>
                                                 </DockPanel>
-                                            </view:BulletItemControl>
+                                            </view2:BulletItemControl>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -651,7 +650,7 @@
                                     </zeroOrAny:ZeroOrAny.AnyItemTemplate>
                                     <zeroOrAny:ZeroOrAny.NoItemsTemplate>
                                         <DataTemplate>
-                                            <msixHeroText:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
+                                            <msixHeroText1:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
                                         </DataTemplate>
                                     </zeroOrAny:ZeroOrAny.NoItemsTemplate>
                                 </zeroOrAny:ZeroOrAny>

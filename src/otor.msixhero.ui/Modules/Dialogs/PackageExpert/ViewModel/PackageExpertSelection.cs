@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
 {
     public class PackageExpertSelection
     {

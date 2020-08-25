@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using otor.msixhero.ui.Modules.Dialogs.CertificateExport.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.CertificateExport.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.View
 {
     /// <summary>
     /// Interaction logic for CertificateExport.

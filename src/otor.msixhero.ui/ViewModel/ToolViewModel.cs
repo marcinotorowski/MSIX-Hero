@@ -1,9 +1,8 @@
 ﻿using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Ui.Helpers;
 
-namespace otor.msixhero.ui.ViewModel
+namespace Otor.MsixHero.Ui.ViewModel
 {
     public class ToolViewModel : NotifyPropertyChanged
     {

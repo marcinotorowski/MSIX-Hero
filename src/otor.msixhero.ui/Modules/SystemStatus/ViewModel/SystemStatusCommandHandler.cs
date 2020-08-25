@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
-using otor.msixhero.ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel
 {
     public class SystemStatusCommandHandler
     {

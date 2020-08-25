@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Configuration;
 using Prism.Events;
 
-namespace otor.msixhero.lib.Domain.Events
+namespace Otor.MsixHero.Lib.Domain.Events
 {
     public class ToolsChangedEvent : PubSubEvent<IReadOnlyCollection<ToolListConfiguration>>
     {

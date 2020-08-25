@@ -1,11 +1,11 @@
-﻿using otor.msixhero.ui.Modules.EventViewer.View;
-using otor.msixhero.ui.Modules.EventViewer.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.EventViewer.View;
+using Otor.MsixHero.Ui.Modules.EventViewer.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.EventViewer
+namespace Otor.MsixHero.Ui.Modules.EventViewer
 {
     public class EventViewerModule : IModule
     {

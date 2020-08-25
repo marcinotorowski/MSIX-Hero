@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Common.PackageSelector.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.View
 {
     /// <summary>
     /// Interaction logic for PackageSelectorView.xaml

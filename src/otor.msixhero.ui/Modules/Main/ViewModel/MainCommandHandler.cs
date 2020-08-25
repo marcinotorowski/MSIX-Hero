@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
-using otor.msixhero.ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Main.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Main.ViewModel
 {
     public class MainCommandHandler
     {

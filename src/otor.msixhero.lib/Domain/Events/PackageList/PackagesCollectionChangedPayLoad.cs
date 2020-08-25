@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.Domain.Appx.Packages;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
-namespace otor.msixhero.lib.Domain.Events.PackageList
+namespace Otor.MsixHero.Lib.Domain.Events.PackageList
 {
     public class PackagesCollectionChangedPayLoad
     {

@@ -9,40 +9,40 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Events.PackageList;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.PackageList.ViewModel;
+using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Packages;
+using Otor.MsixHero.Ui.Hero.Events.Base;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel;
 using Prism.Events;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.View
+namespace Otor.MsixHero.Ui.Modules.PackageList.View
 {
     /// <summary>
     /// Interaction logic for PackageListView.xaml
     /// </summary>
     public partial class PackageListView
     {
-        private readonly IApplicationStateManager applicationStateManager;
+        private readonly IMsixHeroApplication application;
 
         // ReSharper disable once IdentifierTypo
         private SortAdorner sortAdorner;
 
-        public PackageListView(IApplicationStateManager applicationStateManager = null, IRegionManager regionManager = null)
+        public PackageListView(IMsixHeroApplication application, IRegionManager regionManager = null)
         {
-            this.applicationStateManager = applicationStateManager;
+            this.application = application;
             InitializeComponent();
-            Debug.Assert(applicationStateManager != null);
             Debug.Assert(regionManager != null);
 
             regionManager.RegisterViewWithRegion(Constants.RegionPackageSidebar, typeof(EmptySelectionView));
 
             // Subscribe to events
-            applicationStateManager.EventAggregator.GetEvent<PackagesSidebarVisibilityChanged>().Subscribe(OnSidebarVisibilityChanged, ThreadOption.UIThread);
-            applicationStateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(OnPackageGroupAndSortChanged, ThreadOption.UIThread);
-
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSidebarVisibilityCommand>>().Subscribe(this.OnSetPackageSidebarVisibility, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
+            
             // Set up defaults
             this.UpdateSidebarVisibility();
 
@@ -50,8 +50,11 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             FocusManager.SetFocusedElement(this, focusable);
             this.Loaded += this.OnLoaded;
             this.IsVisibleChanged += OnIsVisibleChanged;
-        }
 
+            this.ListView.SelectionChanged += this.OnListViewSelectionChanged;
+            this.ListBox.SelectionChanged += this.OnListBoxSelectionChanged;
+        }
+        
         private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (!(bool)e.NewValue)
@@ -73,12 +76,12 @@ namespace otor.msixhero.ui.Modules.PackageList.View
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= OnLoaded;
-            this.SetSorting(this.applicationStateManager.CurrentState.Packages.Sort, this.applicationStateManager.CurrentState.Packages.SortDescending);
+            this.SetSorting(this.application.ApplicationState.Packages.SortMode, this.application.ApplicationState.Packages.SortDescending);
         }
 
-        private void OnPackageGroupAndSortChanged(PackageGroupAndSortChangedPayload groupAndSortSettings)
+        private void OnSetPackageSorting(UiExecutedPayload<SetPackageSortingCommand> obj)
         {
-            this.SetSorting(groupAndSortSettings.Sorting, groupAndSortSettings.SortingDescending);
+            this.SetSorting(this.application.ApplicationState.Packages.SortMode, this.application.ApplicationState.Packages.SortDescending);
         }
 
         private void SetSorting(PackageSort sorting, bool descending)
@@ -111,11 +114,11 @@ namespace otor.msixhero.ui.Modules.PackageList.View
 
         private void UpdateSidebarVisibility()
         {
-            this.PackageDetails.Visibility = this.applicationStateManager.CurrentState.Packages.ShowSidebar ? Visibility.Visible : Visibility.Collapsed;
+            this.PackageDetails.Visibility = this.application.ApplicationState.Packages.ShowSidebar ? Visibility.Visible : Visibility.Collapsed;
             this.GridSplitter.Visibility = this.PackageDetails.Visibility;
             this.Separator.Visibility = this.PackageDetails.Visibility;
 
-            if (this.applicationStateManager.CurrentState.Packages.ShowSidebar)
+            if (this.application.ApplicationState.Packages.ShowSidebar)
             {
                 this.Grid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
                 this.Grid.ColumnDefinitions[1].Width = GridLength.Auto;
@@ -129,7 +132,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             }
         }
 
-        private void OnSidebarVisibilityChanged(bool explicitSidebarVisible)
+        private void OnSetPackageSidebarVisibility(UiExecutedPayload<SetPackageSidebarVisibilityCommand> obj)
         {
             this.UpdateSidebarVisibility();
         }
@@ -138,7 +141,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
         {
             if (e.AddedItems?.Count > 0 && e.AddedItems[0] != null)
             {
-                this.ListView.ScrollIntoView(e.AddedItems[0]);
+                this.ListBox.ScrollIntoView(e.AddedItems[0]);
             }
         }
 
@@ -155,7 +158,7 @@ namespace otor.msixhero.ui.Modules.PackageList.View
             var source = (GridViewColumnHeader) sender;
             var sorting = (PackageSort)source.Tag;
 
-            this.applicationStateManager.CommandExecutor.ExecuteAsync(new SetPackageSorting(sorting));
+            this.application.CommandExecutor.Invoke(this, new SetPackageSortingCommand(sorting));
             e.Handled = true;
         }
 

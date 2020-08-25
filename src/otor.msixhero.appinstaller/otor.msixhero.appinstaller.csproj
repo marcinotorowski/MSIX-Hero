@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Copyright>Copyright (c) 2020 by Marcin Otorowski</Copyright>
+    <Authors>Marcin Otorowski</Authors>
+    <Company>Marcin Otorowski</Company>
+    <Product>MSIX Hero</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\otor.msixhero.lib\Otor.MsixHero.Lib.csproj" />
+  </ItemGroup>
+
+</Project>

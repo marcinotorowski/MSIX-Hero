@@ -1,18 +1,19 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Common.PsfContent.View.PsfContentView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.Common.PsfContent.View.PsfContentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              Background="White"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.Common.PackageContent.View"
-             xmlns:redirection="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection"
-             xmlns:trace="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace"
-             xmlns:converters="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.Converters"
-             xmlns:electron="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Electron"
-             xmlns:custom="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Custom"
-             xmlns:items="clr-namespace:otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items"
+             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PackageContent.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel"
+             xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PackageContent.View"
+             xmlns:trace="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Trace"
+             xmlns:converters="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.Converters"
+             xmlns:items="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items"
+             xmlns:redirection="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Redirection"
+             xmlns:electron="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Electron"
+             xmlns:custom="clr-namespace:Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Custom"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PsfContentViewModel}">
 
@@ -81,28 +82,28 @@
             <TextBlock Text="TRACING" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
         </Border>
 
-        <view:BulletItemControl Height="10" />
+        <view1:BulletItemControl Height="10" />
 
-        <view:BulletItemControl Visibility="{Binding HasTraceRules, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-            <view:BulletItemControl.Header>
+        <view1:BulletItemControl Visibility="{Binding HasTraceRules, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <view1:BulletItemControl.Header>
                 <Viewbox Width="24" Height="24">
                     <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                 </Viewbox>
-            </view:BulletItemControl.Header>
+            </view1:BulletItemControl.Header>
             <Border Height="32">
                 <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Not configured for any process" />
             </Border>
-        </view:BulletItemControl>
+        </view1:BulletItemControl>
 
         <ItemsControl ItemsSource="{Binding TraceRules}" Visibility="{Binding HasTraceRules, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="trace:PsfContentProcessTraceViewModel">
-                    <view:BulletItemControl>
-                        <view:BulletItemControl.Header>
+                    <view1:BulletItemControl>
+                        <view1:BulletItemControl.Header>
                             <Viewbox Width="24" Height="24">
                                 <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                             </Viewbox>
-                        </view:BulletItemControl.Header>
+                        </view1:BulletItemControl.Header>
                         <Border Height="32">
                             <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                 <Run Text="For" />
@@ -179,7 +180,7 @@
                             </TextBlock>
                         </DockPanel>
 
-                    </view:BulletItemControl>
+                    </view1:BulletItemControl>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
@@ -196,28 +197,28 @@
             <TextBlock Text="REDIRECTIONS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
         </Border>
 
-        <view:BulletItemControl Height="10" />
+        <view1:BulletItemControl Height="10" />
 
-        <view:BulletItemControl Visibility="{Binding HasRedirectionRules, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-            <view:BulletItemControl.Header>
+        <view1:BulletItemControl Visibility="{Binding HasRedirectionRules, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <view1:BulletItemControl.Header>
                 <Viewbox Width="24" Height="24">
                     <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                 </Viewbox>
-            </view:BulletItemControl.Header>
+            </view1:BulletItemControl.Header>
             <Border Height="32">
                 <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Not configured for any process" />
             </Border>
-        </view:BulletItemControl>
+        </view1:BulletItemControl>
 
         <ItemsControl ItemsSource="{Binding RedirectionRules}" Visibility="{Binding HasRedirectionRules, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="redirection:PsfContentProcessRedirectionViewModel">
-                    <view:BulletItemControl>
-                        <view:BulletItemControl.Header>
+                    <view1:BulletItemControl>
+                        <view1:BulletItemControl.Header>
                             <Viewbox Width="24" Height="24">
                                 <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                             </Viewbox>
-                        </view:BulletItemControl.Header>
+                        </view1:BulletItemControl.Header>
                         <Border Height="32">
                             <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                 <Run Text="For" />
@@ -334,7 +335,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
-                    </view:BulletItemControl>
+                    </view1:BulletItemControl>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
@@ -351,28 +352,28 @@
             <TextBlock Text="ELECTRON" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
         </Border>
 
-        <view:BulletItemControl Height="10" />
+        <view1:BulletItemControl Height="10" />
 
-        <view:BulletItemControl Visibility="{Binding HasElectronRules, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-            <view:BulletItemControl.Header>
+        <view1:BulletItemControl Visibility="{Binding HasElectronRules, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+            <view1:BulletItemControl.Header>
                 <Viewbox Width="24" Height="24">
                     <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                 </Viewbox>
-            </view:BulletItemControl.Header>
+            </view1:BulletItemControl.Header>
             <Border Height="32">
                 <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="Not configured for any process" />
             </Border>
-        </view:BulletItemControl>
+        </view1:BulletItemControl>
 
         <ItemsControl ItemsSource="{Binding ElectronRules}" Visibility="{Binding HasElectronRules, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="electron:PsfContentProcessElectronViewModel">
-                    <view:BulletItemControl>
-                        <view:BulletItemControl.Header>
+                    <view1:BulletItemControl>
+                        <view1:BulletItemControl.Header>
                             <Viewbox Width="24" Height="24">
                                 <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                             </Viewbox>
-                        </view:BulletItemControl.Header>
+                        </view1:BulletItemControl.Header>
 
                         <Border Height="32">
                             <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
@@ -390,7 +391,7 @@
                                 <TextBlock VerticalAlignment="Center" TextWrapping="Wrap"  Text="Enable launching this app in an application container" />
                             </StackPanel>
                         </Border>
-                    </view:BulletItemControl>
+                    </view1:BulletItemControl>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Is64Bit}" Value="{x:Static items:Bitness.x64}">
                             <Setter TargetName="PART_Bit" Property="Text" Value="64-bit" />
@@ -412,14 +413,14 @@
                             <TextBlock Text="{Binding Header}" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                         </Border>
 
-                        <view:BulletItemControl Height="10" />
+                        <view1:BulletItemControl Height="10" />
 
-                        <view:BulletItemControl>
-                            <view:BulletItemControl.Header>
+                        <view1:BulletItemControl>
+                            <view1:BulletItemControl.Header>
                                 <Viewbox Width="24" Height="24">
                                     <Path Style="{StaticResource Icon}" Data="{StaticResource VectorConsole}" />
                                 </Viewbox>
-                            </view:BulletItemControl.Header>
+                            </view1:BulletItemControl.Header>
 
                             <Border Height="32">
                                 <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
@@ -442,7 +443,7 @@
                                     </TextBlock>
                                 </StackPanel>
                             </Border>
-                        </view:BulletItemControl>
+                        </view1:BulletItemControl>
 
                     </StackPanel>
                     <DataTemplate.Triggers>

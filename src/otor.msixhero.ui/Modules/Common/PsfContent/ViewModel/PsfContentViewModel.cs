@@ -1,13 +1,13 @@
 ﻿using System.Collections.Specialized;
 using System.Linq;
-using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Custom;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Electron;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Trace;
+using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Custom;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Electron;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Redirection;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Trace;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel
 {
     public class PsfContentViewModel : ChangeableContainer
     {

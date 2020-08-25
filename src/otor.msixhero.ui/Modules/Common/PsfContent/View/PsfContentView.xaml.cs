@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls.Primitives;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.View
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.View
 {
     /// <summary>
     /// Interaction logic for PsfContentView.xaml

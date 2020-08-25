@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using otor.msixhero.lib.Domain.Appx.Psf;
+using Otor.MsixHero.Appx.Psf.Entities;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.Converters
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.Converters
 {
     public class TraceLevelConverter : MarkupExtension, IValueConverter
     {

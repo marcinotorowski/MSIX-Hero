@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Packages.Signing;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.Proxy.Signing.Dto;
 
-namespace otor.msixhero.lib.BusinessLayer.Executors.General
+namespace Otor.MsixHero.Lib.BusinessLayer.Executors.General
 {
     public class TrustPublisherCommandExecutor : CommandExecutor
     {
-        private readonly TrustPublisher command;
-        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
+        private readonly TrustDto command;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
 
         public TrustPublisherCommandExecutor(
-            TrustPublisher command,
-            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory,
-            IWritableApplicationStateManager stateManager) : base(command, stateManager)
+            TrustDto command,
+            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory) : base(command)
         {
             this.command = command;
             this.signingManagerFactory = signingManagerFactory;
@@ -26,7 +26,7 @@ namespace otor.msixhero.lib.BusinessLayer.Executors.General
 
         public override async Task Execute(IInteractionService interactionService, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             await manager.Trust(this.command.FilePath, cancellationToken).ConfigureAwait(false);
         }

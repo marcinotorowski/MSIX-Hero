@@ -5,39 +5,40 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Threading;
-using otor.msixhero.lib.BusinessLayer.Appx.Builder;
-using otor.msixhero.lib.BusinessLayer.Appx.Packer;
-using otor.msixhero.lib.BusinessLayer.Appx.UpdateImpact;
-using otor.msixhero.lib.BusinessLayer.Managers.AppAttach;
-using otor.msixhero.lib.BusinessLayer.Managers.Packages;
-using otor.msixhero.lib.BusinessLayer.Managers.Registry;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.BusinessLayer.SystemState.Services;
-using otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Interop;
-using otor.msixhero.lib.Infrastructure.Ipc;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.lib.Infrastructure.Update;
-using otor.msixhero.ui.Modules.Common;
-using otor.msixhero.ui.Modules.Dialogs;
-using otor.msixhero.ui.Modules.EventViewer;
-using otor.msixhero.ui.Modules.Main;
-using otor.msixhero.ui.Modules.PackageList;
-using otor.msixhero.ui.Modules.Settings;
-using otor.msixhero.ui.Modules.SystemStatus;
-using otor.msixhero.ui.Modules.VolumeManager;
-using otor.msixhero.ui.Services;
+using Otor.MsixHero.Appx.Diagnostic.Registry;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.ModificationPackages;
+using Otor.MsixHero.Appx.Packaging.Packer;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Updates;
+using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Processes;
+using Otor.MsixHero.Infrastructure.Processes.Ipc;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Infrastructure.Updates;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.Services;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.ThirdParty;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Modules.Common;
+using Otor.MsixHero.Ui.Modules.Dialogs;
+using Otor.MsixHero.Ui.Modules.EventViewer;
+using Otor.MsixHero.Ui.Modules.Main;
+using Otor.MsixHero.Ui.Modules.PackageList;
+using Otor.MsixHero.Ui.Modules.Settings;
+using Otor.MsixHero.Ui.Modules.SystemStatus;
+using Otor.MsixHero.Ui.Modules.VolumeManager;
+using Otor.MsixHero.Ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui
+namespace Otor.MsixHero.Ui
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -73,6 +74,7 @@ namespace otor.msixhero.ui
 
         private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
+            // ReSharper disable once PossibleNullReferenceException
             var ex = e.Exception.GetBaseException();
 
             if (ex is OperationCanceledException)
@@ -100,24 +102,23 @@ namespace otor.msixhero.ui
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>(); 
-            containerRegistry.RegisterSingleton<ISelfElevationManagerFactory<IAppxVolumeManager>, SelfElevationManagerFactory>();
-            containerRegistry.RegisterSingleton<ISelfElevationManagerFactory<IRegistryManager>, SelfElevationManagerFactory>();
-            containerRegistry.RegisterSingleton<ISelfElevationManagerFactory<ISigningManager>, SelfElevationManagerFactory>();
-            containerRegistry.RegisterSingleton<ISelfElevationManagerFactory<IAppxPackageManager>, SelfElevationManagerFactory>();
-            containerRegistry.RegisterSingleton<ISelfElevationManagerFactory<IAppAttachManager>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxVolumeManager>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IRegistryManager>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<ISigningManager>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxPackageManager>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppAttachManager>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
             containerRegistry.RegisterSingleton<IAppxContentBuilder, AppxContentBuilder>();
             containerRegistry.RegisterSingleton<IElevatedClient, Client>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
-            containerRegistry.RegisterSingleton<IWritableApplicationStateManager, ApplicationStateManager>();
-            containerRegistry.RegisterSingleton<IApplicationStateManager, ApplicationStateManager>();
-            containerRegistry.RegisterSingleton<ICommandBus, ClientCommandBus>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
             containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
-            containerRegistry.RegisterSingleton<IProcessManager, ProcessManager>();
+            containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();
+            containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();
+            containerRegistry.RegisterSingleton<IInterProcessCommunicationManager, InterProcessCommunicationManager>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
         }
@@ -135,7 +136,7 @@ namespace otor.msixhero.ui
 
             if (this.arguments.Any())
             {
-                var dlg = this.Container.Resolve<IDialogService>();
+                var dlg = IContainerProviderExtensions.Resolve<IDialogService>(this.Container);
                 var handler = new ExplorerHandler(dlg, true);
                 handler.Handle(this.arguments.First());
             }
@@ -154,12 +155,7 @@ namespace otor.msixhero.ui
 
         protected override void OnExit(ExitEventArgs e)
         {
-            if (this.Container.Resolve<IApplicationStateManager>() is IDisposable appStateManager)
-            {
-                appStateManager.Dispose();
-            }
-
-            var processManager = this.Container.Resolve<IProcessManager>();
+            var processManager = this.Container.Resolve<IInterProcessCommunicationManager>();
             processManager.Dispose();
             base.OnExit(e);
         }
@@ -178,7 +174,7 @@ namespace otor.msixhero.ui
 
         public void Dispose()
         {
-            var processManager = this.Container.Resolve<IProcessManager>();
+            var processManager = IContainerProviderExtensions.Resolve<IInterProcessCommunicationManager>(this.Container);
             processManager.Dispose();
         }
     }

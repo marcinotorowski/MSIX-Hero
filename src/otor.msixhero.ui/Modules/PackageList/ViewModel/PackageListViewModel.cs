@@ -8,73 +8,188 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Domain.Commands.Generic;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Events.PackageList;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Modules.Common;
-using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.Navigation;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
-using otor.msixhero.ui.Themes;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Diagnostic.Registry;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Packages;
+using Otor.MsixHero.Ui.Hero.Commands.Volumes;
+using Otor.MsixHero.Ui.Hero.Events.Base;
+using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Modules.Common;
+using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
+using Otor.MsixHero.Ui.Modules.PackageList.Navigation;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements;
+using Otor.MsixHero.Ui.Themes;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism;
 using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.PackageList.ViewModel
+namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 {
     public class PackageListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware, IHeaderViewModel
     {
-        private readonly IApplicationStateManager stateManager;
+        private readonly IMsixHeroApplication msixHeroApplication;
+        private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxManagerProvider;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
+        private readonly ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider;
+        private readonly IRegionManager regionManager;
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
-        private readonly IRegionManager regionManager;
         private readonly IBusyManager busyManager;
-        private readonly List<string> previousSelection = new List<string>();
         private bool isActive;
         private bool firstRun = true;
         private ICommand showSelectionDetails;
         private bool isLoading;
         private int loadingProgress;
         private string loadingMessage;
-        private PackageContext? tempContext;
 
         public PackageListViewModel(
-            IApplicationStateManager stateManager,
+            ISelfElevationProxyProvider<IAppxPackageManager> appxManagerProvider,
+            ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
+            ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider,
+            IRegionManager regionManager,
+            IMsixHeroApplication msixHeroApplication,
             IInteractionService interactionService,
             IConfigurationService configurationService,
             IDialogService dialogService,
-            IRegionManager regionManager,
             IBusyManager busyManager)
         {
-            this.stateManager = stateManager;
+            this.appxManagerProvider = appxManagerProvider;
+            this.signingManagerProvider = signingManagerProvider;
+            this.registryManagerProvider = registryManagerProvider;
+            this.regionManager = regionManager;
+            this.msixHeroApplication = msixHeroApplication;
             this.interactionService = interactionService;
             this.configurationService = configurationService;
             this.dialogService = dialogService;
-            this.regionManager = regionManager;
             this.busyManager = busyManager;
-
+            
             this.AllPackages = new ObservableCollection<InstalledPackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
+            this.AllPackagesView.Filter = this.FilterPackage;
             this.SetSortingAndGrouping();
 
-            stateManager.EventAggregator.GetEvent<PackagesFilterChanged>().Subscribe(this.OnPackageFilterChanged, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackagesCollectionChanged>().Subscribe(this.OnPackagesLoaded, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackagesVisibilityChanged>().Subscribe(this.OnPackagesVisibilityChanged, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackagesSelectionChanged>().Subscribe(this.OnPackagesSelectionChanged, ThreadOption.UIThread);
-            stateManager.EventAggregator.GetEvent<PackageGroupAndSortChanged>().Subscribe(this.OnGroupAndSortChanged, ThreadOption.UIThread);
-
             this.busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
+
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages);
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilter, ThreadOption.UIThread);
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
+        }
+
+        private void OnSetPackageFilter(UiExecutedPayload<SetPackageFilterCommand> obj)
+        {
+            this.OnPropertyChanged(nameof(this.SearchKey));
+            this.AllPackagesView.Refresh();
+        }
+
+        private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)
+        {
+            var selected = this.msixHeroApplication.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToArray();
+            var navigation = new PackageListNavigation(selected);
+            switch (selected.Length)
+            {
+                case 0:
+                {
+                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesEmptySelection, UriKind.Relative), navigation.ToParameters());
+                    break;
+                }
+
+                case 1:
+                {
+                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesSingleSelection, UriKind.Relative), navigation.ToParameters());
+                    break;
+                }
+
+                default:
+                {
+                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesMultiSelection, UriKind.Relative), navigation.ToParameters());
+                    break;
+                }
+            }
+        }
+
+        private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> obj)
+        {
+            this.AllPackages.Clear();
+
+            foreach (var item in obj.Result)
+            {
+                var selected = this.msixHeroApplication.ApplicationState.Packages.SelectedPackages.Contains(item);
+                var itemViewModel = new InstalledPackageViewModel(this.msixHeroApplication, item, selected);
+                this.AllPackages.Add(itemViewModel);
+            }
+        }
+
+        private bool FilterPackage(object obj)
+        {
+            var item = (InstalledPackageViewModel) obj;
+
+            switch (item.SignatureKind)
+            {
+                case SignatureKind.Developer:
+                case SignatureKind.Unsigned:
+                case SignatureKind.Enterprise:
+                    if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.Developer) != PackageFilter.Developer)
+                    {
+                        item.IsSelected = false;
+                        return false;
+                    }
+
+                    break;
+                case SignatureKind.Store:
+                    if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.Store) != PackageFilter.Store)
+                    {
+                        item.IsSelected = false;
+                        return false;
+                    }
+
+                    break;
+                case SignatureKind.System:
+                    if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.System) != PackageFilter.System)
+                    {
+                        item.IsSelected = false;
+                        return false;
+                    }
+
+                    break;
+            }
+
+            if (item.IsAddon && this.msixHeroApplication.ApplicationState.Packages.AddonFilter == AddonsFilter.OnlyMain)
+            {
+                item.IsSelected = false;
+                return false;
+            }
+
+            if (!item.IsAddon && this.msixHeroApplication.ApplicationState.Packages.AddonFilter == AddonsFilter.OnlyAddons)
+            {
+                item.IsSelected = false;
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.msixHeroApplication.ApplicationState.Packages.SearchKey) && item.DisplayName.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                                                           && item.DisplayPublisherName.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                                                           && item.Version.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                                                           && item.Architecture.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+            {
+                item.IsSelected = false;
+                return false;
+            }
+
+            return true;
         }
 
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
@@ -107,7 +222,15 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             private set => this.SetField(ref this.loadingMessage, value);
         }
 
-        public PackageListCommandHandler CommandHandler => new PackageListCommandHandler(this.interactionService, this.configurationService, this.stateManager, this.dialogService, this.busyManager);
+        public PackageListCommandHandler CommandHandler => new PackageListCommandHandler(
+            this.appxManagerProvider, 
+            this.signingManagerProvider, 
+            this.registryManagerProvider, 
+            this.msixHeroApplication, 
+            this.interactionService, 
+            this.configurationService, 
+            this.dialogService, 
+            this.busyManager);
 
         public bool IsActive
         {
@@ -124,45 +247,26 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
                 
                 if (value)
                 {
-#pragma warning disable 4014
-                    this.SetTabActive();
-#pragma warning restore 4014
+                    if (!this.firstRun)
+                    {
+                        return;
+                    }
+
+                    firstRun = false;
+
+                    this.LoadInitialData();
                 }
             }
         }
 
-        private async Task SetTabActive()
+        private async void LoadInitialData()
         {
-            try
-            {
-                await this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages)).ConfigureAwait(false);
-            }
-            catch (UserHandledException)
-            {
-            }
+            await Task.Delay(200).ConfigureAwait(false);
+            var executor = this.msixHeroApplication.CommandExecutor
+                .WithBusyManager(this.busyManager, OperationType.PackageLoading)
+                .WithErrorHandling(this.interactionService, true);
 
-            if (!this.firstRun)
-            {
-                return;
-            }
-
-            firstRun = false;
-
-            var context = this.busyManager.Begin(OperationType.PackageLoading);
-
-            try
-            {
-                context.Message = "Reading packages...";
-                await Task.Delay(200).ConfigureAwait(false);
-                await this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(this.stateManager.CurrentState.Packages.Context), CancellationToken.None, context).ConfigureAwait(false);
-            }
-            catch (UserHandledException)
-            {
-            }
-            finally
-            {
-                this.busyManager.End(context);
-            }
+            await executor.Invoke(this, new GetPackagesCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
         public event EventHandler IsActiveChanged;
@@ -170,77 +274,22 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
         public string Header { get; } = "Packages";
 
         public Geometry Icon { get; } = VectorIcons.TabPackages;
-        
-        private void OnPackagesSelectionChanged(PackagesSelectionChangedPayLoad selectionInfo)
+
+        private void OnSetPackageGrouping(UiExecutedPayload<SetPackageGroupingCommand> obj)
         {
-            var countSelected = 0;
-
-            foreach (var item in this.AllPackages)
-            {
-                if (selectionInfo.Selected.Contains(item.Model))
-                {
-                    if (!item.IsSelected)
-                    {
-                        item.IsSelected = true;
-                    }
-                }
-                else if (selectionInfo.Unselected.Contains(item.Model))
-                {
-                    if (item.IsSelected)
-                    {
-                        item.IsSelected = false;
-                    }
-                }
-
-                if (item.IsSelected && countSelected < 2)
-                {
-                    countSelected++;
-                }
-            }
-
-            var selected = this.AllPackages.Where(p => p.IsSelected).Select(p => p.ManifestLocation).ToArray();
-
-            if (selected.SequenceEqual(this.previousSelection))
-            {
-                return;
-            }
-
-            this.previousSelection.Clear();
-            this.previousSelection.AddRange(selected);
-
-            var navigation = new PackageListNavigation(selected);
-            switch (selected.Length)
-            {
-                case 0:
-                {
-                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesEmptySelection, UriKind.Relative), navigation.ToParameters());
-                    break;
-                }
-
-                case 1:
-                {
-                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesSingleSelection, UriKind.Relative), navigation.ToParameters());
-                    break;
-                }
-
-                default:
-                {
-                    this.regionManager.Regions[Constants.RegionPackageSidebar].RequestNavigate(new Uri(Constants.PathPackagesMultiSelection, UriKind.Relative), navigation.ToParameters());
-                    break;
-                }
-            }
+            this.SetSortingAndGrouping();
         }
 
-        private void OnGroupAndSortChanged(PackageGroupAndSortChangedPayload payload)
+        private void OnSetPackageSorting(UiExecutedPayload<SetPackageSortingCommand> obj)
         {
             this.SetSortingAndGrouping();
         }
 
         private void SetSortingAndGrouping()
         {
-            var currentSort = this.stateManager.CurrentState.Packages.Sort;
-            var currentSortDescending = this.stateManager.CurrentState.Packages.SortDescending;
-            var currentGroup = this.stateManager.CurrentState.Packages.Group;
+            var currentSort = this.msixHeroApplication.ApplicationState.Packages.SortMode;
+            var currentSortDescending = this.msixHeroApplication.ApplicationState.Packages.SortDescending;
+            var currentGroup = this.msixHeroApplication.ApplicationState.Packages.GroupMode;
 
             using (this.AllPackagesView.DeferRefresh())
             {
@@ -334,120 +383,8 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
             }
         }
 
-        private void OnPackagesVisibilityChanged(PackagesVisibilityChangedPayLoad visibilityInfo)
-        {
-            for (var i = this.AllPackages.Count - 1; i >= 0 ; i--)
-            {
-                var item = this.AllPackages[i];
-                if (visibilityInfo.NewHidden.Contains(item.Model))
-                {
-                    this.AllPackages.RemoveAt(i);
-                }
-            }
-
-            foreach (var item in visibilityInfo.NewVisible)
-            {
-                this.AllPackages.Add(new InstalledPackageViewModel(item, this.stateManager));
-            }
-        }
-
-        public PackageContext Context
-        {
-            get
-            {
-                if (this.tempContext.HasValue)
-                {
-                    return this.tempContext.Value;
-                }
-
-                return this.stateManager.CurrentState.Packages.Context;
-            }
-            set
-            {
-                if (this.Context == value)
-                {
-                    return;
-                }
-
-                this.tempContext = value;
-                this.OnPropertyChanged();
-
-                var context = this.busyManager.Begin(OperationType.PackageLoading);
-
-                this.stateManager.CommandExecutor.GetExecuteAsync(new GetPackages(value), CancellationToken.None, context).ContinueWith(
-                    t =>
-                    {
-                        this.busyManager.End(context);
-                        this.tempContext = null;
-                        this.OnPropertyChanged(nameof(this.Context));
-                    },
-                    CancellationToken.None,
-                    TaskContinuationOptions.AttachedToParent,
-                    TaskScheduler.FromCurrentSynchronizationContext());
-            }
-        }
-
-        private void OnPackagesLoaded(PackagesCollectionChangedPayLoad payload)
-        {
-            this.OnPropertyChanged(nameof(Context));
-
-            var selectedItems = this.AllPackages.Where(a => a.IsSelected).Select(a => a.Model.ManifestLocation).ToList();
-
-            switch (payload.Type)
-            {
-                case CollectionChangeType.Reset:
-                    this.AllPackages.Clear();
-                    var visibleItems = this.stateManager.CurrentState.Packages.VisibleItems.ToArray();
-                    foreach (var item in visibleItems.Where(visibleItem => visibleItem != null))
-                    {
-                        var isSelected = item.ManifestLocation != null && selectedItems.Contains(item.ManifestLocation);
-                        this.AllPackages.Add(new InstalledPackageViewModel(item, this.stateManager, isSelected));
-                    }
-
-                    break;
-
-                case CollectionChangeType.Simple:
-
-                    for (var i = this.AllPackages.Count - 1; i >= 0; i--)
-                    {
-                        if (payload.OldPackages.Contains(this.AllPackages[i].Model))
-                        {
-                            this.AllPackages.RemoveAt(i);
-                        }
-                    }
-
-                    foreach (var item in payload.NewPackages)
-                    {
-                        var isSelected = selectedItems.Contains(item.PackageId);
-                        this.AllPackages.Add(new InstalledPackageViewModel(item, this.stateManager, isSelected));
-                    }
-
-                    break;
-            }
-        }
-
-        private void OnPackageFilterChanged(PackagesFilterChangedPayload filter)
-        {
-            if (filter.NewSearchKey != filter.OldSearchKey)
-            {
-                this.OnPropertyChanged(nameof(SearchKey));
-            }
-        }
-        
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var loading = this.busyManager.Begin(OperationType.PackageLoading);
-            try
-            {
-                this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.Packages), CancellationToken.None, loading);
-            }
-            catch (UserHandledException)
-            {
-            }
-            finally
-            {
-                this.busyManager.End(loading);
-            }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -461,8 +398,21 @@ namespace otor.msixhero.ui.Modules.PackageList.ViewModel
 
         public string SearchKey
         {
-            get => this.stateManager.CurrentState.Packages.SearchKey;
-            set => this.stateManager.CommandExecutor.ExecuteAsync(SetPackageFilter.CreateFrom(this.stateManager.CurrentState.Packages.Filter, value, this.stateManager.CurrentState.Packages.AddonsFilter));
+            get => this.msixHeroApplication.ApplicationState.Packages.SearchKey;
+            set
+            {
+                if (this.msixHeroApplication.ApplicationState.Packages.SearchKey == value)
+                {
+                    return;
+                }
+
+                var state = this.msixHeroApplication.ApplicationState.Packages;
+
+
+                this.msixHeroApplication.CommandExecutor
+                    .WithErrorHandling(this.interactionService, false)
+                    .Invoke(this, new SetPackageFilterCommand(state.PackageFilter, state.AddonFilter, value));
+            }
         }
 
         public ObservableCollection<InstalledPackageViewModel> AllPackages { get; }

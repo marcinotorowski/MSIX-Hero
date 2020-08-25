@@ -7,10 +7,10 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Ookii.Dialogs.Wpf;
-using otor.msixhero.lib.Infrastructure;
+using Otor.MsixHero.Infrastructure.Services;
 using Application = System.Windows.Application;
 
-namespace otor.msixhero.ui.Services
+namespace Otor.MsixHero.Ui.Services
 {
     public class InteractionService : IInteractionService
     {

@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using otor.msixhero.lib.Domain.Appx.UpdateImpact;
-using otor.msixhero.lib.Domain.Appx.UpdateImpact.Blocks;
-using otor.msixhero.lib.Domain.Appx.UpdateImpact.ComparePackage;
-using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Updates.Entities;
+using Otor.MsixHero.Appx.Updates.Entities.Blocks;
+using Otor.MsixHero.Appx.Updates.Serialization.ComparePackage;
+using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel.Items
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel.Items
 {
     public enum UpdateImpactViewFilter
     {

@@ -5,12 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.UpdateImpact.ViewModel.Items;
-using otor.msixhero.ui.Modules.EventViewer.ViewModel;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel.Items;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View
 {
     /// <summary>
     /// Interaction logic for UpdateImpactView.

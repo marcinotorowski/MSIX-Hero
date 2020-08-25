@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.lib.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 
-namespace otor.msixhero.lib.BusinessLayer.State
+namespace Otor.MsixHero.Lib.BusinessLayer.State
 {
     public class BusyManager : IBusyManager
     {

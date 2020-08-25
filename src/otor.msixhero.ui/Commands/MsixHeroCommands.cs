@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace otor.msixhero.ui.Commands
+namespace Otor.MsixHero.Ui.Commands
 {
     public static class MsixHeroCommands
     {

@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View
 {
     /// <summary>
     /// Interaction logic for RelativeIndicator.xaml

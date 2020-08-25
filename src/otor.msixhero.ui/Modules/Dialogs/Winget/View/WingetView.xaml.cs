@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.Dialogs.Winget.View
+﻿namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.View
 {
     /// <summary>
     /// Interaction logic for WingetView.

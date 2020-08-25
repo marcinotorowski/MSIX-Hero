@@ -2,11 +2,9 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using otor.msixhero.lib.Infrastructure.Crypt;
-using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
-using otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View
 {
     /// <summary>
     /// Interaction logic for PackageSigningView.

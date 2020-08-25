@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using otor.msixhero.lib.Domain.Appx.Users;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Users;
+using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
 {
     public class FoundUsersViewModel : NotifyPropertyChanged
     {

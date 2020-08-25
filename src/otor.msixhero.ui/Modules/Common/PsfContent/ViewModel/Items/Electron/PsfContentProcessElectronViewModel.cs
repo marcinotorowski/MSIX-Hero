@@ -1,6 +1,6 @@
-﻿using otor.msixhero.lib.Domain.Appx.Psf;
+﻿using Otor.MsixHero.Appx.Psf.Entities;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Electron
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Electron
 {
     public class PsfContentProcessElectronViewModel : PsfContentProcessViewModel
     {

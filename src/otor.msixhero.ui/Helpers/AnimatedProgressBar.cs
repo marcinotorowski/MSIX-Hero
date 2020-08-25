@@ -1,12 +1,10 @@
 ﻿using System;
-using System.ServiceModel.Channels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Media.Animation;
 
-namespace otor.msixhero.ui.Helpers
+namespace Otor.MsixHero.Ui.Helpers
 {
     public class AnimatedProgressBar : DependencyObject
     {

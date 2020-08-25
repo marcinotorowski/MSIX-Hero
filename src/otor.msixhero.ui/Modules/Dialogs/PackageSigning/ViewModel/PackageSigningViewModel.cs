@@ -5,26 +5,27 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
 {
     public class PackageSigningViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly ISelfElevationManagerFactory<ISigningManager> signingManagerFactory;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private readonly IInteractionService interactionService;
         private ICommand openSuccessLink, reset;
 
-        public PackageSigningViewModel(ISelfElevationManagerFactory<ISigningManager> signingManagerFactory, IInteractionService interactionService, IConfigurationService configurationService) : base("Package Signing", interactionService)
+        public PackageSigningViewModel(ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, IInteractionService interactionService, IConfigurationService configurationService) : base("Package Signing", interactionService)
         {
             this.signingManagerFactory = signingManagerFactory;
             this.interactionService = interactionService;
@@ -73,7 +74,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.PackageSigning.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            var manager = await this.signingManagerFactory.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             foreach (var file in this.Files)

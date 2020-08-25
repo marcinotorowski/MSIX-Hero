@@ -3,40 +3,40 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.BusinessLayer.SystemState.Services;
-using otor.msixhero.lib.BusinessLayer.SystemState.ThirdParty;
-using otor.msixhero.lib.Domain.Commands.Generic;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Commanding;
-using otor.msixhero.ui.Modules.Common;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
-using otor.msixhero.ui.Themes;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Diagnostic.Developer;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.Services;
+using Otor.MsixHero.Lib.BusinessLayer.SystemState.ThirdParty;
+using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Modules.Common;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.DeveloperMode;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Repackaging;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Tooling;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
+using Otor.MsixHero.Ui.Themes;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel
 {
     public class SystemStatusViewModel : NotifyPropertyChanged, IHeaderViewModel, INavigationAware, IActiveAware
     {
         protected readonly ISideloadingChecker SideLoadCheck = new RegistrySideloadingChecker();
-        private readonly IApplicationStateManager stateManager;
+        private readonly IMsixHeroApplication application;
         private bool isActive;
         private bool isLoading;
 
         public SystemStatusViewModel(
-            IApplicationStateManager stateManager,
+            IMsixHeroApplication application,
             IThirdPartyAppProvider thirdPartyDetector,
             IServiceRecommendationAdvisor serviceAdvisor,
             IInteractionService interactionService)
         {
-            this.stateManager = stateManager;
+            this.application = application;
             this.Items = new ObservableCollection<BaseRecommendationViewModel>();
 
             var sideloading = new DeveloperAndSideloadingRecommendationViewModel(this.SideLoadCheck);
@@ -77,19 +77,8 @@ namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel
                 this.isActive = value;
                 this.IsActiveChanged?.Invoke(this, new EventArgs());
 
-                if (value)
-                {
-                    try
-                    {
-                        this.stateManager.CommandExecutor.ExecuteAsync(new SetMode(ApplicationMode.SystemStatus));
-                    }
-                    catch (UserHandledException)
-                    {
-                        return;
-                    }
-
-                    this.Refresh();
-                }
+                this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.SystemStatus));
+                this.Refresh();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection
+﻿namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Redirection
 {
     public class PsfContentFileRedirectionViewModel : PsfContentRegexpViewModel
     {

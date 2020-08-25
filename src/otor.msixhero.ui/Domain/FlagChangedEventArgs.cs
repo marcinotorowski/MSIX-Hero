@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace otor.msixhero.ui.Domain
+namespace Otor.MsixHero.Ui.Domain
 {
     public class ValueChangedEventArgs<T> : EventArgs
     {

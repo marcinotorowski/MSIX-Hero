@@ -1,27 +1,28 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.PackageList.View.PackageListView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.PackageList.View.PackageListView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:commands="clr-namespace:otor.msixhero.ui.Commands"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.ViewModel"
-             xmlns:view="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
-             xmlns:viewModel1="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel"
+             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.PackageList.View"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
-             xmlns:enums="clr-namespace:otor.msixhero.lib.Domain.Appx.Packages;assembly=msixhero.lib"
-             xmlns:uac="clr-namespace:otor.msixhero.ui.Controls.Uac"
-             xmlns:routedCommand="clr-namespace:otor.msixhero.ui.Commands.RoutedCommand"
-             xmlns:elements="clr-namespace:otor.msixhero.ui.Modules.PackageList.ViewModel.Elements"
-             xmlns:highlighter="clr-namespace:otor.msixhero.ui.Controls.Highlighter"
-             xmlns:modules="clr-namespace:otor.msixhero.ui.Modules"
+             xmlns:modules="clr-namespace:Otor.MsixHero.Ui.Modules"
              xmlns:fluent="urn:fluent-ribbon"
-             xmlns:progressOverlay="clr-namespace:otor.msixhero.ui.Controls.ProgressOverlay"
-             xmlns:checkedContent="clr-namespace:otor.msixhero.ui.Controls.CheckedContent"
+             xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
+             xmlns:enums1="clr-namespace:Otor.MsixHero.Appx.Packaging.Installation.Enums;assembly=Otor.MsixHero.Appx"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.PackageList.ViewModel"
+             xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.PackageList.View"
+             xmlns:routedCommand="clr-namespace:Otor.MsixHero.Ui.Commands.RoutedCommand"
+             xmlns:commands="clr-namespace:Otor.MsixHero.Ui.Commands"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
+             xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
+             xmlns:checkedContent="clr-namespace:Otor.MsixHero.Ui.Controls.CheckedContent"
+             xmlns:elements="clr-namespace:Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements"
+             xmlns:highlighter="clr-namespace:Otor.MsixHero.Ui.Controls.Highlighter"
+             xmlns:modules1="clr-namespace:Otor.MsixHero.Ui.Modules"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel1:PackageListViewModel}">
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackageListViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,7 +31,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="DummyLogo" UriSource="icons8-sugar-cube-48.png" />
-            <view:PackageContextDisplayNameConverter x:Key="PackageContextDisplayNameConverter" />
+            <view1:PackageContextDisplayNameConverter x:Key="PackageContextDisplayNameConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>
@@ -78,13 +79,13 @@
 
             <ContextMenu x:Key="PackageContextMenu">
                 <MenuItem Header="Copy...">
-                    <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Name}" InputGestureText=" " />
-                    <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.DisplayName}" InputGestureText=" " />
-                    <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.FullName}" />
-                    <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Version}" InputGestureText=" " />
-                    <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Publisher}" InputGestureText=" " />
-                    <MenuItem Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.Subject}" InputGestureText=" " />
-                    <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static enums:PackageProperty.InstallPath}" InputGestureText=" " />
+                    <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" " />
+                    <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" " />
+                    <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" />
+                    <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" " />
+                    <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Publisher}" InputGestureText=" " />
+                    <MenuItem Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" " />
+                    <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.InstallPath}" InputGestureText=" " />
                 </MenuItem>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder">
                     <MenuItem.Icon>
@@ -223,14 +224,14 @@
                                 </checkedContent:CheckedContent>
                             </Border>
                         </ToggleButton>
-                        <RadioButton Visibility="Collapsed" DockPanel.Dock="Right" GroupName="g2a" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="8 0 4 0">
-                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="0 0 0 0" />
+                        <RadioButton Visibility="Collapsed" DockPanel.Dock="Right" GroupName="g2a" IsChecked="{Binding Context, ConverterParameter={x:Static enums1:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="8 0 4 0">
+                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums1:PackageContext.AllUsers}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="0 0 0 0" />
                             <RadioButton.Tag>
                                 <system:Boolean>False</system:Boolean>
                             </RadioButton.Tag>
                         </RadioButton>
-                        <RadioButton Visibility="Collapsed" DockPanel.Dock="Right" GroupName="g1a" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="4 0 0 0">
-                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="0 0 0 0" />
+                        <RadioButton Visibility="Collapsed" DockPanel.Dock="Right" GroupName="g1a" IsChecked="{Binding Context, ConverterParameter={x:Static enums1:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="4 0 0 0">
+                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums1:PackageContext.CurrentUser}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="0 0 0 0" />
                         </RadioButton>
                         <Popup 
                     Visibility="Collapsed"
@@ -274,11 +275,11 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </StackPanel.Resources>
-                                        <RadioButton PreviewMouseDown="UIElement_OnPreviewMouseDown" GroupName="g1" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="0 0 0 4">
-                                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.CurrentUser}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0 0 0" />
+                                        <RadioButton PreviewMouseDown="UIElement_OnPreviewMouseDown" GroupName="g1" IsChecked="{Binding Context, ConverterParameter={x:Static enums1:PackageContext.CurrentUser}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="0 0 0 4">
+                                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums1:PackageContext.CurrentUser}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0 0 0" />
                                         </RadioButton>
-                                        <RadioButton PreviewMouseDown="UIElement_OnPreviewMouseDown" GroupName="g2" IsChecked="{Binding Context, ConverterParameter={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="0 0 0 4">
-                                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums:PackageContext.AllUsers}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0 0 0" />
+                                        <RadioButton PreviewMouseDown="UIElement_OnPreviewMouseDown" GroupName="g2" IsChecked="{Binding Context, ConverterParameter={x:Static enums1:PackageContext.AllUsers}, Converter={StaticResource EnumToBooleanConverter}}" Focusable="False" Margin="0 0 0 4">
+                                            <TextBlock Focusable="False" Text="{Binding Source={x:Static enums1:PackageContext.AllUsers}, Converter={StaticResource PackageContextDisplayNameConverter}}" Margin="4 0 0 0" />
                                             <RadioButton.Tag>
                                                 <system:Boolean>False</system:Boolean>
                                             </RadioButton.Tag>
@@ -439,7 +440,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn>
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="Name" Tag="{x:Static enums:PackageSort.Name}" Click="ColumnClicked" />
+                                            <GridViewColumnHeader Content="Name" Tag="{x:Static configuration:PackageSort.Name}" Click="ColumnClicked" />
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
@@ -449,7 +450,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn>
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="Version" Tag="{x:Static enums:PackageSort.Version}" Click="ColumnClicked" />
+                                            <GridViewColumnHeader Content="Version" Tag="{x:Static configuration:PackageSort.Version}" Click="ColumnClicked" />
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
@@ -459,7 +460,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn>
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="Architecture" Tag="{x:Static enums:PackageSort.Architecture}" Click="ColumnClicked" />
+                                            <GridViewColumnHeader Content="Architecture" Tag="{x:Static configuration:PackageSort.Architecture}" Click="ColumnClicked" />
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
@@ -469,7 +470,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn>
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="Publisher" Tag="{x:Static enums:PackageSort.Publisher}" Click="ColumnClicked" />
+                                            <GridViewColumnHeader Content="Publisher" Tag="{x:Static configuration:PackageSort.Publisher}" Click="ColumnClicked" />
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
@@ -479,7 +480,7 @@
                                     </GridViewColumn>
                                     <GridViewColumn>
                                         <GridViewColumn.Header>
-                                            <GridViewColumnHeader Content="Package type" Tag="{x:Static enums:PackageSort.PackageType}" Click="ColumnClicked" />
+                                            <GridViewColumnHeader Content="Package type" Tag="{x:Static configuration:PackageSort.PackageType}" Click="ColumnClicked" />
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
@@ -592,7 +593,7 @@
         <Border x:Name="Separator" SnapsToDevicePixels="True" HorizontalAlignment="Left" UseLayoutRounding="True" Grid.Row="0" Grid.RowSpan="2" Margin="0 0 0 0" Width="1" Grid.Column="1" Background="#ddd" VerticalAlignment="Stretch" />
 
         <Border x:Name="PackageDetails" Margin="0 0" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2">
-            <ContentControl mvvm:RegionManager.RegionName="{x:Static modules:Constants.RegionPackageSidebar}" />
+            <ContentControl mvvm:RegionManager.RegionName="{x:Static modules1:Constants.RegionPackageSidebar}" />
         </Border>
 
         <GridSplitter x:Name="GridSplitter" Grid.Row="0" Grid.RowSpan="2" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />

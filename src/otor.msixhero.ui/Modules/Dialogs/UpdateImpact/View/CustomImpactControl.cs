@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace otor.msixhero.ui.Modules.Dialogs.UpdateImpact.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View
 {
     public class CustomImpactControl : FrameworkElement
     {

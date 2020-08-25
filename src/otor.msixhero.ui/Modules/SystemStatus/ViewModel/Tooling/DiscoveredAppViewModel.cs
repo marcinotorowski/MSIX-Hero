@@ -1,6 +1,6 @@
-﻿using otor.msixhero.lib.Domain.SystemState.ThirdParty;
+﻿using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.Tooling
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Tooling
 {
     public enum DiscoveredAppViewModelStatus
     {

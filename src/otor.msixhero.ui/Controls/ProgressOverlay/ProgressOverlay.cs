@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace otor.msixhero.ui.Controls.ProgressOverlay
+namespace Otor.MsixHero.Ui.Controls.ProgressOverlay
 {
     public class ProgressOverlay : ContentControl
     {

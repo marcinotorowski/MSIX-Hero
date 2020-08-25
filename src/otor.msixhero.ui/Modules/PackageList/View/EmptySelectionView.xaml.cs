@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using otor.msixhero.ui.Modules.PackageList.Navigation;
+﻿using Otor.MsixHero.Ui.Modules.PackageList.Navigation;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.View
+namespace Otor.MsixHero.Ui.Modules.PackageList.View
 {
     /// <summary>
     /// Interaction logic for EmptySelectionView.xaml

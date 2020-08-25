@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 
-namespace otor.msixhero.ui.Controls.ChangeableDialog
+namespace Otor.MsixHero.Ui.Controls.ChangeableDialog
 {
     public class ChangeableDialog : Control
     {

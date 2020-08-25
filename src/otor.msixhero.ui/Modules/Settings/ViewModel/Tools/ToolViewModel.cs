@@ -1,10 +1,10 @@
 ﻿using System.Windows.Media;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Helpers;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
 
-namespace otor.msixhero.ui.Modules.Settings.ViewModel.Tools
+namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools
 {
     public class ToolViewModel : ChangeableContainer
     {

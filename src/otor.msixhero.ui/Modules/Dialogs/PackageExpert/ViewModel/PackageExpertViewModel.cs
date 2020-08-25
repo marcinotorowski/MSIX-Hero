@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
 {
     public class PackageExpertViewModel : ChangeableDialogViewModel, IDialogAware
     {
         public PackageExpertViewModel(
+            IMsixHeroApplication application,
+            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             IInteractionService interactionService, 
-            IApplicationStateManager stateManager,
-            ISelfElevationManagerFactory<ISigningManager> signManager,
+            ISelfElevationProxyProvider<ISigningManager> signManager,
             IConfigurationService configurationService) : base("MSIX Hero - Package Expert", interactionService)
         {
-            this.Content = new PackageContentViewModel(stateManager, signManager, interactionService, configurationService);
+            this.Content = new PackageContentViewModel(application, packageManagerProvider, signManager, interactionService, configurationService);
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

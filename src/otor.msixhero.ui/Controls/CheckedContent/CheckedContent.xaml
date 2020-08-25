@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:checkedContent="clr-namespace:otor.msixhero.ui.Controls.CheckedContent"
-                    xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers">
+                    xmlns:checkedContent="clr-namespace:Otor.MsixHero.Ui.Controls.CheckedContent"
+                    xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers">
     <Style TargetType="checkedContent:CheckedContent">
         <Setter Property="Height" Value="30" />
         <Setter Property="Padding" Value="4 0" />

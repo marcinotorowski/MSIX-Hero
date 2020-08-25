@@ -3,30 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Volumes;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.Volumes;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Controls.ChangeableDialog.ViewModel;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel.Items;
+using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel.Items;
 
-namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel
 {
     public class NewVolumeViewModel : ChangeableDialogViewModel
     {
-        private readonly IApplicationStateManager stateManager;
-        private readonly ISelfElevationManagerFactory<IAppxVolumeManager> volumeManager;
+        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManager;
 
         public NewVolumeViewModel(
-            IApplicationStateManager stateManager,
             IInteractionService interactionService, 
-            ISelfElevationManagerFactory<IAppxVolumeManager> volumeManager) : base("New volume", interactionService)
+            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManager) : base("New volume", interactionService)
         {
-            this.stateManager = stateManager;
             this.volumeManager = volumeManager;
             this.Path = new ChangeableProperty<string>("WindowsApps");
 
@@ -77,7 +73,7 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
 
             progress.Report(new ProgressData(20, "Adding a volume..."));
 
-            var mgr = await this.volumeManager.Get(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            var mgr = await this.volumeManager.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             var volume = await mgr.Add(drivePath, cancellationToken, progress).ConfigureAwait(false);
@@ -93,14 +89,15 @@ namespace otor.msixhero.ui.Modules.Dialogs.NewVolume.ViewModel
             }
 
             progress.Report(new ProgressData(90, "Reading volumes..."));
-            await this.stateManager.CommandExecutor.ExecuteAsync(new GetVolumes(), cancellationToken).ConfigureAwait(false);
+            // todo
+            // await this.stateManager.CommandExecutor.ExecuteAsync(new GetAllDto(), cancellationToken).ConfigureAwait(false);
 
             return true;
         }
 
         private async Task<List<VolumeCandidateViewModel>> GetLetters()
         {
-            var mgr = await this.volumeManager.Get().ConfigureAwait(false);
+            var mgr = await this.volumeManager.GetProxyFor().ConfigureAwait(false);
             var disks = await mgr.GetAvailableDrivesForAppxVolume(true).ConfigureAwait(false);
             return disks.Select(r => new VolumeCandidateViewModel(r)).ToList();
         }

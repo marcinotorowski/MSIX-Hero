@@ -4,15 +4,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.Repackaging;
-using otor.msixhero.ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
+using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.DeveloperMode;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Repackaging;
+using Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.View
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.View
 {
     /// <summary>
     /// Interaction logic for System Status View.

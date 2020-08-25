@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>msixhero.lib</AssemblyName>
     <Copyright>Copyright (c) 2020 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
@@ -26,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj" />
+    <ProjectReference Include="..\otor.msixhero.appx\otor.msixhero.appx.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +41,11 @@
       <HintPath>C:\Program Files (x86)\Windows Kits\10\References\10.0.18362.0\Windows.Foundation.UniversalApiContract\8.0.0.0\Windows.Foundation.UniversalApiContract.winmd</HintPath>
       <IsWinMDFile>true</IsWinMDFile>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Domain\Commands\Generic\" />
+    <Folder Include="Domain\Commands\Packages\Grid\" />
   </ItemGroup>
 
 </Project>

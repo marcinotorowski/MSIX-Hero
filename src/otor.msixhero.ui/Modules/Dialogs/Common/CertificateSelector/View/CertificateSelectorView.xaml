@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.View.CertificateSelectorView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View.CertificateSelectorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:helpers="clr-namespace:otor.msixhero.ui.Helpers"
-             xmlns:viewModel="clr-namespace:otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel"
-             xmlns:configuration="clr-namespace:otor.msixhero.lib.Infrastructure.Configuration;assembly=msixhero.lib"
+             xmlns:configuration1="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:CertificateSelectorViewModel}">
@@ -24,8 +24,8 @@
         <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Certificate to sign the package" Margin="0 0 0 6" />
 
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <RadioButton GroupName="r1" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Pfx}}" Content="PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
-            <RadioButton GroupName="r2" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Personal}, FallbackValue=True}" Content="Installed certificate" Margin="0 0 16 8" x:Name="CertStore" />
+            <RadioButton GroupName="r1" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Content="PFX file" Margin="0 0 16 8" x:Name="PfxFile" />
+            <RadioButton GroupName="r2" IsChecked="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Personal}, FallbackValue=True}" Content="Installed certificate" Margin="0 0 16 8" x:Name="CertStore" />
         </StackPanel>
 
         <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -61,7 +61,7 @@
         </ComboBox>
 
         <TextBlock Visibility="{Binding ShowPassword, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
-        <PasswordBox x:Name="PasswordBox" Visibility="{Binding ShowPassword, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
+        <PasswordBox x:Name="PasswordBox" Visibility="{Binding ShowPassword, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
 
         <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
         <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />

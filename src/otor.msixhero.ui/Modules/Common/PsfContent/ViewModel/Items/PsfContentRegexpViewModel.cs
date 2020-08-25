@@ -1,8 +1,7 @@
-﻿using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Modules.Common.PsfContent.Model;
-using otor.msixhero.ui.Modules.Common.PsfContent.View;
+﻿using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.Model;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items
 {
     public abstract class PsfContentRegexpViewModel : ChangeableContainer
     {

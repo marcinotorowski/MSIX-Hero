@@ -1,7 +1,7 @@
-﻿using otor.msixhero.lib.Domain.Appx.Psf.Descriptor;
-using otor.msixhero.ui.ViewModel;
+﻿using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
 {
     public class AppxPsfScriptViewModel : NotifyPropertyChanged
     {

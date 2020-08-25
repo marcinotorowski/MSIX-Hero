@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Dialogs.PackageExpert.View
+namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.View
 {
     /// <summary>
     /// Interaction logic for PackageExpertView.xaml

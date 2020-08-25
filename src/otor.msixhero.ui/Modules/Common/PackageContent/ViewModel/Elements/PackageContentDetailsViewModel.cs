@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using otor.msixhero.lib.Domain.Appx.Manifest.Build;
-using otor.msixhero.lib.Domain.Appx.Manifest.Full;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
+using Otor.MsixHero.Ui.ViewModel;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
 {
     public class PackageContentDetailsViewModel : NotifyPropertyChanged
     {

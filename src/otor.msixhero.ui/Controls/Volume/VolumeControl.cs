@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace otor.msixhero.ui.Controls.Volume
+namespace Otor.MsixHero.Ui.Controls.Volume
 {
     public class VolumeControl : Control
     {

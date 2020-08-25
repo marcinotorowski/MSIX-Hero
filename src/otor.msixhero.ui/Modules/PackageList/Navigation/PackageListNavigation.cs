@@ -2,7 +2,7 @@
 using System.Linq;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.PackageList.Navigation
+namespace Otor.MsixHero.Ui.Modules.PackageList.Navigation
 {
     public class PackageListNavigation
     {

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using otor.msixhero.ui.Modules.Dialogs.PackageExpert.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Dialogs
+namespace Otor.MsixHero.Ui.Modules.Dialogs
 {
     public class ExplorerHandler
     {

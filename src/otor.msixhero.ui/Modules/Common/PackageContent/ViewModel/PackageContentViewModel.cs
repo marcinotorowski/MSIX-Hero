@@ -5,41 +5,44 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Appx.Manifest;
-using otor.msixhero.lib.BusinessLayer.Appx.Manifest.FileReaders;
-using otor.msixhero.lib.BusinessLayer.Helpers;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Appx.Manifest.Full;
-using otor.msixhero.lib.Domain.Appx.Packages;
-using otor.msixhero.lib.Domain.Appx.Psf;
-using otor.msixhero.lib.Domain.Appx.Signing;
-using otor.msixhero.lib.Domain.Appx.Users;
-using otor.msixhero.lib.Domain.Commands.Packages.Grid;
-using otor.msixhero.lib.Domain.Commands.Packages.Signing;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Helpers;
-using otor.msixhero.ui.Modules.Common.PackageContent.Helpers;
-using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel.Elements;
-using otor.msixhero.ui.Modules.Common.PsfContent.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.Navigation;
-using otor.msixhero.ui.Modules.PackageList.ViewModel.Elements;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Packaging.Manifest;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Users;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Lib.Proxy.Packaging.Dto;
+using Otor.MsixHero.Lib.Proxy.Signing.Dto;
+using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Modules.Common.PackageContent.Helpers;
+using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements;
+using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel;
+using Otor.MsixHero.Ui.Modules.PackageList.Navigation;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
 
-namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 {
     public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(PsfContentViewModel));
 
-        private readonly IApplicationStateManager stateManager;
-        private readonly ISelfElevationManagerFactory<ISigningManager> signManager;
+        private readonly IMsixHeroApplication application;
+        private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
+        private readonly ISelfElevationProxyProvider<ISigningManager> signManager;
         private readonly IInteractionService interactionService;
         private ICommand findUsers;
         private ICommand trustMe;
@@ -51,12 +54,14 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
         private IAppxFileReader packageSource;
 
         public PackageContentViewModel(
-            IApplicationStateManager stateManager,
-            ISelfElevationManagerFactory<ISigningManager> signManager,
+            IMsixHeroApplication application,
+            ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider,
+            ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService, 
             IConfigurationService configurationService)
         {
-            this.stateManager = stateManager;
+            this.application = application;
+            this.appxPackageManagerProvider = appxPackageManagerProvider;
             this.signManager = signManager;
             this.interactionService = interactionService;
             this.CommandHandler = new PackageContentCommandHandler(configurationService, interactionService);
@@ -90,12 +95,13 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                     {
                         return;
                     }
-
+                    
                     try
                     {
                         this.IsTrusting = true;
-
-                        await this.stateManager.CommandExecutor.ExecuteAsync(new TrustPublisher(this.certificateFile), CancellationToken.None).ConfigureAwait(false);
+                    
+                        var manager = await this.signManager.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                        await manager.Trust(this.certificateFile).ConfigureAwait(false);
                         await this.TrustStatus.Load(this.LoadSignature(this.packageSource, CancellationToken.None)).ConfigureAwait(false);
                     }
                     finally
@@ -142,7 +148,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             if (source is ZipArchiveFileReaderAdapter zipFileReader)
             {
                 this.certificateFile = zipFileReader.PackagePath;
-                var manager = await this.signManager.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                var manager = await this.signManager.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                 var signTask = manager.IsTrusted(zipFileReader.PackagePath, cancellationToken);
                 await this.TrustStatus.Load(signTask);
                 return await signTask.ConfigureAwait(false);
@@ -154,7 +160,7 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
                 if (file.Exists)
                 {
                     this.certificateFile = file.FullName;
-                    var manager = await this.signManager.Get(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                    var manager = await this.signManager.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                     var signTask = manager.IsTrusted(file.FullName, cancellationToken);
                     await this.TrustStatus.Load(signTask);
                     return await signTask.ConfigureAwait(false);
@@ -183,15 +189,16 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             this.fullPackageName = appxManifest.FullName;
 
             Task loadUsers;
-            if (!this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
+            // todo:
+            loadUsers = this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired)));
+            if (true)// !this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
             {
-                loadUsers = this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired)));
             }
             else
             {
                 try
                 {
-                    loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated));
+                    // loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated));
                 }
                 catch (Exception)
                 {
@@ -200,8 +207,9 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
             }
 
             var getAddons = this.Addons.Load(this.GetAddons());
-
-            await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
+            await Task.WhenAll(getAddons, loadSignature).ConfigureAwait(false);
+            // todo
+            // await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
@@ -285,14 +293,15 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
 
         private async Task<List<InstalledPackageViewModel>> GetAddons()
         {
-            var task = new GetModificationPackages(this.fullPackageName);
-            var results = await this.stateManager.CommandExecutor.GetExecuteAsync(task).ConfigureAwait(false);
-
+            // todo
+            // var task = new GetModificationPackagesDto(this.fullPackageName);
+            // var results = await this.stateManager.CommandExecutor.GetExecuteAsync(task).ConfigureAwait(false);
+            // 
             var list = new List<InstalledPackageViewModel>();
-            foreach (var item in results)
-            {
-                list.Add(new InstalledPackageViewModel(item, stateManager));
-            }
+            // foreach (var item in results)
+            // {
+            //     list.Add(new InstalledPackageViewModel(item, stateManager));
+            // }
 
             return list;
         }
@@ -301,13 +310,14 @@ namespace otor.msixhero.ui.Modules.Common.PackageContent.ViewModel
         {
             try
             {
-                var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new FindUsers(this.fullPackageName, forceElevation)).ConfigureAwait(false);
-                if (stateDetails == null)
-                {
-                    return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
-                }
-
-                return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
+                // todo
+                return null;
+                // var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetUsersForPackageDto(this.fullPackageName, forceElevation)).ConfigureAwait(false);
+                // if (stateDetails == null)
+                // {
+                //     return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
+                // }
+                // return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
             }
             catch (Exception)
             {

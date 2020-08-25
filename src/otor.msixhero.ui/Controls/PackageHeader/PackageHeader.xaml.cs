@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace otor.msixhero.ui.Controls.PackageHeader
+namespace Otor.MsixHero.Ui.Controls.PackageHeader
 {
     /// <summary>
     /// Interaction logic for PackageHeader.xaml

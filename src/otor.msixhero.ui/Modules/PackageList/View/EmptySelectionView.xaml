@@ -1,12 +1,10 @@
-﻿<UserControl x:Class="otor.msixhero.ui.Modules.PackageList.View.EmptySelectionView"
+﻿<UserControl x:Class="Otor.MsixHero.Ui.Modules.PackageList.View.EmptySelectionView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:otor.msixhero.ui.Modules.PackageList.View"
-             xmlns:controls="clr-namespace:otor.msixhero.ui.Controls"
-             xmlns:msixHeroText="clr-namespace:otor.msixhero.ui.Controls.MsixHeroText"
+             xmlns:msixHeroText1="clr-namespace:Otor.MsixHero.Ui.Controls.MsixHeroText"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <msixHeroText:MsixHeroText HorizontalAlignment="Center" VerticalAlignment="Center" Tag="Select at least one package to display its properties here" />
+    <msixHeroText1:MsixHeroText HorizontalAlignment="Center" VerticalAlignment="Center" Tag="Select at least one package to display its properties here" />
 </UserControl>

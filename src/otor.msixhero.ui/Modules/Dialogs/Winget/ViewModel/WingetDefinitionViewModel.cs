@@ -5,15 +5,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.Winget;
-using otor.msixhero.lib.Domain.Winget;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Logging;
-using otor.msixhero.lib.Infrastructure.Progress;
-using otor.msixhero.ui.Commands.RoutedCommand;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Progress;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Winget.Yaml;
+using Otor.MsixHero.Winget.Yaml.Entities;
 
-namespace otor.msixhero.ui.Modules.Dialogs.Winget.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 {
     public class WingetDefinitionViewModel : ChangeableContainer
     {

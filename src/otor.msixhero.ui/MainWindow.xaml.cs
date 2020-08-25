@@ -1,4 +1,4 @@
-﻿namespace otor.msixhero.ui
+﻿namespace Otor.MsixHero.Ui
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

@@ -2,20 +2,20 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using otor.msixhero.lib.BusinessLayer.Managers.Signing;
-using otor.msixhero.lib.Domain.Events;
-using otor.msixhero.lib.Infrastructure;
-using otor.msixhero.lib.Infrastructure.Configuration;
-using otor.msixhero.lib.Infrastructure.Crypt;
-using otor.msixhero.lib.Infrastructure.SelfElevation;
-using otor.msixhero.ui.Domain;
-using otor.msixhero.ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
-using otor.msixhero.ui.Modules.Settings.ViewModel.Tools;
-using otor.msixhero.ui.ViewModel;
+using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Cryptography;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Domain.Events;
+using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
+using Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools;
+using Otor.MsixHero.Ui.ViewModel;
 using Prism.Events;
 using Prism.Services.Dialogs;
 
-namespace otor.msixhero.ui.Modules.Settings.ViewModel
+namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 {
     public class SettingsViewModel : NotifyPropertyChanged, IDialogAware
     {
@@ -27,7 +27,7 @@ namespace otor.msixhero.ui.Modules.Settings.ViewModel
             IEventAggregator eventAggregator,
             IConfigurationService configurationService, 
             IInteractionService interactionService, 
-            ISelfElevationManagerFactory<ISigningManager> signingManagerFactory)
+            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory)
         {
             this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;

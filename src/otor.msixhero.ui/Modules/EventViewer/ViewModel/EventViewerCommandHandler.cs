@@ -1,21 +1,22 @@
-﻿using System.Windows.Input;
-using otor.msixhero.lib.BusinessLayer.State;
-using otor.msixhero.lib.Domain.Commands.EventViewer;
-using otor.msixhero.lib.Domain.State;
-using otor.msixhero.ui.Commands.RoutedCommand;
+﻿using System;
+using System.Windows.Input;
+using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.Domain.Commands.EventViewer;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Hero;
 
-namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
+namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
 {
     public class EventViewerCommandHandler
     {
         private readonly EventViewerViewModel viewModel;
-        private readonly IApplicationStateManager stateManager;
+        private readonly IMsixHeroApplication application;
         private ICommand refresh, openLogs;
 
-        public EventViewerCommandHandler(EventViewerViewModel viewModel, IApplicationStateManager stateManager)
+        public EventViewerCommandHandler(EventViewerViewModel viewModel, IMsixHeroApplication application)
         {
             this.viewModel = viewModel;
-            this.stateManager = stateManager;
+            this.application = application;
         }
 
         public ICommand Refresh
@@ -36,7 +37,9 @@ namespace otor.msixhero.ui.Modules.EventViewer.ViewModel
 
         private void OpenLogsExecute(object obj)
         {
-            this.stateManager.CommandExecutor.ExecuteAsync(new OpenEventViewer(obj is EventLogType elt ? elt : EventLogType.AppXDeploymentOperational));
+            // todo:
+            throw new NotImplementedException();
+            // this.stateManager.CommandExecutor.ExecuteAsync(new OpenEventViewer(obj is EventLogType elt ? elt : EventLogType.AppXDeploymentOperational));
         }
 
         private bool CanExecuteOpenLogs(object obj)

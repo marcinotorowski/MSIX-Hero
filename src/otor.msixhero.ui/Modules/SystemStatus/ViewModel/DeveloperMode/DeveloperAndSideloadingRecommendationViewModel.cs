@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using otor.msixhero.lib.BusinessLayer.Appx.DeveloperMode;
+using Otor.MsixHero.Appx.Diagnostic.Developer;
+using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
 
-namespace otor.msixhero.ui.Modules.SystemStatus.ViewModel.DeveloperMode
+namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.DeveloperMode
 {
     public class DeveloperAndSideloadingRecommendationViewModel : BaseRecommendationViewModel
     {

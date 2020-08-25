@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using otor.msixhero.ui.Domain;
+using Otor.MsixHero.Ui.Domain;
 
-namespace otor.msixhero.ui.Modules.Common.PsfContent.ViewModel.Items.Redirection
+namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Redirection
 {
     public enum PsfContentFolderRelationTo
     {

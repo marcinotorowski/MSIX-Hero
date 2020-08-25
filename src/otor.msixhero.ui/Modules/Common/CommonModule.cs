@@ -1,11 +1,11 @@
-﻿using otor.msixhero.ui.Modules.Common.PackageContent.View;
-using otor.msixhero.ui.Modules.Common.PackageContent.ViewModel;
-using otor.msixhero.ui.Modules.PackageList.ViewModel;
+﻿using Otor.MsixHero.Ui.Modules.Common.PackageContent.View;
+using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 
-namespace otor.msixhero.ui.Modules.Common
+namespace Otor.MsixHero.Ui.Modules.Common
 {
     public class CommonModule : IModule
     {
