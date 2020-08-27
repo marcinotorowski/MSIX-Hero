@@ -213,7 +213,5 @@ FakesAssemblies/
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
-/build/msix-hero.msix
-/build/msix-hero.appinstaller
 /.idea
-/build/msixhero.msix
+/build/out
