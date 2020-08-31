@@ -151,7 +151,7 @@ namespace Otor.MsixHero.Appx.Volumes
             using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var command = session.AddCommand("Get-AppxVolume");
 
-            var results = await session.InvokeAsync().ConfigureAwait(false);
+            var results = await session.InvokeAsync(progress).ConfigureAwait(false);
             if (!results.Any())
             {
                 return new List<AppxVolume>();
@@ -193,7 +193,7 @@ namespace Otor.MsixHero.Appx.Volumes
             using var command = session.AddCommand("Add-AppxVolume");
             command.AddParameter("Path", drivePath);
 
-            var results = await session.InvokeAsync().ConfigureAwait(false);
+            var results = await session.InvokeAsync(progress).ConfigureAwait(false);
             var obj = results.FirstOrDefault();
             if (obj == null)
             {
@@ -212,7 +212,7 @@ namespace Otor.MsixHero.Appx.Volumes
             using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var command = session.AddCommand("Remove-AppxVolume");
             command.AddParameter("Volume", volume.Name);
-            await session.InvokeAsync().ConfigureAwait(false);
+            await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public async Task Mount(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -220,7 +220,7 @@ namespace Otor.MsixHero.Appx.Volumes
             using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var command = session.AddCommand("Mount-AppxVolume");
             command.AddParameter("Volume", volume.Name);
-            await session.InvokeAsync().ConfigureAwait(false);
+            await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public async Task Dismount(AppxVolume volume, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -228,7 +228,7 @@ namespace Otor.MsixHero.Appx.Volumes
             using var session = await PowerShellSession.CreateForAppxModule().ConfigureAwait(false);
             using var command = session.AddCommand("Dismount-AppxVolume");
             command.AddParameter("Volume", volume.Name);
-            await session.InvokeAsync().ConfigureAwait(false);
+            await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public async Task MovePackageToVolume(string volumePackagePath, string packageFullName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -239,7 +239,7 @@ namespace Otor.MsixHero.Appx.Volumes
             command.AddParameter("Volume", volumePackagePath);
 
             Logger.Debug($"Executing Move-AppxPackage -Package \"{packageFullName}\" -Volume \"{volumePackagePath}\"...");
-            await session.InvokeAsync().ConfigureAwait(false);
+            await session.InvokeAsync(progress).ConfigureAwait(false);
         }
 
         public Task MovePackageToVolume(AppxVolume volume, AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)

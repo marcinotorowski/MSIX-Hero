@@ -431,13 +431,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     var item = logNames[index];
                     var itemProgress = progresses[index];
                     var logName = (string) item.BaseObject;
-                    itemProgress.Report(new ProgressData(80, "Reading " + logName + "..."));
+                    itemProgress.Report(new ProgressData(0, "Reading " + logName + "..."));
 
                     cancellationToken.ThrowIfCancellationRequested();
 
                     using var psLocal = await PowerShellSession.CreateForModule().ConfigureAwait(false);
                     using var scriptLocal = psLocal.AddScript("Get-WinEvent -ProviderName " + logName + " -MaxEvents " + maxCount + " -ErrorAction SilentlyContinue");
-                    using var logItems = await psLocal.InvokeAsync().ConfigureAwait(false);
+                    using var logItems = await psLocal.InvokeAsync(itemProgress).ConfigureAwait(false);
                     
                     allLogs.AddRange(logItems.Select(log => factory.CreateFromPowerShellObject(log)));
                 }
