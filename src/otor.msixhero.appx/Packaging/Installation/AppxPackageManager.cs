@@ -11,7 +11,6 @@ using System.Xml;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
-using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Exceptions;
@@ -28,16 +27,15 @@ using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
-using LogFactory = Otor.MsixHero.Appx.Diagnostic.Logging.LogFactory;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
     [SuppressMessage("ReSharper", "UnusedVariable")]
     public class AppxPackageManager : IAppxPackageManager
     {
+        private static readonly ILog Logger = LogManager.GetLogger();
         protected readonly ISideloadingChecker SideloadingChecker = new RegistrySideloadingChecker();
 
-        private static readonly ILog Logger = LogManager.GetLogger();
         private readonly IRegistryManager registryManager;
         private readonly IConfigurationService configurationService;
 
@@ -324,126 +322,6 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 throw;
             }
-        }
-
-        public async Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
-        {
-            Logger.Info("Getting last {0} log files...", maxCount);
-
-            //var cmd = "((Get-WinEvent -ListLog *Microsoft-Windows-*Appx* -ErrorAction SilentlyContinue).LogName).Split(\" \")";
-
-            //progress?.Report(new ProgressData(0, "Querying log names..."));
-            //var proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
-            //{
-            //    UseShellExecute = false,
-            //    CreateNoWindow = true,
-            //    RedirectStandardOutput = true,
-            //    StandardOutputEncoding = Encoding.UTF8
-            //};
-
-            //var p = Process.Start(proc);
-            //if (p == null)
-            //{
-            //    throw new InvalidOperationException("Could not start PowerShell.");
-            //}
-
-            //p.WaitForExit(15000);
-
-            //var logNames = p.StandardOutput.ReadToEnd().Split().Select(l => l.Trim()).Where(l => !string.IsNullOrWhiteSpace(l)).ToArray();
-            //var singleProgress = logNames.Length == 0 ? 0 : 66.0 / logNames.Length;
-            //var totalProgress = 20.0;
-
-            var factory = new LogFactory();
-            var allLogs = new List<Log>();
-
-            //foreach (var item in logNames)
-            //{
-            //    progress?.Report(new ProgressData((int)totalProgress, $"Processing {item}..."));
-            //    cmd = "Get-WinEvent -LogName " + item + " -MaxEvents 100 | Select-Object -Property Message,Id,ThreadId, TimeCreated,LevelDisplayName,UserId";
-            //    proc = new ProcessStartInfo("powershell.exe", "-NoLogo -WindowStyle Hidden -Command \"&{ " + cmd + "}\"")
-            //    {
-            //        UseShellExecute = false,
-            //        CreateNoWindow = true,
-            //        RedirectStandardOutput = true,
-            //        StandardOutputEncoding = Encoding.UTF8
-            //    };
-
-            //    p = Process.Start(proc);
-            //    if (p == null)
-            //    {
-            //        throw new InvalidOperationException("Could not start PowerShell.");
-            //    }
-
-            //    p.WaitForExit(20000);
-
-            //    while (!p.StandardOutput.EndOfStream)
-            //    {
-            //        var line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-
-            //        if (!line.StartsWith("Message"))
-            //        {
-            //            continue;
-            //        }
-
-            //        var message = line.Substring(line.IndexOf(':') + 2);
-            //        line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-            //        while (!line.StartsWith("Id"))
-            //        {
-            //            message += " " + line.Trim();
-            //            line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-            //        }
-
-            //        var id = line.Substring(line.IndexOf(':') + 2);
-            //        line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-            //        var threadId = line.Substring(line.IndexOf(':') + 2);
-            //        line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-            //        var timeCreated = line.Substring(line.IndexOf(':') + 2);
-            //        line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-            //        var levelDisplayName = line.Substring(line.IndexOf(':') + 2);
-            //        line = await p.StandardOutput.ReadLineAsync().ConfigureAwait(false);
-            //        var userId = line.Substring(line.IndexOf(':') + 2);
-
-            //        allLogs.Add(factory.CreateFromValues(message, id, threadId, timeCreated, levelDisplayName, userId));
-            //    }
-            //}
-
-            //return allLogs.OrderBy(l => l.DateTime).Take(maxCount).ToList();
-
-            using var ps = await PowerShellSession.CreateForModule().ConfigureAwait(false);
-            using var script = ps.AddScript("(Get-WinEvent -ListLog *Microsoft-Windows-*Appx* -ErrorAction SilentlyContinue).ProviderNames");
-            using var logs = await ps.InvokeAsync().ConfigureAwait(false);
-
-            var logNames = logs.ToArray();
-            
-            var progresses = new IProgress<ProgressData>[logNames.Length];
-
-            using (var wrapperProgress = new WrappedProgress(progress ?? new Progress<ProgressData>()))
-            {
-                for (var index = 0; index < logNames.Length; index++)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    progresses[index] = wrapperProgress.GetChildProgress(100.0);
-                }
-
-                for (var index = 0; index < logNames.Length; index++)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var item = logNames[index];
-                    var itemProgress = progresses[index];
-                    var logName = (string) item.BaseObject;
-                    itemProgress.Report(new ProgressData(0, "Reading " + logName + "..."));
-
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    using var psLocal = await PowerShellSession.CreateForModule().ConfigureAwait(false);
-                    using var scriptLocal = psLocal.AddScript("Get-WinEvent -ProviderName " + logName + " -MaxEvents " + maxCount + " -ErrorAction SilentlyContinue");
-                    using var logItems = await psLocal.InvokeAsync(itemProgress).ConfigureAwait(false);
-                    
-                    allLogs.AddRange(logItems.Select(log => factory.CreateFromPowerShellObject(log)));
-                }
-            }
-
-            return allLogs.OrderByDescending(l => l.DateTime).Take(maxCount).ToList();
         }
 
         public Task Run(InstalledPackage package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -846,8 +724,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             xmlDocument.Load(manifestLocation);
             var nodes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
 
+            // ReSharper disable once AssignNullToNotNullAttribute
             foreach (var node in nodes.OfType<XmlNode>())
             {
+                // ReSharper disable once PossibleNullReferenceException
                 var attrVal = node.Attributes["Id"]?.Value;
                 if (string.IsNullOrEmpty(attrVal))
                 {

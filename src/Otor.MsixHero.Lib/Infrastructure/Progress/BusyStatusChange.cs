@@ -1,6 +1,4 @@
-﻿using Otor.MsixHero.Lib.Infrastructure.Progress;
-
-namespace Otor.MsixHero.Lib.BusinessLayer.State
+﻿namespace Otor.MsixHero.Lib.Infrastructure.Progress
 {
     public class BusyStatusChange : IBusyStatusChange
     {

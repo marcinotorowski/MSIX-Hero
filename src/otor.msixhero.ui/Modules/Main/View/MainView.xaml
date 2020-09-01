@@ -21,7 +21,7 @@
     xmlns:updateNotification1="clr-namespace:Otor.MsixHero.Ui.Controls.UpdateNotification"
     xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
     xmlns:modules1="clr-namespace:Otor.MsixHero.Ui.Modules"
-    xmlns:eventViewer="clr-namespace:Otor.MsixHero.Lib.Domain.Commands.EventViewer;assembly=Otor.MsixHero.Lib"
+    xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Diagnostic.Logging.Enums;assembly=Otor.MsixHero.Appx"
     d:DesignWidth="600"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -161,7 +161,7 @@
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Open Event viewer">
-                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Deployment operational" CommandParameter="{x:Static eventViewer:EventLogType.AppXDeploymentOperational}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
+                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Deployment operational" CommandParameter="{x:Static enums:EventLogCategory.AppXDeploymentOperational}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorBulb}" />
@@ -172,7 +172,7 @@
                         </Fluent:Button.Icon>
                     </Fluent:Button>
 
-                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Server operational" CommandParameter="{x:Static eventViewer:EventLogType.AppXDeploymentServerOperational}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
+                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Server operational" CommandParameter="{x:Static enums:EventLogCategory.AppXDeploymentServerOperational}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorServices}" />
@@ -183,7 +183,7 @@
                         </Fluent:Button.Icon>
                     </Fluent:Button>
 
-                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Server restricted" CommandParameter="{x:Static eventViewer:EventLogType.AppXDeploymentServerRestricted}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
+                    <Fluent:Button MinWidth="100" Size="Large" Header="APPX Server restricted" CommandParameter="{x:Static enums:EventLogCategory.AppXDeploymentServerRestricted}" Command="{x:Static commands:MsixHeroCommands.OpenLogs}" SizeDefinition="Large, Large, Small">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorCancel}" />

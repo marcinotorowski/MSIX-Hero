@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -15,15 +14,17 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.BusinessLayer.State;
+using Otor.MsixHero.Lib.Domain.State;
 using Otor.MsixHero.Lib.Infrastructure;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 using Otor.MsixHero.Ui.Hero.Events.Base;
 using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Hero.State;
 using Otor.MsixHero.Ui.Modules.Common;
 using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
 using Otor.MsixHero.Ui.Modules.PackageList.Navigation;
@@ -75,25 +76,29 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.configurationService = configurationService;
             this.dialogService = dialogService;
             this.busyManager = busyManager;
-            
-            this.AllPackages = new ObservableCollection<InstalledPackageViewModel>();
+
+            this.AllPackages = new List<InstalledPackageViewModel>();
             this.AllPackagesView = CollectionViewSource.GetDefaultView(this.AllPackages);
-            this.AllPackagesView.Filter = this.FilterPackage;
+            this.AllPackagesView.Filter = row => this.IsPackageVisible((InstalledPackageViewModel)row);
+
             this.SetSortingAndGrouping();
 
             this.busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
 
-            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
-            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages);
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilter, ThreadOption.UIThread);
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
-        }
 
-        private void OnSetPackageFilter(UiExecutedPayload<SetPackageFilterCommand> obj)
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages);
+        }
+        public IList<InstalledPackageViewModel> AllPackages { get; }
+
+        public ICollectionView AllPackagesView { get; }
+
+        public IEnumerable<InstalledPackageViewModel> GetSelection()
         {
-            this.OnPropertyChanged(nameof(this.SearchKey));
-            this.AllPackagesView.Refresh();
+            return this.AllPackages.Where(v => this.msixHeroApplication.ApplicationState.Packages.SelectedPackages.Contains(v.Model));
         }
 
         private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)
@@ -122,22 +127,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             }
         }
 
-        private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> obj)
+        private bool IsPackageVisible(InstalledPackageViewModel item)
         {
-            this.AllPackages.Clear();
-
-            foreach (var item in obj.Result)
-            {
-                var selected = this.msixHeroApplication.ApplicationState.Packages.SelectedPackages.Contains(item);
-                var itemViewModel = new InstalledPackageViewModel(this.msixHeroApplication, item, selected);
-                this.AllPackages.Add(itemViewModel);
-            }
-        }
-
-        private bool FilterPackage(object obj)
-        {
-            var item = (InstalledPackageViewModel) obj;
-
             switch (item.SignatureKind)
             {
                 case SignatureKind.Developer:
@@ -145,7 +136,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 case SignatureKind.Enterprise:
                     if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.Developer) != PackageFilter.Developer)
                     {
-                        item.IsSelected = false;
                         return false;
                     }
 
@@ -153,7 +143,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 case SignatureKind.Store:
                     if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.Store) != PackageFilter.Store)
                     {
-                        item.IsSelected = false;
                         return false;
                     }
 
@@ -161,7 +150,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 case SignatureKind.System:
                     if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.System) != PackageFilter.System)
                     {
-                        item.IsSelected = false;
                         return false;
                     }
 
@@ -170,13 +158,11 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
             if (item.IsAddon && this.msixHeroApplication.ApplicationState.Packages.AddonFilter == AddonsFilter.OnlyMain)
             {
-                item.IsSelected = false;
                 return false;
             }
 
             if (!item.IsAddon && this.msixHeroApplication.ApplicationState.Packages.AddonFilter == AddonsFilter.OnlyAddons)
             {
-                item.IsSelected = false;
                 return false;
             }
 
@@ -185,7 +171,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                                                            && item.Version.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
                                                            && item.Architecture.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
             {
-                item.IsSelected = false;
                 return false;
             }
 
@@ -237,35 +222,36 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             get => this.isActive;
             set
             {
-                if (this.isActive == value)
+                if (!this.SetField(ref this.isActive, value))
                 {
                     return;
                 }
 
-                this.isActive = value;
                 this.IsActiveChanged?.Invoke(this, new EventArgs());
-                
-                if (value)
-                {
-                    if (!this.firstRun)
-                    {
-                        return;
-                    }
-
-                    firstRun = false;
-
-                    this.LoadInitialData();
-                }
+                this.SetIsActive(value);
             }
         }
 
-        private async void LoadInitialData()
+        private async void SetIsActive(bool value)
         {
+            if (!value)
+            {
+                return;
+            }
+
+            await this.msixHeroApplication.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.Packages)).ConfigureAwait(false);
+
+            if (!this.firstRun)
+            {
+                return;
+            }
+
+            this.firstRun = false;
+
             await Task.Delay(200).ConfigureAwait(false);
             var executor = this.msixHeroApplication.CommandExecutor
                 .WithBusyManager(this.busyManager, OperationType.PackageLoading)
                 .WithErrorHandling(this.interactionService, true);
-
             await executor.Invoke(this, new GetPackagesCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
@@ -415,10 +401,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             }
         }
 
-        public ObservableCollection<InstalledPackageViewModel> AllPackages { get; }
-
-        public ICollectionView AllPackagesView { get; }
-
         public ICommand ShowSelectionDetails
         {
             get
@@ -429,13 +411,28 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
         private void ShowSelectionDetailsExecute(object obj)
         {
-            var selected = this.AllPackages.FirstOrDefault(item => item.IsSelected);
+            var selected = this.GetSelection().FirstOrDefault();
             if (selected == null)
             {
                 return;
             }
 
             this.dialogService.ShowDialog(Constants.PathPackageExpert, new PackageExpertSelection(selected.ManifestLocation).ToDialogParameters(), result => {});
+        }
+
+        private void OnSetPackageFilter(UiExecutedPayload<SetPackageFilterCommand> obj)
+        {
+            this.OnPropertyChanged(nameof(SearchKey));
+            this.AllPackagesView.Refresh();
+        }
+
+        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
+        {
+            this.AllPackages.Clear();
+            foreach (var item in this.msixHeroApplication.ApplicationState.Packages.AllPackages)
+            {
+                this.AllPackages.Add(new InstalledPackageViewModel(item));
+            }
         }
     }
 }

@@ -131,7 +131,7 @@ namespace Otor.MsixHero.Ui.Controls.Progress
             }
 
             this.isCancelling = true;
-            if (this.currentCancellationTokenSource.IsCancellationRequested)
+            if (this.currentCancellationTokenSource?.IsCancellationRequested == true)
             {
                 return;
             }

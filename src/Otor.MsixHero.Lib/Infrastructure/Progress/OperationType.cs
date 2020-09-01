@@ -8,6 +8,7 @@
     {
         PackageLoading =-1,
         VolumeLoading = -2,
+        EventsLoading = -3,
         Other = 1
     }
 }

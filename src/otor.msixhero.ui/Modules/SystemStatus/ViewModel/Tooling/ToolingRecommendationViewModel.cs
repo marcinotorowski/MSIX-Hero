@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
-using Otor.MsixHero.Lib.BusinessLayer.SystemState.ThirdParty;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty;
 
 namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Tooling
 {

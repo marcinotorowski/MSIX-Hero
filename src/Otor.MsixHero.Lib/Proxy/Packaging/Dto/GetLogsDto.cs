@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
-using Otor.MsixHero.Lib.Domain.Commands;
 
 namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
 {

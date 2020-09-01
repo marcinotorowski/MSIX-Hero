@@ -1,6 +1,4 @@
-﻿using Otor.MsixHero.Lib.Domain.Commands;
-
-namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
+﻿namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
 {
     public class AddDto : ProxyObject
     {

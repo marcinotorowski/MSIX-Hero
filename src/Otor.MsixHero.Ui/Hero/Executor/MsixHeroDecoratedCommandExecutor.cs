@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure;
@@ -26,6 +27,8 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
         private class MsixHeroDecoratedCommandExecutor : IMsixHeroCommandExecutor
         {
+            private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixHeroDecoratedCommandExecutor));
+
             private readonly IMsixHeroCommandExecutor decorated;
 
             private IInteractionService interactionService;
@@ -108,12 +111,18 @@ namespace Otor.MsixHero.Ui.Hero.Executor
                 {
                     await this.decorated.Invoke(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                 }
+                catch (OperationCanceledException e)
+                {
+                    Logger.Warn(e.Message, e);
+                }
                 catch (Exception e)
                 {
+                    Logger.Error(e.Message, e);
                     if (this.interactionService != null)
                     {
                         if (this.ShowError(e) == InteractionResult.Retry)
                         {
+                            Logger.Info("The user wanted to retry...");
                             await this.Invoke(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                         }
                     }
@@ -142,12 +151,19 @@ namespace Otor.MsixHero.Ui.Hero.Executor
                 {
                     return await this.decorated.Invoke<TCommand, TResult>(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                 }
+                catch (OperationCanceledException e)
+                {
+                    Logger.Warn(e.Message, e);
+                    return default;
+                }
                 catch (Exception e)
                 {
+                    Logger.Error(e.Message, e);
                     if (this.interactionService != null)
                     {
                         if (this.ShowError(e) == InteractionResult.Retry)
                         {
+                            Logger.Info("The user wanted to retry...");
                             return await this.Invoke<TCommand, TResult>(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                         }
                     }

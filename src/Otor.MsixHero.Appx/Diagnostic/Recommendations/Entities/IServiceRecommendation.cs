@@ -1,4 +1,6 @@
-﻿namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
+﻿using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
+
+namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities
 {
     public interface IServiceRecommendation
     {

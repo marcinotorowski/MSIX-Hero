@@ -70,11 +70,11 @@ namespace Otor.MsixHero.Ui.Hero.Executor
                 return;
             }  
 
-            var payload = new UiExecutingPayload<UiCommand>(sender, command);
-            this.eventAggregator.GetEvent<UiExecutingEvent<UiCommand>>().Publish(payload);
+            var payload = new UiExecutingPayload<TCommand>(sender, command);
+            this.eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
             if (payload.Cancel)
             {
-                this.eventAggregator.GetEvent<UiCancelledEvent<UiCommand>>().Publish(new UiCancelledPayload<UiCommand>(sender, command));
+                this.eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
             }
 
             try
@@ -103,11 +103,11 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
         private async Task<TResult> InvokeAndReturn<TCommand, TResult>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand<TResult>
         {
-            var payload = new UiExecutingPayload<UiCommand<TResult>>(sender, command);
-            this.eventAggregator.GetEvent<UiExecutingEvent<UiCommand<TResult>>>().Publish(payload);
+            var payload = new UiExecutingPayload<TCommand>(sender, command);
+            this.eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
             if (payload.Cancel)
             {
-                this.eventAggregator.GetEvent<UiCancelledEvent<UiCommand<TResult>>>().Publish(new UiCancelledPayload<UiCommand<TResult>>(sender, command));
+                this.eventAggregator.GetEvent<UiCancelledEvent<TCommand>>().Publish(new UiCancelledPayload<TCommand>(sender, command));
             }
 
             try

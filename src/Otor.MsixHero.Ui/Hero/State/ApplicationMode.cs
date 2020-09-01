@@ -1,4 +1,4 @@
-﻿namespace Otor.MsixHero.Lib.Domain.State
+﻿namespace Otor.MsixHero.Ui.Hero.State
 {
     public enum ApplicationMode
     {

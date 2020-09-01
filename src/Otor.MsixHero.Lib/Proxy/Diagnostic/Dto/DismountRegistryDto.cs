@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Lib.Domain.Commands;
 
 namespace Otor.MsixHero.Lib.Proxy.Diagnostic.Dto
 {

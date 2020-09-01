@@ -15,16 +15,15 @@ using Otor.MsixHero.Appx.Psf.Entities;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Appx.Users;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.BusinessLayer.State;
 using Otor.MsixHero.Lib.Domain.State;
-using Otor.MsixHero.Lib.Proxy.Packaging.Dto;
-using Otor.MsixHero.Lib.Proxy.Signing.Dto;
 using Otor.MsixHero.Ui.Helpers;
-using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Modules.Common.PackageContent.Helpers;
 using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements;
 using Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel;
@@ -40,7 +39,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(PsfContentViewModel));
 
-        private readonly IMsixHeroApplication application;
+        private readonly IInterProcessCommunicationManager interProcessCommunicationManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
         private readonly ISelfElevationProxyProvider<ISigningManager> signManager;
         private readonly IInteractionService interactionService;
@@ -54,13 +53,13 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         private IAppxFileReader packageSource;
 
         public PackageContentViewModel(
-            IMsixHeroApplication application,
+            IInterProcessCommunicationManager interProcessCommunicationManager,
             ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService, 
             IConfigurationService configurationService)
         {
-            this.application = application;
+            this.interProcessCommunicationManager = interProcessCommunicationManager;
             this.appxPackageManagerProvider = appxPackageManagerProvider;
             this.signManager = signManager;
             this.interactionService = interactionService;
@@ -189,27 +188,18 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             this.fullPackageName = appxManifest.FullName;
 
             Task loadUsers;
-            // todo:
-            loadUsers = this.SelectedPackageUsersInfo.Load(Task.FromResult(new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired)));
-            if (true)// !this.stateManager.CurrentState.IsElevated && !this.stateManager.CurrentState.IsSelfElevated)
+            var canElevate = await UserHelper.IsAdministratorAsync(cancellationToken) || await this.interProcessCommunicationManager.Test(cancellationToken);
+            try
             {
+                loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(canElevate, cancellationToken));
             }
-            else
+            catch (Exception)
             {
-                try
-                {
-                    // loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(this.stateManager.CurrentState.IsElevated || this.stateManager.CurrentState.IsSelfElevated));
-                }
-                catch (Exception)
-                {
-                    loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(false));
-                }
+                loadUsers = this.SelectedPackageUsersInfo.Load(this.GetSelectionDetails(false, cancellationToken));
             }
 
-            var getAddons = this.Addons.Load(this.GetAddons());
-            await Task.WhenAll(getAddons, loadSignature).ConfigureAwait(false);
-            // todo
-            // await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
+            var getAddons = this.Addons.Load(this.GetAddons(cancellationToken));
+            await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
@@ -291,33 +281,42 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         {
         }
 
-        private async Task<List<InstalledPackageViewModel>> GetAddons()
+        private async Task<List<InstalledPackageViewModel>> GetAddons(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            // todo
-            // var task = new GetModificationPackagesDto(this.fullPackageName);
-            // var results = await this.stateManager.CommandExecutor.GetExecuteAsync(task).ConfigureAwait(false);
-            // 
+            var manager = await this.appxPackageManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken);
+            var results = await manager.GetModificationPackages(this.fullPackageName, PackageFindMode.Auto, cancellationToken, progress).ConfigureAwait(false);
+            
             var list = new List<InstalledPackageViewModel>();
-            // foreach (var item in results)
-            // {
-            //     list.Add(new InstalledPackageViewModel(item, stateManager));
-            // }
+            foreach (var item in results)
+            {
+                list.Add(new InstalledPackageViewModel(item));
+            }
 
             return list;
         }
 
-        private async Task<FoundUsersViewModel> GetSelectionDetails(bool forceElevation)
+        private async Task<FoundUsersViewModel> GetSelectionDetails(bool forceElevation, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
+            if (!forceElevation)
+            {
+                if (!await UserHelper.IsAdministratorAsync(cancellationToken))
+                {
+                    return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
+                }
+            }
+
             try
             {
-                // todo
-                return null;
-                // var stateDetails = await this.stateManager.CommandExecutor.GetExecuteAsync(new GetUsersForPackageDto(this.fullPackageName, forceElevation)).ConfigureAwait(false);
-                // if (stateDetails == null)
-                // {
-                //     return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
-                // }
-                // return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
+                var manager = await this.appxPackageManagerProvider.GetProxyFor(forceElevation ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.HighestAvailable, cancellationToken);
+                
+                var stateDetails = await manager.GetUsersForPackage(this.fullPackageName, cancellationToken, progress).ConfigureAwait(false);
+
+                if (stateDetails == null)
+                {
+                    return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
+                }
+                
+                return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
             }
             catch (Exception)
             {

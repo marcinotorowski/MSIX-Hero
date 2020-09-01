@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Progress;
-using Otor.MsixHero.Lib.BusinessLayer.State;
 
 namespace Otor.MsixHero.Tests
 {

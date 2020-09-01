@@ -1,5 +1,4 @@
 ﻿using System;
-using Otor.MsixHero.Lib.Domain.Commands;
 
 namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
 {

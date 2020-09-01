@@ -1,6 +1,4 @@
-﻿using Otor.MsixHero.Lib.Domain.Commands;
-
-namespace Otor.MsixHero.Lib.Proxy.Signing.Dto
+﻿namespace Otor.MsixHero.Lib.Proxy.Signing.Dto
 {
     public class TrustDto : ProxyObject
     {

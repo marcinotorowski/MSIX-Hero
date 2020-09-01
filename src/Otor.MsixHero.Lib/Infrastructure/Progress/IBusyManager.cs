@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 
-namespace Otor.MsixHero.Lib.Infrastructure
+namespace Otor.MsixHero.Lib.Infrastructure.Progress
 {
     public interface IBusyManager
     {

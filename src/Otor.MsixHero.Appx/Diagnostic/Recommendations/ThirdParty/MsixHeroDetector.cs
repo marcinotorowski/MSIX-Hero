@@ -2,7 +2,7 @@
 using System.Reflection;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 
-namespace Otor.MsixHero.Lib.BusinessLayer.SystemState.ThirdParty
+namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
 {
     public class MsixHeroAppProvider : IThirdPartyAppProvider
     {

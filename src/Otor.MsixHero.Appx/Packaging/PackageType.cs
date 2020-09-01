@@ -1,4 +1,4 @@
-﻿namespace Otor.MsixHero.Lib.Domain.Appx
+﻿namespace Otor.MsixHero.Appx.Packaging
 {
     public enum PackageType
     {

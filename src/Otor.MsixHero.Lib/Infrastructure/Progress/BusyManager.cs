@@ -7,10 +7,8 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
-using Otor.MsixHero.Lib.Infrastructure;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 
-namespace Otor.MsixHero.Lib.BusinessLayer.State
+namespace Otor.MsixHero.Lib.Infrastructure.Progress
 {
     public class BusyManager : IBusyManager
     {

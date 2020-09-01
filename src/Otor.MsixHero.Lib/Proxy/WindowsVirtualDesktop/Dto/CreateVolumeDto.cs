@@ -1,6 +1,4 @@
-﻿using Otor.MsixHero.Lib.Domain.Commands;
-
-namespace Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop.Dto
+﻿namespace Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop.Dto
 {
     public class CreateVolumeDto : ProxyObject
     {

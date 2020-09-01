@@ -17,6 +17,7 @@
              xmlns:developerMode="clr-namespace:Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.DeveloperMode"
              xmlns:repackaging="clr-namespace:Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Repackaging"
              xmlns:tooling="clr-namespace:Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Tooling"
+             xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;assembly=Otor.MsixHero.Appx"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:SystemStatusViewModel}">
     <UserControl.Resources>
@@ -364,10 +365,10 @@
                                                     </Button>
                                                 </StackPanel>
                                                 <DataTemplate.Triggers>
-                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static services:ServiceRecommendationType.OneTime}">
+                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static enums:ServiceRecommendationType.OneTime}">
                                                         <Setter TargetName="PART_ButtonDisable" Property="Text" Value="Kill process" />
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static services:ServiceRecommendationType.WindowsDefender}">
+                                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static enums:ServiceRecommendationType.WindowsDefender}">
                                                         <Setter TargetName="PART_Shield" Property="Visibility" Value="Collapsed" />
                                                         <Setter TargetName="PART_ButtonDisable" Property="Text" Value="Open Windows Defender Settings" />
                                                     </DataTrigger>

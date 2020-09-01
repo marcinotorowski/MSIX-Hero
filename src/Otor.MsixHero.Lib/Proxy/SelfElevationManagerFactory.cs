@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
@@ -11,21 +12,21 @@ using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.BusinessLayer;
 using Otor.MsixHero.Lib.Proxy.Diagnostic;
 using Otor.MsixHero.Lib.Proxy.Packaging;
 using Otor.MsixHero.Lib.Proxy.Signing;
 using Otor.MsixHero.Lib.Proxy.Volumes;
 using Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop;
 
-namespace Otor.MsixHero.Lib.Infrastructure
+namespace Otor.MsixHero.Lib.Proxy
 {
     public class SelfElevationManagerFactory : 
         ISelfElevationProxyProvider<ISigningManager>,
         ISelfElevationProxyProvider<IAppxVolumeManager>,
         ISelfElevationProxyProvider<IAppxPackageManager>,
         ISelfElevationProxyProvider<IAppAttachManager>,
-        ISelfElevationProxyProvider<IRegistryManager>
+        ISelfElevationProxyProvider<IRegistryManager>,
+        ISelfElevationProxyProvider<IAppxLogManager>
     {
         private readonly IElevatedClient client;
         private readonly IConfigurationService configurationService;
@@ -123,6 +124,29 @@ namespace Otor.MsixHero.Lib.Infrastructure
                     }
 
                     return new RegistryManagerElevationProxy(this.client);
+                default:
+                    throw new InvalidOperationException("Elevation API returned wrong results.");
+            }
+        }
+
+        async Task<IAppxLogManager> ISelfElevationProxyProvider<IAppxLogManager>.GetProxyFor(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken)
+        {
+            if (selfElevationLevel == SelfElevationLevel.HighestAvailable)
+            {
+                selfElevationLevel = await this.GetMaxAvailableElevation(cancellationToken).ConfigureAwait(false);
+            }
+
+            switch (selfElevationLevel)
+            {
+                case SelfElevationLevel.AsInvoker:
+                    return new AppxLogManager();
+                case SelfElevationLevel.AsAdministrator:
+                    if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                    {
+                        return new AppxLogManager();
+                    }
+
+                    return new AppxLogManagerElevationProxy(this.client);
                 default:
                     throw new InvalidOperationException("Elevation API returned wrong results.");
             }

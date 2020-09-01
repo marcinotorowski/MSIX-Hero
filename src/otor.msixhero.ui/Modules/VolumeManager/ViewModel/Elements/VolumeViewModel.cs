@@ -1,17 +1,11 @@
-﻿using System.Linq;
-using Otor.MsixHero.Appx.Volumes.Entities;
-using Otor.MsixHero.Ui.Hero;
-using Otor.MsixHero.Ui.Hero.Commands.Volumes;
+﻿using Otor.MsixHero.Appx.Volumes.Entities;
 
 namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements
 {
     public class VolumeViewModel : SelectableViewModel<AppxVolume>
     {
-        private readonly IMsixHeroApplication app;
-
-        public VolumeViewModel(IMsixHeroApplication app, AppxVolume model, bool isSelected = false) : base(model, isSelected)
+        public VolumeViewModel(AppxVolume model) : base(model)
         {
-            this.app = app;
         }
 
         public bool IsDefault => this.Model.IsDefault;
@@ -27,19 +21,5 @@ namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements
         public string Label => this.Model.DiskLabel;
         
         public string PackageStorePath => this.Model.PackageStorePath;
-
-        protected override bool TrySelect()
-        {
-            var selected = this.app.ApplicationState.Volumes.SelectedVolumes.Select(p => p.PackageStorePath).Union(new[] { this.PackageStorePath });
-            this.app.CommandExecutor.Invoke(this, new SelectVolumesCommand(selected));
-            return true;
-        }
-
-        protected override bool TryUnselect()
-        {
-            var selected = this.app.ApplicationState.Volumes.SelectedVolumes.Select(p => p.PackageStorePath).Except(new[] { this.PackageStorePath });
-            this.app.CommandExecutor.Invoke(this, new SelectVolumesCommand(selected));
-            return true;
-        }
     }
 }

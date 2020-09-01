@@ -1,29 +1,37 @@
-﻿using System;
-using System.Windows.Input;
-using Otor.MsixHero.Lib.BusinessLayer.State;
-using Otor.MsixHero.Lib.Domain.Commands.EventViewer;
+﻿using System.Windows.Input;
+using Otor.MsixHero.Appx.Diagnostic.Logging.Enums;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Logs;
+using Otor.MsixHero.Ui.Hero.Executor;
 
 namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
 {
     public class EventViewerCommandHandler
     {
-        private readonly EventViewerViewModel viewModel;
         private readonly IMsixHeroApplication application;
+        private readonly IBusyManager busyManager;
+        private readonly IInteractionService interactionService;
         private ICommand refresh, openLogs;
 
-        public EventViewerCommandHandler(EventViewerViewModel viewModel, IMsixHeroApplication application)
+        public EventViewerCommandHandler(
+            IMsixHeroApplication application,
+            IBusyManager busyManager,
+            IInteractionService interactionService)
         {
-            this.viewModel = viewModel;
             this.application = application;
+            this.busyManager = busyManager;
+            this.interactionService = interactionService;
         }
 
         public ICommand Refresh
         {
             get
             {
-                return this.refresh ??= new DelegateCommand(this.RefreshExecute, this.CanExecuteRefresh);
+                return this.refresh ??= new DelegateCommand(this.RefreshExecute);
             }
         }
 
@@ -31,30 +39,23 @@ namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
         {
             get
             {
-                return this.openLogs ??= new DelegateCommand(this.OpenLogsExecute, this.CanExecuteOpenLogs);
+                return this.openLogs ??= new DelegateCommand(this.OpenLogsExecute);
             }
         }
 
         private void OpenLogsExecute(object obj)
         {
-            // todo:
-            throw new NotImplementedException();
-            // this.stateManager.CommandExecutor.ExecuteAsync(new OpenEventViewer(obj is EventLogType elt ? elt : EventLogType.AppXDeploymentOperational));
-        }
-
-        private bool CanExecuteOpenLogs(object obj)
-        {
-            return true;
-        }
-
-        private bool CanExecuteRefresh(object obj)
-        {
-            return !this.viewModel.Progress.IsLoading;
+            this.application.CommandExecutor
+                .WithErrorHandling(this.interactionService, true)
+                .Invoke(this, new OpenEventViewerCommand(obj is EventLogCategory elt ? elt : EventLogCategory.AppXDeploymentOperational));
         }
 
         public void RefreshExecute(object param)
         {
-            this.viewModel.Reload();
+            this.application.CommandExecutor
+                .WithBusyManager(this.busyManager, OperationType.EventsLoading)
+                .WithErrorHandling(this.interactionService, true)
+                .Invoke(this, new GetLogsCommand()).ConfigureAwait(false);
         }
     }
 }

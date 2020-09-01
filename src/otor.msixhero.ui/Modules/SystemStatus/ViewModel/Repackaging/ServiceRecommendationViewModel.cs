@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.BusinessLayer.SystemState.Services;
 using Otor.MsixHero.Ui.ViewModel;
 
 namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Repackaging

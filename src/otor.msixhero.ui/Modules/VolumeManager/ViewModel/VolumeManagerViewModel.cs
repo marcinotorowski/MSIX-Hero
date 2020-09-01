@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
@@ -15,6 +15,7 @@ using Otor.MsixHero.Ui.Hero.Commands;
 using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 using Otor.MsixHero.Ui.Hero.Events.Base;
 using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Hero.State;
 using Otor.MsixHero.Ui.Modules.Common;
 using Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements;
 using Otor.MsixHero.Ui.Themes;
@@ -50,40 +51,17 @@ namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel
             this.interactionService = interactionService;
             this.busyManager = busyManager;
 
-
-            eventAggregator.GetEvent<UiExecutedEvent<GetVolumesCommand>>().Subscribe(this.OnGetVolumes, ThreadOption.UIThread);
-            eventAggregator.GetEvent<UiExecutedEvent<SelectVolumesCommand>>().Subscribe(this.OnSelectVolumes, ThreadOption.UIThread);
+            eventAggregator.GetEvent<UiExecutedEvent<GetVolumesCommand>>().Subscribe(this.OnGetVolumes);
             eventAggregator.GetEvent<UiExecutedEvent<SetVolumeFilterCommand>>().Subscribe(this.OnSetVolumeFilter, ThreadOption.UIThread);
-            // eventAggregator.GetEvent<VolumesVisibilityChanged>().Subscribe(this.OnVolumesVisibilityChanged, ThreadOption.UIThread);
             
-            this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
-            this.AllVolumesView.Filter = this.FilterVolume;
-
             this.CommandHandler = new VolumeManagerCommandHandler(this.application, volumeManagerProvider, configurationService, interactionService, dialogService, busyManager);
             this.busyManager.StatusChanged += this.BusyManagerOnStatusChanged;
+
+            this.AllVolumes = new List<VolumeViewModel>();
+            this.AllVolumesView = CollectionViewSource.GetDefaultView(this.AllVolumes);
+            this.AllVolumesView.Filter = row => this.IsVolumeVisible((VolumeViewModel)row);
         }
-
-        private bool FilterVolume(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(this.SearchKey))
-            {
-                return true;
-            }
-
-            var volume = (VolumeViewModel) obj;
-            if (
-                (volume.Name != null && volume.Name.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) > -1) ||
-                (volume.PackageStorePath != null &&
-                 volume.PackageStorePath.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) > -1) ||
-                (volume.Label != null && volume.Label.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) > -1))
-            {
-                return true;
-            }
-
-            volume.IsSelected = false;
-            return false;
-        }
-
+        
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
             if (e.Type != OperationType.VolumeLoading)
@@ -121,25 +99,36 @@ namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel
             get => this.isActive;
             set
             {
-                if (this.isActive == value)
+                if (!this.SetField(ref this.isActive, value))
                 {
                     return;
                 }
 
-                this.isActive = value;
                 this.IsActiveChanged?.Invoke(this, new EventArgs());
-
-                if (value && this.firstRun)
-                {
-                    this.firstRun = false;
-                    this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.VolumeManager));
-
-                    this.application.CommandExecutor
-                        .WithErrorHandling(this.interactionService, true)
-                        .WithBusyManager(this.busyManager, OperationType.VolumeLoading)
-                        .Invoke(this, new GetVolumesCommand());
-                }
+                this.SetIsActive(value);
             }
+        }
+
+        private async void SetIsActive(bool value)
+        {
+            if (!value)
+            {
+                return;
+            }
+
+            await this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.VolumeManager)).ConfigureAwait(false);
+
+            if (!this.firstRun)
+            {
+                return;
+            }
+            
+            this.firstRun = false;
+
+            await this.application.CommandExecutor
+                .WithErrorHandling(this.interactionService, true)
+                .WithBusyManager(this.busyManager, OperationType.VolumeLoading)
+                .Invoke(this, new GetVolumesCommand()).ConfigureAwait(false);
         }
 
         public event EventHandler IsActiveChanged;
@@ -157,11 +146,11 @@ namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
-
-        public ObservableCollection<VolumeViewModel> AllVolumes { get; } = new ObservableCollection<VolumeViewModel>();
+        
+        public IList<VolumeViewModel> AllVolumes { get; }
 
         public ICollectionView AllVolumesView { get; }
-
+        
         public string Header { get; } = "Volume manager";
 
         public Geometry Icon { get; } = VectorIcons.TabVolumes;
@@ -172,63 +161,42 @@ namespace Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel
             set => this.application.CommandExecutor.Invoke(this, new SetVolumeFilterCommand(value));
         }
 
+        private bool IsVolumeVisible(VolumeViewModel volume)
+        {
+            if (string.IsNullOrWhiteSpace(this.SearchKey))
+            {
+                return true;
+            }
+
+            if (
+                (volume.Name != null && volume.Name.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) > -1) ||
+                (volume.PackageStorePath != null &&
+                 volume.PackageStorePath.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) > -1) ||
+                (volume.Label != null && volume.Label.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) > -1))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public IEnumerable<VolumeViewModel> GetSelection()
+        {
+            return this.AllVolumes.Where(v => this.application.ApplicationState.Volumes.SelectedVolumes.Contains(v.Model));
+        }
+
         private void OnSetVolumeFilter(UiExecutedPayload<SetVolumeFilterCommand> obj)
         {
             this.OnPropertyChanged(nameof(SearchKey));
             this.AllVolumesView.Refresh();
         }
-        //private void OnVolumesVisibilityChanged(VolumesVisibilityChangedPayLoad visibilityInfo)
-        //{
-        //    for (var i = this.AllVolumes.Count - 1; i >= 0; i--)
-        //    {
-        //        var item = this.AllVolumes[i];
-        //        if (visibilityInfo.NewHidden.Contains(item.Model))
-        //        {
-        //            this.AllVolumes.RemoveAt(i);
-        //        }
-        //    }
-
-        //    foreach (var item in visibilityInfo.NewVisible)
-        //    {
-        //        this.AllVolumes.Add(new VolumeViewModel(item));
-        //    }
-        //}
-
-        private void OnSelectVolumes(UiExecutedPayload<SelectVolumesCommand> obj)
-        {
-            if (obj.Sender is VolumeViewModel)
-            {
-                return;
-            }
-
-            var countSelected = 0;
-
-            foreach (var item in this.AllVolumes)
-            {
-                if (this.application.ApplicationState.Volumes.SelectedVolumes.Contains(item.Model))
-                {
-                    item.IsSelected = true;
-                }
-                else
-                {
-                    item.IsSelected = false;
-                }
-
-                if (item.IsSelected && countSelected < 2)
-                {
-                    countSelected++;
-                }
-            }
-        }
 
         private void OnGetVolumes(UiExecutedPayload<GetVolumesCommand> obj)
         {
-            var selectedItems = this.application.ApplicationState.Volumes.SelectedVolumes.Select(v => v.PackageStorePath).ToArray();
-
             this.AllVolumes.Clear();
             foreach (var item in this.application.ApplicationState.Volumes.AllVolumes)
             {
-                this.AllVolumes.Add(new VolumeViewModel(this.application, item, selectedItems.Contains(item.PackageStorePath)));
+                this.AllVolumes.Add(new VolumeViewModel(item));
             }
         }
     }

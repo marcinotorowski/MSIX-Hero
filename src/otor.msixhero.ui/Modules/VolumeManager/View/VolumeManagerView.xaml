@@ -126,9 +126,8 @@
                 x:Name="ListBox"
                 SelectionMode="Extended"
                 BorderBrush="#ccc" 
-                SnapsToDevicePixels="True" 
-                UseLayoutRounding="True" 
-                ItemsSource="{Binding AllVolumesView}">
+                SnapsToDevicePixels="True"
+                UseLayoutRounding="True" >
                 <ListBox.InputBindings>
                     <KeyBinding Modifiers="Control" Key="F" Command="Search" />
                 </ListBox.InputBindings>
@@ -162,9 +161,7 @@
                 </ListBox.ContextMenu>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
                         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="BorderThickness" Value="0 0 0 0" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">

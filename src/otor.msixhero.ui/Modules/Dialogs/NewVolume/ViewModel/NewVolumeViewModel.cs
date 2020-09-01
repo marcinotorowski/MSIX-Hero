@@ -11,18 +11,23 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 using Otor.MsixHero.Ui.Domain;
 using Otor.MsixHero.Ui.Helpers;
+using Otor.MsixHero.Ui.Hero;
+using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 using Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel.Items;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel
 {
     public class NewVolumeViewModel : ChangeableDialogViewModel
     {
+        private readonly IMsixHeroApplication application;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManager;
 
         public NewVolumeViewModel(
+            IMsixHeroApplication application,
             IInteractionService interactionService, 
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManager) : base("New volume", interactionService)
         {
+            this.application = application;
             this.volumeManager = volumeManager;
             this.Path = new ChangeableProperty<string>("WindowsApps");
 
@@ -89,9 +94,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewVolume.ViewModel
             }
 
             progress.Report(new ProgressData(90, "Reading volumes..."));
-            // todo
-            // await this.stateManager.CommandExecutor.ExecuteAsync(new GetAllDto(), cancellationToken).ConfigureAwait(false);
-
+            
+            await this.application.CommandExecutor.Invoke(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
             return true;
         }
 

@@ -3,12 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.BusinessLayer.State;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
-using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel;
 using Prism.Services.Dialogs;
 
@@ -17,13 +16,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
     public class PackageExpertViewModel : ChangeableDialogViewModel, IDialogAware
     {
         public PackageExpertViewModel(
-            IMsixHeroApplication application,
+            IInterProcessCommunicationManager interProcessCommunicationManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             IInteractionService interactionService, 
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IConfigurationService configurationService) : base("MSIX Hero - Package Expert", interactionService)
         {
-            this.Content = new PackageContentViewModel(application, packageManagerProvider, signManager, interactionService, configurationService);
+            this.Content = new PackageContentViewModel(interProcessCommunicationManager, packageManagerProvider, signManager, interactionService, configurationService);
         }
 
         public void OnDialogOpened(IDialogParameters parameters)

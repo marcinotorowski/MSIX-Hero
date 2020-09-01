@@ -6,10 +6,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Domain.Appx;
 using Otor.MsixHero.Ui.Domain;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
@@ -109,7 +109,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
         public bool AllowBrowsing { get; private set; }
         
-        public bool IsBundle => this.PackageType.CurrentValue == Otor.MsixHero.Lib.Domain.Appx.PackageType.Bundle;
+        public bool IsBundle => this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle;
 
         public ChangeableProperty<PackageType> PackageType { get; }
         
@@ -172,11 +172,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 var extension = Path.GetExtension((string)e.NewValue);
                 if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.PackageType.CurrentValue = Otor.MsixHero.Lib.Domain.Appx.PackageType.Bundle;
+                    this.PackageType.CurrentValue = Appx.Packaging.PackageType.Bundle;
                 }
                 else if (string.Equals(extension, ".appx", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msix", StringComparison.OrdinalIgnoreCase))
                 {
-                    this.PackageType.CurrentValue = Otor.MsixHero.Lib.Domain.Appx.PackageType.Package;
+                    this.PackageType.CurrentValue = Appx.Packaging.PackageType.Package;
                 }
 
                 try
@@ -271,7 +271,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
             if (allowPackages)
             {
-                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Otor.MsixHero.Lib.Domain.Appx.PackageType.Package)
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Package)
                 {
                     extensions.Add("*.msix");
                     extensions.Add("*.appx");
@@ -282,7 +282,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 
             if (allowBundles)
             {
-                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Otor.MsixHero.Lib.Domain.Appx.PackageType.Bundle)
+                if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle)
                 {
                     extensions.Add("*.appxbundle");
                     names.Append("Bundles|*.appxbundle|");

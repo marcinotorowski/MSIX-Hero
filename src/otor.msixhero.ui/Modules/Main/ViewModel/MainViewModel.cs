@@ -9,7 +9,6 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.Updates;
 using Otor.MsixHero.Lib.Domain.Events;
-using Otor.MsixHero.Lib.Infrastructure;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;

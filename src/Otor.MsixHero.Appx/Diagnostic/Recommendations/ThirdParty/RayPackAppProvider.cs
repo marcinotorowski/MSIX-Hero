@@ -4,7 +4,7 @@ using System.Linq;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 
-namespace Otor.MsixHero.Lib.BusinessLayer.SystemState.ThirdParty
+namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
 {
     public class RayPackAppProvider : IThirdPartyAppProvider
     {

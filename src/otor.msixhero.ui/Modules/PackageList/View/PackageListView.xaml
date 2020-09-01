@@ -381,9 +381,7 @@
                         IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                         MouseDoubleClick="ListOnMouseDoubleClick"
                         x:Name="ListView"
-                        ContextMenu="{StaticResource PackageContextMenu}"
-                        SelectionChanged="OnListViewSelectionChanged"
-                        ItemsSource="{Binding AllPackagesView}">
+                        ContextMenu="{StaticResource PackageContextMenu}">
                         <ListView.InputBindings>
                             <KeyBinding Modifiers="Control" Key="F" Command="Search" />
                         </ListView.InputBindings>
@@ -506,10 +504,8 @@
                         IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                         x:Name="ListBox"
                         SelectionMode="Extended"
-                        SelectionChanged="OnListBoxSelectionChanged"
                         MouseDoubleClick="ListOnMouseDoubleClick"
-                        ContextMenu="{StaticResource PackageContextMenu}"
-                        ItemsSource="{Binding AllPackagesView}">
+                        ContextMenu="{StaticResource PackageContextMenu}">
                         <ListBox.InputBindings>
                             <KeyBinding Modifiers="Control" Key="F" Command="Search" />
                         </ListBox.InputBindings>

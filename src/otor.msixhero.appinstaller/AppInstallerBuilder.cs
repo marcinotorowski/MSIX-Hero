@@ -5,10 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
-using Otor.MsixHero.Lib.Domain.Appx;
 
 namespace Otor.MsixHero.AppInstaller
 {

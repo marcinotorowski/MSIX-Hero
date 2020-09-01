@@ -16,6 +16,7 @@ using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Hero.Events.Base;
 using Otor.MsixHero.Ui.Modules.PackageList.ViewModel;
+using Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements;
 using Prism.Events;
 using Prism.Regions;
 
@@ -42,7 +43,12 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             // Subscribe to events
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSidebarVisibilityCommand>>().Subscribe(this.OnSetPackageSidebarVisibility, ThreadOption.UIThread);
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
-            
+
+            application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages, ThreadOption.UIThread);
+            application.EventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnExecutingGetPackages);
+            application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnCancelledGetPackages, ThreadOption.UIThread);
+            application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages, ThreadOption.UIThread);
+
             // Set up defaults
             this.UpdateSidebarVisibility();
 
@@ -50,9 +56,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             FocusManager.SetFocusedElement(this, focusable);
             this.Loaded += this.OnLoaded;
             this.IsVisibleChanged += OnIsVisibleChanged;
-
-            this.ListView.SelectionChanged += this.OnListViewSelectionChanged;
-            this.ListBox.SelectionChanged += this.OnListBoxSelectionChanged;
         }
         
         private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -137,19 +140,71 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             this.UpdateSidebarVisibility();
         }
 
-        private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems?.Count > 0 && e.AddedItems[0] != null)
+            if (this.ignoreListViewSelectionEvents)
             {
-                this.ListBox.ScrollIntoView(e.AddedItems[0]);
+                return;
+            }
+
+            try
+            {
+                this.ignoreListBoxSelectionEvents = true;
+                this.ListBox.SelectedItems.Clear();
+
+                foreach (var item in this.ListView.SelectedItems)
+                {
+                    this.ListBox.SelectedItems.Add(item);
+                }
+            }
+            finally
+            {
+                this.ignoreListBoxSelectionEvents = false;
+            }
+
+            try
+            {
+                this.ignoreListViewSelectionEvents = true;
+                var selected = ((ListView)sender).SelectedItems.OfType<InstalledPackageViewModel>().Select(v => v.Model.ManifestLocation);
+                await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected)).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.ignoreListViewSelectionEvents = false;
             }
         }
-
-        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+        
+        private async void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems?.Count > 0 && e.AddedItems[0] != null)
+            if (this.ignoreListBoxSelectionEvents)
             {
-                this.ListView.ScrollIntoView(e.AddedItems[0]);
+                return;
+            }
+
+            try
+            {
+                this.ignoreListViewSelectionEvents = true;
+                this.ListView.SelectedItems.Clear();
+
+                foreach (var item in this.ListBox.SelectedItems)
+                {
+                    this.ListView.SelectedItems.Add(item);
+                }
+            }
+            finally
+            {
+                this.ignoreListViewSelectionEvents = false;
+            }
+            
+            try
+            {
+                this.ignoreListBoxSelectionEvents = true;
+                var selected = ((ListBox)sender).SelectedItems.OfType<InstalledPackageViewModel>().Select(v => v.Model.ManifestLocation);
+                await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected)).ConfigureAwait(false);
+            }
+            finally
+            {
+                this.ignoreListBoxSelectionEvents = false;
             }
         }
 
@@ -176,15 +231,29 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
         {
             var width = this.Search.ActualWidth;
 
+            var wasListBoxVisible = this.PanelListBox.Visibility != Visibility.Collapsed;
+            
             if (width > 500)
             {
                 this.PanelListView.Visibility = Visibility.Visible;
                 this.PanelListBox.Visibility = Visibility.Collapsed;
+
+                if (wasListBoxVisible && this.ListView.SelectedItems.Count > 0)
+                {
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    this.ListView.ScrollIntoView(this.ListView.SelectedItems[0]);
+                }
             }
             else
             {
                 this.PanelListView.Visibility = Visibility.Collapsed;
                 this.PanelListBox.Visibility = Visibility.Visible;
+
+                if (!wasListBoxVisible && this.ListBox.SelectedItems.Count > 0)
+                {
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    this.ListBox.ScrollIntoView(this.ListBox.SelectedItems[0]);
+                }
             }
         }
 
@@ -227,6 +296,98 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             Keyboard.Focus(this.SearchBox);
             FocusManager.SetFocusedElement(this, this.SearchBox);
             this.SearchBox.Focus();
+        }
+
+        private bool ignoreListBoxSelectionEvents;
+        private bool ignoreListViewSelectionEvents;
+
+        private void OnExecutingGetPackages(UiExecutingPayload<GetPackagesCommand> obj)
+        {
+            // this.ignoreSelectionEvents = true;
+        }
+
+        private void OnCancelledGetPackages(UiCancelledPayload<GetPackagesCommand> obj)
+        {
+            this.ignoreListBoxSelectionEvents = false;
+            this.ignoreListViewSelectionEvents = false;
+        }
+
+        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
+        {
+            this.ignoreListViewSelectionEvents = false;
+            this.ignoreListBoxSelectionEvents = false;
+
+            try
+            {
+                this.ignoreListViewSelectionEvents = true;
+                this.ignoreListBoxSelectionEvents = true;
+                this.ListBox.SelectionChanged -= this.OnListBoxSelectionChanged;
+                this.ListView.SelectionChanged -= this.OnListViewSelectionChanged;
+
+                this.ListBox.ItemsSource = ((PackageListViewModel)this.DataContext).AllPackagesView;
+                this.ListView.ItemsSource = ((PackageListViewModel)this.DataContext).AllPackagesView;
+                ((PackageListViewModel)this.DataContext).AllPackagesView.Refresh();
+
+                this.ListBox.SelectedItems.Clear();
+                this.ListView.SelectedItems.Clear();
+                foreach (var item in ((PackageListViewModel)this.DataContext).GetSelection())
+                {
+                    this.ListBox.SelectedItems.Add(item);
+                    this.ListView.SelectedItems.Add(item);
+                }
+            }
+            finally
+            {
+                this.ignoreListViewSelectionEvents = false;
+                this.ignoreListBoxSelectionEvents = false;
+                this.ListBox.SelectionChanged += this.OnListBoxSelectionChanged;
+                this.ListView.SelectionChanged += this.OnListViewSelectionChanged;
+            }
+        }
+
+        private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)
+        {
+            // ReSharper disable once PossibleUnintendedReferenceComparison
+            if (obj.Sender == this)
+            {
+                return;
+            }
+
+            if (!this.ignoreListViewSelectionEvents)
+            {
+                try
+                {
+                    this.ignoreListViewSelectionEvents = true;
+
+                    this.ListView.SelectedItems.Clear();
+                    foreach (var item in ((PackageListViewModel)this.DataContext).GetSelection())
+                    {
+                        this.ListView.SelectedItems.Add(item);
+                    }
+                }
+                finally
+                {
+                    this.ignoreListViewSelectionEvents = false;
+                }
+            }
+
+            if (!this.ignoreListBoxSelectionEvents)
+            {
+                try
+                {
+                    this.ignoreListBoxSelectionEvents = true;
+
+                    this.ListBox.SelectedItems.Clear();
+                    foreach (var item in ((PackageListViewModel)this.DataContext).GetSelection())
+                    {
+                        this.ListBox.SelectedItems.Add(item);
+                    }
+                }
+                finally
+                {
+                    this.ignoreListBoxSelectionEvents = false;
+                }
+            }
         }
     }
 

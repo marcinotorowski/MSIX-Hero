@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Diagnostic.Recommendations;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
 
-namespace Otor.MsixHero.Lib.BusinessLayer.SystemState.Services
+namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
 {
     public interface IServiceRecommendationAdvisor
     {

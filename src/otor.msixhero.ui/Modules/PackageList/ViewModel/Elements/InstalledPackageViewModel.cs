@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Linq;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
-using Otor.MsixHero.Ui.Hero;
-using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel.Elements;
 
 namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements
 {
     public class InstalledPackageViewModel : SelectableViewModel<InstalledPackage>
     {
-        private readonly IMsixHeroApplication parent;
-
-        public InstalledPackageViewModel(IMsixHeroApplication parent, InstalledPackage package, bool isSelected = false) : base(package, isSelected)
+        public InstalledPackageViewModel(InstalledPackage package) : base(package)
         {
-            this.parent = parent;
         }
 
         public bool IsAddon => this.Model.IsOptional;
@@ -90,22 +84,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements
         public static explicit operator InstalledPackage(InstalledPackageViewModel installedPackageViewModel)
         {
             return installedPackageViewModel.Model;
-        }
-
-        protected override bool TrySelect()
-        {
-            var selected = parent.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).Union(new [] { this.ManifestLocation });
-            this.parent.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected));
-            // this.parent.NavigateToSelection();
-            return true;
-        }
-
-        protected override bool TryUnselect()
-        {
-            var selected = parent.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).Except(new[] { this.ManifestLocation });
-            this.parent.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected));
-            // this.parent.NavigateToSelection();
-            return true;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
@@ -78,11 +79,13 @@ namespace Otor.MsixHero.AdminHelper
                     IRegistryManager registryManager = new RegistryManager();
                     IConfigurationService configurationService = new LocalConfigurationService();
                     IAppxPackageManager appxPackageManager = new AppxPackageManager(registryManager, configurationService);
+                    IAppxLogManager appxLogManager = new AppxLogManager();
 
                     var receivers = new ISelfElevationProxyReceiver[]
                     {
                         new AppAttachManagerProxyReceiver(appAttachManager),
                         new AppxPackageManagerProxyReceiver(appxPackageManager),
+                        new AppxLogManagerProxyReceiver(appxLogManager), 
                         new AppxVolumeManagerProxyReceiver(appxVolumeManager),
                         new RegistryManagerProxyReceiver(registryManager),
                         new SigningManagerProxyReceiver(signingManager)

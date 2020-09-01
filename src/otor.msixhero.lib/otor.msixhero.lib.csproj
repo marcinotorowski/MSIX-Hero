@@ -43,9 +43,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Domain\Commands\Generic\" />
-    <Folder Include="Domain\Commands\Packages\Grid\" />
-  </ItemGroup>
-
 </Project>

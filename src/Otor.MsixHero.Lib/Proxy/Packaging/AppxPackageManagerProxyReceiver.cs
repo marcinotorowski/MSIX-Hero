@@ -25,7 +25,6 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             yield return typeof(GetByManifestPathDto);
             yield return typeof(GetByIdentityDto);
             yield return typeof(GetInstalledPackagesDto);
-            yield return typeof(GetLogsDto);
             yield return typeof(GetModificationPackagesDto);
             yield return typeof(GetUsersForPackageDto);
             yield return typeof(RemoveDto);
@@ -96,12 +95,6 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
 
                 object proxiedObject = await this.SelfElevationAwareObject.GetInstalledPackages(mode, cancellationToken, progress).ConfigureAwait(false);
                 return (TCommandResult)proxiedObject;
-            }
-
-            if (command is GetLogsDto getLogsDto)
-            {
-                object proxiedObject = await this.SelfElevationAwareObject.GetLogs(getLogsDto.MaxCount, cancellationToken, progress).ConfigureAwait(false);
-                return (TCommandResult) proxiedObject;
             }
 
             if (command is GetModificationPackagesDto getModificationPackagesDto)

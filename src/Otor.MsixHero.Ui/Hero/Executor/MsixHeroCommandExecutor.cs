@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Diagnostic.Logging;
+using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
@@ -15,6 +17,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Hero.Commands.Logs;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 using Prism.Events;
@@ -25,16 +28,19 @@ namespace Otor.MsixHero.Ui.Hero.Executor
     {
         private readonly IConfigurationService configurationService;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
 
         public MsixHeroCommandExecutor(
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider) : base(eventAggregator)
         {
             this.configurationService = configurationService;
             this.packageManagerProvider = packageManagerProvider;
+            this.logManagerProvider = logManagerProvider;
             this.volumeManagerProvider = volumeManagerProvider;
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
             this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
@@ -43,11 +49,27 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             this.Handlers[typeof(GetPackagesCommand)] = (command, token, progress) => this.GetPackages((GetPackagesCommand)command, token, progress);
             this.Handlers[typeof(SelectPackagesCommand)] = (command, token, progress) => this.SelectPackages((SelectPackagesCommand)command);
 
+            this.Handlers[typeof(GetLogsCommand)] = (command, token, progress) => this.GetLogs((GetLogsCommand)command, token, progress);
+            this.Handlers[typeof(OpenEventViewerCommand)] = (command, token, progress) => this.OpenEventViewer((OpenEventViewerCommand)command, token, progress);
+
             this.Handlers[typeof(SetPackageFilterCommand)] = (command, token, progress) => this.SetPackageFilter((SetPackageFilterCommand)command);
             this.Handlers[typeof(SetCurrentModeCommand)] = (command, token, progress) => this.SetCurrentMode((SetCurrentModeCommand)command);
             this.Handlers[typeof(SetPackageSortingCommand)] = (command, token, progress) => this.SetPackageSorting((SetPackageSortingCommand)command);
             this.Handlers[typeof(SetPackageGroupingCommand)] = (command, token, progress) => this.SetPackageGrouping((SetPackageGroupingCommand)command);
             this.Handlers[typeof(SetPackageSidebarVisibilityCommand)] = (command, token, progress) => this.SetPackageSidebarVisibility((SetPackageSidebarVisibilityCommand)command);
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        private async Task<IList<Log>> GetLogs(GetLogsCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
+        {
+            var manager = await this.logManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            return await manager.GetLogs(command.Count, cancellationToken, progressData).ConfigureAwait(false);
+        }
+
+        private async Task OpenEventViewer(OpenEventViewerCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
+        {
+            var manager = await this.logManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            await manager.OpenEventViewer(command.Type, cancellationToken, progressData).ConfigureAwait(false);
         }
 
         private async Task<PackageGroup> SetPackageGrouping(SetPackageGroupingCommand command)
@@ -235,7 +257,11 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             // await this.Invoke(this, new SelectPackagesCommand(), cancellationToken).ConfigureAwait(false);
             if (selected.Any())
             {
-                await this.Invoke(this, new SelectPackagesCommand(selected), cancellationToken).ConfigureAwait(false);
+                this.ApplicationState.Packages.SelectedPackages.Clear();
+                foreach (var item in this.ApplicationState.Packages.AllPackages.Where(p => selected.Contains(p.ManifestLocation)))
+                {
+                    this.ApplicationState.Packages.SelectedPackages.Add(item);
+                }
             }
 
             switch (mode)
@@ -274,7 +300,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
             if (selected.Any())
             {
-                await this.Invoke(this, new SelectVolumesCommand(selected), cancellationToken).ConfigureAwait(false);
+                this.ApplicationState.Volumes.SelectedVolumes = this.ApplicationState.Volumes.AllVolumes.Where(v => selected.Contains(v.PackageStorePath)).ToList();
             }
             
             return results;

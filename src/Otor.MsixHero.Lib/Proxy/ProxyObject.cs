@@ -5,7 +5,7 @@ using Otor.MsixHero.Lib.Proxy.Diagnostic.Dto;
 using Otor.MsixHero.Lib.Proxy.Packaging.Dto;
 using Otor.MsixHero.Lib.Proxy.Signing.Dto;
 
-namespace Otor.MsixHero.Lib.Domain.Commands
+namespace Otor.MsixHero.Lib.Proxy
 {
     [Serializable]
     [XmlInclude(typeof(GetInstalledPackagesDto))]

@@ -8,6 +8,7 @@ using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Proxy;
 
 namespace Otor.MsixHero.Tests
 {

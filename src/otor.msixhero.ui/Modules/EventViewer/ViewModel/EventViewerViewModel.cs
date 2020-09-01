@@ -4,22 +4,25 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
-using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Controls.Progress;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Hero.Commands.Logs;
+using Otor.MsixHero.Ui.Hero.Events.Base;
+using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Hero.State;
 using Otor.MsixHero.Ui.Modules.Common;
 using Otor.MsixHero.Ui.Themes;
 using Otor.MsixHero.Ui.ViewModel;
 using Prism;
+using Prism.Events;
 using Prism.Regions;
 
 namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
@@ -28,29 +31,55 @@ namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
     {
         private bool isActive;
         private readonly IMsixHeroApplication application;
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly IBusyManager busyManager;
         private readonly IInteractionService interactionService;
         private bool firstRun = true;
         private string searchKey;
 
         public EventViewerViewModel(
             IMsixHeroApplication application,
-            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            IBusyManager busyManager,
             IInteractionService interactionService)
         {
             this.application = application;
-            this.packageManagerProvider = packageManagerProvider;
+            this.busyManager = busyManager;
             this.interactionService = interactionService;
             this.Logs = new ObservableCollection<Log>();
             this.LogsView = CollectionViewSource.GetDefaultView(this.Logs);
             this.LogsView.Filter += Filter;
             this.Sort(nameof(Log.DateTime), false);
-            this.CommandHandler = new EventViewerCommandHandler(this, application);
+            this.CommandHandler = new EventViewerCommandHandler(this.application, busyManager, interactionService);
             this.MaxLogs = 250;
             this.End = DateTime.Now;
             this.Start = this.End.Subtract(TimeSpan.FromDays(5));
+
+            this.busyManager.StatusChanged += BusyManagerOnStatusChanged;
+            this.Progress = new ProgressProperty();
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetLogsCommand, IList<Log>>>().Subscribe(this.OnGetLogs, ThreadOption.UIThread);
         }
-        
+
+        private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
+        {
+            if (e.Type != OperationType.EventsLoading)
+            {
+                return;
+            }
+
+            this.Progress.Progress = e.Progress;
+            this.Progress.Message = e.Message;
+            this.Progress.IsLoading = e.IsBusy;
+        }
+
+        public ProgressProperty Progress { get; } 
+
+        private void OnGetLogs(UiExecutedPayload<GetLogsCommand, IList<Log>> obj)
+        {
+            foreach (var item in obj.Result)
+            {
+                this.Logs.Add(item);
+            }
+        }
+
         public EventViewerCommandHandler CommandHandler { get; }
 
         public string SearchKey
@@ -66,42 +95,7 @@ namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
                 this.LogsView.Refresh();
             }
         }
-
-        public ProgressProperty Progress { get; } = new ProgressProperty { SupportsCancelling = true };
-
-        public async Task<IList<Log>> GetLogs()
-        {
-            try
-            {
-                // todo: rewrite to UiCommand
-                this.Progress.IsLoading = true;
-
-                var packageManager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
-                
-                using (var cts = new CancellationTokenSource())
-                {
-                    var p = new Progress<ProgressData>();
-                    var task = packageManager.GetLogs(this.MaxLogs, cts.Token, p);
-                    this.Progress.MonitorProgress(task, cts, p);
-                    var result = await task.ConfigureAwait(false);
-                    return new List<Log>(result);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                this.interactionService.ShowError("Could not get last 250 logs.", e);
-                return new ObservableCollection<Log>();
-            }
-            finally
-            {
-                this.Progress.IsLoading = false;
-            }
-        }
-
+        
         public ObservableCollection<Log> Logs { get; }
 
         public ICollectionView LogsView { get; }
@@ -115,18 +109,41 @@ namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
             get => this.isActive;
             set
             {
-                if (this.isActive == value)
+                if (!this.SetField(ref this.isActive, value))
                 {
                     return;
                 }
 
-                this.isActive = value;
                 this.IsActiveChanged?.Invoke(this, new EventArgs());
+                this.SetIsActive(value);
+            }
+        }
 
-                if (value)
+        private async void SetIsActive(bool value)
+        {
+            if (!value)
+            {
+                return;
+            }
+
+            await this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.EventViewer)).ConfigureAwait(true);
+
+            if (!this.firstRun)
+            {
+                return;
+            }
+
+            this.firstRun = false;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                using (var task = this.application.CommandExecutor
+                    .WithBusyManager(this.busyManager, OperationType.EventsLoading)
+                    .WithErrorHandling(this.interactionService, true)
+                    .Invoke(this, new GetLogsCommand(), cts.Token))
                 {
-                    // todo: initial loading of events with Uicommand
-                    throw new NotImplementedException();
+                    this.Progress.MonitorProgress(task, cts);
+                    await task.ConfigureAwait(false);
                 }
             }
         }
@@ -136,31 +153,7 @@ namespace Otor.MsixHero.Ui.Modules.EventViewer.ViewModel
         public DateTime End { get; set; }
 
         public int MaxLogs { get; set; }
-
-        public void Reload()
-        {
-            this.Progress.Progress = -1;
-            this.Progress.Message = "Loading recent events...";
-            this.Progress.IsLoading = true;
-
-            this.GetLogs().ContinueWith(
-                t =>
-                {
-                    this.Progress.Progress = 100;
-                    this.Progress.IsLoading = false;
-                    this.Logs.Clear();
-
-                    foreach (var item in t.Result)
-                    {
-                        this.Logs.Add(item);
-                    }
-
-                },
-                CancellationToken.None,
-                TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously,
-                TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
+        
         public event EventHandler IsActiveChanged;
 
         public void OnNavigatedTo(NavigationContext navigationContext)

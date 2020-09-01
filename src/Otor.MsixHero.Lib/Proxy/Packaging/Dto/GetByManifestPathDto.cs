@@ -2,7 +2,6 @@
 using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Lib.Domain.Commands;
 
 namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
 {

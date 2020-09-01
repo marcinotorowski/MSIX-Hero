@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
-using Otor.MsixHero.Lib.Domain.Commands;
 
 namespace Otor.MsixHero.Lib.Proxy.Diagnostic.Dto
 {

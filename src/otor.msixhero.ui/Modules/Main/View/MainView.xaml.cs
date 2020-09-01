@@ -4,12 +4,14 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Domain.State;
+using Otor.MsixHero.Lib.Infrastructure;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 using Otor.MsixHero.Ui.Hero.Events.Base;
-using Otor.MsixHero.Ui.Hero.Executor;
+using Otor.MsixHero.Ui.Hero.State;
 using Otor.MsixHero.Ui.Modules.Dialogs;
 using Prism.Events;
 using Prism.Services.Dialogs;
@@ -24,6 +26,7 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
         private readonly IMsixHeroApplication application;
+        private readonly IBusyManager busyManager;
 
         public MainView()
         {
@@ -36,14 +39,18 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
         public MainView(
             IDialogService dialogService, 
             IMsixHeroApplication application,
+            IBusyManager busyManager,
             IConfigurationService configurationService) : this()
         {
             this.dialogService = dialogService;
             this.application = application;
+            this.busyManager = busyManager;
             this.configurationService = configurationService;
 
             application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages, ThreadOption.UIThread);
             application.EventAggregator.GetEvent<UiExecutedEvent<SelectVolumesCommand>>().Subscribe(this.OnSelectVolumes, ThreadOption.UIThread);
+            application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages, ThreadOption.UIThread);
+            application.EventAggregator.GetEvent<UiExecutedEvent<GetVolumesCommand>>().Subscribe(this.OnGetVolumes, ThreadOption.UIThread);
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetCurrentModeCommand>>().Subscribe(this.OnSetCurrentMode, ThreadOption.UIThread);
 
             this.ChangeTabVisibility();
@@ -132,7 +139,7 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
                     this.RibbonTabSystemHome.Visibility = Visibility.Collapsed;
 
                     var wasVisible = this.SelectedVolume.IsVisible && this.Ribbon.SelectedTabItem?.IsContextual == true;
-                    this.SelectedVolume.Visibility = this.application.ApplicationState.Volumes.SelectedVolumes != null ? Visibility.Visible : Visibility.Collapsed;
+                    this.SelectedVolume.Visibility = this.application.ApplicationState.Volumes.SelectedVolumes.Any() ? Visibility.Visible : Visibility.Collapsed;
                     this.SelectedPackage.Visibility = Visibility.Collapsed;
 
                     this.RibbonTabEventViewerHome.Visibility = Visibility.Collapsed;
@@ -192,22 +199,48 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
             }
         }
 
-        private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)
+        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
+        {
+            this.HandlePackageSelectionChange(false);
+        }
+
+        private void OnGetVolumes(UiExecutedPayload<GetVolumesCommand> obj)
+        {
+            this.HandleVolumeSelectionChange(false);
+        }
+
+        private void HandleVolumeSelectionChange(bool allowSelectionChange = true)
+        {
+            var wasVisible = this.SelectedVolume.Items.Any(item => item.IsSelected);
+            this.ChangeTabVisibility();
+
+            this.SelectedVolume.Visibility = this.application.ApplicationState.Volumes.SelectedVolumes.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!wasVisible && this.SelectedVolume.IsVisible)
+            {
+                var config = this.configurationService.GetCurrentConfiguration();
+                if (config.UiConfiguration?.SwitchToContextTabAfterSelection == true && allowSelectionChange)
+                {
+                    this.SelectedVolume.FirstVisibleItem.IsSelected = true;
+                }
+            }
+            else if (wasVisible && !this.SelectedVolume.IsVisible)
+            {
+                this.RibbonTabVolumesHome.IsSelected = true;
+            }
+        }
+
+        private void HandlePackageSelectionChange(bool allowSelectionChange = true)
         {
             var wasVisible = this.SelectedPackage.Items.Any(item => item.IsSelected);
             this.ChangeTabVisibility();
-
-            if (obj.Sender is IMsixHeroCommandExecutor)
-            {
-                return;
-            }
 
             this.SelectedPackage.Visibility = this.application.ApplicationState.Packages.SelectedPackages.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             if (!wasVisible && this.SelectedPackage.IsVisible)
             {
                 var config = this.configurationService.GetCurrentConfiguration();
-                if (config.UiConfiguration?.SwitchToContextTabAfterSelection == true)
+                if (config.UiConfiguration?.SwitchToContextTabAfterSelection == true && allowSelectionChange)
                 {
                     this.SelectedPackage.FirstVisibleItem.IsSelected = true;
                 }
@@ -218,30 +251,14 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
             }
         }
 
+        private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)
+        {
+            this.HandlePackageSelectionChange();
+        }
+
         private void OnSelectVolumes(UiExecutedPayload<SelectVolumesCommand> obj)
         {
-            var wasVisible = this.SelectedVolume.Items.Any(item => item.IsSelected);
-            this.ChangeTabVisibility();
-
-            if (obj.Sender is IMsixHeroCommandExecutor)
-            {
-                return;
-            }
-
-            this.SelectedVolume.Visibility = this.application.ApplicationState.Volumes.SelectedVolumes.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
-
-            if (!wasVisible && this.SelectedVolume.IsVisible)
-            {
-                var config = this.configurationService.GetCurrentConfiguration();
-                if (config.UiConfiguration?.SwitchToContextTabAfterSelection == true)
-                {
-                    this.SelectedVolume.FirstVisibleItem.IsSelected = true;
-                }
-            }
-            else if (wasVisible && !this.SelectedVolume.IsVisible)
-            {
-                this.RibbonTabVolumesHome.IsSelected = true;
-            }
+            this.HandleVolumeSelectionChange();
         }
 
         private void OnSetCurrentMode(UiExecutedPayload<SetCurrentModeCommand> mode)

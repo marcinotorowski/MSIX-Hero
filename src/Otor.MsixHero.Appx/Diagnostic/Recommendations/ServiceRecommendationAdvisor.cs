@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Diagnostic.Recommendations;
+using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
 using Otor.MsixHero.Infrastructure.Logging;
 
-namespace Otor.MsixHero.Lib.BusinessLayer.SystemState.Services
+namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
 {
     public class ServiceRecommendationAdvisor : IServiceRecommendationAdvisor
     {
@@ -77,7 +77,7 @@ namespace Otor.MsixHero.Lib.BusinessLayer.SystemState.Services
                         return false;
                     }
 
-                    System.Threading.Thread.Sleep(300);
+                    global::System.Threading.Thread.Sleep(300);
 
                     p.WaitForExit();
                     if (p.ExitCode != 0)

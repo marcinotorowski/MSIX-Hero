@@ -1,5 +1,6 @@
 ﻿using Otor.MsixHero.Lib.Domain.State;
 using Otor.MsixHero.Ui.Hero.Commands.Base;
+using Otor.MsixHero.Ui.Hero.State;
 
 namespace Otor.MsixHero.Ui.Hero.Commands
 {
