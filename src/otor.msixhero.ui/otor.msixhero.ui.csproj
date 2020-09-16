@@ -49,12 +49,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\otor.msixhero.adminhelper\otor.msixhero.adminhelper.csproj" />
-    <ProjectReference Include="..\otor.msixhero.appinstaller\otor.msixhero.appinstaller.csproj" />
-    <ProjectReference Include="..\otor.msixhero.appx\otor.msixhero.appx.csproj" />
-    <ProjectReference Include="..\otor.msixhero.cmd\Otor.MsixHero.Cli.csproj" />
-    <ProjectReference Include="..\otor.msixhero.lib\Otor.MsixHero.Lib.csproj" />
-    <ProjectReference Include="..\otor.msixhero.winget\Otor.MsixHero.Winget.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.AdminHelper\Otor.MsixHero.AdminHelper.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Cli\Otor.MsixHero.Cli.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Winget\Otor.MsixHero.Winget.csproj" />
   </ItemGroup>
 
   <ItemGroup>

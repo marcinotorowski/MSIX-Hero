@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Winget.Yaml.Entities;
 using YamlDotNet.Serialization;
@@ -23,11 +22,10 @@ namespace Otor.MsixHero.Winget.Yaml
 
         public async Task<string> ValidateAsync(string yamlPath, IAppxPackageManager packageManager, bool throwIfWingetMissing = false, CancellationToken cancellationToken = default)
         {
-            var pkgMan = new PackageManager();
-            var pkg = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+            var pkg = await Task.Run(() => AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
             if (pkg == null)
             {
-                pkg = await Task.Run(() => pkgMan.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminal_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
+                pkg = await Task.Run(() => AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminal_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
             }
 
             if (pkg == null)

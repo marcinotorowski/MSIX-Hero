@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
+using Otor.MsixHero.Appx.Packaging.Installation;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
 {
@@ -11,9 +11,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
         public IEnumerable<IThirdPartyApp> ProvideApps()
         {
             // Detect MSIX version
-
-            var pkgMan = new PackageManager();
-            var pkg  = pkgMan.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_whm4wqzjy81pg").FirstOrDefault();
+            var pkg  = AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_whm4wqzjy81pg").FirstOrDefault();
             if (pkg == null)
             {
                 yield return new ThirdPartyStoreApp("RAYPACK", "RayPack", "Raynet GmbH", "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_whm4wqzjy81pg");

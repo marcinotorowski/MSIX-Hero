@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
+using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
@@ -115,8 +116,6 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
         private IAppxFileReader GetAdapter()
         {
-            var pkgManager = new PackageManager();
-
             switch (this.context)
             {
                 case PackageContext.CurrentUser:
@@ -124,7 +123,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     Package pkg = null;
                     if (string.IsNullOrEmpty(this.packagePublisher))
                     {
-                        pkg = pkgManager.FindPackageForUser(string.Empty, this.packageFullName);
+                        pkg = AppxPackageManager.PackageManager.Value.FindPackageForUser(string.Empty, this.packageFullName);
                         if (pkg == null)
                         {
                             throw new FileNotFoundException("Could not find the required package.");
@@ -133,7 +132,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }
 
-                    var pkgs = pkgManager.FindPackagesForUser(string.Empty, this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
+                    var pkgs = AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
 
                     if (string.IsNullOrEmpty(this.packageVersion) || !Version.TryParse(this.packageVersion, out Version parsedVersion))
                     {
@@ -169,7 +168,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                     Package pkg = null;
                     if (string.IsNullOrEmpty(this.packagePublisher))
                     {
-                        pkg = pkgManager.FindPackage(this.packageFullName);
+                        pkg = AppxPackageManager.PackageManager.Value.FindPackage(this.packageFullName);
                         if (pkg == null)
                         {
                             throw new FileNotFoundException("Could not find the required package.");
@@ -178,7 +177,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
                         return new DirectoryInfoFileReaderAdapter(pkg.InstalledLocation.Path);
                     }
 
-                    var pkgs = pkgManager.FindPackages(this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
+                    var pkgs = AppxPackageManager.PackageManager.Value.FindPackages(this.packageFullName, this.packagePublisher).OrderBy(v => v.Id.Version);
 
                     if (string.IsNullOrEmpty(this.packageVersion) || !Version.TryParse(this.packageVersion, out Version parsedVersion))
                     {

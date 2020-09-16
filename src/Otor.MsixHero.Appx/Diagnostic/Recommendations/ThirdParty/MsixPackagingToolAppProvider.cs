@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
+using Otor.MsixHero.Appx.Packaging.Installation;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
 {
@@ -10,9 +10,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
         public IEnumerable<IThirdPartyApp> ProvideApps()
         {
             // Detect MSIX version
-
-            var pkgMan = new PackageManager();
-            var pkg  = pkgMan.FindPackagesForUser(string.Empty, "Microsoft.MsixPackagingTool_8wekyb3d8bbwe").FirstOrDefault();
+            var pkg  = AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Microsoft.MsixPackagingTool_8wekyb3d8bbwe").FirstOrDefault();
 
             if (pkg == null)
             {

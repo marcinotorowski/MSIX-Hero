@@ -59,11 +59,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 return new List<User>();
             }
 
-            var pkgManager = new PackageManager();
             var result = await Task.Run(
                 () =>
                 {
-                    var list = pkgManager.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
+                    var list = PackageManager.Value.FindUsers(packageName).Select(u => new User(SidToAccountName(u.UserSecurityId))).ToList();
                     return list;
                 },
                 cancellationToken).ConfigureAwait(false);
@@ -82,14 +81,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             Logger.Info("Removing {0} packages...", packages.Count);
 
-            var mmm = new PackageManager();
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
                 Logger.Info("Removing {0}", item.PackageId);
 
                 var task = AsyncOperationHelper.ConvertToTask(
-                    mmm.RemovePackageAsync(item.PackageId,
+                    PackageManager.Value.RemovePackageAsync(item.PackageId,
                         forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None),
                     "Removing " + item.DisplayName, CancellationToken.None, progress);
                 await task.ConfigureAwait(false);
@@ -101,11 +99,12 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
         }
 
+        public static Lazy<PackageManager> PackageManager = new Lazy<PackageManager>(() => new PackageManager(), true);
+
         public async Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var mmm = new PackageManager();
             var task = AsyncOperationHelper.ConvertToTask(
-                mmm.DeprovisionPackageForAllUsersAsync(packageFamilyName),
+                PackageManager.Value.DeprovisionPackageForAllUsersAsync(packageFamilyName),
                 "De-provisioning for all users",
                 CancellationToken.None, progress);
             await task.ConfigureAwait(false);
@@ -127,8 +126,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             if (string.Equals(Path.GetFileName(filePath), "AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
             {
                 var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
-                var pkgManager = new PackageManager();
-
+                
                 DeploymentOptions deploymentOptions = 0;
 
                 if (options.HasFlag(AddPackageOptions.AllowDowngrade))
@@ -145,15 +143,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 deploymentOptions |= DeploymentOptions.DevelopmentMode;
 
                 await AsyncOperationHelper.ConvertToTask(
-                    pkgManager.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
+                    PackageManager.Value.RegisterPackageAsync(new Uri(filePath), Enumerable.Empty<Uri>(), deploymentOptions),
                     $"Installing {reader.DisplayName} {reader.Version}...",
                     cancellationToken,
                     progress).ConfigureAwait(false);
             }
             else if (string.Equals(".appinstaller", Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
             {
-                var pkgManager = new PackageManager();
-
                 if (options.HasFlag(AddPackageOptions.AllUsers))
                 {
                     throw new NotSupportedException("Cannot install a package from .appinstaller for all users.");
@@ -171,9 +167,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     deploymentOptions |= AddPackageByAppInstallerOptions.ForceTargetAppShutdown;
                 }
 
-                var volume = pkgManager.GetDefaultPackageVolume();
+                var volume = PackageManager.Value.GetDefaultPackageVolume();
                 await AsyncOperationHelper.ConvertToTask(
-                    pkgManager.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
+                    PackageManager.Value.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
                     "Installing from " + Path.GetFileName(filePath) + "...",
                     cancellationToken,
                     progress).ConfigureAwait(false);
@@ -183,8 +179,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 try
                 {
                     var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
-                    var pkgManager = new PackageManager();
-
+                    
                     DeploymentOptions deploymentOptions = 0;
 
                     if (options.HasFlag(AddPackageOptions.AllowDowngrade))
@@ -201,7 +196,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     if (options.HasFlag(AddPackageOptions.AllUsers))
                     {
                         var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                            pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
                             $"Installing {reader.DisplayName} {reader.Version}...",
                             cancellationToken,
                             progress).ConfigureAwait(false);
@@ -211,16 +206,16 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                             throw new InvalidOperationException("The package could not be registered.");
                         }
 
-                        var findInstalled = pkgManager.FindPackages(reader.Name, reader.Publisher).FirstOrDefault();
+                        var findInstalled = PackageManager.Value.FindPackages(reader.Name, reader.Publisher).FirstOrDefault();
                         if (findInstalled == null)
                         {
                             throw new InvalidOperationException("The package could not be registered.");
                         }
-
+                        
                         var familyName = findInstalled.Id.FamilyName;
 
                         await AsyncOperationHelper.ConvertToTask(
-                            pkgManager.ProvisionPackageForAllUsersAsync(familyName),
+                            PackageManager.Value.ProvisionPackageForAllUsersAsync(familyName),
                             $"Provisioning {reader.DisplayName} {reader.Version}...",
                             cancellationToken,
                             progress).ConfigureAwait(false);
@@ -228,7 +223,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     else
                     {
                         var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                            pkgManager.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                            PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
                             "Installing " + reader.DisplayName + "...",
                             cancellationToken,
                             progress).ConfigureAwait(false);
@@ -372,18 +367,16 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var pkgManager = new PackageManager();
-
             if (mode == PackageFindMode.Auto)
             {
                 mode = (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false)) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
             }
 
-            var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? pkgManager.FindPackageForUser(string.Empty, packageFullName) : pkgManager.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
+            var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageFullName) : PackageManager.Value.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
             if (find == null)
             {
                 var packageIdentity = PackageIdentity.FromFullName(packageFullName);
-                find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? pkgManager.FindPackageForUser(string.Empty, packageIdentity.AppName) : pkgManager.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
+                find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageIdentity.AppName) : PackageManager.Value.FindPackage(packageIdentity.AppName), cancellationToken).ConfigureAwait(false);
 
                 if (find == null)
                 {
@@ -406,16 +399,14 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task<InstalledPackage> GetInstalledPackages(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var pkgMan = new PackageManager();
-
             Windows.ApplicationModel.Package pkg;
             switch (mode)
             {
                 case PackageFindMode.CurrentUser:
-                    pkg = await Task.Run(() => pkgMan.FindPackagesForUser(packageName, publisher).First(), cancellationToken).ConfigureAwait(false);
+                    pkg = await Task.Run(() => PackageManager.Value.FindPackagesForUser(packageName, publisher).First(), cancellationToken).ConfigureAwait(false);
                     break;
                 case PackageFindMode.AllUsers:
-                    pkg = await Task.Run(() => pkgMan.FindPackages(packageName, publisher).First(), cancellationToken).ConfigureAwait(false);
+                    pkg = await Task.Run(() => PackageManager.Value.FindPackages(packageName, publisher).First(), cancellationToken).ConfigureAwait(false);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -459,10 +450,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
             }
-
-            var pkgMan = new PackageManager();
-
-
+            
             progress?.Report(new ProgressData(0, "Reading packages..."));
 
             if (isAdmin)
@@ -512,10 +500,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        allPackages = await Task.Run(() => pkgMan.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
+                        allPackages = await Task.Run(() => PackageManager.Value.FindPackagesForUserWithPackageTypes(string.Empty, PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                         break;
                     case PackageFindMode.AllUsers:
-                        allPackages = await Task.Run(() => pkgMan.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
+                        allPackages = await Task.Run(() => PackageManager.Value.FindPackagesWithPackageTypes(PackageTypes.Framework | PackageTypes.Main | PackageTypes.Optional).ToList(), cancellationToken).ConfigureAwait(false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
@@ -529,14 +517,14 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     case PackageFindMode.CurrentUser:
                         allPackages = new List<Windows.ApplicationModel.Package>
                         {
-                            await Task.Run(() => pkgMan.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false)
+                            await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false)
                         };
 
                         break;
                     case PackageFindMode.AllUsers:
                         allPackages = new List<Windows.ApplicationModel.Package>
                         {
-                            await Task.Run(() => pkgMan.FindPackage(packageName), cancellationToken).ConfigureAwait(false)
+                            await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false)
                         };
 
                         break;
