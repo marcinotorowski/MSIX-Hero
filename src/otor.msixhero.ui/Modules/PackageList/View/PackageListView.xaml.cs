@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,6 +13,9 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Domain.Events;
+using Otor.MsixHero.Ui.Commands;
 using Otor.MsixHero.Ui.Helpers;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
@@ -28,13 +33,16 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
     public partial class PackageListView
     {
         private readonly IMsixHeroApplication application;
+        private readonly IConfigurationService configService;
+        private IList<MenuItem> tools;
 
         // ReSharper disable once IdentifierTypo
         private SortAdorner sortAdorner;
 
-        public PackageListView(IMsixHeroApplication application, IRegionManager regionManager = null)
+        public PackageListView(IMsixHeroApplication application, IConfigurationService configService, IRegionManager regionManager = null)
         {
             this.application = application;
+            this.configService = configService;
             InitializeComponent();
             Debug.Assert(regionManager != null);
 
@@ -48,6 +56,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             application.EventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnExecutingGetPackages);
             application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnCancelledGetPackages, ThreadOption.UIThread);
             application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages, ThreadOption.UIThread);
+            application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(payload => this.tools = null);
 
             // Set up defaults
             this.UpdateSidebarVisibility();
@@ -387,6 +396,55 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
                 {
                     this.ignoreListBoxSelectionEvents = false;
                 }
+            }
+        }
+
+        private void PackageContextMenu_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (this.tools != null)
+            {
+                return;
+            }
+
+            this.SetTools();
+            var frameworkElement = (FrameworkElement) sender;
+            // ReSharper disable once PossibleNullReferenceException
+            var lastMenu = frameworkElement.ContextMenu.Items.OfType<MenuItem>().Last();
+            
+            lastMenu.Items.Clear();
+            foreach (var item in this.tools)
+            {
+                lastMenu.Items.Add(item);
+            }
+
+            lastMenu.Items.Add(new Separator());
+            lastMenu.Items.Add(new MenuItem
+            {
+                Command = MsixHeroCommands.Settings,
+                CommandParameter = "tools",
+                Header = "More commands..."
+            });
+        }
+
+        private void SetTools()
+        {
+            if (this.tools != null)
+            {
+                return;
+            }
+            
+            this.tools = new List<MenuItem>();
+            var configuredTools = this.configService.GetCurrentConfiguration().List.Tools;
+            
+            foreach (var item in configuredTools)
+            {
+                this.tools.Add(new MenuItem
+                {
+                    Command = MsixHeroCommands.RunTool,
+                    Icon = new Image() { Source = ShellIcon.GetIconFor(string.IsNullOrEmpty(item.Icon) ? item.Path : item.Icon) },
+                    Header = item.Name,
+                    CommandParameter = item
+                });
             }
         }
     }

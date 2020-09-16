@@ -79,13 +79,44 @@
 
             <ContextMenu x:Key="PackageContextMenu">
                 <MenuItem Header="Copy...">
-                    <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" " />
-                    <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" " />
-                    <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" />
-                    <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" " />
-                    <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Publisher}" InputGestureText=" " />
-                    <MenuItem Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" " />
-                    <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.InstallPath}" InputGestureText=" " />
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
+                    </MenuItem.Icon>
+                    <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" ">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorTextInputForm}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" ">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorTextInputForm}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPackage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" ">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorNumberInputForm}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Publisher}" InputGestureText=" ">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorTextInputForm}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.InstallPath}" InputGestureText=" ">
+                        <MenuItem.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSettingsFolder}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open folder">
                     <MenuItem.Icon>
@@ -130,6 +161,7 @@
                         <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Run command in context..." x:Name="ContextMenuRunCommand" />
             </ContextMenu>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
@@ -381,6 +413,7 @@
                         IsEnabled="{Binding IsLoading, Converter={StaticResource NegativeConverter}}"
                         MouseDoubleClick="ListOnMouseDoubleClick"
                         x:Name="ListView"
+                        ContextMenuOpening="PackageContextMenu_OnContextMenuOpening"
                         ContextMenu="{StaticResource PackageContextMenu}">
                         <ListView.InputBindings>
                             <KeyBinding Modifiers="Control" Key="F" Command="Search" />
@@ -505,6 +538,7 @@
                         x:Name="ListBox"
                         SelectionMode="Extended"
                         MouseDoubleClick="ListOnMouseDoubleClick"
+                        ContextMenuOpening="PackageContextMenu_OnContextMenuOpening"
                         ContextMenu="{StaticResource PackageContextMenu}">
                         <ListBox.InputBindings>
                             <KeyBinding Modifiers="Control" Key="F" Command="Search" />
