@@ -50,7 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\otor.msixhero.ui\Otor.MsixHero.Ui.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Ui\Otor.MsixHero.Ui.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Winget\Otor.MsixHero.Winget.csproj" />
   </ItemGroup>
 
   <ItemGroup>
