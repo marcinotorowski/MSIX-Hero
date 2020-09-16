@@ -110,8 +110,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 return;
             }
 
-            var mgr = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable).ConfigureAwait(false);
-            await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(false);
+            var mgr = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(true);
+            await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(true);
 
             this.CloseCommand.Execute(ButtonResult.OK);
         }
