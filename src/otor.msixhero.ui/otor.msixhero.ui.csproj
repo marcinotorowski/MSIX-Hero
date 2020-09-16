@@ -45,7 +45,7 @@
     <PackageReference Include="Prism.Core" Version="8.0.0.1740-pre" />
     <PackageReference Include="Prism.Unity" Version="8.0.0.1740-pre" />
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1740-pre" />
-    <PackageReference Include="System.Management.Automation" Version="7.0.0" />
+    <PackageReference Include="System.Management.Automation" Version="7.0.3" />
   </ItemGroup>
 
   <ItemGroup>
