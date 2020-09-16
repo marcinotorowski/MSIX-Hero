@@ -451,4 +451,183 @@
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
     </Style>
+
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Padding="0 0 6 6" Background="Transparent">
+                        <Border x:Name="Border"
+                                Background="White"
+                                BorderThickness="1"
+                                Margin="0"
+                                BorderBrush="#AAAAAA">
+                            <Border.Effect>
+                                <DropShadowEffect 
+                                    BlurRadius="4"
+                                    Direction="315"
+                                    Opacity="0.3"
+                                    ShadowDepth="2"
+                                    Color="{DynamicResource MahApps.Colors.MenuShadow}" />
+                            </Border.Effect>
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type MenuItem}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="MinWidth" Value="140" />
+        <Setter Property="TextBlock.TextAlignment" Value="Left" />
+        <!--<Setter Property="ItemsSource" Value="{Binding Items}" />-->
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border Name="Border" >
+                        <Grid Background="Transparent">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
+                                <!-- icon -->
+                                <ColumnDefinition Width="*"/>
+                                <!-- content -->
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup"/>
+                                <!-- gestures -->
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemGlyphColumnGroup"/>
+                                <!-- gestures -->
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle x:Name="focus" Grid.ColumnSpan="4" Opacity="0.2"  Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Visibility="Collapsed" />
+
+                            <ContentPresenter 
+                                x:Name="Icon"
+                                Margin="8 4 0 4"
+                                Grid.Column="0"
+                                VerticalAlignment="Center"
+                                ContentSource="Icon"
+                                Width="16"
+                                Height="16"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+                            <ContentPresenter 
+                                x:Name="cPres"
+                                Margin="8 7 4 7"
+                                Grid.Column="1"
+                                TextBlock.FontSize="12"
+                                ContentSource="Header"
+                                HorizontalAlignment="Left"
+                                RecognizesAccessKey="True" />
+
+                            <TextBlock 
+                                Text="{TemplateBinding MenuItem.InputGestureText}" 
+                                x:Name="gesture"
+                                Margin="4 4 8 4" 
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                TextAlignment="Right"
+                                VerticalAlignment="Center"
+                                Opacity="0.5" />
+
+                            <Path 
+                                Visibility="Visible" 
+                                x:Name="ArrowMore" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right" 
+                                Data="M 0 0 4 4 0 8 1 8 5 4 1 0 Z" 
+                                Fill="Black" 
+                                Width="11" 
+                                Grid.Column="3"
+                                Height="10" 
+                                Margin="0 4 4 4" />
+
+                            <Popup
+                                Grid.Column="0" 
+                                Name="Popup"
+                                Placement="Right"
+                                VerticalOffset="-1"
+                                HorizontalOffset="-6"
+                                IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                AllowsTransparency="True" 
+                                Focusable="False"
+                                PopupAnimation="Fade">
+                                <Border Background="Transparent" Padding="0 0 6 6">
+                                    <Border 
+                                        Name="SubmenuBorder"
+                                        SnapsToDevicePixels="True"
+                                        Background="White"
+                                        BorderBrush="#AAAAAA"
+                                        CornerRadius="0"
+                                        BorderThickness="1" >
+                                        <StackPanel  
+                                            IsItemsHost="True" 
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                        <Border.Effect>
+                                            <DropShadowEffect 
+                                                BlurRadius="4"
+                                                Direction="315"
+                                                Opacity="0.3"
+                                                ShadowDepth="2"
+                                                Color="{DynamicResource MahApps.Colors.MenuShadow}" />
+                                        </Border.Effect>
+                                    </Border>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Role" Value="TopLevelItem">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowMore"/>
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="Icon"
+                                Property="Visibility"
+                                Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="TopLevelHeader">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowMore"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="SubmenuItem">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="ArrowMore"/>
+                        </Trigger>
+                        <Trigger Property="IsSuspendingPopupAnimation" Value="true">
+                            <Setter TargetName="Popup" Property="PopupAnimation" Value="None"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="true">
+                            <Setter TargetName="focus" Property="Visibility" Value="Visible" />
+                            <!--<Setter TargetName="cPres" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="gesture" Property="Foreground" Value="White" />
+                            <Setter TargetName="ArrowMore" Property="Fill" Value="White" />-->
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="focus" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="focus" Property="Opacity" Value="0.7" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Separator}">
+        <Setter Property="MinWidth" Value="140" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Rectangle Height="1" Fill="#DDDDDD" Margin="0"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
