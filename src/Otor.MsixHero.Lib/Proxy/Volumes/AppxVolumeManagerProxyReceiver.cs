@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Lib.Proxy.Volumes
 
             if (command is SetDefaultDto setDefaultDto)
             {
-                return this.SelfElevationAwareObject.Dismount(setDefaultDto.DrivePath, cancellationToken, progress);
+                return this.SelfElevationAwareObject.SetDefault(setDefaultDto.DrivePath, cancellationToken, progress);
             }
 
             throw new NotSupportedException();
