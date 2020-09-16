@@ -6,9 +6,6 @@
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
     <Product>MSIX Hero</Product>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
