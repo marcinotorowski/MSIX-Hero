@@ -21,7 +21,7 @@ namespace Otor.MsixHero.Infrastructure.Helpers
         public static Version RtlGetVersion()
         {
             var ver = new OSVERSIONINFOEX();
-            if (!RtlGetVersion(ref ver))
+            if (!RtlGetVersion(ref ver) && ver.MajorVersion < 7)
             {
                 return default;
             }
