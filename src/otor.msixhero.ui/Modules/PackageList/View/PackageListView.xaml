@@ -461,11 +461,18 @@
                                         </GridViewColumn.Header>
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                                <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                    <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                        <Image Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                <Grid>
+                                                    <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                            <Image Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                        </Border>
                                                     </Border>
-                                                </Border>
+                                                    <Border Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="MediumSeaGreen" BorderBrush="White" BorderThickness="2">
+                                                        <Border.RenderTransform>
+                                                            <TranslateTransform X="8" Y="8" />
+                                                        </Border.RenderTransform>
+                                                    </Border>
+                                                </Grid>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
@@ -585,8 +592,10 @@
                                 <DockPanel>
                                     <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
                                     <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                        <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                            <!--<Ellipse Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Grid>
+
+                                            <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <!--<Ellipse Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                 <Ellipse.Fill>
                                                     <ImageBrush>
                                                         <ImageBrush.ImageSource>
@@ -595,12 +604,18 @@
                                                     </ImageBrush>
                                                 </Ellipse.Fill>
                                             </Ellipse>-->
-                                            <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
 
-                                            <!--<Border.OpacityMask>
+                                                <!--<Border.OpacityMask>
                                                 <ImageBrush ImageSource="/Resources/32pxOpacityMask.png" />
                                             </Border.OpacityMask>-->
-                                        </Border>
+                                            </Border>
+                                            <Border Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="MediumSeaGreen" BorderBrush="White" BorderThickness="2">
+                                                <Border.RenderTransform>
+                                                    <TranslateTransform X="8" Y="8" />
+                                                </Border.RenderTransform>
+                                            </Border>
+                                        </Grid>
                                     </Border>
                                     <StackPanel DockPanel.Dock="Right">
                                         <TextBlock highlighter:Highlighter.Selection="{Binding ElementName=SearchBox, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />

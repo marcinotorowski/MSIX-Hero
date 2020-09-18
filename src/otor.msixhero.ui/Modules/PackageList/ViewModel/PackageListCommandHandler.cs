@@ -24,6 +24,7 @@ using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands;
+using Otor.MsixHero.Ui.Hero.Commands.Base;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Hero.Executor;
 using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
@@ -240,9 +241,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                    
                     AppxManifestSummary appxReader;
 
-                    await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
-                    var allPackages = this.application.ApplicationState.Packages.AllPackages;
-
+                    var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>> (this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                    
                     if (!string.Equals(".appinstaller", Path.GetExtension(selection), StringComparison.OrdinalIgnoreCase))
                     {
                         appxReader = await AppxManifestSummaryBuilder.FromFile(selection, AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);

@@ -8,20 +8,18 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
+using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Domain.State;
-using Otor.MsixHero.Lib.Infrastructure;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
-using Otor.MsixHero.Ui.Hero.Commands.Volumes;
 using Otor.MsixHero.Ui.Hero.Events.Base;
 using Otor.MsixHero.Ui.Hero.Executor;
 using Otor.MsixHero.Ui.Hero.State;
@@ -55,6 +53,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         private bool isLoading;
         private int loadingProgress;
         private string loadingMessage;
+        private readonly ReaderWriterLockSlim packagesSync = new ReaderWriterLockSlim();
 
         public PackageListViewModel(
             ISelfElevationProxyProvider<IAppxPackageManager> appxManagerProvider,
@@ -89,9 +88,28 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
 
-            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackages);
+            this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackages);
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages);
+            this.msixHeroApplication.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndication);
         }
+
+        private void OnActivePackageIndication(ActivePackageFullNames obj)
+        {
+            try
+            {
+                this.packagesSync.EnterReadLock();
+
+                foreach (var item in this.AllPackages)
+                {
+                    item.IsRunning = obj.Running.Contains(item.ProductId);
+                }
+            }
+            finally
+            {
+                this.packagesSync.ExitReadLock();
+            }
+        }
+
         public IList<InstalledPackageViewModel> AllPackages { get; }
 
         public ICollectionView AllPackagesView { get; }
@@ -426,12 +444,25 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.AllPackagesView.Refresh();
         }
 
-        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand> obj)
+        private void OnGetPackages(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> payload)
         {
-            this.AllPackages.Clear();
-            foreach (var item in this.msixHeroApplication.ApplicationState.Packages.AllPackages)
+            try
             {
-                this.AllPackages.Add(new InstalledPackageViewModel(item));
+                this.packagesSync.EnterWriteLock();
+
+                this.AllPackages.Clear();
+                var active = this.msixHeroApplication.ApplicationState.Packages.ActivePackageNames ?? new List<string>();
+
+                foreach (var item in payload.Result)
+                {
+                    var p = new InstalledPackageViewModel(item);
+                    this.AllPackages.Add(p);
+                    p.IsRunning = active.Contains(p.ProductId);
+                }
+            }
+            finally
+            {
+                this.packagesSync.ExitWriteLock();
             }
         }
     }

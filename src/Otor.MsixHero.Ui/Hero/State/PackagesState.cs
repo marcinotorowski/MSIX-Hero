@@ -34,5 +34,7 @@ namespace Otor.MsixHero.Ui.Hero.State
         public bool SortDescending { get; set; }
 
         public bool ShowSidebar { get; set; }
+
+        public IReadOnlyList<string> ActivePackageNames { get; set; }
     }
 }

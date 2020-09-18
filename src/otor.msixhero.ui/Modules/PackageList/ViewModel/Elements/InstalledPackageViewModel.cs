@@ -8,6 +8,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements
 {
     public class InstalledPackageViewModel : SelectableViewModel<InstalledPackage>
     {
+        private bool isRunning;
+
         public InstalledPackageViewModel(InstalledPackage package) : base(package)
         {
         }
@@ -73,6 +75,12 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements
                         return "Unknown";
                 }
             }
+        }
+
+        public bool IsRunning
+        {
+            get => this.isRunning;
+            set => this.SetField(ref this.isRunning, value);
         }
 
         public string UserDataPath

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
@@ -24,12 +25,15 @@ using Prism.Events;
 
 namespace Otor.MsixHero.Ui.Hero.Executor
 {
-    public class MsixHeroCommandExecutor : BaseMsixHeroCommandExecutor
+    public class MsixHeroCommandExecutor : BaseMsixHeroCommandExecutor, IObserver<ActivePackageFullNames>
     {
+        private readonly IEventAggregator eventAggregator;
         private readonly IConfigurationService configurationService;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
+
+        private readonly IRunningDetector detector = new RunningDetector();
 
         public MsixHeroCommandExecutor(
             IEventAggregator eventAggregator,
@@ -38,10 +42,14 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider) : base(eventAggregator)
         {
+            this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
             this.packageManagerProvider = packageManagerProvider;
             this.logManagerProvider = logManagerProvider;
             this.volumeManagerProvider = volumeManagerProvider;
+
+            this.detector.Subscribe(this);
+
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
             this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
             this.Handlers[typeof(SetVolumeFilterCommand)] = (command, token, progress) => this.SetVolumeFilter((SetVolumeFilterCommand)command);
@@ -75,7 +83,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
         private async Task<PackageGroup> SetPackageGrouping(SetPackageGroupingCommand command)
         {
             this.ApplicationState.Packages.GroupMode = command.GroupMode;
-            
+
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
             cleanConfig.List ??= new ListConfiguration();
             cleanConfig.List.Group ??= new GroupConfiguration();
@@ -88,7 +96,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
         private async Task SetPackageSidebarVisibility(SetPackageSidebarVisibilityCommand command)
         {
             this.ApplicationState.Packages.ShowSidebar = command.IsVisible;
-            
+
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
             cleanConfig.List ??= new ListConfiguration();
             cleanConfig.List.Sidebar ??= new SidebarListConfiguration();
@@ -174,6 +182,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
         private Task<IList<InstalledPackage>> SelectPackages(SelectPackagesCommand command)
         {
+
             IList<InstalledPackage> selected;
             if (!command.SelectedManifestPaths.Any())
             {
@@ -181,25 +190,36 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             }
             else if (command.SelectedManifestPaths.Count == 1)
             {
-                var singleSelection = this.ApplicationState.Packages.AllPackages.FirstOrDefault(a => string.Equals(a.ManifestLocation, command.SelectedManifestPaths[0], StringComparison.OrdinalIgnoreCase));
-                if (singleSelection != null)
+                try
                 {
-                    selected = new List<InstalledPackage> { singleSelection };
+                    this.packageListSynchronizer.EnterReadLock();
+                    var singleSelection = this.ApplicationState.Packages.AllPackages.FirstOrDefault(a => string.Equals(a.ManifestLocation, command.SelectedManifestPaths[0], StringComparison.OrdinalIgnoreCase));
+                    selected = singleSelection != null ? new List<InstalledPackage> { singleSelection } : new List<InstalledPackage>();
                 }
-                else
+                finally
                 {
-                    selected = new List<InstalledPackage>();
+                    this.packageListSynchronizer.ExitReadLock();
                 }
             }
             else
             {
-                selected = this.ApplicationState.Packages.AllPackages.Where(a => command.SelectedManifestPaths.Contains(a.ManifestLocation)).ToList();
+                try
+                {
+                    this.packageListSynchronizer.EnterReadLock();
+                    selected = this.ApplicationState.Packages.AllPackages.Where(a => command.SelectedManifestPaths.Contains(a.ManifestLocation)).ToList();
+                }
+                finally
+                {
+                    this.packageListSynchronizer.ExitReadLock();
+                }
             }
 
             this.ApplicationState.Packages.SelectedPackages.Clear();
             this.ApplicationState.Packages.SelectedPackages.AddRange(selected);
             return Task.FromResult(selected);
         }
+
+        private readonly ReaderWriterLockSlim packageListSynchronizer = new ReaderWriterLockSlim();
 
         private async Task<IList<InstalledPackage>> GetPackages(GetPackagesCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
         {
@@ -241,8 +261,18 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
             var results = await manager.GetInstalledPackages(mode, cancellationToken, progressData).ConfigureAwait(false);
 
-            this.ApplicationState.Packages.AllPackages.Clear();
-            this.ApplicationState.Packages.AllPackages.AddRange(results);
+            // this.packageListSynchronizer.EnterWriteLock();
+            try
+            {
+                await this.detector.StopListening(cancellationToken).ConfigureAwait(false);
+                this.ApplicationState.Packages.AllPackages.Clear();
+                this.ApplicationState.Packages.AllPackages.AddRange(results);
+                await this.detector.Listen(this.ApplicationState.Packages.AllPackages, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                // this.packageListSynchronizer.ExitWriteLock();
+            }
 
             switch (mode)
             {
@@ -258,9 +288,18 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             if (selected.Any())
             {
                 this.ApplicationState.Packages.SelectedPackages.Clear();
-                foreach (var item in this.ApplicationState.Packages.AllPackages.Where(p => selected.Contains(p.ManifestLocation)))
+
+                try
                 {
-                    this.ApplicationState.Packages.SelectedPackages.Add(item);
+                    this.packageListSynchronizer.EnterReadLock();
+                    foreach (var item in this.ApplicationState.Packages.AllPackages.Where(p => selected.Contains(p.ManifestLocation)))
+                    {
+                        this.ApplicationState.Packages.SelectedPackages.Add(item);
+                    }
+                }
+                finally
+                {
+                    this.packageListSynchronizer.ExitReadLock();
                 }
             }
 
@@ -283,7 +322,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
         private async Task<IList<AppxVolume>> GetVolumes(GetVolumesCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
         {
             var manager = await this.volumeManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
-            
+
             var selected = this.ApplicationState.Volumes.SelectedVolumes.Select(p => p.PackageStorePath).ToArray();
 
             var results = await manager.GetAll(cancellationToken, progressData).ConfigureAwait(false);
@@ -302,8 +341,22 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             {
                 this.ApplicationState.Volumes.SelectedVolumes = this.ApplicationState.Volumes.AllVolumes.Where(v => selected.Contains(v.PackageStorePath)).ToList();
             }
-            
+
             return results;
+        }
+
+        void IObserver<ActivePackageFullNames>.OnCompleted()
+        {
+        }
+
+        void IObserver<ActivePackageFullNames>.OnError(Exception error)
+        {
+        }
+
+        void IObserver<ActivePackageFullNames>.OnNext(ActivePackageFullNames value)
+        {
+            this.ApplicationState.Packages.ActivePackageNames = value.Running;
+            this.eventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Publish(value);
         }
     }
 }
