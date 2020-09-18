@@ -100,7 +100,7 @@ namespace Otor.MsixHero.Ui.Modules.Main.ViewModel
 
         private void ModificationPackageExecute()
         {
-            this.dialogService.ShowDialog(Constants.PathAppAttach, new DialogParameters(), this.OnDialogClosed);
+            this.dialogService.ShowDialog(Constants.PathModificationPackage, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void AppAttachExecute()
