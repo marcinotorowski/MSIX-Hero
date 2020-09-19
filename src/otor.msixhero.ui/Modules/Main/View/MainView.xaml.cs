@@ -2,9 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Fluent;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Domain.State;
-using Otor.MsixHero.Lib.Infrastructure;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands;
@@ -299,6 +298,21 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
 
             var handler = new ExplorerHandler(this.dialogService);
             handler.Handle(droppedFiles);
+        }
+
+        private void SplitButtonClicked(object sender, RoutedEventArgs e)
+        {
+            var findChildren = ((SplitButton) sender).Items.OfType<System.Windows.Controls.RadioButton>().Where(b => b.IsEnabled).ToArray();
+
+            for (var i = 0; i < findChildren.Length; i++)
+            {
+                var isChecked = findChildren[i].IsChecked;
+                if (isChecked == true)
+                {
+                    findChildren[(i + 1) % findChildren.Length].IsChecked = true;
+                    break;
+                }
+            }
         }
     }
 }

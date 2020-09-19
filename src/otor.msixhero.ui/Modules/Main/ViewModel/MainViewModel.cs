@@ -160,79 +160,115 @@ namespace Otor.MsixHero.Ui.Modules.Main.ViewModel
             set => this.application.CommandExecutor.Invoke(this, new SetPackageGroupingCommand(value));
         }
 
-        public bool ShowStoreApps
+        public PackageFilter PackageFilter
         {
-            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.Store) == PackageFilter.Store;
+            get => this.application.ApplicationState.Packages.PackageFilter;
             set
             {
-                var currentFilter = this.application.ApplicationState.Packages.PackageFilter;
-                if (value)
-                {
-                    currentFilter |= PackageFilter.Store;
-                }
-                else
-                {
-                    currentFilter &= ~PackageFilter.Store;
-                }
-
                 var state = this.application.ApplicationState.Packages;
                 this.application.CommandExecutor
                     .WithErrorHandling(this.interactionService, false)
-                    .Invoke(this, new SetPackageFilterCommand(currentFilter, state.AddonFilter, state.SearchKey));
+                    .Invoke(this, new SetPackageFilterCommand(value, state.SearchKey));
             }
+        }
+
+        public bool ShowX64
+        {
+            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.x64) == PackageFilter.x64;
+            set => this.SetPackageFilter(PackageFilter.x64, value);
+        }
+
+        public bool ShowX86
+        {
+            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.x86) == PackageFilter.x86;
+            set => this.SetPackageFilter(PackageFilter.x86, value);
+        }
+
+        public bool ShowNeutral
+        {
+            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.Neutral) == PackageFilter.Neutral;
+            set => this.SetPackageFilter(PackageFilter.Neutral, value);
+        }
+
+        public bool ShowArm
+        {
+            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.Arm) == PackageFilter.Arm;
+            set => this.SetPackageFilter(PackageFilter.Arm, value);
+        }
+
+        public bool ShowArm64
+        {
+            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.Arm64) == PackageFilter.Arm64;
+            set => this.SetPackageFilter(PackageFilter.Arm64, value);
+        }
+
+        private void SetPackageFilter(PackageFilter packageFilter, bool isSet)
+        {
+            var currentFilter = this.application.ApplicationState.Packages.PackageFilter;
+            if (isSet)
+            {
+                currentFilter |= packageFilter;
+            }
+            else
+            {
+                currentFilter &= ~packageFilter;
+            }
+
+            var state = this.application.ApplicationState.Packages;
+            this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(currentFilter, state.SearchKey));
+        }
+
+        public bool ShowStoreApps
+        {
+            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.Store) == PackageFilter.Store;
+            set => this.SetPackageFilter(PackageFilter.Store, value);
         }
 
         public bool ShowSideLoadedApps
         {
             get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.Developer) == PackageFilter.Developer;
-            set
-            {
-                var currentFilter = this.application.ApplicationState.Packages.PackageFilter;
-                if (value)
-                {
-                    currentFilter |= PackageFilter.Developer;
-                }
-                else
-                {
-                    currentFilter &= ~PackageFilter.Developer;
-                }
-
-                var state = this.application.ApplicationState.Packages;
-
-                this.application.CommandExecutor
-                    .WithErrorHandling(this.interactionService, false)
-                    .Invoke(this, new SetPackageFilterCommand(currentFilter, state.AddonFilter, state.SearchKey));
-            }
+            set => this.SetPackageFilter(PackageFilter.Developer, value);
         }
 
         public bool ShowSystemApps
         {
             get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.System) == PackageFilter.System;
-            set
-            {
-                var currentFilter = this.application.ApplicationState.Packages.PackageFilter;
-                if (value)
-                {
-                    currentFilter |= PackageFilter.System;
-                }
-                else
-                {
-                    currentFilter &= ~PackageFilter.System;
-                }
-
-                var state = this.application.ApplicationState.Packages;
-                this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(currentFilter, state.AddonFilter, state.SearchKey));
-            }
+            set => this.SetPackageFilter(PackageFilter.System, value);
         }
 
-        public AddonsFilter AddonsBehavior
+        public PackageFilter AddonsBehavior
         {
-            get => this.application.ApplicationState.Packages.AddonFilter;
+            get
+            {
+                var bitFlag = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.MainAppsAndAddOns;
+                return bitFlag == 0 ? PackageFilter.MainAppsAndAddOns : bitFlag;
+            }
             set
             {
                 var state = this.application.ApplicationState.Packages;
                 var executor = this.application.CommandExecutor.WithErrorHandling(this.interactionService, false);
-                executor.Invoke(this, new SetPackageFilterCommand(state.PackageFilter, value, state.SearchKey));
+
+                var newValue = state.PackageFilter &= ~PackageFilter.MainAppsAndAddOns;
+                newValue |= value & PackageFilter.MainAppsAndAddOns;
+                executor.Invoke(this, new SetPackageFilterCommand(newValue, state.SearchKey));
+            }
+        }
+
+        public PackageFilter RunningBehavior
+        {
+            get
+            {
+                var bitFlag = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.InstalledAndRunning;
+                return bitFlag == 0 ? PackageFilter.InstalledAndRunning : bitFlag;
+            }
+            set
+            {
+                var state = this.application.ApplicationState.Packages;
+                var executor = this.application.CommandExecutor.WithErrorHandling(this.interactionService, false);
+
+                var newValue = state.PackageFilter &= ~PackageFilter.InstalledAndRunning;
+                newValue |= value & PackageFilter.InstalledAndRunning;
+                executor.Invoke(this, new SetPackageFilterCommand(newValue, state.SearchKey));
             }
         }
 
@@ -286,6 +322,12 @@ namespace Otor.MsixHero.Ui.Modules.Main.ViewModel
             this.OnPropertyChanged(nameof(ShowSideLoadedApps));
             this.OnPropertyChanged(nameof(ShowSystemApps));
             this.OnPropertyChanged(nameof(AddonsBehavior));
+            this.OnPropertyChanged(nameof(PackageFilter));
+            this.OnPropertyChanged(nameof(ShowX64));
+            this.OnPropertyChanged(nameof(ShowX86));
+            this.OnPropertyChanged(nameof(ShowArm));
+            this.OnPropertyChanged(nameof(ShowArm64));
+            this.OnPropertyChanged(nameof(ShowNeutral));
         }
 
         private void OnSelectPackages(UiExecutedPayload<SelectPackagesCommand> obj)

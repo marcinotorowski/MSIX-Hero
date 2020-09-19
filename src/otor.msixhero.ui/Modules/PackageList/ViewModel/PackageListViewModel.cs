@@ -91,6 +91,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackages);
             this.msixHeroApplication.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages);
             this.msixHeroApplication.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndication);
+            this.msixHeroApplication.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndicationFinished, ThreadOption.UIThread);
         }
 
         private void OnActivePackageIndication(ActivePackageFullNames obj)
@@ -108,6 +109,11 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             {
                 this.packagesSync.ExitReadLock();
             }
+        }
+
+        private void OnActivePackageIndicationFinished(ActivePackageFullNames obj)
+        {
+            this.AllPackagesView.Refresh();
         }
 
         public IList<InstalledPackageViewModel> AllPackages { get; }
@@ -147,47 +153,122 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
         private bool IsPackageVisible(InstalledPackageViewModel item)
         {
-            switch (item.SignatureKind)
+            var signatureFlags = this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.AllSources;
+            if (signatureFlags != 0 && signatureFlags != PackageFilter.AllSources)
             {
-                case SignatureKind.Developer:
-                case SignatureKind.Unsigned:
-                case SignatureKind.Enterprise:
-                    if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.Developer) != PackageFilter.Developer)
-                    {
-                        return false;
-                    }
+                switch (item.SignatureKind)
+                {
+                    case SignatureKind.Developer:
+                    case SignatureKind.Unsigned:
+                    case SignatureKind.Enterprise:
+                        if ((signatureFlags & PackageFilter.Developer) == 0)
+                        {
+                            return false;
+                        }
 
-                    break;
-                case SignatureKind.Store:
-                    if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.Store) != PackageFilter.Store)
-                    {
-                        return false;
-                    }
+                        break;
+                    case SignatureKind.Store:
+                        if ((signatureFlags & PackageFilter.Store) == 0)
+                        {
+                            return false;
+                        }
 
-                    break;
-                case SignatureKind.System:
-                    if ((this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.System) != PackageFilter.System)
-                    {
-                        return false;
-                    }
+                        break;
+                    case SignatureKind.System:
+                        if ((signatureFlags & PackageFilter.System) == 0)
+                        {
+                            return false;
+                        }
 
-                    break;
+                        break;
+                }
             }
 
-            if (item.IsAddon && this.msixHeroApplication.ApplicationState.Packages.AddonFilter == AddonsFilter.OnlyMain)
+            var addonFlags = this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.MainAppsAndAddOns;
+            if (addonFlags != 0 && addonFlags != PackageFilter.MainAppsAndAddOns)
             {
-                return false;
+                if (item.IsAddon)
+                {
+                    if ((addonFlags & PackageFilter.Addons) == 0)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if ((addonFlags & PackageFilter.MainApps) == 0)
+                    {
+                        return false;
+                    }
+                }
             }
 
-            if (!item.IsAddon && this.msixHeroApplication.ApplicationState.Packages.AddonFilter == AddonsFilter.OnlyAddons)
+            var archFilter = this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.AllArchitectures;
+            if (archFilter != PackageFilter.AllArchitectures && archFilter != 0)
             {
-                return false;
+                switch (item.Model.Architecture?.ToLowerInvariant())
+                {
+                    case "x86":
+                        {
+                            if ((archFilter & PackageFilter.x86) == 0)
+                            {
+                                return false;
+                            }
+
+                            break;
+                        }
+                    case "x64":
+                        {
+                            if ((archFilter & PackageFilter.x64) == 0)
+                            {
+                                return false;
+                            }
+
+                            break;
+                        }
+                    case "arm":
+                        {
+                            if ((archFilter & PackageFilter.Arm) == 0)
+                            {
+                                return false;
+                            }
+
+                            break;
+                        }
+                    case "arm64":
+                        {
+                            if ((archFilter & PackageFilter.Arm64) == 0)
+                            {
+                                return false;
+                            }
+
+                            break;
+                        }
+                    case "neutral":
+                        {
+                            if ((archFilter & PackageFilter.Neutral) == 0)
+                            {
+                                return false;
+                            }
+
+                            break;
+                        }
+                }
+            }
+
+            var isRunningFilter = this.msixHeroApplication.ApplicationState.Packages.PackageFilter & PackageFilter.InstalledAndRunning;
+            if (isRunningFilter == PackageFilter.Running)
+            {
+                if (!item.IsRunning)
+                {
+                    return false;
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(this.msixHeroApplication.ApplicationState.Packages.SearchKey) && item.DisplayName.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                                                           && item.DisplayPublisherName.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                                                           && item.Version.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                                                           && item.Architecture.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                   && item.DisplayPublisherName.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                   && item.Version.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                   && item.Architecture.IndexOf(this.msixHeroApplication.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
             {
                 return false;
             }
@@ -415,7 +496,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
                 this.msixHeroApplication.CommandExecutor
                     .WithErrorHandling(this.interactionService, false)
-                    .Invoke(this, new SetPackageFilterCommand(state.PackageFilter, state.AddonFilter, value));
+                    .Invoke(this, new SetPackageFilterCommand(state.PackageFilter, value));
             }
         }
 

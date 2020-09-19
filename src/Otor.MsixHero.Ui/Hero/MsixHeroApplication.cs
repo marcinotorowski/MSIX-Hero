@@ -46,8 +46,7 @@ namespace Otor.MsixHero.Ui.Hero
                     return;
                 }
 
-                this.ApplicationState.Packages.PackageFilter = configuration.List?.Filter?.ShowApps ?? PackageFilter.Developer;
-                this.ApplicationState.Packages.AddonFilter = configuration.List?.Filter?.AddonsFilter ?? AddonsFilter.OnlyMain;
+                this.ApplicationState.Packages.PackageFilter = configuration.List?.Filter?.PackageFilter ?? PackageFilter.Default;
                 this.ApplicationState.Packages.ShowSidebar = configuration.List?.Sidebar?.Visible != false;
                 this.ApplicationState.Packages.SortMode = configuration.List?.Sorting?.SortingMode ?? PackageSort.Name;
                 this.ApplicationState.Packages.SortDescending = configuration.List?.Sorting?.Descending == true;

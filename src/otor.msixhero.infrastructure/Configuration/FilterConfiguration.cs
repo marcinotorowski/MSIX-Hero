@@ -6,13 +6,10 @@ namespace Otor.MsixHero.Infrastructure.Configuration
     {
         public FilterConfiguration()
         {
-            this.ShowApps = PackageFilter.Developer;
+            this.PackageFilter = PackageFilter.Default;
         }
 
-        [DataMember(Name="showApps")]
-        public PackageFilter ShowApps { get; set; }
-
-        [DataMember(Name = "addons")]
-        public AddonsFilter AddonsFilter { get; set; }
+        [DataMember(Name="packageFilter")]
+        public PackageFilter PackageFilter { get; set; }
     }
 }

@@ -32,23 +32,24 @@ namespace Otor.MsixHero.Ui.Hero.Executor
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
-
-        private readonly IRunningDetector detector = new RunningDetector();
+        private readonly IRunningDetector detector;
 
         public MsixHeroCommandExecutor(
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider,
-            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider) : base(eventAggregator)
+            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
+            IRunningDetector detector) : base(eventAggregator)
         {
             this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
             this.packageManagerProvider = packageManagerProvider;
             this.logManagerProvider = logManagerProvider;
             this.volumeManagerProvider = volumeManagerProvider;
+            this.detector = detector;
 
-            this.detector.Subscribe(this);
+            detector.Subscribe(this);
 
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
             this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
@@ -134,14 +135,12 @@ namespace Otor.MsixHero.Ui.Hero.Executor
         private async Task SetPackageFilter(SetPackageFilterCommand command)
         {
             this.ApplicationState.Packages.PackageFilter = command.PackageFilter;
-            this.ApplicationState.Packages.AddonFilter = command.AddonFilter;
             this.ApplicationState.Packages.SearchKey = command.SearchKey;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
             cleanConfig.List ??= new ListConfiguration();
             cleanConfig.List.Filter ??= new FilterConfiguration();
-            cleanConfig.List.Filter.ShowApps = command.PackageFilter;
-            cleanConfig.List.Filter.AddonsFilter = command.AddonFilter;
+            cleanConfig.List.Filter.PackageFilter = command.PackageFilter;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 

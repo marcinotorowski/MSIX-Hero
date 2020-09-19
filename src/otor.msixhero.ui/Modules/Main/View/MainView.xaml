@@ -22,6 +22,7 @@
     xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
     xmlns:modules1="clr-namespace:Otor.MsixHero.Ui.Modules"
     xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Diagnostic.Logging.Enums;assembly=Otor.MsixHero.Appx"
+    xmlns:filterConverters="clr-namespace:Otor.MsixHero.Ui.Modules.Main.View.FilterConverters"
     d:DesignWidth="600"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModel:MainViewModel}">
@@ -73,7 +74,7 @@
             </Style>
         </Grid.Resources>
 
-            <Fluent:Ribbon
+        <Fluent:Ribbon
                 FocusManager.IsFocusScope="True"
                 CanQuickAccessLocationChanging="False"
                 CanCustomizeQuickAccessToolBar="False"
@@ -274,12 +275,12 @@
 
             </Fluent:RibbonTabItem>
 
-            <!--Tabs-->
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabHome"
                 Header="Home" ReduceOrder="
-                  RibbonHomeActions,RibbonHomeActions,RibbonHomeActions,
-                  RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
+                  RibbonHomeActions,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,
+                  RibbonHomeActions,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting,
+                  RibbonHomeActions,RibbonHomeTroubleshooting,RibbonHomeTroubleshooting">
 
                 <Fluent:RibbonGroupBox x:Name="RibbonHomeActions" Header="Actions">
                     <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Small">
@@ -328,7 +329,7 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPowerShell}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Apps and features" SizeDefinition="Medium,Medium,Small" Command="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}">
+                    <Fluent:Button Header="Apps and features" SizeDefinition="Medium,Medium,Medium" Command="{x:Static commands:MsixHeroCommands.OpenAppsFeatures}">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPowerList}" />
                         </Fluent:Button.LargeIcon>
@@ -336,7 +337,7 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPowerList}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Developer settings" SizeDefinition="Medium,Medium,Small" Command="{x:Static commands:MsixHeroCommands.OpenDevSettings}">
+                    <Fluent:Button Header="Developer settings" SizeDefinition="Medium,Medium,Medium" Command="{x:Static commands:MsixHeroCommands.OpenDevSettings}">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
                         </Fluent:Button.LargeIcon>
@@ -350,10 +351,13 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabView"
                 Header="View"
-                ReduceOrder="RibbonViewGroupBy,RibbonViewGroupBy,RibbonViewGroupBy">
+                ReduceOrder="RibbonViewGroupBy,RibbonHomeContext,RibbonViewFilter,RibbonPanel">
 
-                <Fluent:RibbonGroupBox x:Name="RibbonHomeContext" Header="Context">
-                    <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Small">
+                <Fluent:RibbonGroupBox x:Name="RibbonHomeContext" Header="Source">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
+                    </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:Button Size="Large" Header="Refresh list" Command="Refresh" SizeDefinition="Large, Large, Large">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="M 16 4 C 10.886719 4 6.617188 7.160156 4.875 11.625 L 6.71875 12.375 C 8.175781 8.640625 11.710938 6 16 6 C 19.242188 6 22.132813 7.589844 23.9375 10 L 20 10 L 20 12 L 27 12 L 27 5 L 25 5 L 25 8.09375 C 22.808594 5.582031 19.570313 4 16 4 Z M 25.28125 19.625 C 23.824219 23.359375 20.289063 26 16 26 C 12.722656 26 9.84375 24.386719 8.03125 22 L 12 22 L 12 20 L 5 20 L 5 27 L 7 27 L 7 23.90625 C 9.1875 26.386719 12.394531 28 16 28 C 21.113281 28 25.382813 24.839844 27.125 20.375 Z" />
                         </Fluent:Button.LargeIcon>
@@ -362,47 +366,140 @@
                         </Fluent:Button.Icon>
                     </Fluent:Button>
 
-                    <Separator />
+                    <Separator Visibility="Collapsed" />
 
-                    <Fluent:RadioButton GroupName="Users1" Header="Current user" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static packages:PackageContext.CurrentUser}}">
-                        <Fluent:RadioButton.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
-                        </Fluent:RadioButton.SizeDefinition>
-                        <Fluent:RadioButton.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
-                        </Fluent:RadioButton.Icon>
-                    </Fluent:RadioButton>
-                    <Fluent:RadioButton Header="All users"  GroupName="Users2" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static packages:PackageContext.AllUsers}}">
-                        <Fluent:RadioButton.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Middle" Small="Middle" Middle="Middle" />
-                        </Fluent:RadioButton.SizeDefinition>
-                        <Fluent:RadioButton.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUsers}" />
-                        </Fluent:RadioButton.Icon>
-                    </Fluent:RadioButton>
+                    <Fluent:InRibbonGallery Visibility="Collapsed" Selectable="False" Background="White" MaxItemsInRow="1">
+                        <Fluent:ToggleButton Header="Current user" Size="Middle">
+                            <Fluent:ToggleButton.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:ToggleButton.Icon>
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:ToggleButton.LargeIcon>
+                        </Fluent:ToggleButton>
+                        <Fluent:ToggleButton Header="All users" Size="Middle">
+                            <Fluent:ToggleButton.Icon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:ToggleButton.Icon>
+                            <Fluent:ToggleButton.LargeIcon>
+                                <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
+                            </Fluent:ToggleButton.LargeIcon>
+                        </Fluent:ToggleButton>
+                    </Fluent:InRibbonGallery>
+
+                    <Fluent:RadioButton SizeDefinition="Large, Medium, Small" Header="Current user" GroupName="Users1" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static packages:PackageContext.CurrentUser}}" />
+                    <Fluent:RadioButton SizeDefinition="Large, Medium, Small" Header="All users"  GroupName="Users2" IsChecked="{Binding Context, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static packages:PackageContext.AllUsers}}" />
+               
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Filter" x:Name="RibbonViewFilter">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorFilter}" />
+                    </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:SplitButton MinWidth="84" SizeDefinition="Large, Large, Middle" x:Name="ToggleButtonRunning" Click="SplitButtonClicked">
+                        <Fluent:SplitButton.Header>
+                            <Binding Path="PackageFilter">
+                                <Binding.Converter>
+                                    <filterConverters:RunningConverter />
+                                </Binding.Converter>
+                            </Binding>
+                        </Fluent:SplitButton.Header>
+                        <Fluent:SplitButton.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorStartMenu}" />
+                        </Fluent:SplitButton.Icon>
+                        <Fluent:SplitButton.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorStartMenu}" />
+                        </Fluent:SplitButton.LargeIcon>
 
-                <Fluent:RibbonGroupBox Header="App types">
-                    <Fluent:CheckBox IsChecked="{Binding ShowStoreApps}" Header="Store apps" />
-                    <Fluent:CheckBox IsChecked="{Binding ShowSideLoadedApps}" Header="Side-loaded apps" />
-                    <Fluent:CheckBox IsChecked="{Binding ShowSystemApps}" Header="System apps" />
-                </Fluent:RibbonGroupBox>
+                        <RadioButton Margin="4" IsChecked="{Binding RunningBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageFilter.Running}}" Content="Only running apps" />
+                        <RadioButton Margin="4" IsChecked="{Binding RunningBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageFilter.InstalledAndRunning}}" Content="All installed apps" />
+                    </Fluent:SplitButton>
 
-                <Fluent:RibbonGroupBox Header="Add-ons">
-                    <Fluent:RadioButton IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:AddonsFilter.OnlyMain}}" Header="Only main apps" />
-                    <Fluent:RadioButton IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:AddonsFilter.OnlyAddons}}" Header="Only add-ons" />
-                    <Fluent:RadioButton IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:AddonsFilter.Both}}" Header="Main apps + add-ons" />
+                    <Fluent:SplitButton
+                        MinWidth="84" SizeDefinition="Large, Middle, Middle" x:Name="ToggleButtonAddons" Click="SplitButtonClicked">
+                        <Fluent:SplitButton.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDocumentLink}" />
+                        </Fluent:SplitButton.Icon>
+                        <Fluent:SplitButton.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDocumentLink}" />
+                        </Fluent:SplitButton.LargeIcon>
+
+                        <Fluent:SplitButton.Header>
+                            <Binding Path="PackageFilter">
+                                <Binding.Converter>
+                                    <filterConverters:AddonsConverter />
+                                </Binding.Converter>
+                            </Binding>
+                        </Fluent:SplitButton.Header>
+
+                        <RadioButton Margin="4" IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageFilter.MainApps}}" Content="Only main apps" />
+                        <RadioButton Margin="4" IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageFilter.Addons}}" Content="Only add-ons" />
+                        <RadioButton Margin="4" IsChecked="{Binding AddonsBehavior, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:PackageFilter.MainAppsAndAddOns}}" Content="Main apps + add-ons" />
+                    </Fluent:SplitButton>
+
+                    <Fluent:DropDownButton MinWidth="84" SizeDefinition="Large, Middle, Middle" x:Name="ToggleButtonTypes">
+                        <Fluent:DropDownButton.Header>
+                            <Binding Path="PackageFilter">
+                                <Binding.Converter>
+                                    <filterConverters:InstallationSourceConverter />
+                                </Binding.Converter>
+                            </Binding>
+                        </Fluent:DropDownButton.Header>
+                        <Fluent:DropDownButton.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDatabaseDown}" />
+                        </Fluent:DropDownButton.Icon>
+                        <Fluent:DropDownButton.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDatabaseDown}" />
+                        </Fluent:DropDownButton.LargeIcon>
+
+                        <CheckBox Margin="4" IsChecked="{Binding ShowStoreApps}" Content="Microsoft Store apps" />
+                        <CheckBox Margin="4" IsChecked="{Binding ShowSideLoadedApps}" Content="Side-loaded apps" />
+                        <CheckBox Margin="4" IsChecked="{Binding ShowSystemApps}" Content="System apps" />
+                    </Fluent:DropDownButton>
+
+                    <Fluent:DropDownButton MinWidth="84" SizeDefinition="Large, Middle, Middle">
+                        <Fluent:DropDownButton.Header>
+                            <Binding Path="PackageFilter">
+                                <Binding.Converter>
+                                    <filterConverters:ArchitectureConverter />
+                                </Binding.Converter>
+                            </Binding>
+                        </Fluent:DropDownButton.Header>
+                        <Fluent:DropDownButton.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorProcessor}" />
+                        </Fluent:DropDownButton.Icon>
+                        <Fluent:DropDownButton.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorProcessor}" />
+                        </Fluent:DropDownButton.LargeIcon>
+
+                        <CheckBox Margin="4" IsChecked="{Binding ShowX64}" Content="64-bit" />
+                        <CheckBox Margin="4" IsChecked="{Binding ShowX86}" Content="32-bit" />
+                        <CheckBox Margin="4" IsChecked="{Binding ShowNeutral}" Content="Neutral" />
+                        <CheckBox Margin="4" IsChecked="{Binding ShowArm}" Content="ARM" />
+                        <CheckBox Margin="4" IsChecked="{Binding ShowArm64}" Content="ARM64" />
+
+                    </Fluent:DropDownButton>
                 </Fluent:RibbonGroupBox>
 
                 <Fluent:RibbonGroupBox Header="Group by" x:Name="RibbonViewGroupBy">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorGroupTree}" />
+                    </Fluent:RibbonGroupBox.Icon>
+
                     <Fluent:InRibbonGallery 
                         Orientation="Horizontal" 
                         ItemWidth="72" 
                         ItemHeight="58" 
-                        SelectedValue="{Binding Group}" SelectedValuePath="Tag" Size="Large">
+                        SelectedValue="{Binding Group}" 
+                        SelectedValuePath="Tag">
                         <Fluent:InRibbonGallery.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Large" Small="Middle" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                         </Fluent:InRibbonGallery.SizeDefinition>
+                        <Fluent:InRibbonGallery.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorGroupTree}" />
+                        </Fluent:InRibbonGallery.Icon>
+                        <Fluent:InRibbonGallery.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorGroupTree}" />
+                        </Fluent:InRibbonGallery.LargeIcon>
                         <Fluent:GalleryItem Tag="{x:Static configuration:PackageGroup.None}">
                             <StackPanel>
                                 <Path HorizontalAlignment="Center" Data="{StaticResource VectorCollection}" Style="{StaticResource LargeIcon}" />
@@ -430,11 +527,14 @@
                     </Fluent:InRibbonGallery>
                 </Fluent:RibbonGroupBox>
 
-                <Fluent:RibbonGroupBox Header="Panel">
-                    <Fluent:ToggleButton Header="Show information panel" Size="Large" IsChecked="{Binding ShowSidebar}">
+                <Fluent:RibbonGroupBox Header="Panel" x:Name="RibbonPanel">
+                    <Fluent:ToggleButton Header="Show information panel" SizeDefinition="Large,Small,Small" IsChecked="{Binding ShowSidebar}">
                         <Fluent:ToggleButton.LargeIcon>
                             <Path Data="{StaticResource VectorSidebarRight}" Style="{StaticResource LargeIcon}" />
                         </Fluent:ToggleButton.LargeIcon>
+                        <Fluent:ToggleButton.Icon>
+                            <Path Data="{StaticResource VectorSidebarRight}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:ToggleButton.Icon>
                     </Fluent:ToggleButton>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
@@ -442,9 +542,7 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabEdit"
                 Header="Tools" 
-                ReduceOrder=",
-                            RibbonToolsPack,RibbonToolsPack,RibbonToolsPack,
-                            RibbonToolsCreate,RibbonToolsCreate,RibbonToolsCreate,">
+                ReduceOrder="RibbonToolsPack,RibbonToolsCreate,RibbonToolsPack,RibbonToolsCreate,RibbonToolsPack,RibbonToolsCreate">
                 <Fluent:RibbonGroupBox Header="Packing + unpacking" x:Name="RibbonToolsPack">
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorPack}" Style="{StaticResource MediumIcon}" />
@@ -478,7 +576,7 @@
                     </Fluent:RibbonGroupBox.Icon>
                     <Fluent:Button Header="Update impact analyzer" Command="{x:Static commands:MsixHeroCommands.UpdateImpact}">
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                         </Fluent:Button.SizeDefinition>
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorCompare}" Style="{StaticResource LargeIcon}" />
@@ -495,7 +593,7 @@
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
@@ -507,7 +605,7 @@
                             <Path Data="{StaticResource VectorNetworkDrive}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Small" Middle="Middle" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
@@ -519,7 +617,7 @@
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
@@ -531,7 +629,7 @@
                             <Path Data="{StaticResource VectorConsole}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
@@ -573,8 +671,7 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabCertificates"
                 Header="Certificates"
-                ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts1,RibbonToolsCerts1
-                            RibbonToolsCerts2,RibbonToolsCerts2,RibbonToolsCerts2">
+                ReduceOrder="RibbonToolsCerts1,RibbonToolsCerts2,RibbonToolsCerts1,RibbonToolsCerts2,RibbonToolsCerts1,RibbonToolsCerts2">
                 <Fluent:RibbonGroupBox Header="Code-signing" x:Name="RibbonToolsCerts1">
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorSelfSign}" Style="{StaticResource MediumIcon}" />
@@ -583,16 +680,22 @@
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
                         </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSign}" />
+                        </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
                     <Fluent:Button Header="Extract certificate from package..." Command="{x:Static commands:MsixHeroCommands.ExtractCertificate}">
                         <Fluent:Button.LargeIcon>
                             <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                         </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorExport}" />
+                        </Fluent:Button.Icon>
                         <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Large" />
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -650,9 +753,7 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabManagement"
                 ReduceOrder="
-                    RibbonManagementStart,RibbonManagementStart,RibbonManagementStart
-                    RibbonManagementNavi,RibbonManagementNavi,RibbonManagementNavi,
-                    RibbonManagementControl,RibbonManagementControl,RibbonManagementControl"
+                    RibbonManagementNavi, RibbonManagementOther, RibbonManagementNavi, RibbonManagementControl,RibbonManagementOther,RibbonManagementControl"
                 Header="Management" Group="{Binding Source={x:Reference SelectedPackage}}">
 
                 <Fluent:RibbonGroupBox x:Name="RibbonManagementStart" Header="Start">
@@ -735,6 +836,9 @@
                                 <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorDeleteMachine}" />
                             </uac:UACControl>
                         </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDeleteMachine}" />
+                        </Fluent:Button.Icon>
                     </Fluent:Button>
 
                     <Fluent:Button Command="{x:Static commands:MsixHeroCommands.Deprovision}" Header="Deprovision for all users" ToolTip="De-provisions this package from all users">
@@ -816,16 +920,16 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabDeveloper" 
                 ReduceOrder="
-                  (RibbonDevRun),(RibbonDevRun),(RibbonDevRun),
-                  RibbonDevReg,RibbonDevReg,RibbonDevReg
-                  RibbonDevCreate,RibbonDevCreate,RibbonDevCreate"
+                    RibbonDevRun, RibbonDevReg, RibbonDevCreate, 
+                    RibbonDevRun, RibbonDevReg, RibbonDevCreate, 
+                    RibbonDevRun, RibbonDevReg, RibbonDevCreate"
                   Header="Developer" 
                 Group="{Binding Source={x:Reference SelectedPackage}}">
                 <Fluent:RibbonGroupBox x:Name="RibbonDevCreate" Header="Create...">
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Modification package stub..." Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+                    <Fluent:Button Header="Modification package stub..." SizeDefinition="Large, Medium, Small" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
                         <Fluent:Button.CommandParameter>
                             <system:Boolean>True</system:Boolean>
                         </Fluent:Button.CommandParameter>
@@ -836,27 +940,21 @@
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Appinstaller definition..." Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                    <Fluent:Button Header="Appinstaller definition..." SizeDefinition="Large, Medium, Small" Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
-                        </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
-                    <Fluent:Button Header="Winget manifest (YAML)..." Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                    <Fluent:Button Header="Winget manifest (YAML)..." SizeDefinition="Large, Medium, Small" Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Data="{StaticResource VectorConsole}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Small="Middle" Middle="Middle" />
-                        </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox x:Name="RibbonDevRun" IsEnabled="{Binding HasSingleSelection}" Header="Run in package context">
@@ -866,7 +964,10 @@
                     <Fluent:RibbonGroupBox.Resources>
                         <SolidColorBrush x:Key="WhiteBrush" Color="#fafafa" />
                     </Fluent:RibbonGroupBox.Resources>
-                    <Fluent:InRibbonGallery Selectable="False" Background="White" ItemsSource="{Binding Tools}" MaxItemsInRow="4">
+                    <Fluent:InRibbonGallery 
+                        SizeDefinition="Large, Medium, Medium" 
+                        Selectable="False" 
+                        Background="White" ItemsSource="{Binding Tools}" MaxItemsInRow="4">
                         <Fluent:InRibbonGallery.ItemContainerStyle>
                             <Style TargetType="{x:Type Fluent:GalleryItem}">
                                 <Setter Property="Command" Value="{x:Static commands:MsixHeroCommands.RunTool}" />

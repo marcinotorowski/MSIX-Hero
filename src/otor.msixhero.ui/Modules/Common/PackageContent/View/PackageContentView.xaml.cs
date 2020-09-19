@@ -18,6 +18,12 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.View
         public PackageContentView()
         {
             InitializeComponent();
+            this.Unloaded += OnUnloaded;
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
@@ -32,6 +38,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.View
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
+
         }
 
         private void HyperlinkOnClick(object sender, RoutedEventArgs e)

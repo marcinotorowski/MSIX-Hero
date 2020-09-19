@@ -2,6 +2,7 @@
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.Ui.Hero.State
@@ -20,9 +21,7 @@ namespace Otor.MsixHero.Ui.Hero.State
         public List<InstalledPackage> SelectedPackages { get; }
 
         public PackageFilter PackageFilter { get; set; }
-
-        public AddonsFilter AddonFilter { get; set; }
-
+        
         public string SearchKey { get; set; }
 
         public PackageContext Mode { get; set; }
@@ -36,5 +35,7 @@ namespace Otor.MsixHero.Ui.Hero.State
         public bool ShowSidebar { get; set; }
 
         public IReadOnlyList<string> ActivePackageNames { get; set; }
+
+        public AppxPackageArchitecture Platform { get; set; }
     }
 }

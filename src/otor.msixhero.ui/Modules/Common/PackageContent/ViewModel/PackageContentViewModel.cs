@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
@@ -35,7 +36,7 @@ using Prism.Regions;
 
 namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 {
-    public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware
+    public class PackageContentViewModel : NotifyPropertyChanged, INavigationAware, IObserver<ActivePackageFullNames>
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(PsfContentViewModel));
 
@@ -43,6 +44,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
         private readonly ISelfElevationProxyProvider<ISigningManager> signManager;
         private readonly IInteractionService interactionService;
+        private readonly IRunningDetector runningDetector;
         private ICommand findUsers;
         private ICommand trustMe;
         private ICommand showPropertiesCommand;
@@ -51,18 +53,21 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 
         private string certificateFile;
         private IAppxFileReader packageSource;
+        private IDisposable disposableSubscriber;
 
         public PackageContentViewModel(
             IInterProcessCommunicationManager interProcessCommunicationManager,
             ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService, 
-            IConfigurationService configurationService)
+            IConfigurationService configurationService,
+            IRunningDetector runningDetector)
         {
             this.interProcessCommunicationManager = interProcessCommunicationManager;
             this.appxPackageManagerProvider = appxPackageManagerProvider;
             this.signManager = signManager;
             this.interactionService = interactionService;
+            this.runningDetector = runningDetector;
             this.CommandHandler = new PackageContentCommandHandler(configurationService, interactionService);
         }
 
@@ -229,6 +234,18 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             return null;
         }
 
+        void IObserver<ActivePackageFullNames>.OnCompleted()
+        {
+        }
+
+        void IObserver<ActivePackageFullNames>.OnError(Exception error)
+        {
+        }
+
+        void IObserver<ActivePackageFullNames>.OnNext(ActivePackageFullNames value)
+        {
+        }
+
         async void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
             var navigation = new PackageListNavigation(navigationContext);
@@ -236,6 +253,9 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             {
                 return;
             }
+
+            this.disposableSubscriber?.Dispose();
+            this.disposableSubscriber = this.runningDetector.Subscribe(this);
 
             var manifest = navigation.SelectedManifests.First();
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
@@ -279,6 +299,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
+            this.disposableSubscriber?.Dispose();
         }
 
         private async Task<List<InstalledPackageViewModel>> GetAddons(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

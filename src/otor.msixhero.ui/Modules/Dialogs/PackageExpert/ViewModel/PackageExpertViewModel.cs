@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Processes;
@@ -20,9 +21,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             IInteractionService interactionService, 
             ISelfElevationProxyProvider<ISigningManager> signManager,
-            IConfigurationService configurationService) : base("MSIX Hero - Package Expert", interactionService)
+            IConfigurationService configurationService,
+            IRunningDetector runningDetector) : base("MSIX Hero - Package Expert", interactionService)
         {
-            this.Content = new PackageContentViewModel(interProcessCommunicationManager, packageManagerProvider, signManager, interactionService, configurationService);
+            this.Content = new PackageContentViewModel(interProcessCommunicationManager, packageManagerProvider, signManager, interactionService, configurationService, runningDetector);
         }
 
         public void OnDialogOpened(IDialogParameters parameters)
