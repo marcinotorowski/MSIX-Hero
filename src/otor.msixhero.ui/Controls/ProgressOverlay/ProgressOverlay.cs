@@ -16,6 +16,8 @@ namespace Otor.MsixHero.Ui.Controls.ProgressOverlay
         public static readonly DependencyProperty MessageProperty =  DependencyProperty.Register("Message", typeof(string), typeof(ProgressOverlay), new PropertyMetadata("Please wait..."));
 
         public static readonly DependencyProperty IsShownProperty =  DependencyProperty.Register("IsShown", typeof(bool), typeof(ProgressOverlay), new PropertyMetadata(false));
+        
+        public static readonly DependencyProperty HideContentWhileLoadingProperty =  DependencyProperty.Register("HideContentWhileLoading", typeof(bool), typeof(ProgressOverlay), new PropertyMetadata(false));
 
         public static readonly DependencyProperty CancelCommandProperty = DependencyProperty.Register("CancelCommand", typeof(ICommand), typeof(ProgressOverlay), new PropertyMetadata(null));
 
@@ -50,6 +52,13 @@ namespace Otor.MsixHero.Ui.Controls.ProgressOverlay
         {
             get => (bool)this.GetValue(IsShownProperty);
             set => this.SetValue(IsShownProperty, value);
+        }
+
+
+        public bool HideContentWhileLoading
+        {
+            get => (bool)this.GetValue(HideContentWhileLoadingProperty);
+            set => this.SetValue(HideContentWhileLoadingProperty, value);
         }
     }
 }

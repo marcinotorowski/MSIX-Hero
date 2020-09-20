@@ -30,8 +30,11 @@ using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel;
 using Otor.MsixHero.Ui.Modules.Dialogs.Winget.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel;
+using Otor.MsixHero.Ui.Modules.VolumeManager.View;
+using Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs
 {

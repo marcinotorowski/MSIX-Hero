@@ -64,7 +64,9 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static psf:AppxPsfViewModel.EditScript}" Command="{Binding CommandHandler.EditScript}" />
     </routedCommand:RoutedCommandHandlers.Commands>
 
-    <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
+    <progressOverlay:ProgressOverlay 
+        HideContentWhileLoading="{Binding FirstLoading}"
+        IsShown="{Binding SelectedPackageManifestInfo.IsLoading}">
         <DockPanel>
             <packageHeader1:PackageHeader
                 Visibility="{Binding HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
@@ -670,10 +672,10 @@
                             </TabItem.Header>
                             <progressOverlay:ProgressOverlay IsShown="{Binding SelectedPackageUsersInfo.IsLoading}">
                                 <Grid>
-                                    <StackPanel Margin="8 0" VerticalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                                    <StackPanel Margin="8 0" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
 
-                                        <TextBlock TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
-                                        <Button  DockPanel.Dock="Top" HorizontalAlignment="Left" Command="{Binding FindUsers}">
+                                        <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
+                                        <Button  DockPanel.Dock="Top" HorizontalAlignment="Center" Command="{Binding FindUsers}">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
                                                 <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />

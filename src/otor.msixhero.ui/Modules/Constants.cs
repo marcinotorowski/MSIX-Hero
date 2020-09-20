@@ -4,6 +4,7 @@
     {
         public const string RegionContent = "ContentRegion";
         public const string RegionShell = "ShellRegion";
+        public const string RegionPackageExpertShell = "PackageExpertShellRegion";
         public const string RegionPackageSidebar = "PackageSidebar";
 
         public const string PathVolumeManager = "VolumeManager";

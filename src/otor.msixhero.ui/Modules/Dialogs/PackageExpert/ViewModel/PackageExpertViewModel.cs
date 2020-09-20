@@ -10,11 +10,12 @@ using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
 {
-    public class PackageExpertViewModel : ChangeableDialogViewModel, IDialogAware
+    public class PackageExpertViewModel : ChangeableDialogViewModel, IDialogAware, INavigationAware
     {
         public PackageExpertViewModel(
             IInterProcessCommunicationManager interProcessCommunicationManager,
@@ -27,7 +28,40 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
             this.Content = new PackageContentViewModel(interProcessCommunicationManager, packageManagerProvider, signManager, interactionService, configurationService, runningDetector);
         }
 
-        public void OnDialogOpened(IDialogParameters parameters)
+        void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
+        {
+            var parsedParams = new PackageExpertSelection(navigationContext.Parameters);
+            if (parsedParams.Source == null)
+            {
+                return;
+            }
+
+#pragma warning disable 4014
+            var task = this.Content.LoadPackage(parsedParams.Source, CancellationToken.None);
+            this.Content.SelectedPackageManifestInfo.Load(task);
+
+            task.ContinueWith(t =>
+            {
+                if (t.IsFaulted || t.IsCanceled)
+                {
+                    return;
+                }
+
+                this.Content.SelectedPackageJsonInfo.Load(this.Content.LoadPackageJson(parsedParams.Source, task.Result.Model, CancellationToken.None));
+            });
+        }
+
+        bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
+        {
+#pragma warning restore 4014
+        }
+
+        void IDialogAware.OnDialogOpened(IDialogParameters parameters)
         {   
             var parsedParams = new PackageExpertSelection(parameters);
 #pragma warning disable 4014

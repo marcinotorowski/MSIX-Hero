@@ -14,8 +14,9 @@ namespace Otor.MsixHero.Ui.Helpers
         private bool hasError;
         private string error;
 
-        public AsyncProperty(T initialValue = default)
+        public AsyncProperty(T initialValue = default, bool isLoading = false)
         {
+            this.isLoading = isLoading;
             this.currentValue = initialValue;
         }
 

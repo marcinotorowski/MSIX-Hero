@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs
@@ -10,11 +12,17 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs
     {
         private readonly IDialogService dialogService;
         private readonly bool openAsModal;
+        private readonly IRegionManager regionManager;
 
         public ExplorerHandler(IDialogService dialogService, bool openAsModal = false)
         {
             this.dialogService = dialogService;
             this.openAsModal = openAsModal;
+        }
+
+        public ExplorerHandler(IRegionManager regionManager)
+        {
+            this.regionManager = regionManager;
         }
 
         public void Handle(params string[] files)
@@ -24,7 +32,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs
 
         public void Handle(IEnumerable<string> files)
         {
-            if (this.openAsModal)
+            if (this.regionManager != null || this.openAsModal)
             {
                 files = files.Take(1);
             }
@@ -39,58 +47,74 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs
                 switch (extension)
                 {
                     case ".appinstaller":
-                    {
-                        var parameters = new DialogParameters
+                        if (this.regionManager != null)
                         {
-                            { "file", file }
-                        };
+                            var navigationParams = new NavigationParameters {{"file", file}};
 
-                        if (this.openAsModal)
-                        {
-                            this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, result => { });
+                            this.regionManager.Regions[Constants.RegionPackageExpertShell].RequestNavigate(new Uri(Constants.PathAppInstaller, UriKind.Relative), navigationParams);
                         }
                         else
                         {
-                            this.dialogService.Show(Constants.PathAppInstaller, parameters, result => { });
+                            var parameters = new DialogParameters{{ "file", file }};
+
+                            if (this.openAsModal)
+                            {
+                                this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, result => { });
+                            }
+                            else
+                            {
+                                this.dialogService.Show(Constants.PathAppInstaller, parameters, result => { });
+                            }
                         }
 
                         break;
-                    }
 
                     case ".yaml":
-                    {
-                        var parameters = new DialogParameters
-                        {
-                            { "yaml", file }
-                        };
 
-                        if (this.openAsModal)
+                        if (this.regionManager != null)
                         {
-                            this.dialogService.ShowDialog(Constants.PathWinget, parameters, result => { });
+                            var navigationParams = new NavigationParameters { { "yaml", file } };
+                            this.regionManager.Regions[Constants.RegionPackageExpertShell].RequestNavigate(new Uri(Constants.PathWinget, UriKind.Relative), navigationParams);
                         }
                         else
                         {
-                            this.dialogService.Show(Constants.PathWinget, parameters, result => { });
+                            var parameters = new DialogParameters { { "yaml", file } };
+
+                            if (this.openAsModal)
+                            {
+                                this.dialogService.ShowDialog(Constants.PathWinget, parameters, result => { });
+                            }
+                            else
+                            {
+                                this.dialogService.Show(Constants.PathWinget, parameters, result => { });
+                            }
                         }
 
                         break;
-                    }
 
                     default:
-                    {
-                        var parameters = new PackageExpertSelection(file).ToDialogParameters();
 
-                        if (this.openAsModal)
+                        if (this.regionManager != null)
                         {
-                            this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, result => { });
+                            var navigationParams = new PackageExpertSelection(file).ToNavigationParameters();
+
+                            this.regionManager.Regions[Constants.RegionPackageExpertShell].RequestNavigate(new Uri(Constants.PathPackageExpert, UriKind.Relative), navigationParams);
                         }
                         else
                         {
-                            this.dialogService.Show(Constants.PathPackageExpert, parameters, result => { });
+                            var parameters = new PackageExpertSelection(file).ToDialogParameters();
+
+                            if (this.openAsModal)
+                            {
+                                this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, result => { });
+                            }
+                            else
+                            {
+                                this.dialogService.Show(Constants.PathPackageExpert, parameters, result => { });
+                            }
                         }
 
                         break;
-                    }
                 }
             }
         }

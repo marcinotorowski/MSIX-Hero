@@ -137,6 +137,15 @@
                         <Trigger Property="Progress" Value="-1">
                             <Setter TargetName="PART_ProgressBar" Property="IsIndeterminate" Value="True" />
                         </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HideContentWhileLoading" Value="True" />
+                                <Condition Property="IsShown" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="PART_Content" Property="Visibility" Value="Hidden" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

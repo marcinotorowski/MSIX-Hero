@@ -39,6 +39,7 @@ using Otor.MsixHero.Ui.Modules.VolumeManager;
 using Otor.MsixHero.Ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.Ui
@@ -141,8 +142,8 @@ namespace Otor.MsixHero.Ui
 
             if (this.arguments.Any())
             {
-                var dlg = IContainerProviderExtensions.Resolve<IDialogService>(this.Container);
-                var handler = new ExplorerHandler(dlg, true);
+                var regionManager = this.Container.Resolve<IRegionManager>();
+                var handler = new ExplorerHandler(regionManager);
                 handler.Handle(this.arguments.First());
             }
         }
@@ -151,11 +152,15 @@ namespace Otor.MsixHero.Ui
         {
             if (this.arguments.Any())
             {
-                return null;
+                var shell = this.Container.Resolve<PackageExpert>();
+                return shell;
             }
+            else
+            {
 
-            var shell = this.Container.Resolve<MainWindow>();
-            return shell;
+                var shell = this.Container.Resolve<MainWindow>();
+                return shell;
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

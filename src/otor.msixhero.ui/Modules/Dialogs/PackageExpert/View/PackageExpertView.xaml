@@ -53,15 +53,4 @@
             <view1:PackageContentView Margin="6 0" DataContext="{Binding Path=Content}" x:Name="PackageContentView" DockPanel.Dock="Top" />
         </Grid>
     </DockPanel>
-    <!--<changeableDialog:ChangeableDialog
-        Dialog="{Binding}"
-        OkButtonVisibility="Collapsed"
-        OkButtonLabel="Package expert"
-        Icon="{StaticResource VectorBulb}">
-        <changeableDialog:ChangeableDialog.DialogContentTemplate>
-            <DataTemplate>
-                <view:PackageContentView DataContext="{Binding Path=Content}" />
-            </DataTemplate>
-        </changeableDialog:ChangeableDialog.DialogContentTemplate>
-    </changeableDialog:ChangeableDialog>-->
 </UserControl>

@@ -54,6 +54,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         private string certificateFile;
         private IAppxFileReader packageSource;
         private IDisposable disposableSubscriber;
+        private bool firstLoading = true;
 
         public PackageContentViewModel(
             IInterProcessCommunicationManager interProcessCommunicationManager,
@@ -71,16 +72,22 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             this.CommandHandler = new PackageContentCommandHandler(configurationService, interactionService);
         }
 
+        public bool FirstLoading
+        {
+            get => this.firstLoading;
+            set => this.SetField(ref this.firstLoading, value);
+        }
+
         public PackageContentCommandHandler CommandHandler { get; }
 
         public AsyncProperty<FoundUsersViewModel> SelectedPackageUsersInfo { get; } = new AsyncProperty<FoundUsersViewModel>();
         
         public AsyncProperty<List<InstalledPackageViewModel>> Addons { get; } = new AsyncProperty<List<InstalledPackageViewModel>>();
 
-        public AsyncProperty<PackageContentDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<PackageContentDetailsViewModel>();
+        public AsyncProperty<PackageContentDetailsViewModel> SelectedPackageManifestInfo { get; } = new AsyncProperty<PackageContentDetailsViewModel>(isLoading: true);
 
-        public AsyncProperty<PsfContentViewModel> SelectedPackageJsonInfo { get; } = new AsyncProperty<PsfContentViewModel>();
-        
+        public AsyncProperty<PsfContentViewModel> SelectedPackageJsonInfo { get; } = new AsyncProperty<PsfContentViewModel>(isLoading: true);
+
         public AsyncProperty<TrustStatus> TrustStatus { get; } = new AsyncProperty<TrustStatus>();
 
         public bool IsTrusting
@@ -182,7 +189,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             {
                 throw new FileNotFoundException("Could not find AppxManifest.xml");
             }
-
+            
             var loadSignature = this.LoadSignature(source, cancellationToken);
 
             var appxReader = new AppxManifestReader();
@@ -205,6 +212,8 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 
             var getAddons = this.Addons.Load(this.GetAddons(cancellationToken));
             await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
+
+            this.FirstLoading = false;
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
