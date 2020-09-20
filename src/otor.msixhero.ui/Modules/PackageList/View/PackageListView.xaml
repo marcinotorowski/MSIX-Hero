@@ -47,6 +47,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Deprovision}" Command="{Binding CommandHandler.Deprovision}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenExplorerUser}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunApp}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.StopPackage}" Command="{Binding CommandHandler.StopApp}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
@@ -156,9 +157,14 @@
                     </MenuItem>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="{x:Static commands:MsixHeroCommands.RunPackage}" Header="Run app">
+                <MenuItem Command="{x:Static commands:MsixHeroCommands.RunPackage}" Header="Start app">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Command="{x:Static commands:MsixHeroCommands.StopPackage}" Header="Stop app">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorStop}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Run command in context..." x:Name="ContextMenuRunCommand" />
@@ -467,7 +473,9 @@
                                                             <Image Source="{Binding Image, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                         </Border>
                                                     </Border>
-                                                    <Border Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="MediumSeaGreen" BorderBrush="White" BorderThickness="2">
+                                                    <Border 
+                                                        ToolTip="This app is currently running"
+                                                        Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="MediumSeaGreen" BorderBrush="White" BorderThickness="2">
                                                         <Border.RenderTransform>
                                                             <TranslateTransform X="8" Y="8" />
                                                         </Border.RenderTransform>
@@ -610,7 +618,9 @@
                                                 <ImageBrush ImageSource="/Resources/32pxOpacityMask.png" />
                                             </Border.OpacityMask>-->
                                             </Border>
-                                            <Border Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="MediumSeaGreen" BorderBrush="White" BorderThickness="2">
+                                            <Border
+                                                ToolTip="This app is currently running" 
+                                                Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="MediumSeaGreen" BorderBrush="White" BorderThickness="2">
                                                 <Border.RenderTransform>
                                                     <TranslateTransform X="8" Y="8" />
                                                 </Border.RenderTransform>

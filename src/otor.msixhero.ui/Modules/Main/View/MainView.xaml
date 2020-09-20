@@ -773,6 +773,15 @@
                         </Fluent:Button.Icon>
                     </Fluent:Button>
 
+                    <Fluent:Button Header="Stop app" IsEnabled="{Binding HasSingleSelection}" Command="{x:Static commands:MsixHeroCommands.StopPackage}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorStop}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorStop}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox IsEnabled="{Binding HasSelection}" x:Name="RibbonManagementNavi" Header="Navigation">
                     <Fluent:RibbonGroupBox.Icon>

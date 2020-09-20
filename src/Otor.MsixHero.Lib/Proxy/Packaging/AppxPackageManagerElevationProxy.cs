@@ -57,6 +57,16 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             return this.client.Invoke(proxyObject, cancellationToken, progress);
         }
 
+        public Task Stop(string packageFullName, CancellationToken cancellationToken = default)
+        {
+            var proxyObject = new StopDto
+            {
+                PackageFullName = packageFullName
+            };
+
+            return this.client.Invoke(proxyObject, cancellationToken);
+        }
+
         public async Task RunToolInContext(InstalledPackage package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using (IAppxFileReader reader = new FileInfoFileReaderAdapter(package.ManifestLocation))
@@ -98,18 +108,17 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
         {
             var proxyObject = new RunDto
             {
-                PackageFamilyName = package.PackageFamilyName,
+                ManifestPath = package.ManifestLocation,
                 ApplicationId = appId
             };
 
             return this.client.Invoke(proxyObject, cancellationToken, progress);
         }
 
-        public Task Run(string packageManifestLocation, string packageFamilyName, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Run(string packageManifestLocation, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var proxyObject = new RunDto
             {
-                PackageFamilyName = packageFamilyName,
                 ManifestPath = packageManifestLocation,
                 ApplicationId = appId
             };

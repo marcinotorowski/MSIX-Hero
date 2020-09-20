@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 using Timer = System.Timers.Timer;
 
 namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
@@ -47,7 +48,9 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
         {
+#pragma warning disable 4014
             this.DoCheck();
+#pragma warning restore 4014
         }
 
         private async Task DoCheck()
@@ -57,111 +60,31 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
                 return;
             }
 
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.System);
-            var file = Path.Combine(folder, "tasklist.exe");
-            var cmd = "/apps /fi \"status eq running\" /fo CSV";
-
-            var psi = new ProcessStartInfo(file, cmd)
+            try
             {
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                UseShellExecute = false
-            };
+                this.timer.Stop();
 
-            var p = Process.Start(psi);
-            p.WaitForExit();
+                var wrapper = new TaskListWrapper();
+                var table = await wrapper.GetBasicAppProcesses("running").ConfigureAwait(false);
 
-            var nowRunning = new HashSet<string>();
-
-            var csv = await p.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
-            foreach (var line in csv.Split(Environment.NewLine))
-            {
-                var appId = line.LastIndexOf(',') + 1;
-                if (appId == 0)
+                var nowRunning = new HashSet<string>();
+                foreach (var item in table)
                 {
-                    continue;
+                    nowRunning.Add(item.PackageName);
                 }
 
-                nowRunning.Add(line.Substring(appId).Trim('"'));
-            }
-
-            if (this.previouslyRunningAppIds != null && nowRunning.SequenceEqual(this.previouslyRunningAppIds))
-            {
-                return;
-            }
-
-            this.previouslyRunningAppIds = nowRunning;
-            this.Publish(new ActivePackageFullNames(nowRunning));
-
-
-            //var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "WindowsApps") + "\\";
-
-            //var query = "SELECT ExecutablePath FROM Win32_Process";
-
-            //var nowRunning = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-            //using (var mos = new ManagementObjectSearcher(query))
-            //{
-            //    using (var moc = mos.Get())
-            //    {
-            //        foreach (ManagementObject mo in moc)
-            //        {
-            //            var executablePath = mo["ExecutablePath"];
-            //            if (executablePath == null)
-            //            {
-            //                continue;
-            //            }
-
-            //            nowRunning.Add(executablePath?.ToString());
-            //        }
-            //    }
-            //}
-
-            //// var processes = Process.GetProcesses().Select(GetPathToApp).Where(p => p != null).Where(p => p.StartsWith(path, StringComparison.OrdinalIgnoreCase));
-            //// var nowRunning = processes.Select(p => p.Substring(0, p.IndexOf('\\', path.Length + 1))).ToList();
-            //if (this.previouslyRunningFiles != null && nowRunning.SequenceEqual(this.previouslyRunningFiles))
-            //{
-            //    return Task.FromResult(false);
-            //}
-
-            //this.previouslyRunningFiles = nowRunning;
-            //this.Publish(new ActivePackageFullNames(this.GetActiveNames(nowRunning)));
-            //return Task.FromResult(true);
-        }
-
-        private IEnumerable<string> GetActiveNames(IEnumerable<string> nowRunning)
-        {
-            foreach (var now in nowRunning)
-            {
-                var matching = this.consideredPackages.FirstOrDefault(kv => now.StartsWith(kv.Key, StringComparison.OrdinalIgnoreCase));
-                if (matching.Value == null)
+                if (this.previouslyRunningAppIds != null && nowRunning.SequenceEqual(this.previouslyRunningAppIds))
                 {
-                    continue;
+                    return;
                 }
 
-                yield return matching.Value;
+                this.previouslyRunningAppIds = nowRunning;
+                this.Publish(new ActivePackageFullNames(nowRunning));
             }
-        }
-
-        [DllImport("Kernel32.dll")]
-        static extern uint QueryFullProcessImageName(IntPtr hProcess, uint flags, StringBuilder text, out uint size);
-
-        private static string GetPathToApp(Process proc)
-        {
-            if (null != proc)
+            finally
             {
-                uint charLength = 256;
-                var buffer = new StringBuilder((int)charLength);
-
-                var success = QueryFullProcessImageName(proc.Handle, 0, buffer, out _);
-
-                if (0 != success)
-                {
-                    return buffer.ToString();
-                }
+                this.timer.Start();
             }
-
-            return null;
         }
 
         public Task StopListening(CancellationToken cancellationToken)

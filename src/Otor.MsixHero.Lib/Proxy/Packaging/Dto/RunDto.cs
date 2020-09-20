@@ -11,20 +11,16 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
         {
         }
 
-        public RunDto(string packageFamilyName, string manifestPath, string applicationId = null)
+        public RunDto(string manifestPath, string applicationId = null)
         {
-            this.PackageFamilyName = packageFamilyName;
             this.ManifestPath = manifestPath;
             this.ApplicationId = applicationId;
         }
 
-        public RunDto(InstalledPackage package, string applicationId = null) : this(package.PackageFamilyName, package.ManifestLocation, applicationId)
+        public RunDto(InstalledPackage package, string applicationId = null) : this(package.ManifestLocation, applicationId)
         {
         }
         
-        [XmlElement]
-        public string PackageFamilyName { get; set; }
-
         [XmlElement]
         public string ManifestPath { get; set; }
 

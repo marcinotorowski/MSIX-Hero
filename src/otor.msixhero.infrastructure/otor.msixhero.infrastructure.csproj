@@ -9,8 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="15.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.4" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
     <PackageReference Include="System.Management.Automation" Version="7.0.3" />
   </ItemGroup>
 

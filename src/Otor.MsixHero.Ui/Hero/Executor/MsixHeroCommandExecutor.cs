@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Markdig.Extensions.TaskLists;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
@@ -17,6 +18,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 using Otor.MsixHero.Ui.Hero.Commands;
 using Otor.MsixHero.Ui.Hero.Commands.Logs;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
@@ -56,6 +58,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             this.Handlers[typeof(SetVolumeFilterCommand)] = (command, token, progress) => this.SetVolumeFilter((SetVolumeFilterCommand)command);
 
             this.Handlers[typeof(GetPackagesCommand)] = (command, token, progress) => this.GetPackages((GetPackagesCommand)command, token, progress);
+            this.Handlers[typeof(StopPackageCommand)] = (command, token, progress) => this.StopPackage((StopPackageCommand)command, token);
             this.Handlers[typeof(SelectPackagesCommand)] = (command, token, progress) => this.SelectPackages((SelectPackagesCommand)command);
 
             this.Handlers[typeof(GetLogsCommand)] = (command, token, progress) => this.GetLogs((GetLogsCommand)command, token, progress);
@@ -177,6 +180,12 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             this.ApplicationState.Volumes.SelectedVolumes.Clear();
             this.ApplicationState.Volumes.SelectedVolumes.AddRange(selected);
             return Task.FromResult(selected);
+        }
+
+        private async Task StopPackage(StopPackageCommand command, CancellationToken cancellationToken)
+        {
+            var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            await manager.Stop(command.Package.PackageId, cancellationToken).ConfigureAwait(false);
         }
 
         private Task<IList<InstalledPackage>> SelectPackages(SelectPackagesCommand command)

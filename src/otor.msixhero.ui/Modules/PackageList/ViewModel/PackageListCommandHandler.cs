@@ -84,6 +84,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.OpenManifest = new DelegateCommand(param => this.OpenManifestExecute(), param => this.CanExecuteOpenManifest());
             this.OpenConfigJson = new DelegateCommand(param => this.OpenConfigJsonExecute(), param => this.CanExecuteOpenConfigJson());
             this.RunApp = new DelegateCommand(param => this.RunAppExecute(), param => this.CanExecuteSingleSelectionOnManifest());
+            this.StopApp = new DelegateCommand(param => this.StopAppExecute(), param => this.CanExecuteStopApp());
             this.RunTool = new DelegateCommand(param => this.RunToolExecute(param as ToolListConfiguration), param => this.CanRunTool(param as ToolListConfiguration));
             this.OpenPowerShell = new DelegateCommand(param => this.OpenPowerShellExecute(), param => this.CanExecuteOpenPowerShell());
             this.RemovePackage = new DelegateCommand(param => this.RemovePackageExecute(param is bool b && b), param => this.CanExecuteSingleSelection());
@@ -170,6 +171,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         public ICommand OpenConfigJson { get; }
 
         public ICommand RunApp { get; }
+
+        public ICommand StopApp { get; }
 
         public ICommand RunTool { get; }
 
@@ -394,6 +397,23 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 return false;
             }
         }
+        
+        private bool CanExecuteStopApp()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            var selected = selection.First();
+            if (selected?.InstallLocation == null)
+            {
+                return false;
+            }
+
+            return this.application.ApplicationState.Packages.ActivePackageNames.Contains(selected.PackageId);
+        }
 
         private bool CanExecuteDismountRegistry()
         {
@@ -550,6 +570,36 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             return package?.InstallLocation != null && File.Exists(package.PsfConfig);
         }
 
+        private async void StopAppExecute()
+        {
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
+            if (package == null)
+            {
+                return;
+            }
+
+            if (package.SignatureKind == SignatureKind.System)
+            {
+                var buttons = new string[]
+                {
+                    "Stop this system app",
+                    "Leave the app running"
+                };
+
+                if (this.interactionService.ShowMessage("This is a system app. Are you sure you want to stop it?\r\nStopping a system app may have unexpected side-effects.",
+                    buttons, "Stopping a system app", systemButtons: InteractionResult.None) != 0)
+                {
+                    return;
+                }
+            }
+
+            var executor = this.application.CommandExecutor
+                .WithBusyManager(this.busyManager, OperationType.Other)
+                .WithErrorHandling(this.interactionService, true);
+
+            await executor.Invoke(this, new StopPackageCommand(package), CancellationToken.None).ConfigureAwait(false);
+        }
+
         private async void RunAppExecute()
         {
             var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
@@ -561,7 +611,11 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             try
             {
                 var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
-                await manager.Run(package.ManifestLocation, package.PackageFamilyName).ConfigureAwait(false);
+                await manager.Run(package.ManifestLocation).ConfigureAwait(false);
+            }
+            catch (InvalidOperationException exception)
+            {
+                this.interactionService.ShowError("Could not start the app. " + exception.Message, exception);
             }
 
             catch (Exception exception)

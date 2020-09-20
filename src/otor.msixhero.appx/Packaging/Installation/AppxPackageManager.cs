@@ -8,6 +8,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
@@ -27,6 +28,7 @@ using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
+using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
@@ -321,31 +323,60 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public Task Run(InstalledPackage package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return Run(package.ManifestLocation, package.PackageFamilyName, appId, cancellationToken, progress);
+            return Run(package.ManifestLocation, appId, cancellationToken, progress);
         }
 
-
-        public Task Run(string packageManifestLocation, string packageFamilyName, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Stop(string packageFullName, CancellationToken cancellationToken = default)
         {
+            Logger.Info("Stopping package " + packageFullName);
+
+            var taskListWrapper = new TaskListWrapper();
+            var processes = await taskListWrapper.GetBasicAppProcesses(null, cancellationToken).ConfigureAwait(false);
+
+            var processIds = processes.Where(p => p.PackageName == packageFullName).Select(p => p.ProcessId).ToArray();
+            Logger.Info("The package appears to have currently {0} associated running processes with the following PIDs: {1}.", processIds.Length, string.Join(", ", processIds));
+            foreach (var pid in processIds)
+            {
+                Logger.Info("Killing process PID = " + pid + " and its children...");
+
+                try
+                {
+                    var p = Process.GetProcessById(pid);
+                    p.Kill(true);
+                }
+                catch (ArgumentException)
+                {
+                    Logger.Warn("Could not find the process PID = " + pid + ". Most likely, the process has been already killed or stopped.");
+                }
+                catch (Exception e)
+                {
+                    Logger.Warn("Could not kill process PID = " + pid + ".", e);
+                }
+            }
+        }
+
+        public async Task Run(string packageManifestLocation, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (appId == null)
+            {
+                Logger.Info("Running the default entry point from package " + packageManifestLocation);
+            }
+
             if (packageManifestLocation == null || !File.Exists(packageManifestLocation))
             {
                 throw new FileNotFoundException();
             }
-
-            if (packageFamilyName == null)
-            {
-                throw new ArgumentNullException(nameof(packageFamilyName));
-            }
-
-            var entryPoint = GetEntryPoints(packageManifestLocation, packageFamilyName).FirstOrDefault(e => appId == null || e == appId);
+            
+            var entryPoint = (await GetEntryPoints(packageManifestLocation).ConfigureAwait(false)).FirstOrDefault(e => appId == null || e == appId);
             if (entryPoint == null)
             {
                 if (appId == null)
                 {
-                    throw new InvalidOperationException("This package has no entry points.");
+                    Logger.Warn("The package does not contain any entry point that is visible in the start menu. Aborting...");
+                    throw new InvalidOperationException("This package has no Start Menu entry points.");
                 }
 
-                throw new InvalidOperationException($"Entry point '{appId}' was not found.");
+                throw new InvalidOperationException($"The entry point '{appId}' was not found.");
             }
 
             var p = new Process();
@@ -355,9 +386,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 FileName = entryPoint
             };
 
+            Logger.Info("Executing " + entryPoint + " (with shell execute)...");
             p.StartInfo = startInfo;
             p.Start();
-            return Task.FromResult(true);
         }
 
         public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -701,32 +732,27 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             return pkg;
         }
 
-        private static IEnumerable<string> GetEntryPoints(string manifestLocation, string familyName)
+        private static async Task<string[]> GetEntryPoints(string manifestLocation)
         {
             if (!File.Exists(manifestLocation))
             {
-                yield break;
+                return new string[0];
             }
 
-            var xmlDocument = new XmlDocument();
-            xmlDocument.Load(manifestLocation);
-            var nodes = xmlDocument.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
-
-            // ReSharper disable once AssignNullToNotNullAttribute
-            foreach (var node in nodes.OfType<XmlNode>())
+            var reader = new AppxManifestReader();
+            using (IAppxFileReader appxSource = new FileInfoFileReaderAdapter(manifestLocation))
             {
-                // ReSharper disable once PossibleNullReferenceException
-                var attrVal = node.Attributes["Id"]?.Value;
-                if (string.IsNullOrEmpty(attrVal))
-                {
-                    attrVal = string.Empty;
-                }
-                else
-                {
-                    attrVal = "!" + attrVal;
-                }
+                var appxPackage = await reader.Read(appxSource).ConfigureAwait(false);
 
-                yield return @"shell:appsFolder\" + familyName + attrVal;
+                return appxPackage.Applications.Where(a => a.Visible).Select(app =>
+                {
+                    if (string.IsNullOrEmpty(app.Id))
+                    {
+                        return @"shell:appsFolder\" + appxPackage.FamilyName;
+                    }
+
+                    return @"shell:appsFolder\" + appxPackage.FamilyName + "!" + app.Id;
+                }).ToArray();
             }
         }
 

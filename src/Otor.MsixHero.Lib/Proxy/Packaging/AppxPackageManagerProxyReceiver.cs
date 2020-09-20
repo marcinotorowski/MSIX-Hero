@@ -22,6 +22,7 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
         {
             yield return typeof(AddDto);
             yield return typeof(DeprovisionDto);
+            yield return typeof(StopDto);
             yield return typeof(GetByManifestPathDto);
             yield return typeof(GetByIdentityDto);
             yield return typeof(GetInstalledPackagesDto);
@@ -156,6 +157,11 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
                 return this.SelfElevationAwareObject.Deprovision(deprovisionDto.PackageFamilyName, cancellationToken, progress);
             }
 
+            if (command is StopDto stopDto)
+            {
+                return this.SelfElevationAwareObject.Stop(stopDto.PackageFullName, cancellationToken);
+            }
+
             if (command is RemoveDto removeDto)
             {
                 return this.SelfElevationAwareObject.Remove(removeDto.Packages, removeDto.Context == PackageContext.AllUsers, !removeDto.RemoveAppData, cancellationToken, progress);
@@ -163,7 +169,7 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
 
             if (command is RunDto runPackageDto)
             {
-                return this.SelfElevationAwareObject.Run(runPackageDto.ManifestPath, runPackageDto.PackageFamilyName, runPackageDto.ApplicationId, cancellationToken, progress);
+                return this.SelfElevationAwareObject.Run(runPackageDto.ManifestPath, runPackageDto.ApplicationId, cancellationToken, progress);
             }
 
             if (command is RunToolInContextDto runToolInContextDto)

@@ -13,6 +13,7 @@ namespace Otor.MsixHero.Ui.Commands
             OpenManifest = new RoutedUICommand { Text = "Open manifest", InputGestures = { new KeyGesture(Key.M, ModifierKeys.Control )}};
             OpenConfigJson = new RoutedUICommand { Text = "Open config.json", InputGestures = { new KeyGesture(Key.J, ModifierKeys.Control )}};
             RunPackage = new RoutedUICommand { Text = "Run app", InputGestures = { new KeyGesture(Key.Enter, ModifierKeys.Control) } };
+            StopPackage = new RoutedUICommand { Text = "Stop app" };
             RunTool = new RoutedUICommand { Text = "Run tool in package context" };
             OpenPowerShell = new RoutedUICommand { Text = "Open PowerShell console" };
             MountRegistry = new RoutedUICommand { Text = "Mount registry" };
@@ -67,6 +68,8 @@ namespace Otor.MsixHero.Ui.Commands
         public static RoutedUICommand RunTool { get; }
 
         public static RoutedUICommand RunPackage { get; }
+
+        public static RoutedUICommand StopPackage { get; }
 
         public static RoutedUICommand AddPackage { get; }
 
