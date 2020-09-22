@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public class TaskListWrapper : ExeWrapper
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(TaskListWrapper));
+
         public async Task<IList<AppProcess>> GetBasicAppProcesses(string status = null, CancellationToken cancellationToken = default)
         {
             var stringBuilder = new StringBuilder();
@@ -27,11 +30,21 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             using (var reader = new StringReader(stringBuilder.ToString()))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.CurrentUICulture))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Configuration.HasHeaderRecord = true;
                     csv.Configuration.TrimOptions = TrimOptions.Trim;
-                    return await csv.GetRecordsAsync<AppProcess>().ToListAsync(cancellationToken).ConfigureAwait(false);
+
+                    try
+                    {
+                        return await csv.GetRecordsAsync<AppProcess>().ToListAsync(cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (BadDataException e)
+                    {
+                        Logger.Error($"Invalid data format. Index={e.ReadingContext.CurrentIndex}, CharPos={e.ReadingContext.CharPosition}, ColCount={e.ReadingContext.ColumnCount}, Field={e.ReadingContext.Field}, Row={e.ReadingContext.Row}, Raw={e.ReadingContext.RawRecord}, RawRow={e.ReadingContext.RawRow}", e);
+                        Logger.Warn("CSV content:\r\n" + stringBuilder.ToString());
+                        throw;
+                    }
                 }
             }
         }
@@ -49,7 +62,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             using (var reader = new StringReader(stringBuilder.ToString()))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.CurrentUICulture))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csv.Configuration.HasHeaderRecord = true;
                     csv.Configuration.TrimOptions = TrimOptions.Trim;

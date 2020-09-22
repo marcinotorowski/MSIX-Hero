@@ -400,6 +400,11 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         
         private bool CanExecuteStopApp()
         {
+            if (this.application.ApplicationState.Packages.ActivePackageNames == null)
+            {
+                return false;
+            }
+
             var selection = this.application.ApplicationState.Packages.SelectedPackages;
             if (selection.Count != 1)
             {
@@ -412,7 +417,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 return false;
             }
 
-            return this.application.ApplicationState.Packages.ActivePackageNames.Contains(selected.PackageId);
+            return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageId) == true;
         }
 
         private bool CanExecuteDismountRegistry()

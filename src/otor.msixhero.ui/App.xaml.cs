@@ -40,7 +40,6 @@ using Otor.MsixHero.Ui.Services;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.Ui
 {
@@ -55,8 +54,8 @@ namespace Otor.MsixHero.Ui
         static App()
         {
 #if DEBUG
-            //LogManager.Initialize(MsixHeroLogLevel.Debug);
-            LogManager.Initialize(MsixHeroLogLevel.Info);
+            LogManager.Initialize(MsixHeroLogLevel.Debug);
+            // LogManager.Initialize(MsixHeroLogLevel.Info);
 #else
             LogManager.Initialize(MsixHeroLogLevel.Info);
 #endif

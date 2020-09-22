@@ -54,11 +54,17 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 
         private async Task DoCheck()
         {
-            if (!this.timer.Enabled || this.consideredPackages == null)
+            if (!this.timer.Enabled)
             {
                 return;
             }
 
+            if (this.consideredPackages == null)
+            {
+                return;
+            }
+
+            Logger.Debug("Checking for running apps.");
             try
             {
                 this.timer.Stop();
@@ -78,16 +84,24 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
                 var nowRunning = new HashSet<string>();
                 foreach (var item in table)
                 {
+                    Logger.Debug($"PID = {item.ProcessId}, Name = {item.PackageName}, Memory = {item.MemoryUsage}, Image = {item.ImageName}");
                     nowRunning.Add(item.PackageName);
                 }
 
                 if (this.previouslyRunningAppIds != null && nowRunning.SequenceEqual(this.previouslyRunningAppIds))
                 {
+                    Logger.Debug("The list of running apps has not changed.");
                     return;
                 }
 
+                Logger.Info("Notifying about updated app state.");
                 this.previouslyRunningAppIds = nowRunning;
                 this.Publish(new ActivePackageFullNames(nowRunning));
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                throw;
             }
             finally
             {

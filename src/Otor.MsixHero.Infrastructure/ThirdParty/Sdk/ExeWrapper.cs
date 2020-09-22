@@ -4,14 +4,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public abstract class ExeWrapper
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ExeWrapper));
+
         protected static async Task<int> RunAsync(string path, string arguments, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
         {
+            Logger.Debug("Executing " + path + " " + arguments);
             var processStartInfo = new ProcessStartInfo(path, arguments);
 
             var standardOutput = new List<string>();
@@ -64,6 +68,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 await standardOutputResults.Task.ConfigureAwait(false);
                 await standardErrorResults.Task.ConfigureAwait(false);
 
+                Logger.Trace("Standard error: " + string.Join(Environment.NewLine, standardError ?? Enumerable.Empty<string>()));
+                Logger.Trace("Standard output: " + string.Join(Environment.NewLine, standardOutput ?? Enumerable.Empty<string>()));
                 tcs.TrySetResult(process.ExitCode);
             };
 
@@ -73,7 +79,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     try
                     {
                         if (!process.HasExited)
+                        {
+                            Logger.Info("Killing the process " + process.Id);
                             process.Kill();
+                        }
                     }
                     catch (InvalidOperationException) { }
                 }))
