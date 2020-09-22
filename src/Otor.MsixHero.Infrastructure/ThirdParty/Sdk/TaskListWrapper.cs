@@ -98,69 +98,69 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         public class AppProcess : IAppProcess
         {
             [Index(0)]
-            [Name("Image Name")]
+            //[Name("Image Name")]
             public string ImageName { get; set; }
 
             [Index(1)]
-            [Name("PID")]
+            //[Name("PID")]
             public int ProcessId { get; set; }
 
             [Index(2)]
-            [Name("Mem Usage")]
+            //[Name("Mem Usage")]
             [Optional]
             public string MemoryUsage { get; set; }
 
             [Index(3)]
-            [Name("Package Name")]
+            //[Name("Package Name")]
             public string PackageName { get; set; }
         }
 
         public class AppProcessVerbose : IAppProcess
         {
             [Index(0)]
-            [Name("Image Name")]
+            //[Name("Image Name")]
             public string ImageName { get; set; }
 
             [Index(1)]
-            [Name("PID")]
+            //[Name("PID")]
             public int ProcessId { get; set; }
 
             [Index(2)]
-            [Name("Session Name")]
+            //[Name("Session Name")]
             [Optional]
             public string SessionName { get; set; }
 
             [Index(3)]
-            [Name("Session#")]
+            //[Name("Session#")]
             [Optional]
             public int SessionNumber { get; set; }
 
             [Index(4)]
-            [Name("Mem Usage")]
+            //[Name("Mem Usage")]
             [Optional]
             public string MemoryUsage { get; set; }
 
             [Index(5)]
-            [Name("Status")]
+            //[Name("Status")]
             public string Status { get; set; }
 
             [Index(6)]
-            [Name("User Name")]
+            //[Name("User Name")]
             [Optional]
             public string UserName { get; set; }
 
             [Index(7)]
-            [Name("CPU Time")]
+            //[Name("CPU Time")]
             [Optional]
             public TimeSpan CpuTime { get; set; }
 
             [Index(8)]
-            [Name("Window Title")]
+            //[Name("Window Title")]
             [Optional]
             public string WindowTitle { get; set; }
 
             [Index(9)]
-            [Name("Package Name")]
+            //[Name("Package Name")]
             public string PackageName { get; set; }
         }
     }

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 using Timer = System.Timers.Timer;
 
@@ -16,6 +14,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 {
     public class RunningDetector : IRunningDetector, IDisposable
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(RunningDetector));
         private readonly IList<Subscriber> observers = new List<Subscriber>();
 
         private readonly Timer timer = new Timer(2000);
@@ -65,7 +64,16 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
                 this.timer.Stop();
 
                 var wrapper = new TaskListWrapper();
-                var table = await wrapper.GetBasicAppProcesses("running").ConfigureAwait(false);
+                IList<TaskListWrapper.AppProcess> table;
+                try
+                {
+                    table = await wrapper.GetBasicAppProcesses("running").ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    Logger.Warn(e, "Could not get the list of running processes.");
+                    return;
+                }
 
                 var nowRunning = new HashSet<string>();
                 foreach (var item in table)

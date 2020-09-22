@@ -331,7 +331,15 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             Logger.Info("Stopping package " + packageFullName);
 
             var taskListWrapper = new TaskListWrapper();
-            var processes = await taskListWrapper.GetBasicAppProcesses(null, cancellationToken).ConfigureAwait(false);
+            IList<TaskListWrapper.AppProcess> processes;
+            try
+            {
+                processes = await taskListWrapper.GetBasicAppProcesses(null, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("Could not get the list of running processes.", e);
+            }
 
             var processIds = processes.Where(p => p.PackageName == packageFullName).Select(p => p.ProcessId).ToArray();
             Logger.Info("The package appears to have currently {0} associated running processes with the following PIDs: {1}.", processIds.Length, string.Join(", ", processIds));
