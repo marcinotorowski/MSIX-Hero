@@ -34,7 +34,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "WindowsApps") + "\\";
             this.consideredPackages = new Dictionary<string, string>();
 
-            foreach (var item in installedPackages.Where(p => p.ManifestLocation.StartsWith(path, StringComparison.OrdinalIgnoreCase)))
+            foreach (var item in installedPackages.Where(p => p.ManifestLocation?.StartsWith(path, StringComparison.OrdinalIgnoreCase) == true))
             {
                 this.consideredPackages[item.ManifestLocation.Substring(0, item.ManifestLocation.IndexOf('\\', path.Length + 1))] = item.PackageId;
             }
