@@ -1,4 +1,5 @@
-﻿using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+﻿using System.IO;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities
 {
@@ -19,5 +20,13 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities
         public string Version { get; set; }
 
         public AppxPackageArchitecture Architecture { get; set; }
+
+        public string ParentPackagePath { get; set; }
+
+        public bool IncludeVfsFolders { get; set; }
+
+        public DirectoryInfo IncludeFolder { get; set; }
+
+        public FileInfo IncludeRegistry { get; set; }
     }
 }

@@ -82,7 +82,7 @@
 
                     <StackPanel Margin="10 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <TextBlock FontWeight="Light" Text="Empty modification package" FontFamily="{StaticResource SourceSansPro}" FontSize="16" />
-                        <TextBlock Opacity="0.66" Text="Creates a stub of modification packages from a selected package." Margin="0 0 0 0" TextWrapping="Wrap" />
+                        <TextBlock Opacity="0.66" Text="Creates modification package from a selected package." Margin="0 0 0 0" TextWrapping="Wrap" />
                     </StackPanel>
                 </DockPanel>
             </Button>

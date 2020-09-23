@@ -5,11 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:builder1="clr-namespace:Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;assembly=Otor.MsixHero.Appx"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel"
              xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
-             xmlns:view2="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.View"
-             xmlns:view3="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.View"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
@@ -38,30 +36,9 @@
         OkButtonLabel="Create modification package..."
         Icon="{StaticResource VectorPack}">
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
-            <DataTemplate>
-                <TabControl>
-                    <TabItem Header="Properties">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <AdornerDecorator>
-                                <StackPanel>
-                                    <view2:PackageSelectorView DataContext="{Binding ModificationPackageDetails}" />
-                                    <TextBlock Foreground="#666" Text="What should be created?" Margin="0 16 0 6" />
-                                    <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create only manifest" />
-                                    <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create unsigned MSIX modification package" Margin="0 6" />
-                                    <RadioButton x:Name="Radio3"  GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Create MSIX package and sign it" />
-                                </StackPanel>
-                            </AdornerDecorator>
-                        </ScrollViewer>
-                    </TabItem>
-                    <TabItem Header="Parent package">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <view2:PackageSelectorView DataContext="{Binding PackageSelection}" />
-                        </ScrollViewer>
-                    </TabItem>
-                    <TabItem Header="Signature" Visibility="{Binding ElementName=Radio3, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <view3:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
-                    </TabItem>
-                </TabControl>
+            <DataTemplate DataType="{x:Type viewModel:ModificationPackageViewModel}">
+                <view:ModificationPackageDialogContent />
+               
             </DataTemplate>
         </changeableDialog:ChangeableDialog.DialogContentTemplate>
         <changeableDialog:ChangeableDialog.SuccessContentTemplate>

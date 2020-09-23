@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Namotion.Reflection;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Packaging;
@@ -26,7 +27,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         ShowTypeSelector = 32,
         AllowChanging = 64,
         AllowBrowsing = 128,
-        RequireFullIdentity = 256
+        RequireVersion = 256,
+        RequireArchitecture = 512,
+        RequireFullIdentity = RequireVersion | RequireArchitecture
     }
 
     public class PackageSelectorViewModel : ChangeableContainer
@@ -82,7 +85,21 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             if (displayMode.HasFlag(PackageSelectorDisplayMode.RequireFullIdentity))
             {
                 this.RequireFullIdentity = true;
+                this.RequireArchitecture = true;
+                this.RequireVersion = true;
                 this.AddChildren(this.Version, this.Architecture);
+            }
+            else if (displayMode.HasFlag(PackageSelectorDisplayMode.RequireArchitecture))
+            {
+                this.RequireFullIdentity = true;
+                this.RequireArchitecture = true;
+                this.AddChildren(this.Architecture);
+            }
+            else if (displayMode.HasFlag(PackageSelectorDisplayMode.RequireVersion))
+            {
+                this.RequireFullIdentity = true;
+                this.RequireVersion = true;
+                this.AddChildren(this.Version);
             }
 
             this.AddChildren(this.PackageType);
@@ -157,6 +174,38 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         public ChangeableProperty<AppxPackageArchitecture> Architecture { get; }
 
         public bool RequireFullIdentity { get; private set; }
+        
+        public bool RequireVersion { get; private set; }
+        
+        public bool RequireArchitecture { get; private set; }
+
+        public EventHandler<PackageFileChangedEventArgs> PackageFileChanged;
+
+        public class PackageFileChangedEventArgs : EventArgs
+        {
+            public PackageFileChangedEventArgs(string filePath, string name, string publisher, string version, PackageType packageType, AppxPackageArchitecture architecture)
+            {
+                this.FilePath = filePath;
+                this.Name = name;
+                this.Publisher = publisher;
+                this.Version = version;
+                this.PackageType = packageType;
+                this.Architecture = architecture;
+            }
+
+            public string FilePath { get; private set; }
+
+            public string Name { get; private set; }
+
+            public string Publisher { get; private set; }
+
+            public string Version { get; private set; }
+
+            public PackageType PackageType { get; private set; }
+
+            public AppxPackageArchitecture Architecture { get; private set; }
+        }
+
 
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
@@ -166,10 +215,12 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 this.Version.CurrentValue = null;
                 this.Publisher.CurrentValue = null;
                 this.Architecture.CurrentValue = AppxPackageArchitecture.Neutral;
+                this.PackageFileChanged?.Invoke(this, new PackageFileChangedEventArgs(null, null, null, null, 0, 0));
             }
             else
             {
                 var extension = Path.GetExtension((string)e.NewValue);
+                this.PackageType.CurrentValue = 0;
                 if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase))
                 {
                     this.PackageType.CurrentValue = Appx.Packaging.PackageType.Bundle;
@@ -182,6 +233,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                 try
                 {
                     var builder = new AppInstallerBuilder();
+                    // ReSharper disable once AssignNullToNotNullAttribute
                     builder.MainPackageSource = new FileInfo((string)e.NewValue);
                     var config = builder.Build();
 
@@ -209,6 +261,17 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
+                    this.PackageFileChanged?.Invoke(
+                        this, 
+                        new PackageFileChangedEventArgs(
+                            (string)e.NewValue,
+                            config.MainPackage.Name,
+                            config.MainPackage.Publisher,
+                            config.MainPackage.Version,
+                            this.PackageType.CurrentValue,
+                            this.Architecture.CurrentValue
+                        ));
                 }
                 catch (Exception)
                 {

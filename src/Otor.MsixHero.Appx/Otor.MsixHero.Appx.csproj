@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj" />
     <ProjectReference Include="..\otor.msixhero.infrastructure\Otor.MsixHero.Infrastructure.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Registry\Otor.MsixHero.Registry.csproj" />
   </ItemGroup>
 
   <ItemGroup>

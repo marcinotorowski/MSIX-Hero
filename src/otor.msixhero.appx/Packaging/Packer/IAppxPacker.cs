@@ -9,6 +9,8 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
     public interface IAppxPacker
     {
         Task Pack(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progess = default);
+        
+        Task PackFiles(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progess = default);
        
         Task Unpack(string packagePath, string directory, CancellationToken cancellationToken = default, IProgress<ProgressData> progess = default);
     }

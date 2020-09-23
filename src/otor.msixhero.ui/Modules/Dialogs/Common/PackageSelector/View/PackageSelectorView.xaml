@@ -29,8 +29,8 @@
 
             <TextBlock Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="{Binding CustomPrompt, TargetNullValue='Package type', FallbackValue='Package type'}" />
             <StackPanel Margin="0 6 0 16" Visibility="{Binding ShowPackageTypeSelector, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding AllowChangingSourcePackage}" Orientation="Horizontal">
-                <RadioButton Margin="0 0 16 0" GroupName="p1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appx:PackageType.Package}}" Content="Package (.msix/.appx)" />
-                <RadioButton Margin="0 0 0 0" GroupName="p2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appx:PackageType.Bundle}}" Content="Bundle (.appxbundle)" />
+                <RadioButton Margin="0 0 16 0" GroupName="pa1" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appx:PackageType.Package}}" Content="Package (.msix/.appx)" />
+                <RadioButton Margin="0 0 0 0" GroupName="pa2" IsChecked="{Binding PackageType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appx:PackageType.Bundle}}" Content="Bundle (.appxbundle)" />
             </StackPanel>
 
             <StackPanel Visibility="{Binding ShowActualNames, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -67,14 +67,14 @@
                 <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Grid.Row="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
 
                 <TextBlock
-                        Grid.Column="2" Grid.Row="0"
+                    Grid.Column="2" Grid.Row="0"
                     helpers:RequiredAdorner.IsRequired="True"
                     HorizontalAlignment="Left"
-                    Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Foreground="#666" Text="Architecture" Margin="0 16 0 6" />
                 <ComboBox
                     IsEnabled="{Binding AllowChangingSourcePackage}" 
-                    Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Grid.Row="1" Grid.Column="2" SelectedValue="{Binding Architecture.CurrentValue}" SelectedValuePath="Tag">
                     <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm64}">ARM 64-bit</ComboBoxItem>
                     <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm}">ARM</ComboBoxItem>
