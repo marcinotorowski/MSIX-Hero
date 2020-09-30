@@ -75,13 +75,13 @@
         </Grid.Resources>
 
         <Fluent:Ribbon
-                FocusManager.IsFocusScope="True"
-                CanQuickAccessLocationChanging="False"
-                CanCustomizeQuickAccessToolBar="False"
-                CanCustomizeRibbon="False"
-                IsQuickAccessToolBarMenuDropDownVisible="False"
-                CanCustomizeQuickAccessToolBarItems="False"
-                x:Name="Ribbon"  Grid.Row="0">
+            FocusManager.IsFocusScope="True"
+            CanQuickAccessLocationChanging="False"
+            CanCustomizeQuickAccessToolBar="False"
+            CanCustomizeRibbon="False"
+            IsQuickAccessToolBarMenuDropDownVisible="False"
+            CanCustomizeQuickAccessToolBarItems="False"
+            x:Name="Ribbon"  Grid.Row="0">
             <Fluent:Ribbon.ContextualGroups>
                 <Fluent:RibbonContextualTabGroup 
                     x:Name="SelectedPackage"
@@ -1243,7 +1243,8 @@
                             </Style>
                         </TabControl.Style>
                     </TabControl>
-                    <Button ToolTip="Settings" Command="{x:Static commands:MsixHeroCommands.Settings}" Padding="0" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <Button 
+                        ToolTip="Settings" Command="{x:Static commands:MsixHeroCommands.Settings}" Padding="0" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Bottom">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="MinHeight" Value="46" />

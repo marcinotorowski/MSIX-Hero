@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -33,6 +34,7 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
             FocusManager.SetFocusedElement(this, this.TabControl);
             Keyboard.Focus(this.TabControl);
             this.TabControl.Focus();
+            this.Loaded += this.OnLoaded;
         }
 
         public MainView(
@@ -53,18 +55,25 @@ namespace Otor.MsixHero.Ui.Modules.Main.View
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetCurrentModeCommand>>().Subscribe(this.OnSetCurrentMode, ThreadOption.UIThread);
 
             this.ChangeTabVisibility();
-            this.Loaded += OnLoaded;
+            this.Loaded += this.OnLoaded;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             this.Loaded -= this.OnLoaded;
 
+            // ReSharper disable once PossibleNullReferenceException
+            Window.GetWindow(this).Activated += OnActivated;
             Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
                 },
                 DispatcherPriority.ApplicationIdle);
+        }
+
+        private void OnActivated(object sender, EventArgs e)
+        {
+            this.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
         }
 
         private void ChangeTabVisibility()
