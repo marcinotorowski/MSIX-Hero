@@ -717,7 +717,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             }
             catch (Exception exception)
             {
-                this.interactionService.ShowError("The tool could not be started.", exception);
+                this.interactionService.ShowError(exception.Message, exception);
             }
             finally
             {
@@ -727,12 +727,17 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
         private bool CanRunTool(ToolListConfiguration tool)
         {
+            if (tool == null)
+            {
+                return false;
+            }
+
             if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
             {
                 return false;
             }
 
-            return tool != null;
+            return !this.application.ApplicationState.Packages.SelectedPackages[0].IsOptional;
         }
 
         private async void InstallCertificateExecute()

@@ -262,7 +262,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 if (!manifest.Applications.Any())
                 {
-                    throw new InvalidOperationException("Cannot start tool on a package without applications.");
+                    throw new InvalidOperationException("Cannot execute a command in this package context. The package does not have any applications defined.");
                 }
                 
                 await RunToolInContext(package.PackageFamilyName, manifest.Applications[0].Id, toolPath, arguments, cancellationToken, progress).ConfigureAwait(false);
