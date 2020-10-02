@@ -56,6 +56,7 @@ MSIX Hero uses the following third-party software and libraries.
 * msixmgr (by Microsoft)
 * Newtonsoft.Json (by James Newton-King)
 * NLog (by Jaroslaw Kowalski, Kim Christensen, Julian Verdurmen)
+* OffregLib (by Michael Bisbjerg)
 * Ookii Dialogs WPF (by Sven Groot)
 * Prism (by .NET Foundation)
 * Registry (by Eric Zimmerman)
