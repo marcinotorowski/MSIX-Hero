@@ -39,31 +39,39 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
 
             this.InputPath = new ChangeableFolderProperty(interactionService)
             {
-                Validators = new[] { ChangeableFolderProperty.ValidatePath },
-                ValidationMode = ValidationMode.Silent
+                DisplayName = "Source directory",
+                Validators = new[] { ChangeableFolderProperty.ValidatePath }
             };
 
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
+                DisplayName = "Target package path",
                 Validators = new[] { ChangeableFileProperty.ValidatePath },
                 OpenForSaving = true,
-                Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*",
-                ValidationMode = ValidationMode.Silent
+                Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
             };
 
             this.Sign = new ChangeableProperty<bool>(signByDefault);
             this.Compress = new ChangeableProperty<bool>(true);
             this.Validate = new ChangeableProperty<bool>(true);
 
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig, true);
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig, true)
+            {
+                IsValidated = false
+            };
             
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.Sign.ValueChanged += this.SignOnValueChanged;
 
-            this.AddChildren(this.InputPath, this.OutputPath, this.Sign, this.SelectedCertificate);
-            this.SetValidationMode(ValidationMode.Silent, true);
+            this.TabSource = new ChangeableContainer(this.InputPath, this.OutputPath, this.Sign, this.Compress, this.Validate);
+            this.TabSigning = new ChangeableContainer(this.SelectedCertificate);
+            this.AddChildren(this.TabSource, this.TabSigning);
         }
         
+        public ChangeableContainer TabSource { get; }
+
+        public ChangeableContainer TabSigning { get; }
+
         public ChangeableFileProperty OutputPath { get; }
 
         public ChangeableFolderProperty InputPath { get; }

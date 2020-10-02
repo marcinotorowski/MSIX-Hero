@@ -3,13 +3,6 @@ using System.Runtime.Serialization;
 
 namespace Otor.MsixHero.Appx.Psf.Entities.Descriptor
 {
-    public enum PsfScriptDescriptorTiming
-    {
-        Start,
-        Finish
-    }
-
-
     [Serializable]
     public class PsfScriptDescriptor
     {

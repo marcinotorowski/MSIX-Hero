@@ -25,28 +25,29 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.ViewModel
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
-                Filter = "MSIX files|*.msix"
+                DisplayName = "Path to signed MSIX file",
+                Filter = "MSIX files|*.msix",
+                Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
             };
-
-            this.InputPath.ValueChanged += this.InputPathOnValueChanged;
-            this.InputPath.Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence };
 
             this.OutputPath = new ChangeableFileProperty(interactionService)
             {
+                DisplayName = "Path to certificate",
                 Filter = "Certificate files|*.cer",
                 OpenForSaving = true,
-                Validators = new [] { ChangeableFileProperty.ValidatePath }
+                Validators = new[] { ChangeableFileProperty.ValidatePath }
             };
-
+            
             this.SaveToFile = new ChangeableProperty<bool>(true);
             this.SaveToStore = new ChangeableProperty<bool>(true);
-            this.SaveToStore.ValueChanged += this.SaveToStoreOnValueChanged;
 
             customValidationContainer = new ChangeableContainer(this.SaveToFile, this.SaveToStore);
-            customValidationContainer.CustomValidation += this.CustomCheckboxValidation;
 
             this.AddChildren(this.InputPath, this.OutputPath, customValidationContainer);
-            this.SetValidationMode(ValidationMode.Silent, true);
+
+            this.InputPath.ValueChanged += this.InputPathOnValueChanged;
+            this.SaveToStore.ValueChanged += this.SaveToStoreOnValueChanged;
+            customValidationContainer.CustomValidation += this.CustomCheckboxValidation;
         }
 
         private void SaveToStoreOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -103,20 +104,12 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.ViewModel
 
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
         {
+            this.DisplayValidationErrors = true;
+
             var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
             var result = await manager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
-
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (this.customValidationContainer.ValidationMode == ValidationMode.Silent)
-            {
-                this.customValidationContainer.ValidationMode = ValidationMode.Silent;
-            }
-            else
-            {
-                this.customValidationContainer.ValidationMode = ValidationMode.Default;
-            }
 
             if (result == null)
             {

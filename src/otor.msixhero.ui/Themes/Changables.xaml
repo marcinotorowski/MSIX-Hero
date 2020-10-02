@@ -4,7 +4,8 @@
                     xmlns:dialogs="http://prismlibrary.com/"
                     xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
                     xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
-                    xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers">
+                    xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
+                    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Xceed.Wpf.AvalonDock">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Extras.xaml" />

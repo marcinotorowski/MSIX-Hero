@@ -37,20 +37,31 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.BlockLaunching = new ChangeableProperty<bool>();
-            this.Version = new ValidatedChangeableProperty<string>("1.0.0.0", this.ValidateVersion);
+            this.Version = new ValidatedChangeableProperty<string>("1.0.0.0", this.ValidateVersion)
+            {
+                DisplayName = "Version"
+            };
+
             this.ShowPrompt = new ChangeableProperty<bool>();
 
-            this.AllowDowngrades.ValueChanged += this.OnBooleanChanged;
-            this.BlockLaunching.ValueChanged += this.OnBooleanChanged;
-            this.ShowPrompt.ValueChanged += this.OnBooleanChanged;
+            this.MainPackageUri = new ValidatedChangeableProperty<string>(true)
+            {
+                DisplayName = "Main package URL",
+                Validators = new [] { ValidatorFactory.ValidateUrl(true) }
+            };
 
-            this.MainPackageUri = new ValidatedChangeableProperty<string>(true, this.ValidateUri);
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>(true, this.ValidateUri);
-            
-            this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
-            this.Hours = new ValidatedChangeableProperty<string>("24", this.ValidateHours);
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>(true)
+            {
+                DisplayName = "App installer URL",
+                Validators = new[] { ValidatorFactory.ValidateUrl(true) }
+            };
 
-            this.PackageSelection = new PackageSelectorViewModel(
+            this.Hours = new ValidatedChangeableProperty<string>("24", this.ValidateHours)
+            {
+                DisplayName = "Hours between updates"
+            };
+
+            this.TabPackage = new PackageSelectorViewModel(
                 interactionService,
                 PackageSelectorDisplayMode.AllowAllPackageTypes | 
                 PackageSelectorDisplayMode.ShowTypeSelector | 
@@ -63,22 +74,33 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
                 CustomPrompt = "What will be targeted by this .appinstaller?"
             };
 
-            this.PackageSelection.InputPath.ValueChanged += this.InputPathOnValueChanged;
-
-            this.AddChildren(
-                this.MainPackageUri,
-                this.AppInstallerUri,
+            this.TabOptions = new ChangeableContainer(
                 this.AppInstallerUpdateCheckingMethod,
                 this.AllowDowngrades,
                 this.BlockLaunching,
                 this.ShowPrompt,
-                this.Hours,
-                this.PackageSelection,
-                this.Version);
+                this.Hours);
 
-            this.SetValidationMode(ValidationMode.Silent, true);
+            this.TabProperties = new ChangeableContainer(
+                this.Version, 
+                this.MainPackageUri, 
+                this.AppInstallerUri);
+            
+            this.AddChildren(
+                this.TabPackage,
+                this.TabProperties,
+                this.TabOptions);
+
+            this.TabPackage.InputPath.ValueChanged += this.InputPathOnValueChanged;
+            this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
+            this.AllowDowngrades.ValueChanged += this.OnBooleanChanged;
+            this.BlockLaunching.ValueChanged += this.OnBooleanChanged;
+            this.ShowPrompt.ValueChanged += this.OnBooleanChanged;
         }
 
+        public ChangeableContainer TabProperties { get; }
+
+        public ChangeableContainer TabOptions { get; }
         public bool ShowLaunchOptions =>
             this.AppInstallerUpdateCheckingMethod.CurrentValue == Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground ||
             this.AppInstallerUpdateCheckingMethod.CurrentValue == Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.Launch;
@@ -95,9 +117,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
 
         public ChangeableProperty<bool> AllowDowngrades { get; }
         
-        public ChangeableProperty<string> MainPackageUri { get; }
+        public ValidatedChangeableProperty<string> MainPackageUri { get; }
 
-        public ChangeableProperty<string> AppInstallerUri { get; }
+        public ValidatedChangeableProperty<string> AppInstallerUri { get; }
 
         public string CompatibleWindows
         {
@@ -123,7 +145,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
             get { return this.open ??= new DelegateCommand(this.OpenExecuted); }
         }
 
-        public PackageSelectorViewModel PackageSelection { get; }
+        public PackageSelectorViewModel TabPackage { get; }
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
@@ -137,9 +159,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
                         this.OpenCommand.Execute(sourceFile);
                         break;
                     default:
-                        this.PackageSelection.InputPath.CurrentValue = sourceFile;
-                        this.PackageSelection.AllowChangingSourcePackage = false;
-                        this.PackageSelection.ShowPackageTypeSelector = false;
+                        this.TabPackage.InputPath.CurrentValue = sourceFile;
+                        this.TabPackage.AllowChangingSourcePackage = false;
+                        this.TabPackage.ShowPackageTypeSelector = false;
                         break;
                 }
             }
@@ -147,7 +169,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            this.SetValidationMode(ValidationMode.Default, true);
             if (!this.IsValid)
             {
                 return false;
@@ -169,11 +190,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
             var builder = new AppInstallerBuilder
             {
                 Version = this.Version.CurrentValue,
-                MainPackageType = this.PackageSelection.PackageType.CurrentValue,
-                MainPackageName = this.PackageSelection.Name.CurrentValue,
-                MainPackageArchitecture = this.PackageSelection.Architecture.CurrentValue,
-                MainPackagePublisher = this.PackageSelection.Publisher.CurrentValue,
-                MainPackageVersion = this.PackageSelection.Version.CurrentValue,
+                MainPackageType = this.TabPackage.PackageType.CurrentValue,
+                MainPackageName = this.TabPackage.Name.CurrentValue,
+                MainPackageArchitecture = this.TabPackage.Architecture.CurrentValue,
+                MainPackagePublisher = this.TabPackage.Publisher.CurrentValue,
+                MainPackageVersion = this.TabPackage.Version.CurrentValue,
                 HoursBetweenUpdateChecks = int.Parse(this.Hours.CurrentValue),
                 CheckForUpdates = this.AppInstallerUpdateCheckingMethod.CurrentValue,
                 ShowPrompt = this.ShowPrompt.CurrentValue,
@@ -189,7 +210,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
 
         private void ResetExecuted(object parameter)
         {
-            this.PackageSelection.Reset();
+            this.TabPackage.Reset();
             this.State.IsSaved = false;
         }
 
@@ -230,6 +251,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
             {
                 if (t.IsFaulted)
                 {
+                    // ReSharper disable once PossibleNullReferenceException
                     this.interactionService.ShowError("The selected file is not a valid Appinstaller.", t.Exception.GetBaseException(), InteractionResult.OK);
                     return;
                 }
@@ -255,11 +277,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
                 this.Version.CurrentValue = builder.Version;
                 this.ShowPrompt.CurrentValue = builder.ShowPrompt;
 
-                this.PackageSelection.Name.CurrentValue = builder.MainPackageName;
-                this.PackageSelection.Version.CurrentValue = builder.MainPackageVersion;
-                this.PackageSelection.Publisher.CurrentValue = builder.MainPackagePublisher;
-                this.PackageSelection.PackageType.CurrentValue = builder.MainPackageType;
-                this.PackageSelection.Architecture.CurrentValue = builder.MainPackageArchitecture;
+                this.TabPackage.Name.CurrentValue = builder.MainPackageName;
+                this.TabPackage.Version.CurrentValue = builder.MainPackageVersion;
+                this.TabPackage.Publisher.CurrentValue = builder.MainPackagePublisher;
+                this.TabPackage.PackageType.CurrentValue = builder.MainPackageType;
+                this.TabPackage.Architecture.CurrentValue = builder.MainPackageArchitecture;
 
                 this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
 
@@ -275,22 +297,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
         {
             Process.Start("explorer.exe", "/select," + previousPath);
         }
-
-        private string ValidateUri(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return "The value may not be empty.";
-            }
-
-            if (!Uri.TryCreate(value, UriKind.Absolute, out _))
-            {
-                return $"The value '{value}' is not a valid URI.";
-            }
-
-            return null;
-        }
-
+        
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             if (!string.IsNullOrEmpty((string)e.NewValue))

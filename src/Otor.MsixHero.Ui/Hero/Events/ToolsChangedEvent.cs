@@ -2,7 +2,7 @@
 using Otor.MsixHero.Infrastructure.Configuration;
 using Prism.Events;
 
-namespace Otor.MsixHero.Lib.Domain.Events
+namespace Otor.MsixHero.Ui.Hero.Events
 {
     public class ToolsChangedEvent : PubSubEvent<IReadOnlyCollection<ToolListConfiguration>>
     {

@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Otor.MsixHero.Ui.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -86,21 +87,35 @@
                                 </Border>
                             </Grid>
 
-                            <Border
-                                Background="Transparent">
-                                <ContentPresenter 
-                                    IsHitTestVisible="False"
-                                    x:Name="ContentSite"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Left"
-                                    ContentSource="Header"
-                                    Margin="0 11 0 8"
-                                    TextBlock.FontSize="13"
-                                    RecognizesAccessKey="True" />
+                            <Border Background="Transparent">
+                                <Border x:Name="PART_Root">
+                                    <ContentPresenter 
+                                        Margin="0 11 0 8"
+                                        IsHitTestVisible="False"
+                                        x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        ContentSource="Header"
+                                        TextBlock.FontSize="13"
+                                        RecognizesAccessKey="True" />
+                                </Border>
                             </Border>
                         </DockPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="controls:ValidatedTabItem.IsValid" Value="False">
+                            <Setter Property="Background" TargetName="PART_Root">
+                                <Setter.Value>
+                                    <RadialGradientBrush Center="0.5 1" GradientOrigin="0.5 1" RadiusX="0.7" RadiusY="0.75" MappingMode="RelativeToBoundingBox">
+                                        <RadialGradientBrush.GradientStops>
+                                            <GradientStop Color="Transparent" Offset="1.0" />
+                                            <GradientStop Color="#33ff0000" Offset="0.0" />
+                                        </RadialGradientBrush.GradientStops>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="ToolTip" TargetName="PART_Root" Value="{Binding RelativeSource={RelativeSource Self}, Path=(controls:ValidatedTabItem.ValidationMessage)}" />
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Trigger.EnterActions>
                                 <BeginStoryboard>

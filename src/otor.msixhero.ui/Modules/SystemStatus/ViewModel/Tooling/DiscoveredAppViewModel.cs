@@ -2,17 +2,6 @@
 
 namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel.Tooling
 {
-    public enum DiscoveredAppViewModelStatus
-    {
-        Installed,
-        
-        NotInstalled,
-
-        Available,
-
-        Unknown
-    }
-
     public class DiscoveredAppViewModel
     {
         public DiscoveredAppViewModel(IThirdPartyApp app, DiscoveredAppViewModelStatus status = DiscoveredAppViewModelStatus.Unknown)

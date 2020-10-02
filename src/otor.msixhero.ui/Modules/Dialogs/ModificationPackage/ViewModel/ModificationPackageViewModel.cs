@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.AppInstaller.Entities;
-using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
@@ -25,20 +24,15 @@ using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 {
-    public enum PackageSourceMode
-    {
-        FromFile,
-        FromProperties
-    }
-
     public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly IAppxContentBuilder contentBuilder;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
+        private readonly IConfigurationService configurationService;
         private readonly IInteractionService interactionService;
         private ICommand openSuccessLink;
         private ICommand reset;
-
+        
         public ModificationPackageViewModel(
             IAppxContentBuilder contentBuilder,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
@@ -47,103 +41,45 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
         {
             this.contentBuilder = contentBuilder;
             this.signingManagerFactory = signingManagerFactory;
+            this.configurationService = configurationService;
             this.interactionService = interactionService;
-
-            this.PackageSourceMode = new ChangeableProperty<PackageSourceMode>(ViewModel.PackageSourceMode.FromFile);
-
-            this.PackageSelection = new PackageSelectorViewModel(
-                interactionService,
-                PackageSelectorDisplayMode.AllowChanging | 
-                PackageSelectorDisplayMode.AllowBundles | 
-                PackageSelectorDisplayMode.ShowTypeSelector | 
-                PackageSelectorDisplayMode.AllowPackages |
-                PackageSelectorDisplayMode.AllowAllPackageTypes |
-                PackageSelectorDisplayMode.AllowChanging | 
-                PackageSelectorDisplayMode.RequireFullIdentity | 
-                PackageSelectorDisplayMode.ShowActualName);
-
-            this.ModificationPackageDetails = new PackageSelectorViewModel(
-                interactionService,
-                PackageSelectorDisplayMode.AllowChanging | 
-                PackageSelectorDisplayMode.AllowPackages | 
-                PackageSelectorDisplayMode.RequireVersion | 
-                PackageSelectorDisplayMode.ShowDisplayName);
-
-            this.ModificationPackageDetails.Version.CurrentValue = "1.0.0.0";
-            this.ModificationPackageDetails.Architecture.CurrentValue = (AppxPackageArchitecture)Enum.Parse(typeof(AppxPackageArchitecture), AppInstallerPackageArchitecture.neutral.ToString("G"), true);
-            this.ModificationPackageDetails.Commit();
             
-            this.Create = new ChangeableProperty<ModificationPackageBuilderAction>();
-            this.Create.ValueChanged += this.CreateOnValueChanged;
-
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService.GetCurrentConfiguration()?.Signing, true);
-            
-            this.IncludeFiles = new ChangeableProperty<bool>();
-            this.IncludeRegistry = new ChangeableProperty<bool>();
-            this.IncludeVfsFolders = new ChangeableProperty<bool>();
-
-            this.SourceFolder = new ChangeableFolderProperty(this.interactionService);
-            this.SourceRegistryFile = new ChangeableFileProperty(this.interactionService)
-            {
-                Filter = "Registry files (*.reg)|*.reg",
-                OpenForSaving = false
-            };
-
-            if (configurationService.GetCurrentConfiguration().Packer.SignByDefault)
-            {
-                this.Create.CurrentValue = ModificationPackageBuilderAction.SignedMsix;
-            }
+            this.InitializeTabProperties();
+            this.InitializeTabParentPackage();
+            this.InitializeTabContent();
+            this.InitializeTabCertificate();
 
             this.AddChildren(
-                this.PackageSelection, 
-                this.ModificationPackageDetails, 
-                this.Create, 
-                this.SelectedCertificate,
-                this.IncludeRegistry,
-                this.IncludeFiles,
-                this.IncludeVfsFolders,
-                this.SourceFolder,
-                this.SourceRegistryFile,
-                this.PackageSourceMode);
-
-            this.SetValidationMode(ValidationMode.Silent, true);
-            this.CustomValidation += OnCustomValidation;
-
-            this.PackageSelection.PackageFileChanged += this.PackageFileChanged;
-            this.Create.ValueChanged += this.CreateOnValueChanged;
-            this.PackageSourceMode.ValueChanged += this.PackageSourceModeChanged;
+                this.TabProperties,
+                this.TabParentPackage,
+                this.TabContent,
+                this.TabCertificate);
         }
 
-        private void OnCustomValidation(object sender, ContainerValidationArgs e)
-        {
-            if (!this.PackageSelection.IsValid)
-            {
-                e.SetError(this.PackageSelection.Name.ValidationMessage);
-            }
-            else if (!this.PackageSelection.Publisher.IsValid)
-            {
-                e.SetError(this.PackageSelection.Publisher.ValidationMessage);
-            }
-        }
+        public ChangeableFileProperty SourcePath { get; private set; }
 
-        public PackageSelectorViewModel PackageSelection { get; }
+        public PackageSelectorViewModel PackageSelection { get; private set; }
 
-        public PackageSelectorViewModel ModificationPackageDetails { get; }
+        public PackageSelectorViewModel TabProperties { get; private set; }
 
-        public ChangeableProperty<bool> IncludeFiles { get; }
+        public ChangeableProperty<bool> IncludeFiles { get; private set; }
 
-        public ChangeableProperty<PackageSourceMode> PackageSourceMode { get; }
-        
-        public ChangeableProperty<bool> IncludeRegistry { get; }
-        
-        public ChangeableProperty<bool> IncludeVfsFolders { get; }
+        public ChangeableContainer TabParentPackage { get; private set; }
 
-        public ChangeableFileProperty SourceRegistryFile { get; }
+        public ChangeableContainer TabContent { get; private set; }
 
-        public ChangeableFolderProperty SourceFolder { get; }
-        
-        public ChangeableProperty<ModificationPackageBuilderAction> Create { get; }
-        
+        public ChangeableProperty<PackageSourceMode> PackageSourceMode { get; private set; }
+
+        public ChangeableProperty<bool> IncludeRegistry { get; private set; }
+
+        public ChangeableProperty<bool> IncludeVfsFolders { get; private set; }
+
+        public ChangeableFileProperty SourceRegistryFile { get; private set; }
+
+        public ChangeableFolderProperty SourceFolder { get; private set; }
+
+        public ChangeableProperty<ModificationPackageBuilderAction> Create { get; private set; }
+
         public ICommand OpenSuccessLinkCommand
         {
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
@@ -155,8 +91,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
         }
 
         public string Result { get; private set; }
-        
-        public CertificateSelectorViewModel SelectedCertificate { get; }
+
+        public bool IsIncludeVfsFoldersEnabled => !string.IsNullOrEmpty(this.PackageSelection.InputPath.CurrentValue) && this.PackageSourceMode.CurrentValue == ViewModel.PackageSourceMode.FromFile && this.Create.CurrentValue == ModificationPackageBuilderAction.Manifest;
+
+        public CertificateSelectorViewModel TabCertificate { get; private set; }
         
         public void OnDialogOpened(IDialogParameters parameters)
         {
@@ -169,14 +107,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
             this.PackageSelection.AllowChangingSourcePackage = false;
             this.PackageSelection.ShowPackageTypeSelector = false;
 
-            this.ModificationPackageDetails.Architecture.CurrentValue = this.PackageSelection.Architecture.CurrentValue;
-            this.ModificationPackageDetails.Name.CurrentValue = this.PackageSelection.Name.CurrentValue + "-Modification";
-            this.ModificationPackageDetails.Commit();
+            this.TabProperties.Architecture.CurrentValue = this.PackageSelection.Architecture.CurrentValue;
+            this.TabProperties.Name.CurrentValue = this.PackageSelection.Name.CurrentValue + "-Modification";
+            this.TabProperties.Commit();
         }
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            this.SetValidationMode(ValidationMode.Default, true);
             if (!this.IsValid)
             {
                 return false;
@@ -208,13 +145,18 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                     throw new ArgumentOutOfRangeException();
             }
 
+            if (!string.IsNullOrEmpty(this.SourcePath.CurrentValue))
+            {
+                this.TabProperties.InputPath.CurrentValue = this.SourcePath.CurrentValue;
+            }
+
             var modificationPkgCreationRequest = new ModificationPackageConfig
             {
-                DisplayName = this.ModificationPackageDetails.DisplayName.CurrentValue,
-                Name = Regex.Replace(this.ModificationPackageDetails.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
-                Publisher = "CN=" + Regex.Replace(this.ModificationPackageDetails.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
-                DisplayPublisher = this.ModificationPackageDetails.DisplayPublisher.CurrentValue,
-                Version = this.ModificationPackageDetails.Version.CurrentValue,
+                DisplayName = this.TabProperties.DisplayName.CurrentValue,
+                Name = Regex.Replace(this.TabProperties.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
+                Publisher = "CN=" + Regex.Replace(this.TabProperties.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
+                DisplayPublisher = this.TabProperties.DisplayPublisher.CurrentValue,
+                Version = this.TabProperties.Version.CurrentValue,
                 ParentName = this.PackageSelection.Name.CurrentValue,
                 ParentPublisher = this.PackageSelection.Publisher.CurrentValue,
                 IncludeVfsFolders = this.IncludeVfsFolders.CurrentValue && this.IsIncludeVfsFoldersEnabled,
@@ -240,13 +182,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                     var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    switch (this.SelectedCertificate.Store.CurrentValue)
+                    switch (this.TabCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Pfx:
-                            await manager.SignPackage(selectedPath, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackage(selectedPath, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.Personal:
-                            await manager.SignPackage(selectedPath, true, this.SelectedCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackage(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                     }
 
@@ -257,12 +199,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
             return true;
         }
 
-        public bool IsIncludeVfsFoldersEnabled => !string.IsNullOrEmpty(this.PackageSelection.InputPath.CurrentValue) && this.PackageSourceMode.CurrentValue == ViewModel.PackageSourceMode.FromFile && this.Create.CurrentValue == ModificationPackageBuilderAction.Manifest;
-
         private void PackageFileChanged(object sender, PackageSelectorViewModel.PackageFileChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
-            this.ModificationPackageDetails.Architecture.CurrentValue = e.Architecture;
+            this.TabProperties.Architecture.CurrentValue = e.Architecture;
         }
 
         private void ResetExecuted(object parameter)
@@ -272,18 +212,122 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         private void CreateOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            this.SelectedCertificate.IsValidated = this.Create.CurrentValue == ModificationPackageBuilderAction.SignedMsix;
+            this.TabCertificate.IsValidated = this.Create.CurrentValue == ModificationPackageBuilderAction.SignedMsix;
             this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
         }
 
         private void PackageSourceModeChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
+            this.PackageSelection.IsValidated = (PackageSourceMode)e.NewValue == ViewModel.PackageSourceMode.FromProperties;
+            this.SourcePath.IsValidated = (PackageSourceMode)e.NewValue == ViewModel.PackageSourceMode.FromFile;
         }
 
         private void OpenSuccessLinkExecuted(object parameter)
         {
             Process.Start("explorer.exe", "/select," + this.Result);
+        }
+        private void IncludeFilesChanged(object sender, ValueChangedEventArgs e)
+        {
+            this.SourceFolder.IsValidated = (bool)e.NewValue;
+        }
+
+        private void IncludeRegistryChanged(object sender, ValueChangedEventArgs e)
+        {
+            this.SourceRegistryFile.IsValidated = (bool)e.NewValue;
+        }
+        private void InitializeTabProperties()
+        {
+            this.TabProperties = new PackageSelectorViewModel(
+                interactionService,
+                PackageSelectorDisplayMode.AllowChanging |
+                PackageSelectorDisplayMode.AllowPackages |
+                PackageSelectorDisplayMode.RequireVersion |
+                PackageSelectorDisplayMode.ShowDisplayName);
+
+            this.TabProperties.Version.CurrentValue = "1.0.0.0";
+            this.TabProperties.Architecture.CurrentValue = (AppxPackageArchitecture)Enum.Parse(typeof(AppxPackageArchitecture), AppInstallerPackageArchitecture.neutral.ToString("G"), true);
+            this.TabProperties.Commit();
+        }
+
+        private void InitializeTabParentPackage()
+        {
+            this.SourcePath = new ChangeableFileProperty(this.interactionService)
+            {
+                DisplayName = "Parent package",
+                Filter = "Packages|*.msix;*.appx;Appxmanifest.xml|All files|*.*",
+                IsValidated = true,
+                Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
+            };
+
+            this.PackageSourceMode = new ChangeableProperty<PackageSourceMode>();
+            this.PackageSourceMode.ValueChanged += this.PackageSourceModeChanged;
+
+            this.PackageSelection = new PackageSelectorViewModel(
+                interactionService,
+                PackageSelectorDisplayMode.AllowChanging |
+                PackageSelectorDisplayMode.AllowBundles |
+                PackageSelectorDisplayMode.ShowTypeSelector |
+                PackageSelectorDisplayMode.AllowPackages |
+                PackageSelectorDisplayMode.AllowAllPackageTypes |
+                PackageSelectorDisplayMode.AllowChanging |
+                PackageSelectorDisplayMode.RequireFullIdentity |
+                PackageSelectorDisplayMode.ShowActualName)
+            {
+                IsValidated = false
+            };
+            this.PackageSelection.PackageFileChanged += this.PackageFileChanged;
+
+            this.TabParentPackage = new ChangeableContainer(
+                this.PackageSourceMode,
+                this.PackageSelection,
+                this.SourcePath);
+        }
+
+        private void InitializeTabContent()
+        {
+            this.Create = new ChangeableProperty<ModificationPackageBuilderAction>();
+            if (configurationService.GetCurrentConfiguration().Packer.SignByDefault)
+            {
+                this.Create.CurrentValue = ModificationPackageBuilderAction.SignedMsix;
+            }
+
+            this.IncludeFiles = new ChangeableProperty<bool>();
+            this.IncludeRegistry = new ChangeableProperty<bool>();
+            this.IncludeVfsFolders = new ChangeableProperty<bool>();
+
+            this.SourceFolder = new ChangeableFolderProperty(this.interactionService)
+            {
+                DisplayName = "Folder to include",
+                IsValidated = false,
+                Validators = new[] { ChangeableFolderProperty.ValidatePathAndPresence }
+            };
+
+            this.SourceRegistryFile = new ChangeableFileProperty(this.interactionService)
+            {
+                DisplayName = ".REG file to include",
+                IsValidated = false,
+                Filter = "Registry files (*.reg)|*.reg",
+                OpenForSaving = false,
+                Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
+            };
+
+            this.TabContent = new ChangeableContainer(
+                this.Create,
+                this.IncludeVfsFolders,
+                this.IncludeFiles,
+                this.SourceFolder,
+                this.IncludeRegistry,
+                this.SourceRegistryFile);
+
+            this.Create.ValueChanged += this.CreateOnValueChanged;
+            this.IncludeRegistry.ValueChanged += this.IncludeRegistryChanged;
+            this.IncludeFiles.ValueChanged += this.IncludeFilesChanged;
+        }
+
+        private void InitializeTabCertificate()
+        {
+            this.TabCertificate = new CertificateSelectorViewModel(this.interactionService, this.signingManagerFactory, this.configurationService.GetCurrentConfiguration()?.Signing, true);
         }
     }
 }

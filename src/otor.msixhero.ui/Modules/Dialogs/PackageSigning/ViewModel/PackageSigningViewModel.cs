@@ -29,18 +29,28 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
         {
             this.signingManagerFactory = signingManagerFactory;
             this.interactionService = interactionService;
+            
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService?.GetCurrentConfiguration()?.Signing, true);
             this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
+            
+            this.TabCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService?.GetCurrentConfiguration()?.Signing, true);
+            this.TabPackages = new ChangeableContainer(this.Files);
+            this.TabAdjustments = new ChangeableContainer(this.IncreaseVersion);
 
-            this.AddChildren(this.Files, this.SelectedCertificate, this.IncreaseVersion);
-            this.SetValidationMode(ValidationMode.Silent, true);
-            this.Files.CollectionChanged += (sender, args) => { this.OnPropertyChanged(nameof(IsOnePackage)); };
+            this.AddChildren(this.TabPackages, this.TabCertificate, this.TabAdjustments);
+            this.Files.CollectionChanged += (sender, args) =>
+            {
+                this.OnPropertyChanged(nameof(IsOnePackage));
+            };
         }
         
-        public ChangeableProperty<IncreaseVersionMethod> IncreaseVersion { get; }
+        public ChangeableContainer TabPackages { get; }
 
-        public CertificateSelectorViewModel SelectedCertificate { get; }
+        public ChangeableContainer TabAdjustments { get; }
+
+        public CertificateSelectorViewModel TabCertificate { get; }
+
+        public ChangeableProperty<IncreaseVersionMethod> IncreaseVersion { get; }
 
         public List<string> SelectedPackages { get; } = new List<string>();
 
@@ -81,13 +91,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (this.SelectedCertificate.Store.CurrentValue == CertificateSource.Pfx)
+                if (this.TabCertificate.Store.CurrentValue == CertificateSource.Pfx)
                 {
-                    await manager.SignPackage(file, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    await manager.SignPackage(file, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
                 else
                 {
-                    await manager.SignPackage(file, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.SelectedCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    await manager.SignPackage(file, true, this.TabCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                 }
             }
 

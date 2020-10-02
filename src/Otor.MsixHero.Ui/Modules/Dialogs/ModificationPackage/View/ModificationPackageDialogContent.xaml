@@ -8,75 +8,103 @@
              xmlns:builder1="clr-namespace:Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;assembly=Otor.MsixHero.Appx"
              xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:controls="clr-namespace:Otor.MsixHero.Ui.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
     <TabControl>
         <TabItem Header="Properties">
+            <b:Interaction.Behaviors>
+                <controls:ValidationBehavior ValidatedChangeable="{Binding TabProperties}" />
+            </b:Interaction.Behaviors>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <AdornerDecorator>
-                    <view:PackageSelectorView DataContext="{Binding ModificationPackageDetails}" />
+                    <view:PackageSelectorView DataContext="{Binding TabProperties}" />
                 </AdornerDecorator>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Parent package">
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Top">
-                    <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding PackageSourceMode.CurrentValue}" Margin="0 0 0 16">
-                        <ComboBoxItem Tag="{x:Static viewModel:PackageSourceMode.FromFile}" x:Name="FromFileCombo" Content="From file path" />
-                        <ComboBoxItem Tag="{x:Static viewModel:PackageSourceMode.FromProperties}" x:Name="FromPropertiesCombo" Content="Manually entered identifiers" />
-                    </ComboBox>
+        <TabItem 
+            Header="Parent package">
+            <b:Interaction.Behaviors>
+                <controls:ValidationBehavior ValidatedChangeable="{Binding TabParentPackage}"></controls:ValidationBehavior>
+            </b:Interaction.Behaviors>
+            <AdornerDecorator>
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding PackageSourceMode.CurrentValue}" Margin="0 0 0 16">
+                            <ComboBoxItem Tag="{x:Static viewModel:PackageSourceMode.FromFile}" x:Name="FromFileCombo" Content="From file path" />
+                            <ComboBoxItem Tag="{x:Static viewModel:PackageSourceMode.FromProperties}" x:Name="FromPropertiesCombo" Content="Manually entered identifiers" />
+                        </ComboBox>
 
-                    <StackPanel Visibility="{Binding ElementName=FromFileCombo, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 0">
-                        <TextBlock Text="Source file path for the parent package:" Margin="0 0 0 6" Style="{StaticResource DataHeader}" />
-                        <DockPanel>
-                            <Button Content="..." Command="{Binding PackageSelection.InputPath.Browse}" DockPanel.Dock="Right" Margin="6 0 0 0" />
-                            <TextBox IsReadOnly="True" Text="{Binding PackageSelection.InputPath.CurrentValue, Mode=TwoWay, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}" />
-                        </DockPanel>
+                        <StackPanel Visibility="{Binding ElementName=FromFileCombo, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 0">
+                            <TextBlock Text="Source file path for the parent package:" Margin="0 0 0 6" Style="{StaticResource DataHeader}" />
+                            <DockPanel>
+                                <Button Content="..." Command="{Binding SourcePath.Browse}" DockPanel.Dock="Right" Margin="6 0 0 0" />
+                                <TextBox 
+                                    IsReadOnly="True" 
+                                    Text="{Binding SourcePath.CurrentValue, Mode=TwoWay, 
+                                    ValidatesOnDataErrors=True, 
+                                    UpdateSourceTrigger=PropertyChanged}" />
+                            </DockPanel>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                <ScrollViewer Margin="0 0 0 0" Visibility="{Binding ElementName=FromPropertiesCombo, Path=IsSelected, Converter={StaticResource BooleanToHiddenVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
-                    <view:PackageSelectorView
-                        DataContext="{Binding PackageSelection}" />
-                </ScrollViewer>
-            </DockPanel>
+                    <ScrollViewer Margin="0 0 0 0" Visibility="{Binding ElementName=FromPropertiesCombo, Path=IsSelected, Converter={StaticResource BooleanToHiddenVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
+                        <AdornerDecorator>
+                            <view:PackageSelectorView
+                                DataContext="{Binding PackageSelection}" />
+                        </AdornerDecorator>
+                    </ScrollViewer>
+                </DockPanel>
+            </AdornerDecorator>
         </TabItem>
         <TabItem Header="Content">
-            <StackPanel>
-                <TextBlock Foreground="#666" Text="What should be created?" Margin="0 0 0 6" />
-                <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Uncompressed package (AppxManifest.xml)" />
-                <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Unsigned MSIX modification package" Margin="0 6" />
-                <RadioButton x:Name="Radio3"  GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Signed MSIX modification package" />
+            <b:Interaction.Behaviors>
+                <controls:ValidationBehavior ValidatedChangeable="{Binding TabContent}" />
+            </b:Interaction.Behaviors>
+            <ScrollViewer>
+                <AdornerDecorator>
+                    <StackPanel>
+                        <TextBlock Foreground="#666" Text="What should be created?" Margin="0 0 0 6" />
+                        <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Uncompressed package (AppxManifest.xml)" />
+                        <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Unsigned MSIX modification package" Margin="0 6" />
+                        <RadioButton x:Name="Radio3"  GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Signed MSIX modification package" />
 
-                <TextBlock Foreground="#666" Text="Additional content to include" Margin="0 16 0 6" />
-                <CheckBox 
+                        <TextBlock Foreground="#666" Text="Additional content to include" Margin="0 16 0 6" />
+                        <CheckBox 
                     IsEnabled="{Binding IsIncludeVfsFoldersEnabled}" 
                     IsChecked="{Binding IncludeVfsFolders.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
                     Content="VFS folder structure from the parent package"
                     Margin="0 0 0 6" />
-                <Border Visibility="{Binding IsIncludeVfsFoldersEnabled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                        <Border Visibility="{Binding IsIncludeVfsFoldersEnabled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
                         Background="#fafafa" Margin="22 -3 0 16">
-                    <TextBlock TextWrapping="Wrap" Margin="6" Foreground="#555">
+                            <TextBlock TextWrapping="Wrap" Margin="6" Foreground="#555">
                         <Run Text="This option is not available for signed or unsigned MSIX output type or if the parent package path is not set." />
-                    </TextBlock>
-                </Border>
-                <CheckBox IsChecked="{Binding IncludeFiles.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Files and directories from disk" Margin="0 0 0 3" />
-                <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding IncludeFiles.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Import files and folders from the following location into the package root directory." TextWrapping="Wrap" Margin="22 0 0 6" />
-                <DockPanel Visibility="{Binding IncludeFiles.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="22 0 0 16">
-                    <Button Command="{Binding SourceFolder.Browse}" Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" />
-                    <TextBox 
+                            </TextBlock>
+                        </Border>
+                        <CheckBox IsChecked="{Binding IncludeFiles.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Files and directories from disk" Margin="0 0 0 3" />
+                        <TextBlock Style="{StaticResource DataHeader}" Visibility="{Binding IncludeFiles.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Import files and folders from the following location into the package root directory." TextWrapping="Wrap" Margin="22 0 0 6" />
+                        <DockPanel Visibility="{Binding IncludeFiles.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="22 0 0 16">
+                            <Button Command="{Binding SourceFolder.Browse}" Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" />
+                            <TextBox 
                         Text="{Binding SourceFolder.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                </DockPanel>
-                <CheckBox Content="Registry keys and values" Margin="0 0 0 3" IsChecked="{Binding IncludeRegistry.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                <TextBlock Style="{StaticResource DataHeader}" Margin="22 0 0 6" Text="Import registry from the specified *.reg file:" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <DockPanel Margin="22 0 0 16" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Button Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" Command="{Binding SourceRegistryFile.Browse}" />
-                    <TextBox 
+                        </DockPanel>
+                        <CheckBox Content="Registry keys and values" Margin="0 0 0 3" IsChecked="{Binding IncludeRegistry.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        <TextBlock Style="{StaticResource DataHeader}" Margin="22 0 0 6" Text="Import registry from the specified *.reg file:" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <DockPanel Margin="22 0 0 16" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" Command="{Binding SourceRegistryFile.Browse}" />
+                            <TextBox 
                         Text="{Binding SourceRegistryFile.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                </DockPanel>                
-            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </AdornerDecorator>
+            </ScrollViewer>
         </TabItem>
         <TabItem Header="Signature" Visibility="{Binding ElementName=Radio3, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
+            <b:Interaction.Behaviors>
+                <controls:ValidationBehavior ValidatedChangeable="{Binding TabCertificate}" />
+            </b:Interaction.Behaviors>
+
+            <view1:CertificateSelectorView DataContext="{Binding TabCertificate}" />
         </TabItem>
     </TabControl>
 </UserControl>

@@ -9,6 +9,8 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel"
              xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
              mc:Ignorable="d" 
+             d:DesignHeight="400"
+             d:DesignWidth="400"
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
     <mvvm:Dialog.WindowStyle>

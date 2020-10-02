@@ -25,11 +25,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Unpack.ViewModel
 
             this.OutputPath = new ChangeableFolderProperty(interactionService)
             {
+                DisplayName = "Target directory",
                 Validators = new[] { ChangeableFolderProperty.ValidatePath }
             };
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
+                DisplayName = "Source package path",
                 Validators = new[] { ChangeableFileProperty.ValidatePath },
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
             };
@@ -39,7 +41,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Unpack.ViewModel
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
             this.AddChildren(this.InputPath, this.OutputPath, this.CreateFolder);
-            this.SetValidationMode(ValidationMode.Silent, true);
         }
         
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -96,6 +97,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Unpack.ViewModel
         {
             if (!string.IsNullOrEmpty(this.InputPath.CurrentValue))
             {
+                // ReSharper disable once AssignNullToNotNullAttribute
                 return this.CreateFolder.CurrentValue ? Path.Combine(this.OutputPath.CurrentValue, Path.GetFileNameWithoutExtension(this.InputPath.CurrentValue)) : this.OutputPath.CurrentValue;
             }
 

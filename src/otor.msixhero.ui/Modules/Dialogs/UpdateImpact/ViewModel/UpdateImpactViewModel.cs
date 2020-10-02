@@ -38,7 +38,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel
             };
             
             this.AddChildren(this.Path1, this.Path2);
-            this.SetValidationMode(ValidationMode.Silent, true);
             this.Compare = new DelegateCommand(this.CompareExecuted);
         }
 
@@ -52,9 +51,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel
 
         public AsyncProperty<ComparisonViewModel> Results { get; } = new AsyncProperty<ComparisonViewModel>();
 
-        protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        protected override Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            return true;
+            return Task.FromResult(true);
         }
 
         private async void CompareExecuted(object obj)

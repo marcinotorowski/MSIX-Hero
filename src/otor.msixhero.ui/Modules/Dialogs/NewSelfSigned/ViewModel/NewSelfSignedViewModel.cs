@@ -30,21 +30,33 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
         {
             this.signingManagerFactory = signingManagerFactory;
             
-            this.OutputPath = new ChangeableFolderProperty(interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
+            this.OutputPath = new ChangeableFolderProperty(interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder)
+            {
+                DisplayName = "Output path"
+            };
             
-            this.PublisherName = new ValidatedChangeableProperty<string>("CN=");
-            this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
-            this.PublisherName.Validators = new Func<string, string>[] { ValidatePublisherName };
+            this.PublisherName = new ValidatedChangeableProperty<string>("CN=")
+            {
+                DisplayName = "Publisher name",
+                Validators = new Func<string, string>[] { ValidatePublisherName }
+            };
             
-            this.PublisherFriendlyName = new ValidatedChangeableProperty<string>();
-            this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
-            this.PublisherFriendlyName.Validators = new Func<string, string>[] { ValidatePublisherFriendlyName };
+            this.PublisherFriendlyName = new ValidatedChangeableProperty<string>()
+            {
+                DisplayName = "Publisher display name",
+                Validators = new Func<string, string>[] { ValidatePublisherFriendlyName }
+            };
+            
+            this.Password = new ValidatedChangeableProperty<string>()
+            {
+                DisplayName = "Password",
+                Validators = new Func<string, string>[] { ValidatePassword }
+            };
 
-            this.Password = new ValidatedChangeableProperty<string>();
-            this.Password.Validators = new Func<string, string>[] { ValidatePassword };
-            
+            this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
+            this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
+
             this.AddChildren(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName);
-            this.SetValidationMode(ValidationMode.Silent, true);
         }
         
         public ValidatedChangeableProperty<string> PublisherName { get; }

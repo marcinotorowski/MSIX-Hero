@@ -4,13 +4,6 @@ using Otor.MsixHero.Ui.Domain;
 
 namespace Otor.MsixHero.Ui.Modules.Common.PsfContent.ViewModel.Items.Redirection
 {
-    public enum PsfContentFolderRelationTo
-    {
-        PackageRoot,
-        Drive,
-        KnownFolder
-    }
-
     public class PsfContentFolderRedirectionViewModel : ChangeableContainer
     {
         private readonly ChangeableProperty<string> knownDir;

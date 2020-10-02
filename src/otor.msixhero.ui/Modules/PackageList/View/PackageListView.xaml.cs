@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Domain.Events;
 using Otor.MsixHero.Ui.Commands;
 using Otor.MsixHero.Ui.Helpers;
 using Otor.MsixHero.Ui.Hero;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
+using Otor.MsixHero.Ui.Hero.Events;
 using Otor.MsixHero.Ui.Hero.Events.Base;
 using Otor.MsixHero.Ui.Modules.PackageList.ViewModel;
 using Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements;
@@ -448,29 +444,4 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             }
         }
     }
-
-    internal class PackageContextDisplayNameConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is PackageContext context)
-            {
-                switch (context)
-                {
-                    case PackageContext.CurrentUser:
-                        return "Current user";
-                    case PackageContext.AllUsers:
-                        return "All users";
-                }
-            }
-
-            return value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
 }

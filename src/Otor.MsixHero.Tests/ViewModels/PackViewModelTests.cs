@@ -40,12 +40,10 @@ namespace Otor.MsixHero.Tests.ViewModels
 
             var viewModel = new PackViewModel(mockPacker.Object, mockManager.Object, mockConfiguration.Object, mockInteraction.Object);
 
-            Assert.AreEqual(ValidationMode.Silent, viewModel.ValidationMode);
             Assert.IsFalse(viewModel.HasError);
             Assert.IsFalse(viewModel.IsValid);
 
             viewModel.OkCommand.Execute(null);
-            Assert.AreEqual(ValidationMode.Default, viewModel.ValidationMode);
             Assert.IsTrue(viewModel.HasError);
 
             Assert.IsTrue(string.IsNullOrEmpty(viewModel.OutputPath.CurrentValue));

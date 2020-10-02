@@ -12,8 +12,7 @@ namespace Otor.MsixHero.Ui.Domain
         private string validationMessage;
         private bool isValidated;
         private IReadOnlyCollection<Func<T, string>> validators;
-        private ValidationMode validationMode;
-
+        private bool displayValidationErrors = true;
         public ValidatedChangeableProperty(T initialValue = default) : base(initialValue)
         {
             this.isValidated = true;
@@ -39,18 +38,20 @@ namespace Otor.MsixHero.Ui.Domain
         public ValidatedChangeableProperty(bool isValidated, params Func<T, string>[] validators) : this(default, isValidated, validators)
         {
         }
-        
-        public ValidationMode ValidationMode
+
+        public string DisplayName { get; set; }
+        public bool DisplayValidationErrors
         {
-            get => this.validationMode;
+            get => this.displayValidationErrors;
             set
             {
-                if (!this.SetField(ref this.validationMode, value))
+                if (!this.SetField(ref this.displayValidationErrors, value))
                 {
                     return;
                 }
 
-                this.Validate();
+                this.OnPropertyChanged(nameof(this.Error));
+                this.OnPropertyChanged(nameof(this.CurrentValue));
             }
         }
 
@@ -128,7 +129,7 @@ namespace Otor.MsixHero.Ui.Domain
         {
             get
             {
-                if (this.validationMode == ValidationMode.Silent)
+                if (!this.DisplayValidationErrors)
                 {
                     return null;
                 }
@@ -141,7 +142,7 @@ namespace Otor.MsixHero.Ui.Domain
         {
             get
             {
-                if (this.validationMode == ValidationMode.Silent)
+                if (!this.displayValidationErrors)
                 {
                     return null;
                 }
@@ -183,7 +184,18 @@ namespace Otor.MsixHero.Ui.Domain
                     }
                 }
 
-                this.ValidationMessage = msg;
+                if (string.IsNullOrEmpty(msg))
+                {
+                    this.ValidationMessage = null;
+                }
+                else if (this.DisplayName != null)
+                {
+                    this.ValidationMessage = this.DisplayName + ": " + msg;
+                }
+                else
+                {
+                    this.ValidationMessage = msg;
+                }
             }
             
             // ReSharper disable once InvertIf

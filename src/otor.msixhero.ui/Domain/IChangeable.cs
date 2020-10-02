@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Otor.MsixHero.Ui.Domain
 {
-    public interface IChangeable
+    public interface IChangeable : INotifyPropertyChanged
     {
         /// <summary>
         /// Gets a value indicating if this instance is "dirty", which means that its current value is different from the original one.
@@ -47,43 +48,6 @@ namespace Otor.MsixHero.Ui.Domain
         /// Gets or sets the current value.
         /// </summary>
         T CurrentValue { get; set; }
-    }
-
-    public interface IChangeableValue : IChangeable
-    {
-        /// <summary>
-        /// An event fired when the value was changed.
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        /// <summary>
-        /// An event fired when the value is about to be changed.
-        /// </summary>
-        event EventHandler<ValueChangingEventArgs> ValueChanging;
-    }
-
-    public enum ValidationMode
-    {
-        Default,
-        Silent
-    }
-
-    public interface IValidatedChangeable : IChangeable
-    {
-        string ValidationMessage { get; }
-
-        bool IsValidated { get; set; }
-
-        bool IsValid { get; }
-
-        ValidationMode ValidationMode { get; set; }
-
-        event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
-    }
-
-    public interface IValidatedContainerChangeable : IValidatedChangeable
-    {
-        void SetValidationMode(ValidationMode mode, bool setForChildren);
     }
 
     public interface IValidatedChangeable<T> : IChangeable<T>, IValidatedChangeable

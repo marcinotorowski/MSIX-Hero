@@ -12,12 +12,6 @@ using Otor.MsixHero.Ui.Domain;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
 {
-    public enum AppAttachSizeMode
-    {
-        Auto,
-        Fixed
-    }
-
     public class AppAttachViewModel : ChangeableDialogViewModel
     {
         private readonly IInteractionService interactionService;
@@ -29,6 +23,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
             this.interactionService = interactionService;
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
+                DisplayName = "Source MSIX file",
                 Filter = "MSIX files|*.msix"
             };
 
@@ -41,11 +36,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
             this.SizeMode = new ChangeableProperty<AppAttachSizeMode>();
             this.FixedSize = new ValidatedChangeableProperty<string>("100")
             {
+                DisplayName = "Fixed size",
                 Validators = new Func<string, string>[] { this.ValidateFixedSize }
             };
             
             this.AddChildren(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
-            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
         public ChangeableFileProperty InputPath { get; }
@@ -62,13 +57,12 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
         
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            if (!this.interactionService.SaveFile(this.OutputPath, "Virtual disks|*.vhd", out var output))
+            if (!this.IsValid)
             {
                 return false;
             }
 
-            this.SetValidationMode(ValidationMode.Default, true);
-            if (!this.IsValid)
+            if (!this.interactionService.SaveFile(this.OutputPath, "Virtual disks|*.vhd", out var output))
             {
                 return false;
             }

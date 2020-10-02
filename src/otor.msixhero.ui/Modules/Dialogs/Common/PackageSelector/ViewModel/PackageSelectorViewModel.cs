@@ -15,23 +15,6 @@ using Otor.MsixHero.Ui.Domain;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
 {
-    [Flags]
-    public enum PackageSelectorDisplayMode
-    {
-        ShowDisplayName = 1,
-        ShowActualName = 2,
-        AllowPackages = 4,
-        AllowBundles = 8,
-        AllowManifests = 16,
-        AllowAllPackageTypes = AllowPackages | AllowBundles | AllowManifests,
-        ShowTypeSelector = 32,
-        AllowChanging = 64,
-        AllowBrowsing = 128,
-        RequireVersion = 256,
-        RequireArchitecture = 512,
-        RequireFullIdentity = RequireVersion | RequireArchitecture
-    }
-
     public class PackageSelectorViewModel : ChangeableContainer
     {
         private readonly PackageSelectorDisplayMode displayMode;
@@ -51,16 +34,21 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             this.DisplayName = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull);
             this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion);
             this.Architecture = new ChangeableProperty<AppxPackageArchitecture>(AppxPackageArchitecture.Neutral);
-
             this.PackageType = new ChangeableProperty<PackageType>();
-            this.PackageType.ValueChanged += this.PackageTypeOnValueChanged;
 
-            this.showPackageTypeSelector = displayMode.HasFlag(PackageSelectorDisplayMode.ShowTypeSelector);
+            this.Publisher.DisplayName = "Publisher name";
+            this.DisplayPublisher.DisplayName = "Publisher display name";
+            this.Name.DisplayName = "Package name";
+            this.DisplayName.DisplayName = "Package display name";
+            this.Version.DisplayName = "Package version";
 
             this.InputPath = new ChangeableFileProperty(interactionService)
             {
                 Validators = new[] { ChangeableFileProperty.ValidatePath }
             };
+
+            this.PackageType.ValueChanged += this.PackageTypeOnValueChanged;
+            this.showPackageTypeSelector = displayMode.HasFlag(PackageSelectorDisplayMode.ShowTypeSelector);
 
             this.displayMode = displayMode;
             this.SetInputFilter();

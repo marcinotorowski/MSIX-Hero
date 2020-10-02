@@ -15,21 +15,24 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 {
     public class WingetInstallerViewModel : ChangeableContainer
     {
+        private readonly YamlUtils yamlUtils;
         private readonly IInteractionService interactionService;
-        protected YamlUtils YamlUtils = new YamlUtils();
-
         private ICommand generateSha256, openSha256;
-        private bool isGenerateHashShown;
 
-        public WingetInstallerViewModel(IInteractionService interactionService)
+        public WingetInstallerViewModel(YamlUtils yamlUtils, IInteractionService interactionService)
         {
+            this.yamlUtils = yamlUtils;
             this.interactionService = interactionService;
             this.AddChildren(
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
-                this.Url = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateUrl(true, "Installer URL")),
-                this.Sha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(true, "Installer hash")),
-                this.SystemAppId = new ValidatedChangeableProperty<string>((string)null, this.ValidateSystemAppId),
-                this.SignatureSha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(false, "Signature hash")),
+                this.SystemAppId = new ValidatedChangeableProperty<string>()
+                {
+                    DisplayName = "System AppId"
+                },
+                this.SignatureSha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(false))
+                {
+                    DisplayName = "Signature hash"
+                },
                 this.Scope = new ChangeableProperty<YamlScope?>(),
                 this.SilentCommand = new ChangeableProperty<string>(),
                 this.CustomCommand = new ChangeableProperty<string>(),
@@ -38,8 +41,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             );
 
             this.InstallerType.ValueChanged += InstallerTypeOnValueChanged;
-
-            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
         public void SetData(YamlInstaller installer, bool useNullValues = true)
@@ -49,16 +50,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             if (useNullValues || installer.Arch != null)
             {
                 this.Architecture.CurrentValue = installer?.Arch ?? YamlArchitecture.none;
-            }
-
-            if (useNullValues || installer.Url != null)
-            {
-                this.Url.CurrentValue = installer?.Url;
-            }
-
-            if (useNullValues || installer.Sha256 != null)
-            {
-                this.Sha256.CurrentValue = installer?.Sha256;
             }
 
             if (useNullValues || installer.SystemAppId != null)
@@ -97,18 +88,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             }
 
             this.Commit();
-            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
         public ChangeableProperty<YamlArchitecture> Architecture { get; }
 
         public ChangeableProperty<YamlInstallerType> InstallerType { get; }
 
-        public ChangeableProperty<string> Url { get; }
-        
         public ChangeableProperty<YamlScope?> Scope { get; }
-        
-        public ChangeableProperty<string> Sha256 { get; }
 
         public ChangeableProperty<string> SystemAppId { get; }
 
@@ -119,14 +105,27 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
         public ChangeableProperty<string> CustomCommand { get; }
 
         public ChangeableProperty<string> SilentCommandWithProgress { get; }
-
-        public bool IsGenerateHashShown
-        {
-            get => this.isGenerateHashShown;
-            set => this.SetField(ref this.isGenerateHashShown, value);
-        }
-
+        
         public YamlInstaller Model { get; set; }
+
+        public string Url { get; set; }
+
+        public bool IsMsix => this.InstallerType.CurrentValue == YamlInstallerType.msix || this.InstallerType.CurrentValue == YamlInstallerType.appx;
+
+        public bool IsCommand
+        {
+            get
+            {
+                switch (this.InstallerType.CurrentValue)
+                {
+                    case YamlInstallerType.none:
+                    case YamlInstallerType.exe:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
 
         public ICommand GenerateSha256
         {
@@ -135,6 +134,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
                 return this.generateSha256 ??= new DelegateCommand<string>(this.GenerateHash);
             }
         }
+
+        public ProgressProperty HashingProgressSignature { get; } = new ProgressProperty();
 
         public ICommand OpenSha256
         {
@@ -146,13 +147,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 
         private async void GenerateHash(string parameter)
         {
-            if (string.IsNullOrEmpty(this.Url.CurrentValue))
+            if (string.IsNullOrEmpty(this.Url))
             {
                 this.interactionService.ShowError("You must first configure the installer URL before a hash can be calculated.");
                 return;
             }
-            
-            if (this.interactionService.Confirm($"This will download the file '{this.Url.CurrentValue}' and calculate its hash. The download may take a while, do you want to continue?",  type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
+
+            if (this.interactionService.Confirm($"This will download the file '{this.Url}' and calculate its hash. The download may take a while, do you want to continue?", type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
             {
                 return;
             }
@@ -160,29 +161,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             var progress = new Progress();
             try
             {
-                using (var cts = new CancellationTokenSource())
+                if (this.IsMsix)
                 {
-                    if (parameter == "installer")
+                    using (var cts = new CancellationTokenSource())
                     {
-                        var task = this.YamlUtils.CalculateHashAsync(new Uri(this.Url.CurrentValue), cts.Token, progress);
-                        this.HashingProgress.MonitorProgress(task, cts, progress);
-                        var newHash = await task.ConfigureAwait(false);
-
-                        // this is to make sure that the hash is uppercase or lowercase depending on the source. We prefer lowercase
-                        if (true == this.Sha256.CurrentValue?.All(c => char.IsUpper(c) || char.IsDigit(c)))
-                        {
-                            newHash = newHash.ToUpperInvariant();
-                        }
-                        else
-                        {
-                            newHash = newHash.ToLowerInvariant();
-                        }
-
-                        this.Sha256.CurrentValue = newHash;
-                    }
-                    else if (this.IsMsix && parameter == "signature")
-                    {
-                        var task = this.YamlUtils.CalculateSignatureHashAsync(new Uri(this.Url.CurrentValue), cts.Token, progress);
+                        var task = this.yamlUtils.CalculateSignatureHashAsync(new Uri(this.Url), cts.Token, progress);
                         this.HashingProgressSignature.MonitorProgress(task, cts, progress);
                         var newHash = await task.ConfigureAwait(false);
 
@@ -212,23 +195,17 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             {
                 return;
             }
-         
+
             var progress = new Progress();
             using (var cts = new CancellationTokenSource())
             {
                 try
                 {
-                    if (parameter == "installer")
+                    if (this.IsMsix)
                     {
-                        var task = this.YamlUtils.CalculateHashAsync(new FileInfo(path), cts.Token, progress);
-                        this.HashingProgress.MonitorProgress(task, cts, progress);
-                        this.Sha256.CurrentValue = await task.ConfigureAwait(false);
-                    }
-                    else if (this.IsMsix && parameter == "signature")
-                    {
-                        var task = this.YamlUtils.CalculateSignatureHashAsync(new FileInfo(path), cts.Token, progress);
+                        var task = this.yamlUtils.CalculateSignatureHashAsync(new FileInfo(path), cts.Token, progress);
                         this.HashingProgressSignature.MonitorProgress(task, cts, progress);
-                        this.SignatureSha256.CurrentValue = await task.ConfigureAwait(false);
+                        this.SignatureSha256.CurrentValue = await task.ConfigureAwait(true);
                     }
                 }
                 catch (Exception e)
@@ -238,32 +215,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             }
         }
 
-        public ProgressProperty HashingProgress { get; } = new ProgressProperty();
-
-        public ProgressProperty HashingProgressSignature { get; } = new ProgressProperty();
-
-        public bool IsMsix => this.InstallerType.CurrentValue == YamlInstallerType.msix || this.InstallerType.CurrentValue == YamlInstallerType.appx;
-
-        public bool IsCommand
-        {
-            get
-            {
-                switch (this.InstallerType.CurrentValue)
-                {
-                    case YamlInstallerType.none:
-                    case YamlInstallerType.exe:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        
         public override void Commit()
         {
             base.Commit();
 
-            this.Model.Url = this.Url.CurrentValue;
             this.Model.SystemAppId = this.SystemAppId.CurrentValue;
 
             if (this.Architecture.CurrentValue == YamlArchitecture.none)
@@ -300,31 +255,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
                 this.Model.Switches.Custom = this.CustomCommand.CurrentValue;
             }
 
-            this.Model.Sha256 = this.Sha256.CurrentValue;
             this.Model.SystemAppId = this.SystemAppId.CurrentValue;
             this.Model.SignatureSha256 = this.SignatureSha256.CurrentValue;
-        }
-        private string ValidateSystemAppId(string value)
-        {
-            return null;
-            // This must not return errors, because CLI of winget does not let this value...
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-
-            switch (this.InstallerType.CurrentValue)
-            {
-                case YamlInstallerType.msi:
-                    if (!Guid.TryParse(value, out _))
-                    {
-                        return $"Value {value} is not a valid GUID.";
-                    }
-
-                    break;
-            }
-
-            return null;
         }
 
         private void InstallerTypeOnValueChanged(object sender, ValueChangedEventArgs e)

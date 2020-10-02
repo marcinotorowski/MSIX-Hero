@@ -5,12 +5,12 @@ using System.Linq;
 
 namespace Otor.MsixHero.Ui.Domain
 {
-    public class ValidatedChangeableCollection<T> : ChangeableCollection<T>, IValidatedContainerChangeable
+    public class ValidatedChangeableCollection<T> : ChangeableCollection<T>, IValidatedContainerChangeable, IDataErrorInfo
     {
         private string validationMessage;
         private bool isValidated = true;
         private IReadOnlyCollection<Func<IEnumerable<T>, string>> validators;
-        private ValidationMode validationMode;
+        private bool displayValidationErrors = true;
 
         public ValidatedChangeableCollection(Func<IEnumerable<T>, string> validator = null)
         {
@@ -28,6 +28,10 @@ namespace Otor.MsixHero.Ui.Domain
             }
         }
 
+        public string Error => this.ValidationMessage;
+
+        public string this[string columnName] => null;
+
         protected override void ClearItems()
         {
             base.ClearItems();
@@ -42,6 +46,7 @@ namespace Otor.MsixHero.Ui.Domain
             {
                 validatedItem.ValidationStatusChanged -= this.ItemOnValidationStatusChanged;
                 validatedItem.ValidationStatusChanged += this.ItemOnValidationStatusChanged;
+                validatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
             }
 
             this.Validate();
@@ -90,8 +95,9 @@ namespace Otor.MsixHero.Ui.Domain
             if (item is IValidatedChangeable newValidatedItem)
             {
                 newValidatedItem.ValidationStatusChanged += this.ItemOnValidationStatusChanged;
+                newValidatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
             }
-
+            
             this.Validate();
         }
 
@@ -111,6 +117,8 @@ namespace Otor.MsixHero.Ui.Domain
                 {
                     this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.IsValid)));
                 }
+
+                this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.Error)));
             }
         }
 
@@ -130,35 +138,18 @@ namespace Otor.MsixHero.Ui.Domain
 
         public bool IsValid => string.IsNullOrEmpty(this.validationMessage);
 
-        public ValidationMode GetValidationMode()
+        public bool DisplayValidationErrors
         {
-            return this.validationMode;
-        }
-
-        public ValidationMode ValidationMode
-        {
-            get => this.validationMode;
-            set => this.SetField(ref this.validationMode, value);
-        }
-
-        public void SetValidationMode(ValidationMode mode, bool setForChildren)
-        {
-            if (setForChildren)
+            get => this.displayValidationErrors;
+            set
             {
+                this.SetField(ref this.displayValidationErrors, value);
+
                 foreach (var item in this.OfType<IValidatedChangeable>())
                 {
-                    if (item is IValidatedContainerChangeable container)
-                    {
-                        container.SetValidationMode(mode, true);
-                    }
-                    else
-                    {
-                        item.ValidationMode = mode;
-                    }
+                    item.DisplayValidationErrors = value;
                 }
             }
-
-            this.ValidationMode = mode;
         }
 
         public IReadOnlyCollection<Func<IEnumerable<T>, string>> Validators

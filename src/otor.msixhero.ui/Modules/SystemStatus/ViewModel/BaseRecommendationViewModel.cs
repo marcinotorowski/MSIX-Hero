@@ -6,13 +6,6 @@ using Otor.MsixHero.Ui.ViewModel;
 
 namespace Otor.MsixHero.Ui.Modules.SystemStatus.ViewModel
 {
-    public enum RecommendationStatus
-    {
-        Success,
-        Warning,
-        Error
-    }
-
     public abstract class BaseRecommendationViewModel : NotifyPropertyChanged
     {
         private readonly Lazy<Geometry> iconProvider;

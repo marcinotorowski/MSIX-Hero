@@ -5,13 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.View"
-             xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
-             xmlns:signing1="clr-namespace:Otor.MsixHero.Appx.Signing;assembly=Otor.MsixHero.Appx"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel"
              xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
              xmlns:view2="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.View"
-             xmlns:view3="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
+             d:DesignWidth="455"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:PackageSigningViewModel}">
@@ -47,77 +44,7 @@
         Icon="{StaticResource VectorSign}">
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
-                <TabControl SelectedIndex="1">
-                    <TabItem>
-                        <TabItem.Header>
-                            <TextBlock>
-                            <Run FontSize="13" Text="Packages" />
-                            <Run Text="{Binding Files.Count, Mode=OneWay}" Foreground="#777" />
-                            </TextBlock>
-                        </TabItem.Header>
-                        <ScrollViewer Margin="0 0 0 16">
-                            <DockPanel>
-                                <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Package(s) to update" Margin="0 0 0 6" />
-                                <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                                    <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="New" Content="Add more packages..." />
-                                    <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="Delete" Content="Remove selected package(s)" />
-                                </WrapPanel>
-                                <Grid DockPanel.Dock="Top" VerticalAlignment="Stretch">
-                                    <ListBox
-                                        x:Name="ListBox"
-                                        SelectionChanged="OnSelectionChanged"
-                                        AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DragLeave="OnDragLeave" ItemsSource="{Binding Files}">
-                                        <ListBox.InputBindings>
-                                            <KeyBinding Key="Delete" Command="Delete"></KeyBinding>
-                                        </ListBox.InputBindings>
-                                        <ListBox.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="Remove selected package(s)" Command="Delete">
-                                                    <MenuItem.Icon>
-                                                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                            </ContextMenu>
-                                        </ListBox.ContextMenu>
-                                        <ListBox.Style>
-                                            <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
-                                                <Setter Property="Background" Value="#eee" />
-                                                <Style.Triggers>
-                                                    <Trigger Property="view2:DropFileObject.IsDragging" Value="True">
-                                                        <Setter Property="Background" Value="#ddd" />
-                                                        <Setter Property="Opacity" Value="0.3" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ListBox.Style>
-                                    </ListBox>
-                                    <TextBlock 
-                            Text="Release Left Mouse Button to drop the files here" 
-                            VerticalAlignment="Center" HorizontalAlignment="Center" 
-                            Visibility="{Binding ElementName=ListBox, Path=(view2:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" 
-                            IsHitTestVisible="False" />
-                                </Grid>
-                            </DockPanel>
-                        </ScrollViewer>
-                    </TabItem>
-                    <TabItem Header="Certificate">
-                        <ScrollViewer Margin="0 0 0 16">
-                            <view3:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
-                        </ScrollViewer>
-                    </TabItem>
-                    <TabItem Header="Adjustments">
-                        <StackPanel>
-                            <TextBlock Text="Package version after signing:"></TextBlock>
-                            <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding IncreaseVersion.CurrentValue}" Margin="0 6 0 0">
-                                <ComboBoxItem Tag="{x:Static signing1:IncreaseVersionMethod.None}" Content="Do not change the version" />
-                                <ComboBoxItem Tag="{x:Static signing1:IncreaseVersionMethod.Major}" Content="Increase major ([*].B.C.D) by one" />
-                                <ComboBoxItem Tag="{x:Static signing1:IncreaseVersionMethod.Minor}" Content="Increase minor (A.[*].C.D) by one" />
-                                <ComboBoxItem Tag="{x:Static signing1:IncreaseVersionMethod.Build}" Content="Increase build (A.B.[*].D) by one" />
-                                <ComboBoxItem Tag="{x:Static signing1:IncreaseVersionMethod.Revision}" Content="Increase revision (A.B.C.[*]) by one" />
-                            </ComboBox>
-                        </StackPanel>
-                    </TabItem>
-                </TabControl>
+                <view2:PackageSigningDialogContent />
             </DataTemplate>
         </changeableDialog:ChangeableDialog.DialogContentTemplate>
         <changeableDialog:ChangeableDialog.SuccessContentTemplate>

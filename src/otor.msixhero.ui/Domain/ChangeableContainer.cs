@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Otor.MsixHero.Ui.ViewModel;
 
 namespace Otor.MsixHero.Ui.Domain
 {
-    public class ChangeableContainer : NotifyPropertyChanged, IDisposable, IValidatedContainerChangeable
+    public class ChangeableContainer : NotifyPropertyChanged, IDisposable, IValidatedContainerChangeable, IDataErrorInfo
     {
         private readonly HashSet<IChangeable> children = new HashSet<IChangeable>();
         private readonly HashSet<IChangeable> touchedChildren = new HashSet<IChangeable>();
@@ -16,7 +17,7 @@ namespace Otor.MsixHero.Ui.Domain
         private bool suppressListening;
         private bool isValidated;
         private string validationMessage;
-        private ValidationMode validationMode;
+        protected bool displayValidationErrors = true;
 
         public ChangeableContainer() : this(true)
         {
@@ -83,42 +84,22 @@ namespace Otor.MsixHero.Ui.Domain
             }
         }
 
-        public virtual ValidationMode ValidationMode
+        public string Error => this.ValidationMessage;
+
+        public string this[string columnName] => null;
+
+        public virtual bool DisplayValidationErrors
         {
-            get => this.validationMode;
+            get => this.displayValidationErrors;
             set
             {
-                this.SetField(ref this.validationMode, value);
+                this.SetField(ref this.displayValidationErrors, value);
 
-                if (!this.isValidated)
-                {
-                    return;
-                }
-
-                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
-                this.CustomValidation?.Invoke(this, validationArgs);
-                this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
-            }
-        }
-
-        public void SetValidationMode(ValidationMode mode, bool setForChildren)
-        {
-            if (setForChildren)
-            {
                 foreach (var item in this.children.OfType<IValidatedChangeable>())
                 {
-                    if (item is IValidatedContainerChangeable container)
-                    {
-                        container.SetValidationMode(mode, true);
-                    }
-                    else
-                    {
-                        item.ValidationMode = mode;
-                    }
+                    item.DisplayValidationErrors = value;
                 }
             }
-
-            this.ValidationMode = mode;
         }
 
         public bool IsDirty
@@ -319,6 +300,7 @@ namespace Otor.MsixHero.Ui.Domain
                 // ReSharper disable once InvertIf
                 if (item is IValidatedChangeable validatedItem)
                 {
+                    validatedItem.DisplayValidationErrors = this.DisplayValidationErrors;
                     var wasValidated = this.isValidated;
                     this.isValidated = true;
 
@@ -386,6 +368,8 @@ namespace Otor.MsixHero.Ui.Domain
                 this.OnPropertyChanged(nameof(IsValid));
                 var validationStatusChanged = this.ValidationStatusChanged;
                 validationStatusChanged?.Invoke(this, new ValueChangedEventArgs<string>(value));
+
+                this.OnPropertyChanged(nameof(Error));
             }
         }
 

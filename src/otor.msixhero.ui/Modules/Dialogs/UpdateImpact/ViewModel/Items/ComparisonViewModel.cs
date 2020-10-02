@@ -13,13 +13,6 @@ using Otor.MsixHero.Ui.ViewModel;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel.Items
 {
-    public enum UpdateImpactViewFilter
-    {
-        None,
-        OnlyChanged,
-        OnlyUpdateRelevant
-    }
-
     public class ComparisonViewModel : NotifyPropertyChanged
     {
         private readonly UpdateImpactResult model;

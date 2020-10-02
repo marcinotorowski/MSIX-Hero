@@ -9,7 +9,12 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel"
              xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
              xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:controls="clr-namespace:Otor.MsixHero.Ui.Controls"
+             xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Xceed.Wpf.AvalonDock"
              mc:Ignorable="d" 
+             d:DesignWidth="400"
+             d:DesignHeight="333"
              d:DataContext="{d:DesignInstance viewModel:PackViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -51,6 +56,9 @@
             <DataTemplate>
                 <TabControl>
                     <TabItem Header="Source + target">
+                        <b:Interaction.Behaviors>
+                            <controls:ValidationBehavior ValidatedChangeable="{Binding Source}" />
+                        </b:Interaction.Behaviors>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
                                 <TextBlock Foreground="#666" Text="Full path to an folder where extracted files are" Margin="0 0 0 6" />
@@ -67,17 +75,17 @@
 
                                 <CheckBox Margin="0 10 0 0" Content="Compress files according to ther type" IsChecked="{Binding Compress.CurrentValue}" />
                                 <CheckBox Margin="0 6 0 0" Content="Perform basic integrity checks" IsChecked="{Binding Validate.CurrentValue}" />
+                                <CheckBox Margin="0 6 0 0" Content="Sign this package" IsChecked="{Binding Sign.CurrentValue}" />
+
                             </StackPanel>
                         </ScrollViewer>
                     </TabItem>
-                    <TabItem Header="Signature">
+                    <TabItem Visibility="{Binding Sign.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Header="Signature">
+                        <b:Interaction.Behaviors>
+                            <controls:ValidationBehavior ValidatedChangeable="{Binding TabSigning}" />
+                        </b:Interaction.Behaviors>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel>
-                                <CheckBox IsChecked="{Binding Sign.CurrentValue}" Content="Sign this package" />
-                                <Border Visibility="{Binding Sign.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 10 0 0">
-                                    <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
-                                </Border>
-                            </StackPanel>
+                            <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
                         </ScrollViewer>
                     </TabItem>
                 </TabControl>

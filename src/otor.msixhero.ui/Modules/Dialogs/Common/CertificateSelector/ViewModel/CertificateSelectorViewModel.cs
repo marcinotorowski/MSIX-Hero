@@ -32,10 +32,25 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.signingManagerFactory = signingManagerFactory;
             var signConfig = configuration ?? new SigningConfiguration();
 
-            this.TimeStamp = new ValidatedChangeableProperty<string>(signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll", this.ValidateTimestamp);
-            this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source );
+            this.TimeStamp = new ValidatedChangeableProperty<string>(
+                signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll",
+                this.ValidateTimestamp)
+            {
+                DisplayName = "Time stamp URL"
+            };
+
+            this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source);
             this.Store.ValueChanged += StoreOnValueChanged;
-            this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved) { Filter = "PFX files|*.pfx", Validators = new [] { ChangeableFileProperty.ValidatePathAndPresence }};
+            this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved)
+            {
+                IsValidated = false,
+                DisplayName = "Path to PFX file",
+                Filter = "PFX files|*.pfx", 
+                Validators = new []
+                {
+                    ChangeableFileProperty.ValidatePathAndPresence
+                }
+            };
 
             SecureString initialSecurePassword = null;
             if (this.Store.CurrentValue == CertificateSource.Pfx)
@@ -62,12 +77,17 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             }
 
             this.Password = new ChangeableProperty<SecureString>(initialSecurePassword);
-            this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(this.ValidateSelectedCertificate);
+
+            this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(this.ValidateSelectedCertificate)
+            {
+                DisplayName = "Selected certificate",
+                IsValidated = false
+            };
+
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
 
             this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.Store, this.ShowAllCertificates);
-            this.IsValidated = false;
             this.ShowPassword = showPassword;
 
             this.ShowAllCertificates.ValueChanged += async (sender, args) =>
@@ -75,13 +95,22 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 await this.PersonalCertificates.Load(this.LoadPersonalCertificates(this.SelectedPersonalCertificate.CurrentValue?.Model.Thumbprint, !(bool)args.NewValue)).ConfigureAwait(false);
                 this.OnPropertyChanged(nameof(this.SelectedPersonalCertificate));
             };
+
+            if (this.Store.CurrentValue == CertificateSource.Pfx)
+            {
+                this.PfxPath.IsValidated = true;
+            }
+            else
+            {
+                this.SelectedPersonalCertificate.IsValidated = true;
+            }
         }
 
         public bool ShowPassword { get; }
 
         public AsyncProperty<ObservableCollection<CertificateViewModel>> PersonalCertificates { get; }
 
-        public ChangeableProperty<CertificateViewModel> SelectedPersonalCertificate { get; }
+        public ValidatedChangeableProperty<CertificateViewModel> SelectedPersonalCertificate { get; }
 
         public ChangeableProperty<SecureString> Password { get; }
 
@@ -143,7 +172,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         private void StoreOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            this.PfxPath.IsValidated = ((CertificateSource)e.NewValue) == CertificateSource.Pfx;
+            this.PfxPath.IsValidated = (CertificateSource)e.NewValue == CertificateSource.Pfx;
+            this.SelectedPersonalCertificate.IsValidated = (CertificateSource)e.NewValue == CertificateSource.Personal;
         }
     }
 }

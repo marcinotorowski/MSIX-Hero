@@ -13,7 +13,6 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 using Otor.MsixHero.Ui.Controls.Progress;
-using Otor.MsixHero.Ui.Domain;
 using Otor.MsixHero.Winget.Yaml;
 using Prism.Services.Dialogs;
 
@@ -33,7 +32,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             this.interactionService = interactionService;
             this.packageManager = packageManager;
             this.AddChild(this.Definition = new WingetDefinitionViewModel(interactionService));
-            this.SetValidationMode(ValidationMode.Silent, true);
         }
 
         public WingetDefinitionViewModel Definition { get; private set; }
@@ -58,11 +56,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             this.WingetVerified = false;
-
-            if (this.ValidationMode == ValidationMode.Silent)
-            {
-                this.SetValidationMode(ValidationMode.Default, true);
-            }
 
             if (!this.IsValid)
             {

@@ -21,10 +21,10 @@ namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
 
         protected ChangeableDialogViewModel(string title, IInteractionService interactionService) : base(true)
         {
+            this.displayValidationErrors = false;
             this.showApplyButton = true;
             this.Title = title;
             this.interactionService = interactionService;
-            this.SetValidationMode(ValidationMode.Silent, false);
         }
 
         public string Title
@@ -45,7 +45,7 @@ namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
         {
             get
             {
-                if (this.ValidationMode == ValidationMode.Silent)
+                if (!this.DisplayValidationErrors)
                 {
                     return null;
                 }
@@ -54,32 +54,26 @@ namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
             }
         }
 
-        public bool HasError => this.Error != null;
-
-        public override ValidationMode ValidationMode
+        public override bool DisplayValidationErrors
         {
-            get => base.ValidationMode;
+            get => base.DisplayValidationErrors;
             set
             {
-                base.ValidationMode = value;
+                base.DisplayValidationErrors = value;
                 this.OnPropertyChanged(nameof(Error));
-                this.OnPropertyChanged(nameof(HasError));
             }
         }
 
+        public bool HasError => this.Error != null;
+        
         public override string ValidationMessage
         {
             get => base.ValidationMessage;
             protected set
             {
-                var oldValue = this.ValidationMessage;
                 base.ValidationMessage = value;
-
-                if (oldValue != value)
-                {
-                    this.OnPropertyChanged(nameof(Error));
-                    this.OnPropertyChanged(nameof(HasError));
-                }
+                this.OnPropertyChanged(nameof(HasError));
+                this.OnPropertyChanged(nameof(Error));
             }
         }
 
@@ -111,16 +105,16 @@ namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
                 return false;
             }
 
-            return this.IsValid || this.ValidationMode == ValidationMode.Silent;
+            return this.IsValid || !this.DisplayValidationErrors;
         }
 
         public event Action<IDialogResult> RequestClose;
 
         private void OkExecute(bool closeWindow)
         {
-            if (this.ValidationMode == ValidationMode.Silent)
+            if (!this.DisplayValidationErrors)
             {
-                this.SetValidationMode(ValidationMode.Default, true);
+                this.DisplayValidationErrors = true;
             }
 
             this.OnPropertyChanged(nameof(Error));

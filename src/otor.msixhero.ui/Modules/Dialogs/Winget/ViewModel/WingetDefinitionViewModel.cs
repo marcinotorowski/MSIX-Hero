@@ -8,10 +8,12 @@ using System.Windows.Input;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.Progress;
 using Otor.MsixHero.Ui.Domain;
 using Otor.MsixHero.Winget.Yaml;
 using Otor.MsixHero.Winget.Yaml.Entities;
+using Prism.Commands;
+using DelegateCommand = Otor.MsixHero.Ui.Commands.RoutedCommand.DelegateCommand;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 {
@@ -27,32 +29,119 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
         private YamlDefinition model;
         private bool autoId = true;
         private ICommand loadFromSetup;
+        private ICommand generateSha256, openSha256;
 
         public WingetDefinitionViewModel(IInteractionService interactionService)
         {
             this.interactionService = interactionService;
+
+            this.Name = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField())
+            {
+                DisplayName = "Package name"
+            };
+
+            this.Publisher = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField())
+            {
+                DisplayName = "Package publisher"
+            };
+
+            this.Version = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateVersion(true))
+            {
+                DisplayName = "Version"
+            };
+
+            this.Id = new ValidatedChangeableProperty<string>(true, ValidateId)
+            {
+                DisplayName = "Package identifier"
+            };
+
+            this.ManifestVersion1 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Major version"))
+            {
+                DisplayName = "Manifest version"
+            };
+
+            this.ManifestVersion2 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Minor version"))
+            {
+                DisplayName = "Manifest version"
+            };
+
+            this.ManifestVersion3 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Revision"))
+            {
+                DisplayName = "Manifest version"
+            };
+
+            this.AppMoniker = new ChangeableProperty<string>();
+            this.Tags = new ChangeableProperty<string>();
+            this.Homepage = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateUrl(false))
+            {
+                DisplayName = "Home page"
+            };
+
+            this.Description = new ChangeableProperty<string>();
+
+            this.MinOSVersion = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateVersion(false))
+            {
+                DisplayName = "Minimum OS version"
+            };
+
+            this.Url = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateUrl(true))
+            {
+                DisplayName = "Installer URL"
+            };
+
+            this.Sha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(true))
+            {
+                DisplayName = "Installer hash"
+            };
+
+            this.LicenseUrl = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateUrl(false))
+            {
+                DisplayName = "License URL"
+            };
+
+            this.License = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField())
+            {
+                DisplayName = "License"
+            };
+
+            this.TabIdentity = new ChangeableContainer(this.Name, this.Publisher, this.Version, this.Id, this.ManifestVersion1, this.ManifestVersion2, this.ManifestVersion3);
+            this.TabMetadata = new ChangeableContainer(this.AppMoniker, this.Tags, this.Homepage, this.Description, this.MinOSVersion);
+            this.TabDownloads = new ChangeableContainer(this.Url, this.Sha256);
+            this.TabInstaller = new WingetInstallerViewModel(this.YamlUtils, this.interactionService) { Url = this.Url.CurrentValue };
+            this.TabLicense = new ChangeableContainer(this.License, this.LicenseUrl);
+
             this.AddChildren(
-                this.Name = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField("Package name")),
-                this.Version = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateVersion(true, "Version")),
-                this.Installer = new WingetInstallerViewModel(interactionService),
-                this.LicenseUrl = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateUrl(false, "License URL")),
-                this.Tags = new ChangeableProperty<string>(),
-                this.AppMoniker = new ChangeableProperty<string>(),
-                this.Homepage = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateUrl(false, "Homepage URL")),
-                this.Id = new ValidatedChangeableProperty<string>(true, ValidateId),
-                this.Description = new ChangeableProperty<string>(),
-                this.Publisher = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField("Publisher name")),
-                this.License = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField("License")),
-                this.ManifestVersion1 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Manifest version (major)")),
-                this.ManifestVersion2 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Manifest version (minor)")),
-                this.ManifestVersion3 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Manifest version (revision)")),
-                this.MinOSVersion = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateVersion(false, "Minimum OS version")));
+                this.TabIdentity,
+                this.TabMetadata,
+                this.TabDownloads,
+                this.TabInstaller,
+                this.TabLicense);
 
             this.Name.ValueChanged += this.NameOnValueChanged;
             this.Publisher.ValueChanged += this.PublisherOnValueChanged;
             this.Id.ValueChanged += this.IdOnValueChanged;
+            this.Url.ValueChanged += this.UrlOnValueChanged;
+        }
 
-            this.SetValidationMode(ValidationMode.Silent, true);
+        public ChangeableContainer TabIdentity { get; }
+
+        public ChangeableContainer TabMetadata { get; }
+
+        public ChangeableContainer TabDownloads { get; }
+
+        public ChangeableContainer TabLicense { get; }
+
+        public ChangeableProperty<string> Url { get; }
+
+        public ChangeableProperty<string> Sha256 { get; }
+
+        public ProgressProperty HashingProgress { get; } = new ProgressProperty();
+
+        private bool isGenerateHashShown;
+        public bool IsGenerateHashShown
+        {
+            get => this.isGenerateHashShown;
+            set => this.SetField(ref this.isGenerateHashShown, value);
         }
 
         public static string ValidateId(string id)
@@ -101,7 +190,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 
         public ValidatedChangeableProperty<string> LicenseUrl { get; }
         
-        public WingetInstallerViewModel Installer { get; }
+        public WingetInstallerViewModel TabInstaller { get; }
 
         public bool IsLoading
         {
@@ -109,10 +198,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             set => this.SetField(ref this.isLoading, value);
         }
 
-        public ICommand LoadFromSetup
-        {
-            get => this.loadFromSetup ??= new DelegateCommand(this.OnLoadFromSetup);
-        }
+        public ICommand LoadFromSetup => this.loadFromSetup ??= new DelegateCommand(this.OnLoadFromSetup);
 
         public async Task LoadFromYaml(string file, CancellationToken cancellationToken = default)
         {
@@ -122,7 +208,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 
                 using (var fs = File.OpenRead(file))
                 {
-                    var yaml = await this.YamlReader.ReadAsync(fs, cancellationToken).ConfigureAwait(false);
+                    var yaml = await this.YamlReader.ReadAsync(fs, cancellationToken).ConfigureAwait(true);
                     this.YamlUtils.FillGaps(yaml);
                     this.SetData(yaml);
                 }
@@ -138,7 +224,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             try
             {
                 this.IsLoading = true;
-                var yaml = await this.YamlUtils.CreateFromFile(file, cancellationToken).ConfigureAwait(false);
+                var yaml = await this.YamlUtils.CreateFromFile(file, cancellationToken).ConfigureAwait(true);
                 this.SetData(yaml, false);
             }
             catch (Exception e)
@@ -188,6 +274,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             Logger.Debug($"Package ID is not touched manually and will not auto update...");
             this.autoId = false;
         }
+        private void UrlOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            this.TabInstaller.Url = (string) e.NewValue;
+        }
         
         private async void OnLoadFromSetup(object obj)
         {
@@ -197,6 +287,86 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             }
 
             await this.LoadFromFile(selected, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        public ICommand GenerateSha256
+        {
+            get
+            {
+                return this.generateSha256 ??= new DelegateCommand<string>(this.GenerateHash);
+            }
+        }
+        
+        public ICommand OpenSha256
+        {
+            get
+            {
+                return this.openSha256 ??= new DelegateCommand<string>(this.OpenHash);
+            }
+        }
+
+        private async void GenerateHash(string parameter)
+        {
+            if (string.IsNullOrEmpty(this.Url.CurrentValue))
+            {
+                this.interactionService.ShowError("You must first configure the installer URL before a hash can be calculated.");
+                return;
+            }
+
+            if (this.interactionService.Confirm($"This will download the file '{this.Url.CurrentValue}' and calculate its hash. The download may take a while, do you want to continue?", type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
+            {
+                return;
+            }
+
+            var progress = new Progress();
+            try
+            {
+                using (var cts = new CancellationTokenSource())
+                {
+                    var task = this.YamlUtils.CalculateHashAsync(new Uri(this.Url.CurrentValue), cts.Token, progress);
+                    this.HashingProgress.MonitorProgress(task, cts, progress);
+                    var newHash = await task.ConfigureAwait(true);
+
+                    // this is to make sure that the hash is uppercase or lowercase depending on the source. We prefer lowercase
+                    if (true == this.Sha256.CurrentValue?.All(c => char.IsUpper(c) || char.IsDigit(c)))
+                    {
+                        newHash = newHash.ToUpperInvariant();
+                    }
+                    else
+                    {
+                        newHash = newHash.ToLowerInvariant();
+                    }
+
+                    this.Sha256.CurrentValue = newHash;
+                }
+            }
+            catch (Exception e)
+            {
+                this.interactionService.ShowError(e.Message, e);
+            }
+        }
+
+        private async void OpenHash(string parameter)
+        {
+            if (!this.interactionService.SelectFile(out var path))
+            {
+                return;
+            }
+
+            var progress = new Progress();
+            using (var cts = new CancellationTokenSource())
+            {
+                try
+                {
+                    var task2 = this.YamlUtils.CalculateHashAsync(new FileInfo(path), cts.Token, progress);
+                    this.HashingProgress.MonitorProgress(task2, cts, progress);
+                    this.Sha256.CurrentValue = await task2.ConfigureAwait(true);
+                }
+                catch (Exception e)
+                {
+                    this.interactionService.ShowError($"The file could not be hashed. {e.Message}", e);
+                }
+            }
         }
 
         private void SetData(YamlDefinition definition, bool useNullValues = true)
@@ -218,7 +388,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             {
                 this.Name.CurrentValue = definition.Name;
             }
-
+            
             if (useNullValues || !string.IsNullOrEmpty(definition.Version))
             {
                 this.Version.CurrentValue = definition.Version;
@@ -276,7 +446,18 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 
             if (definition.Installers?.Any() == true)
             {
-                this.Installer.SetData(definition.Installers.First(), useNullValues);
+                var installer = definition.Installers.First();
+                this.TabInstaller.SetData(installer, useNullValues);
+
+                if (useNullValues || installer.Url != null)
+                {
+                    this.Url.CurrentValue = installer?.Url;
+                }
+
+                if (useNullValues || installer.Sha256 != null)
+                {
+                    this.Sha256.CurrentValue = installer?.Sha256;
+                }
             }
             else
             {
@@ -288,7 +469,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
                 };
                 
                 definition.Installers = new List<YamlInstaller> { newItem };
-                this.Installer.SetData(newItem);
+                this.TabInstaller.SetData(newItem);
             }
 
             this.Commit();
@@ -296,11 +477,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
 
         public async Task<bool> Save(string fileName, CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            if (this.ValidationMode == ValidationMode.Silent)
-            {
-                this.SetValidationMode(ValidationMode.Default, true);
-            }
-
             if (!this.IsValid)
             {
                 return false;
@@ -343,7 +519,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
                 Logger.Info("Manifest version changed to {0}.", (object) this.model.ManifestVersion);
             }
             
-            this.Installer.Commit();
+            this.TabInstaller.Commit();
+            this.model.Installers[0].Url = this.Url.CurrentValue;
+            this.model.Installers[0].Sha256 = this.Sha256.CurrentValue;
             
             var fileInfo = new FileInfo(fileName);
             if (fileInfo.Directory != null && !fileInfo.Directory.Exists)

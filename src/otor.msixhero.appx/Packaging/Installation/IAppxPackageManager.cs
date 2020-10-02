@@ -10,13 +10,6 @@ using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
-    public enum PackageFindMode
-    {
-        Auto,
-        CurrentUser,
-        AllUsers
-    }
-
     public interface IAppxPackageManager : ISelfElevationAware
     {
         Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
