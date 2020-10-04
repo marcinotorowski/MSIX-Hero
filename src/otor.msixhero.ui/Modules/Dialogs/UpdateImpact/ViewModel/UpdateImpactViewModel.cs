@@ -25,18 +25,21 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel
             this.updateImpactAnalyzer = updateImpactAnalyzer;
             this.interactionService = interactionService;
 
-            this.Path1 = new ChangeableFileProperty("Path to an old version", interactionService, ChangeableFolderProperty.ValidatePath)
+            this.Path1 = new ChangeableFileProperty("Path to an old version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
+                IsValidated = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|Manifest files|AppxManifest.xml|All files|*.*"
             };
 
-            this.Path2 = new ChangeableFileProperty("Path to a new version", interactionService, ChangeableFileProperty.ValidatePath)
+            this.Path2 = new ChangeableFileProperty("Path to a new version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
+                IsValidated = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|Manifest files|AppxManifest.xml|All files|*.*"
             };
             
             this.AddChildren(this.Path1, this.Path2);
             this.Compare = new DelegateCommand(this.CompareExecuted);
+            this.IsValidated = false;
         }
 
         public ICommand Compare { get; }
@@ -56,6 +59,14 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel
 
         private async void CompareExecuted(object obj)
         {
+            this.IsValidated = true;
+
+            if (!this.IsValid)
+            {
+                this.interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, "Missing values");
+                return;
+            }
+
             this.Progress.Progress = -1;
             this.Progress.IsLoading = true;
             try

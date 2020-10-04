@@ -177,7 +177,9 @@
                                 <TextBlock Text="Select the previous version of the MSIX package to be compared..." />
                                 <DockPanel Margin="0 6 0 0">
                                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path1.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
-                                    <TextBox TabIndex="4" Text="{Binding Path1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                    <TextBox TabIndex="4" 
+                                             Text="{Binding Path1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }" 
+                                             IsReadOnly="True" />
                                 </DockPanel>
                             </StackPanel>
 
@@ -186,7 +188,7 @@
                                 <TextBlock Text="Select the newer version of the MSIX package to be compared..." />
                                 <DockPanel Margin="0 6 0 0">
                                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path2.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
-                                    <TextBox TabIndex="4" Text="{Binding Path2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                    <TextBox TabIndex="4" Text="{Binding Path2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" IsReadOnly="True" />
                                 </DockPanel>
                             </StackPanel>
 
