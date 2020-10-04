@@ -52,7 +52,15 @@ namespace Otor.MsixHero.Registry.Converter
                                 k.SetValue(item.Name, this.Tokenize((string) item.Value));
                                 break;
                             case ValueType.DWord:
-                                k.SetValue(item.Name, (int)Convert.ChangeType(item.Value, typeof(int)));
+                                var val = (long) Convert.ChangeType(item.Value, typeof(long));
+                                if (val > int.MaxValue)
+                                {
+                                    k.SetValue(item.Name, val);
+                                }
+                                else
+                                {
+                                    k.SetValue(item.Name, (int)val);
+                                }
                                 break;
                             case ValueType.QWord:
                                 k.SetValue(item.Name, (long)Convert.ChangeType(item.Value, typeof(long)));

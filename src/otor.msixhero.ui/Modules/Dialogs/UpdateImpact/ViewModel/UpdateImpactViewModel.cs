@@ -24,14 +24,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel
         {
             this.updateImpactAnalyzer = updateImpactAnalyzer;
             this.interactionService = interactionService;
-
-            this.Path1 = new ChangeableFileProperty("Path to an old version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.Path1 = new ChangeableFileProperty("Path to the old version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|Manifest files|AppxManifest.xml|All files|*.*"
             };
 
-            this.Path2 = new ChangeableFileProperty("Path to a new version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.Path2 = new ChangeableFileProperty("Path to the new version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|Manifest files|AppxManifest.xml|All files|*.*"
