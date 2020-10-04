@@ -12,33 +12,50 @@ namespace Otor.MsixHero.Ui.Domain
         private bool isValidated;
         private IReadOnlyCollection<Func<T, string>> validators;
         private bool displayValidationErrors = true;
-        public ValidatedChangeableProperty(T initialValue = default) : base(initialValue)
+        private string displayName;
+
+        public ValidatedChangeableProperty(string displayName, T initialValue = default) : base(initialValue)
         {
+            this.displayName = displayName;
             this.isValidated = true;
             this.validators = new Func<T, string>[0];
             this.Validate();
         }
 
-        public ValidatedChangeableProperty(T initialValue, params Func<T, string>[] validators) : this(initialValue, true, validators)
+        public ValidatedChangeableProperty(string displayName, T initialValue, params Func<T, string>[] validators) : this(displayName, initialValue, true, validators)
         {
         }
 
-        public ValidatedChangeableProperty(params Func<T, string>[] validators) : this(default, true, validators)
+        public ValidatedChangeableProperty(string displayName, params Func<T, string>[] validators) : this(displayName, default, true, validators)
         {
         }
 
-        public ValidatedChangeableProperty(T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
+        public ValidatedChangeableProperty(string displayName, T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
         {
+            this.displayName = displayName;
             this.isValidated = isValidated;
             this.validators = validators;
             this.Validate();
         }
 
-        public ValidatedChangeableProperty(bool isValidated, params Func<T, string>[] validators) : this(default, isValidated, validators)
+        public ValidatedChangeableProperty(string displayName, bool isValidated, params Func<T, string>[] validators) : this(displayName, default, isValidated, validators)
         {
         }
 
-        public string DisplayName { get; set; }
+        public string DisplayName
+        {
+            get => this.displayName;
+            set
+            {
+                if (!this.SetField(ref this.displayName, value) || !this.isValidated)
+                {
+                    return;
+                }
+
+                this.Validate();
+            }
+        }
+
         public bool DisplayValidationErrors
         {
             get => this.displayValidationErrors;

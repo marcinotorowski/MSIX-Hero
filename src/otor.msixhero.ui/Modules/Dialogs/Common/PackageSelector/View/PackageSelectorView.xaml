@@ -68,7 +68,6 @@
 
                 <TextBlock
                     Grid.Column="2" Grid.Row="0"
-                    helpers:RequiredAdorner.IsRequired="True"
                     HorizontalAlignment="Left"
                     Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Foreground="#666" Text="Architecture" Margin="0 16 0 6" />

@@ -23,16 +23,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Unpack.ViewModel
         {
             this.appxPacker = appxPacker;
 
-            this.OutputPath = new ChangeableFolderProperty(interactionService)
-            {
-                DisplayName = "Target directory",
-                Validators = new[] { ChangeableFolderProperty.ValidatePath }
-            };
-
-            this.InputPath = new ChangeableFileProperty(interactionService)
-            {
-                DisplayName = "Source package path",
-                Validators = new[] { ChangeableFileProperty.ValidatePath },
+            this.OutputPath = new ChangeableFolderProperty("Target directory", interactionService, ChangeableFolderProperty.ValidatePath);
+            this.InputPath = new ChangeableFileProperty("Source package path", interactionService, ChangeableFileProperty.ValidatePath)
+            { 
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
             };
             

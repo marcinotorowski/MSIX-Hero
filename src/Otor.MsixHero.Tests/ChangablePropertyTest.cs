@@ -216,7 +216,7 @@ namespace Otor.MsixHero.Tests
         {
             Func<int, string> validator = i => i % 2 != 0 ? "The number must be even" : null;
 
-            var validatedProperty = new ValidatedChangeableProperty<int>(0, validator);
+            var validatedProperty = new ValidatedChangeableProperty<int>("abc", 0, validator);
             Assert.IsTrue(validatedProperty.IsValidated);
             Assert.IsTrue(validatedProperty.IsValid);
             Assert.IsNull(validatedProperty.ValidationMessage);
@@ -224,7 +224,7 @@ namespace Otor.MsixHero.Tests
             validatedProperty.CurrentValue = 1;
             Assert.IsTrue(validatedProperty.IsValidated);
             Assert.IsFalse(validatedProperty.IsValid);
-            Assert.AreEqual("The number must be even", validatedProperty.ValidationMessage);
+            Assert.AreEqual("abc: The number must be even", validatedProperty.ValidationMessage);
 
             validatedProperty.IsValidated = false;
             Assert.IsFalse(validatedProperty.IsValidated);

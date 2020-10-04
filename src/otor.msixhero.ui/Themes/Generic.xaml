@@ -267,7 +267,7 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0 0 0 10" />
+        <Setter Property="Margin" Value="0 0 0 6" />
         <Setter Property="Foreground" Value="#333" />
         <Setter Property="Template">
             <Setter.Value>

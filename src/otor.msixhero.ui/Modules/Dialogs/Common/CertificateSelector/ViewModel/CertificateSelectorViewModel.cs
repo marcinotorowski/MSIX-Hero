@@ -33,18 +33,15 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             var signConfig = configuration ?? new SigningConfiguration();
 
             this.TimeStamp = new ValidatedChangeableProperty<string>(
+                "Time stamp URL",
                 signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll",
-                this.ValidateTimestamp)
-            {
-                DisplayName = "Time stamp URL"
-            };
+                this.ValidateTimestamp);
 
             this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source);
             this.Store.ValueChanged += StoreOnValueChanged;
-            this.PfxPath = new ChangeableFileProperty(interactionService, signConfig.PfxPath?.Resolved)
+            this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved)
             {
                 IsValidated = false,
-                DisplayName = "Path to PFX file",
                 Filter = "PFX files|*.pfx", 
                 Validators = new []
                 {
@@ -78,12 +75,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
             this.Password = new ChangeableProperty<SecureString>(initialSecurePassword);
 
-            this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(this.ValidateSelectedCertificate)
-            {
-                DisplayName = "Selected certificate",
-                IsValidated = false
-            };
-
+            this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>("Selected certificate", false, this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
 

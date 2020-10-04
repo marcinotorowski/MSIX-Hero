@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -65,7 +66,27 @@ namespace Otor.MsixHero.Ui.Helpers
                 return;
             }
 
-            var adornedElementRect = new Rect(this.AdornedElement.RenderSize);
+
+            double width, height;
+            if (!double.IsNaN(this.AdornedElement.DesiredSize.Width))
+            {
+                width = Math.Min(this.AdornedElement.RenderSize.Width, this.AdornedElement.DesiredSize.Width);
+            }
+            else
+            {
+                width = this.AdornedElement.RenderSize.Width;
+            }
+
+            if (!double.IsNaN(this.AdornedElement.DesiredSize.Height))
+            {
+                height = Math.Min(this.AdornedElement.RenderSize.Height, this.AdornedElement.DesiredSize.Height);
+            }
+            else
+            {
+                height = this.AdornedElement.RenderSize.Height;
+            }
+
+            var adornedElementRect = new Rect(new Point(0, 0), new Point(width, height));
             var pointCenter = new Point(adornedElementRect.TopRight.X + padding + radius, adornedElementRect.TopLeft.Y + borderWidth + radius + padding);
             drawingContext.DrawEllipse(Brushes.Gray, new Pen(Brushes.Transparent, 0.0), pointCenter, radius, radius);
         }

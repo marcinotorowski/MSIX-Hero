@@ -23,19 +23,15 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.ViewModel
         {
             this.signingManagerFactory = signingManagerFactory;
 
-            this.InputPath = new ChangeableFileProperty(interactionService)
+            this.InputPath = new ChangeableFileProperty("Path to signed MSIX file", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                DisplayName = "Path to signed MSIX file",
-                Filter = "MSIX files|*.msix",
-                Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
+                Filter = "MSIX files|*.msix"
             };
 
-            this.OutputPath = new ChangeableFileProperty(interactionService)
+            this.OutputPath = new ChangeableFileProperty("Path to certificate", interactionService, ChangeableFileProperty.ValidatePath)
             {
-                DisplayName = "Path to certificate",
                 Filter = "Certificate files|*.cer",
-                OpenForSaving = true,
-                Validators = new[] { ChangeableFileProperty.ValidatePath }
+                OpenForSaving = true
             };
             
             this.SaveToFile = new ChangeableProperty<bool>(true);

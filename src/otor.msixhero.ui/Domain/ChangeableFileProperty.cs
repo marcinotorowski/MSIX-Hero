@@ -17,17 +17,17 @@ namespace Otor.MsixHero.Ui.Domain
         private readonly IInteractionService interactionService;
         private ICommand browse;
 
-        public ChangeableFileProperty(IInteractionService interactionService, string initialFile) : base(initialFile)
+        public ChangeableFileProperty(string displayName, IInteractionService interactionService, string initialFile) : base(displayName, initialFile)
         {
             this.interactionService = interactionService;
         }
 
-        public ChangeableFileProperty(IInteractionService interactionService, string initialFile, params Func<string, string>[] validators) : base(initialFile, validators)
+        public ChangeableFileProperty(string displayName, IInteractionService interactionService, string initialFile, params Func<string, string>[] validators) : base(displayName, initialFile, validators)
         {
             this.interactionService = interactionService;
         }
 
-        public ChangeableFileProperty(IInteractionService interactionService, params Func<string, string>[] validators) : base(validators)
+        public ChangeableFileProperty(string displayName, IInteractionService interactionService, params Func<string, string>[] validators) : base(displayName, validators)
         {
             this.interactionService = interactionService;
         }

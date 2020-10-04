@@ -37,29 +37,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.BlockLaunching = new ChangeableProperty<bool>();
-            this.Version = new ValidatedChangeableProperty<string>("1.0.0.0", this.ValidateVersion)
-            {
-                DisplayName = "Version"
-            };
-
+            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", this.ValidateVersion);
             this.ShowPrompt = new ChangeableProperty<bool>();
-
-            this.MainPackageUri = new ValidatedChangeableProperty<string>(true)
-            {
-                DisplayName = "Main package URL",
-                Validators = new [] { ValidatorFactory.ValidateUrl(true) }
-            };
-
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>(true)
-            {
-                DisplayName = "App installer URL",
-                Validators = new[] { ValidatorFactory.ValidateUrl(true) }
-            };
-
-            this.Hours = new ValidatedChangeableProperty<string>("24", this.ValidateHours)
-            {
-                DisplayName = "Hours between updates"
-            };
+            this.MainPackageUri = new ValidatedChangeableProperty<string>("Main package URL", true, ValidatorFactory.ValidateUrl(true));
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>("App installer URL", true, ValidatorFactory.ValidateUrl(true));
+            this.Hours = new ValidatedChangeableProperty<string>("Hours between updates", "24", this.ValidateHours);
 
             this.TabPackage = new PackageSelectorViewModel(
                 interactionService,

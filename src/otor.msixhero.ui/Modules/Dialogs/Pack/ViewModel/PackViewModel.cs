@@ -37,16 +37,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
             var signConfig = configurationService.GetCurrentConfiguration().Signing ?? new SigningConfiguration();
             var signByDefault = configurationService.GetCurrentConfiguration().Packer?.SignByDefault == true;
 
-            this.InputPath = new ChangeableFolderProperty(interactionService)
-            {
-                DisplayName = "Source directory",
-                Validators = new[] { ChangeableFolderProperty.ValidatePath }
-            };
+            this.InputPath = new ChangeableFolderProperty("Source directory", interactionService, ChangeableFolderProperty.ValidatePath);
 
-            this.OutputPath = new ChangeableFileProperty(interactionService)
+            this.OutputPath = new ChangeableFileProperty("Target package path", interactionService, ChangeableFileProperty.ValidatePath)
             {
-                DisplayName = "Target package path",
-                Validators = new[] { ChangeableFileProperty.ValidatePath },
                 OpenForSaving = true,
                 Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
             };

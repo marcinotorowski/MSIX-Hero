@@ -35,75 +35,22 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
         {
             this.interactionService = interactionService;
 
-            this.Name = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField())
-            {
-                DisplayName = "Package name"
-            };
-
-            this.Publisher = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField())
-            {
-                DisplayName = "Package publisher"
-            };
-
-            this.Version = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateVersion(true))
-            {
-                DisplayName = "Version"
-            };
-
-            this.Id = new ValidatedChangeableProperty<string>(true, ValidateId)
-            {
-                DisplayName = "Package identifier"
-            };
-
-            this.ManifestVersion1 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Major version"))
-            {
-                DisplayName = "Manifest version"
-            };
-
-            this.ManifestVersion2 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Minor version"))
-            {
-                DisplayName = "Manifest version"
-            };
-
-            this.ManifestVersion3 = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateInteger(false, "Revision"))
-            {
-                DisplayName = "Manifest version"
-            };
-
+            this.Name = new ValidatedChangeableProperty<string>("Package name", true, ValidatorFactory.ValidateNotEmptyField());
+            this.Publisher = new ValidatedChangeableProperty<string>("Package publisher", true, ValidatorFactory.ValidateNotEmptyField());
+            this.Version = new ValidatedChangeableProperty<string>("Version", true, ValidatorFactory.ValidateVersion(true));
+            this.Id = new ValidatedChangeableProperty<string>("Package identifier", true, ValidateId);
+            this.ManifestVersion1 = new ValidatedChangeableProperty<string>("Manifest version", true, ValidatorFactory.ValidateInteger(false, "Major version"));
+            this.ManifestVersion2 = new ValidatedChangeableProperty<string>("Manifest version", true, ValidatorFactory.ValidateInteger(false, "Minor version"));
+            this.ManifestVersion3 = new ValidatedChangeableProperty<string>("Manifest version", true, ValidatorFactory.ValidateInteger(false, "Revision"));
             this.AppMoniker = new ChangeableProperty<string>();
             this.Tags = new ChangeableProperty<string>();
-            this.Homepage = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateUrl(false))
-            {
-                DisplayName = "Home page"
-            };
-
+            this.Homepage = new ValidatedChangeableProperty<string>("Home page", true, ValidatorFactory.ValidateUrl(false));
             this.Description = new ChangeableProperty<string>();
-
-            this.MinOSVersion = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateVersion(false))
-            {
-                DisplayName = "Minimum OS version"
-            };
-
-            this.Url = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateUrl(true))
-            {
-                DisplayName = "Installer URL"
-            };
-
-            this.Sha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(true))
-            {
-                DisplayName = "Installer hash"
-            };
-
-            this.LicenseUrl = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateUrl(false))
-            {
-                DisplayName = "License URL"
-            };
-
-            this.License = new ValidatedChangeableProperty<string>(true, ValidatorFactory.ValidateNotEmptyField())
-            {
-                DisplayName = "License"
-            };
-
+            this.MinOSVersion = new ValidatedChangeableProperty<string>("Minimum OS version", true, ValidatorFactory.ValidateVersion(false));
+            this.Url = new ValidatedChangeableProperty<string>("Installer URL", ValidatorFactory.ValidateUrl(true));
+            this.Sha256 = new ValidatedChangeableProperty<string>("Installer hash", ValidatorFactory.ValidateSha256(true));
+            this.LicenseUrl = new ValidatedChangeableProperty<string>("License URL", true, ValidatorFactory.ValidateUrl(false));
+            this.License = new ValidatedChangeableProperty<string>("License", true, ValidatorFactory.ValidateNotEmptyField());
             this.TabIdentity = new ChangeableContainer(this.Name, this.Publisher, this.Version, this.Id, this.ManifestVersion1, this.ManifestVersion2, this.ManifestVersion3);
             this.TabMetadata = new ChangeableContainer(this.AppMoniker, this.Tags, this.Homepage, this.Description, this.MinOSVersion);
             this.TabDownloads = new ChangeableContainer(this.Url, this.Sha256);

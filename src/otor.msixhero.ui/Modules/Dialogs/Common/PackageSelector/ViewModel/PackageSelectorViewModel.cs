@@ -26,11 +26,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
             this.displayMode = displayMode;
-            this.Publisher = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSubject());
-            this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateNotEmptyField());
-            this.Name = new ValidatedChangeableProperty<string>(this.ValidateName);
-            this.DisplayName = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateNotEmptyField());
-            this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion);
+            this.Publisher = new ValidatedChangeableProperty<string>("Publisher name", ValidatorFactory.ValidateSubject());
+            this.DisplayPublisher = new ValidatedChangeableProperty<string>("Publisher display name", ValidatorFactory.ValidateNotEmptyField());
+            this.Name = new ValidatedChangeableProperty<string>("Package name", this.ValidateName);
+            this.DisplayName = new ValidatedChangeableProperty<string>("Package display name", ValidatorFactory.ValidateNotEmptyField());
+            this.Version = new ValidatedChangeableProperty<string>("Version", this.ValidateVersion);
             this.Architecture = new ChangeableProperty<AppxPackageArchitecture>(AppxPackageArchitecture.Neutral);
             this.PackageType = new ChangeableProperty<PackageType>();
 
@@ -39,11 +39,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
             this.Name.DisplayName = "Package name";
             this.DisplayName.DisplayName = "Package display name";
             this.Version.DisplayName = "Package version";
-
-            this.InputPath = new ChangeableFileProperty(interactionService)
-            {
-                Validators = new[] { ChangeableFileProperty.ValidatePath }
-            };
+            this.InputPath = new ChangeableFileProperty("Package path", interactionService, ChangeableFileProperty.ValidatePath);
 
             this.PackageType.ValueChanged += this.PackageTypeOnValueChanged;
             this.showPackageTypeSelector = displayMode.HasFlag(PackageSelectorDisplayMode.ShowTypeSelector);

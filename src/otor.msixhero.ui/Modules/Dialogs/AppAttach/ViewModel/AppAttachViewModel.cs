@@ -21,9 +21,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
         {
             this.appAttachManagerFactory = appAttachManagerFactory;
             this.interactionService = interactionService;
-            this.InputPath = new ChangeableFileProperty(interactionService)
+            this.InputPath = new ChangeableFileProperty("Source MSIX file", interactionService)
             {
-                DisplayName = "Source MSIX file",
                 Filter = "MSIX files|*.msix"
             };
 
@@ -34,12 +33,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel
 
             this.ExtractCertificate = new ChangeableProperty<bool>();
             this.SizeMode = new ChangeableProperty<AppAttachSizeMode>();
-            this.FixedSize = new ValidatedChangeableProperty<string>("100")
-            {
-                DisplayName = "Fixed size",
-                Validators = new Func<string, string>[] { this.ValidateFixedSize }
-            };
-            
+            this.FixedSize = new ValidatedChangeableProperty<string>("Fixed size", "100", this.ValidateFixedSize);
             this.AddChildren(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
         }
 

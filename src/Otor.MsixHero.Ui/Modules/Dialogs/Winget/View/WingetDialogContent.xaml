@@ -52,7 +52,10 @@
                             <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Package identifier" Margin="0 16 0 6" />
                             <TextBox Text="{Binding Id.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Manifest version" Margin="0 16 0 6" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock Foreground="#666" Text="Note: The official repository has some conventions to follow. This value must include the publisher name and application name separated by a period." Margin="0 4 0 0" TextWrapping="Wrap" />
+
+                            <TextBlock
+                                helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Manifest version" Margin="0 16 0 6" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBox Width="60" Margin="0 0 8 0" Text="{Binding ManifestVersion1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 <TextBox Width="60" Margin="0 0 8 0" Text="{Binding ManifestVersion2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
@@ -150,7 +153,7 @@
 
                             <UniformGrid Columns="2" Margin="0 16 0 0">
                                 <StackPanel VerticalAlignment="Top" Margin="0 0 4 0">
-                                    <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Installer architecture" Margin="0 0 0 6" />
+                                    <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Installer architecture" Margin="0 0 0 6" />
                                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Architecture.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
                                         <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.none}">Unknown / not specified</ComboBoxItem>
                                         <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Neutral}">Neutral</ComboBoxItem>

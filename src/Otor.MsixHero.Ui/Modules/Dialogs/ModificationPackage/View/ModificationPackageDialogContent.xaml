@@ -19,26 +19,28 @@
                 <controls:ValidationBehavior ValidatedChangeable="{Binding TabProperties}" />
             </b:Interaction.Behaviors>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel>
+                <AdornerDecorator>
                     <StackPanel>
-                        <Label Style="{StaticResource FormLabel}">Display options</Label>
-                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed package name" Margin="0 0 0 6" />
-                        <TextBox Text="{Binding DisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        <StackPanel>
+                            <Label Style="{StaticResource FormLabel}">Display options</Label>
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed package name" Margin="0 0 0 6" />
+                            <TextBox Text="{Binding DisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed publisher name" Margin="0 16 0 6" />
-                        <TextBox Margin="0 0 0 16" Text="{Binding PublisherDisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed publisher name" Margin="0 16 0 6" />
+                            <TextBox Margin="0 0 0 16" Text="{Binding PublisherDisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                        <Label Style="{StaticResource FormLabel}" Margin="0 16 0 10">Package identity</Label>
-                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
-                        <TextBox Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                            <Label Style="{StaticResource FormLabel}" Margin="0 16 0 10">Package identity</Label>
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
+                            <TextBox Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
-                        <TextBox Text="{Binding PublisherName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
+                            <TextBox Text="{Binding PublisherName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package version" Margin="0 16 0 6" />
-                        <TextBox Width="250" HorizontalAlignment="Left" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package version" Margin="0 16 0 6" />
+                            <TextBox Width="250" HorizontalAlignment="Left" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
+                </AdornerDecorator>
             </ScrollViewer>
         </TabItem>
         <TabItem 
@@ -55,7 +57,9 @@
                         </ComboBox>
 
                         <StackPanel Visibility="{Binding ElementName=FromFileCombo, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 0">
-                            <TextBlock Text="Source file path for the parent package:" Margin="0 0 0 6" Style="{StaticResource DataHeader}" />
+                            <TextBlock 
+                            helpers:RequiredAdorner.IsRequired="True"
+                            Text="Source file path for the parent package:" Margin="0 0 0 6" Style="{StaticResource DataHeader}" />
                             <DockPanel>
                                 <Button Content="..." Command="{Binding SourcePath.Browse}" DockPanel.Dock="Right" Margin="6 0 0 0" />
                                 <TextBox 
@@ -94,17 +98,18 @@
                 HorizontalScrollBarVisibility="Disabled" >
                 <AdornerDecorator>
                     <StackPanel>
-                        <TextBlock Foreground="#666" Text="What should be created?" Margin="0 0 0 6" />
+                        <Label Style="{StaticResource FormLabel}" Content="Output type" />
                         <RadioButton GroupName="g1" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Manifest}, Converter={StaticResource EnumToBooleanConverter}}" Content="Uncompressed package (AppxManifest.xml)" />
                         <RadioButton GroupName="g2" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.Msix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Unsigned MSIX modification package" Margin="0 6" />
                         <RadioButton x:Name="Radio3"  GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Signed MSIX modification package" />
 
-                        <TextBlock Foreground="#666" Text="Additional content to include" Margin="0 16 0 6" />
+                        <Label Content="Additional content" Margin="0 16 0 6" Style="{StaticResource FormLabel}" />
+                        <TextBlock Text="Specify which extra content (folders, files and/or registry keys) should be merged by MSIX Hero." TextWrapping="Wrap" Foreground="#666" Margin="0 0 0 6" />
                         <CheckBox 
-                    IsEnabled="{Binding IsIncludeVfsFoldersEnabled}" 
-                    IsChecked="{Binding IncludeVfsFolders.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                    Content="VFS folder structure from the parent package"
-                    Margin="0 0 0 6" />
+                            IsEnabled="{Binding IsIncludeVfsFoldersEnabled}" 
+                            IsChecked="{Binding IncludeVfsFolders.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                            Content="VFS folder structure from the parent package"
+                            Margin="0 0 0 6" />
                         <Border Visibility="{Binding IsIncludeVfsFoldersEnabled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
                         Background="#fafafa" Margin="22 -3 0 16">
                             <TextBlock TextWrapping="Wrap" Margin="6" Foreground="#555">
@@ -133,8 +138,9 @@
             <b:Interaction.Behaviors>
                 <controls:ValidationBehavior ValidatedChangeable="{Binding TabCertificate}" />
             </b:Interaction.Behaviors>
-
-            <view1:CertificateSelectorView DataContext="{Binding TabCertificate}" />
+            <AdornerDecorator>
+                <view1:CertificateSelectorView DataContext="{Binding TabCertificate}" />
+            </AdornerDecorator>
         </TabItem>
     </TabControl>
 </UserControl>

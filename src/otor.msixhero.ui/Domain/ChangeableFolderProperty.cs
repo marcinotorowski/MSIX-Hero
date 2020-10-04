@@ -17,17 +17,17 @@ namespace Otor.MsixHero.Ui.Domain
         private readonly IInteractionService interactionService;
         private ICommand browse;
 
-        public ChangeableFolderProperty(IInteractionService interactionService, string initialFolder) : base(initialFolder)
+        public ChangeableFolderProperty(string displayName, IInteractionService interactionService, string initialFolder) : base(displayName, initialFolder)
         {
             this.interactionService = interactionService;
         }
 
-        public ChangeableFolderProperty(IInteractionService interactionService, string initialFolder, params Func<string, string>[] validators) : base(initialFolder, validators)
+        public ChangeableFolderProperty(string displayName, IInteractionService interactionService, string initialFolder, params Func<string, string>[] validators) : base(displayName, initialFolder, validators)
         {
             this.interactionService = interactionService;
         }
 
-        public ChangeableFolderProperty(IInteractionService interactionService, params Func<string, string>[] validators) : base(validators)
+        public ChangeableFolderProperty(string displayName, IInteractionService interactionService, params Func<string, string>[] validators) : base(displayName, validators)
         {
             this.interactionService = interactionService;
         }

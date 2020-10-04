@@ -15,9 +15,9 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools
             this.model = model;
             
             this.AddChildren(
-                this.Path = new ChangeableFileProperty(interactionService, model.Path, ValidatePath),
-                this.Name = new ValidatedChangeableProperty<string>(model.Name, ValidateName),
-                this.Icon = new ChangeableFileProperty(interactionService, model.Icon),
+                this.Path = new ChangeableFileProperty("Command path", interactionService, model.Path, ValidatePath),
+                this.Name = new ValidatedChangeableProperty<string>("Command name", model.Name, ValidateName),
+                this.Icon = new ChangeableFileProperty("Command icon", interactionService, model.Icon),
                 this.Arguments = new ChangeableProperty<string>(model.Arguments),
                 this.AsAdmin = new ChangeableProperty<bool>(model.AsAdmin)
             );

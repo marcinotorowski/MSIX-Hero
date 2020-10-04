@@ -25,18 +25,12 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel
             this.interactionService = interactionService;
             this.AddChildren(
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
-                this.SystemAppId = new ValidatedChangeableProperty<string>()
-                {
-                    DisplayName = "System AppId"
-                },
-                this.SignatureSha256 = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSha256(false))
-                {
-                    DisplayName = "Signature hash"
-                },
+                this.SystemAppId = new ValidatedChangeableProperty<string>("System AppId"),
+                this.SignatureSha256 = new ValidatedChangeableProperty<string>("Signature hash", ValidatorFactory.ValidateSha256(false)),
                 this.Scope = new ChangeableProperty<YamlScope?>(),
                 this.SilentCommand = new ChangeableProperty<string>(),
                 this.CustomCommand = new ChangeableProperty<string>(),
-                this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>(ValidateInstallerType),
+                this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>("Installer type", ValidateInstallerType),
                 this.SilentCommandWithProgress = new ChangeableProperty<string>()
             );
 

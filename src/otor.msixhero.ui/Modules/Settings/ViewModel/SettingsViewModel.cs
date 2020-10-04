@@ -35,24 +35,24 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
             var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
             
             this.AllSettings.AddChildren(
-                this.CertificateOutputPath = new ChangeableFolderProperty(interactionService, config.Signing?.DefaultOutFolder?.Resolved),
+                this.CertificateOutputPath = new ChangeableFolderProperty("Certificate output path", interactionService, config.Signing?.DefaultOutFolder?.Resolved),
                 this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
                 this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration.ConfirmDeletion),
                 this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true),
                 this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
-                this.ManifestEditorPath = new ChangeableFileProperty(interactionService, config.Editing.ManifestEditor.Resolved),
+                this.ManifestEditorPath = new ChangeableFileProperty("Manifest editor path", interactionService, config.Editing.ManifestEditor.Resolved),
                 this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
-                this.MsixEditorPath = new ChangeableFileProperty(interactionService, config.Editing.MsixEditor.Resolved),
+                this.MsixEditorPath = new ChangeableFileProperty("MSIX editor path", interactionService, config.Editing.MsixEditor.Resolved),
                 this.AppinstallerEditorType = new ChangeableProperty<EditorType>(config.Editing.AppInstallerEditorType),
-                this.AppinstallerEditorPath = new ChangeableFileProperty(interactionService, config.Editing.AppInstallerEditor.Resolved),
+                this.AppinstallerEditorPath = new ChangeableFileProperty("App installer editor path", interactionService, config.Editing.AppInstallerEditor.Resolved),
                 this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
-                this.PsfEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PsfEditor.Resolved),
+                this.PsfEditorPath = new ChangeableFileProperty("PSF editor path", interactionService, config.Editing.PsfEditor.Resolved),
                 this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
-                this.PowerShellEditorPath = new ChangeableFileProperty(interactionService, config.Editing.PowerShellEditor.Resolved),
-                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
-                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri),
+                this.PowerShellEditorPath = new ChangeableFileProperty("PowerShell editor path", interactionService, config.Editing.PowerShellEditor.Resolved),
+                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>("Remote .msix URL", config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
+                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>("Remote .appinstaller URL", config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri),
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config)
             );
 

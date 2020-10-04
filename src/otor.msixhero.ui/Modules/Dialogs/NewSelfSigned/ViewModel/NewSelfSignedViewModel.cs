@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -30,33 +29,14 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
         {
             this.signingManagerFactory = signingManagerFactory;
             
-            this.OutputPath = new ChangeableFolderProperty(interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder)
-            {
-                DisplayName = "Output path"
-            };
-            
-            this.PublisherName = new ValidatedChangeableProperty<string>("CN=")
-            {
-                DisplayName = "Publisher name",
-                Validators = new Func<string, string>[] { ValidatePublisherName }
-            };
-            
-            this.PublisherFriendlyName = new ValidatedChangeableProperty<string>()
-            {
-                DisplayName = "Publisher display name",
-                Validators = new Func<string, string>[] { ValidatePublisherFriendlyName }
-            };
-            
-            this.Password = new ValidatedChangeableProperty<string>()
-            {
-                DisplayName = "Password",
-                Validators = new Func<string, string>[] { ValidatePassword }
-            };
+            this.OutputPath = new ChangeableFolderProperty("Output path", interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
+            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", "CN=", ValidatorFactory.ValidateSubject());
+            this.PublisherFriendlyName = new ValidatedChangeableProperty<string>("Publisher display name", ValidatePublisherFriendlyName);
+            this.Password = new ValidatedChangeableProperty<string>("Password", ValidatePassword);
+            this.AddChildren(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName);
 
             this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
             this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
-
-            this.AddChildren(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName);
         }
         
         public ValidatedChangeableProperty<string> PublisherName { get; }
@@ -86,22 +66,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 progress);
 
             return true;
-        }
-
-        private static string ValidatePublisherName(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "The display name of the publisher may not be empty.";
-            }
-            
-            if (!Regex.IsMatch(newValue, "^[a-zA-Z]+=.+"))
-            {
-                // todo: Some better validation, RFC compliant
-                return "Publisher name must be a valid DN string (for example CN=Author)";
-            }
-
-            return null;
         }
 
         private static string ValidatePublisherFriendlyName(string newValue)

@@ -236,35 +236,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
         }
         private void InitializeTabProperties()
         {
-            this.DisplayName = new ValidatedChangeableProperty<string>()
-            {
-                DisplayName = "Displayed name",
-                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
-            };
-
-            this.PublisherDisplayName = new ValidatedChangeableProperty<string>()
-            {
-                DisplayName = "Displayed publisher name",
-                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
-            };
-
-            this.Name = new ValidatedChangeableProperty<string>()
-            {
-                DisplayName = "Display name",
-                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
-            };
-
-            this.PublisherName = new ValidatedChangeableProperty<string>()
-            {
-                DisplayName = "Publisher name",
-                Validators = new[] { ValidatorFactory.ValidateSubject() }
-            };
-
-            this.Version = new ValidatedChangeableProperty<string>("1.0.0.0")
-            {
-                DisplayName = "Version",
-                Validators = new[] { ValidatorFactory.ValidateVersion(true) }
-            };
+            this.DisplayName = new ValidatedChangeableProperty<string>("Displayed name", ValidatorFactory.ValidateNotEmptyField());
+            this.PublisherDisplayName = new ValidatedChangeableProperty<string>("Displayed publisher name", ValidatorFactory.ValidateNotEmptyField());
+            this.Name = new ValidatedChangeableProperty<string>("Display name", ValidatorFactory.ValidateNotEmptyField());
+            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", ValidatorFactory.ValidateSubject());
+            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", ValidatorFactory.ValidateVersion(true));
 
             this.TabProperties = new ChangeableContainer(
                 this.DisplayName,
@@ -303,30 +279,16 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         private void InitializeTabParentPackage()
         {
-            this.SourcePath = new ChangeableFileProperty(this.interactionService)
+            this.SourcePath = new ChangeableFileProperty("Parent package path", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                DisplayName = "Parent package path",
                 Filter = "Packages|*.msix;*.appx;Appxmanifest.xml|All files|*.*",
-                IsValidated = true,
-                Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
+                IsValidated = true
             };
 
             this.PackageSourceMode = new ChangeableProperty<PackageSourceMode>();
-
-            this.ParentName = new ValidatedChangeableProperty<string>
-            {
-                DisplayName = "Parent package name",
-                IsValidated = false,
-                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
-            };
-
-            this.ParentPublisher = new ValidatedChangeableProperty<string>
-            {
-                DisplayName = "Parent publisher",
-                IsValidated = false,
-                Validators = new[]{ ValidatorFactory.ValidateSubject() }
-            };
-
+            this.ParentName = new ValidatedChangeableProperty<string>("Parent package name", false, ValidatorFactory.ValidateNotEmptyField());
+            this.ParentPublisher = new ValidatedChangeableProperty<string>("Parent publisher", false, ValidatorFactory.ValidateSubject());
+            
             this.TabParentPackage = new ChangeableContainer(
                 this.PackageSourceMode,
                 this.ParentName,
@@ -392,20 +354,16 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
             this.IncludeRegistry = new ChangeableProperty<bool>();
             this.IncludeVfsFolders = new ChangeableProperty<bool>();
 
-            this.SourceFolder = new ChangeableFolderProperty(this.interactionService)
+            this.SourceFolder = new ChangeableFolderProperty("Folder to include", this.interactionService, ChangeableFolderProperty.ValidatePathAndPresence)
             {
-                DisplayName = "Folder to include",
-                IsValidated = false,
-                Validators = new[] { ChangeableFolderProperty.ValidatePathAndPresence }
+                IsValidated = false
             };
 
-            this.SourceRegistryFile = new ChangeableFileProperty(this.interactionService)
+            this.SourceRegistryFile = new ChangeableFileProperty(".REG file to include", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                DisplayName = ".REG file to include",
                 IsValidated = false,
                 Filter = "Registry files (*.reg)|*.reg",
-                OpenForSaving = false,
-                Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
+                OpenForSaving = false
             };
 
             this.TabContent = new ChangeableContainer(
