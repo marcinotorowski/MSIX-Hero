@@ -8,7 +8,6 @@ namespace Otor.MsixHero.Ui.Domain
     public class ValidatedChangeableProperty<T> : ChangeableProperty<T>, IValidatedChangeable<T>, IDataErrorInfo
     {
         // ReSharper disable once InconsistentNaming
-        private static Func<T, string> validateNotNull;
         private string validationMessage;
         private bool isValidated;
         private IReadOnlyCollection<Func<T, string>> validators;
@@ -53,29 +52,6 @@ namespace Otor.MsixHero.Ui.Domain
                 this.OnPropertyChanged(nameof(this.Error));
                 this.OnPropertyChanged(nameof(this.CurrentValue));
             }
-        }
-
-        public static Func<T, string> ValidateNotNull
-        {
-            get => validateNotNull ??= value =>
-            {
-                if (typeof(T) == typeof(string))
-                {
-                    if (string.IsNullOrEmpty(value as string))
-                    {
-                        return "This value may not be empty.";
-                    }
-                }
-                else if (!typeof(T).IsValueType)
-                {
-                    if (value == null)
-                    {
-                        return "This value is required.";
-                    }
-                }
-
-                return null;
-            };
         }
 
         public string ValidationMessage

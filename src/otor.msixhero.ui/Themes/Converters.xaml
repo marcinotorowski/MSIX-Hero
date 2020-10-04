@@ -4,6 +4,7 @@
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:BooleanToHiddenVisibilityConverter x:Key="BooleanToHiddenVisibilityConverter" />
     <converters:NegativeConverter x:Key="NegativeConverter" />
+    <converters:UppercaseConverter x:Key="UppercaseConverter" />
     <converters:NegativeEnumToBooleanConverter x:Key="NegativeEnumToBooleanConverter" />
     <converters:NegativeBooleanToVisibilityConverter x:Key="NegativeBooleanToVisibilityConverter" />
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />

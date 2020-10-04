@@ -2,7 +2,7 @@
   "profiles": {
     "Otor.MsixHero.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "appattach -p \"C:\\Users\\marci\\Downloads\\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix\" -d \"C:\\Users\\marci\\Downloads\\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix_vhd\" -c -e"
+      "commandLineArgs": "newmodpack --parentPath \"C:\\Users\\marci\\Downloads\\ConEmuPack.msix\" --name \"mymodpack\" --displayName \"My modification package\" --publisherName \"CN=MarcinOtorowski\" --publisherDisplayName \"Marcin Otorowski\" --version \"1.2.3.4\" c:\\temp\\paczka\\"
     }
   }
 }

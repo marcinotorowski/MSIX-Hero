@@ -14,10 +14,10 @@
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
-            <Setter Property="Width" Value="550" />
-            <Setter Property="Height" Value="550" />
-            <Setter Property="MinWidth" Value="500" />
-            <Setter Property="MinHeight" Value="350" />
+            <Setter Property="Width" Value="800" />
+            <Setter Property="Height" Value="700" />
+            <Setter Property="MinWidth" Value="600" />
+            <Setter Property="MinHeight" Value="500" />
         </Style>
     </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>

@@ -18,6 +18,26 @@ namespace Otor.MsixHero.Ui.Domain
             };
         }
 
+
+        public static Func<string, string> ValidateSubject()
+        {
+            return value =>
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return "The publisher may not be empty.";
+                }
+
+                if (!Regex.IsMatch(value, "^[a-zA-Z]+=.+"))
+                {
+                    // todo: Some better validation, RFC compliant
+                    return "Publisher name must be a valid DN string (for example CN=Author)";
+                }
+
+                return null;
+            };
+        }
+
         public static Func<string, string> ValidateInteger(bool required = false, string prompt = null)
         {
             return value =>

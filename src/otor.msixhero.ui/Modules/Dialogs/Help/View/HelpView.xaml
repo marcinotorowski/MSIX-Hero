@@ -64,7 +64,7 @@
                     <DockPanel>
                         <Image Source="/Resources/Images/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
                         <StackPanel Margin="10 0 0 0">
-                            <Label Content="About" Style="{StaticResource Label}" />
+                            <Label Content="About" Style="{StaticResource FormLabel}" />
                             <TextBlock>
                         <Run Text="Author:" />
                         <Hyperlink Click="Hyperlink2_OnClick">Marcin Otorowski</Hyperlink>
@@ -125,7 +125,7 @@
 
                     <Border Background="#eee" Margin="0 16 0 0" BorderBrush="{StaticResource Otor.MsixHero.Brushes.Accent}" BorderThickness="0 4 0 0">
                         <StackPanel Margin="8">
-                            <Label Content="License" Style="{StaticResource Label}" />
+                            <Label Content="License" Style="{StaticResource FormLabel}" />
                             <TextBox Padding="0" Margin="0" BorderBrush="Transparent" BorderThickness="0" Background="#eee" 
                                      FontFamily="Consolas" FontSize="10" x:Name="TextBox" Text="License Terms Come Here" IsReadOnly="True" />
                         </StackPanel>

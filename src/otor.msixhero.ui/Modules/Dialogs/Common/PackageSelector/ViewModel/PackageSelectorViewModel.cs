@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using Namotion.Reflection;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Packaging;
@@ -28,10 +26,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
         public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
             this.displayMode = displayMode;
-            this.Publisher = new ValidatedChangeableProperty<string>(this.ValidateSubject);
-            this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull);
+            this.Publisher = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateSubject());
+            this.DisplayPublisher = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateNotEmptyField());
             this.Name = new ValidatedChangeableProperty<string>(this.ValidateName);
-            this.DisplayName = new ValidatedChangeableProperty<string>(ValidatedChangeableProperty<string>.ValidateNotNull);
+            this.DisplayName = new ValidatedChangeableProperty<string>(ValidatorFactory.ValidateNotEmptyField());
             this.Version = new ValidatedChangeableProperty<string>(this.ValidateVersion);
             this.Architecture = new ChangeableProperty<AppxPackageArchitecture>(AppxPackageArchitecture.Neutral);
             this.PackageType = new ChangeableProperty<PackageType>();
@@ -266,22 +264,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel
                     Logger.Warn($"Could not read value from MSIX manifest {e.NewValue}");
                 }
             }
-        }
-
-        private string ValidateSubject(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "The publisher may not be empty.";
-            }
-
-            if (!Regex.IsMatch(newValue, "^[a-zA-Z]+=.+"))
-            {
-                // todo: Some better validation, RFC compliant
-                return "Publisher name must be a valid DN string (for example CN=Author)";
-            }
-
-            return null;
         }
 
         private string ValidateVersion(string newValue)

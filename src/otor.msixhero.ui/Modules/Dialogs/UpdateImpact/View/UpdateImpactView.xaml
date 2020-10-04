@@ -160,7 +160,7 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="0" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
+                            <!--<Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="0" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
                                 <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Border>
 
@@ -170,9 +170,10 @@
 
                             <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="2" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
                                 <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="3" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            </Border>
+                            </Border>-->
 
-                            <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 8">
+                            <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 0 0 16">
+                                <Label Style="{StaticResource FormLabel}" Content="Older version" />
                                 <TextBlock Text="Select the previous version of the MSIX package to be compared..." />
                                 <DockPanel Margin="0 6 0 0">
                                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path1.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
@@ -180,7 +181,8 @@
                                 </DockPanel>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0 8">
+                            <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0 0 0 16">
+                                <Label Style="{StaticResource FormLabel}" Content="Newer version" />
                                 <TextBlock Text="Select the newer version of the MSIX package to be compared..." />
                                 <DockPanel Margin="0 6 0 0">
                                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path2.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
@@ -188,9 +190,10 @@
                                 </DockPanel>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="0 8">
+                            <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="0 0 0 16">
+                                <Label Style="{StaticResource FormLabel}" Content="Compare" />
                                 <TextBlock Text="Press the button to start comparing selected packages..." />
-                                <Button DockPanel.Dock="Top" Command="{Binding Compare}" Content="Analyze the update impact" Margin="0 6 0 0" HorizontalAlignment="Left" />
+                                <Button DockPanel.Dock="Top" Command="{Binding Compare}" Content="Analyze the update impact" Margin="0 6 0 0" Padding="25 10" HorizontalAlignment="Left" />
                             </StackPanel>
                         </Grid>
 

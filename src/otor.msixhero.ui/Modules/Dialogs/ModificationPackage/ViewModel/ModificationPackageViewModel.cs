@@ -5,12 +5,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Otor.MsixHero.AppInstaller.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
+using Otor.MsixHero.Appx.Packaging.Manifest;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -19,13 +20,14 @@ using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 using Otor.MsixHero.Ui.Domain;
 using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
-using Otor.MsixHero.Ui.Modules.Dialogs.Common.PackageSelector.ViewModel;
 using Prism.Services.Dialogs;
+using LogManager = Otor.MsixHero.Infrastructure.Logging.LogManager;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 {
     public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ModificationPackageViewModel));
         private readonly IAppxContentBuilder contentBuilder;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private readonly IConfigurationService configurationService;
@@ -58,9 +60,21 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         public ChangeableFileProperty SourcePath { get; private set; }
 
-        public PackageSelectorViewModel PackageSelection { get; private set; }
+        public ValidatedChangeableProperty<string> ParentPublisher { get; private set; }
+        
+        public ValidatedChangeableProperty<string> ParentName { get; private set; }
 
-        public PackageSelectorViewModel TabProperties { get; private set; }
+        public ChangeableContainer TabProperties { get; private set; }
+
+        public ValidatedChangeableProperty<string> Name { get; private set; }
+
+        public ValidatedChangeableProperty<string> PublisherName { get; private set; }
+
+        public ValidatedChangeableProperty<string> DisplayName { get; private set; }
+
+        public ValidatedChangeableProperty<string> PublisherDisplayName { get; private set; }
+
+        public ValidatedChangeableProperty<string> Version { get; private set; }
 
         public ChangeableProperty<bool> IncludeFiles { get; private set; }
 
@@ -92,7 +106,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         public string Result { get; private set; }
 
-        public bool IsIncludeVfsFoldersEnabled => !string.IsNullOrEmpty(this.PackageSelection.InputPath.CurrentValue) && this.PackageSourceMode.CurrentValue == ViewModel.PackageSourceMode.FromFile && this.Create.CurrentValue == ModificationPackageBuilderAction.Manifest;
+        public bool IsIncludeVfsFoldersEnabled => !string.IsNullOrEmpty(this.SourcePath.CurrentValue) && this.PackageSourceMode.CurrentValue == ViewModel.PackageSourceMode.FromFile && this.Create.CurrentValue == ModificationPackageBuilderAction.Manifest;
 
         public CertificateSelectorViewModel TabCertificate { get; private set; }
         
@@ -103,13 +117,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                 return;
             }
 
-            this.PackageSelection.InputPath.CurrentValue = sourceFile;
-            this.PackageSelection.AllowChangingSourcePackage = false;
-            this.PackageSelection.ShowPackageTypeSelector = false;
-
-            this.TabProperties.Architecture.CurrentValue = this.PackageSelection.Architecture.CurrentValue;
-            this.TabProperties.Name.CurrentValue = this.PackageSelection.Name.CurrentValue + "-Modification";
+            this.SourcePath.CurrentValue = sourceFile;
             this.TabProperties.Commit();
+            this.TabParentPackage.Commit();
         }
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
@@ -144,28 +154,21 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            if (!string.IsNullOrEmpty(this.SourcePath.CurrentValue))
-            {
-                this.TabProperties.InputPath.CurrentValue = this.SourcePath.CurrentValue;
-            }
-
+            
             var modificationPkgCreationRequest = new ModificationPackageConfig
             {
-                DisplayName = this.TabProperties.DisplayName.CurrentValue,
-                Name = Regex.Replace(this.TabProperties.DisplayName.CurrentValue, "[^a-zA-Z0-9\\-]", string.Empty),
-                Publisher = "CN=" + Regex.Replace(this.TabProperties.DisplayPublisher.CurrentValue, "[,=]", string.Empty),
-                DisplayPublisher = this.TabProperties.DisplayPublisher.CurrentValue,
-                Version = this.TabProperties.Version.CurrentValue,
-                ParentName = this.PackageSelection.Name.CurrentValue,
-                ParentPublisher = this.PackageSelection.Publisher.CurrentValue,
+                DisplayName = this.DisplayName.CurrentValue,
+                Name = this.Name.CurrentValue,
+                Publisher = this.PublisherName.CurrentValue,
+                DisplayPublisher = this.PublisherDisplayName.CurrentValue,
+                Version = this.Version.CurrentValue,
+                ParentName = this.ParentName.CurrentValue,
+                ParentPublisher = this.ParentPublisher.CurrentValue,
                 IncludeVfsFolders = this.IncludeVfsFolders.CurrentValue && this.IsIncludeVfsFoldersEnabled,
                 IncludeFolder = this.IncludeFiles.CurrentValue && !string.IsNullOrEmpty(this.SourceFolder.CurrentValue) ? new DirectoryInfo(this.SourceFolder.CurrentValue) : null,
                 IncludeRegistry = this.IncludeRegistry.CurrentValue && !string.IsNullOrEmpty(this.SourceRegistryFile.CurrentValue) ? new FileInfo(this.SourceRegistryFile.CurrentValue) : null,
-                ParentPackagePath = this.PackageSelection.InputPath.CurrentValue
+                ParentPackagePath = this.SourcePath.CurrentValue
             };
-
-            modificationPkgCreationRequest.Architecture = (AppxPackageArchitecture) Enum.Parse(typeof(AppxPackageArchitecture), modificationPkgCreationRequest.Architecture.ToString("G"), true);
 
             await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
 
@@ -199,12 +202,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
             return true;
         }
 
-        private void PackageFileChanged(object sender, PackageSelectorViewModel.PackageFileChangedEventArgs e)
-        {
-            this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
-            this.TabProperties.Architecture.CurrentValue = e.Architecture;
-        }
-
         private void ResetExecuted(object parameter)
         {
             this.State.IsSaved = false;
@@ -219,7 +216,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
         private void PackageSourceModeChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
-            this.PackageSelection.IsValidated = (PackageSourceMode)e.NewValue == ViewModel.PackageSourceMode.FromProperties;
+            this.ParentName.IsValidated = (PackageSourceMode)e.NewValue == ViewModel.PackageSourceMode.FromProperties;
+            this.ParentPublisher.IsValidated = (PackageSourceMode)e.NewValue == ViewModel.PackageSourceMode.FromProperties;
             this.SourcePath.IsValidated = (PackageSourceMode)e.NewValue == ViewModel.PackageSourceMode.FromFile;
         }
 
@@ -238,50 +236,148 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
         }
         private void InitializeTabProperties()
         {
-            this.TabProperties = new PackageSelectorViewModel(
-                interactionService,
-                PackageSelectorDisplayMode.AllowChanging |
-                PackageSelectorDisplayMode.AllowPackages |
-                PackageSelectorDisplayMode.RequireVersion |
-                PackageSelectorDisplayMode.ShowDisplayName);
+            this.DisplayName = new ValidatedChangeableProperty<string>()
+            {
+                DisplayName = "Displayed name",
+                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
+            };
 
-            this.TabProperties.Version.CurrentValue = "1.0.0.0";
-            this.TabProperties.Architecture.CurrentValue = (AppxPackageArchitecture)Enum.Parse(typeof(AppxPackageArchitecture), AppInstallerPackageArchitecture.neutral.ToString("G"), true);
+            this.PublisherDisplayName = new ValidatedChangeableProperty<string>()
+            {
+                DisplayName = "Displayed publisher name",
+                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
+            };
+
+            this.Name = new ValidatedChangeableProperty<string>()
+            {
+                DisplayName = "Display name",
+                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
+            };
+
+            this.PublisherName = new ValidatedChangeableProperty<string>()
+            {
+                DisplayName = "Publisher name",
+                Validators = new[] { ValidatorFactory.ValidateSubject() }
+            };
+
+            this.Version = new ValidatedChangeableProperty<string>("1.0.0.0")
+            {
+                DisplayName = "Version",
+                Validators = new[] { ValidatorFactory.ValidateVersion(true) }
+            };
+
+            this.TabProperties = new ChangeableContainer(
+                this.DisplayName,
+                this.PublisherDisplayName,
+                this.Name,
+                this.PublisherName,
+                this.Version);
+
             this.TabProperties.Commit();
+
+            this.DisplayName.ValueChanged += DisplayNameOnValueChanged;
+            this.PublisherDisplayName.ValueChanged += PublisherDisplayNameOnValueChanged;
+        }
+
+        private void DisplayNameOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (this.Name.IsTouched || string.IsNullOrEmpty((string)e.NewValue))
+            {
+                return;
+            }
+
+            this.Name.CurrentValue = Regex.Replace((string) e.NewValue, "[^a-zA-Z0-9\\-]", string.Empty);
+            this.Name.Commit();
+        }
+
+        private void PublisherDisplayNameOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (this.PublisherName.IsTouched || string.IsNullOrEmpty((string)e.NewValue))
+            {
+                return;
+            }
+
+            this.PublisherName.CurrentValue = "CN=" + Regex.Replace((string) e.NewValue, "[,=]", string.Empty);
+            this.PublisherName.Commit();
         }
 
         private void InitializeTabParentPackage()
         {
             this.SourcePath = new ChangeableFileProperty(this.interactionService)
             {
-                DisplayName = "Parent package",
+                DisplayName = "Parent package path",
                 Filter = "Packages|*.msix;*.appx;Appxmanifest.xml|All files|*.*",
                 IsValidated = true,
                 Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence }
             };
 
             this.PackageSourceMode = new ChangeableProperty<PackageSourceMode>();
-            this.PackageSourceMode.ValueChanged += this.PackageSourceModeChanged;
 
-            this.PackageSelection = new PackageSelectorViewModel(
-                interactionService,
-                PackageSelectorDisplayMode.AllowChanging |
-                PackageSelectorDisplayMode.AllowBundles |
-                PackageSelectorDisplayMode.ShowTypeSelector |
-                PackageSelectorDisplayMode.AllowPackages |
-                PackageSelectorDisplayMode.AllowAllPackageTypes |
-                PackageSelectorDisplayMode.AllowChanging |
-                PackageSelectorDisplayMode.RequireFullIdentity |
-                PackageSelectorDisplayMode.ShowActualName)
+            this.ParentName = new ValidatedChangeableProperty<string>
             {
-                IsValidated = false
+                DisplayName = "Parent package name",
+                IsValidated = false,
+                Validators = new[] { ValidatorFactory.ValidateNotEmptyField() }
             };
-            this.PackageSelection.PackageFileChanged += this.PackageFileChanged;
+
+            this.ParentPublisher = new ValidatedChangeableProperty<string>
+            {
+                DisplayName = "Parent publisher",
+                IsValidated = false,
+                Validators = new[]{ ValidatorFactory.ValidateSubject() }
+            };
 
             this.TabParentPackage = new ChangeableContainer(
                 this.PackageSourceMode,
-                this.PackageSelection,
+                this.ParentName,
+                this.ParentPublisher,
                 this.SourcePath);
+
+            this.SourcePath.ValueChanged += SourcePathOnValueChanged;
+            this.PackageSourceMode.ValueChanged += this.PackageSourceModeChanged;
+        }
+
+        private void SourcePathOnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            try
+            {
+                var ext = Path.GetExtension((string) e.NewValue);
+                if (string.Equals(".msix", ext))
+                {
+                    using (IAppxFileReader reader = new ZipArchiveFileReaderAdapter((string) e.NewValue))
+                    {
+                        var mr = new AppxManifestReader();
+                        var read = mr.Read(reader).GetAwaiter().GetResult();
+                        if (string.IsNullOrWhiteSpace(this.DisplayName.CurrentValue))
+                        {
+                            this.DisplayName.CurrentValue = read.DisplayName + " - Modification package";
+                        }
+
+                        this.ParentName.CurrentValue = read.Name;
+                        this.ParentPublisher.CurrentValue = read.Publisher;
+                    }
+                }
+                else
+                {
+                    using (IAppxFileReader reader = new FileInfoFileReaderAdapter((string)e.NewValue))
+                    {
+                        var mr = new AppxManifestReader();
+                        var read = mr.Read(reader).GetAwaiter().GetResult();
+                        if (string.IsNullOrWhiteSpace(this.DisplayName.CurrentValue))
+                        {
+                            this.DisplayName.CurrentValue = read.DisplayName + " - Modification package";
+                        }
+
+                        this.ParentName.CurrentValue = read.Name;
+                        this.ParentPublisher.CurrentValue = read.Publisher;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                this.interactionService.ShowError("Could not read the properties from the package.", exception);
+            }
         }
 
         private void InitializeTabContent()

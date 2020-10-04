@@ -40,7 +40,7 @@
         Dialog="{Binding}">
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
-                <view:AppAttachDialogContent />
+                <view:AppAttachDialogContent Margin="0 16 0 0" />
             </DataTemplate>
         </changeableDialog:ChangeableDialog.DialogContentTemplate>
         <changeableDialog:ChangeableDialog.SuccessContentTemplate>

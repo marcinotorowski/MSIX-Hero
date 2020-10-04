@@ -6,8 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Packaging.Manifest;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Infrastructure.Branding;
@@ -45,7 +46,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             using (var fs = File.OpenRead(modPackageTemplate))
             {
                 var xmlDoc = await XDocument.LoadAsync(fs, LoadOptions.None, cancellationToken: cancellation).ConfigureAwait(false);
-                this.PrepareModificationPackage(xmlDoc, config);
+                await this.PrepareModificationPackage(xmlDoc, config).ConfigureAwait(false);
                 manifestContent = xmlDoc.ToString(SaveOptions.OmitDuplicateNamespaces);
             }
 
@@ -279,7 +280,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             }
         }
 
-        private void PrepareModificationPackage(XDocument template, ModificationPackageConfig config)
+        private async Task PrepareModificationPackage(XDocument template, ModificationPackageConfig config)
         {
             XNamespace nsUap4 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/4";
             XNamespace nsUap6 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/6";
@@ -329,10 +330,48 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
             var dependency = new XElement(nsUap4 + "MainPackageDependency");
             dependencies.Add(dependency);
-            dependency.SetAttributeValue("Name", config.ParentName);
-            dependency.SetAttributeValue("Publisher", config.ParentPublisher);
 
+            var parentName = config.ParentName;
+            var parentPublisher = config.ParentPublisher;
+
+            if (string.IsNullOrEmpty(parentPublisher) || string.IsNullOrEmpty(parentName))
+            {
+                IAppxFileReader reader = null;
+                try
+                {
+                    if (string.Equals("appxmanifest.xml", Path.GetFileName(config.ParentPackagePath), StringComparison.OrdinalIgnoreCase))
+                    {
+                        reader = new FileInfoFileReaderAdapter(config.ParentPackagePath);
+                    }
+                    else
+                    {
+                        reader = new ZipArchiveFileReaderAdapter(config.ParentPackagePath);
+                    }
+
+                    var manifestReader = new AppxManifestReader();
+                    var read = await manifestReader.Read(reader).ConfigureAwait(false);
+
+                    if (string.IsNullOrEmpty(parentPublisher))
+                    {
+                        parentPublisher = read.Publisher;
+                    }
+
+                    if (string.IsNullOrEmpty(parentName))
+                    {
+                        parentName = read.Name;
+                    }
+                }
+                finally
+                {
+                    reader?.Dispose();
+                }
+            }
+
+            dependency.SetAttributeValue("Name", parentName);
+            dependency.SetAttributeValue("Publisher", parentPublisher);
+            
             var identity = GetOrCreateNode(package, "Identity", defaultNamespace);
+
             identity.SetAttributeValue("Name", config.Name);
             identity.SetAttributeValue("Publisher", config.Publisher);
 
@@ -368,7 +407,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             var properties = GetOrCreateNode(package, "Properties", defaultNamespace);
             GetOrCreateNode(properties, "DisplayName", defaultNamespace).Value = config.DisplayName ?? "Modification Package Name";
             GetOrCreateNode(properties, "PublisherDisplayName", defaultNamespace).Value = config.DisplayPublisher ?? "Modification Package Publisher Name";
-            GetOrCreateNode(properties, "Description", defaultNamespace).Value = "Modification Package for " + config.ParentName;
+            GetOrCreateNode(properties, "Description", defaultNamespace).Value = "Modification Package for " + parentName;
             GetOrCreateNode(properties, "Logo", defaultNamespace).Value = "Assets\\Logo.png";
             GetOrCreateNode(properties, "ModificationPackage", nsRescap6).Value = "true";
 

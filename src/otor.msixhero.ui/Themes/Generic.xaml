@@ -263,6 +263,26 @@
         <Setter Property="Foreground" Value="Black" />
     </Style>
 
+    <Style TargetType="{x:Type Label}" x:Key="FormLabel">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0 0 0 10" />
+        <Setter Property="Foreground" Value="#333" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Label">
+                    <TextBlock 
+                        Foreground="{TemplateBinding Foreground}"
+                        FontWeight="{TemplateBinding FontWeight}"
+                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content, Converter={StaticResource UppercaseConverter}}" 
+                        Margin="{TemplateBinding Padding}" 
+                        Typography.Capitals="{TemplateBinding Typography.Capitals}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="GridSplitter">
         <Setter Property="Background" Value="Transparent" />
     </Style>

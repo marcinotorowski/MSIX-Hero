@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:controls="clr-namespace:Otor.MsixHero.Ui.Controls"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
     <TabControl>
@@ -18,9 +19,26 @@
                 <controls:ValidationBehavior ValidatedChangeable="{Binding TabProperties}" />
             </b:Interaction.Behaviors>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <AdornerDecorator>
-                    <view:PackageSelectorView DataContext="{Binding TabProperties}" />
-                </AdornerDecorator>
+                <StackPanel>
+                    <StackPanel>
+                        <Label Style="{StaticResource FormLabel}">Display options</Label>
+                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed package name" Margin="0 0 0 6" />
+                        <TextBox Text="{Binding DisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed publisher name" Margin="0 16 0 6" />
+                        <TextBox Margin="0 0 0 16" Text="{Binding PublisherDisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                        <Label Style="{StaticResource FormLabel}" Margin="0 16 0 10">Package identity</Label>
+                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
+                        <TextBox Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
+                        <TextBox Text="{Binding PublisherName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                        <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package version" Margin="0 16 0 6" />
+                        <TextBox Width="250" HorizontalAlignment="Left" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                    </StackPanel>
+                </StackPanel>
             </ScrollViewer>
         </TabItem>
         <TabItem 
@@ -48,10 +66,20 @@
                             </DockPanel>
                         </StackPanel>
                     </StackPanel>
-                    <ScrollViewer Margin="0 0 0 0" Visibility="{Binding ElementName=FromPropertiesCombo, Path=IsSelected, Converter={StaticResource BooleanToHiddenVisibilityConverter}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Top">
+                    <ScrollViewer 
+                        Margin="0 0 0 0" 
+                        Visibility="{Binding ElementName=FromPropertiesCombo, Path=IsSelected, Converter={StaticResource BooleanToHiddenVisibilityConverter}}" 
+                        VerticalScrollBarVisibility="Auto" 
+                        HorizontalScrollBarVisibility="Disabled" 
+                        DockPanel.Dock="Top">
                         <AdornerDecorator>
-                            <view:PackageSelectorView
-                                DataContext="{Binding PackageSelection}" />
+                            <StackPanel>
+                                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Parent package name" Margin="0 0 0 6" />
+                                <TextBox Text="{Binding ParentName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+
+                                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Parent publisher name" Margin="0 16 0 6" />
+                                <TextBox Text="{Binding ParentPublisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
+                            </StackPanel>
                         </AdornerDecorator>
                     </ScrollViewer>
                 </DockPanel>
@@ -61,7 +89,9 @@
             <b:Interaction.Behaviors>
                 <controls:ValidationBehavior ValidatedChangeable="{Binding TabContent}" />
             </b:Interaction.Behaviors>
-            <ScrollViewer>
+            <ScrollViewer  
+                VerticalScrollBarVisibility="Auto" 
+                HorizontalScrollBarVisibility="Disabled" >
                 <AdornerDecorator>
                     <StackPanel>
                         <TextBlock Foreground="#666" Text="What should be created?" Margin="0 0 0 6" />
