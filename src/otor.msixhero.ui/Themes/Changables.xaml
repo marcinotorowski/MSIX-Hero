@@ -27,9 +27,19 @@
                         Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Message}">
                         <DockPanel>
                             <Border Background="#2B579A" DockPanel.Dock="Top" Visibility="{TemplateBinding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <DockPanel Margin="16">
-                                    <Path Width="32" Height="32" Margin="0 -16" Fill="White" Data="{TemplateBinding Icon}" />
+                                <DockPanel Margin="10">
+                                    <Path 
+                                        Width="32" 
+                                        Height="32" 
+                                        Margin="0 -0" 
+                                        Fill="White" 
+                                        Data="{TemplateBinding Icon}">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleX="1" ScaleY="1"></ScaleTransform>
+                                        </Path.LayoutTransform>
+                                    </Path>
                                     <Label 
+                                        Visibility="Collapsed"
                                         Margin="8 0 0 0" 
                                         VerticalContentAlignment="Center" 
                                         Style="{StaticResource Label}" 
