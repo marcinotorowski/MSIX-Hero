@@ -93,6 +93,43 @@ namespace Otor.MsixHero.Ui.Domain
             };
         }
 
+        public static Func<string, string> ValidateUri(bool required, string prompt = null)
+        {
+            return value =>
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    if (!required)
+                    {
+                        return null;
+                    }
+
+                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                }
+
+                if (!Uri.TryCreate(value, UriKind.Absolute, out var parsed))
+                {
+                    return prompt == null ? "This value is not a valid URI." : $"{prompt} is not a valid URL.";
+                }
+
+                switch (parsed.Scheme.ToLowerInvariant())
+                {
+                    case "http":
+                    case "https":
+                    case "ftps":
+                    case "ftp":
+                    case "file":
+                        return null;
+                }
+
+                return prompt == null
+                    ? $"Protocol {parsed.Scheme}:// is not supported."
+                    : $"{prompt} has an unsupported protocol {parsed.Scheme}://.";
+
+                return null;
+            };
+        }
+
         public static Func<string, string> ValidateVersion(bool required, string prompt = null)
         {
             return version =>

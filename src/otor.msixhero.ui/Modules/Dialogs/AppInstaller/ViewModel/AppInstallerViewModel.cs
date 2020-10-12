@@ -39,8 +39,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.AppInstaller.ViewModel
             this.BlockLaunching = new ChangeableProperty<bool>();
             this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", this.ValidateVersion);
             this.ShowPrompt = new ChangeableProperty<bool>();
-            this.MainPackageUri = new ValidatedChangeableProperty<string>("Main package URL", true, ValidatorFactory.ValidateUrl(true));
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>("App installer URL", true, ValidatorFactory.ValidateUrl(true));
+            this.MainPackageUri = new ValidatedChangeableProperty<string>("Main package URL", true, ValidatorFactory.ValidateUri(true));
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>("App installer URL", true, ValidatorFactory.ValidateUri(true));
             this.Hours = new ValidatedChangeableProperty<string>("Hours between updates", "24", this.ValidateHours);
 
             this.TabPackage = new PackageSelectorViewModel(
