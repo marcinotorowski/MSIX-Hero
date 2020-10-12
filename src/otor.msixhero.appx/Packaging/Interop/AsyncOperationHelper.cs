@@ -56,8 +56,6 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
 
         public static async Task<T> ConvertToTask<T>(IAsyncOperation<T> operation, CancellationToken token = default)
         {
-            await Task.Delay(100, token).ConfigureAwait(false);
-
             var cts = new TaskCompletionSource<T>();
 
             operation.Completed += (info, status) =>
@@ -82,7 +80,6 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             token.Register(() => { cts.TrySetCanceled(token); });
             
             var res = await cts.Task.ConfigureAwait(false);
-            await Task.Delay(100, token).ConfigureAwait(false);
             return res;
         }
     }

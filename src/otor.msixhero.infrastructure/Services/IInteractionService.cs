@@ -28,6 +28,8 @@ namespace Otor.MsixHero.Infrastructure.Services
         bool SelectFolder(out string selectedFolder);
 
         InteractionResult ShowError(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null);
+        
+        InteractionResult ShowInfo(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null);
 
         InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close);
 

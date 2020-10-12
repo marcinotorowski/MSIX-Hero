@@ -59,6 +59,7 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
             this.Handlers[typeof(GetPackagesCommand)] = (command, token, progress) => this.GetPackages((GetPackagesCommand)command, token, progress);
             this.Handlers[typeof(StopPackageCommand)] = (command, token, progress) => this.StopPackage((StopPackageCommand)command, token);
+            this.Handlers[typeof(CheckForUpdatesCommand)] = (command, token, progress) => this.CheckForUpdates((CheckForUpdatesCommand)command, token);
             this.Handlers[typeof(SelectPackagesCommand)] = (command, token, progress) => this.SelectPackages((SelectPackagesCommand)command);
 
             this.Handlers[typeof(GetLogsCommand)] = (command, token, progress) => this.GetLogs((GetLogsCommand)command, token, progress);
@@ -94,7 +95,6 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             cleanConfig.List.Group.GroupMode = this.ApplicationState.Packages.GroupMode;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
             return this.ApplicationState.Packages.GroupMode;
-
         }
 
         private async Task SetPackageSidebarVisibility(SetPackageSidebarVisibilityCommand command)
@@ -186,6 +186,12 @@ namespace Otor.MsixHero.Ui.Hero.Executor
         {
             var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
             await manager.Stop(command.Package.PackageId, cancellationToken).ConfigureAwait(false);
+        }
+
+        private async Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(CheckForUpdatesCommand command, CancellationToken cancellationToken)
+        {
+            var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            return await manager.CheckForUpdates(command.PackageFullName, cancellationToken).ConfigureAwait(false);
         }
 
         private Task<IList<InstalledPackage>> SelectPackages(SelectPackagesCommand command)

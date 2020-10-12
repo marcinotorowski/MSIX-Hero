@@ -19,12 +19,9 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Hero;
-using Otor.MsixHero.Ui.Hero.Commands;
-using Otor.MsixHero.Ui.Hero.Commands.Base;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
 using Otor.MsixHero.Ui.Hero.Executor;
 using Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel;
@@ -445,10 +442,41 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 return;
             }
 
-            var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
-            foreach (var item in updatable)
+            var executor = this.application.CommandExecutor
+                .WithBusyManager(this.busyManager, OperationType.Other)
+                .WithErrorHandling(this.interactionService, true);
+
+            if (updatable.Length == 1)
             {
-                var updateResult = await manager.CheckForUpdates(item.PackageId).ConfigureAwait(false);
+                var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(updatable[0].PackageId)).ConfigureAwait(false);
+                string msg;
+                switch (updateResult)
+                {
+                    case AppInstallerUpdateAvailabilityResult.Unknown:
+                        msg = "This package was not installed via .appinstaller file.";
+                        break;
+                    case AppInstallerUpdateAvailabilityResult.NoUpdates:
+                        msg = "No updates are available.";
+                        break;
+                    case AppInstallerUpdateAvailabilityResult.Available:
+                        msg = "An optional update is available.";
+                        break;
+                    case AppInstallerUpdateAvailabilityResult.Required:
+                        msg = "A required update is available.";
+                        break;
+                    case AppInstallerUpdateAvailabilityResult.Error:
+                        msg = "Could not check for updates.";
+                        break;
+                    default:
+                        msg = "Could not check fro updates.";
+                        break;
+                }
+
+                this.interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
+            }
+            else
+            {
+                throw new NotImplementedException("Checking for many apps at once is not supported yet.");
             }
         }
 
@@ -602,7 +630,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
             if (package.SignatureKind == SignatureKind.System)
             {
-                var buttons = new string[]
+                var buttons = new[]
                 {
                     "Stop this system app",
                     "Leave the app running"

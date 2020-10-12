@@ -197,6 +197,76 @@ namespace Otor.MsixHero.Ui.Services
             return (InteractionResult) result;
         }
 
+        public InteractionResult ShowInfo(string body, InteractionResult buttons = InteractionResult.Close, string title = null, string extendedInfo = null)
+        {
+            var taskDialog = new TaskDialog
+            {
+                MainIcon = TaskDialogIcon.Information,
+                ButtonStyle = TaskDialogButtonStyle.Standard
+            };
+
+            if (buttons.HasFlag(InteractionResult.Retry))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Retry));
+            }
+
+            if (buttons.HasFlag(InteractionResult.OK))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Ok));
+            }
+
+            if (buttons.HasFlag(InteractionResult.Yes))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
+            }
+
+            if (buttons.HasFlag(InteractionResult.No))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
+            }
+
+            if (buttons.HasFlag(InteractionResult.Cancel))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
+            }
+
+            if (buttons.HasFlag(InteractionResult.Close))
+            {
+                taskDialog.Buttons.Add(new TaskDialogButton(ButtonType.Close));
+            }
+
+            taskDialog.CenterParent = true;
+            taskDialog.Content = body;
+
+            if (!string.IsNullOrEmpty(extendedInfo))
+            {
+                taskDialog.ExpandedInformation = extendedInfo;
+            }
+
+            taskDialog.WindowTitle = title ?? "MSIX Hero";
+
+            if (this.context == null)
+            {
+                return (InteractionResult)(int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType;
+            }
+
+            var result = 0;
+
+            var dispatcher = Application.Current.Dispatcher;
+            if (dispatcher != null)
+            {
+                dispatcher.Invoke(() =>
+                {
+                    this.context.Send(
+                        state => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
+                        null);
+                },
+                DispatcherPriority.SystemIdle);
+            }
+
+            return (InteractionResult)result;
+        }
+
         public bool SelectFile(string initialFile, string filterString, out string selectedFile)
         {
             if (!SelectFile(initialFile, filterString, false, out var selection))
