@@ -86,5 +86,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
         public bool IsOptional { get; set; }
 
         public bool IsFramework { get; set; }
+
+        public Uri AppInstallerUri { get; set; }
     }
 }

@@ -78,6 +78,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.MountRegistry = new DelegateCommand(param => this.MountRegistryExecute(), param => this.CanExecuteMountRegistry());
             this.DismountRegistry = new DelegateCommand(param => this.DismountRegistryExecute(), param => this.CanExecuteDismountRegistry());
             this.ChangeVolume = new DelegateCommand(param => this.ChangeVolumeExecute(), param => this.CanExecuteChangeVolume());
+            this.CheckUpdates = new DelegateCommand(param => this.CheckUpdatesExecute(), param => this.CanExecuteCheckUpdates());
 
             // General APPX
             this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
@@ -152,6 +153,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         public ICommand OpenExplorerUser { get; }
 
         public ICommand ChangeVolume { get; }
+
+        public ICommand CheckUpdates { get; }
 
         public ICommand OpenManifest { get; }
 
@@ -433,6 +436,22 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             }
         }
 
+        private async void CheckUpdatesExecute()
+        {
+            var updatable = this.application.ApplicationState.Packages.SelectedPackages.Where(p => p.AppInstallerUri != null).ToArray();
+
+            if (!updatable.Any())
+            {
+                return;
+            }
+
+            var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+            foreach (var item in updatable)
+            {
+                var updateResult = await manager.CheckForUpdates(item.PackageId).ConfigureAwait(false);
+            }
+        }
+
         private void ChangeVolumeExecute()
         {
             var selection = this.application.ApplicationState.Packages.SelectedPackages;
@@ -473,6 +492,17 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             }
 
             return true;
+        }
+
+        private bool CanExecuteCheckUpdates()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count == 0)
+            {
+                return false;
+            }
+
+            return selection.Any(s => s.AppInstallerUri != null);
         }
 
         private bool CanExecuteOpenPowerShell()

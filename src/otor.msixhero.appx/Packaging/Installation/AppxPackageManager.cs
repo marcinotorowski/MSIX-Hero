@@ -7,8 +7,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
+using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
@@ -49,7 +48,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public Task<List<User>> GetUsersForPackage(InstalledPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.GetUsersForPackage(package.Name, cancellationToken, progress);
+            return GetUsersForPackage(package.Name, cancellationToken, progress);
         }
 
         public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -72,7 +71,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             Logger.Info("Returning {0} users...", result.Count);
             return result;
         }
-        
+
         public async Task Remove(IReadOnlyCollection<InstalledPackage> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!packages.Any())
@@ -99,6 +98,39 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     await Deprovision(item.PackageFamilyName, cancellationToken, progress).ConfigureAwait(false);
                 }
             }
+        }
+
+        public async Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(string itemPackageId, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (string.IsNullOrEmpty(itemPackageId))
+            {
+                return AppInstallerUpdateAvailabilityResult.Unknown;
+            }
+
+            var pkg = PackageManager.Value.FindPackageForUser(string.Empty, itemPackageId);
+            if (pkg == null)
+            {
+                return AppInstallerUpdateAvailabilityResult.Unknown;
+            }
+
+            var appInstaller = pkg.GetAppInstallerInfo();
+            if (appInstaller == null)
+            {
+                return AppInstallerUpdateAvailabilityResult.Unknown;
+            }
+
+            var u = await AsyncOperationHelper.ConvertToTask(pkg.CheckUpdateAvailabilityAsync(), cancellationToken).ConfigureAwait(false);
+            if (u.Availability == PackageUpdateAvailability.Error)
+            {
+                if (u.ExtendedError != null)
+                {
+                    throw u.ExtendedError;
+                }
+
+                throw new ApplicationException("Checking for updates failed from an unspecified reason.");
+            }
+
+            return (AppInstallerUpdateAvailabilityResult) (int) u.Availability;
         }
 
         public static Lazy<PackageManager> PackageManager = new Lazy<PackageManager>(() => new PackageManager(), true);
@@ -128,7 +160,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             if (string.Equals(Path.GetFileName(filePath), "AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
             {
                 var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
-                
+
                 DeploymentOptions deploymentOptions = 0;
 
                 if (options.HasFlag(AddPackageOptions.AllowDowngrade))
@@ -181,7 +213,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 try
                 {
                     var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
-                    
+
                     DeploymentOptions deploymentOptions = 0;
 
                     if (options.HasFlag(AddPackageOptions.AllowDowngrade))
@@ -213,7 +245,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                         {
                             throw new InvalidOperationException("The package could not be registered.");
                         }
-                        
+
                         var familyName = findInstalled.Id.FamilyName;
 
                         await AsyncOperationHelper.ConvertToTask(
@@ -264,7 +296,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 {
                     throw new InvalidOperationException("Cannot execute a command in this package context. The package does not have any applications defined.");
                 }
-                
+
                 await RunToolInContext(package.PackageFamilyName, manifest.Applications[0].Id, toolPath, arguments, cancellationToken, progress).ConfigureAwait(false);
             }
         }
@@ -374,7 +406,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 throw new FileNotFoundException();
             }
-            
+
             var entryPoint = (await GetEntryPoints(packageManifestLocation).ConfigureAwait(false)).FirstOrDefault(e => appId == null || e == appId);
             if (entryPoint == null)
             {
@@ -401,7 +433,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            return this.GetInstalledPackages(null, mode, cancellationToken, progress);
+            return GetInstalledPackages(null, mode, cancellationToken, progress);
         }
 
         public async Task<List<InstalledPackage>> GetModificationPackages(string packageFullName, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
@@ -438,7 +470,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task<InstalledPackage> GetInstalledPackages(string packageName, string publisher, PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Windows.ApplicationModel.Package pkg;
+            Package pkg;
             switch (mode)
             {
                 case PackageFindMode.CurrentUser:
@@ -489,7 +521,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
             }
-            
+
             progress?.Report(new ProgressData(0, "Reading packages..."));
 
             if (isAdmin)
@@ -531,7 +563,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             progress?.Report(new ProgressData(5, "Reading packages..."));
 
-            IList<Windows.ApplicationModel.Package> allPackages;
+            IList<Package> allPackages;
 
             if (string.IsNullOrEmpty(packageName))
             {
@@ -554,14 +586,14 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        allPackages = new List<Windows.ApplicationModel.Package>
+                        allPackages = new List<Package>
                         {
                             await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false)
                         };
 
                         break;
                     case PackageFindMode.AllUsers:
-                        allPackages = new List<Windows.ApplicationModel.Package>
+                        allPackages = new List<Package>
                         {
                             await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false)
                         };
@@ -579,9 +611,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             var cnt = 0;
             var all = allPackages.Count;
-            
+
             var tasks = new HashSet<Task<InstalledPackage>>();
-            var config = await this.configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
+            var config = await configurationService.GetCurrentConfigurationAsync(true, cancellationToken).ConfigureAwait(false);
 
             int maxThreads;
             if (config.Advanced?.DisableMultiThreadingForGetPackages == false || config.Advanced?.MaxThreadsForGetPackages < 2)
@@ -607,8 +639,8 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 progress?.Report(new ProgressData((int)total, $"Reading package {cnt} out of {all}..."));
 
                 cancellationToken.ThrowIfCancellationRequested();
-                
-                if (tasks.Count >= maxThreads) 
+
+                if (tasks.Count >= maxThreads)
                 {
                     var awaited = await Task.WhenAny(tasks).ConfigureAwait(false);
                     tasks.Remove(awaited);
@@ -652,7 +684,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             return list;
         }
 
-        private async Task<InstalledPackage> ConvertFrom(Windows.ApplicationModel.Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
+        private async Task<InstalledPackage> ConvertFrom(Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             Logger.Debug("Getting details about package {0}...", item.Id.Name);
             string installLocation;
@@ -695,7 +727,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             else
             {
                 details = await GetVisualsFromManifest(installLocation, cancellationToken).ConfigureAwait(false);
-                hasRegistry = await this.registryManager.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
+                hasRegistry = await registryManager.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
             }
 
             var pkg = new InstalledPackage()
@@ -717,14 +749,15 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 Version = new Version(item.Id.Version.Major, item.Id.Version.Minor, item.Id.Version.Build, item.Id.Version.Revision),
                 SignatureKind = Convert(item.SignatureKind),
                 HasRegistry = hasRegistry,
-                InstallDate = installDate
+                InstallDate = installDate,
+                AppInstallerUri = item.GetAppInstallerInfo()?.Uri
             };
 
             if (pkg.Architecture[0] == 'X')
             {
                 pkg.Architecture = "x" + pkg.Architecture.Substring(1);
             }
-
+            
             if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))
@@ -827,19 +860,19 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
         }
 
-        private static SignatureKind Convert(Windows.ApplicationModel.PackageSignatureKind signatureKind)
+        private static SignatureKind Convert(PackageSignatureKind signatureKind)
         {
             switch (signatureKind)
             {
-                case Windows.ApplicationModel.PackageSignatureKind.None:
+                case PackageSignatureKind.None:
                     return SignatureKind.Unsigned;
-                case Windows.ApplicationModel.PackageSignatureKind.Developer:
+                case PackageSignatureKind.Developer:
                     return SignatureKind.Developer;
-                case Windows.ApplicationModel.PackageSignatureKind.Enterprise:
+                case PackageSignatureKind.Enterprise:
                     return SignatureKind.Enterprise;
-                case Windows.ApplicationModel.PackageSignatureKind.Store:
+                case PackageSignatureKind.Store:
                     return SignatureKind.Store;
-                case Windows.ApplicationModel.PackageSignatureKind.System:
+                case PackageSignatureKind.System:
                     return SignatureKind.System;
                 default:
                     throw new NotSupportedException();

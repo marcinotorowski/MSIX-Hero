@@ -872,6 +872,16 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRight}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
+                    <Fluent:Button Header="Check for updates..." Command="{x:Static commands:MsixHeroCommands.CheckUpdates}">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUpdates}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUpdates}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
 

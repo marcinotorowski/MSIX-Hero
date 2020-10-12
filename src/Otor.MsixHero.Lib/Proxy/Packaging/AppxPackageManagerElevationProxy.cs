@@ -47,6 +47,13 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             return await this.client.Get(proxyObject, cancellationToken, progress).ConfigureAwait(false);
         }
 
+        public async Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(string itemPackageId, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var proxyObject = new CheckUpdateAvailabilityDto(itemPackageId);
+
+            return await this.client.Get(proxyObject, cancellationToken, progress).ConfigureAwait(false);
+        }
+
         public Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var proxyObject = new DeprovisionDto

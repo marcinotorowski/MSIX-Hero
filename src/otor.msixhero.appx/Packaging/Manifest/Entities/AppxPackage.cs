@@ -57,5 +57,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
         public List<AppxCapability> Capabilities { get; set; }
 
         public bool PackageIntegrity { get; set; }
+
+        public Uri AppInstallerUri { get; set; }
     }
 }

@@ -53,5 +53,37 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             await Task.Delay(100, token).ConfigureAwait(false);
             return res;
         }
+
+        public static async Task<T> ConvertToTask<T>(IAsyncOperation<T> operation, CancellationToken token = default)
+        {
+            await Task.Delay(100, token).ConfigureAwait(false);
+
+            var cts = new TaskCompletionSource<T>();
+
+            operation.Completed += (info, status) =>
+            {
+                switch (status)
+                {
+                    case AsyncStatus.Completed:
+                        cts.TrySetResult(info.GetResults());
+                        break;
+                    case AsyncStatus.Error:
+                        cts.TrySetException(info.ErrorCode);
+                        break;
+                    case AsyncStatus.Canceled:
+                        cts.TrySetCanceled(token);
+                        break;
+                    default:
+                        cts.TrySetCanceled();
+                        break;
+                }
+            };
+
+            token.Register(() => { cts.TrySetCanceled(token); });
+            
+            var res = await cts.Task.ConfigureAwait(false);
+            await Task.Delay(100, token).ConfigureAwait(false);
+            return res;
+        }
     }
 }

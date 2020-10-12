@@ -22,6 +22,7 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
         {
             yield return typeof(AddDto);
             yield return typeof(DeprovisionDto);
+            yield return typeof(CheckUpdateAvailabilityDto);
             yield return typeof(StopDto);
             yield return typeof(GetByManifestPathDto);
             yield return typeof(GetByIdentityDto);
@@ -155,6 +156,11 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             if (command is DeprovisionDto deprovisionDto)
             {
                 return this.SelfElevationAwareObject.Deprovision(deprovisionDto.PackageFamilyName, cancellationToken, progress);
+            }
+
+            if (command is CheckUpdateAvailabilityDto checkUpdatesDto)
+            {
+                return this.SelfElevationAwareObject.CheckForUpdates(checkUpdatesDto.PackageFullName, cancellationToken, progress);
             }
 
             if (command is StopDto stopDto)

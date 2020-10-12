@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.System;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Interop;
@@ -505,6 +506,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 appxPackage.FullName = AppxPackaging.GetPackageFullName(appxPackage.Name, appxPackage.Publisher, appxPackage.ProcessorArchitecture, appxPackage.Version, appxPackage.ResourceId);
                 
                 appxPackage.Capabilities = this.GetCapabilities(nodeCapabilitiesRoot);
+
+                var pkgManager = new PackageManager();
+                var pkg = pkgManager.FindPackageForUser(string.Empty, appxPackage.FullName);
+                if (pkg != null)
+                {
+                    appxPackage.AppInstallerUri = pkg.GetAppInstallerInfo()?.Uri;
+                }
 
                 return await Translate(fileReader, appxPackage, cancellationToken).ConfigureAwait(false);
             }

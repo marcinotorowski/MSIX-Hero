@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
@@ -24,6 +25,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
             this.PublisherDisplayName = model.PublisherDisplayName;
             this.Version = model.Version;
             this.Logo = model.Logo;
+            this.AppInstallerUri = model.AppInstallerUri;
 
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
@@ -83,6 +85,10 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
             this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
             this.PackageIntegrity = model.PackageIntegrity;
         }
+
+        public Uri AppInstallerUri { get; }
+
+        public bool HasAppInstallerUri => this.AppInstallerUri != default;
 
         public bool PackageIntegrity { get; }
 

@@ -410,6 +410,62 @@
                         <TabItem Style="{StaticResource Compact}">
                             <TabItem.Header>
                                 <TextBlock>
+                            <Run Text="Optional content" />
+                            <Run Text="{Binding Addons.CurrentValue.Count, Mode=OneWay}"  Foreground="#777" />
+                                </TextBlock>
+                            </TabItem.Header>
+                            <progressOverlay:ProgressOverlay IsShown="{Binding Addons.IsLoading}">
+
+                                <zeroOrAny:ZeroOrAny ItemsCount="{Binding Addons.CurrentValue.Count}">
+                                    <zeroOrAny:ZeroOrAny.Template>
+                                        <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
+                                            <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
+                                        </ControlTemplate>
+                                    </zeroOrAny:ZeroOrAny.Template>
+                                    <zeroOrAny:ZeroOrAny.AnyItemTemplate>
+                                        <DataTemplate>
+                                            <ItemsControl
+                                                ItemsSource="{Binding Addons.CurrentValue}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                        <DockPanel Margin="0 0 8 8">
+                                                            <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                                    <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                                </Border>
+                                                            </Border>
+
+                                                            <StackPanel DockPanel.Dock="Right">
+                                                                <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Margin="10 0">
+                                                                <TextBlock TextTrimming="CharacterEllipsis">
+                                                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
+                                                                </TextBlock>
+                                                                <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
+                                                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
+                                                                </TextBlock>
+                                                            </StackPanel>
+
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </DataTemplate>
+                                    </zeroOrAny:ZeroOrAny.AnyItemTemplate>
+                                    <zeroOrAny:ZeroOrAny.NoItemsTemplate>
+                                        <DataTemplate>
+                                            <msixHeroText1:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
+                                        </DataTemplate>
+                                    </zeroOrAny:ZeroOrAny.NoItemsTemplate>
+                                </zeroOrAny:ZeroOrAny>
+                            </progressOverlay:ProgressOverlay>
+                        </TabItem>
+
+                        <TabItem Style="{StaticResource Compact}">
+                            <TabItem.Header>
+                                <TextBlock>
                                     <Run Text="Capabilities" />
                                     <Run Text="{Binding SelectedPackageManifestInfo.CurrentValue.Capabilities.Count, Mode=OneWay}" Foreground="#777" />
                                 </TextBlock>
@@ -603,70 +659,24 @@
                 </TabItem>
                 <TabItem Header="Installation" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                     <TabControl Margin="0 -7 0 0">
-                        <TabItem Style="{StaticResource Compact}">
-                            <TabItem.Header>
-                                <TextBlock>
-                            <Run Text="Modifications + Add-ons" />
-                            <Run Text="{Binding Addons.CurrentValue.Count, Mode=OneWay}"  Foreground="#777" />
-                                </TextBlock>
-                            </TabItem.Header>
-                            <progressOverlay:ProgressOverlay IsShown="{Binding Addons.IsLoading}">
-
-                                <zeroOrAny:ZeroOrAny ItemsCount="{Binding Addons.CurrentValue.Count}">
-                                    <zeroOrAny:ZeroOrAny.Template>
-                                        <ControlTemplate TargetType="zeroOrAny:ZeroOrAny">
-                                            <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
-                                        </ControlTemplate>
-                                    </zeroOrAny:ZeroOrAny.Template>
-                                    <zeroOrAny:ZeroOrAny.AnyItemTemplate>
-                                        <DataTemplate>
-                                            <ItemsControl
-                                                ItemsSource="{Binding Addons.CurrentValue}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                                        <DockPanel Margin="0 0 8 8">
-                                                            <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                                <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                                    <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
-                                                                </Border>
-                                                            </Border>
-
-                                                            <StackPanel DockPanel.Dock="Right">
-                                                                <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                                            </StackPanel>
-
-                                                            <StackPanel Margin="10 0">
-                                                                <TextBlock TextTrimming="CharacterEllipsis">
-                                                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
-                                                                </TextBlock>
-                                                                <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
-                                                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
-                                                                </TextBlock>
-                                                            </StackPanel>
-
-                                                        </DockPanel>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </DataTemplate>
-                                    </zeroOrAny:ZeroOrAny.AnyItemTemplate>
-                                    <zeroOrAny:ZeroOrAny.NoItemsTemplate>
-                                        <DataTemplate>
-                                            <msixHeroText1:MsixHeroText VerticalAlignment="Center" Tag="This package has no installed add-ons or modification packages." />
-                                        </DataTemplate>
-                                    </zeroOrAny:ZeroOrAny.NoItemsTemplate>
-                                </zeroOrAny:ZeroOrAny>
-                            </progressOverlay:ProgressOverlay>
+                        <TabItem Header="Source">
+                            <StackPanel DataContext="{Binding SelectedPackageManifestInfo.CurrentValue}" Margin="0 10 0 0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Installation source" />
+                                <TextBlock Style="{StaticResource DataValue}" Text="App installer file" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                
+                                <TextBlock Style="{StaticResource DataHeader}" Text="App installer path" />
+                                <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=AppInstallerUri, Mode=OneWay}" TextWrapping="Wrap" />
+                            </StackPanel>
                         </TabItem>
                         <TabItem Style="{StaticResource Compact}">
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Run Text="Installed by" />
+                                    <Run Text="Users" />
                                     <Run Text="{Binding SelectedPackageUsersInfo.CurrentValue.InstalledBy.Count, Mode=OneWay, FallbackValue=''}" Foreground="#777" />
                                     </TextBlock>
                                     <TextBlock Visibility="{Binding SelectedPackageUsersInfo.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
-                                    <Run Text="Installed by" />
+                                    <Run Text="Users" />
                                     </TextBlock>
                                 </StackPanel>
                             </TabItem.Header>

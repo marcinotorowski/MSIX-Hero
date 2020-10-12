@@ -53,6 +53,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenPowerShell}" Command="{Binding CommandHandler.OpenPowerShell}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.OpenLogs}" Command="{Binding CommandHandler.OpenLogs}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.CheckUpdates}" Command="{Binding CommandHandler.CheckUpdates}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.ChangeVolume}" Command="{Binding CommandHandler.ChangeVolume}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.DismountRegistry}" Command="{Binding CommandHandler.DismountRegistry}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
