@@ -803,7 +803,7 @@
                             <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
                         </Fluent:Button.SizeDefinition>
                         <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDirectory}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                     <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open manifest" Command="{x:Static commands:MsixHeroCommands.OpenManifest}">

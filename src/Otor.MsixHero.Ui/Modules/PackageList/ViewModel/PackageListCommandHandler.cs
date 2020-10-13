@@ -435,9 +435,10 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
         private async void CheckUpdatesExecute()
         {
-            var updatable = this.application.ApplicationState.Packages.SelectedPackages.Where(p => p.AppInstallerUri != null).ToArray();
+            var appInstallers = this.application.ApplicationState.Packages.SelectedPackages.Where(p => p.AppInstallerUri != null).ToArray();
+            var anyStore = this.application.ApplicationState.Packages.SelectedPackages.Any(p => p.SignatureKind == SignatureKind.Store);
 
-            if (!updatable.Any())
+            if (!appInstallers.Any() && !anyStore)
             {
                 return;
             }
@@ -446,9 +447,14 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 .WithBusyManager(this.busyManager, OperationType.Other)
                 .WithErrorHandling(this.interactionService, true);
 
-            if (updatable.Length == 1)
+            if (anyStore)
             {
-                var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(updatable[0].PackageId)).ConfigureAwait(false);
+                Process.Start(new ProcessStartInfo("ms-windows-store://downloadsandupdates") { UseShellExecute = true });
+            }
+
+            if (appInstallers.Length == 1)
+            {
+                var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(appInstallers[0].PackageId)).ConfigureAwait(false);
                 string msg;
                 switch (updateResult)
                 {
@@ -468,15 +474,64 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                         msg = "Could not check for updates.";
                         break;
                     default:
-                        msg = "Could not check fro updates.";
+                        msg = "Could not check for updates.";
                         break;
                 }
 
                 this.interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
             }
-            else
+            else if (appInstallers.Length > 1)
             {
-                throw new NotImplementedException("Checking for many apps at once is not supported yet.");
+                var updateResults = new Dictionary<AppInstallerUpdateAvailabilityResult, IList<string>>();
+
+                foreach (var item in appInstallers)
+                {
+                    var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(item.PackageId)).ConfigureAwait(false);
+
+                    if (!updateResults.TryGetValue(updateResult, out var list))
+                    {
+                        list = new List<string>();
+                        updateResults[updateResult] = list;
+                    }
+
+                    list.Add(item.DisplayName);
+                }
+
+                var stringBuilder = new StringBuilder();
+
+                foreach (var key in updateResults.Keys)
+                {
+                    switch (key)
+                    {
+                        case AppInstallerUpdateAvailabilityResult.Unknown:
+                            stringBuilder.AppendLine("These package were not installed via .appinstaller file:");
+                            break;
+                        case AppInstallerUpdateAvailabilityResult.NoUpdates:
+                            stringBuilder.AppendLine("No updates are available for these packages:");
+                            break;
+                        case AppInstallerUpdateAvailabilityResult.Available:
+                            stringBuilder.AppendLine("An optional update is available for these packages:");
+                            break;
+                        case AppInstallerUpdateAvailabilityResult.Required:
+                            stringBuilder.AppendLine("A required update is available for these packages:");
+                            break;
+                        case AppInstallerUpdateAvailabilityResult.Error:
+                            stringBuilder.AppendLine("Could not check for updates for these packages:");
+                            break;
+                        default:
+                            stringBuilder.AppendLine("Could not check for updates for these packages:");
+                            break;
+                    }
+
+                    foreach (var item in updateResults[key])
+                    {
+                        stringBuilder.AppendLine(item);
+                    }
+
+                    stringBuilder.AppendLine();
+                }
+
+                this.interactionService.ShowInfo(stringBuilder.ToString().Trim(), InteractionResult.OK, "Update check result");
             }
         }
 
@@ -530,7 +585,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 return false;
             }
 
-            return selection.Any(s => s.AppInstallerUri != null);
+            return selection.Any(s => s.AppInstallerUri != null || s.SignatureKind == SignatureKind.Store);
         }
 
         private bool CanExecuteOpenPowerShell()

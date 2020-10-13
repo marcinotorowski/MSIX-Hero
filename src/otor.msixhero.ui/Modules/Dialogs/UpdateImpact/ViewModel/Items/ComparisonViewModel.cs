@@ -125,8 +125,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel.Items
             task.ContinueWith(this.LoadView, CancellationToken.None, TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 #pragma warning restore 4014
 
-            this.Content1 = new PackageContentDetailsViewModel(updateImpact.OldPackage.Manifest);
-            this.Content2 = new PackageContentDetailsViewModel(updateImpact.NewPackage.Manifest);
+            this.Content1 = new PackageContentDetailsViewModel(updateImpact.OldPackage.Manifest, updateImpact.OldPackage.Path);
+            this.Content2 = new PackageContentDetailsViewModel(updateImpact.NewPackage.Manifest, updateImpact.NewPackage.Path);
 
             var comparePackage = updateImpact.Comparison;
 

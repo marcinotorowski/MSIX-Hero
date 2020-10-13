@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Ui.ViewModel;
 
 namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
@@ -11,9 +11,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
     {
         private AppxApplicationViewModel selectedFixup;
 
-        public AppxPackage Model { get; private set; }
-
-        public PackageContentDetailsViewModel(AppxPackage model)
+        public PackageContentDetailsViewModel(AppxPackage model, string filePath = null)
         {
             this.Model = model;
             this.DisplayName = model.DisplayName;
@@ -25,12 +23,11 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
             this.PublisherDisplayName = model.PublisherDisplayName;
             this.Version = model.Version;
             this.Logo = model.Logo;
-            this.AppInstallerUri = model.AppInstallerUri;
-
+            
             this.OperatingSystemDependencies = new ObservableCollection<OperatingSystemDependencyViewModel>();
             this.Applications = new ObservableCollection<AppxApplicationViewModel>();
             this.PackageDependencies = new ObservableCollection<PackageDependencyViewModel>();
-
+            
             if (model.OperatingSystemDependencies != null)
             {
                 foreach (var item in model.OperatingSystemDependencies)
@@ -84,11 +81,14 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
 
             this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
             this.PackageIntegrity = model.PackageIntegrity;
+            this.RootDirectory = filePath;
         }
 
-        public Uri AppInstallerUri { get; }
+        public string RootDirectory { get; }
 
-        public bool HasAppInstallerUri => this.AppInstallerUri != default;
+        public AppxPackage Model { get; private set; }
+
+        public bool HasAppInstallerUri => this.Model.Source is AppInstallerPackageSource;
 
         public bool PackageIntegrity { get; }
 

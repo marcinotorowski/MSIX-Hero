@@ -7,12 +7,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.System;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf;
@@ -509,9 +511,45 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                 var pkgManager = new PackageManager();
                 var pkg = pkgManager.FindPackageForUser(string.Empty, appxPackage.FullName);
-                if (pkg != null)
+
+                string manifestFilePath;
+                if (pkg?.InstalledLocation != null)
                 {
-                    appxPackage.AppInstallerUri = pkg.GetAppInstallerInfo()?.Uri;
+                    manifestFilePath = Path.Combine(pkg.InstalledLocation.Path, "AppxManifest.xml");
+                }
+                else if (fileReader is IAppxDiskFileReader appxDiskReader)
+                {
+                    manifestFilePath = Path.Combine(appxDiskReader.RootDirectory, manifestFileName);
+                }
+                else
+                {
+                    manifestFilePath = manifestFileName;
+                }
+
+                if (pkg == null)
+                {
+                    appxPackage.Source = new NotInstalledSource();
+                }
+                else if (pkg.SignatureKind == PackageSignatureKind.None || pkg.IsDevelopmentMode)
+                {
+                    appxPackage.Source = new DeveloperSource(manifestFileName);
+                }
+                else if (pkg.SignatureKind == PackageSignatureKind.Store)
+                {
+                    appxPackage.Source = new StorePackageSource(appxPackage.FamilyName, Path.GetDirectoryName(manifestFilePath));
+                }
+                else
+                {
+                    var appInstaller = pkg.GetAppInstallerInfo();
+                    if (appInstaller != null)
+                    {
+                        appxPackage.Source = new AppInstallerPackageSource(appInstaller.Uri, Path.GetDirectoryName(manifestFilePath));
+                    }
+                }
+
+                if (appxPackage.Source == null)
+                {
+                    appxPackage.Source = new StandardSource(manifestFilePath);
                 }
 
                 return await Translate(fileReader, appxPackage, cancellationToken).ConfigureAwait(false);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using Otor.MsixHero.Infrastructure.Logging;
@@ -56,6 +57,12 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.View
             {
                 Logger.Error(exception);
             }
+        }
+
+        private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dir = (string) ((Hyperlink) sender).Tag;
+            Process.Start("explorer.exe", "/select," + Path.Combine(dir, "AppxManifest.xml"));
         }
     }
 }

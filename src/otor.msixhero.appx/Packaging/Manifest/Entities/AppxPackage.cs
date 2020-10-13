@@ -58,6 +58,6 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 
         public bool PackageIntegrity { get; set; }
 
-        public Uri AppInstallerUri { get; set; }
+        public AppxSource Source { get; set; }
     }
 }

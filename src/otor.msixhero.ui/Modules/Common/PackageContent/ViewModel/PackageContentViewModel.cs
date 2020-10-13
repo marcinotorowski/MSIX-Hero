@@ -214,6 +214,12 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             await Task.WhenAll(getAddons, loadUsers, loadSignature).ConfigureAwait(false);
 
             this.FirstLoading = false;
+
+            if (source is IAppxDiskFileReader diskReader)
+            {
+                return new PackageContentDetailsViewModel(appxManifest, diskReader.RootDirectory);
+            }
+
             return new PackageContentDetailsViewModel(appxManifest);
         }
 
