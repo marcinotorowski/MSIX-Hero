@@ -1,4 +1,5 @@
 ﻿<UserControl 
+    Focusable="False"
     x:Name="root"
     x:Class="Otor.MsixHero.Ui.Controls.UpdateNotification.UpdateNotificationControl"
      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -12,8 +13,8 @@
         <SolidColorBrush Color="#FFFDE4" />
     </UserControl.Background>
     <DockPanel Margin="4 0">
-        <Button DockPanel.Dock="Right" VerticalAlignment="Center" Content="Dismiss" Margin="4 0" Padding="8 2" Click="OnCloseClick" />
-        <Button DockPanel.Dock="Right" VerticalAlignment="Center" Content="Show release notes" Margin="4 0" Click="OnShowReleaseNotesClick" Padding="8 2" />
+        <Button Focusable="False" DockPanel.Dock="Right" VerticalAlignment="Center" Content="Dismiss" Margin="4 0" Padding="8 2" Click="OnCloseClick" />
+        <Button Focusable="False" DockPanel.Dock="Right" VerticalAlignment="Center" Content="Show release notes" Margin="4 0" Click="OnShowReleaseNotesClick" Padding="8 2" />
 
         <TextBlock VerticalAlignment="Center" Margin="8 0" TextWrapping="Wrap">
             <Run Text="MSIX Hero has been updated to version" />
