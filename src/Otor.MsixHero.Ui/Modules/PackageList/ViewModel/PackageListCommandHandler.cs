@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
@@ -78,7 +79,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.CheckUpdates = new DelegateCommand(param => this.CheckUpdatesExecute(), param => this.CanExecuteCheckUpdates());
 
             // General APPX
-            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
+            this.AddPackage = new DelegateCommand(param => this.AddPackageExecute(null, param is bool boolParam && boolParam), param => this.CanExecuteAddPackage());
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.Pack = new DelegateCommand(param => this.PackExecute());
             this.AppAttach = new DelegateCommand(param => this.AppAttachExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
@@ -191,31 +192,34 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             return true;
         }
 
-        private async void AddPackageExecute(bool forAllUsers)
+        private async void AddPackageExecute(string packagePath, bool forAllUsers)
         {
-            string selection;
-            if (forAllUsers)
+            if (packagePath == null)
             {
-                if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx|Packages|*.msix;*.appx", out selection))
+                if (forAllUsers)
                 {
-                    return;
+                    if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx|Packages|*.msix;*.appx", out packagePath))
+                    {
+                        return;
+                    }
                 }
-            }
-            else
-            {
-                if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx;*.appxbundle;*.appinstaller;AppxManifest.xml|Packages and bundles|*.msix;*.appx;*.appxbundle|App installer files|*.appinstaller|Manifest files|AppxManifest.xml", out selection))
+                else
                 {
-                    return;
+                    if (!this.interactionService.SelectFile("All supported files|*.msix;*.appx;*.appxbundle;*.appinstaller;AppxManifest.xml|Packages and bundles|*.msix;*.appx;*.appxbundle|App installer files|*.appinstaller|Manifest files|AppxManifest.xml", out packagePath))
+                    {
+                        return;
+                    }
                 }
             }
 
             AddPackageOptions options = 0;
+           
             if (forAllUsers)
             {
                 options |= AddPackageOptions.AllUsers;
             }
 
-            options |= AddPackageOptions.AllowDowngrade;
+            //options |= AddPackageOptions.AllowDowngrade;
             options |= AddPackageOptions.KillRunningApps;
 
             var context = this.busyManager.Begin();
@@ -227,15 +231,15 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                     var p2 = wrappedProgress.GetChildProgress(10);
 
                     var manager = await this.packageManagerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
-                    await manager.Add(selection, options, progress: p1).ConfigureAwait(false);
+                    await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
                    
                     AppxManifestSummary appxReader;
 
                     var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>> (this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
                     
-                    if (!string.Equals(".appinstaller", Path.GetExtension(selection), StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(".appinstaller", Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
                     {
-                        appxReader = await AppxManifestSummaryBuilder.FromFile(selection, AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
+                        appxReader = await AppxManifestSummaryBuilder.FromFile(packagePath, AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
                     }
                     else
                     {
@@ -249,6 +253,10 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                         {
                             await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.ManifestLocation)).ConfigureAwait(false);
                         }
+                    }
+                    else
+                    {
+                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
                     }
                 }
             }
@@ -456,6 +464,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             {
                 var updateResult = await executor.Invoke<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>(this, new CheckForUpdatesCommand(appInstallers[0].PackageId)).ConfigureAwait(false);
                 string msg;
+
+                var askForUpdate = false;
                 switch (updateResult)
                 {
                     case AppInstallerUpdateAvailabilityResult.Unknown:
@@ -466,9 +476,11 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                         break;
                     case AppInstallerUpdateAvailabilityResult.Available:
                         msg = "An optional update is available.";
+                        askForUpdate = true;
                         break;
                     case AppInstallerUpdateAvailabilityResult.Required:
                         msg = "A required update is available.";
+                        askForUpdate = true;
                         break;
                     case AppInstallerUpdateAvailabilityResult.Error:
                         msg = "Could not check for updates.";
@@ -478,7 +490,17 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                         break;
                 }
 
-                this.interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
+                if (!askForUpdate)
+                {
+                    this.interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
+                }
+                else
+                {
+                    if (this.interactionService.ShowMessage(msg, new[] { "Update now" }, "Update check result", systemButtons: InteractionResult.Close) == 0)
+                    {
+                        this.AddPackageExecute(appInstallers[0].AppInstallerUri.ToString(), false);
+                    }
+                }
             }
             else if (appInstallers.Length > 1)
             {
@@ -531,7 +553,21 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                     stringBuilder.AppendLine();
                 }
 
-                this.interactionService.ShowInfo(stringBuilder.ToString().Trim(), InteractionResult.OK, "Update check result");
+                if (updateResults.Keys.Any(k =>
+                    k == AppInstallerUpdateAvailabilityResult.Required ||
+                    k == AppInstallerUpdateAvailabilityResult.Available))
+                {
+                    var msg = "Updates are available for the following packages:\r\n" + string.Join("\r\n",
+                        updateResults
+                            .Where(k => k.Key == AppInstallerUpdateAvailabilityResult.Available ||
+                                        k.Key == AppInstallerUpdateAvailabilityResult.Required).Select(kv => kv.Value));
+
+                    this.interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
+                }
+                else
+                {
+                    this.interactionService.ShowInfo("There are no updates available.", InteractionResult.OK, "Update check result");
+                }
             }
         }
 
@@ -789,6 +825,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                     await manager.Remove(selection, allUsersRemoval, progress: p1).ConfigureAwait(false);
 
                     await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
+                    await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
                 }
             }
             catch (Exception exception)

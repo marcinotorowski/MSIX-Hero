@@ -14,7 +14,14 @@ namespace Otor.MsixHero.Ui.Hero.Commands.Packages
 
         public SelectPackagesCommand(string manifestPaths)
         {
-            this.SelectedManifestPaths = new List<string> { manifestPaths };
+            if (manifestPaths == null)
+            {
+                this.SelectedManifestPaths = new List<string>();
+            }
+            else
+            {
+                this.SelectedManifestPaths = new List<string> { manifestPaths };
+            }
         }
 
         public SelectPackagesCommand(IList<string> manifestPaths)

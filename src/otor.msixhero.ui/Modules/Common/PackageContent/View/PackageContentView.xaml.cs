@@ -39,7 +39,6 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.View
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
-
         }
 
         private void HyperlinkOnClick(object sender, RoutedEventArgs e)

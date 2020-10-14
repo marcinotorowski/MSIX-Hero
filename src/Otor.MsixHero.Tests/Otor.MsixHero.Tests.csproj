@@ -12,6 +12,7 @@
     <None Remove="Resources\inno.exe" />
     <None Remove="Resources\MSIX.Commander_1.0.7.5-x64.msix" />
     <None Remove="Resources\nsis.exe" />
+    <None Remove="Resources\resources.pri" />
     <None Remove="Resources\wintrust.dll.ini" />
     <None Remove="UpdateImpact\update.xml" />
   </ItemGroup>
@@ -26,6 +27,7 @@
     <EmbeddedResource Include="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\resources.pri" />
     <EmbeddedResource Include="Resources\wintrust.dll.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

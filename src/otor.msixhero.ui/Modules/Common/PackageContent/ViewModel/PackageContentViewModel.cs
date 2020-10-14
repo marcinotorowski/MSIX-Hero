@@ -55,6 +55,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         private IAppxFileReader packageSource;
         private IDisposable disposableSubscriber;
         private bool firstLoading = true;
+        private string previousManifest;
 
         public PackageContentViewModel(
             IInterProcessCommunicationManager interProcessCommunicationManager,
@@ -273,6 +274,8 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             this.disposableSubscriber = this.runningDetector.Subscribe(this);
 
             var manifest = navigation.SelectedManifests.First();
+            this.previousManifest = manifest;
+
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
             var task = this.LoadPackage(fileReader, CancellationToken.None);
 
@@ -309,7 +312,18 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
         {
             var navigation = new PackageListNavigation(navigationContext);
-            return navigation.SelectedManifests?.Count == 1;
+            if (navigation.SelectedManifests?.Count != 1)
+            {
+                return false;
+            }
+
+            var newManifest = navigation.SelectedManifests.First();
+            if (this.previousManifest == null)
+            {
+                return true;
+            }
+
+            return string.Equals(this.previousManifest, newManifest, StringComparison.OrdinalIgnoreCase);
         }
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)

@@ -3,12 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using PriFormat;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
     public static class StringLocalizer
     {
-        public static string Localize(string priFile, string appId, string resourceId)
+        public static string Localize(string priFile, string appId, string packageFullName, string resourceId)
         {
             if (resourceId == null || !resourceId.StartsWith("ms-resource:"))
             {
@@ -20,7 +21,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 return resourceId;
             }
 
-            string fullString;
+            var outBuff = new StringBuilder(1024);
+
 
             resourceId = resourceId.Remove(0, "ms-resource:".Length);
             if (string.IsNullOrEmpty(resourceId))
@@ -28,36 +30,77 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 return resourceId;
             }
 
+            string fullString;
+
+            if (resourceId.StartsWith("//"))
+            {
+                fullString = "@{" + priFile + "?ms-resource:" + resourceId.TrimEnd('/') + "}";
+                if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
+                {
+                    return outBuff.ToString();
+                }
+            }
+
+            string msResource;
             if (resourceId[0] == '/')
             {
                 var split = resourceId.Split('/');
                 var newResourceId = string.Join('/', split.Take(2)) + "/" + string.Join('.', split.Skip(2));
-                fullString = "@{" + priFile + "?ms-resource://" + appId + newResourceId.TrimEnd('/') + "}";
+                msResource = "ms-resource://" + appId + newResourceId.TrimEnd('/');
             }
             else if (resourceId.IndexOf('/') != -1)
             {
                 var split = resourceId.Split('/');
                 var newResourceId = string.Join('/', split.Take(1)) + "/" + string.Join('.', split.Skip(1));
-                fullString = "@{" + priFile + "?ms-resource://" + appId + "/" + newResourceId.TrimEnd('/') + "}";
+                msResource = "ms-resource://" + appId + "/" + newResourceId.TrimEnd('/');
             }
             else
             {
                 var split = resourceId.Split('/');
                 var newResourceId = string.Join('/', split.Take(1)) + "/" + string.Join('.', split.Skip(1));
-                fullString = "@{" + priFile + "?ms-resource://" + appId + "/resources/" + newResourceId.TrimEnd('/') + "}";
+                msResource = "ms-resource://" + appId + "/resources/" + newResourceId.TrimEnd('/') ;
             }
 
-            var outBuff = new StringBuilder(1024);
+            fullString = "@{" + priFile + "?" + msResource + "}";
+
             if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
             {
                 return outBuff.ToString();
             }
-            else
-            {
-                return resourceId;
-            }
-        }
 
+            fullString = "@{" + packageFullName + "?" + msResource + "}";
+            if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
+            {
+                return outBuff.ToString();
+            }
+
+            using (var s = File.OpenRead(priFile))
+            {
+                var pri= PriFile.Parse(s);
+                var name = pri.Sections.OfType<HierarchicalSchemaSection>().FirstOrDefault(s => s.UniqueName != null);
+                if (name != null)
+                {
+                    msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + "Resources/" + resourceId.TrimEnd('/');
+                    fullString = "@{" + priFile + "?" + msResource + "}";
+
+                    if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
+                    {
+                        return outBuff.ToString();
+                    }
+
+                    msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + resourceId.TrimEnd('/');
+                    fullString = "@{" + priFile + "?" + msResource + "}";
+
+                    if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
+                    {
+                        return outBuff.ToString();
+                    }
+                }
+            }
+
+            return resourceId;
+        }
+        
         [DllImport("shlwapi.dll", BestFitMapping = false, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = false, ThrowOnUnmappableChar = true)]
         private static extern int SHLoadIndirectString(string pszSource, StringBuilder pszOutBuf, int cchOutBuf, IntPtr ppvReserved);
     }

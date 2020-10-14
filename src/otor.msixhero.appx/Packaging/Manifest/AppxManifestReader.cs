@@ -595,14 +595,14 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         }
                     }
 
-                    package.DisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.DisplayName);
-                    package.Description = StringLocalizer.Localize(priFullPath, package.Name, package.Description);
-                    package.PublisherDisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.PublisherDisplayName);
-
+                    package.DisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.DisplayName);
+                    package.Description = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.Description);
+                    package.PublisherDisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.PublisherDisplayName);
+                    
                     foreach (var app in package.Applications ?? Enumerable.Empty<AppxApplication>())
                     {
-                        app.DisplayName = StringLocalizer.Localize(priFullPath, app.Id, app.DisplayName);
-                        app.Description = StringLocalizer.Localize(priFullPath, app.Id, app.Description);
+                        app.DisplayName = StringLocalizer.Localize(priFullPath, app.Id, package.FullName, app.DisplayName);
+                        app.Description = StringLocalizer.Localize(priFullPath, app.Id, package.FullName, app.Description);
                     }
                 }
 

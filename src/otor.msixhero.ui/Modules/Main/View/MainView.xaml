@@ -752,8 +752,7 @@
             </Fluent:RibbonTabItem>
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabManagement"
-                ReduceOrder="
-                    RibbonManagementNavi, RibbonManagementOther, RibbonManagementNavi, RibbonManagementControl,RibbonManagementOther,RibbonManagementControl"
+                ReduceOrder="RibbonManagementOther, RibbonManagementControl,RibbonManagementOther,RibbonManagementControl"
                 Header="Management" Group="{Binding Source={x:Reference SelectedPackage}}">
 
                 <Fluent:RibbonGroupBox x:Name="RibbonManagementStart" Header="Start">
@@ -782,46 +781,6 @@
                         </Fluent:Button.Icon>
                     </Fluent:Button>
 
-                </Fluent:RibbonGroupBox>
-                <Fluent:RibbonGroupBox IsEnabled="{Binding HasSelection}" x:Name="RibbonManagementNavi" Header="Navigation">
-                    <Fluent:RibbonGroupBox.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                    </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open install location" Command="{x:Static commands:MsixHeroCommands.OpenExplorer}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open user data location" Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDirectory}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open manifest" Command="{x:Static commands:MsixHeroCommands.OpenManifest}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open config.json" Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}">
-                        <Fluent:Button.SizeDefinition>
-                            <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
-                        </Fluent:Button.SizeDefinition>
-                        <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox x:Name="RibbonManagementControl"  Header="Control" IsEnabled="{Binding HasSelection}">
                     <Fluent:Button Header="Remove for current user" Command="Delete" ToolTip="Removes this app for the current user only">
@@ -862,6 +821,16 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox x:Name="RibbonManagementOther" Header="Other" IsEnabled="{Binding HasSelection}">
+
+                    <Fluent:Button Header="Check for updates..." Command="{x:Static commands:MsixHeroCommands.CheckUpdates}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUpdates}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUpdates}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+
                     <Fluent:Button Header="Change volume..." Command="{x:Static commands:MsixHeroCommands.ChangeVolume}">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
@@ -870,14 +839,6 @@
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRight}" />
-                        </Fluent:Button.Icon>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Check for updates..." Command="{x:Static commands:MsixHeroCommands.CheckUpdates}">
-                        <Fluent:Button.LargeIcon>
-                            <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUpdates}" />
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUpdates}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -937,40 +898,49 @@
             <Fluent:RibbonTabItem 
                 x:Name="RibbonTabDeveloper" 
                 ReduceOrder="
-                    RibbonDevRun, RibbonDevReg, RibbonDevCreate, 
-                    RibbonDevRun, RibbonDevReg, RibbonDevCreate, 
-                    RibbonDevRun, RibbonDevReg, RibbonDevCreate"
+                    RibbonDevRun, RibbonManagementNavi, RibbonDevReg, RibbonDevCreate,
+                    RibbonDevRun, RibbonManagementNavi, RibbonDevReg, RibbonDevCreate,
+                    RibbonDevRun, RibbonManagementNavi, RibbonDevReg, RibbonDevCreate"
                   Header="Developer" 
                 Group="{Binding Source={x:Reference SelectedPackage}}">
-                <Fluent:RibbonGroupBox x:Name="RibbonDevCreate" Header="Create...">
+
+                <Fluent:RibbonGroupBox IsEnabled="{Binding HasSelection}" x:Name="RibbonManagementNavi" Header="Navigation">
                     <Fluent:RibbonGroupBox.Icon>
-                        <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                     </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Modification package..." SizeDefinition="Large, Medium, Small" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
-                        <Fluent:Button.CommandParameter>
-                            <system:Boolean>True</system:Boolean>
-                        </Fluent:Button.CommandParameter>
+                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open install location" Command="{x:Static commands:MsixHeroCommands.OpenExplorer}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
+                        </Fluent:Button.SizeDefinition>
                         <Fluent:Button.LargeIcon>
-                            <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
+                            <Path Style="{StaticResource LargeIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
-                            <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                            <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Appinstaller definition..." SizeDefinition="Large, Medium, Small" Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
-                        <Fluent:Button.LargeIcon>
-                            <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
-                        </Fluent:Button.LargeIcon>
+                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open user data location" Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
+                        </Fluent:Button.SizeDefinition>
                         <Fluent:Button.Icon>
-                            <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDirectory}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Winget manifest (YAML)..." SizeDefinition="Large, Medium, Small" Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
-                        <Fluent:Button.LargeIcon>
-                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
-                        </Fluent:Button.LargeIcon>
+                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open manifest" Command="{x:Static commands:MsixHeroCommands.OpenManifest}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
+                        </Fluent:Button.SizeDefinition>
                         <Fluent:Button.Icon>
-                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource MediumIcon}" />
+                            <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Fluent:Button IsEnabled="{Binding HasSingleSelection}" Header="Open config.json" Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Middle" Middle="Middle" Small="Small" />
+                        </Fluent:Button.SizeDefinition>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -1133,6 +1103,38 @@
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Data="{StaticResource VectorRegistry}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox x:Name="RibbonDevCreate" Header="Create...">
+                    <Fluent:RibbonGroupBox.Icon>
+                        <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                    </Fluent:RibbonGroupBox.Icon>
+                    <Fluent:Button Header="Modification package..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+                        <Fluent:Button.CommandParameter>
+                            <system:Boolean>True</system:Boolean>
+                        </Fluent:Button.CommandParameter>
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Appinstaller definition..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Winget manifest (YAML)..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorConsole}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>

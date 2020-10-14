@@ -765,9 +765,9 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 var priFile = Path.Combine(installLocation, "resources.pri");
 
                 var appId = pkg.Name;
-                pkg.DisplayName = StringLocalizer.Localize(priFile, appId, pkg.DisplayName);
-                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, appId, pkg.DisplayPublisherName);
-                pkg.Description = StringLocalizer.Localize(priFile, appId, pkg.Description);
+                pkg.DisplayName = StringLocalizer.Localize(priFile, appId, pkg.PackageId, pkg.DisplayName);
+                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, appId, pkg.PackageId, pkg.DisplayPublisherName);
+                pkg.Description = StringLocalizer.Localize(priFile, appId, pkg.PackageId, pkg.Description);
             }
 
             return pkg;
