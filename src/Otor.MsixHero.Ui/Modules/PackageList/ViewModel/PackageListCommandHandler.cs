@@ -560,7 +560,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                     var msg = "Updates are available for the following packages:\r\n" + string.Join("\r\n",
                         updateResults
                             .Where(k => k.Key == AppInstallerUpdateAvailabilityResult.Available ||
-                                        k.Key == AppInstallerUpdateAvailabilityResult.Required).Select(kv => kv.Value));
+                                        k.Key == AppInstallerUpdateAvailabilityResult.Required).SelectMany(kv => kv.Value));
 
                     this.interactionService.ShowInfo(msg, InteractionResult.OK, "Update check result");
                 }

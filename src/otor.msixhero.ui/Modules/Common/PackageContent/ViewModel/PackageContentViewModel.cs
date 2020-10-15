@@ -312,18 +312,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)
         {
             var navigation = new PackageListNavigation(navigationContext);
-            if (navigation.SelectedManifests?.Count != 1)
-            {
-                return false;
-            }
-
-            var newManifest = navigation.SelectedManifests.First();
-            if (this.previousManifest == null)
-            {
-                return true;
-            }
-
-            return string.Equals(this.previousManifest, newManifest, StringComparison.OrdinalIgnoreCase);
+            return navigation.SelectedManifests?.Count == 1;
         }
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)

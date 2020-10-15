@@ -511,6 +511,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                 var pkgManager = new PackageManager();
                 var pkg = pkgManager.FindPackageForUser(string.Empty, appxPackage.FullName);
+                if (pkg == null && appxPackage.ResourceId == null)
+                {
+                    appxPackage.FullName = AppxPackaging.GetPackageFullName(appxPackage.Name, appxPackage.Publisher, appxPackage.ProcessorArchitecture, appxPackage.Version, "neutral");
+                    pkg = pkgManager.FindPackageForUser(string.Empty, appxPackage.FullName);
+                }
 
                 string manifestFilePath;
                 if (pkg?.InstalledLocation != null)
