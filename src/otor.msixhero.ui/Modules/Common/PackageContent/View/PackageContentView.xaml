@@ -767,7 +767,9 @@
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
                                         </TextBlock>
-                                        <source:DeveloperSource ManifestFilePath="{Binding ManifestPath}" />
+
+                                        <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                        <TextBlock Style="{StaticResource DataValue}" Text="Manifest file (developer mode)" TextWrapping="Wrap" Margin="0 0 0 10" />
                                     </StackPanel>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type sources:StandardSource}">
@@ -781,7 +783,25 @@
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
                                         </TextBlock>
-                                        <source:StandardSource/>
+
+                                        <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                        <TextBlock Style="{StaticResource DataValue}" Text="Side-loaded package" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                    </StackPanel>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type sources:SystemSource}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                        <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+
+                                        <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                        <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
+                                            <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
+                                                <Run Text="{Binding RootDirectory, Mode=OneWay}" />
+                                            </Hyperlink>
+                                        </TextBlock>
+
+                                        <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                        <TextBlock Style="{StaticResource DataValue}" Text="System package" TextWrapping="Wrap" Margin="0 0 0 10" />
                                     </StackPanel>
                                 </DataTemplate>
                                 <DataTemplate DataType="{x:Type sources:NotInstalledSource}">

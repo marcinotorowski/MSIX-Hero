@@ -535,6 +535,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 {
                     appxPackage.Source = new NotInstalledSource();
                 }
+                else if (pkg.SignatureKind == PackageSignatureKind.System)
+                {
+                    appxPackage.Source = new SystemSource(manifestFilePath);
+                }
                 else if (pkg.SignatureKind == PackageSignatureKind.None || pkg.IsDevelopmentMode)
                 {
                     appxPackage.Source = new DeveloperSource(manifestFileName);
