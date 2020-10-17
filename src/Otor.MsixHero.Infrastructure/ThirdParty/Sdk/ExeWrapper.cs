@@ -68,8 +68,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 await standardOutputResults.Task.ConfigureAwait(false);
                 await standardErrorResults.Task.ConfigureAwait(false);
 
-                Logger.Trace("Standard error: " + string.Join(Environment.NewLine, standardError ?? Enumerable.Empty<string>()));
-                Logger.Trace("Standard output: " + string.Join(Environment.NewLine, standardOutput ?? Enumerable.Empty<string>()));
+                Logger.Trace("Standard error: " + string.Join(Environment.NewLine, standardError));
+                Logger.Trace("Standard output: " + string.Join(Environment.NewLine, standardOutput));
                 tcs.TrySetResult(process.ExitCode);
             };
 
@@ -103,7 +103,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 if (properExitCodes != null && properExitCodes.Any() && !properExitCodes.Contains(result))
                 {
-                    throw new ProcessWrapperException($"Process existed with an improper exit code {result}.", result, standardError.Any() ? standardError : standardOutput);
+                    throw new ProcessWrapperException(
+                        $"Process existed with an improper exit code {result}.", result, 
+                        standardError.Any() ? standardError : standardOutput,
+                        standardOutput);
                 }
 
                 return result;

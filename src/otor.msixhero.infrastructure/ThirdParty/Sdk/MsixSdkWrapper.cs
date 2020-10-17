@@ -24,7 +24,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var signToolArguments = new StringBuilder();
 
             signToolArguments.Append("sign");
-            signToolArguments.AppendFormat(" /fd {0}", algorithmType);
+            signToolArguments.AppendFormat(" /debug /fd {0}", algorithmType);
             signToolArguments.AppendFormat(" /a /f \"{0}\"", pfxPath);
 
             if (!string.IsNullOrEmpty(password))
@@ -63,7 +63,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
                 if (line != null)
                 {
-                    throw new SdkException($"The package could not be signed (exit code = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                    if (TryGetMessageForCriteria(e.StandardOutput, out var specialError))
+                    {
+                        throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
+                    }
+
+                    throw new SdkException($"The package could not be signed (error = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)
@@ -74,13 +79,13 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 throw;
             }
         }
-        
+
         public async Task SignPackageWithPersonal(IEnumerable<string> filePaths, string algorithmType, string thumbprint, bool useMachineStore, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder();
             
             signToolArguments.Append("sign");
-            signToolArguments.AppendFormat(" /fd {0}", algorithmType);
+            signToolArguments.AppendFormat(" /debug /fd {0}", algorithmType);
 
             if (useMachineStore)
             {
@@ -115,7 +120,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
                 if (line != null)
                 {
-                    throw new SdkException($"The package could not be signed (exit code = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                    if (TryGetMessageForCriteria(e.StandardOutput, out var specialError))
+                    {
+                        throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
+                    }
+
+                    throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)
@@ -271,6 +281,68 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 throw;
             }
+        }
+
+        private static bool TryGetMessageForCriteria(IList<string> lines, out string error)
+        {
+            error = null;
+            var extended = new StringBuilder();
+
+            var count = 0;
+            foreach (var line in lines)
+            {
+                if (line.Contains("Issued by: "))
+                {
+                    count++;
+                    continue;
+                }
+
+                if (!line.StartsWith("After "))
+                {
+                    continue;
+                }
+
+                /*
+                    After EKU filter, 2 certs were left.
+                    After expiry filter, 2 certs were left.
+                    After Private Key filter, 0 certs were left.
+                 */
+                var match = Regex.Match(line, @"After (.*) filter, (\d+) certs were left.");
+                if (!match.Success)
+                {
+                    continue;
+                }
+
+                extended.AppendLine("* " + line.Trim());
+                if (match.Groups[2].Value == "0")
+                {
+                    switch (match.Groups[1].Value.ToLowerInvariant())
+                    {
+                        case "private key":
+                            error = "The selected certificate does not have a private key.";
+                            break;
+                        case "expiry":
+                            error = "The selected certificate has expired.";
+                            break;
+                        case "eku":
+                            error = "The selected certificate cannot be used for signing purposes (EKU mismatch).";
+                            break;
+                        default:
+                            error = "The selected certificate does not meet the " + match.Groups[1].Value + " filter.";
+                            break;
+                    }
+
+                    break;
+                }
+            }
+
+            if (error != null)
+            {
+                Logger.Info("Additional info from SignTool.exe:" + string.Join(System.Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
+                return true;
+            }
+
+            return false;
         }
 
         private class PackUnPackProgressWrapper

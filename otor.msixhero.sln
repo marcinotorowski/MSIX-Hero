@@ -31,7 +31,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Registry", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LordMike.OffregLib", "src\external\LordMike.OffregLib\LordMike.OffregLib.csproj", "{DC9B3C96-5633-4262-8209-ADCDBF762670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chausner.PriTools", "src\external\chausner.PriTools\chausner.PriTools.csproj", "{46CAD57D-3657-4E82-9784-BFFD6A6EAA9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "chausner.PriTools", "src\external\chausner.PriTools\chausner.PriTools.csproj", "{46CAD57D-3657-4E82-9784-BFFD6A6EAA9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Artifacts", "Artifacts", "{EDE612F6-92A3-4592-B254-93C670707DC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{CD098C75-8536-4E82-9B00-A9754036AF3E}"
+	ProjectSection(SolutionItems) = preProject
+		artifacts\templates\AppAttachDeregister.ps1 = artifacts\templates\AppAttachDeregister.ps1
+		artifacts\templates\AppAttachDestage.ps1 = artifacts\templates\AppAttachDestage.ps1
+		artifacts\templates\AppAttachRegister.ps1 = artifacts\templates\AppAttachRegister.ps1
+		artifacts\templates\AppAttachStage.ps1 = artifacts\templates\AppAttachStage.ps1
+		artifacts\templates\ModificationPackage.AppxManifest.xml = artifacts\templates\ModificationPackage.AppxManifest.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{C65B391A-96D3-45C1-B97D-605250DE1C2C}"
+	ProjectSection(SolutionItems) = preProject
+		artifacts\scripts\create-certificate.ps1 = artifacts\scripts\create-certificate.ps1
+		artifacts\scripts\extract-certificate-from-msix.ps1 = artifacts\scripts\extract-certificate-from-msix.ps1
+		artifacts\scripts\install-certificate.ps1 = artifacts\scripts\install-certificate.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +117,8 @@ Global
 		{EA08C739-61A2-402A-9621-590DBF78C04A} = {FEA96B7F-E9D5-449F-83EE-789116B1BD9B}
 		{DC9B3C96-5633-4262-8209-ADCDBF762670} = {FEA96B7F-E9D5-449F-83EE-789116B1BD9B}
 		{46CAD57D-3657-4E82-9784-BFFD6A6EAA9D} = {FEA96B7F-E9D5-449F-83EE-789116B1BD9B}
+		{CD098C75-8536-4E82-9B00-A9754036AF3E} = {EDE612F6-92A3-4592-B254-93C670707DC9}
+		{C65B391A-96D3-45C1-B97D-605250DE1C2C} = {EDE612F6-92A3-4592-B254-93C670707DC9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {80D19363-C14E-4F5F-81D4-90F23FBB760E}
