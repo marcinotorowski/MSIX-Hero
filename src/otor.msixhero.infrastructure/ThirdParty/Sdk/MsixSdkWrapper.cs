@@ -338,7 +338,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (error != null)
             {
-                Logger.Info("Additional info from SignTool.exe:" + string.Join(System.Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
+                Logger.Info("Additional info from SignTool.exe: " + string.Join(System.Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
                 return true;
             }
 

@@ -889,8 +889,9 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
 
             try
             {
-                var signing = await this.signingManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable).ConfigureAwait(false);
+                var signing = await this.signingManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
                 await signing.InstallCertificate(selectedFile, CancellationToken.None, context).ConfigureAwait(false);
+                this.interactionService.ShowInfo("The certificate has been successfully installed.");
             }
             catch (Exception exception)
             {
