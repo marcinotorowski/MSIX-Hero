@@ -63,7 +63,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
                 if (line != null)
                 {
-                    if (TryGetMessageForCriteria(e.StandardOutput, out var specialError))
+                    if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
                         throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
                     }
@@ -120,7 +120,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
                 if (line != null)
                 {
-                    if (TryGetMessageForCriteria(e.StandardOutput, out var specialError))
+                    if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
                         throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
                     }
@@ -283,12 +283,15 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
         }
 
-        private static bool TryGetMessageForCriteria(IList<string> lines, out string error)
+        public static bool TryGetErrorMessageFromSignToolOutput(IList<string> lines, out string error)
         {
             error = null;
             var extended = new StringBuilder();
 
             var count = 0;
+
+            var parsed = new List<Tuple<int, string>>();
+
             foreach (var line in lines)
             {
                 if (line.Contains("Issued by: "))
@@ -314,9 +317,25 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 }
 
                 extended.AppendLine("* " + line.Trim());
-                if (match.Groups[2].Value == "0")
+                parsed.Add(new Tuple<int, string>(int.Parse(match.Groups[2].Value), match.Groups[1].Value));
+            }
+
+            parsed.Insert(0, new Tuple<int, string>(count, null));
+            for (var i = parsed.Count - 1; i > 0; i--)
+            {
+                if (parsed[i].Item1 == parsed[i - 1].Item1)
                 {
-                    switch (match.Groups[1].Value.ToLowerInvariant())
+                    parsed.RemoveAt(i);
+                }
+            }
+
+            var findHash = parsed.FirstOrDefault(p => p.Item2 == "Hash");
+            if (findHash != null && findHash.Item1 == 0)
+            {
+                var findHashIndex = parsed.LastIndexOf(findHash);
+                if (findHashIndex == 2)
+                {
+                    switch (parsed.Skip(1).First().Item2.ToLowerInvariant())
                     {
                         case "private key":
                             error = "The selected certificate does not have a private key.";
@@ -328,9 +347,45 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                             error = "The selected certificate cannot be used for signing purposes (EKU mismatch).";
                             break;
                         default:
-                            error = "The selected certificate does not meet the " + match.Groups[1].Value + " filter.";
+                            error = "The selected certificate does not meet the " + parsed[parsed.Count - 1].Item2 + " filter.";
                             break;
                     }
+
+                    return true;
+                }
+                else if (findHashIndex > 0)
+                {
+                    error = "The selected certificate failed validation of one of the following filters: " + string.Join(", ", parsed.Skip(1).Take(findHashIndex - 1).Select(x => x.Item2));
+                    return true;
+                }
+            }
+
+            if (parsed.Count > 0)
+            {
+                if (parsed[parsed.Count - 1].Item1 == 0)
+                {
+                    switch (parsed[parsed.Count - 1].Item2.ToLowerInvariant())
+                    {
+                        case "private key":
+                            error = "The selected certificate does not have a private key.";
+                            break;
+                        case "expiry":
+                            error = "The selected certificate has expired.";
+                            break;
+                        case "eku":
+                            error = "The selected certificate cannot be used for signing purposes (EKU mismatch).";
+                            break;
+                        default:
+                            error = "The selected certificate does not meet the " + parsed[parsed.Count - 1].Item2 + " filter.";
+                            break;
+                    }
+                }
+            }
+
+            for (var i = 0; i < parsed.Count; i++)
+            {
+                if (parsed[i].Item1 == 0)
+                {
 
                     break;
                 }
@@ -338,7 +393,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (error != null)
             {
-                Logger.Info("Additional info from SignTool.exe: " + string.Join(System.Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
+                Logger.Info("Additional info from SignTool.exe: " + string.Join(Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
                 return true;
             }
 
