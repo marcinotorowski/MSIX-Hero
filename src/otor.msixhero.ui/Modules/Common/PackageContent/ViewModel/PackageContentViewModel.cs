@@ -33,6 +33,7 @@ using Otor.MsixHero.Ui.Modules.PackageList.ViewModel.Elements;
 using Otor.MsixHero.Ui.ViewModel;
 using Prism.Commands;
 using Prism.Regions;
+using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 {
@@ -45,6 +46,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         private readonly ISelfElevationProxyProvider<ISigningManager> signManager;
         private readonly IInteractionService interactionService;
         private readonly IRunningDetector runningDetector;
+        private readonly IDialogService dialogService;
         private ICommand findUsers;
         private ICommand trustMe;
         private ICommand showPropertiesCommand;
@@ -55,7 +57,7 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
         private IAppxFileReader packageSource;
         private IDisposable disposableSubscriber;
         private bool firstLoading = true;
-        private string previousManifest;
+        private ICommand visualize;
 
         public PackageContentViewModel(
             IInterProcessCommunicationManager interProcessCommunicationManager,
@@ -63,13 +65,15 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService, 
             IConfigurationService configurationService,
-            IRunningDetector runningDetector)
+            IRunningDetector runningDetector,
+            IDialogService dialogService)
         {
             this.interProcessCommunicationManager = interProcessCommunicationManager;
             this.appxPackageManagerProvider = appxPackageManagerProvider;
             this.signManager = signManager;
             this.interactionService = interactionService;
             this.runningDetector = runningDetector;
+            this.dialogService = dialogService;
             this.CommandHandler = new PackageContentCommandHandler(configurationService, interactionService);
         }
 
@@ -153,6 +157,33 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
 #pragma warning restore 4014
                     });
             }
+        }
+
+        public ICommand Visualize
+        {
+            get
+            {
+                return this.visualize ??= new DelegateCommand(this.VisualizeExecuted);
+            }
+        }
+
+        private void VisualizeExecuted()
+        {
+            string file;
+            if (this.packageSource is ZipArchiveFileReaderAdapter zip)
+            {
+                file = zip.PackagePath;
+            }
+            else if (this.packageSource is FileInfoFileReaderAdapter manifest)
+            {
+                file = Path.Combine(manifest.RootDirectory, "AppxManifest.xml");
+            }
+            else
+            {
+                return;
+            }
+
+            this.dialogService.ShowDialog(Constants.PathDependencyViewer, new DialogParameters() { { "file", file } }, o => { });
         }
 
         private async Task<TrustStatus> LoadSignature(IAppxFileReader source, CancellationToken cancellationToken)
@@ -274,7 +305,6 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel
             this.disposableSubscriber = this.runningDetector.Subscribe(this);
 
             var manifest = navigation.SelectedManifests.First();
-            this.previousManifest = manifest;
 
             using IAppxFileReader fileReader = new FileInfoFileReaderAdapter(manifest);
             var task = this.LoadPackage(fileReader, CancellationToken.None);

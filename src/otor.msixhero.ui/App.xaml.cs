@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Otor.Msix.Dependencies;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty;
@@ -124,6 +125,7 @@ namespace Otor.MsixHero.Ui
             containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();
             containerRegistry.RegisterSingleton<IRunningDetector, RunningDetector>();
             containerRegistry.RegisterSingleton<IInterProcessCommunicationManager, InterProcessCommunicationManager>();
+            containerRegistry.Register<IDependencyMapper, DependencyMapper>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
         }

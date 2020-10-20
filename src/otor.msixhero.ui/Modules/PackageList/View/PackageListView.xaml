@@ -69,6 +69,7 @@
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.AppAttach}" Command="{Binding CommandHandler.AppAttach}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Unpack}" Command="{Binding CommandHandler.Unpack}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.UpdateImpact}" Command="{Binding CommandHandler.UpdateImpact}" />
+        <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.DependencyViewer}" Command="{Binding CommandHandler.DependencyViewer}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="{x:Static commands:MsixHeroCommands.Winget}" Command="{Binding CommandHandler.Winget}" />
         <routedCommand:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
     </routedCommand:RoutedCommandHandlers.Commands>
@@ -117,26 +118,26 @@
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="Open folder...">
+                <MenuItem Header="Open...">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                     </MenuItem.Icon>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Open install folder">
+                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Install folder">
                         <MenuItem.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Open manifest">
+                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Manifest file">
                         <MenuItem.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Header="Open config.json">
+                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Header="Config.json">
                         <MenuItem.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Header="Open user folder">
+                    <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Header="User folder">
                         <MenuItem.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDirectory}" />
                         </MenuItem.Icon>
@@ -148,12 +149,17 @@
                         <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUpdates}" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Analyze dependencies" Command="{x:Static commands:MsixHeroCommands.DependencyViewer}" CommandParameter="{x:Static viewModel:VariableContextCommandParameter.Selection}">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDependencies}" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Remove for...">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
                     </MenuItem.Icon>
-                    <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroCommands.RemovePackage}">
+                    <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroCommands.RemovePackage}" InputGestureText="Del">
                         <MenuItem.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDeleteUser}" />
                         </MenuItem.Icon>

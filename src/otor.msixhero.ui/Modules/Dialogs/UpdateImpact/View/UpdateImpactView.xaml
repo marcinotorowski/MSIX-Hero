@@ -50,6 +50,7 @@
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
                 <progressOverlay:ProgressOverlay
+                    Progress="{Binding Progress.Progress}"
                     Message="{Binding Progress.Message}"
                     SupportsCancelling="{Binding Progress.SupportsCancelling}"
                     CancelCommand="{Binding Progress.Cancel}"

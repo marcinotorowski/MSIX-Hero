@@ -56,7 +56,8 @@
         </changeableDialog:ChangeableDialog.SuccessContentTemplate>
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
-                <progressOverlay:ProgressOverlay IsShown="{Binding CurrentVolume.IsLoading}" Message="Getting data...">
+                <progressOverlay:ProgressOverlay 
+                    IsShown="{Binding CurrentVolume.IsLoading}" Message="Getting data...">
                     <StackPanel>
                         <TextBlock
                             helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Current volume" Margin="0 16 0 6" />

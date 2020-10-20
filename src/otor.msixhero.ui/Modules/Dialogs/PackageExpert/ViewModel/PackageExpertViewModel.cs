@@ -23,9 +23,18 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageExpert.ViewModel
             IInteractionService interactionService, 
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IConfigurationService configurationService,
-            IRunningDetector runningDetector) : base("MSIX Hero - Package Expert", interactionService)
+            IRunningDetector runningDetector,
+            IDialogService dialogService
+            ) : base("Package Expert", interactionService)
         {
-            this.Content = new PackageContentViewModel(interProcessCommunicationManager, packageManagerProvider, signManager, interactionService, configurationService, runningDetector);
+            this.Content = new PackageContentViewModel(
+                interProcessCommunicationManager, 
+                packageManagerProvider, 
+                signManager, 
+                interactionService, 
+                configurationService, 
+                runningDetector,
+                dialogService);
         }
 
         void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)

@@ -51,6 +51,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{C65B
 		artifacts\scripts\install-certificate.ps1 = artifacts\scripts\install-certificate.ps1
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.Msix.Dependencies", "src\Otor.Msix.Dependencies\Otor.Msix.Dependencies.csproj", "{1432F690-1E0B-4B27-A6C8-41561ECC31A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{46CAD57D-3657-4E82-9784-BFFD6A6EAA9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46CAD57D-3657-4E82-9784-BFFD6A6EAA9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46CAD57D-3657-4E82-9784-BFFD6A6EAA9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

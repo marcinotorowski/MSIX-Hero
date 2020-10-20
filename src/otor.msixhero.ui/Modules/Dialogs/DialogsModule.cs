@@ -6,6 +6,8 @@ using Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.CertificateExport.ViewModel;
 using Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.ChangeVolume.ViewModel;
+using Otor.MsixHero.Ui.Modules.Dialogs.DependencyViewer.View;
+using Otor.MsixHero.Ui.Modules.Dialogs.DependencyViewer.ViewModel;
 using Otor.MsixHero.Ui.Modules.Dialogs.Help.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.Help.ViewModel;
 using Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.View;
@@ -30,11 +32,8 @@ using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel;
 using Otor.MsixHero.Ui.Modules.Dialogs.Winget.View;
 using Otor.MsixHero.Ui.Modules.Dialogs.Winget.ViewModel;
-using Otor.MsixHero.Ui.Modules.VolumeManager.View;
-using Otor.MsixHero.Ui.Modules.VolumeManager.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Mvvm;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs
 {
@@ -48,6 +47,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs
             containerRegistry.RegisterDialog<CertificateExportView, CertificateExportViewModel>(Constants.PathCertificateExport);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(Constants.PathUnpack);
             containerRegistry.RegisterDialog<UpdateImpactView, UpdateImpactViewModel>(Constants.PathUpdateImpact);
+            containerRegistry.RegisterDialog<DependencyViewerView, DependencyViewerViewModel>(Constants.PathDependencyViewer);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(Constants.PathPack);
             containerRegistry.RegisterDialog<NewVolumeView, NewVolumeViewModel>(Constants.PathNewVolume);
             containerRegistry.RegisterDialog<ChangeVolumeView, ChangeVolumeViewModel>(Constants.PathChangeVolume);

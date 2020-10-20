@@ -25,6 +25,7 @@
         public const string PathCertificateExport = "CertificateExport";
         public const string PathUnpack = "Unpack";
         public const string PathUpdateImpact = "UpdateImpact";
+        public const string PathDependencyViewer = "DependencyViewer";
         public const string PathAppInstaller = "AppInstaller";
         public const string PathPackageExpert = "PackageExpert";
         public const string PathWinget = "Winget";

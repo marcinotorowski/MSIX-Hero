@@ -56,6 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Otor.Msix.Dependencies\Otor.Msix.Dependencies.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />

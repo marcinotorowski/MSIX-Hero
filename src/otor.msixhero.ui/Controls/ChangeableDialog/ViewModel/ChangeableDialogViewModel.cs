@@ -23,7 +23,7 @@ namespace Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel
         {
             this.displayValidationErrors = false;
             this.showApplyButton = true;
-            this.Title = title;
+            this.Title = title.IndexOf("msix hero", StringComparison.OrdinalIgnoreCase) == -1 ? $"{title} - MSIX Hero" : title;
             this.interactionService = interactionService;
         }
 

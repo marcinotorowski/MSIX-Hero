@@ -39,6 +39,7 @@
   <ItemGroup>
     <PackageReference Include="Fluent.Ribbon" Version="7.1.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0" />
+    <PackageReference Include="GraphX" Version="3.0.0" />
     <PackageReference Include="Microsoft.Packaging.Tools.Trimming" Version="1.1.0-preview1-26619-01" />
     <PackageReference Include="MiqM.Xceed.Wpf.Toolkit.NETCore" Version="3.5.1.3" />
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.0" />
@@ -49,6 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Otor.Msix.Dependencies\Otor.Msix.Dependencies.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.AdminHelper\Otor.MsixHero.AdminHelper.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
@@ -87,6 +89,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\Dialogs\Common\CertificateSelector\View\CertificateSelectorView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Dialogs\DependencyViewer\View\DependencyViewerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\Dialogs\UpdateImpact\View\UpdateImpactView.xaml.cs">
@@ -132,6 +137,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\Common\CertificateSelector\View\CertificateSelectorView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\DependencyViewer\View\DependencyViewerView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Dialogs\UpdateImpact\View\UpdateImpactView.xaml">

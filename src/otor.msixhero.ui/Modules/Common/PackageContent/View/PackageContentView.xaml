@@ -710,6 +710,11 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
+                                <TextBlock DockPanel.Dock="Top" Margin="0 10">
+                                    <Hyperlink Command="{Binding Visualize}">
+                                        <Run Text="Open dependencies graph..." />
+                                    </Hyperlink>
+                                </TextBlock>
                             </StackPanel>
                         </ScrollViewer>
                     </progressOverlay:ProgressOverlay>

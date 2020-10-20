@@ -585,6 +585,17 @@
                             <Path Data="{StaticResource VectorCompare}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
+                    <Fluent:Button Header="Dependencies analyzer" Command="{x:Static commands:MsixHeroCommands.DependencyViewer}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
+                        </Fluent:Button.SizeDefinition>
+                        <Fluent:Button.LargeIcon>
+                            <Path Data="{StaticResource VectorDependencies}" Style="{StaticResource LargeIcon}" />
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Data="{StaticResource VectorDependencies}" Style="{StaticResource MediumIcon}" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
                     <Fluent:Button Header="Modification package generator" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource LargeIcon}" />
@@ -609,7 +620,7 @@
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
-                    <Fluent:Button Header="App installer editor" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
+                    <Fluent:Button Header="App installer editor" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -621,7 +632,7 @@
                         </Fluent:Button.SizeDefinition>
                     </Fluent:Button>
 
-                    <Fluent:Button Header="Winget manifest (YAML)" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.Winget}">
+                    <Fluent:Button Header="Winget manifest (YAML)" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Empty}" Command="{x:Static commands:MsixHeroCommands.Winget}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -808,7 +819,7 @@
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDeleteMachine}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-
+                    <Separator />
                     <Fluent:Button Command="{x:Static commands:MsixHeroCommands.Deprovision}" Header="Deprovision for all users" ToolTip="De-provisions this package from all users">
                         <Fluent:Button.LargeIcon>
                             <uac:UACControl ShowShield="True">
@@ -817,6 +828,17 @@
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="M 21.75 4 C 20.078125 4 18.492188 4.660156 17.3125 5.84375 L 15.84375 7.3125 C 14.660156 8.496094 14 10.078125 14 11.75 C 14 12.542969 14.152344 13.316406 14.4375 14.03125 L 16.0625 12.40625 C 15.859375 11.109375 16.253906 9.714844 17.25 8.71875 L 18.71875 7.25 C 19.523438 6.445313 20.613281 6 21.75 6 C 22.886719 6 23.945313 6.445313 24.75 7.25 C 26.410156 8.910156 26.410156 11.621094 24.75 13.28125 L 24.03125 14 C 24.886719 14.003906 25.710938 14.109375 26.5 14.3125 C 27.476563 13.179688 28 11.761719 28 10.25 C 28 8.578125 27.339844 7.027344 26.15625 5.84375 C 24.976563 4.660156 23.421875 4 21.75 4 Z M 19.28125 11.28125 L 11.28125 19.28125 L 12.71875 20.71875 L 20.71875 12.71875 Z M 11.75 14 C 10.078125 14 8.492188 14.660156 7.3125 15.84375 L 5.84375 17.3125 C 4.660156 18.496094 4 20.078125 4 21.75 C 4 23.421875 4.660156 24.972656 5.84375 26.15625 C 7.023438 27.339844 8.578125 28 10.25 28 C 11.761719 28 13.179688 27.476563 14.3125 26.5 C 14.109375 25.707031 14.003906 24.886719 14 24.03125 L 13.28125 24.75 C 12.476563 25.554688 11.386719 26 10.25 26 C 9.113281 26 8.054688 25.554688 7.25 24.75 C 5.589844 23.089844 5.589844 20.378906 7.25 18.71875 L 8.71875 17.25 C 9.523438 16.445313 10.613281 16 11.75 16 C 11.972656 16 12.191406 16.023438 12.40625 16.0625 L 14.03125 14.4375 C 13.316406 14.152344 12.542969 14 11.75 14 Z M 24 16 C 19.59375 16 16 19.59375 16 24 C 16 28.40625 19.59375 32 24 32 C 28.40625 32 32 28.40625 32 24 C 32 19.59375 28.40625 16 24 16 Z M 24 18 C 27.324219 18 30 20.675781 30 24 C 30 27.324219 27.324219 30 24 30 C 20.675781 30 18 27.324219 18 24 C 18 20.675781 20.675781 18 24 18 Z M 21.71875 20.28125 L 20.28125 21.71875 L 22.5625 24 L 20.28125 26.28125 L 21.71875 27.71875 L 24 25.4375 L 26.28125 27.71875 L 27.71875 26.28125 L 25.4375 24 L 27.71875 21.71875 L 26.28125 20.28125 L 24 22.5625 Z" />
+                        </Fluent:Button.Icon>
+                    </Fluent:Button>
+                    <Separator />
+                    <Fluent:Button Header="Change volume..." Command="{x:Static commands:MsixHeroCommands.ChangeVolume}">
+                        <Fluent:Button.LargeIcon>
+                            <uac:UACControl ShowShield="True">
+                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorRight}" />
+                            </uac:UACControl>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.Icon>
+                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRight}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -831,14 +853,15 @@
                         </Fluent:Button.Icon>
                     </Fluent:Button>
 
-                    <Fluent:Button Header="Change volume..." Command="{x:Static commands:MsixHeroCommands.ChangeVolume}">
+                    <Fluent:Button Header="Analyze dependencies" Command="{x:Static commands:MsixHeroCommands.DependencyViewer}" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
+                        <Fluent:Button.SizeDefinition>
+                            <Fluent:RibbonControlSizeDefinition Large="Large" Middle="Middle" Small="Small" />
+                        </Fluent:Button.SizeDefinition>
                         <Fluent:Button.LargeIcon>
-                            <uac:UACControl ShowShield="True">
-                                <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorRight}" />
-                            </uac:UACControl>
+                            <Path Data="{StaticResource VectorDependencies}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorRight}" />
+                            <Path Data="{StaticResource VectorDependencies}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -1121,7 +1144,7 @@
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Appinstaller definition..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                    <Fluent:Button Header="Appinstaller definition..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -1129,7 +1152,7 @@
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Winget manifest (YAML)..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:AppInstallerCommandParameter.Selection}">
+                    <Fluent:Button Header="Winget manifest (YAML)..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>

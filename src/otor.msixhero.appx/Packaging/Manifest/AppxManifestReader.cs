@@ -244,6 +244,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 cancellationToken.ThrowIfCancellationRequested();
                 appxPackage.PackageDependencies = new List<AppxPackageDependency>();
                 appxPackage.OperatingSystemDependencies = new List<AppxOperatingSystemDependency>();
+                appxPackage.MainPackages = new List<AppxMainPackageDependency>();
                 appxPackage.Applications = new List<AppxApplication>();
 
                 if (nodeApplicationsRoot != null)
@@ -414,6 +415,17 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         {
                             switch (node.Name.LocalName)
                             {
+                                case "MainPackageDependency":
+                                    var modName = node.Attribute("Name")?.Value;
+
+                                    var appxModPackDependency = new AppxMainPackageDependency
+                                    {
+                                        Name = modName,
+                                    };
+
+                                    appxPackage.MainPackages.Add(appxModPackDependency);
+
+                                    break;
                                 case "TargetDeviceFamily":
                                 {
                                     /*
@@ -443,14 +455,14 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                                     var name = node.Attribute("Name")?.Value;
                                     var publisher = node.Attribute("Publisher")?.Value;
 
-                                    var appxDepdendency = new AppxPackageDependency
+                                    var appxDependency = new AppxPackageDependency
                                     {
                                         Publisher = publisher,
                                         Name = name,
                                         Version = minVersion
                                     };
 
-                                    appxPackage.PackageDependencies.Add(appxDepdendency);
+                                    appxPackage.PackageDependencies.Add(appxDependency);
                                     break;
                                 }
                             }
@@ -541,7 +553,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 }
                 else if (pkg.SignatureKind == PackageSignatureKind.None || pkg.IsDevelopmentMode)
                 {
-                    appxPackage.Source = new DeveloperSource(manifestFileName);
+                    appxPackage.Source = new DeveloperSource(Path.Combine(appxPackage.RootFolder, manifestFileName));
                 }
                 else if (pkg.SignatureKind == PackageSignatureKind.Store)
                 {

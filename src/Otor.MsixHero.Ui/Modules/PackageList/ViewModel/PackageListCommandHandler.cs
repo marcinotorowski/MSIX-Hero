@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
@@ -83,12 +82,13 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.OpenLogs = new DelegateCommand(param => this.OpenLogsExecute(), param => true);
             this.Pack = new DelegateCommand(param => this.PackExecute());
             this.AppAttach = new DelegateCommand(param => this.AppAttachExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
-            this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
+            this.AppInstaller = new DelegateCommand(param => this.AppInstallerExecute(param is VariableContextCommandParameter parameter ? parameter : VariableContextCommandParameter.Empty), param => this.CanExecuteDialog(param is VariableContextCommandParameter parameter ? parameter : VariableContextCommandParameter.Empty));
             this.PackageExpert = new DelegateCommand(param => this.PackageExpertExecute(), param => this.CanExecutePackageExpert());
             this.ModificationPackage = new DelegateCommand(param => this.ModificationPackageExecute(param is bool && (bool)param), param => this.CanExecuteSingleSelection(param is bool && (bool)param));
             this.Unpack = new DelegateCommand(param => this.UnpackExecute());
             this.UpdateImpact = new DelegateCommand(param => this.UpdateImpactExecute());
-            this.Winget = new DelegateCommand(param => this.WingetExecute(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty), param => this.CanExecuteAppInstaller(param is AppInstallerCommandParameter parameter ? parameter : AppInstallerCommandParameter.Empty));
+            this.DependencyViewer = new DelegateCommand(param => this.DependencyViewerExecute(param is VariableContextCommandParameter parameter ? parameter : VariableContextCommandParameter.Empty), param => this.CanExecuteDialog(param is VariableContextCommandParameter parameter ? parameter : VariableContextCommandParameter.Empty));
+            this.Winget = new DelegateCommand(param => this.WingetExecute(param is VariableContextCommandParameter parameter ? parameter : VariableContextCommandParameter.Empty), param => this.CanExecuteDialog(param is VariableContextCommandParameter parameter ? parameter : VariableContextCommandParameter.Empty));
 
             // Certificates
             this.NewSelfSignedCert = new DelegateCommand(param => this.NewSelfSignedCertExecute(), param => true);
@@ -135,6 +135,8 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         public ICommand Unpack { get; }
 
         public ICommand UpdateImpact { get; }
+
+        public ICommand DependencyViewer { get; }
 
         public ICommand Winget { get; }
         
@@ -190,6 +192,11 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         private bool CanExecuteAddPackage()
         {
             return true;
+        }
+
+        private void DependencyViewerExecute(VariableContextCommandParameter parameter)
+        {
+            this.DialogExecute(parameter, "All supported files|*.msix;*.appx;AppxManifest.xml|Packages|*.msix;*.appx|Manifest files|AppxManifest.xml", Constants.PathDependencyViewer);
         }
 
         private async void AddPackageExecute(string packagePath, bool forAllUsers)
@@ -928,6 +935,45 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
         {
             this.dialogService.ShowDialog(Constants.PathUpdateImpact, new DialogParameters(), this.OnDialogClosed);
         }
+        
+        private void DialogExecute(VariableContextCommandParameter parameter, string filter, string path, string parameterName = "file")
+        {
+            switch (parameter)
+            {
+                case VariableContextCommandParameter.Empty:
+                    this.dialogService.ShowDialog(Constants.PathDependencyViewer, new DialogParameters(), this.OnDialogClosed);
+                    break;
+                case VariableContextCommandParameter.Selection:
+                    if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
+                    {
+                        this.dialogService.ShowDialog(path, new DialogParameters(), this.OnDialogClosed);
+                    }
+                    else
+                    {
+                        var parameters = new DialogParameters
+                        {
+                            { parameterName, this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation }
+                        };
+
+                        this.dialogService.ShowDialog(path, parameters, this.OnDialogClosed);
+                    }
+                    break;
+                case VariableContextCommandParameter.Browse:
+
+                    if (!this.interactionService.SelectFile(filter, out var selected))
+                    {
+                        var parameters = new DialogParameters
+                        {
+                            { "file", selected }
+                        };
+
+                        this.dialogService.ShowDialog(path, parameters, this.OnDialogClosed);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null);
+            }
+        }
 
         private void PackExecute()
         {
@@ -939,19 +985,20 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             return !forSelection || this.application.ApplicationState.Packages.SelectedPackages.Count == 1;
         }
 
-        private bool CanExecuteAppInstaller(AppInstallerCommandParameter param)
+        private bool CanExecuteDialog(VariableContextCommandParameter param)
         {
             switch (param)
             {
-                case AppInstallerCommandParameter.Empty:
-                case AppInstallerCommandParameter.Browse:
+                case VariableContextCommandParameter.Empty:
+                case VariableContextCommandParameter.Browse:
                     return true;
-                case AppInstallerCommandParameter.Selection:
+                case VariableContextCommandParameter.Selection:
                     return this.application.ApplicationState.Packages.SelectedPackages.Count == 1;
                 default:
                     return false;
             }
         }
+
         private bool CanExecutePackageExpert()
         {
             return this.application.ApplicationState.Packages.SelectedPackages.Count == 1;
@@ -968,84 +1015,25 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             this.dialogService.ShowDialog(Constants.PathPackageExpert, parameters, this.OnDialogClosed);
         }
 
-        private void WingetExecute(AppInstallerCommandParameter parameter)
+        private void WingetExecute(VariableContextCommandParameter parameter)
         {
             switch (parameter)
             {
-                case AppInstallerCommandParameter.Empty:
-                    this.dialogService.ShowDialog(Constants.PathWinget, new DialogParameters(), this.OnDialogClosed);
+                case VariableContextCommandParameter.Empty:
+                case VariableContextCommandParameter.Selection:
+                    this.DialogExecute(parameter, null, Constants.PathWinget, "msix");
                     break;
-                case AppInstallerCommandParameter.Selection:
-                    if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
-                    {
-                        this.dialogService.ShowDialog(Constants.PathWinget, new DialogParameters(),
-                            this.OnDialogClosed);
-                    }
-                    else
-                    {
-                        var parameters = new DialogParameters
-                        {
-                            { "msix", this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation}
-                        };
-
-                        this.dialogService.ShowDialog(Constants.PathWinget, parameters, this.OnDialogClosed);
-                    }
-
-                    break;
-                case AppInstallerCommandParameter.Browse:
-                    if (this.interactionService.SelectFile("Winget manifets (*.yaml)|*.yaml|All files|*.*",
-                        out var selected))
-                    {
-                        var parameters = new DialogParameters
-                        {
-                            { "yaml" , selected}
-                        };
-
-                        this.dialogService.ShowDialog(Constants.PathWinget, parameters, this.OnDialogClosed);
-                    }
-
+                case VariableContextCommandParameter.Browse:
+                    this.DialogExecute(parameter, "Winget manifests (*.yaml)|*.yaml|All files|*.*", Constants.PathWinget, "yaml");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null);
             }
         }
 
-        private void AppInstallerExecute(AppInstallerCommandParameter parameter)
+        private void AppInstallerExecute(VariableContextCommandParameter parameter)
         {
-            switch (parameter)
-            {
-                case AppInstallerCommandParameter.Empty:
-                    this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
-                    break;
-                case AppInstallerCommandParameter.Selection:
-                    if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
-                    {
-                        this.dialogService.ShowDialog(Constants.PathAppInstaller, new DialogParameters(), this.OnDialogClosed);
-                    }
-                    else
-                    {
-                        var parameters = new DialogParameters
-                        {
-                            { "file", this.application.ApplicationState.Packages.SelectedPackages.First().ManifestLocation }
-                        };
-
-                        this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, this.OnDialogClosed);
-                    }
-                    break;
-                case AppInstallerCommandParameter.Browse:
-                    if (this.interactionService.SelectFile("Appinstaller files|*.appinstaller|All files|*.*", out var selected))
-                    {
-                        var parameters = new DialogParameters
-                        {
-                            { "file", selected }
-                        };
-
-                        this.dialogService.ShowDialog(Constants.PathAppInstaller, parameters, this.OnDialogClosed);
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null);
-            }
+            this.DialogExecute(parameter, "App installer files|*.appinstaller|All files|*.*", Constants.PathAppInstaller);
         }
 
         private void ModificationPackageExecute(bool forSelection)
