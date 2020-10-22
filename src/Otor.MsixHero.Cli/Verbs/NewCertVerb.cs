@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System;
+using CommandLine;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
@@ -13,6 +14,9 @@ namespace Otor.MsixHero.Cli.Verbs
 
         [Option('d', "directory", HelpText = "Directory, where certificate files will be saved.", Required = true)]
         public string OutputFolder { get; set; }
+
+        [Option("validUntil", HelpText = "Date time until which the certificate can be used for signing purposes. Defaults to one year from today.", Required = false)]
+        public DateTime? ValidUntil { get; set; }
 
         [Option('i', "import", HelpText = "If set, the certificate will be imported to the local store. This option requires that MSIXHeroCLI.exe is started as administrator.")]
         public bool Import { get; set; }

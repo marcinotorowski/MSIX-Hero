@@ -33,7 +33,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
             this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", "CN=", ValidatorFactory.ValidateSubject());
             this.PublisherFriendlyName = new ValidatedChangeableProperty<string>("Publisher display name", ValidatePublisherFriendlyName);
             this.Password = new ValidatedChangeableProperty<string>("Password", ValidatePassword);
-            this.AddChildren(this.OutputPath, this.Password, this.PublisherName, this.PublisherFriendlyName);
+            this.ValidUntil = new ValidatedChangeableProperty<DateTime>("Valid until", DateTime.Now.Add(TimeSpan.FromDays(365)), ValidateDateTime);
+            this.AddChildren(this.PublisherFriendlyName, this.PublisherName, this.ValidUntil, this.Password, this.OutputPath);
 
             this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
             this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
@@ -42,15 +43,14 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
         public ValidatedChangeableProperty<string> PublisherName { get; }
         
         public ValidatedChangeableProperty<string> PublisherFriendlyName { get; }
+        
+        public ValidatedChangeableProperty<DateTime> ValidUntil { get; }
 
         public ValidatedChangeableProperty<string> Password { get; }
 
         public ChangeableFolderProperty OutputPath { get; }
 
-        public ICommand ImportNewCertificate
-        {
-            get => this.importNewCertificate ??= new DelegateCommand(param => this.ImportNewCertificateExecute());
-        }
+        public ICommand ImportNewCertificate => this.importNewCertificate ??= new DelegateCommand(param => this.ImportNewCertificateExecute());
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
@@ -62,8 +62,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
                 this.PublisherName.CurrentValue,
                 this.PublisherFriendlyName.CurrentValue,
                 this.Password.CurrentValue,
+                this.ValidUntil.CurrentValue,
                 cancellationToken,
-                progress);
+                progress).ConfigureAwait(false);
 
             return true;
         }
@@ -71,6 +72,11 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.ViewModel
         private static string ValidatePublisherFriendlyName(string newValue)
         {
             return string.IsNullOrEmpty(newValue) ? "The name of the publisher may not be empty." : null;
+        }
+
+        private static string ValidateDateTime(DateTime date)
+        {
+            return date > DateTime.Now ? null : "The date lies in the past.";
         }
 
         private static string ValidatePassword(string currentValue)

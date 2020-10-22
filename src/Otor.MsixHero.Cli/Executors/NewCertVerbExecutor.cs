@@ -36,7 +36,7 @@ namespace Otor.MsixHero.Cli.Executors
                     output.Create();
                 }
 
-                var pfxFile = await signingManager.CreateSelfSignedCertificate(output, subject, this.Verb.DisplayName, this.Verb.Password).ConfigureAwait(false);
+                var pfxFile = await signingManager.CreateSelfSignedCertificate(output, subject, this.Verb.DisplayName, this.Verb.Password, this.Verb.ValidUntil ?? DateTime.Now.AddDays(365)).ConfigureAwait(false);
                 await this.Console.WriteSuccess($"Certificate has been saved to {pfxFile}.").ConfigureAwait(false);
 
                 if (this.Verb.Import)

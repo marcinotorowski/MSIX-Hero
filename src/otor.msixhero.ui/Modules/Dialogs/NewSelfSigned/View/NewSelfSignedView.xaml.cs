@@ -15,11 +15,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.NewSelfSigned.View
             this.InitializeComponent();
         }
 
-        private void OnPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            ((NewSelfSignedViewModel) this.DataContext).Password.CurrentValue = ((PasswordBox)sender).Password;
-        }
-
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {
             Process.Start("explorer.exe", ((NewSelfSignedViewModel)this.DataContext).OutputPath.CurrentValue);

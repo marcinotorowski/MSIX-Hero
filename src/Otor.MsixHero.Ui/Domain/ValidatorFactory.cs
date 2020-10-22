@@ -28,7 +28,7 @@ namespace Otor.MsixHero.Ui.Domain
                     return "The publisher may not be empty.";
                 }
 
-                if (!Regex.IsMatch(value, "^[a-zA-Z]+=.+"))
+                if (!Regex.IsMatch(value.Replace(", ", ","), @"^(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)\s*=\s*(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*"")(?:\+(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)=(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*""))*(?:,(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)=(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*"")(?:\+(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)\s*=\s*(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*""))*)*$"))
                 {
                     // todo: Some better validation, RFC compliant
                     return "Publisher name must be a valid DN string (for example CN=Author)";

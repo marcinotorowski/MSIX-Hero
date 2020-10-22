@@ -491,6 +491,7 @@ namespace Otor.MsixHero.Appx.Signing
             string publisherName,
             string publisherDisplayName,
             string password,
+            DateTime? validUntil,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
@@ -506,6 +507,7 @@ namespace Otor.MsixHero.Appx.Signing
             using var paramPfxOutputFileName = cmd.AddParameter("PfxOutputFileName", null);
             using var paramCerOutputFileName = cmd.AddParameter("CerOutputFileName", null);
             using var paramCreatePasswordFile = cmd.AddParameter("CreatePasswordFile");
+            using var paramNotAfter = cmd.AddParameter("NotAfter", validUntil ?? DateTime.Now.AddDays(365));
 
             using var result = await ps.InvokeAsync(progress).ConfigureAwait(false);
 

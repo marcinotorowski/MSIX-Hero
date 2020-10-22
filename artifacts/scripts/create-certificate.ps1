@@ -6,12 +6,13 @@ param(
     [String]$OutputDirectory,
     [String]$PfxOutputFileName = $null,
     [String]$CerOutputFileName = $null,
-    [switch]$CreatePasswordFile
+    [switch]$CreatePasswordFile,
+    [System.DateTime]$NotAfter
 )
 
 Write-Progress -Activity "Generating certificate for $PublisherFriendlyName..." -Id "1" -Status "Generating certificate" -PercentComplete 10;
 
-$certificate = New-SelfSignedCertificate -Type Custom -KeyUsage DigitalSignature -Subject $PublisherName -FriendlyName $PublisherFriendlyName -CertStoreLocation 'Cert:\CurrentUser\my';
+$certificate = New-SelfSignedCertificate -NotAfter $NotAfter -Type Custom -KeyUsage DigitalSignature -Subject $PublisherName -FriendlyName $PublisherFriendlyName -CertStoreLocation 'Cert:\CurrentUser\my';
 $securePassword = ConvertTo-SecureString -String $Password -Force -AsPlainText;
 
 [String]$pfxFullPath;

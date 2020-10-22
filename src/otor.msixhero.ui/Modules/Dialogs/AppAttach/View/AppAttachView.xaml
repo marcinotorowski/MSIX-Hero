@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.ViewModel"
              xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
              xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.AppAttach.View"
