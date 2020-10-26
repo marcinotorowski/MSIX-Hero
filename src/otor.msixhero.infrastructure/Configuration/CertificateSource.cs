@@ -3,6 +3,7 @@
     public enum CertificateSource
     {
         Personal,
-        Pfx
+        Pfx,
+        DeviceGuard
     }
 }

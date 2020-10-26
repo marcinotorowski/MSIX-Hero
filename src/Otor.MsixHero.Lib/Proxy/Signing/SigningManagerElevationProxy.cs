@@ -93,18 +93,30 @@ namespace Otor.MsixHero.Lib.Proxy.Signing
             return await manager.GetCertificateFromMsix(msixFile, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public async Task SignPackage(string package, bool updatePublisher, string pfxPath, SecureString password, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task SignPackageWithPfx(string package, bool updatePublisher, string pfxPath, SecureString password, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var manager = await this.managerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
-            await manager.SignPackage(package, updatePublisher, pfxPath, password, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
+            await manager.SignPackageWithPfx(package, updatePublisher, pfxPath, password, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public async Task SignPackage(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task SignPackageWithDeviceGuard(
+            string package, 
+            Guid clientId, 
+            SecureString clientSecret, 
+            string timestampUrl = null,
+            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, 
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task SignPackageWithInstalled(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var manager = await this.managerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
-            await manager.SignPackage(package, updatePublisher, certificate, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
+            await manager.SignPackageWithInstalled(package, updatePublisher, certificate, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
         }
     }
 }

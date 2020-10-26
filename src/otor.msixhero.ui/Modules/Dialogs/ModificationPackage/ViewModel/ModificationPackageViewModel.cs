@@ -188,10 +188,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                     switch (this.TabCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Pfx:
-                            await manager.SignPackage(selectedPath, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithPfx(selectedPath, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.Personal:
-                            await manager.SignPackage(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithInstalled(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            break;
+                        case CertificateSource.DeviceGuard:
+                            await manager.SignPackageWithDeviceGuard(selectedPath, Guid.Parse(this.TabCertificate.ClientId.CurrentValue), this.TabCertificate.Secret.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                     }
 

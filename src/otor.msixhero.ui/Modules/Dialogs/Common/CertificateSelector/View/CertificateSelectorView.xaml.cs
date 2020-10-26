@@ -48,5 +48,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View
         {
             ((CertificateSelectorViewModel)this.DataContext).Password.CurrentValue = ((PasswordBox)sender).SecurePassword;
         }
+
+        private void PasswordBox_OnSecretChanged(object sender, RoutedEventArgs e)
+        {
+            ((CertificateSelectorViewModel)this.DataContext).Secret.CurrentValue = ((PasswordBox)sender).SecurePassword;
+        }
     }
 }

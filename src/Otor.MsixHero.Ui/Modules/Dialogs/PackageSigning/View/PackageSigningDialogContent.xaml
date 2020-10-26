@@ -18,10 +18,16 @@
                 <controls:ValidationBehavior ValidatedChangeable="{Binding TabPackages}" />
             </b:Interaction.Behaviors>
             <TabItem.Header>
-                <TextBlock>
-                    <Run FontSize="13" Text="Packages" />
-                    <Run Text="{Binding Files.Count, Mode=OneWay}" Foreground="#777" />
-                </TextBlock>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="13" Text="Packages" />
+                    <Border 
+                        Tag="{Binding Files.Count, Mode=OneWay}"
+                        Style="{StaticResource Badge}">
+                        <TextBlock 
+                            Style="{StaticResource BadgeText}" 
+                            Text="{Binding Files.Count, Mode=OneWay}" />
+                    </Border>
+                </StackPanel>
             </TabItem.Header>
             <ScrollViewer Margin="0 0 0 16">
                 <AdornerDecorator>
@@ -33,9 +39,10 @@
                         </WrapPanel>
                         <Grid DockPanel.Dock="Top" VerticalAlignment="Stretch">
                             <ListBox
-                            x:Name="ListBox"
-                            SelectionChanged="OnSelectionChanged"
-                            AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DragLeave="OnDragLeave" ItemsSource="{Binding Files}">
+                                x:Name="ListBox"
+                                SelectionChanged="OnSelectionChanged"
+                                AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" DragLeave="OnDragLeave" 
+                                ItemsSource="{Binding Files}">
                                 <ListBox.InputBindings>
                                     <KeyBinding Key="Delete" Command="Delete"></KeyBinding>
                                 </ListBox.InputBindings>

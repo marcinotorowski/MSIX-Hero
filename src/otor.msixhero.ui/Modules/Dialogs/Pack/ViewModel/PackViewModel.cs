@@ -115,10 +115,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
                     switch (this.SelectedCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Personal:
-                            await manager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithInstalled(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.Pfx:
-                            await manager.SignPackage(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithPfx(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            break;
+                        case CertificateSource.DeviceGuard:
+                            await manager.SignPackageWithDeviceGuard(this.OutputPath.CurrentValue, Guid.Parse(this.SelectedCertificate.ClientId.CurrentValue), this.SelectedCertificate.Secret.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                     }
                 }

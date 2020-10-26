@@ -34,5 +34,11 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         [DataMember(Name = "encodedPassword")]
         public string EncodedPassword { get; set; }
+
+        [DataMember(Name = "encodedSecret")]
+        public string EncodedSecret { get; set; }
+
+        [DataMember(Name = "clientId")]
+        public string ClientId { get; set; }
     }
 }

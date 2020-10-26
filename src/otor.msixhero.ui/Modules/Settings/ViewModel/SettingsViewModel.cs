@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -143,7 +142,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
                 return false;
             }
 
-            var newConfiguration = this.configurationService.GetCurrentConfiguration(false);
+            var newConfiguration = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
 
             if (this.CertificateOutputPath.IsTouched)
             {
@@ -172,38 +171,55 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
             if (this.CertificateSelector.IsTouched)
             {
-                if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.PfxPath.IsTouched)
+                if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Pfx)
                 {
-                    newConfiguration.Signing.PfxPath.Resolved = this.CertificateSelector.PfxPath.CurrentValue;
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.PfxPath.IsTouched)
+                    {
+                        newConfiguration.Signing.PfxPath.Resolved = this.CertificateSelector.PfxPath.CurrentValue;
+                    }
+
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.Password.IsTouched)
+                    {
+                        var encoder = new Crypto();
+                        newConfiguration.Signing.EncodedPassword = encoder.Protect(this.CertificateSelector.Password.CurrentValue);
+                    }
+                }
+                else
+                {
+                    newConfiguration.Signing.EncodedPassword = null;
+                    newConfiguration.Signing.PfxPath = null;
                 }
 
-                if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.Password.IsTouched)
+                if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Personal)
                 {
-                    if (this.CertificateSelector.Password?.CurrentValue == null || this.CertificateSelector.Password.CurrentValue.Length == 0)
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.SelectedPersonalCertificate.IsTouched)
                     {
+                        newConfiguration.Signing.Thumbprint = this.CertificateSelector.SelectedPersonalCertificate.CurrentValue?.Model?.Thumbprint;
+                    }
+                }
+                else
+                {
+                    newConfiguration.Signing.Thumbprint = null;
+                }
+
+                if (this.CertificateSelector.Store.CurrentValue == CertificateSource.DeviceGuard)
+                {
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.ClientId.IsTouched)
+                    {
+                        newConfiguration.Signing.ClientId = this.CertificateSelector.ClientId.CurrentValue;
+                    }
+
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.Secret.IsTouched)
+                    {
+                        var crypto = new Crypto();
+                        newConfiguration.Signing.EncodedSecret = crypto.Protect(this.CertificateSelector.Secret.CurrentValue);
                         newConfiguration.Signing.EncodedPassword = null;
                     }
-                    else
-                    {
-                        var valuePtr = IntPtr.Zero;
-                        try
-                        {
-                            valuePtr = Marshal.SecureStringToGlobalAllocUnicode(this.CertificateSelector.Password.CurrentValue);
-
-                            var encoder = new Crypto();
-                            // newConfiguration.Signing.EncodedPassword = encoder.EncryptString(Marshal.PtrToStringUni(valuePtr), "$%!!ASddahs55839AA___ąółęńśSdcvv");
-                            newConfiguration.Signing.EncodedPassword = encoder.Protect(Marshal.PtrToStringUni(valuePtr));
-                        }
-                        finally
-                        {
-                            Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
-                        }
-                    }
                 }
-
-                if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.SelectedPersonalCertificate.IsTouched)
+                else
                 {
-                    newConfiguration.Signing.Thumbprint = this.CertificateSelector.SelectedPersonalCertificate.CurrentValue?.Model?.Thumbprint;
+                    newConfiguration.Signing.ClientId = null;
+                    newConfiguration.Signing.EncodedSecret = null;
                 }
 
                 if (this.CertificateSelector.Store.IsTouched)

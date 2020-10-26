@@ -37,6 +37,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll",
                 this.ValidateTimestamp);
 
+            this.ClientId = new ValidatedChangeableProperty<string>("ClientId", signConfig.ClientId, false, this.ValidateGuid);
+
             this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source);
             this.Store.ValueChanged += StoreOnValueChanged;
             this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved)
@@ -50,21 +52,18 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             };
 
             SecureString initialSecurePassword = null;
+            SecureString initialSecureSecret = null;
+
             if (this.Store.CurrentValue == CertificateSource.Pfx)
             {
                 var initialPassword = signConfig.EncodedPassword;
+
                 if (!string.IsNullOrEmpty(initialPassword))
                 {
                     var crypto = new Crypto();
                     try
                     {
-                        // initialPassword = crypto.DecryptString(initialPassword, "$%!!ASddahs55839AA___ąółęńśSdcvv");
-                        initialPassword = crypto.Unprotect(initialPassword);
-                        initialSecurePassword = new SecureString();
-                        foreach (var p in initialPassword ?? string.Empty)
-                        {
-                            initialSecurePassword.AppendChar(p);
-                        }
+                        initialSecurePassword = crypto.Unprotect(initialPassword);
                     }
                     catch (Exception)
                     {
@@ -73,13 +72,31 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 }
             }
 
+            if (this.Store.CurrentValue == CertificateSource.DeviceGuard)
+            {
+                var initialSecret = signConfig.EncodedSecret;
+                if (!string.IsNullOrEmpty(initialSecret))
+                {
+                    var crypto = new Crypto();
+                    try
+                    {
+                        initialSecureSecret = crypto.Unprotect(initialSecret);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.Warn("The encrypted secret from settings could not be decrypted.");
+                    }
+                }
+            }   
+
             this.Password = new ChangeableProperty<SecureString>(initialSecurePassword);
+            this.Secret = new ValidatedChangeableProperty<SecureString>("Client secret", initialSecureSecret, false);
 
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>("Selected certificate", false, this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
 
-            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.Store, this.ShowAllCertificates);
+            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.ClientId, this.Secret, this.Store, this.ShowAllCertificates);
             this.ShowPassword = showPassword;
 
             this.ShowAllCertificates.ValueChanged += async (sender, args) =>
@@ -88,13 +105,18 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 this.OnPropertyChanged(nameof(this.SelectedPersonalCertificate));
             };
 
-            if (this.Store.CurrentValue == CertificateSource.Pfx)
+            switch (this.Store.CurrentValue)
             {
-                this.PfxPath.IsValidated = true;
-            }
-            else
-            {
-                this.SelectedPersonalCertificate.IsValidated = true;
+                case CertificateSource.Pfx:
+                    this.PfxPath.IsValidated = true;
+                    break;
+                case CertificateSource.DeviceGuard:
+                    this.Secret.IsValidated = true;
+                    this.ClientId.IsValidated = true;
+                    break;
+                case CertificateSource.Personal:
+                    this.SelectedPersonalCertificate.IsValidated = true;
+                    break;
             }
         }
 
@@ -105,6 +127,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
         public ValidatedChangeableProperty<CertificateViewModel> SelectedPersonalCertificate { get; }
 
         public ChangeableProperty<SecureString> Password { get; }
+
+        public ValidatedChangeableProperty<SecureString> Secret { get; }
 
         public ChangeableProperty<CertificateSource> Store { get; }
 
@@ -130,6 +154,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         public ChangeableProperty<string> TimeStamp { get; }
 
+        public ValidatedChangeableProperty<string> ClientId { get; }
+
         public ChangeableProperty<bool> ShowAllCertificates { get; }
 
         private string ValidateSelectedCertificate(CertificateViewModel arg)
@@ -140,6 +166,16 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             }
 
             return arg == null ? "The certificate is required." : null;
+        }
+
+        private string ValidateGuid(string value)
+        {
+            if (string.IsNullOrEmpty(value) || !Guid.TryParse(value, out _))
+            {
+                return "The value must be a GUID.";
+            }
+
+            return null;
         }
 
         private string ValidateTimestamp(string value)
@@ -164,8 +200,27 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         private void StoreOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            this.PfxPath.IsValidated = (CertificateSource)e.NewValue == CertificateSource.Pfx;
-            this.SelectedPersonalCertificate.IsValidated = (CertificateSource)e.NewValue == CertificateSource.Personal;
+            switch ((CertificateSource) e.NewValue)
+            {
+                case CertificateSource.Personal:
+                    this.PfxPath.IsValidated = false;
+                    this.SelectedPersonalCertificate.IsValidated = true;
+                    this.Secret.IsValidated = false;
+                    this.ClientId.IsValidated = false;
+                    break;
+                case CertificateSource.Pfx:
+                    this.PfxPath.IsValidated = true;
+                    this.SelectedPersonalCertificate.IsValidated = false;
+                    this.Secret.IsValidated = false;
+                    this.ClientId.IsValidated = false;
+                    break;
+                case CertificateSource.DeviceGuard:
+                    this.PfxPath.IsValidated = false;
+                    this.SelectedPersonalCertificate.IsValidated = false;
+                    this.Secret.IsValidated = true;
+                    this.ClientId.IsValidated = true;
+                    break;
+            }
         }
     }
 }

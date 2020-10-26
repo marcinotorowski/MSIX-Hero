@@ -91,13 +91,17 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                if (this.TabCertificate.Store.CurrentValue == CertificateSource.Pfx)
+                switch (this.TabCertificate.Store.CurrentValue)
                 {
-                    await manager.SignPackage(file, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                }
-                else
-                {
-                    await manager.SignPackage(file, true, this.TabCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    case CertificateSource.Pfx:
+                        await manager.SignPackageWithPfx(file, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                        break;
+                    case CertificateSource.Personal:
+                        await manager.SignPackageWithInstalled(file, true, this.TabCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                        break;
+                    case CertificateSource.DeviceGuard:
+                        await manager.SignPackageWithDeviceGuard(file, Guid.Parse(this.TabCertificate.ClientId.CurrentValue), this.TabCertificate.Secret.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                        break;
                 }
             }
 

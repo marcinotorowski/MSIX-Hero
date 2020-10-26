@@ -97,49 +97,6 @@
             </Border>
 
             <TabControl DockPanel.Dock="Top" Margin="12 0 0 0" Visibility="{Binding SelectedPackageManifestInfo.HasError, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-
-                <TabControl.Resources>
-                    <Style TargetType="Border" x:Key="Badge">
-                        <Setter Property="MinHeight" Value="15" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="MinWidth" Value="15" />
-                        <Setter Property="Padding" Value="3 1" />
-                        <Setter Property="Margin" Value="6 -2 2 -2" />
-                        <Setter Property="CornerRadius" Value="20" />
-                        <Setter Property="TextBlock.Foreground" Value="#fff" />
-                        <Setter Property="Background" Value="{StaticResource Fluent.Ribbon.Brushes.AccentBaseColorBrush}" />
-                        <Style.Triggers>
-                            <Trigger Property="Tag">
-                                <Trigger.Value>
-                                    <system:Int32>0</system:Int32>
-                                </Trigger.Value>
-                                <Trigger.Setters>
-                                    <Setter Property="TextBlock.Foreground" Value="#000" />
-                                    <Setter Property="Background" Value="#ddd" />
-                                </Trigger.Setters>
-                            </Trigger>
-                            <Trigger Property="Tag" Value="{x:Null}">
-                                <Trigger.Setters>
-                                    <Setter Property="TextBlock.Foreground" Value="#000" />
-                                    <Setter Property="Background" Value="#ddd" />
-                                </Trigger.Setters>
-                            </Trigger>
-                            <Trigger Property="Tag" Value="{x:Static DependencyProperty.UnsetValue}">
-                                <Trigger.Setters>
-                                    <Setter Property="TextBlock.Foreground" Value="#000" />
-                                    <Setter Property="Background" Value="#ddd" />
-                                </Trigger.Setters>
-                            </Trigger>
-                        </Style.Triggers>
-
-                    </Style>
-                    <Style TargetType="TextBlock" x:Key="BadgeText">
-                        <Setter Property="FontSize" Value="10" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="HorizontalAlignment" Value="Center" />
-                        <Setter Property="TextAlignment" Value="Center" />
-                    </Style>
-                </TabControl.Resources>
                 <TabItem Header="Properties">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>

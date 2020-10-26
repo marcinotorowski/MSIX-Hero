@@ -94,7 +94,7 @@ namespace Otor.MsixHero.Cli.Executors
                     foreach (var path in this.Verb.FilePath)
                     {
                         await this.Console.WriteInfo($"Signing '{path}' with certificate [{fileName}]...");
-                        await this.signingManager.SignPackage(path, true, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                        await this.signingManager.SignPackageWithPfx(path, true, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                         await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
                         await this.Console.ShowCertSummary(signingManager, path);
                     }
@@ -128,7 +128,7 @@ namespace Otor.MsixHero.Cli.Executors
                 foreach (var path in this.Verb.FilePath)
                 {
                     await this.Console.WriteInfo($"Signing '{path}' with certificate [SHA1 = {thumbprint}]...");
-                    await this.signingManager.SignPackage(path, true, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this.signingManager.SignPackageWithInstalled(path, true, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                     await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
                     await this.Console.ShowCertSummary(signingManager, path);
                 }

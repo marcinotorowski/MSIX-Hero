@@ -42,6 +42,18 @@ namespace Otor.MsixHero.Appx.Signing
             return this.ExtractCertificateFromMsix(msixFile, true, null, progress);
         }
 
+        public Task SignPackageWithDeviceGuard(
+            string package,
+            Guid clientId,
+            SecureString clientSecret,
+            string timestampUrl = null,
+            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<PersonalCertificate> GetCertificateFromMsix(string msixFile, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (string.IsNullOrEmpty(msixFile))
@@ -312,7 +324,7 @@ namespace Otor.MsixHero.Appx.Signing
             }
         }
 
-        public async Task SignPackage(
+        public async Task SignPackageWithInstalled(
             string package,
             bool updatePublisher,
             PersonalCertificate certificate,
@@ -413,7 +425,7 @@ namespace Otor.MsixHero.Appx.Signing
             }
         }
 
-        public async Task SignPackage(
+        public async Task SignPackageWithPfx(
             string package,
             bool updatePublisher,
             string pfxPath,
@@ -640,6 +652,7 @@ namespace Otor.MsixHero.Appx.Signing
                         var identity =
                             xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
 
+                        // ReSharper disable once PossibleNullReferenceException
                         var publisher = identity.Attributes["Publisher"];
                         if (publisher == null)
                         {
