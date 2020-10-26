@@ -15,6 +15,8 @@
              xmlns:commands="clr-namespace:Otor.MsixHero.Ui.Modules.Settings.Commands"
              xmlns:tools="clr-namespace:Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools"
              xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:controls="clr-namespace:Otor.MsixHero.Ui.Controls"
              Background="White"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
@@ -23,8 +25,8 @@
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="SizeToContent" Value="Manual" />
-            <Setter Property="Width" Value="650" />
-            <Setter Property="Height" Value="650" />
+            <Setter Property="Width" Value="800" />
+            <Setter Property="Height" Value="700" />
             <Setter Property="MinWidth" Value="350" />
             <Setter Property="MinHeight" Value="350" />
         </Style>
@@ -118,30 +120,20 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Signing">
+                <b:Interaction.Behaviors>
+                    <controls:ValidationBehavior ValidatedChangeable="{Binding TabSigning}" />
+                </b:Interaction.Behaviors>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
-                        <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
-                        <DockPanel>
-                            <Button DockPanel.Dock="Right" Content="..." Command="{Binding CertificateOutputPath.Browse}" Margin="4 0 0 0" />
-                            <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
-                        </DockPanel>
-
-                        <view3:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 16 0 0" />
-                    </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-            <TabItem Header="Packer" HorizontalAlignment="Left" Width="52">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel>
-                        <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 6">
-                            <TextBlock Text="Sign packages after packing" TextWrapping="Wrap" />
-                        </CheckBox>
-                    </StackPanel>
+                    <view3:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 0 0 0" />
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Editors">
+                <b:Interaction.Behaviors>
+                    <controls:ValidationBehavior ValidatedChangeable="{Binding TabEditors}" />
+                </b:Interaction.Behaviors>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel>
+                        <Label Style="{StaticResource FormLabel}" Content="Manifest files" />
                         <TextBlock Text="Default editor for manifest files (AppxManifest.xml)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
 
                         <ComboBox SelectedValue="{Binding ManifestEditorType.CurrentValue}" SelectedValuePath="Tag">
@@ -155,7 +147,8 @@
                             <TextBox IsEnabled="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding ManifestEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <TextBlock Text="Default editor for App installer files (*.appinstaller)" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <Label Style="{StaticResource FormLabel}" Content="App installer files" Margin="0 16 0 6" />
+                        <TextBlock Text="Default editor for App installer files (*.appinstaller)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
 
                         <ComboBox SelectedValue="{Binding AppinstallerEditorType.CurrentValue}" SelectedValuePath="Tag">
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default text editor" />
@@ -168,7 +161,8 @@
                             <TextBox IsEnabled="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding AppinstallerEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <TextBlock Text="Default editor for APPX/MSIX files" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <Label Style="{StaticResource FormLabel}" Content="Compressed packages" Margin="0 16 0 6" />
+                        <TextBlock Text="Default editor for APPX/MSIX files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <ComboBox SelectedValue="{Binding MsixEditorType.CurrentValue}" SelectedValuePath="Tag">
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default XML editor" />
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
@@ -180,7 +174,8 @@
                             <TextBox IsEnabled="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding MsixEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <TextBlock Text="Default editor for Package Support Framework configuration files" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <Label Style="{StaticResource FormLabel}" Content="Package Support Framework" Margin="0 16 0 6" />
+                        <TextBlock Text="Default editor for Package Support Framework configuration files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <ComboBox SelectedValue="{Binding PsfEditorType.CurrentValue}" SelectedValuePath="Tag">
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default JSON editor" />
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
@@ -192,7 +187,8 @@
                             <TextBox IsEnabled="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PsfEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <TextBlock Text="Default editor for PS1 scripts" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                        <Label Style="{StaticResource FormLabel}" Content="PowerShell" Margin="0 16 0 6" />
+                        <TextBlock Text="Default editor for PS1 scripts" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <ComboBox SelectedValue="{Binding PowerShellEditorType.CurrentValue}" SelectedValuePath="Tag">
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default application" />
                             <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
@@ -207,6 +203,9 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Commands" x:Name="tools">
+                <b:Interaction.Behaviors>
+                    <controls:ValidationBehavior ValidatedChangeable="{Binding Tools}" />
+                </b:Interaction.Behaviors>
                 <Grid DataContext="{Binding Tools}" DataContextChanged="ToolsDataContextChanged">
                     <routedCommand:RoutedCommandHandlers.Commands>
                         <routedCommand:RoutedCommandHandler RoutedCommand="New" Command="{Binding NewCommand}" />
@@ -414,7 +413,23 @@
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="Other">
+                <b:Interaction.Behaviors>
+                    <controls:ValidationBehavior ValidatedChangeable="{Binding TabOther}" />
+                </b:Interaction.Behaviors>
                 <StackPanel>
+                    <Label Content="Certificates" Style="{StaticResource FormLabel}" />
+
+                    <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                    <DockPanel Margin="0 0 0 16">
+                        <Button DockPanel.Dock="Right" Content="..." Command="{Binding CertificateOutputPath.Browse}" Margin="4 0 0 0" />
+                        <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
+                    </DockPanel>
+
+                    <Label Content="Packing" Style="{StaticResource FormLabel}" />
+                    <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 16">
+                        <TextBlock Text="Sign packages after packing" TextWrapping="Wrap" />
+                    </CheckBox>
+
                     <Label Content="App installer (.appinstaller)" Style="{StaticResource FormLabel}" />
                     <TextBlock Text="Default base URI for hosted MSIX packages" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                     <TextBox Text="{Binding DefaultRemoteLocationPackages.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />

@@ -24,40 +24,152 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
         public SettingsViewModel(
             IEventAggregator eventAggregator,
-            IConfigurationService configurationService, 
-            IInteractionService interactionService, 
+            IConfigurationService configurationService,
+            IInteractionService interactionService,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory)
         {
             this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
 
             var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
-            
-            this.AllSettings.AddChildren(
+
+            this.TabOther.AddChildren
+            (
                 this.CertificateOutputPath = new ChangeableFolderProperty("Certificate output path", interactionService, config.Signing?.DefaultOutFolder?.Resolved),
                 this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
+                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>("Remote .msix URL", config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
+                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>("Remote .appinstaller URL", config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri)
+            );
+
+            this.TabEditors.AddChildren
+            (
+                this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
+                this.ManifestEditorPath = new ChangeableFileProperty("Manifest editor path", interactionService, config.Editing.ManifestEditor.Resolved, this.ValidateManifestEditorPath),
+                this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.MsixEditorType),
+                this.MsixEditorPath = new ChangeableFileProperty("MSIX editor path", interactionService, config.Editing.MsixEditor.Resolved, this.ValidateMsixEditorPath),
+                this.AppinstallerEditorType = new ChangeableProperty<EditorType>(config.Editing.AppInstallerEditorType),
+                this.AppinstallerEditorPath = new ChangeableFileProperty("App installer editor path", interactionService, config.Editing.AppInstallerEditor.Resolved, this.ValidateAppInstallerEditorPath),
+                this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
+                this.PsfEditorPath = new ChangeableFileProperty("PSF editor path", interactionService, config.Editing.PsfEditor.Resolved, this.ValidatePsfEditorPath),
+                this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
+                this.PowerShellEditorPath = new ChangeableFileProperty("PowerShell editor path", interactionService, config.Editing.PowerShellEditor.Resolved, this.ValidatePowerShellEditorPath)
+            );
+
+            this.TabSigning.AddChildren
+            (
+                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true)
+            );
+
+            this.AllSettings.AddChildren(
+                this.TabSigning,
                 this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
                 this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration.ConfirmDeletion),
-                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true),
-                this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
-                this.ManifestEditorPath = new ChangeableFileProperty("Manifest editor path", interactionService, config.Editing.ManifestEditor.Resolved),
-                this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
-                this.MsixEditorPath = new ChangeableFileProperty("MSIX editor path", interactionService, config.Editing.MsixEditor.Resolved),
-                this.AppinstallerEditorType = new ChangeableProperty<EditorType>(config.Editing.AppInstallerEditorType),
-                this.AppinstallerEditorPath = new ChangeableFileProperty("App installer editor path", interactionService, config.Editing.AppInstallerEditor.Resolved),
-                this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
-                this.PsfEditorPath = new ChangeableFileProperty("PSF editor path", interactionService, config.Editing.PsfEditor.Resolved),
-                this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
-                this.PowerShellEditorPath = new ChangeableFileProperty("PowerShell editor path", interactionService, config.Editing.PowerShellEditor.Resolved),
-                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>("Remote .msix URL", config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
-                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>("Remote .appinstaller URL", config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri),
-                this.Tools = new ToolsConfigurationViewModel(interactionService, config)
+                this.TabEditors,
+                this.Tools = new ToolsConfigurationViewModel(interactionService, config),
+                this.TabOther
             );
 
             this.CertificateOutputPath.Validators = new[] { ChangeableFolderProperty.ValidatePath };
+
+            this.AppinstallerEditorType.ValueChanged += this.PathTypeChanged;
+            this.ManifestEditorType.ValueChanged += this.PathTypeChanged;
+            this.PsfEditorType.ValueChanged += this.PathTypeChanged;
+            this.MsixEditorType.ValueChanged += this.PathTypeChanged;
+            this.PowerShellEditorType.ValueChanged += this.PathTypeChanged;
         }
-        
+
+        private void PathTypeChanged(object sender, ValueChangedEventArgs e)
+        {
+            ChangeableProperty<string> changeable;
+
+            if (sender == this.AppinstallerEditorType)
+            {
+                changeable = this.AppinstallerEditorPath;
+            }
+            else if (sender == this.MsixEditorType)
+            {
+                changeable = this.MsixEditorPath;
+            }
+            else if (sender == this.PsfEditorType)
+            {
+                changeable = this.PsfEditorPath;
+            }
+            else if (sender == this.PowerShellEditorType)
+            {
+                changeable = this.PowerShellEditorPath;
+            }
+            else if (sender == this.ManifestEditorType)
+            {
+                changeable = this.ManifestEditorPath;
+            }
+            else
+            {
+                return;
+            }
+
+            if ((EditorType)e.NewValue != EditorType.Custom || string.IsNullOrEmpty(changeable.CurrentValue))
+            {
+                changeable.CurrentValue = "<custom-path>";
+            }
+        }
+
+        public string ValidatePowerShellEditorPath(string value)
+        {
+            if (this.PowerShellEditorType.CurrentValue != EditorType.Custom)
+            {
+                return null;
+            }
+
+            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+        }
+
+        public string ValidateManifestEditorPath(string value)
+        {
+            if (this.ManifestEditorType.CurrentValue != EditorType.Custom)
+            {
+                return null;
+            }
+
+            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+        }
+
+        public string ValidateAppInstallerEditorPath(string value)
+        {
+            if (this.AppinstallerEditorType.CurrentValue != EditorType.Custom)
+            {
+                return null;
+            }
+
+            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+        }
+
+        public string ValidateMsixEditorPath(string value)
+        {
+            if (this.MsixEditorType.CurrentValue != EditorType.Custom)
+            {
+                return null;
+            }
+
+            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+        }
+
+        public string ValidatePsfEditorPath(string value)
+        {
+            if (this.PsfEditorType.CurrentValue != EditorType.Custom)
+            {
+                return null;
+            }
+
+            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+        }
+
+        public ChangeableContainer TabOther { get; } = new ChangeableContainer();
+
+        public ChangeableContainer TabEditors { get; } = new ChangeableContainer();
+
+        public ChangeableContainer TabSigning { get; } = new ChangeableContainer();
+
         public ToolsConfigurationViewModel Tools { get; }
 
         public CertificateSelectorViewModel CertificateSelector { get; }
@@ -65,7 +177,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
         public ChangeableContainer AllSettings { get; } = new ChangeableContainer();
 
         public ChangeableFolderProperty CertificateOutputPath { get; }
-        
+
         public ValidatedChangeableProperty<string> DefaultRemoteLocationPackages { get; }
 
         public ValidatedChangeableProperty<string> DefaultRemoteLocationAppInstaller { get; }
@@ -91,7 +203,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
         public ChangeableFileProperty PowerShellEditorPath { get; }
 
         public ChangeableProperty<bool> PackerSignByDefault { get; }
-        
+
         public ChangeableProperty<bool> SidebarDefaultState { get; }
 
         public ChangeableProperty<bool> SwitchToContextualTabAfterSelection { get; }
@@ -129,7 +241,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
         {
             return this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid);
         }
-        
+
         public async Task<bool> Save()
         {
             if (!this.AllSettings.IsValidated)
@@ -153,7 +265,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
             {
                 newConfiguration.Packer.SignByDefault = this.PackerSignByDefault.CurrentValue;
             }
-            
+
             if (this.SidebarDefaultState.IsTouched)
             {
                 newConfiguration.List.Sidebar.Visible = this.SidebarDefaultState.CurrentValue;
@@ -258,29 +370,64 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
                 newConfiguration.Editing.PowerShellEditorType = this.PowerShellEditorType.CurrentValue;
             }
 
-            if (this.ManifestEditorPath.IsTouched)
+            if (this.PowerShellEditorType.CurrentValue == EditorType.Custom)
             {
-                newConfiguration.Editing.ManifestEditor.Resolved = this.ManifestEditorPath.CurrentValue;
+                if (this.ManifestEditorPath.IsTouched)
+                {
+                    newConfiguration.Editing.ManifestEditor.Resolved = this.ManifestEditorPath.CurrentValue;
+                }
+            }
+            else
+            {
+                newConfiguration.Editing.ManifestEditor.Resolved = null;
             }
 
-            if (this.AppinstallerEditorPath.IsTouched)
+            if (this.AppinstallerEditorType.CurrentValue == EditorType.Custom)
             {
-                newConfiguration.Editing.AppInstallerEditor.Resolved = this.AppinstallerEditorPath.CurrentValue;
+                if (this.AppinstallerEditorPath.IsTouched)
+                {
+                    newConfiguration.Editing.AppInstallerEditor.Resolved = this.AppinstallerEditorPath.CurrentValue;
+                }
+            }
+            else
+            {
+                newConfiguration.Editing.AppInstallerEditor.Resolved = null;
             }
 
-            if (this.MsixEditorPath.IsTouched)
+            if (this.MsixEditorType.CurrentValue == EditorType.Custom)
             {
-                newConfiguration.Editing.MsixEditor.Resolved = this.MsixEditorPath.CurrentValue;
+                if (this.MsixEditorPath.IsTouched)
+                {
+                    newConfiguration.Editing.MsixEditor.Resolved = this.MsixEditorPath.CurrentValue;
+                }
+            }
+            else
+            {
+                newConfiguration.Editing.MsixEditor.Resolved = null;
             }
 
-            if (this.PsfEditorPath.IsTouched)
+            if (this.PsfEditorType.CurrentValue == EditorType.Custom)
             {
-                newConfiguration.Editing.PsfEditor.Resolved = this.PsfEditorPath.CurrentValue;
+                if (this.PsfEditorPath.IsTouched)
+                {
+                    newConfiguration.Editing.PsfEditor.Resolved = this.PsfEditorPath.CurrentValue;
+                }
+            }
+            else
+            {
+                newConfiguration.Editing.PsfEditor.Resolved = null;
             }
 
-            if (this.PowerShellEditorPath.IsTouched)
+            if (this.PowerShellEditorType.CurrentValue == EditorType.Custom)
             {
-                newConfiguration.Editing.PowerShellEditor.Resolved = this.PowerShellEditorPath.CurrentValue;
+                if (this.PowerShellEditorPath.IsTouched)
+                {
+                    newConfiguration.Editing.PowerShellEditor.Resolved = this.PowerShellEditorPath.CurrentValue;
+                }
+            }
+            else
+            {
+                newConfiguration.Editing.PowerShellEditor.Resolved = null;
             }
 
             var toolsTouched = this.Tools.IsTouched;
