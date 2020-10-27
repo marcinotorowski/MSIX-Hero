@@ -92,7 +92,20 @@
                             <controls:ValidationBehavior ValidatedChangeable="{Binding TabSigning}" />
                         </b:Interaction.Behaviors>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                            <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
+                            <StackPanel>
+                                <view1:CertificateSelectorView DataContext="{Binding SelectedCertificate}" />
+
+                                <TextBlock
+                                    DockPanel.Dock="Top" 
+                                    Foreground="#666" 
+                                    HorizontalAlignment="Left"
+                                    Text="Package publisher name" 
+                                    Margin="0 16 0 6" />
+
+                                <CheckBox 
+                                    Content="Override package publisher with the certificate subject (recommended)" 
+                                    IsChecked="{Binding OverrideSubject.CurrentValue}" />
+                            </StackPanel>
                         </ScrollViewer>
                     </TabItem>
                 </TabControl>

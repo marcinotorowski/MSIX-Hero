@@ -194,7 +194,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                             await manager.SignPackageWithInstalled(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuard(selectedPath, Guid.Parse(this.TabCertificate.ClientId.CurrentValue), this.TabCertificate.Secret.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuard(selectedPath, this.TabCertificate.DeviceGuardLeafCertificateSubject.CurrentValue, this.TabCertificate.DeviceGuardToken.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                     }
 
@@ -384,7 +384,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
 
         private void InitializeTabCertificate()
         {
-            this.TabCertificate = new CertificateSelectorViewModel(this.interactionService, this.signingManagerFactory, this.configurationService.GetCurrentConfiguration()?.Signing, true);
+            this.TabCertificate = new CertificateSelectorViewModel(this.interactionService, this.signingManagerFactory, this.configurationService.GetCurrentConfiguration()?.Signing);
         }
     }
 }

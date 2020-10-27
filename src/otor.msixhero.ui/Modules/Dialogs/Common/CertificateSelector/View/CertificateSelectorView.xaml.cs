@@ -31,6 +31,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View
                 try
                 {
                     valuePtr = Marshal.SecureStringToGlobalAllocUnicode(newDataContext.Password.CurrentValue);
+                    // ReSharper disable once AssignNullToNotNullAttribute
                     this.PasswordBox.Password = Marshal.PtrToStringUni(valuePtr);
                 }
                 finally
@@ -47,11 +48,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             ((CertificateSelectorViewModel)this.DataContext).Password.CurrentValue = ((PasswordBox)sender).SecurePassword;
-        }
-
-        private void PasswordBox_OnSecretChanged(object sender, RoutedEventArgs e)
-        {
-            ((CertificateSelectorViewModel)this.DataContext).Secret.CurrentValue = ((PasswordBox)sender).SecurePassword;
         }
     }
 }

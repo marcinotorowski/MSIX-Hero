@@ -57,7 +57,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
             this.TabSigning.AddChildren
             (
-                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true)
+                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, CertificateSelectorMode.Administrator)
             );
 
             this.AllSettings.AddChildren(
@@ -316,22 +316,22 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
                 if (this.CertificateSelector.Store.CurrentValue == CertificateSource.DeviceGuard)
                 {
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.ClientId.IsTouched)
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.DeviceGuardLeafCertificateSubject.IsTouched)
                     {
-                        newConfiguration.Signing.ClientId = this.CertificateSelector.ClientId.CurrentValue;
+                        newConfiguration.Signing.DeviceGuardLeafCertificateSubject = this.CertificateSelector.DeviceGuardLeafCertificateSubject.CurrentValue;
                     }
 
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.Secret.IsTouched)
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.DeviceGuardToken.IsTouched)
                     {
                         var crypto = new Crypto();
-                        newConfiguration.Signing.EncodedSecret = crypto.Protect(this.CertificateSelector.Secret.CurrentValue);
+                        newConfiguration.Signing.EncodedDeviceGuardToken = crypto.Protect(this.CertificateSelector.DeviceGuardToken.CurrentValue);
                         newConfiguration.Signing.EncodedPassword = null;
                     }
                 }
                 else
                 {
-                    newConfiguration.Signing.ClientId = null;
-                    newConfiguration.Signing.EncodedSecret = null;
+                    newConfiguration.Signing.DeviceGuardLeafCertificateSubject = null;
+                    newConfiguration.Signing.EncodedDeviceGuardToken = null;
                 }
 
                 if (this.CertificateSelector.Store.IsTouched)

@@ -44,8 +44,8 @@ namespace Otor.MsixHero.Appx.Signing
 
         public Task SignPackageWithDeviceGuard(
             string package,
-            Guid clientId,
-            SecureString clientSecret,
+            string subject,
+            SecureString jsonToken,
             string timestampUrl = null,
             IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
             CancellationToken cancellationToken = default,
@@ -649,8 +649,11 @@ namespace Otor.MsixHero.Appx.Signing
                     {
                         var xmlDocument = new XmlDocument();
                         xmlDocument.Load(stream);
-                        var identity =
-                            xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
+                        var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
+                        if (identity == null)
+                        {
+                            throw new FormatException("Missing <Identity /> tag.");
+                        }
 
                         // ReSharper disable once PossibleNullReferenceException
                         var publisher = identity.Attributes["Publisher"];

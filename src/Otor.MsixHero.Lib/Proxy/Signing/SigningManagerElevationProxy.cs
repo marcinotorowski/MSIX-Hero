@@ -102,8 +102,8 @@ namespace Otor.MsixHero.Lib.Proxy.Signing
 
         public Task SignPackageWithDeviceGuard(
             string package, 
-            Guid clientId, 
-            SecureString clientSecret, 
+            string subject, 
+            SecureString jsonToken, 
             string timestampUrl = null,
             IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, 
             CancellationToken cancellationToken = default,

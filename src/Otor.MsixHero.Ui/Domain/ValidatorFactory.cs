@@ -19,12 +19,17 @@ namespace Otor.MsixHero.Ui.Domain
         }
 
 
-        public static Func<string, string> ValidateSubject()
+        public static Func<string, string> ValidateSubject(bool required = true)
         {
             return value =>
             {
                 if (string.IsNullOrEmpty(value))
                 {
+                    if (!required)
+                    {
+                        return null;
+                    }
+
                     return "The publisher may not be empty.";
                 }
 
@@ -93,6 +98,29 @@ namespace Otor.MsixHero.Ui.Domain
             };
         }
 
+        public static Func<string, string> ValidateGuid(bool required, string prompt = null)
+        {
+            return value =>
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    if (!required)
+                    {
+                        return null;
+                    }
+                    
+                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                }
+
+                if (!Guid.TryParse(value, out _))
+                {
+                    return prompt == null ? "This value is not a valid URL." : $"{prompt} is not a valid URL.";
+                }
+
+                return null;
+            };
+        }
+
         public static Func<string, string> ValidateUri(bool required, string prompt = null)
         {
             return value =>
@@ -125,8 +153,6 @@ namespace Otor.MsixHero.Ui.Domain
                 return prompt == null
                     ? $"Protocol {parsed.Scheme}:// is not supported."
                     : $"{prompt} has an unsupported protocol {parsed.Scheme}://.";
-
-                return null;
             };
         }
 

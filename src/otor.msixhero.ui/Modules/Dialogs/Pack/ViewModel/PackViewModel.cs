@@ -48,8 +48,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
             this.Sign = new ChangeableProperty<bool>(signByDefault);
             this.Compress = new ChangeableProperty<bool>(true);
             this.Validate = new ChangeableProperty<bool>(true);
+            this.OverrideSubject = new ChangeableProperty<bool>(true);
 
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig, true)
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig)
             {
                 IsValidated = false
             };
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
             this.Sign.ValueChanged += this.SignOnValueChanged;
 
             this.TabSource = new ChangeableContainer(this.InputPath, this.OutputPath, this.Sign, this.Compress, this.Validate);
-            this.TabSigning = new ChangeableContainer(this.SelectedCertificate);
+            this.TabSigning = new ChangeableContainer(this.SelectedCertificate, this.OverrideSubject);
             this.AddChildren(this.TabSource, this.TabSigning);
         }
         
@@ -67,6 +68,8 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
         public ChangeableContainer TabSigning { get; }
 
         public ChangeableFileProperty OutputPath { get; }
+
+        public ChangeableProperty<bool> OverrideSubject { get; }
 
         public ChangeableFolderProperty InputPath { get; }
         
@@ -115,13 +118,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
                     switch (this.SelectedCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Personal:
-                            await manager.SignPackageWithInstalled(this.OutputPath.CurrentValue, true, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithInstalled(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.Pfx:
-                            await manager.SignPackageWithPfx(this.OutputPath.CurrentValue, true, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithPfx(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuard(this.OutputPath.CurrentValue, Guid.Parse(this.SelectedCertificate.ClientId.CurrentValue), this.SelectedCertificate.Secret.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuard(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue ? this.SelectedCertificate.DeviceGuardLeafCertificateSubject.CurrentValue : null, this.SelectedCertificate.DeviceGuardToken.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                     }
                 }

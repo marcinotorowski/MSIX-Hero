@@ -292,6 +292,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             var parsed = new List<Tuple<int, string>>();
 
+            if (lines.Any(l => l.Contains("-2147024885/0x8007000b")))
+            {
+                error = "Package publisher and certificate subject are not the same. MSIX app cannot be signed with the selected certificate.";
+                return true;
+            }
+
             foreach (var line in lines)
             {
                 if (line.Contains("Issued by: "))

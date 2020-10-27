@@ -37,27 +37,38 @@
                 <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" Content="Sign with Device Guard" x:Name="CertDeviceGuard" />
             </ComboBox>
 
-            <TextBlock
+            <!--<TextBlock
                 Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                helpers:RequiredAdorner.IsRequired="True" 
                 DockPanel.Dock="Top" 
                 Foreground="#666" 
                 HorizontalAlignment="Left"
-                Text="Client ID" Margin="0 16 0 6" />
+                Text="Leaf certificate subject" Margin="0 16 0 6" />
             <TextBox 
+                DockPanel.Dock="Top" 
+                Text="{Binding DeviceGuardLeafCertificateSubject.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />-->
+
+            <Border 
                 Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
                 DockPanel.Dock="Top" 
-                Text="{Binding ClientId.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                Background="LightYellow" 
+                Margin="0 16 0 0">
+                <TextBlock TextWrapping="Wrap" Margin="10">
+                    <Run Text="One-time configuration is required to use Device Guard. Follow the steps as described in the following article:" />
+                    <Hyperlink>
+                        <Run Text="https://docs.microsoft.com/en-us/windows/msix/package/signing-package-device-guard-signing" ></Run>
+                    </Hyperlink>
+                    <Run Text="and then press the button" />
+                    <Run Text="Configure Device Guard" FontWeight="SemiBold" />
+                    <Run Text="to configure it." />
+                </TextBlock>
+            </Border>
 
-            <TextBlock
+            <Button 
                 Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                helpers:RequiredAdorner.IsRequired="True" 
                 DockPanel.Dock="Top" 
-                Foreground="#666" 
-                HorizontalAlignment="Left"
-                Text="Client secret" Margin="0 16 0 6" />
-            <PasswordBox x:Name="SecretBox" Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.DeviceGuard}}" Tag="{Binding Secret.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnSecretChanged" DockPanel.Dock="Top" />
-
+                HorizontalAlignment="Left" 
+                Content="Configure Device Guard signing..." 
+                Margin="0 16 0 0" />
 
             <TextBlock
                 Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"

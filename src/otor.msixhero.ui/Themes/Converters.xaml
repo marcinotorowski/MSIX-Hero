@@ -9,4 +9,5 @@
     <converters:NegativeBooleanToVisibilityConverter x:Key="NegativeBooleanToVisibilityConverter" />
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+    <converters:NegativeEnumToVisibilityConverter x:Key="NegativeEnumToVisibilityConverter" />
 </ResourceDictionary>

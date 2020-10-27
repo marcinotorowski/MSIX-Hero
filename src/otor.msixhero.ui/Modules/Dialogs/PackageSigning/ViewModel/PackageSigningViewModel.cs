@@ -32,10 +32,12 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
             
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
-            
-            this.TabCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService?.GetCurrentConfiguration()?.Signing, true);
+            this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService?.GetCurrentConfiguration()?.Signing);
+            this.OverrideSubject = new ChangeableProperty<bool>(true);
+
             this.TabPackages = new ChangeableContainer(this.Files);
             this.TabAdjustments = new ChangeableContainer(this.IncreaseVersion);
+            this.TabCertificate = new ChangeableContainer(this.CertificateSelector);
 
             this.AddChildren(this.TabPackages, this.TabCertificate, this.TabAdjustments);
             this.Files.CollectionChanged += (sender, args) =>
@@ -48,9 +50,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
 
         public ChangeableContainer TabAdjustments { get; }
 
-        public CertificateSelectorViewModel TabCertificate { get; }
+        public ChangeableContainer TabCertificate { get; }
+
+        public CertificateSelectorViewModel CertificateSelector { get; }
 
         public ChangeableProperty<IncreaseVersionMethod> IncreaseVersion { get; }
+
+        public ChangeableProperty<bool> OverrideSubject { get; }
 
         public List<string> SelectedPackages { get; } = new List<string>();
 
@@ -91,16 +97,16 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                switch (this.TabCertificate.Store.CurrentValue)
+                switch (this.CertificateSelector.Store.CurrentValue)
                 {
                     case CertificateSource.Pfx:
-                        await manager.SignPackageWithPfx(file, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                        await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                         break;
                     case CertificateSource.Personal:
-                        await manager.SignPackageWithInstalled(file, true, this.TabCertificate.SelectedPersonalCertificate.CurrentValue.Model, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                        await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                         break;
                     case CertificateSource.DeviceGuard:
-                        await manager.SignPackageWithDeviceGuard(file, Guid.Parse(this.TabCertificate.ClientId.CurrentValue), this.TabCertificate.Secret.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                        await manager.SignPackageWithDeviceGuard(file, this.OverrideSubject.CurrentValue ? this.CertificateSelector.DeviceGuardLeafCertificateSubject.CurrentValue : null, this.CertificateSelector.DeviceGuardToken.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                         break;
                 }
             }
