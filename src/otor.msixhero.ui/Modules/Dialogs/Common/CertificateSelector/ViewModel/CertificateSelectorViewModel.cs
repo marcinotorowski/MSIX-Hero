@@ -4,7 +4,10 @@ using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Microsoft.Identity.Client;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
@@ -12,6 +15,7 @@ using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Domain;
 using Otor.MsixHero.Ui.Helpers;
 
@@ -27,7 +31,9 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(CertificateSelectorViewModel));
 
+        private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
+        private ICommand signOutDeviceGuard, signInDeviceGuard;
 
         public CertificateSelectorViewModel(
             IInteractionService interactionService,
@@ -36,6 +42,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             CertificateSelectorMode mode = CertificateSelectorMode.Consumer)
         {
             Mode = mode;
+            this.interactionService = interactionService;
             this.signingManagerFactory = signingManagerFactory;
             var signConfig = configuration ?? new SigningConfiguration();
 
@@ -43,8 +50,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 "Time stamp URL",
                 signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll",
                 this.ValidateTimestamp);
-
-            this.DeviceGuardLeafCertificateSubject = new ValidatedChangeableProperty<string>("Certificate subject", signConfig.DeviceGuardLeafCertificateSubject, false, ValidatorFactory.ValidateSubject());
 
             this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source);
             this.Store.ValueChanged += StoreOnValueChanged;
@@ -78,26 +83,17 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                     }
                 }
             }
-
-            if (this.Store.CurrentValue == CertificateSource.DeviceGuard)
-            {
-                var initialToken = signConfig.EncodedDeviceGuardToken;
-                if (!string.IsNullOrEmpty(initialToken))
-                {
-                    var crypto = new Crypto();
-                    try
-                    {
-                        initialSecureSecret = crypto.Unprotect(initialToken);
-                    }
-                    catch (Exception)
-                    {
-                        Logger.Warn("The encrypted secret from settings could not be decrypted.");
-                    }
-                }
-            }   
-
+            
             this.Password = new ChangeableProperty<SecureString>(initialSecurePassword);
-            this.DeviceGuardToken = new ValidatedChangeableProperty<SecureString>("Device Guard", initialSecureSecret, ValidateJsonToken);
+
+            if (configuration?.DeviceGuard?.EncodedAccessToken != null)
+            {
+                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>("Device Guard", configuration?.DeviceGuard, false, this.ValidateDeviceGuard);
+            }
+            else
+            {
+                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>("Device Guard", null, false, this.ValidateDeviceGuard);
+            }
 
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>("Selected certificate", false, this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
@@ -109,15 +105,14 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                     this.PfxPath.IsValidated = true;
                     break;
                 case CertificateSource.DeviceGuard:
-                    this.DeviceGuardLeafCertificateSubject.IsValidated = true;
-                    this.DeviceGuardToken.IsValidated = true;
+                    this.DeviceGuard.IsValidated = true;
                     break;
                 case CertificateSource.Personal:
                     this.SelectedPersonalCertificate.IsValidated = true;
                     break;
             }
 
-            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.DeviceGuardLeafCertificateSubject, this.DeviceGuardToken, this.Store, this.ShowAllCertificates);
+            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.DeviceGuard, this.Store, this.ShowAllCertificates);
             
             this.ShowAllCertificates.ValueChanged += async (sender, args) =>
             {
@@ -125,7 +120,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 this.OnPropertyChanged(nameof(this.SelectedPersonalCertificate));
             };
         }
-
+        
         public CertificateSelectorMode Mode { get; }
 
         public AsyncProperty<ObservableCollection<CertificateViewModel>> PersonalCertificates { get; }
@@ -134,9 +129,65 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 
         public ChangeableProperty<SecureString> Password { get; }
 
-        public ValidatedChangeableProperty<SecureString> DeviceGuardToken { get; }
+        public ValidatedChangeableProperty<DeviceGuardConfiguration> DeviceGuard { get; }
 
         public ChangeableProperty<CertificateSource> Store { get; }
+
+        public ICommand SignInDeviceGuard
+        {
+            get
+            {
+                return this.signInDeviceGuard ??= new DelegateCommand(this.ExecuteSignInDeviceGuard);
+            }
+        }
+
+        public ICommand SignOutDeviceGuard
+        {
+            get
+            {
+                return this.signOutDeviceGuard ??= new DelegateCommand(this.ExecuteSignOutDeviceGuard);
+            }
+        }
+
+        private void ExecuteSignOutDeviceGuard(object param)
+        {
+            this.DeviceGuard.CurrentValue = null;
+        }
+
+        private async void ExecuteSignInDeviceGuard(object param)
+        {
+            var dgh = new DgssTokenCreator();
+
+
+            try
+            {
+                var result = await dgh.SignIn(default).ConfigureAwait(false);
+
+                var crypto = new Crypto();
+
+                if (this.DeviceGuard.CurrentValue == null)
+                {
+                    this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
+                    {
+                        EncodedAccessToken = crypto.Protect(result.AccessToken),
+                        EncodedRefreshToken = crypto.Protect(result.RefreshToken)
+                    };
+                }
+                else
+                {
+                    this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
+                    {
+                        EncodedAccessToken = crypto.Protect(result.AccessToken),
+                        EncodedRefreshToken = crypto.Protect(result.RefreshToken),
+                        UseV1 = this.DeviceGuard.CurrentValue.UseV1
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                this.interactionService.ShowError(e.Message, e, InteractionResult.OK);
+            }
+        }
 
         private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(string thumbprint = null, bool onlyValid = true, CancellationToken cancellationToken = default)
         {
@@ -159,9 +210,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
         public ChangeableFileProperty PfxPath { get; }
 
         public ChangeableProperty<string> TimeStamp { get; }
-
-        public ValidatedChangeableProperty<string> DeviceGuardLeafCertificateSubject { get; }
-
+        
         public ChangeableProperty<bool> ShowAllCertificates { get; }
 
         private string ValidateSelectedCertificate(CertificateViewModel arg)
@@ -172,6 +221,16 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             }
 
             return arg == null ? "The certificate is required." : null;
+        }
+
+        private string ValidateDeviceGuard(DeviceGuardConfiguration arg)
+        {
+            if (this.Store.CurrentValue != CertificateSource.DeviceGuard)
+            {
+                return null;
+            }
+
+            return arg == null ? "The configuration for the device guard is required." : null;
         }
 
         private string ValidateTimestamp(string value)
@@ -201,27 +260,19 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 case CertificateSource.Personal:
                     this.PfxPath.IsValidated = false;
                     this.SelectedPersonalCertificate.IsValidated = true;
-                    this.DeviceGuardLeafCertificateSubject.IsValidated = false;
-                    this.DeviceGuardToken.IsValidated = false;
+                    this.DeviceGuard.IsValidated = false;
                     break;
                 case CertificateSource.Pfx:
                     this.PfxPath.IsValidated = true;
                     this.SelectedPersonalCertificate.IsValidated = false;
-                    this.DeviceGuardLeafCertificateSubject.IsValidated = false;
-                    this.DeviceGuardToken.IsValidated = false;
+                    this.DeviceGuard.IsValidated = false;
                     break;
                 case CertificateSource.DeviceGuard:
                     this.PfxPath.IsValidated = false;
                     this.SelectedPersonalCertificate.IsValidated = false;
-                    this.DeviceGuardLeafCertificateSubject.IsValidated = true;
-                    this.DeviceGuardToken.IsValidated = true;
+                    this.DeviceGuard.IsValidated = true;
                     break;
             }
-        }
-
-        private static string ValidateJsonToken(SecureString value)
-        {
-            return value == null || value.Length == 0 ? "Device Guard must be configured first." : null;
         }
     }
 }

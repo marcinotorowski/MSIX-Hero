@@ -12,6 +12,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
             this.Source = CertificateSource.Pfx;
             this.DefaultOutFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.DoNotVerify), "Certificates");
             this.TimeStampServer = "http://timestamp.globalsign.com/scripts/timstamp.dll";
+            this.DeviceGuard = new DeviceGuardConfiguration();
         }
 
         [DataMember(Name = "defaultOutputFolder")]
@@ -35,10 +36,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         [DataMember(Name = "encodedPassword")]
         public string EncodedPassword { get; set; }
 
-        [DataMember(Name = "encodedDeviceGuardToken")]
-        public string EncodedDeviceGuardToken { get; set; }
-
-        [DataMember(Name = "deviceGuardLeafCertificateSubject")]
-        public string DeviceGuardLeafCertificateSubject { get; set; }
+        [DataMember(Name = "deviceGuard")]
+        public DeviceGuardConfiguration DeviceGuard { get; set; }
     }
 }

@@ -316,22 +316,14 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
                 if (this.CertificateSelector.Store.CurrentValue == CertificateSource.DeviceGuard)
                 {
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.DeviceGuardLeafCertificateSubject.IsTouched)
+                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.DeviceGuard.IsTouched)
                     {
-                        newConfiguration.Signing.DeviceGuardLeafCertificateSubject = this.CertificateSelector.DeviceGuardLeafCertificateSubject.CurrentValue;
-                    }
-
-                    if (this.CertificateSelector.Store.IsTouched || this.CertificateSelector.DeviceGuardToken.IsTouched)
-                    {
-                        var crypto = new Crypto();
-                        newConfiguration.Signing.EncodedDeviceGuardToken = crypto.Protect(this.CertificateSelector.DeviceGuardToken.CurrentValue);
-                        newConfiguration.Signing.EncodedPassword = null;
+                        newConfiguration.Signing.DeviceGuard = this.CertificateSelector.DeviceGuard.CurrentValue;
                     }
                 }
                 else
                 {
-                    newConfiguration.Signing.DeviceGuardLeafCertificateSubject = null;
-                    newConfiguration.Signing.EncodedDeviceGuardToken = null;
+                    newConfiguration.Signing.DeviceGuard = null;
                 }
 
                 if (this.CertificateSelector.Store.IsTouched)

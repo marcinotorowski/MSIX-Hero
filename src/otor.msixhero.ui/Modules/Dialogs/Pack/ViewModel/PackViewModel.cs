@@ -15,6 +15,7 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
 using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
@@ -124,7 +125,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel
                             await manager.SignPackageWithPfx(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuard(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue ? this.SelectedCertificate.DeviceGuardLeafCertificateSubject.CurrentValue : null, this.SelectedCertificate.DeviceGuardToken.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuard(this.OutputPath.CurrentValue, this.SelectedCertificate.DeviceGuard.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                     }
                 }

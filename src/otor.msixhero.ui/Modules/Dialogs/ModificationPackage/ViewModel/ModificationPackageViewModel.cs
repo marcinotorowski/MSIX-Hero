@@ -19,6 +19,7 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
 using Otor.MsixHero.Ui.Controls.ChangeableDialog.ViewModel;
 using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.Ui.Helpers;
 using Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel;
 using Prism.Services.Dialogs;
 using LogManager = Otor.MsixHero.Infrastructure.Logging.LogManager;
@@ -194,7 +195,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.ModificationPackage.ViewModel
                             await manager.SignPackageWithInstalled(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuard(selectedPath, this.TabCertificate.DeviceGuardLeafCertificateSubject.CurrentValue, this.TabCertificate.DeviceGuardToken.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuard(selectedPath, this.TabCertificate.DeviceGuard.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                     }
 

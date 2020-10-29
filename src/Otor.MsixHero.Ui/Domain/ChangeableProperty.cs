@@ -18,6 +18,19 @@ namespace Otor.MsixHero.Ui.Domain
             this.PostSetValue();
         }
 
+        public bool HasValue
+        {
+            get
+            {
+                if (this.OriginalValue is IEquatable<T> equatable)
+                {
+                    return !equatable.Equals(default);
+                }
+
+                return !EqualityComparer<T>.Default.Equals(default, this.currentValue);
+            }
+        }
+
         public T OriginalValue { get; private set; }
 
         public T CurrentValue
@@ -64,6 +77,8 @@ namespace Otor.MsixHero.Ui.Domain
 
                 this.IsDirty = newIsDirty;
                 this.IsTouched = true;
+
+                this.OnPropertyChanged(nameof(HasValue));
                 if (!this.SetField(ref this.currentValue, value))
                 {
                     return;

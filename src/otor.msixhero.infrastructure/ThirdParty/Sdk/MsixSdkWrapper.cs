@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,7 +16,91 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     public class MsixSdkWrapper : ExeWrapper
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixSdkWrapper));
-        
+
+        public async Task SignPackageWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, bool useDgssV1, string timestampUrl, CancellationToken cancellationToken = default)
+        {
+            var signToolArguments = new StringBuilder();
+
+            signToolArguments.Append("sign");
+            signToolArguments.AppendFormat(" /debug /fd {0}", algorithmType);
+            
+            if (!string.IsNullOrEmpty(timestampUrl))
+            {
+                signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+            }
+
+            string libPath;
+            if (useDgssV1)
+            {
+                libPath = GetSdkPath("dgsslib.dll");
+            }
+            else
+            {
+                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                // ReSharper disable once AssignNullToNotNullAttribute
+                libPath = Path.Combine(baseDir, "Microsoft.Acs.Dlib.dll");
+            }
+
+            signToolArguments.AppendFormat(" /dlib \"{0}\"", libPath);
+            signToolArguments.AppendFormat(" /dmdf \"{0}\"", dgssTokenPath);
+
+            foreach (var filePath in filePaths)
+            {
+                signToolArguments.AppendFormat(" \"{0}\"", filePath);
+            }
+
+            var args = signToolArguments.ToString();
+            var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
+            Logger.Info("Executing {0} {1}", signTool, args);
+
+            Action<string> callBack = data => { };
+
+            try
+            {
+                await RunAsync(signTool, args, cancellationToken, callBack, 0).ConfigureAwait(false);
+            }
+            catch (ProcessWrapperException e)
+            {
+                foreach (var err in e.StandardOutput)
+                {
+                    if (err.IndexOf("0x80192ee7", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        err.IndexOf("System.Net.WebException", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                        err.IndexOf("microsoft.com", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        throw new WebException("Unable to reach the Device Guard Signing Service", e);
+                    }
+
+                    if (err.IndexOf("0x80190191", StringComparison.OrdinalIgnoreCase) >= 0 || err.IndexOf("System.Net.Http.HttpRequestException", StringComparison.OrdinalIgnoreCase) >= 0 && err.Contains("401"))
+                    {
+                        throw new UnauthorizedAccessException("The provided account is not authorized to sign via the Device Guard Signing Service", e);
+                    }
+
+                    if (err.IndexOf("0x8007000d", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        throw new ArgumentException("The provided JSON token file is invalid", e);
+                    }
+                }
+
+                var line = e.StandardError.FirstOrDefault(l => l.StartsWith("SignTool Error: "));
+                if (line != null)
+                {
+                    if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
+                    {
+                        throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
+                    }
+
+                    throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                }
+
+                if (e.ExitCode != 0)
+                {
+                    throw new SdkException(e.Message, e.ExitCode, e);
+                }
+
+                throw;
+            }
+        }
+
         public async Task SignPackageWithPfx(IEnumerable<string> filePaths, string algorithmType, string pfxPath, string password, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var remove = -1;

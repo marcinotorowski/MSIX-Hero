@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
 namespace Otor.MsixHero.Tests.Sdk
@@ -8,6 +9,14 @@ namespace Otor.MsixHero.Tests.Sdk
     [TestFixture]
     public class SignToolSdkTests
     {
+        [Test]
+        public void TestDeviceGuard()
+        {
+            var src = @"C:\temp\outfile.json";
+            var dev = new DeviceGuardHelper();
+            dev.GetSubjectFromDeviceGuardSigning(src, true).GetAwaiter().GetResult();
+        }
+
         [Test]
         public void TestMessage()
         {

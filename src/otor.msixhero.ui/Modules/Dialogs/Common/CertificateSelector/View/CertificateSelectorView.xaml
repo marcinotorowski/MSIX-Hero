@@ -37,38 +37,43 @@
                 <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" Content="Sign with Device Guard" x:Name="CertDeviceGuard" />
             </ComboBox>
 
-            <!--<TextBlock
-                Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                DockPanel.Dock="Top" 
-                Foreground="#666" 
-                HorizontalAlignment="Left"
-                Text="Leaf certificate subject" Margin="0 16 0 6" />
-            <TextBox 
-                DockPanel.Dock="Top" 
-                Text="{Binding DeviceGuardLeafCertificateSubject.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />-->
+            <StackPanel 
+                DockPanel.Dock="Top"
+                Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            
+                <Border 
+                    Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    DockPanel.Dock="Top" 
+                    Background="LightYellow" 
+                    Margin="0 16 0 0">
+                    <TextBlock TextWrapping="Wrap" Margin="10">
+                        <Run Text="One-time configuration is required to use Device Guard. Follow the steps as described in the following article:" />
+                        <Hyperlink>
+                            <Run Text="https://docs.microsoft.com/en-us/windows/msix/package/signing-package-device-guard-signing" ></Run>
+                        </Hyperlink>
+                        <Run Text="and then press the button" />
+                        <Run Text="Sign-in to Microsoft to configure Device Guard" FontWeight="SemiBold" />
+                        <Run Text="to configure it." />
+                    </TextBlock>
+                </Border>
 
-            <Border 
-                Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                DockPanel.Dock="Top" 
-                Background="LightYellow" 
-                Margin="0 16 0 0">
-                <TextBlock TextWrapping="Wrap" Margin="10">
-                    <Run Text="One-time configuration is required to use Device Guard. Follow the steps as described in the following article:" />
-                    <Hyperlink>
-                        <Run Text="https://docs.microsoft.com/en-us/windows/msix/package/signing-package-device-guard-signing" ></Run>
-                    </Hyperlink>
-                    <Run Text="and then press the button" />
-                    <Run Text="Configure Device Guard" FontWeight="SemiBold" />
-                    <Run Text="to configure it." />
-                </TextBlock>
-            </Border>
+                <Button 
+                    Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                    DockPanel.Dock="Top" 
+                    Command="{Binding SignInDeviceGuard}"
+                    HorizontalAlignment="Left" 
+                    Content="Sign-in to Microsoft to configure Device Guard" 
+                    Margin="0 16 0 0" />
 
-            <Button 
-                Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                DockPanel.Dock="Top" 
-                HorizontalAlignment="Left" 
-                Content="Configure Device Guard signing..." 
-                Margin="0 16 0 0" />
+                <Button 
+                    Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    DockPanel.Dock="Top" 
+                    Command="{Binding SignOutDeviceGuard}"
+                    HorizontalAlignment="Left" 
+                    Content="Sign out" 
+                    Margin="0 16 0 0" />
+
+            </StackPanel>
 
             <TextBlock
                 Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
