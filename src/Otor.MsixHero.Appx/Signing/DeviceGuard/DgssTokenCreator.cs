@@ -8,7 +8,6 @@ using System.Security;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Services.Maps;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,11 +19,13 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 {
     public class DgssTokenCreator
     {
-        private static readonly string[] Scope = { "https://onestore.microsoft.com/user_impersonation" };
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(DgssTokenCreator));
 
+        private static readonly string[] Scope = { "https://onestore.microsoft.com/user_impersonation" };
 
         public async Task<DeviceGuardConfig> SignIn(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
+            Logger.Info("Signing in to AzureAD...");
             progress?.Report(new ProgressData(50, "Waiting for authentication..."));
             var tokens = new DeviceGuardConfig();
             var pipeName = "msixhero-" + Guid.NewGuid().ToString("N");
@@ -34,6 +35,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
                 // ReSharper disable once AssignNullToNotNullAttribute
                 var startPath = Path.Combine(Path.GetDirectoryName(entry), "DGSS", "msixhero-dgss.exe");
+                Logger.Debug($"Starting {startPath}...");
                 var process = new ProcessStartInfo(
                     startPath,
                     pipeName);
@@ -69,6 +71,8 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                     var message = obj["exception"]["message"]?.Value<string>();
                     var errorCode = obj["exception"]["errorCode"]?.Value<string>();
 
+                    Logger.Error($"Got exception (type: {type}, error code: {errorCode}, message: {message}");
+
                     switch (type)
                     {
                         case nameof(AuthenticationException):
@@ -85,6 +89,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                 tokens.AccessToken = obj["access_token"]?.Value<string>();
                 tokens.RefreshToken = obj["refresh_token"]?.Value<string>();
 
+                Logger.Info("Got access and refresh token!");
                 await tcs.Task.ConfigureAwait(false);
             }
 
@@ -102,6 +107,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
             {
                 if (tempJsonFile != null)
                 {
+                    Logger.Debug($"Removing {tempJsonFile}...");
                     ExceptionGuard.Guard(() => File.Delete(tempJsonFile));
                 }
             }
@@ -127,7 +133,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
         public async Task<string> CreateDeviceGuardJsonTokenFile(DeviceGuardConfig tokens, CancellationToken cancellationToken = default)
         {
-            var tmpFile = Path.Combine(Path.GetTempPath(), "msixhero-dg-" + Guid.NewGuid().ToString("N").Substring(0, 12) + ".json");
+            var tmpFile = Path.Combine(Path.GetTempPath(), "msix-hero-dg-" + Guid.NewGuid().ToString("N").Substring(0, 12) + ".json");
 
             using (var text = File.Create(tmpFile))
             {
