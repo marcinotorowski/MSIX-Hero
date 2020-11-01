@@ -77,7 +77,7 @@ Task("Publish .NET Core")
     .IsDependentOn("Copy artifacts")
     .Does(() =>
 {
-    Information("Publishing 'otor.msixhero.sln'...");
+    Information("Publishing 'Otor.MsixHero.sln'...");
     var settings = new DotNetCorePublishSettings
     {
         Configuration = configuration,
@@ -87,7 +87,7 @@ Task("Publish .NET Core")
     settings.MSBuildSettings = new DotNetCoreMSBuildSettings()
     .WithProperty("AssemblyVersion", version)
     .WithProperty("Version", version);
-    DotNetCorePublish("./otor.msixhero.sln", settings);
+    DotNetCorePublish("./Otor.MsixHero.sln", settings);
 });
 
 Task("Trim publish folder")
@@ -190,7 +190,7 @@ Task("Sign MSIX")
     .IsDependentOn("Build MSIX")
     .Does(() => {
         StartProcess(
-            outFolder + "/msixherocli.exe",
+            System.IO.Path.Combine(binFolder, "msixherocli.exe"),
                 new ProcessSettings {
                     Arguments = "sign \"" + System.IO.Path.Combine(msixFolder, "msix-hero-" + version + ".msix") + "\"",
                     RedirectStandardOutput = false

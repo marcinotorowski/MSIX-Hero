@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Otor.Msix.Dependencies.Domain
+namespace Otor.MsixHero.Dependencies.Domain
 {
     public interface IPackageVersionDependency : IPackageDependency
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.Msix.Dependencies.Domain;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+using Otor.MsixHero.Dependencies.Domain;
 using Otor.MsixHero.Infrastructure.Progress;
 
-namespace Otor.Msix.Dependencies
+namespace Otor.MsixHero.Dependencies
 {
     public interface IDependencyMapper
     {

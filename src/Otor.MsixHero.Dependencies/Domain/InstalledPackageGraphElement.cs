@@ -1,6 +1,6 @@
 ﻿using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 
-namespace Otor.Msix.Dependencies.Domain
+namespace Otor.MsixHero.Dependencies.Domain
 {
     public class InstalledPackageGraphElement : GraphElement
     {

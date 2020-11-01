@@ -1,5 +1,4 @@
-﻿using Otor.Msix.Dependencies;
-using Otor.Msix.Dependencies.Domain;
+﻿using Otor.MsixHero.Dependencies.Domain;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.DependencyViewer.Model
 {

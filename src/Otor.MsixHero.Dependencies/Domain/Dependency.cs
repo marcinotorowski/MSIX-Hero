@@ -1,4 +1,4 @@
-﻿namespace Otor.Msix.Dependencies.Domain
+﻿namespace Otor.MsixHero.Dependencies.Domain
 {
     public abstract class Dependency
     {

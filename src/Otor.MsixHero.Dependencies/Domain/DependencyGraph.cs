@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Otor.Msix.Dependencies.Domain
+namespace Otor.MsixHero.Dependencies.Domain
 {
     public class DependencyGraph
     {

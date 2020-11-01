@@ -51,7 +51,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{C65B
 		artifacts\scripts\install-certificate.ps1 = artifacts\scripts\install-certificate.ps1
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.Msix.Dependencies", "src\Otor.Msix.Dependencies\Otor.Msix.Dependencies.csproj", "{1432F690-1E0B-4B27-A6C8-41561ECC31A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Dependencies", "src\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj", "{1432F690-1E0B-4B27-A6C8-41561ECC31A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otor.MsixHero.DeviceGuardLoginHelper", "src\Otor.MsixHero.DeviceGuardLoginHelper\Otor.MsixHero.DeviceGuardLoginHelper.csproj", "{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}"
 EndProject

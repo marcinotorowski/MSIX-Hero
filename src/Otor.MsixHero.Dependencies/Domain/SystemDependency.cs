@@ -1,7 +1,6 @@
-﻿using System;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
+﻿using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace Otor.Msix.Dependencies.Domain
+namespace Otor.MsixHero.Dependencies.Domain
 {
     public class SystemDependency : Dependency
     {

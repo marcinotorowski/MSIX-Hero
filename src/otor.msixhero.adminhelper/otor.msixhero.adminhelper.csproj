@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\otor.msixhero.lib\Otor.MsixHero.Lib.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

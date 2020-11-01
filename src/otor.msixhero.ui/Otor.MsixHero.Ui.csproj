@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Otor.Msix.Dependencies\Otor.Msix.Dependencies.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.AdminHelper\Otor.MsixHero.AdminHelper.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />

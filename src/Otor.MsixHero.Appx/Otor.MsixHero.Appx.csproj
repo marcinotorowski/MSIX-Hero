@@ -28,7 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\external\chausner.PriTools\chausner.PriTools.csproj" />
     <ProjectReference Include="..\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj" />
-    <ProjectReference Include="..\otor.msixhero.infrastructure\Otor.MsixHero.Infrastructure.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Registry\Otor.MsixHero.Registry.csproj" />
   </ItemGroup>
 
