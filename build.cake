@@ -71,6 +71,22 @@ Task("Determine version").Does(() =>{
     Information("Product version is '" + version + "'");
 });
 
+Task("Publish .NET Framework")
+.Does(() =>
+{
+    Information("Building Otor.MsixHero.DeviceGuardLoginHelper.csproj...");
+    MSBuild("./src/Otor.MsixHero.DeviceGuardLoginHelper/Otor.MsixHero.DeviceGuardLoginHelper.csproj", new MSBuildSettings {
+        Verbosity = Verbosity.Minimal,
+        ToolVersion = MSBuildToolVersion.VS2019,
+        Configuration = "Release"
+        });
+
+    var src = System.IO.Path.Combine("src", "bin", "netcoreapp3.1", "DGSS");
+    var tgt = System.IO.Path.Combine(binFolder, "DGSS");
+    Information("Copying '" + src + "' to '" + tgt + "'...");
+    CopyDirectory(src, tgt);
+});
+
 Task("Publish .NET Core")
     .IsDependentOn("Clean output folder")
     .IsDependentOn("Determine version")
@@ -153,6 +169,7 @@ Task("Copy artifacts")
 
 Task("Sign files")
     .WithCriteria(shouldSign)
+    .IsDependentOn("Publish .NET Framework")
     .IsDependentOn("Publish .NET Core")
     .IsDependentOn("Trim publish folder")
     .IsDependentOn("Copy artifacts")
@@ -176,6 +193,10 @@ Task("Sign files")
 
 Task("Build MSIX")
     .IsDependentOn("Prepare MSIX")
+    .IsDependentOn("Publish .NET Framework")
+    .IsDependentOn("Publish .NET Core")
+    .IsDependentOn("Trim publish folder")
+    .IsDependentOn("Copy artifacts")
     .Does(() => {
         StartProcess(
             System.IO.Path.Combine(binFolder, "msixherocli.exe"),

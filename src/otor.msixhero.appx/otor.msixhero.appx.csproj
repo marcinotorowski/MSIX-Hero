@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Signing\DeviceGuard\MSIXHeroTest.cat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
