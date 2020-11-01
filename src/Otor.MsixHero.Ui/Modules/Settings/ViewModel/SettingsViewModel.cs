@@ -81,7 +81,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
         private void PathTypeChanged(object sender, ValueChangedEventArgs e)
         {
-            ChangeableProperty<string> changeable;
+            ChangeableFileProperty changeable;
 
             if (sender == this.AppinstallerEditorType)
             {
@@ -108,9 +108,10 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
                 return;
             }
 
-            if ((EditorType)e.NewValue != EditorType.Custom || string.IsNullOrEmpty(changeable.CurrentValue))
+            if ((EditorType)e.NewValue == EditorType.Custom)
             {
-                changeable.CurrentValue = "<custom-path>";
+                changeable.Browse.Execute(null);
+                // changeable.CurrentValue = "<custom-path>";
             }
         }
 
@@ -420,6 +421,18 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
             else
             {
                 newConfiguration.Editing.PowerShellEditor.Resolved = null;
+            }
+
+            if (this.ManifestEditorType.CurrentValue == EditorType.Custom)
+            {
+                if (this.ManifestEditorPath.IsTouched)
+                {
+                    newConfiguration.Editing.ManifestEditor.Resolved = this.ManifestEditorPath.CurrentValue;
+                }
+            }
+            else
+            {
+                newConfiguration.Editing.ManifestEditor.Resolved = null;
             }
 
             var toolsTouched = this.Tools.IsTouched;

@@ -5,6 +5,7 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -100,16 +101,18 @@ namespace Otor.MsixHero.Lib.Proxy.Signing
             await manager.SignPackageWithPfx(package, updatePublisher, pfxPath, password, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public Task SignPackageWithDeviceGuard(
-            string package, 
-            bool useDgssV1,
-            SecureString jsonToken, 
+        public async Task SignPackageWithDeviceGuard(string package,
+            bool updatePublisher,
+            DeviceGuardConfig config,
+            bool useDgssV1 = false,
             string timestampUrl = null,
-            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, 
+            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            throw new NotImplementedException();
+            var manager = await this.managerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+            await manager.SignPackageWithDeviceGuard(package, updatePublisher, config, useDgssV1, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task SignPackageWithInstalled(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,6 +49,20 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.View
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             ((CertificateSelectorViewModel)this.DataContext).Password.CurrentValue = ((PasswordBox)sender).SecurePassword;
+        }
+
+        private void DeviceGuardMoreInfoClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo("https://msixhero.net/redirect/device-guard-signing")
+                    {UseShellExecute = true};
+                Process.Start(psi);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Could not open the link:\r\nhttps://msixhero.net/redirect/device-guard-signing");
+            }
         }
     }
 }

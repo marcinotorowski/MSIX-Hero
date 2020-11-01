@@ -12,7 +12,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
     {
         public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, bool useDgssV1, CancellationToken cancellationToken = default)
         {
-            var tempFilePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".cat");
+            var tempFilePath = Path.Combine(Path.GetTempPath(), "msix-hero-" + Guid.NewGuid().ToString("N") + ".cat");
             try
             {
                 using (var manifestResourceStream = typeof(DeviceGuardHelper).Assembly.GetManifestResourceStream("Otor.MsixHero.Appx.Signing.DeviceGuard.MSIXHeroTest.cat"))

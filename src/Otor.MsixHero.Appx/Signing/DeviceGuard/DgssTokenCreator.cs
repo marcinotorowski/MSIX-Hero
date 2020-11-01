@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Net.Http;
+using System.Reflection;
 using System.Security;
+using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Services.Maps;
 using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 {
@@ -17,56 +23,96 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
         private static readonly string[] Scope = { "https://onestore.microsoft.com/user_impersonation" };
 
 
-        public async Task<DeviceGuardConfig> SignIn(CancellationToken cancellationToken)
+        public async Task<DeviceGuardConfig> SignIn(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var factory = new MsixHeroClientFactory();
-            string refreshToken = null;
-            EventHandler<string> gotRefreshToken = (sender, s) =>
+            progress?.Report(new ProgressData(50, "Waiting for authentication..."));
+            var tokens = new DeviceGuardConfig();
+            var pipeName = "msixhero-" + Guid.NewGuid().ToString("N");
+            using (var namedPipeServer = new NamedPipeServerStream(pipeName, PipeDirection.In))
             {
-                refreshToken = s;
-            };
+                var entry = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
-            try
-            {
-                factory.GotRefreshToken += gotRefreshToken;
-                var clientApp = PublicClientApplicationBuilder.Create("4dd963fd-7400-4ce3-bc90-0bed2b65820d")
-                    .WithRedirectUri("https://login.microsoftonline.com/common/oauth2/nativeclient")
-                    .WithHttpClientFactory(factory)
-                    .Build();
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var startPath = Path.Combine(Path.GetDirectoryName(entry), "DGSS", "msixhero-dgss.exe");
+                var process = new ProcessStartInfo(
+                    startPath,
+                    pipeName);
 
-                await clientApp.GetAccountsAsync().ConfigureAwait(true);
-                var result = await clientApp.AcquireTokenInteractive(Scope).WithPrompt(Prompt.ForceLogin).ExecuteAsync(cancellationToken).ConfigureAwait(false);
-                var tokens = new DeviceGuardConfig(result.AccessToken, refreshToken);
-                
-                var dgh = new DeviceGuardHelper();
+                var tcs = new TaskCompletionSource<int>();
 
-                string tempJsonFile = null;
-                try
+                var start = Process.Start(process);
+                if (start == null)
                 {
-                    tempJsonFile = await this.CreateDeviceGuardJsonTokenFile(tokens, cancellationToken).ConfigureAwait(false);
-                    var subject = await dgh.GetSubjectFromDeviceGuardSigning(tempJsonFile, false, cancellationToken).ConfigureAwait(false);
-                    tokens.Subject = subject;
+                    throw new InvalidOperationException();
                 }
-                finally
+
+                start.EnableRaisingEvents = true;
+                start.Exited += (sender, args) =>
                 {
-                    if (tempJsonFile != null)
+                    tcs.SetResult(start.ExitCode);
+                };
+
+                await namedPipeServer.WaitForConnectionAsync(cancellationToken).ConfigureAwait(false);
+
+                var bufferInt = new byte[4];
+                await namedPipeServer.ReadAsync(bufferInt, 0, bufferInt.Length, cancellationToken).ConfigureAwait(false);
+
+                var bufferObj = new byte[BitConverter.ToInt32(bufferInt, 0)];
+                await namedPipeServer.ReadAsync(bufferObj, 0, bufferObj.Length, cancellationToken).ConfigureAwait(false);
+
+                var text = System.Text.Encoding.UTF8.GetString(bufferObj);
+                var obj = JObject.Parse(text);
+
+                if (obj["exception"] != null)
+                {
+                    var type = obj["exception"]["type"]?.Value<string>();
+                    var message = obj["exception"]["message"]?.Value<string>();
+                    var errorCode = obj["exception"]["errorCode"]?.Value<string>();
+
+                    switch (type)
                     {
-                        ExceptionGuard.Guard(() => File.Delete(tempJsonFile));
+                        case nameof(AuthenticationException):
+                            throw new AuthenticationException(message);
+                        case nameof(MsalException):
+                            throw new MsalException(errorCode ?? "1", message);
+                        case nameof(MsalClientException):
+                            throw new MsalClientException(errorCode ?? "1", message);
+                        default:
+                            throw new Exception(message);
                     }
                 }
 
-                return tokens;
+                tokens.AccessToken = obj["access_token"]?.Value<string>();
+                tokens.RefreshToken = obj["refresh_token"]?.Value<string>();
+
+                await tcs.Task.ConfigureAwait(false);
+            }
+
+            string tempJsonFile = null;
+            try
+            {
+                var dgh = new DeviceGuardHelper();
+                progress?.Report(new ProgressData(75, "Verifying signing capabilities..."));
+                tempJsonFile = await this.CreateDeviceGuardJsonTokenFile(tokens, cancellationToken).ConfigureAwait(false);
+                progress?.Report(new ProgressData(98, "Verifying signing capabilities..."));
+                var subject = await dgh.GetSubjectFromDeviceGuardSigning(tempJsonFile, false, cancellationToken).ConfigureAwait(false);
+                tokens.Subject = subject;
             }
             finally
             {
-                factory.GotRefreshToken -= gotRefreshToken;
+                if (tempJsonFile != null)
+                {
+                    ExceptionGuard.Guard(() => File.Delete(tempJsonFile));
+                }
             }
+
+            return tokens;
         }
 
         public SecureString CreateDeviceGuardJsonToken(DeviceGuardConfig tokens, CancellationToken cancellationToken = default)
         {
             var secureString = new SecureString();
-            
+
             var jsonObject = new JObject();
             jsonObject["access_token"] = tokens.AccessToken;
             jsonObject["refresh_token"] = tokens.RefreshToken;

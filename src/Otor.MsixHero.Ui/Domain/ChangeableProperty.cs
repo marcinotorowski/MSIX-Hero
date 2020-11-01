@@ -78,12 +78,12 @@ namespace Otor.MsixHero.Ui.Domain
                 this.IsDirty = newIsDirty;
                 this.IsTouched = true;
 
-                this.OnPropertyChanged(nameof(HasValue));
                 if (!this.SetField(ref this.currentValue, value))
                 {
                     return;
                 }
 
+                this.OnPropertyChanged(nameof(HasValue));
                 this.PostSetValue();
 
                 var valueChanged = this.ValueChanged;

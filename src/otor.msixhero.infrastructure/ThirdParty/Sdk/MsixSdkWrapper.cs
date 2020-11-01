@@ -36,9 +36,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             else
             {
-                var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                // ReSharper disable once AssignNullToNotNullAttribute
-                libPath = Path.Combine(baseDir, "Microsoft.Acs.Dlib.dll");
+                libPath = GetSdkPath("Microsoft.Acs.Dlib.dll");
             }
 
             signToolArguments.AppendFormat(" /dlib \"{0}\"", libPath);
@@ -455,7 +453,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             {
                 if (parsed[parsed.Count - 1].Item1 == 0)
                 {
-                    switch (parsed[parsed.Count - 1].Item2.ToLowerInvariant())
+                    switch (parsed[parsed.Count - 1].Item2?.ToLowerInvariant())
                     {
                         case "private key":
                             error = "The selected certificate does not have a private key.";
@@ -470,15 +468,6 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                             error = "The selected certificate does not meet the " + parsed[parsed.Count - 1].Item2 + " filter.";
                             break;
                     }
-                }
-            }
-
-            for (var i = 0; i < parsed.Count; i++)
-            {
-                if (parsed[i].Item1 == 0)
-                {
-
-                    break;
                 }
             }
 

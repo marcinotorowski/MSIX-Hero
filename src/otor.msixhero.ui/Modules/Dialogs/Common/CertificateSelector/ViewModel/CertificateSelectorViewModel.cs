@@ -14,8 +14,10 @@ using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Ui.Commands.RoutedCommand;
+using Otor.MsixHero.Ui.Controls.Progress;
 using Otor.MsixHero.Ui.Domain;
 using Otor.MsixHero.Ui.Helpers;
 
@@ -154,33 +156,44 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             this.DeviceGuard.CurrentValue = null;
         }
 
+        public ProgressProperty Progress { get; } = new ProgressProperty();
+
         private async void ExecuteSignInDeviceGuard(object param)
         {
             var dgh = new DgssTokenCreator();
-
-
+            
             try
             {
-                var result = await dgh.SignIn(default).ConfigureAwait(false);
-
-                var crypto = new Crypto();
-
-                if (this.DeviceGuard.CurrentValue == null)
+                using (var cancellation = new CancellationTokenSource())
                 {
-                    this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
+                    IProgress<ProgressData> progress = new Progress<ProgressData>();
+                    var task = dgh.SignIn(cancellation.Token, progress);
+                    this.Progress.MonitorProgress(task, cancellation, progress);
+                    
+                    var result = await task.ConfigureAwait(true);
+
+                    var crypto = new Crypto();
+
+                    if (this.DeviceGuard.CurrentValue == null)
                     {
-                        EncodedAccessToken = crypto.Protect(result.AccessToken),
-                        EncodedRefreshToken = crypto.Protect(result.RefreshToken)
-                    };
-                }
-                else
-                {
-                    this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
+                        this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
+                        {
+                            EncodedAccessToken = crypto.Protect(result.AccessToken),
+                            EncodedRefreshToken = crypto.Protect(result.RefreshToken),
+                            Subject = result.Subject,
+                            UseV1 = false
+                        };
+                    }
+                    else
                     {
-                        EncodedAccessToken = crypto.Protect(result.AccessToken),
-                        EncodedRefreshToken = crypto.Protect(result.RefreshToken),
-                        UseV1 = this.DeviceGuard.CurrentValue.UseV1
-                    };
+                        this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
+                        {
+                            EncodedAccessToken = crypto.Protect(result.AccessToken),
+                            EncodedRefreshToken = crypto.Protect(result.RefreshToken),
+                            UseV1 = this.DeviceGuard.CurrentValue.UseV1,
+                            Subject = result.Subject
+                        };
+                    }
                 }
             }
             catch (Exception e)

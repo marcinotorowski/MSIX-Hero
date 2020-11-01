@@ -6,6 +6,8 @@
              xmlns:configuration1="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel"
              xmlns:helpers="clr-namespace:Otor.MsixHero.Ui.Helpers"
+             xmlns:progressOverlay="clr-namespace:Otor.MsixHero.Ui.Controls.ProgressOverlay"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="500"
@@ -22,73 +24,161 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <AdornerDecorator>
-        <DockPanel>
+        <progressOverlay:ProgressOverlay
+            IsShown="{Binding Progress.IsLoading}"
+            Progress="{Binding Progress.Progress}"
+            Message="{Binding Progress.Message}"
+            SupportsCancelling="False">
+            <DockPanel>
 
-            <TextBlock
+                <TextBlock
                 helpers:RequiredAdorner.IsRequired="True" 
                 DockPanel.Dock="Top" 
                 Foreground="#666" 
                 HorizontalAlignment="Left"
                 Text="Certificate to sign the package" Margin="0 0 0 6" />
 
-            <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
-                <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" Content="Sign with PFX file" x:Name="PfxFile" />
-                <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" Content="Sign with installed certificate" x:Name="CertStore" />
-                <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" Content="Sign with Device Guard" x:Name="CertDeviceGuard" />
-            </ComboBox>
+                <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" Content="Sign with PFX file" x:Name="PfxFile" />
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" Content="Sign with installed certificate" x:Name="CertStore" />
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" Content="Sign with Device Guard" x:Name="CertDeviceGuard" />
+                </ComboBox>
 
-            <StackPanel 
-                DockPanel.Dock="Top"
-                Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-            
-                <Border 
-                    Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                    DockPanel.Dock="Top" 
-                    Background="LightYellow" 
-                    Margin="0 16 0 0">
-                    <TextBlock TextWrapping="Wrap" Margin="10">
-                        <Run Text="One-time configuration is required to use Device Guard. Follow the steps as described in the following article:" />
-                        <Hyperlink>
-                            <Run Text="https://docs.microsoft.com/en-us/windows/msix/package/signing-package-device-guard-signing" ></Run>
-                        </Hyperlink>
-                        <Run Text="and then press the button" />
-                        <Run Text="Sign-in to Microsoft to configure Device Guard" FontWeight="SemiBold" />
-                        <Run Text="to configure it." />
-                    </TextBlock>
-                </Border>
+                <StackPanel 
+                    DockPanel.Dock="Top"
+                    Visibility="{Binding ElementName=CertDeviceGuard, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
 
-                <Button 
-                    Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                    DockPanel.Dock="Top" 
-                    Command="{Binding SignInDeviceGuard}"
-                    HorizontalAlignment="Left" 
-                    Content="Sign-in to Microsoft to configure Device Guard" 
-                    Margin="0 16 0 0" />
+                    <StackPanel
+                        Margin="0 16 0 0"
+                        Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                        DockPanel.Dock="Top" >
+                        <Border 
+                            Background="LightYellow" 
+                            Margin="0 0 0 0">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap" Margin="10">
+                                    <Run Text="You have to sign-in with Azure AD credentials to use Device Guard signing. The account must have signing permissions." />
+                                    <Hyperlink Click="DeviceGuardMoreInfoClick">
+                                        <Run Text="See more information" />
+                                    </Hyperlink>
+                                </TextBlock>
 
-                <Button 
-                    Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    DockPanel.Dock="Top" 
-                    Command="{Binding SignOutDeviceGuard}"
-                    HorizontalAlignment="Left" 
-                    Content="Sign out" 
-                    Margin="0 16 0 0" />
+                                <Button 
+                                    Command="{Binding SignInDeviceGuard}"
+                                    HorizontalAlignment="Left" 
+                                    Margin="10 0 10 10">
+                                    <DockPanel>
+                                        <Image 
+                                            VerticalAlignment="Center"
+                                            Margin="0 -4"
+                                            Height="20"
+                                            Width="20"
+                                            Source="../Images/microsoftlogo.png" />
+                                        <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Sign in with Microsoft" />
+                                    </DockPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
 
-            </StackPanel>
+                    </StackPanel>
 
-            <TextBlock
+                    <StackPanel
+                        Visibility="{Binding DeviceGuard.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        DockPanel.Dock="Top">
+
+                        <Border 
+                            Margin="0 0 0 0">
+                            <DockPanel Margin="10">
+                                <Border
+                                    VerticalAlignment="Center"
+                                    CornerRadius="16" Background="ForestGreen" Margin="-5 -5 0 -5">
+                                    <Path Data="{StaticResource VectorOK}" Fill="White" Width="32" Height="32" Margin="2">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                </Border>
+                                <StackPanel
+                                    Margin="5 0 0 0"
+                                    VerticalAlignment="Center">
+                                    <TextBlock
+                                        TextWrapping="Wrap" >
+                                        <Run Text="Device Guard signing is ready to be used for publisher name" />
+                                        <Run Text="{Binding DeviceGuard.CurrentValue.Subject, Mode=OneWay}" FontWeight="SemiBold" /><Run Text="." />
+                                    </TextBlock>
+                                    <TextBlock
+                                        TextWrapping="Wrap" >
+                                        <Hyperlink Command="{Binding SignOutDeviceGuard}">
+                                            <Run Text="Click here to sign out or use another account for signing" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+
+                        <!--<TextBlock
+                            DockPanel.Dock="Top" 
+                            Foreground="#666" 
+                            HorizontalAlignment="Left"
+                            Text="Publisher (certificate subject)" Margin="0 16 0 6" />
+
+                        <TextBox
+                            IsReadOnly="True"
+                            DockPanel.Dock="Top" 
+                            Text="{Binding DeviceGuard.CurrentValue.Subject, Mode=OneWay}" 
+                            Margin="0 0 0 0" />-->
+
+                        <TextBlock
+                            DockPanel.Dock="Top" 
+                            Foreground="#666" 
+                            HorizontalAlignment="Left"
+                            Text="Version" Margin="0 16 0 6" />
+
+                        <ComboBox 
+                            Margin="0"
+                            SelectedValuePath="Tag"
+                            SelectedValue="{Binding DeviceGuard.CurrentValue.UseV1}">
+                            <ComboBoxItem Content="Use Device Guard signing version 1 (legacy)">
+                                <ComboBoxItem.Tag>
+                                    <system:Boolean>True</system:Boolean>
+                                </ComboBoxItem.Tag>
+                            </ComboBoxItem>
+                            <ComboBoxItem Content="Use Device Guard signing version 2 (recommended)">
+                                <ComboBoxItem.Tag>
+                                    <system:Boolean>False</system:Boolean>
+                                </ComboBoxItem.Tag>
+                            </ComboBoxItem>
+                        </ComboBox>
+                        <Border Background="LightYellow" Visibility="{Binding DeviceGuard.CurrentValue.UseV1, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <DockPanel>
+                                <Path
+                                    Margin="5 5 -5 5"
+                                    Data="{StaticResource VectorBulb}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}">
+                                    <Path.LayoutTransform>
+                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                    </Path.LayoutTransform>
+                                </Path>
+                                <TextBlock Margin="10" Text="This API in version 1 is going to be deprecated soon. Consider using version 2 instead." TextWrapping="Wrap" />
+                            </DockPanel>
+                        </Border>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <TextBlock
                 Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
                 helpers:RequiredAdorner.IsRequired="True" 
                 DockPanel.Dock="Top" 
                 Foreground="#666" 
                 HorizontalAlignment="Left"
                 Text="Path to PFX file" Margin="0 16 0 6" />
-            <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
-                <TextBox 
+                <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
+                    <TextBox 
                     Text="{Binding PfxPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-            </DockPanel>
+                </DockPanel>
 
-            <TextBlock
+                <TextBlock
                 Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
                 helpers:RequiredAdorner.IsRequired="True" 
                 DockPanel.Dock="Top" 
@@ -96,40 +186,41 @@
                 HorizontalAlignment="Left"
                 Text="Installed certificate" Margin="0 16 0 6" />
 
-            <CheckBox 
+                <CheckBox 
                 Margin="0 0 0 6"
                 IsChecked="{Binding ShowAllCertificates.CurrentValue, Converter={StaticResource NegativeConverter}}"
                 Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Content="Show only valid certificates for signing" DockPanel.Dock="Top" />
-            <ComboBox SelectedValue="{Binding SelectedPersonalCertificate.CurrentValue, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" 
+                <ComboBox SelectedValue="{Binding SelectedPersonalCertificate.CurrentValue, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" 
               ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" 
               Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ComboBox.ItemTemplateSelector>
-                    <helpers:ComboBoxTemplateSelector>
-                        <helpers:ComboBoxTemplateSelector.ListTemplate>
-                            <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding Subject}" Opacity="0.6" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </helpers:ComboBoxTemplateSelector.ListTemplate>
-                        <helpers:ComboBoxTemplateSelector.SelectedTemplate>
-                            <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
-                                <TextBlock Text="{Binding DisplayName}" />
-                            </DataTemplate>
-                        </helpers:ComboBoxTemplateSelector.SelectedTemplate>
-                    </helpers:ComboBoxTemplateSelector>
-                </ComboBox.ItemTemplateSelector>
-            </ComboBox>
+                    <ComboBox.ItemTemplateSelector>
+                        <helpers:ComboBoxTemplateSelector>
+                            <helpers:ComboBoxTemplateSelector.ListTemplate>
+                                <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Subject}" Opacity="0.6" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </helpers:ComboBoxTemplateSelector.ListTemplate>
+                            <helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                                <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
+                                    <TextBlock Text="{Binding DisplayName}" />
+                                </DataTemplate>
+                            </helpers:ComboBoxTemplateSelector.SelectedTemplate>
+                        </helpers:ComboBoxTemplateSelector>
+                    </ComboBox.ItemTemplateSelector>
+                </ComboBox>
 
-            <TextBlock Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
-            <PasswordBox x:Name="PasswordBox" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
+                <TextBlock Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
+                <PasswordBox x:Name="PasswordBox" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
 
-            <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
-            <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
+                <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-            <Border />
-        </DockPanel>
+                <Border />
+            </DockPanel>
+        </progressOverlay:ProgressOverlay>
     </AdornerDecorator>
 </UserControl>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -37,7 +38,7 @@ namespace Otor.MsixHero.Appx.Signing
 
         Task SignPackageWithInstalled(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
 
-        Task SignPackageWithDeviceGuard(string package, bool useDgssV1, SecureString jsonToken, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
+        Task SignPackageWithDeviceGuard(string package, bool updatePublisher, DeviceGuardConfig config, bool useDgssV1 = false, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
 
         Task<TrustStatus> IsTrusted(string certificateFileOrSignedFile, CancellationToken cancellationToken = default);
         

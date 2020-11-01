@@ -10,8 +10,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.X509;
+using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Branding;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
@@ -40,18 +42,6 @@ namespace Otor.MsixHero.Appx.Signing
             IProgress<ProgressData> progress = null)
         {
             return this.ExtractCertificateFromMsix(msixFile, true, null, progress);
-        }
-
-        public Task SignPackageWithDeviceGuard(
-            string package,
-            bool useDgssV1,
-            SecureString jsonToken,
-            string timestampUrl = null,
-            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
-            CancellationToken cancellationToken = default,
-            IProgress<ProgressData> progress = null)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<PersonalCertificate> GetCertificateFromMsix(string msixFile, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -181,7 +171,7 @@ namespace Otor.MsixHero.Appx.Signing
                 // var cert5092 = new X509Certificate2(certObject);
                 cancellationToken.ThrowIfCancellationRequested();
                 // ReSharper disable once AccessToDisposedClosure
-                
+
                 var validated = await Task.Run(() => certObject.OfType<X509Certificate2>().FirstOrDefault(c => c.Verify()), cancellationToken).ConfigureAwait(false);
                 if (validated != null)
                 {
@@ -425,6 +415,67 @@ namespace Otor.MsixHero.Appx.Signing
             }
         }
 
+        public async Task SignPackageWithDeviceGuard(string package,
+            bool updatePublisher,
+            DeviceGuardConfig config,
+            bool useDgss1 = false,
+            string timestampUrl = null,
+            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progress = null)
+        {
+            Logger.Info("Signing package {0} using Device Guard for {1}.", package, config.Subject);
+
+            var dgssTokenPath = await new DgssTokenCreator().CreateDeviceGuardJsonTokenFile(config, cancellationToken);
+            try
+            {
+                var publisherName = config.Subject;
+                if (publisherName == null)
+                {
+                    var dgh = new DeviceGuardHelper();
+                    publisherName = await dgh.GetSubjectFromDeviceGuardSigning(dgssTokenPath, useDgss1, cancellationToken).ConfigureAwait(false);
+                }
+
+                var localCopy = await this.PreparePackageForSigning(package, updatePublisher, increaseVersion, publisherName, cancellationToken).ConfigureAwait(false);
+
+                try
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    
+                    var sdk = new MsixSdkWrapper();
+                    progress?.Report(new ProgressData(25, "Signing with Device Guard..."));
+                    await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, useDgss1, timestampUrl, cancellationToken).ConfigureAwait(false);
+                    progress?.Report(new ProgressData(75, "Signing with Device Guard..."));
+                    await Task.Delay(500, cancellationToken).ConfigureAwait(false);
+
+                    Logger.Debug("Moving {0} to {1}.", localCopy, package);
+                    File.Copy(localCopy, package, true);
+                    progress?.Report(new ProgressData(95, "Signing with Device Guard..."));
+                }
+                finally
+                {
+                    try
+                    {
+                        if (File.Exists(localCopy))
+                        {
+                            File.Delete(localCopy);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Warn(e, "Clean-up of a temporary file {0} failed.", localCopy);
+                    }
+                }
+            }
+            finally
+            {
+                if (File.Exists(dgssTokenPath))
+                {
+                    ExceptionGuard.Guard(() => File.Delete(dgssTokenPath));
+                }
+            }
+        }
+
         public async Task SignPackageWithPfx(
             string package,
             bool updatePublisher,
@@ -466,7 +517,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                 var sdk = new MsixSdkWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
-                await sdk.SignPackageWithPfx(new [] { localCopy  }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
+                await sdk.SignPackageWithPfx(new[] { localCopy }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
                 progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
@@ -609,12 +660,22 @@ namespace Otor.MsixHero.Appx.Signing
             return cert;
         }
 
-        private async Task<string> PreparePackageForSigning(
+        private Task<string> PreparePackageForSigning(
             string package,
             bool updatePublisher,
             IncreaseVersionMethod increaseVersion,
             X509Certificate certificate,
             CancellationToken cancellationToken = default)
+        {
+            return this.PreparePackageForSigning(package, updatePublisher, increaseVersion, certificate.Subject, cancellationToken);
+        }
+
+        private async Task<string> PreparePackageForSigning(
+        string package,
+        bool updatePublisher,
+        IncreaseVersionMethod increaseVersion,
+        string subject,
+        CancellationToken cancellationToken = default)
         {
             if (!File.Exists(package))
             {
@@ -663,8 +724,8 @@ namespace Otor.MsixHero.Appx.Signing
                             identity.Attributes.Append(publisher);
                         }
 
-                        Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.InnerText, certificate.Subject);
-                        publisher.InnerText = certificate.Subject;
+                        Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.InnerText, subject);
+                        publisher.InnerText = subject;
 
                         if (increaseVersion != IncreaseVersionMethod.None)
                         {

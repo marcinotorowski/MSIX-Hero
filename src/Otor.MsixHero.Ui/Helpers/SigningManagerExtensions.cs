@@ -29,8 +29,7 @@ namespace Otor.MsixHero.Ui.Helpers
             tokens.RefreshToken = FromSecureString(crypto.Unprotect(configuration.EncodedRefreshToken));
             tokens.Subject = configuration.Subject;
             
-            var token = new DgssTokenCreator().CreateDeviceGuardJsonToken(tokens, cancellationToken);
-            return signingManager.SignPackageWithDeviceGuard(package, configuration.UseV1, token, timestampUrl, increaseVersion, cancellationToken, progress);
+            return signingManager.SignPackageWithDeviceGuard(package, true, tokens, configuration.UseV1, timestampUrl, increaseVersion, cancellationToken, progress);
         }
 
         private static string FromSecureString(SecureString secureString)

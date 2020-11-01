@@ -3,11 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Otor.MsixHero.DeviceGuardLoginHelper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <Button Content="Sign in" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ClickMe" />
-        <TextBlock x:Name="Label" />
-    </StackPanel>
+        ShowInTaskbar="False"
+        WindowStyle="None"
+        Title="MSIX Hero - Sign to AzureAD" Height="32" Width="100">
+    <TextBlock Text="Signing-in..." VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" />
 </Window>
