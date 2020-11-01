@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PriInfo>
+	<ResourceMap name="FilePicker" version="1.0" primary="true">
+		<Qualifiers>
+			<Scale>100,200,400</Scale>
+			<TargetSize>24</TargetSize>
+		</Qualifiers>
+		<ResourceMapSubtree name="Files">
+			<NamedResource name="app.xbf" uri="ms-resource://FilePicker/Files/app.xbf">
+				<Candidate type="EmbeddedData">
+					<Base64Value>[Embedded Binary Data]</Base64Value>
+				</Candidate>
+			</NamedResource>
+			<ResourceMapSubtree name="assets">
+				<NamedResource name="SplashScreen.png" uri="ms-resource://FilePicker/Files/assets/SplashScreen.png">
+					<Candidate qualifiers="Scale-100" isDefault="true" type="Path">
+						<Value>assets\SplashScreen.scale-100.png</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SquareTile150x150.png" uri="ms-resource://FilePicker/Files/assets/SquareTile150x150.png">
+					<Candidate qualifiers="Scale-400" isDefault="true" type="Path">
+						<Value>assets\SquareTile150x150.scale-400.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-200" isDefault="true" type="Path">
+						<Value>assets\SquareTile150x150.scale-200.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-100" isDefault="true" type="Path">
+						<Value>assets\SquareTile150x150.scale-100.png</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SquareTile310x150.png" uri="ms-resource://FilePicker/Files/assets/SquareTile310x150.png">
+					<Candidate qualifiers="Scale-400" isDefault="true" type="Path">
+						<Value>assets\SquareTile310x150.scale-400.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-200" isDefault="true" type="Path">
+						<Value>assets\SquareTile310x150.scale-200.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-100" isDefault="true" type="Path">
+						<Value>assets\SquareTile310x150.scale-100.png</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SquareTile44x44.png" uri="ms-resource://FilePicker/Files/assets/SquareTile44x44.png">
+					<Candidate qualifiers="TargetSize-24" isDefault="true" type="Path">
+						<Value>assets\SquareTile44x44.targetsize-24.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-400" isDefault="true" type="Path">
+						<Value>assets\SquareTile44x44.scale-400.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-200" isDefault="true" type="Path">
+						<Value>assets\SquareTile44x44.scale-200.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-100" isDefault="true" type="Path">
+						<Value>assets\SquareTile44x44.scale-100.png</Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="SquareTile71x71.png" uri="ms-resource://FilePicker/Files/assets/SquareTile71x71.png">
+					<Candidate qualifiers="Scale-400" isDefault="true" type="Path">
+						<Value>assets\SquareTile71x71.scale-400.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-200" isDefault="true" type="Path">
+						<Value>assets\SquareTile71x71.scale-200.png</Value>
+					</Candidate>
+					<Candidate qualifiers="Scale-100" isDefault="true" type="Path">
+						<Value>assets\SquareTile71x71.scale-100.png</Value>
+					</Candidate>
+				</NamedResource>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="View">
+				<NamedResource name="FilePropertiesDialog.xbf" uri="ms-resource://FilePicker/Files/View/FilePropertiesDialog.xbf">
+					<Candidate type="EmbeddedData">
+						<Base64Value>[Embedded Binary Data]</Base64Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="HostedAppControl.xbf" uri="ms-resource://FilePicker/Files/View/HostedAppControl.xbf">
+					<Candidate type="EmbeddedData">
+						<Base64Value>[Embedded Binary Data]</Base64Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="MainPage.xbf" uri="ms-resource://FilePicker/Files/View/MainPage.xbf">
+					<Candidate type="EmbeddedData">
+						<Base64Value>[Embedded Binary Data]</Base64Value>
+					</Candidate>
+				</NamedResource>
+				<NamedResource name="Styles.xbf" uri="ms-resource://FilePicker/Files/View/Styles.xbf">
+					<Candidate type="EmbeddedData">
+						<Base64Value>[Embedded Binary Data]</Base64Value>
+					</Candidate>
+				</NamedResource>
+			</ResourceMapSubtree>
+		</ResourceMapSubtree>
+		<ResourceMapSubtree name="MicrosoftInternalMetadata">
+			<NamedResource name="ContentChecksumValue" uri="ms-resource://FilePicker/MicrosoftInternalMetadata/ContentChecksumValue">
+				<Candidate type="String">
+					<Value>3360130737</Value>
+				</Candidate>
+			</NamedResource>
+		</ResourceMapSubtree>
+		<ResourceMapSubtree name="Resources">
+			<NamedResource name="AppxManifest_Description" uri="ms-resource://FilePicker/Resources/AppxManifest_Description"/>
+			<NamedResource name="AppxManifest_DisplayName" uri="ms-resource://FilePicker/Resources/AppxManifest_DisplayName"/>
+			<NamedResource name="AppxManifest_VisualStudioDisplayName" uri="ms-resource://FilePicker/Resources/AppxManifest_VisualStudioDisplayName"/>
+			<NamedResource name="EnterpriseId_Personal" uri="ms-resource://FilePicker/Resources/EnterpriseId_Personal"/>
+			<NamedResource name="EnterpriseId_Work" uri="ms-resource://FilePicker/Resources/EnterpriseId_Work"/>
+			<NamedResource name="MainPage_CommitButton_CachedFileUpdate" uri="ms-resource://FilePicker/Resources/MainPage_CommitButton_CachedFileUpdate"/>
+			<NamedResource name="MainPage_CommitButton_FolderOpen" uri="ms-resource://FilePicker/Resources/MainPage_CommitButton_FolderOpen"/>
+			<NamedResource name="MainPage_CommitButton_Open" uri="ms-resource://FilePicker/Resources/MainPage_CommitButton_Open"/>
+			<NamedResource name="MainPage_CommitButton_Save" uri="ms-resource://FilePicker/Resources/MainPage_CommitButton_Save"/>
+			<NamedResource name="MainPage_DefaultSaveFileName" uri="ms-resource://FilePicker/Resources/MainPage_DefaultSaveFileName"/>
+			<NamedResource name="MainPage_Title_CachedFileUpdate" uri="ms-resource://FilePicker/Resources/MainPage_Title_CachedFileUpdate"/>
+			<NamedResource name="MainPage_Title_FolderOpen" uri="ms-resource://FilePicker/Resources/MainPage_Title_FolderOpen"/>
+			<NamedResource name="MainPage_Title_Open" uri="ms-resource://FilePicker/Resources/MainPage_Title_Open"/>
+			<NamedResource name="MainPage_Title_Save" uri="ms-resource://FilePicker/Resources/MainPage_Title_Save"/>
+			<NamedResource name="Picker_Blocked_Message" uri="ms-resource://FilePicker/Resources/Picker_Blocked_Message"/>
+			<NamedResource name="Picker_Blocked_Title" uri="ms-resource://FilePicker/Resources/Picker_Blocked_Title"/>
+			<NamedResource name="ProviderAppsFlyoutButton_AccessibilityName" uri="ms-resource://FilePicker/Resources/ProviderAppsFlyoutButton_AccessibilityName"/>
+			<ResourceMapSubtree name="AppBar_ChangeFileProperties">
+				<NamedResource name="Label" uri="ms-resource://FilePicker/Resources/AppBar_ChangeFileProperties/Label"/>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="CameraButton">
+				<ResourceMapSubtree name="[using:Windows.UI.Xaml.Automation]AutomationProperties">
+					<NamedResource name="Name" uri="ms-resource://FilePicker/Resources/CameraButton/[using:Windows.UI.Xaml.Automation]AutomationProperties/Name"/>
+				</ResourceMapSubtree>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="EnterpriseIdsComboBox">
+				<ResourceMapSubtree name="[using:Windows.UI.Xaml.Automation]AutomationProperties">
+					<NamedResource name="Name" uri="ms-resource://FilePicker/Resources/EnterpriseIdsComboBox/[using:Windows.UI.Xaml.Automation]AutomationProperties/Name"/>
+				</ResourceMapSubtree>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="FileExtComboBox">
+				<ResourceMapSubtree name="[using:Windows.UI.Xaml.Automation]AutomationProperties">
+					<NamedResource name="Name" uri="ms-resource://FilePicker/Resources/FileExtComboBox/[using:Windows.UI.Xaml.Automation]AutomationProperties/Name"/>
+				</ResourceMapSubtree>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="FilePropertiesDialog">
+				<NamedResource name="PrimaryButtonText" uri="ms-resource://FilePicker/Resources/FilePropertiesDialog/PrimaryButtonText"/>
+				<NamedResource name="SecondaryButtonText" uri="ms-resource://FilePicker/Resources/FilePropertiesDialog/SecondaryButtonText"/>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="FilePropertiesDialog_EnterpriseComboHeader">
+				<NamedResource name="Text" uri="ms-resource://FilePicker/Resources/FilePropertiesDialog_EnterpriseComboHeader/Text"/>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="FilePropertiesDialog_FileExtsHeader">
+				<NamedResource name="Text" uri="ms-resource://FilePicker/Resources/FilePropertiesDialog_FileExtsHeader/Text"/>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="FilePropertiesDialog_Title">
+				<NamedResource name="Text" uri="ms-resource://FilePicker/Resources/FilePropertiesDialog_Title/Text"/>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="MainPage_CancelButton">
+				<NamedResource name="Content" uri="ms-resource://FilePicker/Resources/MainPage_CancelButton/Content"/>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="MainPage_XboxFocusMessage">
+				<NamedResource name="Text" uri="ms-resource://FilePicker/Resources/MainPage_XboxFocusMessage/Text"/>
+				<ResourceMapSubtree name="[using:Windows.UI.Xaml.Automation]AutomationProperties">
+					<NamedResource name="Name" uri="ms-resource://FilePicker/Resources/MainPage_XboxFocusMessage/[using:Windows.UI.Xaml.Automation]AutomationProperties/Name"/>
+				</ResourceMapSubtree>
+			</ResourceMapSubtree>
+			<ResourceMapSubtree name="ProviderAppsFlyout">
+				<ResourceMapSubtree name="[using:Windows.UI.Xaml.Automation]AutomationProperties">
+					<NamedResource name="Name" uri="ms-resource://FilePicker/Resources/ProviderAppsFlyout/[using:Windows.UI.Xaml.Automation]AutomationProperties/Name"/>
+				</ResourceMapSubtree>
+			</ResourceMapSubtree>
+		</ResourceMapSubtree>
+	</ResourceMap>
+</PriInfo>
