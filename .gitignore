@@ -214,5 +214,5 @@ FakesAssemblies/
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
 /.idea
-/build/out
+/out
 /packages

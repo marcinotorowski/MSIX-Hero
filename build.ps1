@@ -1,0 +1,2 @@
+dotnet cake
+Read-Host
