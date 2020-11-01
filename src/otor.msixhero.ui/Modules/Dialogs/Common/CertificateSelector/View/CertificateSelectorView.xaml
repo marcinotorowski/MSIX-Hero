@@ -67,14 +67,51 @@
                                     Command="{Binding SignInDeviceGuard}"
                                     HorizontalAlignment="Left" 
                                     Margin="10 0 10 10">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="BorderBrush" Value="#8C8C8C" />
+                                            <Setter Property="BorderThickness" Value="1" />
+                                            <Setter Property="Padding" Value="12" />
+                                            <Setter Property="Cursor" Value="Hand" />
+                                            <Setter Property="Foreground" Value="#5E5E5E" />
+                                            <Setter Property="FontWeight" Value="600" />
+                                            <Setter Property="FontFamily" Value="Segoe UI" />
+                                            <Setter Property="FontSize" Value="15px" />
+                                            <Setter Property="SnapsToDevicePixels" Value="True" />
+                                            <Setter Property="UseLayoutRounding" Value="True" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border 
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                            UseLayoutRounding="{TemplateBinding UseLayoutRounding}"
+                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            Background="{TemplateBinding Background}">
+                                                            <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#2f2f2F" />
+                                                    <Setter Property="BorderBrush" Value="#2f2f2f" />
+                                                    <Setter Property="Foreground" Value="#ffffff" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
                                     <DockPanel>
                                         <Image 
                                             VerticalAlignment="Center"
                                             Margin="0 -4"
-                                            Height="20"
-                                            Width="20"
+                                            Stretch="None"
+                                            SnapsToDevicePixels="True"
+                                            UseLayoutRounding="True"
+                                            RenderOptions.BitmapScalingMode="NearestNeighbor"
                                             Source="../Images/microsoftlogo.png" />
-                                        <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Sign in with Microsoft" />
+                                        <TextBlock Margin="12 0 0 0" VerticalAlignment="Center" Text="Sign in with Microsoft" />
                                     </DockPanel>
                                 </Button>
                             </StackPanel>
