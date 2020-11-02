@@ -46,17 +46,26 @@ namespace Otor.MsixHero.Cli.Executors
 
             if (this.Verb.ThumbPrint != null)
             {
-                return await this.SignStore(this.Verb.ThumbPrint, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer).ConfigureAwait(false);
+                return await this.SignStore(
+                    this.Verb.ThumbPrint, 
+                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
             if (this.Verb.PfxFilePath != null)
             {
-                return await this.SignPfx(this.Verb.PfxFilePath, this.Verb.PfxPassword, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer).ConfigureAwait(false);
+                return await this.SignPfx(
+                    this.Verb.PfxFilePath, 
+                    this.Verb.PfxPassword, 
+                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
             if (this.Verb.DeviceGuardInteractive)
             {
-                return await this.SignDeviceGuardInteractive(this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer).ConfigureAwait(false);
+                return await this.SignDeviceGuardInteractive(
+                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
             if (this.Verb.DeviceGuardFile != null)
@@ -69,12 +78,17 @@ namespace Otor.MsixHero.Cli.Executors
                     Subject = this.Verb.DeviceGuardSubject
                 };
 
-                if (cfg.Subject == null)
+                if (cfg.Subject == null && !this.Verb.NoPublisherUpdate)
                 {
+                    await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
                     cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(cfg.AccessToken, cfg.RefreshToken, this.Verb.DeviceGuardVersion1);
+                    await this.Console.WriteSuccess("New publisher name is " + cfg.Subject).ConfigureAwait(false);
                 }
 
-                return await this.SignDeviceGuard(cfg, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer).ConfigureAwait(false);
+                return await this.SignDeviceGuard(
+                    cfg, 
+                    this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                    !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
             await this.Console.WriteInfo("Using current MSIX Hero signing options...").ConfigureAwait(false);
@@ -99,9 +113,16 @@ namespace Otor.MsixHero.Cli.Executors
                         }
                     }
                         
-                    return await this.SignPfx(config.Signing.PfxPath.Resolved, password, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer).ConfigureAwait(false);
+                    return await this.SignPfx(
+                        config.Signing.PfxPath.Resolved, 
+                        password, 
+                        this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                        !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
                 case CertificateSource.Personal:
-                    return await this.SignStore(config.Signing.Thumbprint, this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer);
+                    return await this.SignStore(
+                        config.Signing.Thumbprint, 
+                        this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                        !this.Verb.NoPublisherUpdate);
                 case CertificateSource.DeviceGuard:
                     if (config.Signing.DeviceGuard == null)
                     {
@@ -110,74 +131,15 @@ namespace Otor.MsixHero.Cli.Executors
                         return 10;
                     }
 
-                    return await this.SignDeviceGuard(config.Signing.DeviceGuard.FromConfiguration(), this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer);
+                    return await this.SignDeviceGuard(
+                        config.Signing.DeviceGuard.FromConfiguration(), 
+                        this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
+                        !this.Verb.NoPublisherUpdate);
                 default:
                     Logger.Error("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.");
                     await this.Console.WriteError("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.").ConfigureAwait(false);
                     return 10;
             }
-        }
-
-        private async Task<int> SignDeviceGuard(DeviceGuardConfig cfg, string timestamp)
-        {
-            try
-            {
-                foreach (var path in this.Verb.FilePath)
-                {
-                    await this.Console.WriteInfo($"Signing '{path}' with Device Guard...");
-                    await this.signingManager.SignPackageWithDeviceGuard(path, true, cfg, this.Verb.DeviceGuardVersion1, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
-                    await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(signingManager, path);
-                }
-
-                return 0;
-            }
-            catch (SdkException e)
-            {
-                Logger.Error(e);
-                await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
-                return e.ExitCode;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                await this.Console.WriteError($"Signing failed: {e.Message}");
-                return 10;
-            }
-        }
-
-        private async Task<int> SignDeviceGuardInteractive(string timestamp)
-        {
-            string json = null;
-            DeviceGuardConfig cfg;
-
-            try
-            {
-                cfg = await this.DeviceGuardTokenCreator.SignIn().ConfigureAwait(false);
-                json = await this.DeviceGuardTokenCreator.CreateDeviceGuardJsonTokenFile(cfg).ConfigureAwait(false);
-                cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json, this.Verb.DeviceGuardVersion1).ConfigureAwait(false);
-            }
-            catch (SdkException e)
-            {
-                Logger.Error(e);
-                await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
-                return e.ExitCode;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                await this.Console.WriteError($"Signing failed: {e.Message}");
-                return 10;
-            }
-            finally
-            {
-                if (json != null && File.Exists(json))
-                {
-                    ExceptionGuard.Guard(() => File.Delete(json));
-                }
-            }
-
-            return await this.SignDeviceGuard(cfg, timestamp).ConfigureAwait(false);
         }
 
         private static string GetOptionName(string propertyName)
@@ -328,7 +290,75 @@ namespace Otor.MsixHero.Cli.Executors
             return 0;
         }
 
-        private async Task<int> SignPfx(string pfxPath, string password, string timestamp)
+        private async Task<int> SignDeviceGuard(DeviceGuardConfig cfg, string timestamp, bool updatePublisherName)
+        {
+            try
+            {
+                foreach (var path in this.Verb.FilePath)
+                {
+                    await this.Console.WriteInfo($"Signing '{path}' with Device Guard...");
+                    await this.signingManager.SignPackageWithDeviceGuard(path, updatePublisherName, cfg, this.Verb.DeviceGuardVersion1, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
+                    await this.Console.ShowCertSummary(signingManager, path);
+                }
+
+                return 0;
+            }
+            catch (SdkException e)
+            {
+                Logger.Error(e);
+                await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
+                return e.ExitCode;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                await this.Console.WriteError($"Signing failed: {e.Message}");
+                return 10;
+            }
+        }
+
+        private async Task<int> SignDeviceGuardInteractive(string timestamp, bool updatePublisherName)
+        {
+            string json = null;
+            DeviceGuardConfig cfg;
+
+            try
+            {
+                cfg = await this.DeviceGuardTokenCreator.SignIn().ConfigureAwait(false);
+                json = await this.DeviceGuardTokenCreator.CreateDeviceGuardJsonTokenFile(cfg).ConfigureAwait(false);
+
+                if (!this.Verb.NoPublisherUpdate)
+                {
+                    await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
+                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json, this.Verb.DeviceGuardVersion1).ConfigureAwait(false);
+                    await this.Console.WriteSuccess("New publisher name is " + cfg.Subject).ConfigureAwait(false);
+                }
+            }
+            catch (SdkException e)
+            {
+                Logger.Error(e);
+                await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
+                return e.ExitCode;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+                await this.Console.WriteError($"Signing failed: {e.Message}");
+                return 10;
+            }
+            finally
+            {
+                if (json != null && File.Exists(json))
+                {
+                    ExceptionGuard.Guard(() => File.Delete(json));
+                }
+            }
+
+            return await this.SignDeviceGuard(cfg, timestamp, updatePublisherName).ConfigureAwait(false);
+        }
+
+        private async Task<int> SignPfx(string pfxPath, string password, string timestamp, bool updatePublisherName)
         {
             try
             {
@@ -343,7 +373,7 @@ namespace Otor.MsixHero.Cli.Executors
                     foreach (var path in this.Verb.FilePath)
                     {
                         await this.Console.WriteInfo($"Signing '{path}' with certificate [{fileName}]...");
-                        await this.signingManager.SignPackageWithPfx(path, true, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                        await this.signingManager.SignPackageWithPfx(path, updatePublisherName, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                         await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
                         await this.Console.ShowCertSummary(signingManager, path);
                     }
@@ -359,7 +389,7 @@ namespace Otor.MsixHero.Cli.Executors
             }
         }
 
-        private async Task<int> SignStore(string thumbprint, string timestamp)
+        private async Task<int> SignStore(string thumbprint, string timestamp, bool updatePublisherName)
         {
             var mode = this.Verb.UseMachineStore ? CertificateStoreType.Machine : CertificateStoreType.User;
             var certificates = await this.signingManager.GetCertificatesFromStore(mode, false).ConfigureAwait(false);
@@ -377,7 +407,7 @@ namespace Otor.MsixHero.Cli.Executors
                 foreach (var path in this.Verb.FilePath)
                 {
                     await this.Console.WriteInfo($"Signing '{path}' with certificate [SHA1 = {thumbprint}]...");
-                    await this.signingManager.SignPackageWithInstalled(path, true, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this.signingManager.SignPackageWithInstalled(path, updatePublisherName, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                     await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
                     await this.Console.ShowCertSummary(signingManager, path);
                 }

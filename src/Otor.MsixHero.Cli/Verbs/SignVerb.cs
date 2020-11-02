@@ -40,5 +40,8 @@ namespace Otor.MsixHero.Cli.Verbs
 
         [Option('i', "increaseVersion", HelpText = "Specifies whether the version should be automatically increased, and (if yes) which component of it. Supported values are [None, Major, Minor, Build, Revision].", Default = IncreaseVersionMethod.None, Required = false)]
         public IncreaseVersionMethod IncreaseVersion { get; set; }
+
+        [Option("noPublisherUpdate", HelpText = "Disables the automatic update of publisher name with the value of certificate subject.", Default = false)]
+        public bool NoPublisherUpdate { get; set; }
     }
 }
