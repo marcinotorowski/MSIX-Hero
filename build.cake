@@ -107,6 +107,7 @@ Task("Publish .NET Core")
 });
 
 Task("Trim publish folder")
+    .IsDependentOn("Publish .NET Framework")
     .IsDependentOn("Publish .NET Core")
     .Does(() => {
 
@@ -179,6 +180,7 @@ Task("Sign files")
             (System.IO.Directory.EnumerateFiles(binFolder, "*msix*.dll")).Union
             (System.IO.Directory.EnumerateFiles(binFolder, "*msix*.exe")).Union
             (System.IO.Directory.EnumerateFiles(binFolder, "External.*.dll")).Union
+            (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "dgss"), "msixhero*.exe")).Union
             (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "templates"), "AppAttach*.ps1")).Union
             (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "scripts"), "*.ps1")).ToArray();
 

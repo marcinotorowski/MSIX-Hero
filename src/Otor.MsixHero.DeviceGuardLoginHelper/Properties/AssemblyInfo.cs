@@ -6,7 +6,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MSIX Hero DGSS Helper")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A helper app to get AzureAD credential dialog")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MSIX Hero")]

@@ -1,7 +1,5 @@
 ﻿using NUnit.Framework;
-using Otor.Msix.Dependencies;
-using Otor.MsixHero.Appx.Diagnostic.Registry;
-using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Services;

@@ -10,14 +10,6 @@ namespace Otor.MsixHero.Tests.Sdk
     public class SignToolSdkTests
     {
         [Test]
-        public void TestDeviceGuard()
-        {
-            var src = @"C:\temp\outfile.json";
-            var dev = new DeviceGuardHelper();
-            dev.GetSubjectFromDeviceGuardSigning(src, true).GetAwaiter().GetResult();
-        }
-
-        [Test]
         public void TestMessage()
         {
             var output = @"The following certificates were considered:

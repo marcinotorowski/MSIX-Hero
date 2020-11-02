@@ -1,32 +1,15 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
-using Otor.MsixHero.Infrastructure.Progress;
 
-namespace Otor.MsixHero.Ui.Helpers
+namespace Otor.MsixHero.Cli.Helpers
 {
-    public static class SigningManagerExtensions
+    public static class DeviceGuardConfigurationExtensions
     {
-        public static Task SignPackageWithDeviceGuard(
-            this ISigningManager signingManager,
-            string package,
-            DeviceGuardConfiguration configuration,
-            string timestampUrl = null,
-            IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
-            CancellationToken cancellationToken = default,
-            IProgress<ProgressData> progress = default)
-        {
-            var tokens = configuration.FromConfiguration();
-            return signingManager.SignPackageWithDeviceGuard(package, true, tokens, configuration.UseV1, timestampUrl, increaseVersion, cancellationToken, progress);
-        }
-
-        private static DeviceGuardConfig FromConfiguration(this DeviceGuardConfiguration configuration)
+        public static DeviceGuardConfig FromConfiguration(this DeviceGuardConfiguration configuration)
         {
             var tokens = new DeviceGuardConfig();
 

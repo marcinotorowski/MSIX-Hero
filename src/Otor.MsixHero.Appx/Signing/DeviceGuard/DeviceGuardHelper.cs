@@ -14,6 +14,32 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(DeviceGuardHelper));
 
+
+        public async Task<string> GetSubjectFromDeviceGuardSigning(string accessToken, string refreshToken, bool useDgssV1, CancellationToken cancellationToken = default)
+        {
+            string tempFile = null;
+            try
+            {
+                var cfg = new DeviceGuardConfig
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+
+                var helper = new DgssTokenCreator();
+                tempFile = await helper.CreateDeviceGuardJsonTokenFile(cfg, cancellationToken).ConfigureAwait(false);
+
+                return await this.GetSubjectFromDeviceGuardSigning(tempFile, useDgssV1, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (tempFile != null && File.Exists(tempFile))
+                {
+                    ExceptionGuard.Guard(() => File.Delete(tempFile));
+                }
+            }
+        }
+
         public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, bool useDgssV1, CancellationToken cancellationToken = default)
         {
             Logger.Info("Getting certificate subject for Device Guard signing...");
