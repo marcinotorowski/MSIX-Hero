@@ -449,11 +449,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 }
             }
 
-            if (parsed.Count > 0)
+            if (parsed.Count > 1)
             {
-                if (parsed[parsed.Count - 1].Item1 == 0)
+                if (parsed[^1].Item1 == 0)
                 {
-                    switch (parsed[parsed.Count - 1].Item2?.ToLowerInvariant())
+                    switch (parsed[^1].Item2?.ToLowerInvariant())
                     {
                         case "private key":
                             error = "The selected certificate does not have a private key.";
@@ -465,7 +465,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                             error = "The selected certificate cannot be used for signing purposes (EKU mismatch).";
                             break;
                         default:
-                            error = "The selected certificate does not meet the " + parsed[parsed.Count - 1].Item2 + " filter.";
+                            error = "The selected certificate does not meet the " + parsed[^1].Item2 + " filter.";
                             break;
                     }
                 }
