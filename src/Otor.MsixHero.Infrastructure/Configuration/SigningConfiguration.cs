@@ -9,7 +9,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
     {
         public SigningConfiguration()
         {
-            this.Source = CertificateSource.Pfx;
+            this.Source = CertificateSource.Unknown;
             this.DefaultOutFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, Environment.SpecialFolderOption.DoNotVerify), "Certificates");
             this.TimeStampServer = "http://timestamp.globalsign.com/scripts/timstamp.dll";
             this.DeviceGuard = new DeviceGuardConfiguration();

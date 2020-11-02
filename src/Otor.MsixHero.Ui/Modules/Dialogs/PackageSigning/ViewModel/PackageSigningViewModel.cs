@@ -33,7 +33,10 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.PackageSigning.ViewModel
             
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
-            this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, configurationService?.GetCurrentConfiguration()?.Signing);
+            this.CertificateSelector = new CertificateSelectorViewModel(
+                interactionService, 
+                signingManagerFactory, 
+                configurationService?.GetCurrentConfiguration()?.Signing);
             this.OverrideSubject = new ChangeableProperty<bool>(true);
 
             this.TabPackages = new ChangeableContainer(this.Files);

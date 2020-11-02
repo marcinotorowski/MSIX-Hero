@@ -39,6 +39,7 @@
                 Text="Certificate to sign the package" Margin="0 0 0 6" />
 
                 <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
+                    <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" Content="No certificate" x:Name="AskMe" />
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" Content="Sign with PFX file" x:Name="PfxFile" />
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" Content="Sign with installed certificate" x:Name="CertStore" />
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" Content="Sign with Device Guard" x:Name="CertDeviceGuard" />

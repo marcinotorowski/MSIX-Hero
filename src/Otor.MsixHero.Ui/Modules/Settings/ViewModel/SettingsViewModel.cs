@@ -57,7 +57,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
             this.TabSigning.AddChildren
             (
-                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, CertificateSelectorMode.Administrator)
+                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true)
             );
 
             this.AllSettings.AddChildren(

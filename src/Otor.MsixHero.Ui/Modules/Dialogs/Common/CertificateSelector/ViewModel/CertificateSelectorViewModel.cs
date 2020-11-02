@@ -22,12 +22,6 @@ using Otor.MsixHero.Ui.Helpers;
 
 namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
 {
-    public enum CertificateSelectorMode
-    {
-        Administrator,
-        Consumer
-    }
-
     public class CertificateSelectorViewModel : ChangeableContainer
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(CertificateSelectorViewModel));
@@ -35,14 +29,15 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private ICommand signOutDeviceGuard, signInDeviceGuard;
+        private bool allowNoSelection;
 
         public CertificateSelectorViewModel(
             IInteractionService interactionService,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             SigningConfiguration configuration,
-            CertificateSelectorMode mode = CertificateSelectorMode.Consumer)
+            bool allowNoSelection = false)
         {
-            Mode = mode;
+            this.allowNoSelection = allowNoSelection;
             this.interactionService = interactionService;
             this.signingManagerFactory = signingManagerFactory;
             var signConfig = configuration ?? new SigningConfiguration();
@@ -52,7 +47,13 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
                 signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll",
                 this.ValidateTimestamp);
 
-            this.Store = new ChangeableProperty<CertificateSource>(signConfig.Source);
+            var newStore = signConfig.Source;
+            if (newStore == CertificateSource.Unknown && !allowNoSelection)
+            {
+                newStore = CertificateSource.Personal;
+            }
+
+            this.Store = new ChangeableProperty<CertificateSource>(newStore);
             this.Store.ValueChanged += StoreOnValueChanged;
             this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved)
             {
@@ -121,8 +122,6 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
             };
         }
         
-        public CertificateSelectorMode Mode { get; }
-
         public AsyncProperty<ObservableCollection<CertificateViewModel>> PersonalCertificates { get; }
 
         public ValidatedChangeableProperty<CertificateViewModel> SelectedPersonalCertificate { get; }
@@ -132,6 +131,23 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.Common.CertificateSelector.ViewModel
         public ValidatedChangeableProperty<DeviceGuardConfiguration> DeviceGuard { get; }
 
         public ChangeableProperty<CertificateSource> Store { get; }
+
+        public bool AllowNoSelection
+        {
+            get => this.allowNoSelection;
+            set
+            {
+                if (!this.SetField(ref this.allowNoSelection, value))
+                {
+                    return;
+                }
+
+                if (this.Store.CurrentValue == CertificateSource.Unknown)
+                {
+                    this.Store.CurrentValue = CertificateSource.Pfx;
+                }
+            }
+        }
 
         public ICommand SignInDeviceGuard
         {
