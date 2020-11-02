@@ -454,7 +454,10 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
             return true;
         }
 
+        /// <inheritdoc />
+#pragma warning disable CS0067
         public event Action<IDialogResult> RequestClose;
+#pragma warning restore CS0067
 
         private string ValidateUri(string value)
         {

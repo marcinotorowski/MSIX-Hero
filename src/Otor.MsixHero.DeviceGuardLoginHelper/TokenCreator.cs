@@ -116,7 +116,7 @@ namespace Otor.MsixHero.DeviceGuardLoginHelper
                         var responseJson = JObject.Parse(responseText);
                         this.clientFactory.RaiseGotRefreshToken(responseJson["refresh_token"]?.Value<string>());
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         this.clientFactory.RaiseGotRefreshToken(null);
                     }

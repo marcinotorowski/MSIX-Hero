@@ -69,7 +69,6 @@ Installers:
             Assert.AreEqual("evernote.evernote", yaml.Id);
             Assert.AreEqual("Evernote", yaml.Name);
             Assert.AreEqual("Evernote", yaml.Publisher);
-            Assert.AreEqual("Evernote", yaml.Author);
             Assert.AreEqual("evernote", yaml.AppMoniker);
             Assert.AreEqual("Copyright (c) 2020 Evernote Corporation. All rights reserved.", yaml.License);
             Assert.AreEqual("https://evernote.com/legal/terms-of-service", yaml.LicenseUrl);
@@ -78,7 +77,10 @@ Installers:
             Assert.AreEqual("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it's all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.", yaml.Description);
             Assert.AreEqual("https://www.evernote.com", yaml.Homepage);
             Assert.AreEqual("evernote,notes,cloud,online", yaml.Tags);
+#pragma warning disable 618
+            Assert.AreEqual("Evernote", yaml.Author);
             Assert.AreEqual(YamlInstallerType.exe, yaml.InstallerType);
+#pragma warning restore 618
             Assert.NotNull(yaml.Installers);
             Assert.AreEqual(1, yaml.Installers.Count);
 

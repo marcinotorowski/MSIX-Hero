@@ -45,7 +45,7 @@ namespace Otor.MsixHero.Ui.Modules.Dialogs.DependencyViewer.View
             }
         }
 
-        private void OnLogicLoaded(object? sender, DependencyLogicCore newValue)
+        private void OnLogicLoaded(object sender, DependencyLogicCore newValue)
         {
             this.GraphArea.LogicCore = newValue;
             this.GraphArea.GenerateGraph();
