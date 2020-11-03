@@ -41,7 +41,9 @@
                     <AdornerDecorator>
                         <StackPanel>
                             <TextBlock
-                                helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Full path to an MSIX package" Margin="0 0 0 6" />
+                                Style="{StaticResource LabelTextBlock}"
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Text="Full path to an MSIX package" />
                             <DockPanel>
                                 <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
                                 <TextBox x:Name="PathInput" TabIndex="4" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />

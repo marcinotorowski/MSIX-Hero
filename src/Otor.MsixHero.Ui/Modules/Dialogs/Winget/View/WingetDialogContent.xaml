@@ -24,7 +24,10 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding Definition}">
                     <AdornerDecorator>
                         <StackPanel>
-                            <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}" 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Text="Package name" />
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -34,10 +37,16 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBox Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                    <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Package publisher" Margin="0 16 0 6" />
+                                    <TextBlock 
+                                        Style="{StaticResource LabelTextBlock}"
+                                        helpers:RequiredAdorner.IsRequired="True" 
+                                        Text="Package publisher" Margin="0 16 0 6" />
                                     <TextBox Text="{Binding Publisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                    <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Version" Margin="0 16 0 6" />
+                                    <TextBlock
+                                        Style="{StaticResource LabelTextBlock}"
+                                        helpers:RequiredAdorner.IsRequired="True" 
+                                        Text="Version" Margin="0 16 0 6" />
                                     <TextBox Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 </StackPanel>
 
@@ -49,13 +58,24 @@
                                 <Button Grid.Column="2" Content="Load data from MSI/MSIX/EXE..." Command="{Binding LoadFromSetup}" VerticalAlignment="Center" />
                             </Grid>
 
-                            <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Package identifier" Margin="0 16 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}" 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Text="Package identifier" 
+                                Margin="0 16 0 6" />
                             <TextBox Text="{Binding Id.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <TextBlock Foreground="#666" Text="Note: The official repository has some conventions to follow. This value must include the publisher name and application name separated by a period." Margin="0 4 0 0" TextWrapping="Wrap" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Note: The official repository has some conventions to follow. This value must include the publisher name and application name separated by a period." 
+                                Margin="0 4 0 0" />
 
                             <TextBlock
-                                helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Manifest version" Margin="0 16 0 6" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}" 
+                                Text="Manifest version" 
+                                Margin="0 16 0 6" 
+                                Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBox Width="60" Margin="0 0 8 0" Text="{Binding ManifestVersion1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 <TextBox Width="60" Margin="0 0 8 0" Text="{Binding ManifestVersion2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
@@ -74,21 +94,34 @@
                         <AdornerDecorator>
                             <StackPanel>
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="AppMoniker" Margin="0 0 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="AppMoniker" />
                                 <TextBox Text="{Binding AppMoniker.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 <TextBlock Text="The common name someone may use to search for the package" Margin="0 2 0 0" TextWrapping="Wrap" />
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Tags" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Tags" 
+                                    Margin="0 16 0 6" />
                                 <TextBox Text="{Binding Tags.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 <TextBlock Text="Additional strings a user would use to search for the package" Margin="0 2 0 0" TextWrapping="Wrap" />
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Homepage" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Homepage" Margin="0 16 0 6" />
                                 <TextBox Text="{Binding Homepage.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Description" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Description" 
+                                    Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding Description.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Minimum required Windows version" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}" 
+                                    Text="Minimum required Windows version" 
+                                    Margin="0 16 0 6" />
                                 <TextBox Text="{Binding MinOSVersion.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                             </StackPanel>
                         </AdornerDecorator>
@@ -111,10 +144,16 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <AdornerDecorator>
                             <StackPanel>
-                                <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="URL" Margin="0 0 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    helpers:RequiredAdorner.IsRequired="True" 
+                                    Text="URL" />
                                 <TextBox Text="{Binding Url.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Installer hash" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    helpers:RequiredAdorner.IsRequired="True" 
+                                    Text="Installer hash" Margin="0 16 0 6" />
 
                                 <Border Padding="8" Background="#eee">
                                     <TextBox Text="{Binding Sha256.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
@@ -138,7 +177,9 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding Definition.TabInstaller}">
                     <AdornerDecorator>
                         <StackPanel>
-                            <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Installer type" Margin="0 0 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Installer type" />
 
                             <ComboBox Margin="0 0 0 6" SelectedValuePath="Tag" SelectedValue="{Binding InstallerType.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
                                 <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.msix}">MSIX</ComboBoxItem>
@@ -153,7 +194,9 @@
 
                             <UniformGrid Columns="2" Margin="0 16 0 0">
                                 <StackPanel VerticalAlignment="Top" Margin="0 0 4 0">
-                                    <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Installer architecture" Margin="0 0 0 6" />
+                                    <TextBlock 
+                                        Style="{StaticResource LabelTextBlock}"
+                                        Text="Installer architecture" />
                                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Architecture.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
                                         <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.none}">Unknown / not specified</ComboBoxItem>
                                         <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Neutral}">Neutral</ComboBoxItem>
@@ -165,7 +208,9 @@
                                 </StackPanel>
 
                                 <StackPanel Margin="4 0 0 0">
-                                    <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Scope" Margin="0 0 0 6" />
+                                    <TextBlock 
+                                        Style="{StaticResource LabelTextBlock}"
+                                        Text="Scope" />
                                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Scope.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}">
                                         <ComboBoxItem Tag="{x:Static winget:YamlScope.none}">Unknown / not specified</ComboBoxItem>
                                         <ComboBoxItem Tag="{x:Static winget:YamlScope.machine}">Machine installation</ComboBoxItem>
@@ -185,7 +230,10 @@
                                             Message="{Binding HashingProgressSignature.Message}" 
                                             Progress="{Binding HashingProgressSignature.Progress}">
                                 <StackPanel>
-                                    <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Signature hash" Margin="0 16 0 6" />
+                                    <TextBlock 
+                                        Style="{StaticResource LabelTextBlock}"
+                                        Text="Signature hash" 
+                                        Margin="0 16 0 6" />
                                     <Border Padding="8" Background="#eee">
                                         <TextBox Text="{Binding SignatureSha256.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                     </Border>
@@ -215,13 +263,19 @@
                                         </Popup>-->
 
                             <StackPanel Visibility="{Binding IsCommand, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Command line for silent installation" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Command line for silent installation" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding SilentCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Command line for basic installation (with progress)" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Command line for basic installation (with progress)" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding SilentCommandWithProgress.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                                <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Command line for custom installation" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Command line for custom installation" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding CustomCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                             </StackPanel>
                         </StackPanel>
@@ -235,10 +289,16 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding Definition}">
                     <AdornerDecorator>
                         <StackPanel>
-                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Copyright or license" Margin="0 0 0 6" />
+                            <TextBlock 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Copyright or license" />
                             <TextBox Text="{Binding License.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <TextBlock HorizontalAlignment="Left" Foreground="#666" Text="Link to EULA or Terms of Service (TOS)" Margin="0 10 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Link to EULA or Terms of Service (TOS)" 
+                                Margin="0 16 0 6" />
                             <TextBox Text="{Binding LicenseUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                         </StackPanel>
                     </AdornerDecorator>

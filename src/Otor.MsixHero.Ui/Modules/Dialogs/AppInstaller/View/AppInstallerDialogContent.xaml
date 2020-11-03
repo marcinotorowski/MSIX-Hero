@@ -30,14 +30,31 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <AdornerDecorator>
                     <StackPanel>
-                        <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="App installer version" Margin="0 0 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                            helpers:RequiredAdorner.IsRequired="True" 
+                            Text="App installer version" />
                         <TextBox TabIndex="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                        <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Visibility="{Binding TabPackage.IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main package is available" Margin="0 16 0 6" />
-                        <TextBlock HorizontalAlignment="Left" helpers:RequiredAdorner.IsRequired="True" Visibility="{Binding TabPackage.IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="#666" Text="URI to a remote location where the main bundle is available" Margin="0 16 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                            helpers:RequiredAdorner.IsRequired="True" 
+                            Visibility="{Binding TabPackage.IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                            Text="URI to a remote location where the main package is available" 
+                            Margin="0 16 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                            helpers:RequiredAdorner.IsRequired="True" 
+                            Visibility="{Binding TabPackage.IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            Text="URI to a remote location where the main bundle is available" 
+                            Margin="0 16 0 6" />
                         <TextBox TabIndex="2" Text="{Binding MainPackageUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                        <TextBlock HorizontalAlignment="Left" Foreground="#666" helpers:RequiredAdorner.IsRequired="True" Text="URI to a remote location where the .appinstaller file will be available" Margin="0 16 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                           helpers:RequiredAdorner.IsRequired="True" 
+                           Text="URI to a remote location where the .appinstaller file will be available" 
+                           Margin="0 16 0 6" />
                         <TextBox TabIndex="2" Text="{Binding AppInstallerUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                     </StackPanel>
                 </AdornerDecorator>
@@ -50,7 +67,9 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <AdornerDecorator>
                     <StackPanel>
-                        <TextBlock Foreground="#666" Text="When to check for updates?" Margin="0 0 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                            Text="When to check for updates?" />
                         <ComboBox SelectedValue="{Binding AppInstallerUpdateCheckingMethod.CurrentValue}" SelectedValuePath="Tag" Margin="0 0 0 0">
                             <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
                             <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On launch</ComboBoxItem>
@@ -59,21 +78,28 @@
                         </ComboBox>
 
                         <StackPanel Visibility="{Binding ElementName=UpdateNever, Path=IsSelected, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                            <TextBlock Foreground="#666" Text="Update options" Margin="0 16 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Update options" Margin="0 16 0 6" />
                             <CheckBox IsChecked="{Binding AllowDowngrades.CurrentValue}" Margin="0 0 0 6">
                                 <TextBlock Text="Allow downgrades (installing older version of an app over the newer one)" TextWrapping="Wrap" />
                             </CheckBox>
                         </StackPanel>
 
                         <StackPanel Visibility="{Binding ShowLaunchOptions, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Foreground="#666" Text="When launching the app check for a new version and..." Margin="0 16 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="When launching the app check for a new version and..." 
+                                Margin="0 16 0 6" />
                             <CheckBox IsChecked="{Binding ShowPrompt.CurrentValue}" Margin="0 0 0 6">
                                 <TextBlock Text="Show a prompt if a new version is available" TextWrapping="Wrap" />
                             </CheckBox>
                             <CheckBox IsChecked="{Binding BlockLaunching.CurrentValue}" Margin="0 0 0 6">
                                 <TextBlock Text="Stop the user from launching the application until the available update has been applied." TextWrapping="Wrap" />
                             </CheckBox>
-                            <TextBlock Foreground="#666" Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />
                             <StackPanel Orientation="Horizontal">
                                 <xctk:ButtonSpinner Content="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="80" />
                                 <TextBlock Text="hours" VerticalAlignment="Center" Margin="5 0 0 0" />

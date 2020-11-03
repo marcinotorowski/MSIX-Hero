@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:view="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View"
-             xmlns:packageHeader="clr-namespace:Otor.MsixHero.Ui.Controls.PackageHeader"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.ViewModel"
              xmlns:view1="clr-namespace:Otor.MsixHero.Ui.Modules.Dialogs.UpdateImpact.View"
              xmlns:changeableDialog="clr-namespace:Otor.MsixHero.Ui.Controls.ChangeableDialog"
@@ -144,7 +142,7 @@
                                     PackageName="{Binding Results.CurrentValue.Content2.DisplayName}"
                                     Publisher="{Binding Results.CurrentValue.Content2.PublisherDisplayName}"
                                     Version="{Binding Results.CurrentValue.Content2.Version}"
-                                    Logo="{Binding Results.CurrentValue.Content2.Logo}"/> 
+                                    Logo="{Binding Results.CurrentValue.Content2.Logo}"/>
                             </Border>
                         </Grid>
 
@@ -210,7 +208,11 @@
                                                 <DockPanel>
                                                     <Border Background="#f5f5f5">
                                                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="24 12">
-                                                            <TextBlock Foreground="#666" Text="Net size difference" HorizontalAlignment="Center"  />
+                                                            <TextBlock 
+                                                                Style="{StaticResource LabelTextBlock}"
+                                                                Text="Net size difference" 
+                                                                Margin="0"
+                                                                HorizontalAlignment="Center"  />
                                                             <Label HorizontalAlignment="Center" Margin="0" Style="{StaticResource Label}" FontSize="40" Content="{Binding Results.CurrentValue.NetSizeDifference, Converter={StaticResource SizeConverter}}" />
                                                             <view1:RelativeIndicator ToolTipService.ShowDuration="40000" ToolTipService.InitialShowDelay="0" HorizontalAlignment="Center" OldValue="{Binding Results.CurrentValue.OldTotalSize}" NewValue="{Binding Results.CurrentValue.NewTotalSize}">
                                                                 <view1:RelativeIndicator.ToolTip>

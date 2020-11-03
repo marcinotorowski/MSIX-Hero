@@ -23,20 +23,38 @@
                     <StackPanel>
                         <StackPanel>
                             <Label Style="{StaticResource FormLabel}">Display options</Label>
-                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed package name" Margin="0 0 0 6" />
+                            <TextBlock 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Displayed package name" />
                             <TextBox Text="{Binding DisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Displayed publisher name" Margin="0 16 0 6" />
+                            <TextBlock 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Displayed publisher name" 
+                                Margin="0 16 0 6" />
                             <TextBox Margin="0 0 0 16" Text="{Binding PublisherDisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                             <Label Style="{StaticResource FormLabel}" Margin="0 16 0 10">Package identity</Label>
-                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package name" Margin="0 0 0 6" />
+                            <TextBlock 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Package name" />
                             <TextBox Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Publisher name" Margin="0 16 0 6" />
+                            <TextBlock 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Publisher name" 
+                                Margin="0 16 0 6" />
                             <TextBox Text="{Binding PublisherName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Package version" Margin="0 16 0 6" />
+                            <TextBlock 
+                                helpers:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Package version" 
+                                Margin="0 16 0 6" />
                             <TextBox Width="250" HorizontalAlignment="Left" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                         </StackPanel>
                     </StackPanel>
@@ -78,10 +96,17 @@
                         DockPanel.Dock="Top">
                         <AdornerDecorator>
                             <StackPanel>
-                                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Parent package name" Margin="0 0 0 6" />
+                                <TextBlock 
+                                    helpers:RequiredAdorner.IsRequired="True" 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Parent package name" />
                                 <TextBox Text="{Binding ParentName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
 
-                                <TextBlock helpers:RequiredAdorner.IsRequired="True" HorizontalAlignment="Left" Foreground="#666" Text="Parent publisher name" Margin="0 16 0 6" />
+                                <TextBlock 
+                                    helpers:RequiredAdorner.IsRequired="True" 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Parent publisher name" 
+                                    Margin="0 16 0 6" />
                                 <TextBox Text="{Binding ParentPublisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
                             </StackPanel>
                         </AdornerDecorator>
@@ -104,7 +129,7 @@
                         <RadioButton x:Name="Radio3"  GroupName="g3" IsChecked="{Binding Create.CurrentValue, ConverterParameter={x:Static builder1:ModificationPackageBuilderAction.SignedMsix}, Converter={StaticResource EnumToBooleanConverter}}" Content="Signed MSIX modification package" />
 
                         <Label Content="Additional content" Margin="0 16 0 6" Style="{StaticResource FormLabel}" />
-                        <TextBlock Text="Specify which extra content (folders, files and/or registry keys) should be merged by MSIX Hero." TextWrapping="Wrap" Foreground="#666" Margin="0 0 0 6" />
+                        <TextBlock Style="{StaticResource LabelTextBlock}" Text="Specify which extra content (folders, files and/or registry keys) should be merged by MSIX Hero." />
                         <CheckBox 
                             IsEnabled="{Binding IsIncludeVfsFoldersEnabled}" 
                             IsChecked="{Binding IncludeVfsFolders.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 

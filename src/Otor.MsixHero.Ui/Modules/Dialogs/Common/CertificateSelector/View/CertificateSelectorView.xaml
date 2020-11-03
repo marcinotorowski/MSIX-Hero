@@ -32,11 +32,10 @@
             <DockPanel>
 
                 <TextBlock
-                helpers:RequiredAdorner.IsRequired="True" 
-                DockPanel.Dock="Top" 
-                Foreground="#666" 
-                HorizontalAlignment="Left"
-                Text="Certificate to sign the package" Margin="0 0 0 6" />
+                    Style="{StaticResource LabelTextBlock}"
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    DockPanel.Dock="Top" 
+                    Text="Certificate to sign the package" />
 
                 <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
                     <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" Content="No certificate" x:Name="AskMe" />
@@ -154,23 +153,11 @@
                             </DockPanel>
                         </Border>
 
-                        <!--<TextBlock
-                            DockPanel.Dock="Top" 
-                            Foreground="#666" 
-                            HorizontalAlignment="Left"
-                            Text="Publisher (certificate subject)" Margin="0 16 0 6" />
-
-                        <TextBox
-                            IsReadOnly="True"
-                            DockPanel.Dock="Top" 
-                            Text="{Binding DeviceGuard.CurrentValue.Subject, Mode=OneWay}" 
-                            Margin="0 0 0 0" />-->
-
                         <TextBlock
                             DockPanel.Dock="Top" 
-                            Foreground="#666" 
-                            HorizontalAlignment="Left"
-                            Text="Version" Margin="0 16 0 6" />
+                            Style="{StaticResource LabelTextBlock}"
+                            Text="Version" 
+                            Margin="0 16 0 6" />
 
                         <ComboBox 
                             Margin="0"
@@ -204,12 +191,11 @@
                 </StackPanel>
 
                 <TextBlock
-                Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                helpers:RequiredAdorner.IsRequired="True" 
-                DockPanel.Dock="Top" 
-                Foreground="#666" 
-                HorizontalAlignment="Left"
-                Text="Path to PFX file" Margin="0 16 0 6" />
+                    Style="{StaticResource LabelTextBlock}"
+                    Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    DockPanel.Dock="Top" 
+                    Text="Path to PFX file" Margin="0 16 0 6" />
                 <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
                     <TextBox 
@@ -217,12 +203,11 @@
                 </DockPanel>
 
                 <TextBlock
-                Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                helpers:RequiredAdorner.IsRequired="True" 
-                DockPanel.Dock="Top" 
-                Foreground="#666" 
-                HorizontalAlignment="Left"
-                Text="Installed certificate" Margin="0 16 0 6" />
+                    Style="{StaticResource LabelTextBlock}"
+                    Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    DockPanel.Dock="Top" 
+                    Text="Installed certificate" Margin="0 16 0 6" />
 
                 <CheckBox 
                 Margin="0 0 0 6"
@@ -251,10 +236,19 @@
                     </ComboBox.ItemTemplateSelector>
                 </ComboBox>
 
-                <TextBlock Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Top" Foreground="#666" Text="Password for the selected certificate" Margin="0 16 0 6" />
+                <TextBlock 
+                    Style="{StaticResource LabelTextBlock}"
+                    Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                    DockPanel.Dock="Top"
+                    Text="Password for the selected certificate" 
+                    Margin="0 16 0 6" />
                 <PasswordBox x:Name="PasswordBox" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
 
-                <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Timestamp server" Margin="0 16 0 6" />
+                <TextBlock 
+                    DockPanel.Dock="Top" 
+                    Style="{StaticResource LabelTextBlock}" 
+                    Text="Timestamp server" 
+                    Margin="0 16 0 6" />
                 <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                 <Border />

@@ -32,7 +32,10 @@
             <ScrollViewer Margin="0 0 0 16">
                 <AdornerDecorator>
                     <DockPanel>
-                        <TextBlock DockPanel.Dock="Top" Foreground="#666" Text="Package(s) to update" Margin="0 0 0 6" />
+                        <TextBlock 
+                            DockPanel.Dock="Top" 
+                            Style="{StaticResource LabelTextBlock}"
+                            Text="Package(s) to update" />
                         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
                             <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="New" Content="Add more packages..." />
                             <Button DockPanel.Dock="Top" Margin="0 0 6 6" HorizontalAlignment="Left" Command="Delete" Content="Remove selected package(s)" />
@@ -90,10 +93,8 @@
 
                         <TextBlock
                             DockPanel.Dock="Top" 
-                            Foreground="#666" 
-                            HorizontalAlignment="Left"
-                            Text="Package publisher name" 
-                            Margin="0 0 0 6" />
+                            Style="{StaticResource LabelTextBlock}"
+                            Text="Package publisher name" />
 
                         <CheckBox 
                             Content="Override package publisher with the certificate subject (recommended)" 

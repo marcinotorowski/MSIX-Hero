@@ -60,7 +60,10 @@
                     IsShown="{Binding CurrentVolume.IsLoading}" Message="Getting data...">
                     <StackPanel>
                         <TextBlock
-                            helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Current volume" Margin="0 16 0 6" />
+                            Style="{StaticResource LabelTextBlock}"
+                            helpers:RequiredAdorner.IsRequired="True" 
+                            Text="Current volume" 
+                            Margin="0 16 0 6" />
                         <Border MinHeight="57" SnapsToDevicePixels="True" UseLayoutRounding="True" DataContext="{Binding CurrentVolume.CurrentValue}">
                             <volume:VolumeControl HorizontalAlignment="Stretch"
                                IsDefault="False"
@@ -72,7 +75,10 @@
                         </Border>
 
                         <TextBlock
-                            helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Target volume" Margin="0 16 0 6" />
+                            Style="{StaticResource LabelTextBlock}"
+                            helpers:RequiredAdorner.IsRequired="True" 
+                            Text="Target volume" 
+                            Margin="0 16 0 6" />
                         <ComboBox 
                             MinHeight="57" 
                             HorizontalContentAlignment="Stretch" 

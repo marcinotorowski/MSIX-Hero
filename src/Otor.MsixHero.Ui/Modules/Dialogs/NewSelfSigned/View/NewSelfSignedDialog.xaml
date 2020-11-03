@@ -12,13 +12,24 @@
     <ScrollViewer Margin="0 16 0 0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <AdornerDecorator>
             <StackPanel>
-                <TextBlock helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Publisher friendly name" Margin="0 0 0 6" />
+                <TextBlock 
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    Style="{StaticResource LabelTextBlock}"
+                    Text="Publisher friendly name" />
                 <TextBox TabIndex="1" Text="{Binding PublisherFriendlyName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                <TextBlock helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Publisher name (subject)" Margin="0 16 0 6" />
+                <TextBlock 
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    Style="{StaticResource LabelTextBlock}"
+                    Text="Publisher name (subject)" 
+                    Margin="0 16 0 6" />
                 <TextBox TabIndex="2" Text="{Binding PublisherName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                <TextBlock helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Valid until" Margin="0 16 0 6" />
+                <TextBlock 
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    Style="{StaticResource LabelTextBlock}"
+                    Text="Valid until" 
+                    Margin="0 16 0 6" />
 
                 <DockPanel>
                     <ToggleButton IsChecked="{Binding ElementName=DateTimePicker, Path=IsOpen, Mode=TwoWay}" Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" />
@@ -39,13 +50,20 @@
                         BorderThickness="2" />
                 </DockPanel>
 
-                <TextBlock Foreground="#666" Text="Password" Margin="0 16 0 6" />
+                <TextBlock 
+                    Style="{StaticResource LabelTextBlock}"
+                    Text="Password" 
+                    Margin="0 16 0 6" />
                 <PasswordBox
                     Validation.ErrorTemplate="{StaticResource ValidationControlTemplate}"
                     TabIndex="3" 
                     PasswordChanged="OnPasswordChanged" />
 
-                <TextBlock helpers:RequiredAdorner.IsRequired="True" Foreground="#666" Text="Output path" Margin="0 16 0 6" />
+                <TextBlock 
+                    helpers:RequiredAdorner.IsRequired="True" 
+                    Style="{StaticResource LabelTextBlock}"
+                    Text="Output path" 
+                    Margin="0 16 0 6" />
                 <DockPanel>
                     <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
                     <TextBox x:Name="OutputPath" TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />

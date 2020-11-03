@@ -26,7 +26,10 @@
                         Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Progress, Mode=OneWay}"
                         Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Message}">
                         <DockPanel>
-                            <Border Background="#2B579A" DockPanel.Dock="Top" Visibility="{TemplateBinding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Border 
+                                Background="{StaticResource Otor.MsixHero.Brushes.Accent}" 
+                                DockPanel.Dock="Top" 
+                                Visibility="{TemplateBinding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <DockPanel Margin="10">
                                     <Path 
                                         Width="32" 
@@ -50,7 +53,7 @@
                                         Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Title}" />
                                 </DockPanel>
                             </Border>
-                            <Border Background="#eee" DockPanel.Dock="Bottom">
+                            <Border Background="#F7F7F7" DockPanel.Dock="Bottom">
                                 <DockPanel>
                                     <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
                                         <ContentPresenter Content="{TemplateBinding Footer}" />

@@ -57,7 +57,10 @@
             <DataTemplate>
                 <progressOverlay:ProgressOverlay IsShown="{Binding Letters.IsLoading}" Message="Getting available drives...">
                     <StackPanel>
-                        <TextBlock Foreground="#666" Text="Drive" Margin="0 16 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                            Text="Drive" 
+                            Margin="0 16 0 6" />
                         <ComboBox MinHeight="57" HorizontalContentAlignment="Stretch" SelectedValuePath="PackageStorePath" SelectedValue="{Binding SelectedLetter.CurrentValue}" ItemsSource="{Binding Letters.CurrentValue}" IsEnabled="{Binding Letters.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type items:VolumeCandidateViewModel}">
@@ -74,12 +77,18 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <TextBlock Foreground="#666" Text="Path" Margin="0 16 0 6" />
+                        <TextBlock 
+                            Style="{StaticResource LabelTextBlock}"
+                            Text="Path" 
+                            Margin="0 16 0 6" />
                         <RadioButton IsChecked="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Default}, Converter={StaticResource EnumToBooleanConverter}}" Content="Install packages to WindowsApps root folder (default)" />
                         <RadioButton IsChecked="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Custom}, Converter={StaticResource EnumToBooleanConverter}}" Content="Install packages in a custom folder path" Margin="0 4" />
                         <TextBox IsEnabled="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Custom}, Converter={StaticResource EnumToBooleanConverter}}" Text="{Binding Path=Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="21 0 0 0" />
 
-                        <TextBlock Foreground="#666" Text="Default volume" Margin="0 16 0 6" />
+                        <TextBlock
+                            Style="{StaticResource LabelTextBlock}" 
+                            Text="Default volume" 
+                            Margin="0 16 0 6" />
                         <CheckBox Content="Make this volume my default volume" IsChecked="{Binding SetAsDefault.CurrentValue}" />
 
                     </StackPanel>
