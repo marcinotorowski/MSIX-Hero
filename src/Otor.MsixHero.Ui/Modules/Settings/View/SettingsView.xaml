@@ -225,18 +225,28 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <WrapPanel Grid.Row="0" Orientation="Horizontal" Grid.Column="0" Margin="-3 -3 -3 3">
-                        <Button Command="New" Content="New command" Margin="3" />
-                        <Button Command="Delete" Content="Remove selected" Margin="3" />
-                    </WrapPanel>
+                    <Border Width="2" SnapsToDevicePixels="True" UseLayoutRounding="True" Background="#CCCCCC" HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch" Grid.RowSpan="2" Grid.Row="0" Grid.Column="1" />
 
-                    <DockPanel Grid.Row="1" Grid.Column="0">
+                    <Border
+                        Grid.Row="0"
+                        BorderBrush="#CCCCCC" BorderThickness="0" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                        <WrapPanel  Grid.Row="0" Orientation="Horizontal" Grid.Column="0" Margin="-3">
+                            <Button Command="New" Content="New" Margin="3" />
+                            <Button Command="Delete" Content="Remove" Margin="3" />
+                        </WrapPanel>
+                    </Border>
 
+                    <DockPanel Grid.Row="1" Grid.Column="0" Margin="0 6 0 0">
                         <DockPanel DockPanel.Dock="Bottom">
                             <Path Data="{StaticResource VectorBulb}" Style="{StaticResource MediumIcon}" />
                             <TextBlock Text="Tip: reorder commands by drag-and-drop." Margin="4" TextWrapping="Wrap" />
                         </DockPanel>
-                        <ListBox DockPanel.Dock="Top" SelectedItem="{Binding Selected}" ItemsSource="{Binding Items}" BorderBrush="#ccc" BorderThickness="2" SnapsToDevicePixels="True" UseLayoutRounding="True"
+                        <ListBox
+                            BorderThickness="0"
+                            DockPanel.Dock="Top" SelectedItem="{Binding Selected}" 
+                            ItemsSource="{Binding Items}" BorderBrush="#ccc" 
+                            SnapsToDevicePixels="True" UseLayoutRounding="True"
                              dd:DragDrop.IsDragSource="True"
                              dd:DragDrop.IsDropTarget="True"
                              dd:DragDrop.DropHandler="{Binding}">
@@ -314,7 +324,7 @@
                     </DockPanel>
                     <GridSplitter Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                   ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
-                    <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" 
+                    <ScrollViewer Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" VerticalScrollBarVisibility="Auto" 
                                   HorizontalScrollBarVisibility="Disabled" 
                                   DataContext="{Binding Selected}">
                         <ScrollViewer.Style>
