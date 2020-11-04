@@ -44,6 +44,24 @@ namespace Otor.MsixHero.Cli.Executors
 
             var config = await configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
 
+            if (config.Signing?.Source == CertificateSource.Unknown)
+            {
+                // workaround for some migration issues
+                if (!string.IsNullOrEmpty(config.Signing.PfxPath))
+                {
+                    config.Signing.Source = CertificateSource.Pfx;
+                }
+                else if (!string.IsNullOrEmpty(config.Signing.Thumbprint))
+                {
+                    config.Signing.Source = CertificateSource.Personal;
+                }
+                else
+                {
+                    await this.Console.WriteError("In order to sign with CLI without any extra signing parameters, configure your signature in MSIX Hero settings.").ConfigureAwait(false);
+                    return 1;
+                }
+            }
+
             if (this.Verb.ThumbPrint != null)
             {
                 return await this.SignStore(

@@ -2,7 +2,7 @@
   "profiles": {
     "Otor.MsixHero.Cli": {
       "commandName": "Project",
-      "commandLineArgs": "newmodpack --parentPath \"C:\\Users\\marci\\Downloads\\ConEmuPack.msix\" --name \"mymodpack\" --displayName \"My modification package\" --publisherName \"CN=MarcinOtorowski\" --publisherDisplayName \"Marcin Otorowski\" --version \"1.2.3.4\" c:\\temp\\paczka\\"
+      "commandLineArgs": "sign \"C:\\Users\\marci\\Documents\\DEV\\MSIX-Hero\\Source\\out\\msix\\msix-hero-1.4.27.0.msix\""
     }
   }
 }
