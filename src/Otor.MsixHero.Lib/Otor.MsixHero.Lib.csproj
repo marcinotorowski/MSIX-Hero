@@ -18,7 +18,7 @@
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.4" />
-    <PackageReference Include="Prism.Core" Version="8.0.0.1740-pre" />
+    <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
     <PackageReference Include="System.Management.Automation" Version="7.0.3" />
     <PackageReference Include="YamlDotNet" Version="8.1.2" />
   </ItemGroup>
