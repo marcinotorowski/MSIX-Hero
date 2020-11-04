@@ -941,7 +941,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             switch (parameter)
             {
                 case VariableContextCommandParameter.Empty:
-                    this.dialogService.ShowDialog(Constants.PathDependencyViewer, new DialogParameters(), this.OnDialogClosed);
+                    this.dialogService.ShowDialog(path, new DialogParameters(), this.OnDialogClosed);
                     break;
                 case VariableContextCommandParameter.Selection:
                     if (this.application.ApplicationState.Packages.SelectedPackages.Count != 1)
