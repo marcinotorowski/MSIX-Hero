@@ -52,6 +52,65 @@
         </Grid.RowDefinitions>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+            <Style TargetType="Fluent:RibbonTitleBar">
+                <Setter Property="Height" Value="32" />
+            </Style>
+
+
+
+            <Style TargetType="{x:Type Fluent:RibbonTabItem}" BasedOn="{StaticResource {x:Type Fluent:RibbonTabItem}}">
+                <Setter Property="HeaderPadding" Value="16 9" />
+
+                <Style.Triggers>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsContextual" Value="True" />
+                            <Condition Property="IsSelected" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <MultiTrigger.Setters>
+                            <Setter Property="Background" Value="#005A9E" />
+                        </MultiTrigger.Setters>
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Fluent:Button" BasedOn="{StaticResource {x:Type Fluent:Button}}">
+                <Style.Triggers>
+                    <Trigger Property="Size" Value="Large">
+                        <Setter Property="Padding" Value="5 0" />
+                        <Setter Property="MinWidth" Value="64" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Fluent:ToggleButton" BasedOn="{StaticResource {x:Type Fluent:ToggleButton}}">
+                <Style.Triggers>
+                    <Trigger Property="Size" Value="Large">
+                        <Setter Property="Padding" Value="5 0" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Fluent:SplitButton" BasedOn="{StaticResource {x:Type Fluent:SplitButton}}">
+                <Style.Triggers>
+                    <Trigger Property="Size" Value="Large">
+                        <Setter Property="Padding" Value="5 0" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style TargetType="Fluent:TwoLineLabel">
+                <Setter Property="Block.LineStackingStrategy" Value="BlockLineHeight" />
+                <Setter Property="Block.LineHeight" Value="14" />
+                <Setter Property="Height" Value="30" />
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <TranslateTransform Y="2" />
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <Style TargetType="Fluent:RibbonGroupBox">
                 <Style.Resources>
                     <Storyboard x:Key="Animation">
@@ -1133,7 +1192,10 @@
                     <Fluent:RibbonGroupBox.Icon>
                         <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                     </Fluent:RibbonGroupBox.Icon>
-                    <Fluent:Button Header="Modification package..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+                    <Fluent:Button 
+                        Header="Modification package..." 
+                        SizeDefinition="Medium, Medium, Medium" 
+                        Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
                         <Fluent:Button.CommandParameter>
                             <system:Boolean>True</system:Boolean>
                         </Fluent:Button.CommandParameter>
@@ -1144,7 +1206,11 @@
                             <Path Data="{StaticResource VectorTransform}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Appinstaller definition..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.AppInstaller}" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
+                    <Fluent:Button 
+                        Header="Appinstaller definition..." 
+                        SizeDefinition="Medium, Medium, Medium" 
+                        Command="{x:Static commands:MsixHeroCommands.AppInstaller}" 
+                        CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>
@@ -1152,7 +1218,11 @@
                             <Path Data="{StaticResource VectorSetup}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
                     </Fluent:Button>
-                    <Fluent:Button Header="Winget manifest (YAML)..." SizeDefinition="Medium, Medium, Medium" Command="{x:Static commands:MsixHeroCommands.Winget}" CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
+                    <Fluent:Button 
+                        Header="Winget manifest (YAML)..." 
+                        SizeDefinition="Medium, Medium, Medium" 
+                        Command="{x:Static commands:MsixHeroCommands.Winget}" 
+                        CommandParameter="{x:Static viewModel11:VariableContextCommandParameter.Selection}">
                         <Fluent:Button.LargeIcon>
                             <Path Data="{StaticResource VectorConsole}" Style="{StaticResource LargeIcon}" />
                         </Fluent:Button.LargeIcon>

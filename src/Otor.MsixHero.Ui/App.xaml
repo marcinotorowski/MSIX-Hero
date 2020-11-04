@@ -7,50 +7,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/colorful.blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/light.blue.colorful.xaml" />
                 <ResourceDictionary Source="Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <Style TargetType="{x:Type Fluent:RibbonTabItem}" BasedOn="{StaticResource {x:Type Fluent:RibbonTabItem}}">
-                <Setter Property="HeaderPadding" Value="14 7" />
-
-                <Style.Triggers>
-                    <MultiTrigger>
-                        <MultiTrigger.Conditions>
-                            <Condition Property="IsContextual" Value="True" />
-                            <Condition Property="IsSelected" Value="False" />
-                        </MultiTrigger.Conditions>
-                        <MultiTrigger.Setters>
-                            <Setter Property="Background" Value="#005A9E" />
-                        </MultiTrigger.Setters>
-                    </MultiTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style TargetType="Fluent:Button" BasedOn="{StaticResource {x:Type Fluent:Button}}">
-                <Style.Triggers>
-                    <Trigger Property="Size" Value="Large">
-                        <Setter Property="Padding" Value="5 0" />
-                        <Setter Property="MinWidth" Value="64" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style TargetType="Fluent:ToggleButton" BasedOn="{StaticResource {x:Type Fluent:ToggleButton}}">
-                <Style.Triggers>
-                    <Trigger Property="Size" Value="Large">
-                        <Setter Property="Padding" Value="5 0" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style TargetType="Fluent:SplitButton" BasedOn="{StaticResource {x:Type Fluent:SplitButton}}">
-                <Style.Triggers>
-                    <Trigger Property="Size" Value="Large">
-                        <Setter Property="Padding" Value="5 0" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
         </ResourceDictionary>
     </unity:PrismApplication.Resources>
 </unity:PrismApplication>
