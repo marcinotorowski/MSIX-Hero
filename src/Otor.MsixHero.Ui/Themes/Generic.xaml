@@ -300,6 +300,18 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
+    <Style TargetType="{x:Type Path}" x:Key="LargeOfficeIcon">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="0.6" ScaleY="0.6" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type Path}" x:Key="LargeIcon">
         <Setter Property="Width" Value="32" />
         <Setter Property="Height" Value="32" />
@@ -318,6 +330,18 @@
         <Setter Property="LayoutTransform">
             <Setter.Value>
                 <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Path}" x:Key="MediumOfficeIcon">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="0.33333333" ScaleY="0.333333333" />
             </Setter.Value>
         </Setter>
     </Style>
