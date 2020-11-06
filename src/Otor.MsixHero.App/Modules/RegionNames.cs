@@ -2,9 +2,10 @@
 {
     public static class RegionNames
     {
-        public const string Toolbar = "msixhero-toolbar";
-        public const string Sidebar = "msixhero-sidebar";
-        public const string Root = "msixhero-root";
-        public const string Main = "msixhero-main";
+        public const string Toolbar = "msix-hero-toolbar";
+        public const string Sidebar = "msix-hero-sidebar";
+        public const string Root = "msix-hero-root";
+        public const string Main = "msix-hero-main";
+        public const string Search = "msix-hero-search";
     }
 }

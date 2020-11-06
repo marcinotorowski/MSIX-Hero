@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <None Remove="Modules\Main\Sidebar\Views\mock1.png" />
-    <None Remove="Modules\Packages\List\Views\mock2.png" />
+    <None Remove="Modules\Packages\Views\mock2.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,9 +19,40 @@
 
   <ItemGroup>
     <Resource Include="Modules\Main\Sidebar\Views\mock1.png" />
-    <Resource Include="Modules\Packages\List\Views\mock2.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Modules\Volumes\Views\VolumesListView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Volumes\Views\VolumesDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Volumes\Views\VolumesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Volumes\Views\VolumesSearchView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Modules\Volumes\Views\VolumesListView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Volumes\Views\VolumesDetailsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Volumes\Views\VolumesView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Volumes\Views\VolumesSearchView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Serv\" />
   </ItemGroup>
 
 </Project>

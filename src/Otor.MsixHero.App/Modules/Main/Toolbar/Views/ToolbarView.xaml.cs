@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using Otor.MsixHero.App.Events;
+using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.Main.Toolbar.Views
 {
     /// <summary>
-    /// Interaction logic for ToolbarView.xaml
+    /// Interaction logic for ToolbarView.
     /// </summary>
-    public partial class ToolbarView : UserControl
+    public partial class ToolbarView
     {
-        public ToolbarView()
+        private readonly IEventAggregator eventAggregator;
+
+        public ToolbarView(IEventAggregator eventAggregator)
         {
+            this.eventAggregator = eventAggregator;
             InitializeComponent();
+            this.eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Subscribe(this.OnTopSearchWidthChangeEvent, ThreadOption.UIThread);
+        }
+
+        private void OnTopSearchWidthChangeEvent(TopSearchWidthChangeEventPayLoad obj)
+        {
+            this.Region.Width = obj.PanelWidth;
         }
     }
 }

@@ -1,0 +1,206 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Volumes.Views.VolumesListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Height="44">
+            <WrapPanel>
+                <Button Style="{StaticResource ActionButton}">
+                    <controls:LabelWithIcon 
+                        Icon16x16="M 7.5 1 C 3.914063 1 1 3.914063 1 7.5 C 1 11.085938 3.914063 14 7.5 14 C 11.085938 14 14 11.085938 14 7.5 L 14 7 L 13 7 L 13 7.5 C 13 10.542969 10.542969 13 7.5 13 C 4.457031 13 2 10.542969 2 7.5 C 2 4.457031 4.457031 2 7.5 2 C 9.140625 2 10.597656 2.722656 11.605469 3.859375 L 10.464844 5 L 14 5 L 14 1.464844 L 12.3125 3.152344 C 11.121094 1.835938 9.410156 1 7.5 1 Z"
+                        Content="Refresh"
+                        Style="{StaticResource ActionLabelWithIcon}" />
+                </Button>
+                <ToggleButton Style="{StaticResource ActionToggleButton}" x:Name="ButtonInstall">
+                    <controls:LabelWithIcon 
+                        Icon16x16="M 3.5 2 A 0.50005 0.50005 0 0 0 3.0195312 2.3632812 L 1.0195312 9.3632812 A 0.50005 0.50005 0 0 0 1 9.5 L 1 13.5 A 0.50005 0.50005 0 0 0 1.5 14 L 14.5 14 A 0.50005 0.50005 0 0 0 15 13.5 L 15 9.5 A 0.50005 0.50005 0 0 0 14.980469 9.3632812 L 12.980469 2.3632812 A 0.50005 0.50005 0 0 0 12.5 2 L 12 2 L 12 3 L 12.123047 3 L 13.837891 9 L 2.1621094 9 L 3.8769531 3 L 4 3 L 4 2 L 3.5 2 z M 5 2 L 8 5 L 11 2 L 5 2 z M 2 10 L 14 10 L 14 13 L 2 13 L 2 10 z M 12.5 11 A 0.5 0.5 0 0 0 12 11.5 A 0.5 0.5 0 0 0 12.5 12 A 0.5 0.5 0 0 0 13 11.5 A 0.5 0.5 0 0 0 12.5 11 z"
+                        Content="Install..."
+                        Style="{StaticResource ActionLabelWithIcon}" />
+                </ToggleButton>
+
+                <Popup 
+                    StaysOpen="False"
+                    PlacementTarget="{Binding ElementName=ButtonInstall}"
+                    Placement="Bottom"
+                    AllowsTransparency="True" IsOpen="{Binding ElementName=ButtonInstall, Path=IsChecked}">
+
+                    <Border Padding="0 0 18 18">
+                        <Border Background="White" BorderBrush="#ccc" BorderThickness="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
+                            </Border.Effect>
+                            <StackPanel>
+                                <Button Style="{StaticResource ActionButton}">
+                                    <controls:LabelWithIcon
+                                Icon16x16="M 8 2 C 6.347656 2 5 3.347656 5 5 C 5 6.652344 6.347656 8 8 8 C 9.652344 8 11 6.652344 11 5 C 11 3.347656 9.652344 2 8 2 Z M 8 8 C 5.246094 8 3 10.246094 3 13 L 4 13 C 4 10.785156 5.785156 9 8 9 C 10.214844 9 12 10.785156 12 13 L 13 13 C 13 10.246094 10.753906 8 8 8 Z M 8 3 C 9.109375 3 10 3.890625 10 5 C 10 6.109375 9.109375 7 8 7 C 6.890625 7 6 6.109375 6 5 C 6 3.890625 6.890625 3 8 3 Z"
+                                Style="{StaticResource ActionLabelWithIcon}"
+                                Content="For the current user" />
+                                </Button>
+                                <Button Style="{StaticResource ActionButton}">
+                                    <controls:LabelWithIcon
+                                Icon16x16="M 1 2 L 1 2.5 L 1 14 L 7 14 L 7 12 L 8.9941406 12 C 8.9938519 12.161215 8.9934896 12.326888 8.9941406 12.511719 C 8.9949982 12.756825 8.9948627 12.815221 8.9960938 13 L 8 13 L 8 14 L 11 14 L 11 13 L 9.9960938 13 C 9.9948507 12.815137 9.9950122 12.754677 9.9941406 12.507812 C 9.9934922 12.323698 9.993854 12.159347 9.9941406 12 L 13.5 12 C 14.322531 12 15 11.322531 15 10.5 L 15 5.5 C 15 4.6774686 14.322531 4 13.5 4 L 7 4 L 7 2 L 1 2 z M 2 3 L 6 3 L 6 13 L 2 13 L 2 3 z M 3 4 L 3 5 L 5 5 L 5 4 L 3 4 z M 7 5 L 13.5 5 C 13.781469 5 14 5.2185314 14 5.5 L 14 10.5 C 14 10.781469 13.781469 11 13.5 11 L 7 11 L 7 5 z M 3 6 L 3 7 L 5 7 L 5 6 L 3 6 z"
+                                Style="{StaticResource ActionLabelWithIcon}"
+                                Content="For all users (provisioning)" />
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Border>
+                </Popup>
+            </WrapPanel>
+        </Border>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="10">
+            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
+            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+
+                    <Border Background="#fe30af" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock Text="Version" VerticalAlignment="Center" TextAlignment="Right" />
+                <TextBlock Text="Architecture" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+            </StackPanel>
+
+            <StackPanel Margin="10 0">
+                <TextBlock Text="Display name" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="Display Publisher Name" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+            </StackPanel>
+
+        </DockPanel>
+        <Image Visibility="Collapsed" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" Source="mock2.png" />
+    </DockPanel>
+</UserControl>

@@ -4,8 +4,69 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Image Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0 0 -10 0" Source="mock1.png" />
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:SidebarViewModel}">
+    <StackPanel>
+        <ListBox 
+            SelectedItem="{Binding SelectedItem}"
+            SelectionMode="Single"
+            Width="60"
+            ItemsSource="{Binding SidebarItems}">
+            <ListBox.Template>
+                <ControlTemplate TargetType="ListBox">
+                    <ItemsPresenter />
+                </ControlTemplate>
+            </ListBox.Template>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Height" Value="60" />
+                    <Setter Property="Width" Value="60" />
+                    <Setter Property="ToolTip" Value="{Binding Title}" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Grid Background="Transparent">
+                                    <Border 
+                                        x:Name="PART_Border"
+                                        Visibility="Collapsed"
+                                        Background="#0173C7" Width="4" Height="26" VerticalAlignment="Center" HorizontalAlignment="Left" />
+
+                                    <Ellipse 
+                                        x:Name="PART_Background"
+                                        Fill="#B1D6F0"
+                                        Visibility="Collapsed"
+                                        Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="PART_Border" Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="PART_Border" Property="Visibility" Value="Visible" />
+                                        <Setter TargetName="PART_Background" Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type viewModels:SidebarItemViewModel}">
+                    <Viewbox Width="24" Height="24">
+                        <Path 
+                            Data="{Binding Icon}"
+                            Width="32"
+                            Height="32"
+                            Fill="#0173C7" />
+                    </Viewbox>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+    </StackPanel>
 </UserControl>

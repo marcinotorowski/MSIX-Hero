@@ -24,11 +24,11 @@ namespace Otor.MsixHero.App
         
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule(new ModuleInfo(typeof(MainModule), "Main", InitializationMode.WhenAvailable));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(PackagesModule), "Packages", InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), "EventViewer", InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(SystemViewModule), "System", InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeModule), "Volumes", InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(MainModule), ModuleNames.Main, InitializationMode.WhenAvailable));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(PackagesModule), ModuleNames.Packages, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), ModuleNames.EventViewer, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(SystemViewModule), ModuleNames.SystemView, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(VolumesModule), ModuleNames.Volumes, InitializationMode.OnDemand));
 
             base.ConfigureModuleCatalog(moduleCatalog);
         }
@@ -38,10 +38,6 @@ namespace Otor.MsixHero.App
             base.Initialize();
             var regionManager = this.Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
-
-            var moduleManager = this.Container.Resolve<IModuleManager>();
-            moduleManager.LoadModule("Packages");
-            regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.PackagesPage);
         }
 
         protected override Window CreateShell()
