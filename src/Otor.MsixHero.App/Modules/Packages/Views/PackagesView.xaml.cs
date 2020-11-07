@@ -25,7 +25,6 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             this.eventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
-            this.regionManager.Regions[RegionNames.Search].RequestNavigate(PackagesNavigationPaths.Search);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

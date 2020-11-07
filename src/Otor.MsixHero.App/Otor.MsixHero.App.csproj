@@ -13,8 +13,16 @@
 
   <ItemGroup>
     <PackageReference Include="FluentWPF" Version="0.8.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.1" />
     <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,10 +57,6 @@
     <Page Update="Modules\Volumes\Views\VolumesSearchView.xaml">
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Serv\" />
   </ItemGroup>
 
 </Project>
