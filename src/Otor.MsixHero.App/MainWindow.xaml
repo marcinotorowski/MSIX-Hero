@@ -13,5 +13,5 @@
         TintOpacity="0.2"
         TintColor="#0173C7"
         regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="1024">
 </fw:AcrylicWindow>

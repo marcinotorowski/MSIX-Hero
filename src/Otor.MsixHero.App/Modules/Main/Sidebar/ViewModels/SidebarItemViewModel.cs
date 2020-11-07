@@ -1,4 +1,5 @@
 ﻿using System.Windows.Media;
+using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
 
 namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
@@ -7,15 +8,15 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
     {
         private bool isChecked;
 
-        public SidebarItemViewModel(string moduleId, string name, string title, Geometry icon)
+        public SidebarItemViewModel(ApplicationMode screen, string name, string title, Geometry icon)
         {
-            this.ModuleId = moduleId;
+            this.Screen = screen;
             this.Icon = icon;
             this.Name = name;
             this.Title = title;
         }
 
-        public string ModuleId { get; }
+        public ApplicationMode Screen { get; }
 
         public string Name { get; }
 

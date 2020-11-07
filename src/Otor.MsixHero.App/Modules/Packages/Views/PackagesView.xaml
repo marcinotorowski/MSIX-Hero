@@ -4,14 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.Packages.Constants"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <commands:RoutedCommandHandlers.Commands>
+        <commands:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+    </commands:RoutedCommandHandlers.Commands>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="200" />
-            <ColumnDefinition Width="2*" MinWidth="150" />
+            <ColumnDefinition Width="2*" MinWidth="200" />
+            <ColumnDefinition Width="3*" MinWidth="150" />
         </Grid.ColumnDefinitions>
         <Border Margin="0 0 0 0">
             <Border Background="White" BorderBrush="#D2D2D2" BorderThickness="1 0">

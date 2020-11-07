@@ -13,6 +13,9 @@ namespace Otor.MsixHero.App.Modules.Packages
         {
             containerRegistry.RegisterForNavigation<PackagesView, PackagesViewModel>(PathNames.Packages);
             containerRegistry.RegisterForNavigation<PackagesSearchView>(PackagesNavigationPaths.Search);
+            containerRegistry.RegisterForNavigation<PackagesNoDetailsView>(PackagesNavigationPaths.ZeroSelection);
+            containerRegistry.RegisterForNavigation<PackagesSingleDetailsView>(PackagesNavigationPaths.SingleSelection);
+            containerRegistry.RegisterForNavigation<PackagesManyDetailsView>(PackagesNavigationPaths.MultipleSelection);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
@@ -20,7 +23,7 @@ namespace Otor.MsixHero.App.Modules.Packages
             var regionManager = containerProvider.Resolve<IRegionManager>();
             // regionManager.RegisterViewWithRegion(RegionNames.Main, typeof(PackagesView));
             regionManager.RegisterViewWithRegion(PackagesRegionNames.Master, typeof(PackagesListView));
-            regionManager.RegisterViewWithRegion(PackagesRegionNames.Details, typeof(PackagesDetailsView));
+            regionManager.RegisterViewWithRegion(PackagesRegionNames.Details, typeof(PackagesNoDetailsView));
             regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(PackagesSearchView));
         }
     }

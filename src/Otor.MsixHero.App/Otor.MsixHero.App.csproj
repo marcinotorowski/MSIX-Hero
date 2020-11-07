@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="Modules\Main\Sidebar\Views\mock1.png" />
     <None Remove="Modules\Packages\Views\mock2.png" />
+    <None Remove="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,9 +28,16 @@
 
   <ItemGroup>
     <Resource Include="Modules\Main\Sidebar\Views\mock1.png" />
+    <Resource Include="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Modules\Packages\Views\PackagesManyDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Packages\Views\PackagesSingleDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Volumes\Views\VolumesListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -45,6 +53,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Modules\Packages\Views\PackagesManyDetailsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Packages\Views\PackagesSingleDetailsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Modules\Volumes\Views\VolumesListView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -55,6 +69,15 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Volumes\Views\VolumesSearchView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Fonts.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Colors.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Converters.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

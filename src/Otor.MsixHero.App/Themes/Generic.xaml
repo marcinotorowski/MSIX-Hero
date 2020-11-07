@@ -2,96 +2,13 @@
                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls">
 
-    <Style TargetType="ButtonBase" x:Key="ActionButtonBase">
-        <Setter Property="Height" Value="44"/>
-        <Setter Property="Padding" Value="10 0" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="TextBlock.Foreground" Value="#222" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ButtonBase">
-                    <Border 
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="{TemplateBinding Background}">
-                        <ContentPresenter Margin="{TemplateBinding Padding}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#d3d3d3" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="Padding" Value="8 0" />
-                <Setter Property="BorderBrush" Value="#cfcfcf" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#666" />
-                <Setter Property="BorderBrush" Value="#666" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style TargetType="Button" x:Key="ActionButton" BasedOn="{StaticResource ActionButtonBase}">
-    </Style>
-
-    <Style TargetType="ToggleButton" x:Key="ActionToggleButton" BasedOn="{StaticResource ActionButtonBase}">
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#d3d3d3" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="Padding" Value="8 0" />
-                <Setter Property="BorderBrush" Value="#cfcfcf" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#666" />
-                <Setter Property="BorderBrush" Value="#666" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
-            </Trigger>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#666" />
-                <Setter Property="BorderBrush" Value="#666" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style TargetType="controls:LabelWithIcon">
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="UseLayoutRounding" Value="True" />
-        <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="controls:LabelWithIcon">
-                    <StackPanel Orientation="Horizontal">
-                        <Path 
-                            VerticalAlignment="Center" 
-                            Margin="0 0 4 0" 
-                            Data="{TemplateBinding Icon16x16}" 
-                            Fill="{TemplateBinding Foreground}" 
-                            Width="16" 
-                            Height="16" />
-
-                        <ContentPresenter 
-                            TextBlock.Foreground="{TemplateBinding Foreground}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="controls:LabelWithIcon" BasedOn="{StaticResource {x:Type controls:LabelWithIcon}}" x:Key="ActionLabelWithIcon">
-        <Setter Property="Focusable" Value="False"></Setter>
-        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ButtonBase}, Path=Foreground}" />
-        <Setter Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ButtonBase}, Path=Foreground}" />
-    </Style>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Colors.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Converters.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Fonts.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Icons.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Buttons.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/ListBox.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Controls/Themes.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

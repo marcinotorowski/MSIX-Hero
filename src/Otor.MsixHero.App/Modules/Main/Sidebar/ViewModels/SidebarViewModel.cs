@@ -1,6 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
+using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands;
+using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
 using Prism.Modularity;
 using Prism.Regions;
@@ -11,6 +14,7 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
     {
         private readonly IRegionManager regionManager;
         private readonly IModuleManager moduleManager;
+        private readonly IMsixHeroApplication application;
         private static readonly Geometry TabPackages = Geometry.Parse("M 16 4 L 15.625 4.15625 L 9.625 6.5625 L 9 6.8125 L 9 13.53125 L 3.59375 15.875 L 3 16.15625 L 3 24.21875 L 3.5 24.53125 L 9.5 27.875 L 9.96875 28.125 L 10.4375 27.90625 L 16 25.125 L 21.5625 27.90625 L 22.03125 28.125 L 22.5 27.875 L 28.5 24.53125 L 29 24.21875 L 29 16.15625 L 28.40625 15.875 L 23 13.53125 L 23 6.8125 L 22.375 6.5625 L 16.375 4.15625 Z M 16 6.1875 L 19.28125 7.46875 L 16 8.75 L 12.71875 7.46875 Z M 11 8.9375 L 15 10.46875 L 15 15.34375 L 11 13.5625 Z M 21 8.9375 L 21 13.5625 L 17 15.34375 L 17 10.46875 Z M 10 15.3125 L 13.625 16.90625 L 10 18.6875 L 6.375 16.875 Z M 22 15.3125 L 25.625 16.875 L 22 18.6875 L 18.375 16.90625 L 19.5 16.40625 Z M 5 18.40625 L 9 20.40625 L 9 25.3125 L 5 23.0625 Z M 27 18.40625 L 27 23.0625 L 23 25.3125 L 23 20.40625 Z M 15 18.46875 L 15 23.375 L 11 25.375 L 11 20.40625 Z M 17 18.46875 L 21 20.40625 L 21 25.375 L 17 23.375 Z");
 
         private static readonly Geometry TabVolumes = Geometry.Parse("M 6.21875 6 L 3 18.875 L 3 26 L 29 26 L 29 18.875 L 25.78125 6 Z M 7.78125 8 L 24.21875 8 L 26.71875 18 L 5.28125 18 Z M 5 20 L 27 20 L 27 24 L 5 24 Z M 24 21 C 23.449219 21 23 21.449219 23 22 C 23 22.550781 23.449219 23 24 23 C 24.550781 23 25 22.550781 25 22 C 25 21.449219 24.550781 21 24 21 Z");
@@ -21,38 +25,39 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 
         private SidebarItemViewModel selectedItem;
 
-        public SidebarViewModel(IRegionManager regionManager, IModuleManager moduleManager)
+        public SidebarViewModel(IRegionManager regionManager, IModuleManager moduleManager, IMsixHeroApplication application)
         {
             this.regionManager = regionManager;
             this.moduleManager = moduleManager;
+            this.application = application;
             this.SidebarItems = new ObservableCollection<SidebarItemViewModel>
             {
                 new SidebarItemViewModel(
-                    ModuleNames.Packages,
+                    ApplicationMode.Packages,
                     PathNames.Packages,
                     "Packages",
                     TabPackages),
 
                 new SidebarItemViewModel(
-                    ModuleNames.Volumes,
+                    ApplicationMode.VolumeManager,
                     PathNames.Volumes,
                     "Volumes",
                     TabVolumes),
 
                 new SidebarItemViewModel(
-                    ModuleNames.EventViewer,
+                    ApplicationMode.EventViewer,
                     PathNames.EventViewer,
                     "Event viewer",
                     TabEventViewer),
 
                 new SidebarItemViewModel(
-                    ModuleNames.SystemView, 
+                    ApplicationMode.SystemStatus, 
                     PathNames.SystemView,
                     "System overview",
                     TabSystemStatus)
             };
 
-            this.SelectedItem = this.SidebarItems.First();
+            this.selectedItem = this.SidebarItems.First();
         }
 
         public ObservableCollection<SidebarItemViewModel> SidebarItems { get; }
@@ -67,11 +72,7 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
                     return;
                 }
 
-                if (value != null)
-                {
-                    this.moduleManager.LoadModule(value.ModuleId);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(value.Name);
-                }
+                this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(value.Screen));
             }
         }
     }

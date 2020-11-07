@@ -1,0 +1,173 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Otor.MsixHero.App.Controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="local:LabelWithIcon">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:LabelWithIcon">
+                    <StackPanel Orientation="Horizontal">
+                        <Path 
+                            VerticalAlignment="Center" 
+                            Margin="0 0 4 0" 
+                            Data="{TemplateBinding Icon16x16}" 
+                            Fill="{TemplateBinding Foreground}" 
+                            Width="16" 
+                            Height="16" />
+
+                        <ContentPresenter 
+                            TextBlock.Foreground="{TemplateBinding Foreground}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="local:LabelWithIcon" BasedOn="{StaticResource {x:Type local:LabelWithIcon}}" x:Key="ActionLabelWithIcon">
+        <Setter Property="Focusable" Value="False"></Setter>
+        <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ButtonBase}, Path=Foreground}" />
+        <Setter Property="TextBlock.Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ButtonBase}, Path=Foreground}" />
+    </Style>
+
+    <Style TargetType="local:ProgressOverlay">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ProgressOverlay">
+                    <Grid>
+                        <ContentPresenter x:Name="PART_Content" IsHitTestVisible="True" />
+                        <Border 
+                            x:Name="PART_ProgressReport"
+                            Background="{TemplateBinding Background}" IsHitTestVisible="False">
+                            <StackPanel 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                                <TextBlock 
+                                    x:Name="PART_Overlay"
+                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0">
+                                    <TextBlock.RenderTransform>
+                                        <TranslateTransform Y="40" />
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+
+                                <ProgressBar
+                                    Opacity="0.0"
+                                    UseLayoutRounding="True"
+                                    SnapsToDevicePixels="True"
+                                    Margin="0 8 0 0" Foreground="{StaticResource Otor.MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
+                                    Width="200" HorizontalAlignment="Center" 
+                                    local:AnimatedProgressBar.Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}">
+                                    <ProgressBar.RenderTransform>
+                                        <TranslateTransform Y="40" />
+                                    </ProgressBar.RenderTransform>
+                                </ProgressBar>
+
+                                <Button 
+                                    Opacity="0.0"
+                                    UseLayoutRounding="True"
+                                    SnapsToDevicePixels="True"
+                                    Visibility="{TemplateBinding SupportsCancelling, ConverterParameter={StaticResource BooleanToVisibilityConverter}}" 
+                                    x:Name="PART_CancelButton" 
+                                    HorizontalAlignment="Center" 
+                                    Margin="0 8 0 0" 
+                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
+                                    Content="Cancel">
+                                    <Button.RenderTransform>
+                                        <TranslateTransform Y="40" />
+                                    </Button.RenderTransform>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="CancelCommand" Value="{x:Null}">
+                            <Setter TargetName="PART_CancelButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsShown" Value="True">
+                            <Setter TargetName="PART_Content" Property="IsHitTestVisible" Value="False" />
+                            <Setter TargetName="PART_Content" Property="Focusable" Value="False" />
+                            <Setter TargetName="PART_ProgressReport" Property="IsHitTestVisible" Value="True" />
+                            <!--<Setter TargetName="PART_Content" Property="Opacity" Value="0.33" />-->
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Content" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.15" />
+                                            <SplineDoubleKeyFrame Value="0.2" KeyTime="00:00:00.5" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.1" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.3" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.2" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.4" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="Opacity">
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="0.0" KeyTime="00:00:00.3" />
+                                            <SplineDoubleKeyFrame Value="1.0" KeyTime="00:00:00.5" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="RenderTransform.Y">
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.1" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.3" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="RenderTransform.Y">
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.2" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.4" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="RenderTransform.Y">
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.0" />
+                                            <SplineDoubleKeyFrame Value="40" KeyTime="00:00:00.3" />
+                                            <SplineDoubleKeyFrame Value="00" KeyTime="00:00:00.5" />
+                                        </DoubleAnimationUsingKeyFrames>
+
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Duration="00:00:0.4" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_CancelButton" Storyboard.TargetProperty="Opacity" />
+                                        <DoubleAnimation Duration="00:00:0.4" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity" />
+                                        <DoubleAnimation Duration="00:00:0.4" To="0.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_Overlay" Storyboard.TargetProperty="Opacity" />
+                                        <DoubleAnimation Duration="00:00:0.4" To="1.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Storyboard.TargetName="PART_Content" Storyboard.TargetProperty="Opacity" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="Progress" Value="-1">
+                            <Setter TargetName="PART_ProgressBar" Property="IsIndeterminate" Value="True" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="HideContentWhileLoading" Value="True" />
+                                <Condition Property="IsShown" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="PART_Content" Property="Visibility" Value="Hidden" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -5,9 +5,9 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
     /// <summary>
     /// Interaction logic for PackagesDetailsView.xaml
     /// </summary>
-    public partial class PackagesDetailsView : UserControl
+    public partial class PackagesSingleDetailsView : UserControl
     {
-        public PackagesDetailsView()
+        public PackagesSingleDetailsView()
         {
             InitializeComponent();
         }

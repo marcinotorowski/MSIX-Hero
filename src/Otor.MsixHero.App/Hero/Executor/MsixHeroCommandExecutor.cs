@@ -7,6 +7,10 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
+using Otor.MsixHero.App.Hero.State;
+using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Modules.Packages.Constants;
+using Otor.MsixHero.App.Modules.Volumes.Constants;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
@@ -22,11 +26,15 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
+using Prism.Modularity;
+using Prism.Regions;
 
 namespace Otor.MsixHero.App.Hero.Executor
 {
     public class MsixHeroCommandExecutor : BaseMsixHeroCommandExecutor, IObserver<ActivePackageFullNames>
     {
+        private readonly IModuleManager moduleManager;
+        private readonly IRegionManager regionManager;
         private readonly IEventAggregator eventAggregator;
         private readonly IConfigurationService configurationService;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
@@ -35,6 +43,8 @@ namespace Otor.MsixHero.App.Hero.Executor
         private readonly IRunningDetector detector;
 
         public MsixHeroCommandExecutor(
+            IModuleManager moduleManager,
+            IRegionManager regionManager,
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
@@ -42,6 +52,8 @@ namespace Otor.MsixHero.App.Hero.Executor
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
             IRunningDetector detector) : base(eventAggregator)
         {
+            this.moduleManager = moduleManager;
+            this.regionManager = regionManager;
             this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
             this.packageManagerProvider = packageManagerProvider;
@@ -130,6 +142,29 @@ namespace Otor.MsixHero.App.Hero.Executor
         private Task SetCurrentMode(SetCurrentModeCommand command)
         {
             this.ApplicationState.CurrentMode = command.NewMode;
+
+            switch (command.NewMode)
+            {
+                case ApplicationMode.Packages:
+                    this.moduleManager.LoadModule(ModuleNames.Packages);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Packages);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(PackagesNavigationPaths.Search);
+                    break;
+                case ApplicationMode.VolumeManager:
+                    this.moduleManager.LoadModule(ModuleNames.Volumes);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Volumes);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(VolumesNavigationPaths.Search);
+                    break;
+                case ApplicationMode.SystemStatus:
+                    this.moduleManager.LoadModule(ModuleNames.SystemView);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.SystemView);
+                    break;
+                case ApplicationMode.EventViewer:
+                    this.moduleManager.LoadModule(ModuleNames.EventViewer);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.SystemView);
+                    break;
+            }
+
             return Task.FromResult(true);
         }
 
@@ -194,7 +229,6 @@ namespace Otor.MsixHero.App.Hero.Executor
 
         private Task<IList<InstalledPackage>> SelectPackages(SelectPackagesCommand command)
         {
-
             IList<InstalledPackage> selected;
             if (!command.SelectedManifestPaths.Any())
             {
@@ -228,6 +262,24 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             this.ApplicationState.Packages.SelectedPackages.Clear();
             this.ApplicationState.Packages.SelectedPackages.AddRange(selected);
+
+            var parameters = new NavigationParameters
+            {
+                { "packages", this.ApplicationState.Packages.SelectedPackages }
+            };
+
+            switch (this.ApplicationState.Packages.SelectedPackages.Count)
+            {
+                case 0:
+                    this.regionManager.Regions[PackagesRegionNames.Details].RequestNavigate(new Uri(PackagesNavigationPaths.ZeroSelection, UriKind.Relative), parameters);
+                    break;
+                case 1:
+                    this.regionManager.Regions[PackagesRegionNames.Details].RequestNavigate(new Uri(PackagesNavigationPaths.SingleSelection, UriKind.Relative), parameters);
+                    break;
+                default:
+                    this.regionManager.Regions[PackagesRegionNames.Details].NavigationService.RequestNavigate(new Uri(PackagesNavigationPaths.MultipleSelection, UriKind.Relative), parameters);
+                    break;
+            }
             return Task.FromResult(selected);
         }
 

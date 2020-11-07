@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters">
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <converters:BooleanToHiddenVisibilityConverter x:Key="BooleanToHiddenVisibilityConverter" />
+    <converters:NegativeConverter x:Key="NegativeConverter" />
+    <converters:UppercaseConverter x:Key="UppercaseConverter" />
+    <converters:NegativeEnumToBooleanConverter x:Key="NegativeEnumToBooleanConverter" />
+    <converters:NegativeBooleanToVisibilityConverter x:Key="NegativeBooleanToVisibilityConverter" />
+    <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+    <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+    <converters:NegativeEnumToVisibilityConverter x:Key="NegativeEnumToVisibilityConverter" />
+</ResourceDictionary>
