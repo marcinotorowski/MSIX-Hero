@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Modules.Packages.Views.PackageExpert"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Packages.ViewModels"
+             xmlns:mvvm="http://prismlibrary.com/"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesSingleDetailsViewModel}">
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
             <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -16,12 +20,12 @@
                             Content="Start" />
                 </Button>
 
-                <Button Style="{StaticResource ActionButton}">
+                <ToggleButton Style="{StaticResource ActionPopupToggleButton}">
                     <controls:LabelWithIcon 
                             Style="{StaticResource ActionLabelWithIcon}"
                             Icon16x16="M 2.5 2 C 1.675781 2 1 2.675781 1 3.5 L 1 12.5 C 1 13.324219 1.675781 14 2.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 5.5 C 15 4.675781 14.324219 4 13.5 4 L 6.796875 4 L 6.144531 2.789063 C 5.882813 2.300781 5.375 2 4.824219 2 Z M 2.5 3 L 4.824219 3 C 5.007813 3 5.175781 3.101563 5.265625 3.261719 L 6.203125 5 L 13.5 5 C 13.78125 5 14 5.21875 14 5.5 L 14 7 L 5.21875 7 C 4.578125 7 4 7.414063 3.796875 8.023438 L 2.179688 12.878906 C 2.070313 12.789063 2 12.65625 2 12.5 L 2 3.5 C 2 3.21875 2.21875 3 2.5 3 Z M 5.21875 8 L 14 8 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 3.195313 13 L 4.746094 8.34375 C 4.816406 8.136719 5.003906 8 5.21875 8 Z"
                             Content="Open" />
-                </Button>
+                </ToggleButton>
 
                 <Button Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
@@ -38,39 +42,12 @@
                 </Button>
             </WrapPanel>
         </Border>
-        <Border DockPanel.Dock="Top" MinHeight="148" Background="#EFEFEF">
-            <StackPanel Margin="12">
-                <DockPanel VerticalAlignment="Top">
-                    <Border Width="48" Height="48" Background="#0173C7" />
-
-                    <WrapPanel DockPanel.Dock="Right" Margin="0 10 0 0" VerticalAlignment="Center">
-                        <Border CornerRadius="5" BorderBrush="#B7B7B7" BorderThickness="2" Margin="8 0 0 0">
-                            <TextBlock FontSize="11" Text="SL" FontWeight="Bold" Foreground="#565656" Margin="6" />
-                        </Border>
-                        <Border CornerRadius="5" BorderBrush="#B7B7B7" BorderThickness="2" Margin="8 0 0 0">
-                            <TextBlock FontSize="11" Text="UWP" FontWeight="Bold" Foreground="#565656" Margin="6" />
-                        </Border>
-                        <Border CornerRadius="5" BorderBrush="#B7B7B7" BorderThickness="2" Margin="8 0 0 0">
-                            <TextBlock FontSize="11" Text="X64" FontWeight="Bold" Foreground="#565656" Margin="6" />
-                        </Border>
-                    </WrapPanel>
-
-                    <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                        <TextBlock FontSize="16" FontFamily="Source Sans Pro" Text="MSIX Hero" />
-                        <TextBlock FontWeight="Bold" Text="1.4.4.4" />
-                    </StackPanel>
-                </DockPanel>
-
-                <TextBlock Margin="0 12 0 0" Text="Your companion and the ultimate toolkit to the MSIX world" />
-                <TextBlock Text="MSIX_Hero_1.4.30_neutral_blablaba_1.2.3" Opacity="0.66" />
-
-                <WrapPanel Margin="0 10 0 0">
-                    <Border CornerRadius="5" BorderBrush="#565656" BorderThickness="2">
-                        <TextBlock Text="MARCIN OTOROWSKI" FontWeight="Bold" Foreground="#565656" Margin="11 8" />
-                    </Border>
-                </WrapPanel>
-            </StackPanel>
+        <TextBlock Text="{Binding FilePath}" DockPanel.Dock="Top"></TextBlock>
+        <Border Background="Pink">
+            <packageExpert:PackageExpert 
+                Margin="10"
+                DockPanel.Dock="Top" 
+                FilePath="{Binding FilePath, Delay=2000}" />
         </Border>
-        <Border />
     </DockPanel>
 </UserControl>

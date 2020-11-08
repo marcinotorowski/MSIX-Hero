@@ -17,7 +17,7 @@
                         Content="Refresh"
                         Style="{StaticResource ActionLabelWithIcon}" />
                 </Button>
-                <ToggleButton Style="{StaticResource ActionToggleButton}" x:Name="ButtonInstall">
+                <ToggleButton Style="{StaticResource ActionPopupToggleButton}" x:Name="ButtonInstall">
                     <controls:LabelWithIcon 
                         Icon16x16="M 3.5 2 A 0.50005 0.50005 0 0 0 3.0195312 2.3632812 L 1.0195312 9.3632812 A 0.50005 0.50005 0 0 0 1 9.5 L 1 13.5 A 0.50005 0.50005 0 0 0 1.5 14 L 14.5 14 A 0.50005 0.50005 0 0 0 15 13.5 L 15 9.5 A 0.50005 0.50005 0 0 0 14.980469 9.3632812 L 12.980469 2.3632812 A 0.50005 0.50005 0 0 0 12.5 2 L 12 2 L 12 3 L 12.123047 3 L 13.837891 9 L 2.1621094 9 L 3.8769531 3 L 4 3 L 4 2 L 3.5 2 z M 5 2 L 8 5 L 11 2 L 5 2 z M 2 10 L 14 10 L 14 13 L 2 13 L 2 10 z M 12.5 11 A 0.5 0.5 0 0 0 12 11.5 A 0.5 0.5 0 0 0 12.5 12 A 0.5 0.5 0 0 0 13 11.5 A 0.5 0.5 0 0 0 12.5 11 z"
                         Content="Install..."

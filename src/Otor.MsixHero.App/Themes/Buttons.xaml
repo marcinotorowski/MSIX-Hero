@@ -3,6 +3,7 @@
 
     <Style TargetType="ButtonBase" x:Key="ActionButtonBase">
         <Setter Property="Height" Value="44"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="10 0" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
@@ -41,6 +42,44 @@
     </Style>
 
     <Style TargetType="Button" x:Key="ActionButton" BasedOn="{StaticResource ActionButtonBase}">
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="ActionPopupToggleButton" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ButtonBase">
+                    <Border 
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                        <DockPanel Margin="{TemplateBinding Padding}">
+                            <Path VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="16" Height="16" DockPanel.Dock="Right" Margin="4 0 0 0" Data="M 1.726563 4.015625 L 1.023438 4.734375 L 7.5 11.074219 L 13.972656 4.734375 L 13.277344 4.015625 L 7.5 9.675781 Z" Fill="{TemplateBinding Foreground}" />
+                            <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#d3d3d3" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="Padding" Value="8 0" />
+                <Setter Property="BorderBrush" Value="#cfcfcf" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#666" />
+                <Setter Property="BorderBrush" Value="#666" />
+                <Setter Property="TextBlock.Foreground" Value="White" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="#666" />
+                <Setter Property="BorderBrush" Value="#666" />
+                <Setter Property="TextBlock.Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="ToggleButton" x:Key="ActionToggleButton" BasedOn="{StaticResource ActionButtonBase}">

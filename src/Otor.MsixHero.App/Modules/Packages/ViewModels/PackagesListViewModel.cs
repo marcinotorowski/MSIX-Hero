@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 using System.Windows.Data;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
@@ -10,6 +12,7 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules.Packages.ViewModels.Items;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
@@ -26,6 +29,7 @@ namespace Otor.MsixHero.App.Modules.Packages.ViewModels
         private readonly IBusyManager busyManager;
         private readonly IMsixHeroApplication application;
         private readonly IInteractionService interactionService;
+        private readonly ReaderWriterLockSlim packagesSync = new ReaderWriterLockSlim();
         private bool firstRun = true;
         private bool isActive;
 
@@ -41,13 +45,25 @@ namespace Otor.MsixHero.App.Modules.Packages.ViewModels
             this.ItemsCollection = CollectionViewSource.GetDefaultView(this.Items);
             this.ItemsCollection.Filter = row => this.IsPackageVisible((InstalledPackageViewModel)row);
 
+            // reloading packages
             this.application.EventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuting);
             this.application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
             this.application.EventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesFailed);
             this.application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCancelled);
+
+            // filtering
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand, ThreadOption.UIThread);
 
+            // sorting ang grouping
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
+
+            // is running indicator
+            this.application.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndication);
+            this.application.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndicationFinished, ThreadOption.UIThread);
+
             this.busyManager.StatusChanged += BusyManagerOnStatusChanged;
+            this.SetSortingAndGrouping();
         }
 
         public string SearchKey
@@ -264,6 +280,136 @@ namespace Otor.MsixHero.App.Modules.Packages.ViewModels
             }
 
             return true;
+        }
+
+        private void OnActivePackageIndication(ActivePackageFullNames obj)
+        {
+            try
+            {
+                this.packagesSync.EnterReadLock();
+
+                foreach (var item in this.Items)
+                {
+                    item.IsRunning = obj.Running.Contains(item.ProductId);
+                }
+            }
+            finally
+            {
+                this.packagesSync.ExitReadLock();
+            }
+        }
+
+        private void OnActivePackageIndicationFinished(ActivePackageFullNames obj)
+        {
+            this.ItemsCollection.Refresh();
+        }
+
+        private void OnSetPackageGrouping(UiExecutedPayload<SetPackageGroupingCommand> obj)
+        {
+            this.SetSortingAndGrouping();
+        }
+
+        private void OnSetPackageSorting(UiExecutedPayload<SetPackageSortingCommand> obj)
+        {
+            this.SetSortingAndGrouping();
+        }
+
+        private void SetSortingAndGrouping()
+        {
+            var currentSort = this.application.ApplicationState.Packages.SortMode;
+            var currentSortDescending = this.application.ApplicationState.Packages.SortDescending;
+            var currentGroup = this.application.ApplicationState.Packages.GroupMode;
+
+            using (this.ItemsCollection.DeferRefresh())
+            {
+                string sortProperty;
+                string groupProperty;
+
+                switch (currentSort)
+                {
+                    case PackageSort.Name:
+                        sortProperty = nameof(InstalledPackageViewModel.DisplayName);
+                        break;
+                    case PackageSort.Publisher:
+                        sortProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
+                        break;
+                    case PackageSort.Architecture:
+                        sortProperty = nameof(InstalledPackageViewModel.Architecture);
+                        break;
+                    case PackageSort.InstallDate:
+                        sortProperty = nameof(InstalledPackageViewModel.InstallDate);
+                        break;
+                    case PackageSort.Type:
+                        sortProperty = nameof(InstalledPackageViewModel.Type);
+                        break;
+                    case PackageSort.Version:
+                        sortProperty = nameof(InstalledPackageViewModel.Version);
+                        break;
+                    case PackageSort.PackageType:
+                        sortProperty = nameof(InstalledPackageViewModel.DisplayPackageType);
+                        break;
+                    default:
+                        sortProperty = null;
+                        break;
+                }
+
+                switch (currentGroup)
+                {
+                    case PackageGroup.None:
+                        groupProperty = null;
+                        break;
+                    case PackageGroup.Publisher:
+                        groupProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
+                        break;
+                    case PackageGroup.Architecture:
+                        groupProperty = nameof(InstalledPackageViewModel.Architecture);
+                        break;
+                    case PackageGroup.Type:
+                        groupProperty = nameof(InstalledPackageViewModel.Type);
+                        break;
+                    default:
+                        return;
+                }
+
+                // 1) First grouping
+                if (groupProperty == null)
+                {
+                    this.ItemsCollection.GroupDescriptions.Clear();
+                }
+                else
+                {
+                    var pgd = this.ItemsCollection.GroupDescriptions.OfType<PropertyGroupDescription>().FirstOrDefault();
+                    if (pgd == null || pgd.PropertyName != groupProperty)
+                    {
+                        this.ItemsCollection.GroupDescriptions.Clear();
+                        this.ItemsCollection.GroupDescriptions.Add(new PropertyGroupDescription(groupProperty));
+                    }
+                }
+
+                // 2) Then sorting
+                if (sortProperty == null)
+                {
+                    this.ItemsCollection.SortDescriptions.Clear();
+                }
+                else
+                {
+                    var sd = this.ItemsCollection.SortDescriptions.FirstOrDefault();
+                    if (sd.PropertyName != sortProperty || sd.Direction != (currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+                    {
+                        this.ItemsCollection.SortDescriptions.Clear();
+                        this.ItemsCollection.SortDescriptions.Add(new SortDescription(sortProperty, currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+                    }
+                }
+
+                if (this.ItemsCollection.GroupDescriptions.Any())
+                {
+                    var gpn = ((PropertyGroupDescription)this.ItemsCollection.GroupDescriptions[0]).PropertyName;
+                    if (this.ItemsCollection.GroupDescriptions.Any() && this.ItemsCollection.SortDescriptions.All(sd => sd.PropertyName != gpn))
+                    {
+                        this.ItemsCollection.SortDescriptions.Insert(0, new SortDescription(gpn, ListSortDirection.Ascending));
+                    }
+                }
+            }
         }
     }
 }
