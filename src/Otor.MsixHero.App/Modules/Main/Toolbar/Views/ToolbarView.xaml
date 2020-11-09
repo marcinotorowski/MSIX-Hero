@@ -21,7 +21,28 @@
             VerticalAlignment="Stretch"
             mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.Search}" />
 
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Title}" />
+        <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <TextBlock Foreground="White" Text="{Binding Title}">
+                <TextBlock.Effect>
+                    <BlurEffect
+                        Radius="2.0"
+                        KernelType="Box"/>
+                </TextBlock.Effect>
+            </TextBlock><TextBlock Foreground="White" Text="{Binding Title}">
+                <TextBlock.Effect>
+                    <BlurEffect
+                        Radius="3.0"
+                        KernelType="Box"/>
+                </TextBlock.Effect>
+            </TextBlock><TextBlock Foreground="White" Text="{Binding Title}">
+                <TextBlock.Effect>
+                    <BlurEffect
+                        Radius="8.0"
+                        KernelType="Box"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Text="{Binding Title}" />
+        </Grid>
     </DockPanel>
     
 </UserControl>

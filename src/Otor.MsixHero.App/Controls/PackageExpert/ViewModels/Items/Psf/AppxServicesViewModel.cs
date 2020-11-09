@@ -3,9 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
 
-namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items.Psf
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
     public class AppxServicesViewModel : NotifyPropertyChanged
     {

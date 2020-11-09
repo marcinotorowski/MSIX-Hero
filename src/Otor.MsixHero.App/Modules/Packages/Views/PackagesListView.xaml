@@ -198,12 +198,12 @@
                 SelectionMode="Extended"
                 ContextMenuOpening="PackageContextMenu_OnContextMenuOpening"
                 ContextMenu="{StaticResource PackageContextMenu}">
-                <ListBox.InputBindings>
-                    <KeyBinding Modifiers="Control" Key="F" Command="Search" />
-                </ListBox.InputBindings>
                 <ListBox.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
                 </ListBox.GroupStyle>
+                <ListBox.InputBindings>
+                    <KeyBinding Modifiers="Control" Key="F" Command="Find" />
+                </ListBox.InputBindings>
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Padding" Value="10" />

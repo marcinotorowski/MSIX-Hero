@@ -1,0 +1,24 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <Style TargetType="TextBlock" x:Key="DataHeader">
+        <Setter Property="Opacity" Value="0.7" />
+        <Setter Property="Margin" Value="0 0 0 2" />
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="DataValue">
+        <Setter Property="Margin" Value="0 0 0 8" />
+    </Style>
+
+    <Style TargetType="{x:Type TextBox}" x:Key="TextBlock">
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style TargetType="TextBox" x:Key="DataValueTextBlock" BasedOn="{StaticResource TextBlock}">
+        <Setter Property="Margin" Value="-1 0 0 8" />
+    </Style>
+</ResourceDictionary>

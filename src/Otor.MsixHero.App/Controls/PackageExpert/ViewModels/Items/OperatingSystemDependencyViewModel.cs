@@ -2,7 +2,7 @@
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
-namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
     public class OperatingSystemDependencyViewModel : NotifyPropertyChanged
     {

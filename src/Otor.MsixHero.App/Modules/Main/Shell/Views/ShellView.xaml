@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
         <Border Height="58" DockPanel.Dock="Top">
-            <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Toolbar}"  />
+            <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Toolbar}" FocusManager.IsFocusScope="True" />
         </Border>
         <Border Width="60" DockPanel.Dock="Left" Background="White">
             <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Sidebar}" />

@@ -1,17 +1,17 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items;
+using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 
-namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 {
     public class PackageExpertPropertiesViewModel : NotifyPropertyChanged
     {
-        private AppxApplicationViewModel selectedFixup;
-
         public PackageExpertPropertiesViewModel(AppxPackage model, string filePath = null)
         {
             this.Model = model;
@@ -65,8 +65,7 @@ namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert
             }
 
             this.Fixups = new ObservableCollection<AppxApplicationViewModel>(this.Applications.Where(a => a.HasPsf && a.Psf != null && (a.Psf.HasFileRedirections || a.Psf.HasTracing || a.Psf.HasOtherFixups)));
-            this.selectedFixup = this.Fixups.FirstOrDefault();
-
+            
             // 1) fixup count is the sum of all individual file redirections...
             this.FixupsCount = this.Fixups.SelectMany(s => s.Psf.FileRedirections).Select(s => s.Exclusions.Count + s.Inclusions.Count).Sum();
 
@@ -84,10 +83,128 @@ namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert
             this.PackageIntegrity = model.PackageIntegrity;
             this.RootDirectory = filePath;
         }
-
+        
         public string RootDirectory { get; }
 
         public AppxPackage Model { get; private set; }
+
+        public string AppType
+        {
+            get
+            {
+                if (this.Model.Source is StorePackageSource)
+                {
+                    return "Store App";
+                }
+
+                if (this.Model.Source is SystemSource)
+                {
+                    return "System App";
+                }
+
+                if (this.Model.Source is DeveloperSource)
+                {
+                    return "Developer";
+                }
+
+                if (this.Model.Source is NotInstalledSource)
+                {
+                    return "Not installed";
+                }
+
+                return "Sideloaded App";
+            }
+        }
+
+        public string AppTypeTooltip
+        {
+            get
+            {
+                if (this.Model.Source is StorePackageSource)
+                {
+                    return "This application has been installed from Microsoft Store.";
+                }
+
+                if (this.Model.Source is SystemSource)
+                {
+                    return "This application has been pre-installed with Windows.";
+                }
+
+                if (this.Model.Source is DeveloperSource)
+                {
+                    return "This application has been installed from a manifest file, using the Developer mode.";
+                }
+
+                if (this.Model.Source is NotInstalledSource)
+                {
+                    return "This application has not been installed yet.";
+                }
+
+                if (this.Model.Source is AppInstallerPackageSource)
+                {
+                    return "This application has been side-loaded from an .appinstaller file.";
+                }
+
+                return "This application has been side-loaded.";
+            }
+        }
+
+        public string Caption
+        {
+            get
+            {
+                var result = this.Model.IsFramework ? MsixPackageType.Framework : 0;
+                foreach (var app in this.Model.Applications ?? Enumerable.Empty<AppxApplication>())
+                {
+                    result = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, this.Model.IsFramework);
+                    break;
+                }
+
+                switch (result)
+                {
+                    case MsixPackageType.Uwp:
+                        return "UWP";
+                    case MsixPackageType.BridgeDirect:
+                        return "Win32";
+                    case MsixPackageType.BridgePsf:
+                        return "Win32 + PSF";
+                    case MsixPackageType.Web:
+                        return "Web";
+                    case MsixPackageType.Framework:
+                        return "Framework";
+                    default:
+                        return null;
+                }
+            }
+        }
+        public string CaptionToolTip
+        {
+            get
+            {
+                var result = this.Model.IsFramework ? MsixPackageType.Framework : 0;
+                foreach (var app in this.Model.Applications ?? Enumerable.Empty<AppxApplication>())
+                {
+                    result = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, this.Model.IsFramework);
+                    break;
+                }
+
+                switch (result)
+                {
+                    case MsixPackageType.Uwp:
+                        return "This is Universal Windows Platform (UWP) package.";
+                    case MsixPackageType.BridgeDirect:
+                        return "This is a Win32 packaged app.";
+                    case MsixPackageType.BridgePsf:
+                        return "This is a Win32 packaged app, enhanced by Package Support Framework (PSF)";
+                    case MsixPackageType.Web:
+                        return "This is a web app.";
+                    case MsixPackageType.Framework:
+                        return "This is a framework app";
+                    default:
+                        return "This is an app of an unknown type.";
+                }
+            }
+        }
 
         public bool HasAppInstallerUri => this.Model.Source is AppInstallerPackageSource;
 
@@ -126,13 +243,7 @@ namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert
         public ObservableCollection<AppxApplicationViewModel> Applications { get; }
 
         public ObservableCollection<AppxApplicationViewModel> Fixups { get; }
-
-        public AppxApplicationViewModel SelectedFixup
-        {
-            get => this.selectedFixup;
-            set => this.SetField(ref this.selectedFixup, value);
-        }
-
+        
         public BuildInfo BuildInfo { get; }
 
         public int FixupsCount { get; }

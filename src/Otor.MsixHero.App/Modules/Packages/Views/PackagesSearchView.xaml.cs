@@ -20,5 +20,11 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
             FocusManager.SetFocusedElement(this, this.SearchBox);
             Keyboard.Focus(this.SearchBox);
         }
+
+        private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.SearchBox.Focus();
+            Keyboard.Focus(this.SearchBox);
+        }
     }
 }

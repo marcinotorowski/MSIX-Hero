@@ -4,6 +4,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>C:\Users\marci\Documents\DEV\MSIX-Hero\Source\src\bin\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -81,5 +86,13 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Modules\Packages\ViewModels\PackageExpert\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
+  </Target>
 
 </Project>

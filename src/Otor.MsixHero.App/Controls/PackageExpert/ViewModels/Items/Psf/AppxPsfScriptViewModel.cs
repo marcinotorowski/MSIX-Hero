@@ -1,7 +1,7 @@
 ﻿using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
-namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items.Psf
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
     public class AppxPsfScriptViewModel : NotifyPropertyChanged
     {

@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Controls.PackageExpert.Views.Header"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
+    <Border DataContext="{Binding Properties}" DockPanel.Dock="Top" MinHeight="148" Background="#EFEFEF">
+        <Border.Resources>
+            <Style TargetType="views:Pill">
+                <Setter Property="Background" Value="White" />
+                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="Padding" Value="8 4" />
+                <Setter Property="BorderBrush" Value="#999" />
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Foreground" Value="#565656" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="views:Pill">
+                            <Border
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <StackPanel Orientation="Horizontal" Margin="-1 0">
+                                    <Path 
+                                        x:Name="PART_Icon"
+                                        Width="16"
+                                        Height="16"
+                                        Margin="1 0"
+                                        Fill="{TemplateBinding Foreground}"
+                                        Data="{TemplateBinding Icon}" />
+                                    <TextBlock 
+                                        x:Name="PART_Text"
+                                        Margin="1 0" 
+                                        Foreground="{TemplateBinding Foreground}"
+                                        Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Icon" Value="{x:Null}">
+                                    <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                                <Trigger Property="Content" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Border.Resources>
+        <StackPanel Margin="12">
+            <DockPanel VerticalAlignment="Top">
+                <Border 
+                    Background="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                    Width="48" 
+                    Height="48">
+                    <Border Background="{Binding TileColor, FallbackValue='#cccccc', TargetNullValue='#cccccc'}">
+                        <Image 
+                            SnapsToDevicePixels="True"
+                            UseLayoutRounding="True"
+                            Stretch="Uniform"
+                            Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
+                    </Border>
+                </Border>
+
+                <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
+                    <views:Pill
+                        Icon="M 7.5 1 C 4.132813 1 2 3.523438 2 6.5 C 2 8.019531 2.570313 9.015625 3.085938 9.789063 C 3.597656 10.558594 4 11.082031 4 11.875 L 4 14 L 5 14 L 5 11.875 C 5 10.734375 4.402344 9.96875 3.914063 9.234375 C 3.429688 8.5 3 7.78125 3 6.5 C 3 4.460938 4.070313 2.796875 6 2.226563 L 6 5.28125 C 5.40625 5.628906 5 6.265625 5 7 C 5 8.097656 5.902344 9 7 9 C 7.367188 9 7.710938 8.890625 8.007813 8.714844 L 9.035156 9.742188 C 9.011719 9.828125 9 9.914063 9 10 C 9 10.550781 9.449219 11 10 11 C 10.550781 11 11 10.550781 11 10 C 11 9.449219 10.550781 9 10 9 C 9.914063 9 9.828125 9.011719 9.742188 9.035156 L 8.714844 8.007813 C 8.890625 7.710938 9 7.367188 9 7 C 9 5.902344 8.097656 5 7 5 L 7 2.042969 C 7.167969 2.027344 7.324219 2 7.5 2 C 8.996094 2 9.96875 2.464844 10.640625 3.15625 C 11.316406 3.847656 11.691406 4.796875 11.835938 5.789063 C 11.859375 5.960938 11.914063 6.128906 12 6.289063 L 12.988281 8.0625 C 13.019531 8.113281 13.003906 8.152344 12.949219 8.175781 L 12 8.527344 L 12 10.5 C 12 11.332031 11.65625 11.613281 11.277344 11.800781 C 10.898438 11.992188 10.5 12 10.5 12 L 10 12 L 10 14 L 11 14 L 11 12.875 C 11.234375 12.847656 11.355469 12.878906 11.722656 12.699219 C 12.34375 12.386719 13 11.667969 13 10.5 L 13 9.222656 L 13.328125 9.101563 L 13.335938 9.097656 C 13.921875 8.851563 14.171875 8.132813 13.863281 7.578125 L 12.875 5.804688 C 12.851563 5.761719 12.832031 5.710938 12.824219 5.648438 C 12.65625 4.5 12.222656 3.339844 11.359375 2.457031 C 10.496094 1.574219 9.210938 1 7.5 1 Z M 7 6 C 7.558594 6 8 6.441406 8 7 C 8 7.558594 7.558594 8 7 8 C 6.441406 8 6 7.558594 6 7 C 6 6.441406 6.441406 6 7 6 Z"
+                        ToolTip="{Binding Publisher}"
+                        Content="{Binding PublisherDisplayName}" />
+                </WrapPanel>
+
+                <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                    <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='Unnamed', TargetNullValue='Unnamed'}" />
+                    <TextBlock FontWeight="Bold" Text="{Binding Version, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" FontFamily="{StaticResource SourceSansPro}" />
+                </StackPanel>
+            </DockPanel>
+
+            <TextBlock Margin="0 12 0 0" Text="{Binding Description, FallbackValue='No description', TargetNullValue='No description'}" />
+            <TextBox Style="{StaticResource TextBlock}" Text="{Binding PackageFullName, Mode=OneWay, FallbackValue='Missing full package name', TargetNullValue='Missing full package name'}" Opacity="0.66" />
+
+            <WrapPanel Margin="-2 8 0 -2">
+                <views:Pill
+                    ToolTip="Package architecture"
+                    Icon="M 4 1 L 4 2 L 5 2 L 5 1 L 4 1 z M 6 1 L 6 2 L 7 2 L 7 1 L 6 1 z M 8 1 L 8 2 L 9 2 L 9 1 L 8 1 z M 10 1 L 10 2 L 11 2 L 11 1 L 10 1 z M 4.5 3 C 3.6774686 3 3 3.6774686 3 4.5 L 3 10.5 C 3 11.322531 3.6774686 12 4.5 12 L 10.5 12 C 11.322531 12 12 11.322531 12 10.5 L 12 4.5 C 12 3.6774686 11.322531 3 10.5 3 L 4.5 3 z M 1 4 L 1 5 L 2 5 L 2 4 L 1 4 z M 4.5 4 L 10.5 4 C 10.781469 4 11 4.2185314 11 4.5 L 11 10.5 C 11 10.781469 10.781469 11 10.5 11 L 4.5 11 C 4.2185314 11 4 10.781469 4 10.5 L 4 4.5 C 4 4.2185314 4.2185314 4 4.5 4 z M 13 4 L 13 5 L 14 5 L 14 4 L 13 4 z M 5.5 5 A 0.5 0.5 0 0 0 5 5.5 A 0.5 0.5 0 0 0 5.5 6 A 0.5 0.5 0 0 0 6 5.5 A 0.5 0.5 0 0 0 5.5 5 z M 1 6 L 1 7 L 2 7 L 2 6 L 1 6 z M 13 6 L 13 7 L 14 7 L 14 6 L 13 6 z M 1 8 L 1 9 L 2 9 L 2 8 L 1 8 z M 13 8 L 13 9 L 14 9 L 14 8 L 13 8 z M 9.5 9 A 0.5 0.5 0 0 0 9 9.5 A 0.5 0.5 0 0 0 9.5 10 A 0.5 0.5 0 0 0 10 9.5 A 0.5 0.5 0 0 0 9.5 9 z M 1 10 L 1 11 L 2 11 L 2 10 L 1 10 z M 13 10 L 13 11 L 14 11 L 14 10 L 13 10 z M 4 13 L 4 14 L 5 14 L 5 13 L 4 13 z M 6 13 L 6 14 L 7 14 L 7 13 L 6 13 z M 8 13 L 8 14 L 9 14 L 9 13 L 8 13 z M 10 13 L 10 14 L 11 14 L 11 13 L 10 13 z"
+                    Content="{Binding Architecture, Converter={StaticResource UppercaseConverter}}" />
+                <views:Pill
+                    ToolTip="{Binding CaptionToolTip}"
+                    Icon="M 13.484375 2 A 0.50005 0.50005 0 0 0 13.410156 2.0078125 L 2.4101562 4.0078125 A 0.50005 0.50005 0 0 0 2 4.5 L 2 8 L 2 9 L 2 12.5 A 0.50005 0.50005 0 0 0 2.4101562 12.992188 L 13.410156 14.992188 A 0.50005 0.50005 0 0 0 14 14.5 L 14 2.5 A 0.50005 0.50005 0 0 0 13.484375 2 z M 13 3.0996094 L 13 8 L 8 8 L 8 4.0078125 L 13 3.0996094 z M 7 4.1914062 L 7 8 L 3 8 L 3 4.9179688 L 7 4.1914062 z M 3 9 L 7 9 L 7 12.808594 L 3 12.082031 L 3 9 z M 8 9 L 13 9 L 13 13.900391 L 8 12.992188 L 8 9 z"
+                    Content="{Binding Caption, Converter={StaticResource UppercaseConverter}}" />
+                <views:Pill
+                    ToolTip="{Binding AppTypeTooltip}"
+                    Icon="M 7.5 1 C 4.4686873 1 2 3.4686873 2 6.5 C 2 7.3995174 2.2234007 8.2483521 2.6074219 9 L 2 9 C 1.4534686 9 1 9.4534686 1 10 L 1 13 C 1 13.546531 1.4534686 14 2 14 L 13 14 C 13.546531 14 14 13.546531 14 13 L 14 10 C 14 9.4534686 13.546531 9 13 9 L 12.394531 9 C 12.778848 8.2485556 13 7.399833 13 6.5 C 13 3.4686873 10.531313 1 7.5 1 z M 7.5 2 C 9.9906873 2 12 4.0093127 12 6.5 C 12 7.4305023 11.708338 8.2834537 11.226562 9 L 3.7734375 9 C 3.2915148 8.2829707 3 7.4303966 3 6.5 C 3 4.0093127 5.0093127 2 7.5 2 z M 7.5 5 C 6.6774952 5 6 5.6774952 6 6.5 C 6 7.3225048 6.6774952 8 7.5 8 C 8.3225048 8 9 7.3225048 9 6.5 C 9 5.6774952 8.3225048 5 7.5 5 z M 7.5 6 C 7.7820647 6 8 6.2179353 8 6.5 C 8 6.7820647 7.7820647 7 7.5 7 C 7.2179353 7 7 6.7820647 7 6.5 C 7 6.2179353 7.2179353 6 7.5 6 z M 2 10 L 13 10 L 13 13 L 2 13 L 2 10 z"
+                    Content="{Binding AppType, Converter={StaticResource UppercaseConverter}}" />
+            </WrapPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

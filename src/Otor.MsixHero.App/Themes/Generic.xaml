@@ -9,6 +9,9 @@
         <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Icons.xaml" />
         <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Buttons.xaml" />
         <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/ListBox.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Text.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Tabs.xaml" />
         <ResourceDictionary Source="/Otor.MsixHero.App;component/Controls/Themes.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Controls/PackageExpert/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

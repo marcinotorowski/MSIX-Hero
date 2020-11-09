@@ -185,7 +185,7 @@ namespace Otor.MsixHero.Ui
 
         public void Dispose()
         {
-            var processManager = IContainerProviderExtensions.Resolve<IInterProcessCommunicationManager>(this.Container);
+            var processManager = this.Container.Resolve<IInterProcessCommunicationManager>();
             processManager.Dispose();
         }
     }

@@ -1,4 +1,5 @@
-﻿using Otor.MsixHero.App.Modules.Packages.Constants;
+﻿using Otor.MsixHero.App.Controls.PackageExpert;
+using Otor.MsixHero.App.Modules.Packages.Constants;
 using Otor.MsixHero.App.Modules.Packages.ViewModels;
 using Otor.MsixHero.App.Modules.Packages.Views;
 using Prism.Ioc;
@@ -24,7 +25,8 @@ namespace Otor.MsixHero.App.Modules.Packages
             // regionManager.RegisterViewWithRegion(RegionNames.Main, typeof(PackagesView));
             regionManager.RegisterViewWithRegion(PackagesRegionNames.Master, typeof(PackagesListView));
             regionManager.RegisterViewWithRegion(PackagesRegionNames.Details, typeof(PackagesNoDetailsView));
-            regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(PackagesSearchView));
+            regionManager.RegisterViewWithRegion(PackagesRegionNames.PackageExpert, typeof(PackageExpertControl));
+            // regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(PackagesSearchView));
         }
     }
 }

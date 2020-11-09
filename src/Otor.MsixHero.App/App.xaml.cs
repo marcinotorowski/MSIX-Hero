@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
 using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
@@ -36,9 +39,9 @@ using Prism.Regions;
 namespace Otor.MsixHero.App
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Interaction logic for the application.
     /// </summary>
-    public partial class App
+    public partial class App : IDisposable
     {
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -83,12 +86,22 @@ namespace Otor.MsixHero.App
             base.Initialize();
             var regionManager = this.Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
+
+
+            var app = this.Container.Resolve<IMsixHeroApplication>();
+            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Packages));
         }
 
         protected override Window CreateShell()
         {
             var w = this.Container.Resolve<MainWindow>();
             return w;
+        }
+
+        public void Dispose()
+        {
+            var processManager = this.Container.Resolve<IInterProcessCommunicationManager>();
+            processManager.Dispose();
         }
     }
 }

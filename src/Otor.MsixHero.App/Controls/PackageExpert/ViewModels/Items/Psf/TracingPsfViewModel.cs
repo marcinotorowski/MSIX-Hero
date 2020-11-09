@@ -2,7 +2,7 @@
 using Otor.MsixHero.Appx.Psf.Entities;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
 
-namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf
 {
     public class TracingPsfViewModel
     {

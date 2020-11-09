@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items.Psf;
+using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements.Psf;
 
-namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
     public class AppxApplicationViewModel : NotifyPropertyChanged
     {

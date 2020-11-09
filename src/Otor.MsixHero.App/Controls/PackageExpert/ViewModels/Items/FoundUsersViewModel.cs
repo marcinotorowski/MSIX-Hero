@@ -3,7 +3,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Lib.Domain.State;
 
-namespace Otor.MsixHero.App.Modules.Packages.ViewModels.PackageExpert.Items
+namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
     public class FoundUsersViewModel : NotifyPropertyChanged
     {

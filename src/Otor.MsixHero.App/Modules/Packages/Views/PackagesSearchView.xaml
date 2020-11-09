@@ -8,7 +8,11 @@
              xmlns:mvvm="http://prismlibrary.com/"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
+             Focusable="False"
              d:DesignHeight="58" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesSearchViewModel}">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Find" Executed="CommandBinding_OnExecuted"></CommandBinding>
+    </UserControl.CommandBindings>
 
     <Grid Margin="6 0 0 6"
           Height="30"
@@ -94,9 +98,56 @@
                 </Button.Style>
             </Button>
 
-            <Border Opacity="0.75" Margin="5" Background="#0173C7" VerticalAlignment="Stretch" HorizontalAlignment="Right">
-                <TextBlock Text="USER" FontWeight="Bold" Foreground="White" Margin="6 0" VerticalAlignment="Center" />
-            </Border>
+            <CheckBox 
+                FocusVisualStyle="{x:Null}"
+                ToolTip="Click to change between showing of packages installed per-user and per-machine"
+                IsChecked="{Binding IsAllUsers, Mode=TwoWay}">
+                <CheckBox.Style>
+                    <Style TargetType="CheckBox">
+                        <Setter Property="Background" Value="#BB0173C7" />
+                        <Setter Property="Foreground" Value="#FFFFFF" />
+                        <Setter Property="Margin" Value="3" />
+                        <Setter Property="Padding" Value="6 0" />
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="CheckBox">
+                                    <Border
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        Background="{TemplateBinding Background}">
+                                        <TextBlock 
+                                            x:Name="PART_Label" 
+                                            Text="USER"
+                                            Margin="{TemplateBinding Padding}" 
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="PART_Label" Property="Text" Value="MACHINE" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#0173C7" />
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="Black" />
+                                        </Trigger>
+                                        <Trigger Property="IsKeyboardFocused" Value="True">
+                                            <Setter Property="BorderBrush" Value="#55000000" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </CheckBox.Style>
+            </CheckBox>
         </StackPanel>
     </Grid>
 </UserControl>
