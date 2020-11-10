@@ -1,5 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Color x:Key="Otor.MsixHero.Colors.Accent">#0173C7</Color>
+    <Color x:Key="Otor.MsixHero.Colors.Accent.Light">#CDE6F7</Color>
     <SolidColorBrush x:Key="Otor.MsixHero.Brushes.Accent" Color="{StaticResource Otor.MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="Otor.MsixHero.Brushes.Accent.Light" Color="{StaticResource Otor.MsixHero.Colors.Accent.Light}" />
 </ResourceDictionary>
