@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
+using Otor.MsixHero.App.Services;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.Views
 {
@@ -18,7 +21,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.Views
 
         private void HyperlinkOnClick(object sender, RoutedEventArgs e)
         {
-            try
+            ExceptionGuard.Guard(() =>
             {
                 var psi = new ProcessStartInfo((string)((Hyperlink)sender).Tag)
                 {
@@ -26,17 +29,16 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.Views
                 };
 
                 Process.Start(psi);
-            }
-            catch (Exception exception)
-            {
-                // Logger.Error(exception);
-            }
+            }, new InteractionService());
         }
 
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {
-            var dir = (string)((Hyperlink)sender).Tag;
-            Process.Start("explorer.exe", "/select," + Path.Combine(dir, "AppxManifest.xml"));
+            ExceptionGuard.Guard(() =>
+            {
+                var dir = (string)((Hyperlink) sender).Tag;
+                Process.Start("explorer.exe", "/select," + Path.Combine(dir, "AppxManifest.xml"));
+            }, new InteractionService());
         }
     }
 }

@@ -6,8 +6,35 @@
                     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Themes/Buttons.xaml" />
+        <ResourceDictionary Source="/Themes/Colors.xaml" />
+        <ResourceDictionary Source="/Themes/Fonts.xaml" />
         <ResourceDictionary Source="/Themes/Icons.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="views:BulletItemControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="views:BulletItemControl">
+                    <DockPanel>
+                        <Border Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 0 0 10">
+                            <ContentPresenter Width="32" Content="{TemplateBinding Header}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+
+                        <Border Width="1" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Stretch" Background="#DDD" Margin="10 0" />
+
+                        <StackPanel IsItemsHost="True" Margin="0 0 0 10" />
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Path" x:Key="Icon">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Fill" Value="#999" />
+    </Style>
 
     <Style TargetType="packageExpert1:SignatureStatusControl">
         <Setter Property="Template">

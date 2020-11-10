@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\PsfContent\View\PsfContentView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Packages\Views\PackagesManyDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -58,6 +61,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\PsfContent\View\PsfContentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Modules\Packages\Views\PackagesManyDetailsView.xaml">
       <SubType>Designer</SubType>
     </Page>

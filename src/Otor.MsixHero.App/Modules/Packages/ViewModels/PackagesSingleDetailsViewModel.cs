@@ -2,7 +2,6 @@
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Prism.Regions;
-using System.Linq;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 
 namespace Otor.MsixHero.App.Modules.Packages.ViewModels

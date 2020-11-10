@@ -7,12 +7,53 @@
              mc:Ignorable="d" >
     <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
         <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-            <Button Style="{StaticResource ActionButton}">
+            <ToggleButton 
+                x:Name="ToggleButtonStart"
+                Style="{StaticResource ActionPopupToggleButton}">
                 <controls:LabelWithIcon 
                             Style="{StaticResource ActionLabelWithIcon}"
                             Icon16x16="M 3 0.875 L 3 14.203125 L 3.769531 13.714844 L 13.425781 7.539063 Z M 4 2.699219 L 11.574219 7.539063 L 4 12.375 Z"
                             Content="Start" />
-            </Button>
+            </ToggleButton>
+
+            <Popup 
+                StaysOpen="False"
+                PlacementTarget="{Binding ElementName=ToggleButtonStart}"
+                Placement="Bottom"
+                AllowsTransparency="True" IsOpen="{Binding ElementName=ToggleButtonStart, Path=IsChecked}">
+
+                <Border Padding="0 0 18 18">
+                    <Border Background="White" BorderBrush="#ccc" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="Main application" Margin="0 0 0 10" />
+
+                            <Border Width="64" Height="64" Background="BlueViolet" Margin="0 0 0 10">
+                                <Image Source="{StaticResource DummyLogo}" />
+                            </Border>
+
+                            <TextBlock Text="Other application" Margin="0 20 0 10"/> 
+
+                            <Border Width="64" Height="64" Background="BlueViolet" Margin="0 0 0 10">
+                                <Image Source="{StaticResource DummyLogo}" />
+                            </Border>
+
+                            <Border Width="64" Height="64" Background="BlueViolet" Margin="0 0 0 10">
+                                <Image Source="{StaticResource DummyLogo}" />
+                            </Border>
+
+                            <Border Width="64" Height="64" Background="BlueViolet" Margin="0 0 0 10">
+                                <Image Source="{StaticResource DummyLogo}" />
+                            </Border>
+
+
+                            <TextBlock Text="Custom tools" Margin="0 20 0 10" />
+                        </StackPanel>
+                    </Border>
+                </Border>
+            </Popup>
 
             <ToggleButton Style="{StaticResource ActionPopupToggleButton}">
                 <controls:LabelWithIcon 

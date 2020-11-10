@@ -11,7 +11,18 @@
         xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
         mc:Ignorable="d"
         TintOpacity="0.2"
+        Margin="0"
+        Padding="0"
         TintColor="#0173C7"
-        regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}"
         Title="MainWindow" Height="800" Width="1024">
+    <Grid
+        Margin="0">
+        <Border
+            Margin="0"
+            Padding="0" Height="54" Background="Transparent" MouseDown="UIElement_OnMouseDown" MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown" VerticalAlignment="Top" />
+        <ContentControl
+            Margin="0"
+            Padding="0" regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}" />
+
+    </Grid>
 </fw:AcrylicWindow>

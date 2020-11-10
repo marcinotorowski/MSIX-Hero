@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
+using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.Infrastructure.Helpers
 {
@@ -9,9 +9,19 @@ namespace Otor.MsixHero.Infrastructure.Helpers
         {
             Guard<Exception>(lambda);
         }
+        public static void Guard(Action lambda, IInteractionService interactionService)
+        {
+            Guard<Exception>(lambda, interactionService);
+        }
+
         public static void Guard<T>(Func<T> lambda)
         {
             Guard<Exception, T>(lambda);
+        }
+
+        public static void Guard<T>(Func<T> lambda, IInteractionService interactionService)
+        {
+            Guard<Exception, T>(lambda, interactionService);
         }
 
         public static void Guard<TException>(Action lambda) where TException : Exception
@@ -31,6 +41,24 @@ namespace Otor.MsixHero.Infrastructure.Helpers
             }
         }
 
+        public static void Guard<TException>(Action lambda, IInteractionService interactionService) where TException : Exception
+        {
+            try
+            {
+                lambda();
+            }
+            catch (Exception e)
+            {
+                if (e is TException)
+                {
+                    interactionService.ShowError(e.Message, e);
+                    return;
+                }
+
+                throw;
+            }
+        }
+
         public static TValue Guard<TException, TValue>(Func<TValue> lambda) where TException : Exception
         {
             try
@@ -41,6 +69,24 @@ namespace Otor.MsixHero.Infrastructure.Helpers
             {
                 if (e is TException)
                 {
+                    return default;
+                }
+
+                throw;
+            }
+        }
+
+        public static TValue Guard<TException, TValue>(Func<TValue> lambda, IInteractionService interactionService) where TException : Exception
+        {
+            try
+            {
+                return lambda();
+            }
+            catch (Exception e)
+            {
+                if (e is TException)
+                {
+                    interactionService.ShowError(e.Message, e);
                     return default;
                 }
 
