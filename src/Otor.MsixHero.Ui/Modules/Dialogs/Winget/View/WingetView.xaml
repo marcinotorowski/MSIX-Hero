@@ -67,7 +67,7 @@
                     Margin="4" 
                     Content="Open YAML file..." 
                     Command="{Binding OpenCommand}" 
-                    Visibility="{Binding State.IsSaved, ConverterParameter={StaticResource NegativeBooleanToVisibilityConverter}}" />
+                    Visibility="{Binding State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
             </StackPanel>
         </changeableDialog:ChangeableDialog.Footer>
     </changeableDialog:ChangeableDialog>

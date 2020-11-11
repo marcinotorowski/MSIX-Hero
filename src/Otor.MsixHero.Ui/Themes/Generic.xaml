@@ -56,7 +56,6 @@
                                     Opacity="0.0"
                                     UseLayoutRounding="True"
                                     SnapsToDevicePixels="True"
-                                    Visibility="{TemplateBinding SupportsCancelling, ConverterParameter={StaticResource BooleanToVisibilityConverter}}" 
                                     x:Name="PART_CancelButton" 
                                     HorizontalAlignment="Center" 
                                     Margin="0 8 0 0" 
@@ -71,6 +70,9 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="CancelCommand" Value="{x:Null}">
+                            <Setter TargetName="PART_CancelButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="SupportsCancelling" Value="False">
                             <Setter TargetName="PART_CancelButton" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="IsShown" Value="True">

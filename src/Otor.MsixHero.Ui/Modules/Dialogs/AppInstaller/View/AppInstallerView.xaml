@@ -43,7 +43,7 @@
         Icon="{StaticResource VectorSetup}">
         <changeableDialog:ChangeableDialog.Footer>
             <StackPanel VerticalAlignment="Center" Visibility="{Binding TabPackage.AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button Padding="8 4" Margin="4" Content="Load from file..." Command="{Binding OpenCommand}" Visibility="{Binding State.IsSaved, ConverterParameter={StaticResource NegativeBooleanToVisibilityConverter}}" />
+                <Button Padding="8 4" Margin="4" Content="Load from file..." Command="{Binding OpenCommand}" Visibility="{Binding State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
             </StackPanel>
         </changeableDialog:ChangeableDialog.Footer>
         <changeableDialog:ChangeableDialog.DialogContentTemplate>
