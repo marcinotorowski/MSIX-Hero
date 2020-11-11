@@ -4,6 +4,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Colors.xaml" />
+        <ResourceDictionary Source="/Otor.MsixHero.App;component/Themes/Buttons.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="local:LabelWithIcon">

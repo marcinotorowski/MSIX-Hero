@@ -4,13 +4,16 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
+using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Common;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -38,26 +41,24 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         }
 
         private readonly IInterProcessCommunicationManager ipcManager;
-
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
-
         private readonly IRunningDetector runningDetector;
-
         private readonly IInteractionService interactionService;
-
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
-
         private readonly IDialogService dialogService;
-
         private readonly ObservableObject<object> context;
+        private readonly PackageExpertCommandHandler commandHandler;
 
         public PackageExpertControl(
+            IMsixHeroApplication application,
+            IBusyManager busyManager,
             IInterProcessCommunicationManager ipcManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             IRunningDetector runningDetector,
             IInteractionService interactionService,
             ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
-            IDialogService dialogService
+            IDialogService dialogService,
+            IConfigurationService configurationService
         )
         {
             this.context = RegionContext.GetObservableContext(this);
@@ -68,6 +69,15 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.interactionService = interactionService;
             this.signingManagerProvider = signingManagerProvider;
             this.dialogService = dialogService;
+            
+            this.commandHandler = new PackageExpertCommandHandler(
+                this,
+                application,
+                busyManager,
+                packageManagerProvider,
+                configurationService, 
+                interactionService, 
+                new FileInvoker(interactionService));
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -124,12 +134,14 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 await newDataContext.Load().ConfigureAwait(true);
                 sender.Package = newDataContext;
                 sender.ErrorMessage = null;
+                sender.commandHandler.Package = newDataContext.Manifest.CurrentValue.Model;
             }
             catch (Exception exception)
             {
                 sender.Package = null;
                 sender.ErrorMessage = "Could not load details. " + exception.Message;
                 Logger.Warn($"Could not load details of package '{newFilePath}'.");
+                sender.commandHandler.Package = null;
             }
         }
     }

@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
+using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;

@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
 using Otor.MsixHero.App.Mvvm;
@@ -81,10 +83,34 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
             this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
             this.PackageIntegrity = model.PackageIntegrity;
-            this.RootDirectory = filePath;
+
+            if (filePath != null)
+            {
+                this.RootDirectory = filePath.Replace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\'), "%programfiles%");
+            }
+            
+            this.UserDirectory = Path.Combine("%localappdata%", "Packages", this.FamilyName, "LocalCache");
+            this.PsfFilePath = Path.Combine(filePath, "config.json");
+            this.ManifestFilePath = Path.Combine(filePath, "appxmanifest.xml");
+
+            if (!File.Exists(this.PsfFilePath))
+            {
+                this.PsfFilePath = null;
+            }
+
+            if (!File.Exists(this.ManifestFilePath))
+            {
+                this.ManifestFilePath = null;
+            }
         }
         
         public string RootDirectory { get; }
+
+        public string UserDirectory { get; }
+
+        public string PsfFilePath { get; }
+
+        public string ManifestFilePath { get; }
 
         public AppxPackage Model { get; private set; }
 

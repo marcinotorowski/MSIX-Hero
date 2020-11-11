@@ -1,4 +1,7 @@
-﻿namespace Otor.MsixHero.App.Controls.PackageExpert.Views.Open
+﻿using System.Windows.Input;
+using Otor.MsixHero.App.Commands;
+
+namespace Otor.MsixHero.App.Controls.PackageExpert.Views.Open
 {
     /// <summary>
     /// Interaction logic for StoreSource.xaml

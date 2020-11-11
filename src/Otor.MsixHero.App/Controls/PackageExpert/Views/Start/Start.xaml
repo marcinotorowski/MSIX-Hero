@@ -1,12 +1,9 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Controls.PackageExpert.Views.Open.Open"
+﻿<UserControl x:Class="Otor.MsixHero.App.Controls.PackageExpert.Views.Start.Start"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
-             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
              d:DesignHeight="300" d:DesignWidth="600">
     <StackPanel Margin="0">
         <StackPanel.Resources>
@@ -80,23 +77,15 @@
 
         <DockPanel>
 
-            <Button 
-                Command="Copy"
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                CommandParameter="{Binding Manifest.CurrentValue.RootDirectory}"
-                Style="{StaticResource FolderButton}" 
-                DockPanel.Dock="Right">
+            <Button Style="{StaticResource FolderButton}" DockPanel.Dock="Right">
                 <Path Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="16" Height="16" />
             </Button>
-            <Button 
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenExplorer}"
-                Style="{StaticResource FolderButton}">
+            <Button Style="{StaticResource FolderButton}">
                 <DockPanel>
                     <Path Style="{StaticResource LargeIcon}" Data="M 5 3 L 5 29 L 17 29 L 17 32 L 32 32 L 32 19 L 25 19 L 25 15.414062 L 27 13.414062 L 27 3 L 23 3 L 22 3 L 5 3 z M 7 5 L 21 5 L 21 13.414062 L 23 15.414062 L 23 19 L 17 19 L 17 20 L 17 27 L 7 27 L 7 5 z M 23 5 L 25 5 L 25 12.585938 L 24 13.585938 L 23 12.585938 L 23 5 z M 19 21 L 21 21 L 21 23 L 19 23 L 19 21 z M 23 21 L 30 21 L 30 23 L 23 23 L 23 21 z M 19 25 L 30 25 L 30 30 L 19 30 L 19 25 z" DockPanel.Dock="Left" Margin="0 0 8 0" />
                     <StackPanel VerticalAlignment="Center">
                         <Label HorizontalContentAlignment="Left" Style="{StaticResource ButtonLabel}" Content="Installation folder" />
-                        <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Path=Manifest.CurrentValue.RootDirectory}" />
+                        <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="C:\Program Files\WindowsApps\Microsoft.Appconnector_1.3.3.0_neutral__8wekyb3d8bbwe" />
                     </StackPanel>
                 </DockPanel>
             </Button>
@@ -104,22 +93,15 @@
 
         <DockPanel>
 
-            <Button 
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="Copy"
-                CommandParameter="{Binding Manifest.CurrentValue.UserDirectory}"
-                Style="{StaticResource FolderButton}" DockPanel.Dock="Right">
+            <Button Style="{StaticResource FolderButton}" DockPanel.Dock="Right">
                 <Path VerticalAlignment="Center" Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="16" Height="16" />
             </Button>
-            <Button 
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}"
-                Style="{StaticResource FolderButton}">
+            <Button Style="{StaticResource FolderButton}">
                 <DockPanel>
                     <Path Style="{StaticResource LargeIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 13.4375 L 27.71875 11.71875 L 28 11.40625 L 28 3 Z M 8 5 L 22 5 L 22 11.40625 L 22.28125 11.71875 L 24 13.4375 L 24 27 L 8 27 Z M 24 5 L 26 5 L 26 10.5625 L 25 11.5625 L 24 10.5625 Z M 16 11 C 13.800781 11 12 12.800781 12 15 C 12 16.113281 12.476563 17.117188 13.21875 17.84375 C 11.886719 18.746094 11 20.28125 11 22 L 13 22 C 13 20.332031 14.332031 19 16 19 C 17.667969 19 19 20.332031 19 22 L 21 22 C 21 20.28125 20.113281 18.746094 18.78125 17.84375 C 19.523438 17.117188 20 16.113281 20 15 C 20 12.800781 18.199219 11 16 11 Z M 16 13 C 17.117188 13 18 13.882813 18 15 C 18 16.117188 17.117188 17 16 17 C 14.882813 17 14 16.117188 14 15 C 14 13.882813 14.882813 13 16 13 Z" DockPanel.Dock="Left" Margin="0 0 8 0" />
                     <StackPanel VerticalAlignment="Center">
                         <Label HorizontalContentAlignment="Left" Style="{StaticResource ButtonLabel}" Content="Real user folder" />
-                        <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Manifest.CurrentValue.UserDirectory}" />
+                        <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="C:\Users\marci\AppData\Local\Packages\Microsoft.Appconnector_8wekyb3d8bbwe" />
                     </StackPanel>
                 </DockPanel>
             </Button>
@@ -128,9 +110,7 @@
 
         <WrapPanel>
 
-            <Button 
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Visibility="Collapsed" Style="{StaticResource Button}">
+            <Button Visibility="Collapsed" Style="{StaticResource Button}">
                 <HeaderedContentControl>
                     <HeaderedContentControl.Header>
                         <Path Margin="0 0 0 8" Fill="#333" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorWindows}" />
@@ -141,10 +121,7 @@
                     </StackPanel>
                 </HeaderedContentControl>
             </Button>
-            <Button 
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenManifest}"
-                Style="{StaticResource Button}">
+            <Button Style="{StaticResource Button}">
                 <HeaderedContentControl>
                     <HeaderedContentControl.Header>
                         <Path Margin="0 0 0 8" Style="{StaticResource LargeIcon}" Data="M 5 5 L 5 6 L 5 27 L 27 27 L 27 5 L 5 5 z M 7 7 L 25 7 L 25 25 L 7 25 L 7 7 z M 13.292969 11.292969 L 8.5859375 16 L 13.292969 20.707031 L 14.707031 19.292969 L 11.414062 16 L 14.707031 12.707031 L 13.292969 11.292969 z M 18.707031 11.292969 L 17.292969 12.707031 L 20.585938 16 L 17.292969 19.292969 L 18.707031 20.707031 L 23.414062 16 L 18.707031 11.292969 z" />
@@ -155,10 +132,7 @@
                     </StackPanel>
                 </HeaderedContentControl>
             </Button>
-            <Button
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}"
-                Style="{StaticResource Button}">
+            <Button Style="{StaticResource Button}">
                 <HeaderedContentControl>
                     <HeaderedContentControl.Header>
                         <Path Margin="0 0 0 8" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorGear}" />
@@ -169,10 +143,7 @@
                     </StackPanel>
                 </HeaderedContentControl>
             </Button>
-            <Button
-                CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenStore}"
-                Style="{StaticResource Button}">
+            <Button IsEnabled="False" Style="{StaticResource Button}">
                 <HeaderedContentControl>
                     <HeaderedContentControl.Header>
                         <Path Margin="0 0 0 8" Style="{StaticResource LargeIcon}" Data="M 27 4.84375 L 25.875 5 L 5.875 7.8125 L 5 7.90625 L 5 24.09375 L 5.875 24.1875 L 25.875 27 L 27 27.15625 Z M 25 7.15625 L 25 15 L 16 15 L 16 8.40625 Z M 14 8.6875 L 14 15 L 7 15 L 7 9.65625 Z M 7 17 L 14 17 L 14 23.3125 L 7 22.34375 Z M 16 17 L 25 17 L 25 24.84375 L 16 23.59375 Z" />

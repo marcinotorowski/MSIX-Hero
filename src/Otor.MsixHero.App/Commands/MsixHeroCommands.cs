@@ -8,6 +8,7 @@ namespace Otor.MsixHero.App.Commands
         {
             SetVolumeAsDefault = new RoutedUICommand() { Text = "Set volume as default..." };
             Deprovision = new RoutedUICommand { Text = "Deprovision for all users" };
+            OpenStore = new RoutedUICommand { Text = "Open Store Product Page" };
             OpenExplorer = new RoutedUICommand { Text = "Open install location", InputGestures = { new KeyGesture(Key.E, ModifierKeys.Control) } };
             OpenExplorerUser = new RoutedUICommand { Text = "Open user data folder", InputGestures = { new KeyGesture(Key.U, ModifierKeys.Control) } };
             OpenManifest = new RoutedUICommand { Text = "Open manifest", InputGestures = { new KeyGesture(Key.M, ModifierKeys.Control )}};
@@ -50,6 +51,8 @@ namespace Otor.MsixHero.App.Commands
         public static RoutedUICommand Deprovision { get; }
 
         public static RoutedUICommand OpenExplorer { get; }
+
+        public static RoutedUICommand OpenStore { get; }
         
         public static RoutedUICommand OpenResign { get; }
 
