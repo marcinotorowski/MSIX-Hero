@@ -182,7 +182,9 @@
                                 x:Name="PART_Package"
                                 Visibility="Collapsed"
                                 DataContext="{TemplateBinding Package}">
-                                <views:ActionBar DockPanel.Dock="Top" />
+                                <views:ActionBar 
+                                    x:Name="PART_ActionBar"
+                                    DockPanel.Dock="Top" />
                                 <views:Header DockPanel.Dock="Top" />
                                 <views:Body DockPanel.Dock="Top"  />
                             </DockPanel>

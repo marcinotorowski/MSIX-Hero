@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using Otor.MsixHero.App.Commands;
@@ -50,7 +52,75 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.OpenConfigJson, this.OnOpenConfigJson, this.CanOpenPsfConfig));
             parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.OpenStore, this.OnOpenStore, this.CanOpenStore));
             parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.CheckUpdates, this.OnCheckUpdates, this.CanCheckUpdates));
+            parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.RunTool, this.OnRunTool, this.CanRunTool));
+            parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.RunPackage, this.OnRunPackage, this.CanRunPackage));
             parent.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, this.OnCopy, this.CanCopy));
+        }
+
+        private async void OnRunPackage(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+                await manager.Run(Path.Combine(this.Package.RootFolder, "appxmanifest.xml"), (string)e.Parameter).ConfigureAwait(false);
+            }
+            catch (InvalidOperationException exception)
+            {
+                this.interactionService.ShowError("Could not start the app. " + exception.Message, exception);
+            }
+
+            catch (Exception exception)
+            {
+                this.interactionService.ShowError("Could not start the app.", exception);
+            }
+        }
+
+        private void CanRunPackage(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = e.Parameter != null;
+        }
+
+        private void CanRunTool(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!(e.Parameter is ToolListConfiguration))
+            {
+                return;
+            }
+
+            if (!this.Package.Applications.Any())
+            {
+                return;
+            }
+
+            e.CanExecute = true;
+        }
+
+        private async void OnRunTool(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!(e.Parameter is ToolListConfiguration tool))
+            {
+                return;
+            }
+
+            if (!this.Package.Applications.Any())
+            {
+                return;
+            }
+
+            var context = this.busyManager.Begin();
+            try
+            {
+                var manager = await this.packageManagerProvider.GetProxyFor(tool.AsAdmin ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                await manager.RunToolInContext(this.Package.FamilyName, this.Package.Applications[0].Id, tool.Path, tool.Arguments, CancellationToken.None, context).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                this.interactionService.ShowError(exception.Message, exception);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
         }
 
         private readonly FileInvoker fileInvoker;
@@ -243,12 +313,22 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 
         private void CanOpenUser(object sender, CanExecuteRoutedEventArgs e)
         {
+            if (this.Package?.FamilyName == null)
+            {
+                return;
+            }
+
             var rootDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Packages", this.Package.FamilyName, "LocalCache");
             e.CanExecute = Directory.Exists(rootDir);
         }
 
         private void OnOpenUser(object sender, ExecutedRoutedEventArgs e)
         {
+            if (this.Package == null)
+            {
+                return;
+            }
+
             var rootDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Packages", this.Package.FamilyName, "LocalCache");
             Process.Start("explorer.exe", "/e," + rootDir);
         }

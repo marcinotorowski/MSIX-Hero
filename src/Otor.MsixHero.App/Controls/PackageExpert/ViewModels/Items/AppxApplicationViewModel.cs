@@ -50,6 +50,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
         public string DisplayName => this.model.DisplayName;
 
         public byte[] Image => this.model.Logo;
+        
+        public string Id => this.model.Id;
 
         public string TileColor => this.model.BackgroundColor;
 

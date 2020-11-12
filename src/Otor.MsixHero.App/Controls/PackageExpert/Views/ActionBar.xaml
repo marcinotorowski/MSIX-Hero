@@ -1,15 +1,17 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Controls.PackageExpert.Views.ActionBar"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:open="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Open"
-             xmlns:start="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Start"
-             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
-             d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
-             mc:Ignorable="d" >
+﻿<UserControl 
+    x:Name="Root"
+    x:Class="Otor.MsixHero.App.Controls.PackageExpert.Views.ActionBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:open="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Open"
+    xmlns:start="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Start"
+    xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
+    d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
+    mc:Ignorable="d" >
     <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
         <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
             <ToggleButton 
@@ -32,7 +34,7 @@
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                         </Border.Effect>
-                        <start:Start />
+                        <start:Start Tools="{Binding ElementName=Root, Path=Tools}" />
                     </Border>
                 </Border>
             </Popup>

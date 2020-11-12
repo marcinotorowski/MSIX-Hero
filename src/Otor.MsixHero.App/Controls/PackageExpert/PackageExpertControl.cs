@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
+using Otor.MsixHero.App.Controls.PackageExpert.Views;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes;
@@ -15,6 +20,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Common;
+using Prism.Events;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -46,12 +52,15 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
         private readonly IDialogService dialogService;
+        private readonly IConfigurationService configurationService;
         private readonly ObservableObject<object> context;
         private readonly PackageExpertCommandHandler commandHandler;
+        private ActionBar actionBar;
 
         public PackageExpertControl(
             IMsixHeroApplication application,
             IBusyManager busyManager,
+            IEventAggregator eventAggregator,
             IInterProcessCommunicationManager ipcManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             IRunningDetector runningDetector,
@@ -69,6 +78,9 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.interactionService = interactionService;
             this.signingManagerProvider = signingManagerProvider;
             this.dialogService = dialogService;
+            this.configurationService = configurationService;
+
+            eventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.CreateTools, ThreadOption.UIThread);
             
             this.commandHandler = new PackageExpertCommandHandler(
                 this,
@@ -80,6 +92,36 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 new FileInvoker(interactionService));
         }
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            this.actionBar = (ActionBar)this.GetTemplateChild("PART_ActionBar");
+            this.CreateTools(null);
+        }
+
+        private async void CreateTools(IReadOnlyCollection<ToolListConfiguration> tools)
+        {
+            if (tools == null)
+            {
+                var cfg = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
+                tools = cfg.List?.Tools;
+            }
+
+            this.Tools.Clear();
+
+            if (tools == null || tools.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var item in tools)
+            {
+                this.Tools.Add(new ToolItem(item));
+            }
+
+            this.actionBar.Tools = this.Tools;
+        }
+        
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.FilePath = (string) this.context.Value;
@@ -108,6 +150,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             get => (string)GetValue(FilePathProperty);
             set => SetValue(FilePathProperty, value);
         }
+
+        public ObservableCollection<ToolItem> Tools { get; } = new ObservableCollection<ToolItem>();
 
         private static async void OnFilePathChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
