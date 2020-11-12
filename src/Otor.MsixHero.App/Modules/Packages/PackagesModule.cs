@@ -24,7 +24,7 @@ namespace Otor.MsixHero.App.Modules.Packages
             var regionManager = containerProvider.Resolve<IRegionManager>();
             // regionManager.RegisterViewWithRegion(RegionNames.Main, typeof(PackagesView));
             regionManager.RegisterViewWithRegion(PackagesRegionNames.Master, typeof(PackagesListView));
-            regionManager.RegisterViewWithRegion(PackagesRegionNames.Details, typeof(PackagesNoDetailsView));
+            // regionManager.RegisterViewWithRegion(PackagesRegionNames.Details, typeof(PackagesNoDetailsView));
             regionManager.RegisterViewWithRegion(PackagesRegionNames.PackageExpert, typeof(PackageExpertControl));
             // regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(PackagesSearchView));
         }

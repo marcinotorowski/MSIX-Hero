@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using NUnit.Framework.Internal;
 using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Helpers;
@@ -38,6 +39,26 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
             application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCancelled, ThreadOption.UIThread);
             application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
             this.InitializeComponent();
+            this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
+            this.ListBox.PreviewKeyUp += ListBoxOnKeyUp;
+        }
+
+        private void ListBoxOnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.PageDown || e.Key == Key.PageUp)
+            {
+                this.ListBox.SelectionChanged -= this.OnSelectionChanged;
+            }
+        }
+
+        private void ListBoxOnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.PageDown || e.Key == Key.PageUp)
+            {
+                this.ListBox.SelectionChanged += this.OnSelectionChanged;
+
+                this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(p => p.ManifestLocation)));
+            }
         }
 
         private void OnGetPackagesExecuting(UiExecutingPayload<GetPackagesCommand> obj)
@@ -123,10 +144,7 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.application.CommandExecutor.Invoke(this,
-                new SelectPackagesCommand(
-                    this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>()
-                    .Select(p => p.ManifestLocation)));
+            this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(p => p.ManifestLocation)));
         }
     }
 }

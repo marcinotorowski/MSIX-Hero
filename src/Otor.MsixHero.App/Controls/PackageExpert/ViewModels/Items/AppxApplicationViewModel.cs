@@ -20,20 +20,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
             this.Psf = model.Psf == null ? null : new AppxPsfViewModel(package.RootFolder, model.Psf);
             this.Services = model.Extensions == null ? null : new AppxServicesViewModel(model.Extensions);
 
-            var type = PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
-            switch (type)
-            {
-                case MsixPackageType.BridgePsf: 
-                    // we adjust the information to not show PSF here, because we show it elsewhere.
-                    this.Type = MsixPackageType.BridgeDirect;
-                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(MsixPackageType.BridgeDirect, true);
-                    break;
-                default:
-                    this.Type = type;
-                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(type, true);
-                    break;
-            }
-
+            this.Type = PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
             this.Alias = this.model.ExecutionAlias?.Any() == true ? string.Join(", ", this.model.ExecutionAlias.Distinct(StringComparer.OrdinalIgnoreCase)) : null;
         }
         
@@ -82,7 +69,5 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
         public bool HasEntryPoint => this.Type == MsixPackageType.Uwp;
 
         public MsixPackageType Type { get; }
-
-        public string DisplayType { get; }
     }
 }

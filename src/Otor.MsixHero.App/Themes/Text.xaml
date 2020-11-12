@@ -36,11 +36,10 @@
         <Setter Property="Foreground" Value="Black" />
     </Style>
 
-    <Style TargetType="{x:Type Label}" x:Key="FormLabel">
+    <Style TargetType="{x:Type Label}" x:Key="FormLabelThin">
         <Setter Property="FontWeight" Value="SemiBold" />
-        <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0 0 0 6" />
+        <Setter Property="Margin" Value="0 " />
         <Setter Property="Foreground" Value="#333" />
         <Setter Property="Template">
             <Setter.Value>
@@ -48,11 +47,38 @@
                     <TextBlock 
                         Foreground="{TemplateBinding Foreground}"
                         FontWeight="{TemplateBinding FontWeight}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content, Converter={StaticResource UppercaseConverter}}" 
                         Margin="{TemplateBinding Padding}" 
                         Typography.Capitals="{TemplateBinding Typography.Capitals}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Label}" x:Key="FormLabel">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="0 0 0 6" />
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="ButtonLabel">
+        <Setter Property="Margin" Value="0 0 0 0 "/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="HorizontalAlignment" Value="Center "/>
+        <Setter Property="VerticalAlignment" Value="Center "/>
+    </Style>
+
+    <Style TargetType="Run" x:Key="ButtonLabelRun">
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="ButtonDescription">
+        <Setter Property="Foreground" Value="#888" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="Run" x:Key="ButtonDescriptionRun">
+        <Setter Property="Foreground" Value="#888" />
     </Style>
 </ResourceDictionary>

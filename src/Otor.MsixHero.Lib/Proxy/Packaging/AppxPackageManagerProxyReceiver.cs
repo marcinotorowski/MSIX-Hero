@@ -30,6 +30,7 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             yield return typeof(GetModificationPackagesDto);
             yield return typeof(GetUsersForPackageDto);
             yield return typeof(RemoveDto);
+            yield return typeof(RemoveCurrentUserDto);
             yield return typeof(RunDto);
             yield return typeof(RunToolInContextDto);
         }
@@ -171,6 +172,11 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             if (command is RemoveDto removeDto)
             {
                 return this.SelfElevationAwareObject.Remove(removeDto.Packages, removeDto.Context == PackageContext.AllUsers, !removeDto.RemoveAppData, cancellationToken, progress);
+            }
+
+            if (command is RemoveCurrentUserDto removeCurrentUserDto)
+            {
+                return this.SelfElevationAwareObject.Remove(removeCurrentUserDto.PackageFullNames, !removeCurrentUserDto.RemoveAppData, cancellationToken, progress);
             }
 
             if (command is RunDto runPackageDto)

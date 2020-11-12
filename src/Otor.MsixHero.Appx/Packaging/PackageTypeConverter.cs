@@ -4,46 +4,91 @@ using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging
 {
+    public enum PackageTypeDisplay
+    {
+        Long,
+        Normal,
+        Short
+    }
+
     public static class PackageTypeConverter
     {
-        public static string GetPackageTypeStringFrom(MsixPackageType packageType, bool longName = false)
+        public static string GetPackageTypeStringFrom(MsixPackageType packageType, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
         {
             var isUwp = (packageType & MsixPackageType.Uwp) == MsixPackageType.Uwp;
             if (isUwp)
             {
-                return longName ? "Universal Windows Platform (UWP) app" : "UWP";
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Long:
+                        return "Universal Windows Platform (UWP) app";
+                    default:
+                        return "UWP";
+                }
             }
 
             var isBridge = (packageType & MsixPackageType.BridgeDirect) == MsixPackageType.BridgeDirect;
             if (isBridge)
             {
-                return longName ? "Classic Win32 app" : "Win32";
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Long:
+                        return "Classic Win32 app";
+                    default:
+                        return "Win32";
+                }
             }
 
             var isPsf = (packageType & MsixPackageType.BridgePsf) == MsixPackageType.BridgePsf;
             if (isPsf)
             {
-                return longName ? "Classic Win32 app enhanced by Package Support Framework (PSF)" : "Win32 + PSF";
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Long:
+                        return "Classic Win32 app enhanced by Package Support Framework (PSF)";
+                    case PackageTypeDisplay.Short:
+                        return "PSF";
+                    default:
+                        return "Win32 + PSF";
+                }
             }
 
             var isWeb = (packageType & MsixPackageType.Web) == MsixPackageType.Web;
             if (isWeb)
             {
-                return longName ? "Web application" : "Web";
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Long:
+                        return "Web application";
+                    default:
+                        return "Web";
+                }
             }
 
             var isFramework = (packageType & MsixPackageType.Framework) == MsixPackageType.Framework;
             if (isFramework)
             {
-                return "Framework";
+                switch (displayType)
+                {
+                    case PackageTypeDisplay.Short:
+                        return "FRAMEWORK";
+                    default:
+                        return "Framework";
+                }
             }
 
-            return "Unknown";
+            switch (displayType)
+            {
+                case PackageTypeDisplay.Short:
+                    return "App";
+                default:
+                    return "Unknown";
+            }
         }
 
-        public static string GetPackageTypeStringFrom(string entryPoint, string executable, string startPage, bool isFramework, bool longNames = false)
+        public static string GetPackageTypeStringFrom(string entryPoint, string executable, string startPage, bool isFramework, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
         {
-            return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework), longNames);
+            return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework), displayType);
         }
 
         public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework)

@@ -14,11 +14,14 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.Model = model;
             this.Header = model.Name;
             this.Description = model.Path == null ? null : model.Path;
+            this.IsUac = model.AsAdmin;
         }
 
         public string Header { get; }
 
         public string Description { get; }
+
+        public bool IsUac { get; }
 
         public ImageSource Icon { get; }
 

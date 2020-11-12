@@ -200,6 +200,17 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             return this.client.Invoke(proxyObject, cancellationToken, progress);
         }
 
+        public Task Remove(IReadOnlyCollection<string> packageFullNames, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            var proxyObject = new RemoveCurrentUserDto
+            {
+                PackageFullNames = packageFullNames.ToList(),
+                RemoveAppData = !preserveAppData
+            };
+
+            return this.client.Invoke(proxyObject, cancellationToken, progress);
+        }
+
         public Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var proxyObject = new GetLogsDto

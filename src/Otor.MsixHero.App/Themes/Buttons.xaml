@@ -131,4 +131,42 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style TargetType="ButtonBase" x:Key="ButtonRectangleBase">
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter 
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                            Margin="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.4" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Button" x:Key="ButtonSquare" BasedOn="{StaticResource ButtonRectangleBase}">
+        <Setter Property="Height" Value="120" />
+        <Setter Property="Width" Value="150" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="Button" x:Key="ButtonRectangle" BasedOn="{StaticResource ButtonRectangleBase}">
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+    </Style>
 </ResourceDictionary>

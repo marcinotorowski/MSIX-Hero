@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+
+namespace Otor.MsixHero.Lib.Proxy.Packaging.Dto
+{
+    [Serializable]
+    public class RemoveCurrentUserDto : ProxyObject
+    {
+        public RemoveCurrentUserDto()
+        {
+            this.PackageFullNames = new List<string>();
+        }
+
+        public RemoveCurrentUserDto(IEnumerable<string> packageFullNames) : this()
+        {
+            this.PackageFullNames.AddRange(packageFullNames);
+        }
+
+        public RemoveCurrentUserDto(IEnumerable<InstalledPackage> packages) : this(packages.Select(p => p.PackageId))
+        {
+        }
+
+        public RemoveCurrentUserDto(params InstalledPackage[] packages) : this((IEnumerable<InstalledPackage>)packages)
+        {
+        }
+
+        public RemoveCurrentUserDto(params string[] packageFullName) : this((IEnumerable<string>)packageFullName)
+        {
+        }
+
+        public List<string> PackageFullNames { get; set; }
+
+        public bool RemoveAppData { get; set; }
+    }
+}

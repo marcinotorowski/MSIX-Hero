@@ -60,6 +60,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         public PackageExpertControl(
             IMsixHeroApplication application,
             IBusyManager busyManager,
+            IRegionManager regionManager,
             IEventAggregator eventAggregator,
             IInterProcessCommunicationManager ipcManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
@@ -84,6 +85,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             
             this.commandHandler = new PackageExpertCommandHandler(
                 this,
+                regionManager,
                 application,
                 busyManager,
                 packageManagerProvider,

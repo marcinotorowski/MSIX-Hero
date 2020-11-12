@@ -9,97 +9,86 @@
     xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
     xmlns:items="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items"
+    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+    xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
+    xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
     mc:Ignorable="d" 
     MinWidth="250"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
     d:DesignHeight="300" d:DesignWidth="600">
     <StackPanel Margin="0">
         <StackPanel.Resources>
-            <Style TargetType="Label" x:Key="ButtonLabel">
-                <Setter Property="Margin" Value="0 0 0 0 "/>
-                <Setter Property="Padding" Value="0 "/>
-                <Setter Property="FontWeight" Value="SemiBold"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center "/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Label">
-                            <TextBlock TextAlignment="Center" TextTrimming="CharacterEllipsis" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" />
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style TargetType="TextBlock" x:Key="ButtonDescription">
-                <Setter Property="Opacity" Value="0.6" />
-                <Setter Property="HorizontalAlignment" Value="Center" />
-            </Style>
-
-            <Style TargetType="Button" x:Key="Button">
-                <Setter Property="Height" Value="130" />
-                <Setter Property="Width" Value="130" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value="0.4" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style TargetType="Button" x:Key="FolderButton">
-                <Setter Property="Padding" Value="10" />
-                <!--<Setter Property="Padding" Value="16" />-->
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value="0.4" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
+            <converters:MsixPackageTypeConverter x:Key="MsixPackageTypeConverter" />
         </StackPanel.Resources>
-
-        <ItemsControl ItemsSource="{Binding Manifest.CurrentValue.Applications}">
+        <ItemsControl 
+            Grid.IsSharedSizeScope="True"
+            ItemsSource="{Binding Manifest.CurrentValue.Applications}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel MaxWidth="390" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type items:AppxApplicationViewModel}">
                     <Button
                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
                         Command="{x:Static commands:MsixHeroCommands.RunPackage}"
                         CommandParameter="{Binding Id}"
-                        Style="{StaticResource FolderButton}">
-                        <DockPanel>
-                            <Image Source="{Binding Image}" MaxWidth="32" MaxHeight="32" Margin="0 0 8 0" UseLayoutRounding="True" SnapsToDevicePixels="True" />
+                        Style="{StaticResource ButtonSquare}">
 
-                            <StackPanel VerticalAlignment="Center">
-                                <Label HorizontalContentAlignment="Left" Style="{StaticResource ButtonLabel}" Content="{Binding DisplayName}" />
-                                <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Start}" />
-                            </StackPanel>
-                        </DockPanel>
+                        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" SharedSizeGroup="row1" />
+                            </Grid.RowDefinitions>
+                            <Border 
+                                    Grid.Row="0"
+                                    HorizontalAlignment="Center"
+                                    Background="{StaticResource Otor.MsixHero.Brushes.Accent}" 
+                                    Width="32" Height="32" Margin="0 0 0 8">
+                                <Image Source="{Binding Image}" 
+                                       MaxWidth="32" MaxHeight="32" 
+                                       UseLayoutRounding="True" SnapsToDevicePixels="True" />
+                            </Border>
+
+                            <Border 
+                                Margin="0 0 0 0"
+                                Grid.Row="0" 
+                                VerticalAlignment="Top" 
+                                HorizontalAlignment="Center" 
+                                Background="DimGray">
+                                <TextBlock Foreground="White"
+                                           FontSize="9"
+                                           Margin="4 2" FontWeight="Bold" 
+                                           Text="{Binding Type, Converter={StaticResource MsixPackageTypeConverter}, ConverterParameter={x:Static packaging:PackageTypeDisplay.Short}}" />
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="20" Y="-12" />
+                                </Border.RenderTransform>
+                            </Border>
+
+                            <TextBlock  
+                                Grid.Row="1"
+                                Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+                                TextAlignment="Center" 
+                                TextTrimming="CharacterEllipsis" 
+                                TextWrapping="Wrap">
+                                <Run Style="{StaticResource ButtonLabelRun}" Text="{Binding DisplayName, Mode=OneTime}" />
+                                <LineBreak /><Run Style="{StaticResource ButtonDescriptionRun}" Text="{Binding Start, Mode=OneTime}" />
+                            </TextBlock>
+
+                            <TextBlock  
+                                Grid.Row="1"
+                                Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                TextAlignment="Center" 
+                                TextTrimming="CharacterEllipsis" 
+                                TextWrapping="Wrap">
+                                <Run Style="{StaticResource ButtonLabelRun}" Text="{Binding DisplayName, Mode=OneTime}" />
+                                <LineBreak /><Run Style="{StaticResource ButtonDescriptionRun}" Text="{Binding Psf.Executable, Mode=OneTime}" />
+                                <Run Style="{StaticResource ButtonDescriptionRun}" Text="*" Foreground="Maroon" FontWeight="Bold" />
+                            </TextBlock>
+
+                        </Grid>
+
                     </Button>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -107,46 +96,36 @@
 
         <Separator Margin="0 0" />
 
-        <!--<ItemsControl ItemsSource="{Binding ElementName=Root, Path=Tools}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="packageExpert:ToolItem">
-                    <Button 
-                        CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                        Command="{x:Static commands:MsixHeroCommands.RunTool}"
-                        CommandParameter="{Binding Model}"
-                        Style="{StaticResource Button}">
-                        <HeaderedContentControl>
-                            <HeaderedContentControl.Header>
-                                <Image Margin="0 0 0 8" Source="{Binding Icon}" MaxWidth="32" MaxHeight="32" UseLayoutRounding="False" SnapsToDevicePixels="True" />
-                            </HeaderedContentControl.Header>
-                            <StackPanel>
-                                <Label Style="{StaticResource ButtonLabel}" Content="{Binding Header}" />
-                                <TextBlock Style="{StaticResource ButtonDescription}" Text="{Binding Description}" />
-                            </StackPanel>
-                        </HeaderedContentControl>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
 
+        <Label Style="{StaticResource FormLabelThin}" Height="28" Margin="8 8 8 0" Content="Execute in package context" Padding="0" VerticalContentAlignment="Center" />
         <ItemsControl ItemsSource="{Binding ElementName=Root, Path=Tools}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="packageExpert:ToolItem">
                     <Button 
+                        HorizontalContentAlignment="Stretch"
                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
                         Command="{x:Static commands:MsixHeroCommands.RunTool}"
                         CommandParameter="{Binding Model}"
-                        Style="{StaticResource FolderButton}">
+                        Style="{StaticResource ButtonRectangle}">
                         <DockPanel>
-                            <Image Source="{Binding Icon}" MaxWidth="32" MaxHeight="32" Margin="0 0 8 0" UseLayoutRounding="True" SnapsToDevicePixels="True" />
+                            <Image 
+                                Source="{Binding Icon}" 
+                                MaxWidth="24" MaxHeight="24" Margin="4 4 12 4" UseLayoutRounding="True" SnapsToDevicePixels="True" />
+
+
+                            <Image 
+                                Visibility="{Binding IsUac, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                VerticalAlignment="Center" 
+                                DockPanel.Dock="Right"
+                                Margin="0 -2"
+                                Source="{x:Static helpers:ShieldIcon.Source}" 
+                                Stretch="None" 
+                                UseLayoutRounding="True" 
+                                SnapsToDevicePixels="True">
+                            </Image>
 
                             <StackPanel VerticalAlignment="Center">
-                                <Label HorizontalContentAlignment="Left" Style="{StaticResource ButtonLabel}" Content="{Binding Header}" />
+                                <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonLabel}" Text="{Binding Header}" />
                                 <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Description}" />
                             </StackPanel>
                         </DockPanel>

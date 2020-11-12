@@ -72,6 +72,35 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             return result;
         }
 
+        public async Task Remove(IReadOnlyCollection<string> packages, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            if (!packages.Any())
+            {
+                Logger.Warn("Removing 0 packages, the list from the user is empty.");
+                return;
+            }
+
+            Logger.Info("Removing {0} packages...", packages.Count);
+
+            var opts = RemovalOptions.None;
+            if (preserveAppData)
+            {
+                opts |= RemovalOptions.PreserveApplicationData;
+            }
+
+            // ReSharper disable once PossibleMultipleEnumeration
+            foreach (var item in packages)
+            {
+                Logger.Info("Removing {0}", item);
+
+                var task = AsyncOperationHelper.ConvertToTask(
+                    PackageManager.Value.RemovePackageAsync(item, opts),
+                    "Removing...", CancellationToken.None, progress);
+
+                await task.ConfigureAwait(false);
+            }
+        }
+
         public async Task Remove(IReadOnlyCollection<InstalledPackage> packages, bool forAllUsers = false, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!packages.Any())
@@ -82,15 +111,26 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             Logger.Info("Removing {0} packages...", packages.Count);
 
+            var opts = RemovalOptions.None;
+            if (preserveAppData)
+            {
+                opts |= RemovalOptions.PreserveApplicationData;
+            }
+
+            if (forAllUsers)
+            {
+                opts |= RemovalOptions.RemoveForAllUsers;
+            }
+
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
                 Logger.Info("Removing {0}", item.PackageId);
 
                 var task = AsyncOperationHelper.ConvertToTask(
-                    PackageManager.Value.RemovePackageAsync(item.PackageId,
-                        forAllUsers ? RemovalOptions.RemoveForAllUsers : RemovalOptions.None),
-                    "Removing " + item.DisplayName, CancellationToken.None, progress);
+                    PackageManager.Value.RemovePackageAsync(item.PackageId, opts),
+                    $"Removing {item.DisplayName}...", CancellationToken.None, progress);
+
                 await task.ConfigureAwait(false);
 
                 if (item.IsProvisioned && forAllUsers)

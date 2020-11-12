@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.App.Modules.Packages.Constants;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
@@ -17,13 +19,16 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
+using Prism.Regions;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert
 {
     internal class PackageExpertCommandHandler
     {
+        private readonly IRegionManager regionManager;
         private readonly IMsixHeroApplication application;
         private readonly IBusyManager busyManager;
         private readonly IConfigurationService configurationService;
@@ -32,6 +37,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 
         public PackageExpertCommandHandler(
             UIElement parent,
+            IRegionManager regionManager,
             IMsixHeroApplication application,
             IBusyManager busyManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
@@ -39,6 +45,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             IInteractionService interactionService,
             FileInvoker fileInvoker)
         {
+            this.regionManager = regionManager;
             this.application = application;
             this.busyManager = busyManager;
             this.configurationService = configurationService;
@@ -54,6 +61,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.CheckUpdates, this.OnCheckUpdates, this.CanCheckUpdates));
             parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.RunTool, this.OnRunTool, this.CanRunTool));
             parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.RunPackage, this.OnRunPackage, this.CanRunPackage));
+            parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.RemovePackage, this.OnRemovePackage, this.CanRemovePackage));
             parent.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, this.OnCopy, this.CanCopy));
         }
 
@@ -182,12 +190,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                     {
                         var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
                         await manager.Add(appInstaller.AppInstallerUri.ToString(), AddPackageOptions.KillRunningApps).ConfigureAwait(false);
-
                         await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand()).ConfigureAwait(false);
-
-                        await this.application.CommandExecutor.Invoke(this,
-                                new SelectPackagesCommand(Path.Combine(this.Package.RootFolder, "appxmanifest.xml")))
-                            .ConfigureAwait(false);
+                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(Path.Combine(this.Package.RootFolder, "appxmanifest.xml"))).ConfigureAwait(false);
                     }
                 }
             }
@@ -196,6 +200,65 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         private void CanCheckUpdates(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.Package?.Source is AppInstallerPackageSource || this.Package?.Source is StorePackageSource;
+        }
+
+        private async void OnRemovePackage(object sender, ExecutedRoutedEventArgs e)
+        {
+            var config = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+            if (config.UiConfiguration.ConfirmDeletion)
+            {
+                var options = new List<string>
+                {
+                    "Remove for current user",
+                    "Do not remove"
+                };
+
+                var caption = "Are you sure you want to remove " + this.Package.DisplayName + " " + this.Package.Version + "? This operation is irreversible.";
+
+                var selectedOption = this.interactionService.ShowMessage(caption, options, "Removing package", systemButtons: InteractionResult.Cancel);
+                if (selectedOption != 0)
+                {
+                    return;
+                }
+            }
+
+            var context = this.busyManager.Begin();
+            try
+            {
+                using (var wrappedProgress = new WrappedProgress(context))
+                {
+                    var p1 = wrappedProgress.GetChildProgress(70);
+                    var p2 = wrappedProgress.GetChildProgress(30);
+
+                    var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+                    await manager.Remove(new [] { this.Package.FullName }, progress: p1).ConfigureAwait(false);
+
+                    await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
+                    var select = this.application.ApplicationState.Packages.AllPackages.FirstOrDefault();
+
+                    if (select == null)
+                    {
+                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(select.ManifestLocation)).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                this.interactionService.ShowError("Could not remove the package.", exception);
+            }
+            finally
+            {
+                this.busyManager.End(context);
+            }
+        }
+
+        private void CanRemovePackage(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.Package != null;
         }
 
         private void CanOpenStore(object sender, CanExecuteRoutedEventArgs e)

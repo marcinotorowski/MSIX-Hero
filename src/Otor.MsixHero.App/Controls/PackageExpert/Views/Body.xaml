@@ -16,6 +16,7 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.View"
              xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.Packages.ViewModels.Items"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
@@ -122,6 +123,7 @@
                                     <DataTemplate.Resources>
                                         <system:Boolean x:Key="True">True</system:Boolean>
                                         <system:Boolean x:Key="False">False</system:Boolean>
+                                        <converters:MsixPackageTypeConverter x:Key="MsixPackageTypeConverter" />
                                     </DataTemplate.Resources>
                                     <ItemsControl ItemsSource="{Binding Applications}">
                                         <ItemsControl.ItemTemplate>
@@ -138,7 +140,7 @@
                                                         <Border MinHeight="32">
                                                             <StackPanel VerticalAlignment="Center" Margin="0 2">
                                                                 <TextBlock Text="{Binding DisplayName, Mode=OneTime}" />
-                                                                <TextBlock Text="{Binding DisplayType, Mode=OneTime}" />
+                                                                <TextBlock Text="{Binding Type, Converter={StaticResource MsixPackageTypeConverter}, Mode=OneTime}" />
                                                             </StackPanel>
                                                         </Border>
                                                     </views:BulletItemControl>

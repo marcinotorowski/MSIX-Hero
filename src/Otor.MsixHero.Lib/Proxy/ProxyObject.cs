@@ -14,6 +14,7 @@ namespace Otor.MsixHero.Lib.Proxy
     [XmlInclude(typeof(DismountRegistryDto))]
     [XmlInclude(typeof(GetUsersForPackageDto))]
     [XmlInclude(typeof(RemoveDto))]
+    [XmlInclude(typeof(RemoveCurrentUserDto))]
     [XmlInclude(typeof(GetLogsDto))]
     [XmlInclude(typeof(GetByIdentityDto))]
     [XmlInclude(typeof(GetByManifestPathDto))]
