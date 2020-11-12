@@ -407,7 +407,16 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 throw new FileNotFoundException();
             }
 
-            var entryPoint = (await GetEntryPoints(packageManifestLocation).ConfigureAwait(false)).FirstOrDefault(e => appId == null || e == appId);
+            string entryPoint;
+            if (string.IsNullOrEmpty(appId))
+            {
+                entryPoint = (await GetEntryPoints(packageManifestLocation).ConfigureAwait(false)).FirstOrDefault();
+            }
+            else
+            {
+                entryPoint = (await GetEntryPoints(packageManifestLocation).ConfigureAwait(false)).FirstOrDefault(e => e.EndsWith("!" + appId, StringComparison.Ordinal));
+            }
+
             if (entryPoint == null)
             {
                 if (appId == null)
@@ -785,7 +794,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 var appxPackage = await reader.Read(appxSource).ConfigureAwait(false);
 
-                return appxPackage.Applications.Where(a => a.Visible).Select(app =>
+                return appxPackage.Applications.Select(app =>
                 {
                     if (string.IsNullOrEmpty(app.Id))
                     {
