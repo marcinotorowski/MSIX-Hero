@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using NUnit.Framework.Internal;
 using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
-using Otor.MsixHero.App.Hero.Commands;
-using Otor.MsixHero.App.Hero.Commands.Base;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Hero.Events.Base;
+using Otor.MsixHero.App.Modules.Packages.ViewModels;
 using Otor.MsixHero.App.Modules.Packages.ViewModels.Items;
+using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.Packages.Views
@@ -28,8 +27,16 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
         private readonly IMsixHeroApplication application;
         private readonly IConfigurationService configService;
         private IList<MenuItem> tools;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly PackagesListCommandHandler commandHandler;
 
-        public PackagesListView(IMsixHeroApplication application, IConfigurationService configService)
+        public PackagesListView(
+            IMsixHeroApplication application, 
+            IConfigurationService configService,
+            IInteractionService interactionService,
+            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            IBusyManager busyManager
+            )
         {
             this.application = application;
             this.configService = configService;
@@ -41,6 +48,8 @@ namespace Otor.MsixHero.App.Modules.Packages.Views
             this.InitializeComponent();
             this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
             this.ListBox.PreviewKeyUp += ListBoxOnKeyUp;
+
+            this.commandHandler = new PackagesListCommandHandler(this, application, interactionService, packageManagerProvider, busyManager);
         }
 
         private void ListBoxOnKeyDown(object sender, KeyEventArgs e)

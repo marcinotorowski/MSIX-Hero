@@ -117,7 +117,7 @@
                                 Visibility="{Binding IsUac, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 VerticalAlignment="Center" 
                                 DockPanel.Dock="Right"
-                                Margin="0 -2"
+                                Margin="8 -2 0 -2"
                                 Source="{x:Static helpers:ShieldIcon.Source}" 
                                 Stretch="None" 
                                 UseLayoutRounding="True" 

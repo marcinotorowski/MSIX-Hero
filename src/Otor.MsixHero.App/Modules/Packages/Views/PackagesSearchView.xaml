@@ -54,7 +54,7 @@
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding ElementName=SearchBox, Path=IsFocused}" Value="False" />
+                                    <Condition Binding="{Binding ElementName=SearchBox, Path=IsKeyboardFocused}" Value="False" />
                                     <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
                                         <Condition.Value>
                                             <system:Int32>0</system:Int32>

@@ -51,7 +51,7 @@ namespace Otor.MsixHero.App
             var b = new WindowChromeBehavior();
             b.IgnoreTaskbarOnMaximize = false;
             b.TryToBeFlickerFree = true;
-            b.ResizeBorderThickness = new Thickness(0);
+            //b.ResizeBorderThickness = new Thickness(0);
             Interaction.GetBehaviors(this).Add(b);
         }
 
