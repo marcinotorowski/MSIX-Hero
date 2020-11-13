@@ -18,7 +18,6 @@ namespace Otor.MsixHero.App.Modules.Volumes
         public void OnInitialized(IContainerProvider containerProvider)
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
-            // regionManager.RegisterViewWithRegion(RegionNames.Main, typeof(VolumesView));
             regionManager.RegisterViewWithRegion(VolumesRegionNames.Master, typeof(VolumesListView));
             regionManager.RegisterViewWithRegion(VolumesRegionNames.Details, typeof(VolumesDetailsView));
             regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(VolumesSearchView));

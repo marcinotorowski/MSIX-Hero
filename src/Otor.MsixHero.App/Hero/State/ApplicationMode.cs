@@ -2,6 +2,8 @@
 {
     public enum ApplicationMode
     {
+        Overview,
+
         Packages,
 
         VolumeManager,

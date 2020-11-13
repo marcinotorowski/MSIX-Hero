@@ -75,7 +75,9 @@
 
     <Style TargetType="TextBlock" x:Key="ButtonDescription">
         <Setter Property="Foreground" Value="#888" />
+        <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
     </Style>
 
     <Style TargetType="Run" x:Key="ButtonDescriptionRun">

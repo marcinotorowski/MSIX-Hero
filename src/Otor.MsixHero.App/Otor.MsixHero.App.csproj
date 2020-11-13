@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Modules\Main\Sidebar\Views\mock1.png" />
     <None Remove="Modules\Packages\Views\mock2.png" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
@@ -32,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Modules\Main\Sidebar\Views\mock1.png" />
     <Resource Include="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
@@ -67,6 +65,9 @@
     <Page Update="Controls\PsfContent\View\PsfContentView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Modules\Overview\Views\OverviewSearchView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Modules\Packages\Views\PackagesManyDetailsView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -97,6 +98,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Modules\Overview\ViewModels\" />
     <Folder Include="Modules\Packages\ViewModels\PackageExpert\" />
   </ItemGroup>
 

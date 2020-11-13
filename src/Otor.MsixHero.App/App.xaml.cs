@@ -8,6 +8,7 @@ using Otor.MsixHero.App.Modules;
 using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
 using Otor.MsixHero.App.Modules.Main.Shell.Views;
+using Otor.MsixHero.App.Modules.Overview;
 using Otor.MsixHero.App.Modules.Packages;
 using Otor.MsixHero.App.Modules.SystemView;
 using Otor.MsixHero.App.Modules.Volumes;
@@ -77,6 +78,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), ModuleNames.EventViewer, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SystemViewModule), ModuleNames.SystemView, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumesModule), ModuleNames.Volumes, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(OverviewModule), ModuleNames.Overview, InitializationMode.OnDemand));
 
             base.ConfigureModuleCatalog(moduleCatalog);
         }
@@ -89,7 +91,7 @@ namespace Otor.MsixHero.App
 
 
             var app = this.Container.Resolve<IMsixHeroApplication>();
-            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Packages));
+            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Overview));
         }
 
         protected override Window CreateShell()

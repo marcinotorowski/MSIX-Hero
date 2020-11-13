@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Overview.Views.OverviewSearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Packages.ViewModels"
+             xmlns:mvvm="http://prismlibrary.com/"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" 
+             Focusable="False"
+             d:DesignHeight="58" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesSearchViewModel}">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Find" Executed="CommandBinding_OnExecuted"></CommandBinding>
+    </UserControl.CommandBindings>
+
+    <Grid Margin="6 0 0 6"
+          Height="30"
+          VerticalAlignment="Bottom">
+
+        <TextBox
+            WindowChrome.IsHitTestVisibleInChrome="True"
+            BorderThickness="0"
+            BorderBrush="#11000000"
+            Padding="26 0 100 0"
+            Background="#ccffffff"
+            VerticalContentAlignment="Center" HorizontalAlignment="Stretch"
+            x:Name="SearchBox" >
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#efefef" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Background" Value="#fafafa" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
+        <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+            <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
+                <Path.LayoutTransform>
+                    <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                </Path.LayoutTransform>
+            </Path>
+            <TextBlock TextTrimming="CharacterEllipsis" Text="Search in tools..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ElementName=SearchBox, Path=IsKeyboardFocused}" Value="False" />
+                                    <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                        <Condition.Value>
+                                            <system:Int32>0</system:Int32>
+                                        </Condition.Value>
+                                    </Condition>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </DockPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" 
+                    FontFamily="Webdings" Height="26" MinHeight="26" 
+                    Margin="2" 
+                    BorderThickness="0" 
+                    Background="Transparent"
+                    Content="&#x72;">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                        <Condition.Value>
+                                            <system:Int32>0</system:Int32>
+                                        </Condition.Value>
+                                    </Condition>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

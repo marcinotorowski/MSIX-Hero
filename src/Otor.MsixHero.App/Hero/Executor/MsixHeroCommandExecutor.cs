@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.App.Controls;
+using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Modules.Overview.Constants;
 using Otor.MsixHero.App.Modules.Packages.Constants;
 using Otor.MsixHero.App.Modules.Volumes.Constants;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
@@ -150,6 +153,11 @@ namespace Otor.MsixHero.App.Hero.Executor
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Packages);
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(PackagesNavigationPaths.Search);
                     break;
+                case ApplicationMode.Overview:
+                    this.moduleManager.LoadModule(ModuleNames.Overview);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Overview);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(OverviewNavigationPaths.Search);
+                    break;
                 case ApplicationMode.VolumeManager:
                     this.moduleManager.LoadModule(ModuleNames.Volumes);
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Volumes);
@@ -158,10 +166,12 @@ namespace Otor.MsixHero.App.Hero.Executor
                 case ApplicationMode.SystemStatus:
                     this.moduleManager.LoadModule(ModuleNames.SystemView);
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.SystemView);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(PathNames.Empty);
                     break;
                 case ApplicationMode.EventViewer:
                     this.moduleManager.LoadModule(ModuleNames.EventViewer);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.SystemView);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.EventViewer);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(PathNames.Empty);
                     break;
             }
 

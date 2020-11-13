@@ -11,7 +11,14 @@
         <Border FocusManager.IsFocusScope="True" Height="58" DockPanel.Dock="Top">
             <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Toolbar}" FocusManager.IsFocusScope="True" />
         </Border>
-        <Border Width="60" DockPanel.Dock="Left" Background="White">
+        <Border 
+            Width="60" 
+            DockPanel.Dock="Left" 
+            Background="White"
+            BorderBrush="#D2D2D2"
+            BorderThickness="0 0 1 0"
+            SnapsToDevicePixels="True"
+            UseLayoutRounding="True">
             <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Sidebar}" />
         </Border>
         <Border Background="White">

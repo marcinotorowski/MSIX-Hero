@@ -6,5 +6,7 @@
         public const string Volumes = "volumes-page";
         public const string EventViewer = "event-viewer-page";
         public const string SystemView = "system-view-page";
+        public const string Overview = "overview-view-page";
+        public const string Empty = "empty-page";
 }
 }

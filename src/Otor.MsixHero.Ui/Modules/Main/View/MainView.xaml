@@ -1293,7 +1293,7 @@
                         <Fluent:Button.Icon>
                             <Path Data="{StaticResource VectorDependencies}" Style="{StaticResource MediumIcon}" />
                         </Fluent:Button.Icon>
-                    </Fluent:Button>
+                    </Fluent:Button>wi
 
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Other editors and generators" x:Name="RibbonToolsCreate">

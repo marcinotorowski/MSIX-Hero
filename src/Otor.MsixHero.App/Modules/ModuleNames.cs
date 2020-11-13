@@ -11,5 +11,6 @@ namespace Otor.MsixHero.App.Modules
         public const string Volumes = "msix-hero-volumes-module";
         public const string EventViewer = "msix-hero-event-viewer-module";
         public const string SystemView = "msix-hero-system-view-module";
+        public const string Overview = "msix-hero-overview-view-module";
     }
 }
