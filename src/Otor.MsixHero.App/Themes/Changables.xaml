@@ -1,0 +1,280 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+                    xmlns:dialogs="http://prismlibrary.com/"
+                    xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
+                    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+                    xmlns:helpers1="clr-namespace:Otor.MsixHero.App.Helpers">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <system:Boolean x:Key="True">True</system:Boolean>
+
+    <Style TargetType="Path" x:Key="AnimatedSuccess">
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeDashCap" Value="Round" />
+        <Setter Property="StrokeDashOffset" Value="20" />
+        <Setter Property="Margin" Value="-40" />
+        <Setter Property="Stroke" Value="DarkGreen" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Data" Value="M 10.050781 16.400391 L 14.699219 21.050781 L 22.349609 13.400391" />
+        <Setter Property="LayoutTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="6.0" ScaleY="6.0" CenterX="16" CenterY="16" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="StrokeDashArray">
+            <Setter.Value>
+                <DoubleCollection>
+                    <system:Double>18</system:Double>
+                    <system:Double>36</system:Double>
+                </DoubleCollection>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsVisible" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard BeginTime="00:00:00.2">
+                            <DoubleAnimationUsingKeyFrames AccelerationRatio="0.5" DecelerationRatio="0.5" BeginTime="00:00:00" Storyboard.TargetProperty="(Shape.StrokeDashOffset)">
+                                <SplineDoubleKeyFrame KeyTime="00:00:00.75" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="dialog:ChangeableDialog">
+        <Setter Property="ShowShield" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="dialog:ChangeableDialog">
+                    <controls:ProgressOverlay 
+                        SupportsCancelling="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.SupportsCancelling}"
+                        CancelCommand="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Cancel}"
+                        IsShown="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.IsLoading}" 
+                        Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Progress, Mode=OneWay}"
+                        Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Message}">
+                        <DockPanel>
+                            <Border 
+                                Background="{StaticResource Otor.MsixHero.Brushes.Accent}" 
+                                DockPanel.Dock="Top" 
+                                Visibility="{TemplateBinding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <DockPanel Margin="10">
+                                    <Path 
+                                        Width="32" 
+                                        Height="32" 
+                                        Margin="0 -0" 
+                                        Fill="White" 
+                                        Data="{TemplateBinding Icon}">
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleX="1" ScaleY="1"></ScaleTransform>
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                    <Label 
+                                        Visibility="Collapsed"
+                                        Margin="8 0 0 0" 
+                                        VerticalContentAlignment="Center" 
+                                        Style="{StaticResource Label}" 
+                                        Foreground="White" 
+                                        VerticalAlignment="Center" 
+                                        HorizontalAlignment="Left" 
+                                        FontSize="24" 
+                                        Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Title}" />
+                                </DockPanel>
+                            </Border>
+                            <Border Background="#F7F7F7" DockPanel.Dock="Bottom">
+                                <DockPanel>
+                                    <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
+                                        <ContentPresenter Content="{TemplateBinding Footer}" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
+                                        <Button Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" x:Name="PART_ButtonOK" Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.OkCommand}">
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                <Image Visibility="{Binding ShowShield, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Source="{x:Static helpers1:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" Margin="0 0 4 0" />
+                                                <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding OkButtonLabel}" />
+                                            </StackPanel>
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Tag" Value="{StaticResource True}">
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation To="0.3" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" Storyboard.TargetProperty="Opacity" />
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                            <Trigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation To="1.0" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" Storyboard.TargetProperty="Opacity" />
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.ExitActions>
+                                                            <Setter Property="IsHitTestVisible" Value="False" />
+                                                            <Setter Property="Focusable" Value="False" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        <Button x:Name="PART_Close"  Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="Close" />
+                                    </StackPanel>
+                                </DockPanel>
+                            </Border>
+
+                            <Grid>
+
+                                <DockPanel>
+                                    <Border  Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
+                                        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Error}" VerticalAlignment="Center" />
+                                    </Border>
+
+                                    <ContentPresenter 
+                                        x:Name="PART_ContentPresenter"
+                                        Margin="16 0 16 16" 
+                                        Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
+                                        Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
+                                        ContentTemplate="{TemplateBinding DialogContentTemplate}" 
+                                        ContentTemplateSelector="{TemplateBinding DialogContentTemplateSelector}">
+
+                                        <ContentPresenter.Style>
+                                            <Style TargetType="ContentPresenter">
+                                                <Style.Triggers>
+                                                    <Trigger Property="Tag">
+                                                        <Trigger.Value>
+                                                            <system:Boolean>True</system:Boolean>
+                                                        </Trigger.Value>
+                                                        <Trigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard BeginTime="00:00:0">
+                                                                    <DoubleAnimation From="1" To="0" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" />
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                                        <DiscreteObjectKeyFrame Value="{x:Static Visibility.Visible}" KeyTime="00:00:0.0" />
+                                                                        <DiscreteObjectKeyFrame Value="{x:Static Visibility.Collapsed}" KeyTime="00:00:0.5" />
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <DoubleAnimation From="0" To="1" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" />
+                                                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                                        <DiscreteObjectKeyFrame Value="{x:Static Visibility.Visible}" KeyTime="00:00:0.5" />
+                                                                    </ObjectAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentPresenter.Style>
+                                    </ContentPresenter>
+                                </DockPanel>
+
+                                <Border Margin="0" Visibility="Collapsed" Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <Trigger Property="Tag">
+                                                    <Trigger.Value>
+                                                        <system:Boolean>True</system:Boolean>
+                                                    </Trigger.Value>
+                                                    <Trigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard BeginTime="00:00:0.0">
+                                                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                                                    <DiscreteDoubleKeyFrame Value="0" KeyTime="00:00:00" />
+                                                                    <DiscreteDoubleKeyFrame Value="1" KeyTime="00:00:0.5" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame Value="{x:Static Visibility.Collapsed}" KeyTime="00:00:0.0" />
+                                                                    <DiscreteObjectKeyFrame Value="{x:Static Visibility.Visible}" KeyTime="00:00:0.5" />
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.EnterActions>
+                                                    <Trigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation From="1" To="0" Storyboard.TargetProperty="Opacity" AccelerationRatio="0.5" DecelerationRatio="0.5" Duration="00:00:0.5" />
+                                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                                    <DiscreteObjectKeyFrame Value="{x:Static Visibility.Visible}" KeyTime="00:00:0.0" />
+                                                                    <DiscreteObjectKeyFrame Value="{x:Static Visibility.Collapsed}" KeyTime="00:00:0.5" />
+                                                                </ObjectAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </Trigger.ExitActions>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <Path Style="{StaticResource AnimatedSuccess}" />
+                                        <ContentControl 
+                                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
+                                            Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
+                                            ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
+                                            ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}">
+                                            <ContentControl.LayoutTransform>
+                                                <ScaleTransform ScaleY="0" />
+                                            </ContentControl.LayoutTransform>
+                                            <ContentControl.Style>
+                                                <Style TargetType="ContentControl">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Tag">
+                                                            <Trigger.Value>
+                                                                <system:Boolean>True</system:Boolean>
+                                                            </Trigger.Value>
+                                                            <Trigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00" />
+                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:1.7" />
+                                                                            <SplineDoubleKeyFrame Value="1" KeyTime="00:00:2.4" />
+                                                                        </DoubleAnimationUsingKeyFrames>
+                                                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="LayoutTransform.ScaleY">
+                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:00" />
+                                                                            <SplineDoubleKeyFrame Value="0" KeyTime="00:00:1.2" />
+                                                                            <SplineDoubleKeyFrame Value="1" KeyTime="00:00:1.7" />
+                                                                        </DoubleAnimationUsingKeyFrames>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </Trigger.EnterActions>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </ContentControl.Style>
+                                        </ContentControl>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </DockPanel>
+                    </controls:ProgressOverlay>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="OkButtonVisibility" Value="Collapsed">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ButtonOK" />
+                        </Trigger>
+                        <Trigger Property="OkButtonVisibility" Value="Hidden">
+                            <Setter Property="Visibility" Value="Hidden" TargetName="PART_ButtonOK" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}" Value="{StaticResource True}">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ButtonOK" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.WasSaved}" Value="{StaticResource True}">
+                            <Setter Property="CommandParameter" Value="{x:Static dialogs:ButtonResult.OK}" TargetName="PART_Close" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

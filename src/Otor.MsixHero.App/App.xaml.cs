@@ -5,6 +5,14 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.App.Modules.Editors;
+using Otor.MsixHero.App.Modules.Editors.AppAttach;
+using Otor.MsixHero.App.Modules.Editors.AppInstaller;
+using Otor.MsixHero.App.Modules.Editors.Dependencies;
+using Otor.MsixHero.App.Modules.Editors.Packaging;
+using Otor.MsixHero.App.Modules.Editors.Signing;
+using Otor.MsixHero.App.Modules.Editors.Updates;
+using Otor.MsixHero.App.Modules.Editors.Winget;
 using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
 using Otor.MsixHero.App.Modules.Main.Shell.Views;
@@ -79,7 +87,16 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(SystemViewModule), ModuleNames.SystemView, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumesModule), ModuleNames.Volumes, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(OverviewModule), ModuleNames.Overview, InitializationMode.OnDemand));
-
+            
+            moduleCatalog.AddModule(new ModuleInfo(typeof(SigningModule), DialogModuleNames.Signing, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(AppInstallerModule), DialogModuleNames.AppInstaller, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(PackagingModule), DialogModuleNames.Packaging, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(DependenciesModule), DialogModuleNames.Dependencies, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(UpdatesModule), DialogModuleNames.Updates, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(Modules.Editors.Volumes.VolumesModule), DialogModuleNames.Volumes, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(WingetModule), DialogModuleNames.Winget, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), DialogModuleNames.AppAttach, InitializationMode.OnDemand));
+            
             base.ConfigureModuleCatalog(moduleCatalog);
         }
 

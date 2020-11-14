@@ -1,4 +1,5 @@
 ﻿using Otor.MsixHero.App.Modules.Overview.Constants;
+using Otor.MsixHero.App.Modules.Overview.ViewModels;
 using Otor.MsixHero.App.Modules.Overview.Views;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -10,7 +11,7 @@ namespace Otor.MsixHero.App.Modules.Overview
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<OverviewView>(PathNames.Overview);
+            containerRegistry.RegisterForNavigation<OverviewView, OverviewViewModel>(PathNames.Overview);
             containerRegistry.RegisterForNavigation<OverviewSearchView>(OverviewNavigationPaths.Search);
         }
 

@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>msixhero</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -12,30 +13,69 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Controls\CertificateSelector\Images\microsoftlogo.png" />
     <None Remove="Modules\Packages\Views\mock2.png" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.94" />
     <PackageReference Include="FluentWPF" Version="0.8.0" />
+    <PackageReference Include="GraphX" Version="3.0.0" />
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.1" />
     <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Winget\Otor.MsixHero.Winget.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Controls\CertificateSelector\Images\microsoftlogo.png" />
     <Resource Include="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Controls\CertificateSelector\View\CertificateSelectorView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Controls\PsfContent\View\PsfContentView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\AppAttach\Editor\View\AppAttachView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\AppInstaller\Editor\View\AppInstallerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Dependencies\Graph\View\DependencyViewerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Packaging\ModificationPackage\View\ModificationPackageView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Packaging\Pack\View\PackView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Packaging\Unpack\View\UnpackView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Signing\CertificateExport\View\CertificateExportView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Signing\PackageSigning\View\PackageSigningView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Updates\UpdateImpact\View\UpdateImpactView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Editors\Winget\YamlEditor\View\WingetView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\Packages\Views\PackagesManyDetailsView.xaml.cs">
@@ -59,10 +99,96 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Controls\CertificateSelector\View\CertificateSelectorView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Controls\PackageExpert\Views\Start\Start.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Controls\PackageHeader\PackageHeader.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Controls\PackageSelector\View\PackageSelectorView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Controls\PsfContent\View\PsfContentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Volume\Theme.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\AppAttach\Editor\View\AppAttachDialogContent.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\AppAttach\Editor\View\AppAttachView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\AppInstaller\Editor\View\AppInstallerDialogContent.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\AppInstaller\Editor\View\AppInstallerView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Dependencies\Graph\View\DependencyViewerDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Dependencies\Graph\View\DependencyViewerView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Packaging\ModificationPackage\View\ModificationPackageDialogContent.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Packaging\ModificationPackage\View\ModificationPackageView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Packaging\Pack\View\PackView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Packaging\Unpack\View\UnpackView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Signing\CertificateExport\View\CertificateExportView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Signing\NewSelfSigned\View\NewSelfSignedDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Signing\NewSelfSigned\View\NewSelfSignedView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Signing\PackageSigning\View\PackageSigningDialogContent.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Signing\PackageSigning\View\PackageSigningView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Updates\UpdateImpact\View\RelativeIndicator.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Updates\UpdateImpact\View\UpdateImpactView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Editors\Volumes\ChangeVolume\View\ChangeVolumeView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Volumes\NewVolume\View\NewVolumeView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Winget\YamlEditor\View\WingetDialogContent.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Editors\Winget\YamlEditor\View\WingetView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\Overview\Views\OverviewSearchView.xaml">
@@ -86,6 +212,9 @@
     <Page Update="Modules\Volumes\Views\VolumesSearchView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Themes\Changables.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Themes\Fonts.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -98,7 +227,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Overview\ViewModels\" />
     <Folder Include="Modules\Packages\ViewModels\PackageExpert\" />
   </ItemGroup>
 

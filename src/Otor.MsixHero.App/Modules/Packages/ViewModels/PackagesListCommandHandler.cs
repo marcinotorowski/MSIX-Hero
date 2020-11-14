@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
-using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;

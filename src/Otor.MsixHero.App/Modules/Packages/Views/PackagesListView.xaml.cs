@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Otor.MsixHero.App.Changeable;
+using Otor.MsixHero.App.Mvvm.Changeable;
 
 namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items.Redirection
 {

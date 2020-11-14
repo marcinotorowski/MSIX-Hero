@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using Otor.MsixHero.App.Commands;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.Views.Open
 {

@@ -21,6 +21,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Modules\Dialogs\AppInstaller\Enums\**" />
+    <EmbeddedResource Remove="Modules\Dialogs\AppInstaller\Enums\**" />
+    <None Remove="Modules\Dialogs\AppInstaller\Enums\**" />
+    <Page Remove="Modules\Dialogs\AppInstaller\Enums\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Modules\Common\PackageContent\View\icons8-sugar-cube-64.png" />
     <None Remove="Modules\Dialogs\Common\CertificateSelector\Images\microsoftlogo.png" />
     <None Remove="Modules\PackageList\View\icons8-sugar-cube-48.png" />
@@ -184,7 +191,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\Dialogs\AppInstaller\Enums\" />
     <Folder Include="Modules\Main\View\Ribbons\" />
   </ItemGroup>
 

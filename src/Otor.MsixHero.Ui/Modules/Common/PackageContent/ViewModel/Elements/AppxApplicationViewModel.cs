@@ -26,11 +26,11 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
                 case MsixPackageType.BridgePsf: 
                     // we adjust the information to not show PSF here, because we show it elsewhere.
                     this.Type = MsixPackageType.BridgeDirect;
-                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(MsixPackageType.BridgeDirect, true);
+                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(MsixPackageType.BridgeDirect, PackageTypeDisplay.Long);
                     break;
                 default:
                     this.Type = type;
-                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(type, true);
+                    this.DisplayType = PackageTypeConverter.GetPackageTypeStringFrom(type, PackageTypeDisplay.Long);
                     break;
             }
 
@@ -64,7 +64,6 @@ namespace Otor.MsixHero.Ui.Modules.Common.PackageContent.ViewModel.Elements
                         return this.model.Executable;
                     case MsixPackageType.Web:
                         return this.model.StartPage;
-                    case MsixPackageType.Uwp:
                     default:
                         if (string.IsNullOrEmpty(this.model.EntryPoint))
                         {

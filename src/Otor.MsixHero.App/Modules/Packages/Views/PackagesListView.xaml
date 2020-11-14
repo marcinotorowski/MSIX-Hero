@@ -10,9 +10,9 @@
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Packages.ViewModels"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
-    xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
     xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.Packages.ViewModels.Items"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesListViewModel}">

@@ -1,6 +1,6 @@
 ﻿using System;
-using Otor.MsixHero.App.Changeable;
 using Otor.MsixHero.App.Controls.PsfContent.Model;
+using Otor.MsixHero.App.Mvvm.Changeable;
 
 namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
 {

@@ -9,7 +9,7 @@
     xmlns:open="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Open"
     xmlns:start="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Start"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
-    xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
     mc:Ignorable="d" >
     <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">

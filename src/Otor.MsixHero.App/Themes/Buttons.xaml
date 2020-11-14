@@ -5,12 +5,12 @@
         <ResourceDictionary Source="Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="Button" x:Key="{x:Type Button}">
+    <Style TargetType="ButtonBase" x:Key="BaseButton">
         <Setter Property="MinHeight" Value="30" />
         <Setter Property="Padding" Value="10 4" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
-        <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+        <Setter Property="BorderBrush" Value="#DDDDDD" />
+        <Setter Property="Background" Value="#DDDDDD" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Style.Triggers>
@@ -20,12 +20,10 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="ToggleButton" x:Key="{x:Type ToggleButton}">
-        <Setter Property="MinHeight" Value="30" />
-        <Setter Property="Padding" Value="10 4" />
-        <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Style TargetType="Button" x:Key="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="{x:Type ToggleButton}" BasedOn="{StaticResource BaseButton}">
     </Style>
 
     <Style TargetType="ButtonBase" x:Key="ActionButtonBase">

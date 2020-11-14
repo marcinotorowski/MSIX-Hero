@@ -15,6 +15,13 @@
         <Setter Property="Margin" Value="0 0 0 8" />
     </Style>
 
+    <Style TargetType="TextBlock" x:Key="LabelTextBlock">
+        <Setter Property="Foreground" Value="#666" />
+        <Setter Property="Margin" Value="0 0 0 6" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
     <Style TargetType="{x:Type TextBox}" x:Key="TextBlock">
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="Background" Value="Transparent" />

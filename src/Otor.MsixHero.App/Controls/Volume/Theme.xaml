@@ -1,0 +1,98 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
+                    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls">
+
+    <Style TargetType="volume:VolumeControl">
+        <Setter Property="Background" Value="#2B579A" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="volume:VolumeControl">
+                    <DockPanel>
+                        <!--<Border
+                            Margin="-2 -2 6 -2" CornerRadius="20" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2">-->
+
+                        <Border 
+                                DockPanel.Dock="Left"
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center" 
+                                Margin="0 0 6 0"
+                                Background="{TemplateBinding Background}" 
+                                Width="32" 
+                                Height="32" >
+                            <Path 
+                                x:Name="PART_Path" 
+                                Fill="White"
+                                Style="{StaticResource LargeIcon}" 
+                                Data="{StaticResource VectorDisk}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center">
+                                <Path.LayoutTransform>
+                                    <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
+                                </Path.LayoutTransform>
+                            </Path>
+                        </Border>
+
+
+                        <Border
+                            DockPanel.Dock="Right"
+                            Width="32" Height="32" CornerRadius="16" Background="Green" 
+                            Visibility="{TemplateBinding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            Margin="8 0 0 0" 
+                            VerticalAlignment="Center" 
+                            ToolTip="This is the default volume">
+                            <Path 
+                                Data="{StaticResource VectorCheckmark}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <Border.LayoutTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
+                                </TransformGroup>
+                            </Border.LayoutTransform>
+                        </Border>
+
+                        <Border
+                                DockPanel.Dock="Right"
+                                Width="32" Height="32" CornerRadius="16" Background="Gray" 
+                                Visibility="{TemplateBinding IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                Margin="8 0 0 0" 
+                                VerticalAlignment="Center" 
+                                ToolTip="This volume is not mounted">
+                            <Path 
+                                Data="{StaticResource VectorCancel}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <Border.LayoutTransform>
+                                <TransformGroup>
+                                    <ScaleTransform ScaleY="0.75" ScaleX="0.75" />
+                                </TransformGroup>
+                            </Border.LayoutTransform>
+                        </Border>
+
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock controls:Highlighter.Selection="{TemplateBinding SearchKey}" Text="{TemplateBinding DisplayName}" />
+
+                            <ProgressBar
+                                    UseLayoutRounding="True"
+                                    SnapsToDevicePixels="True"
+                                    Margin="0 3 0 1" 
+                                    BorderThickness="1"
+                                    BorderBrush="#BCBCBC"
+                                    Height="11"
+                                    x:Name="PART_Progress"
+                                    Foreground="#26A0DA" 
+                                    Minimum="0" 
+                                    Maximum="100"
+                                    Value="{TemplateBinding Percent}" />
+
+                            <TextBlock Foreground="Gray" Text="{TemplateBinding Caption}" />
+
+                        </StackPanel>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ThresholdReached" Value="True">
+                            <Setter Property="Foreground" TargetName="PART_Progress" Value="#DA2626" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

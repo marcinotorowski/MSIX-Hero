@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using Otor.MsixHero.App.Changeable;
+using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Psf.Entities;
 
 namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items.Custom

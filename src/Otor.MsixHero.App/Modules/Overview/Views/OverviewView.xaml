@@ -3,10 +3,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Otor.MsixHero.App.Modules.Overview.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Overview.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="650" d:DesignWidth="820">
+             d:DesignHeight="650" d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:OverviewViewModel}">
     <UserControl.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource ButtonRectangle}">
             <Setter Property="Width" Value="180" />
@@ -16,7 +17,7 @@
     <StackPanel Margin="20">
         <Label Margin="0 0 0 8" Content="Developing" Style="{StaticResource FormLabel}" />
         <WrapPanel>
-            <Button>
+            <Button Command="{Binding ShowAppInstallerDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                       Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z"
@@ -26,7 +27,7 @@
                 </StackPanel>
             </Button>
 
-            <Button>
+            <Button Command="{Binding ShowWingetDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                       Data="{StaticResource VectorConsole}"
@@ -36,7 +37,40 @@
                 </StackPanel>
             </Button>
 
-            <Button>
+            <Button Command="{Binding ShowAppAttachDialog}">
+                <StackPanel>
+                    <Path Style="{StaticResource LargeIcon}"
+                          Data="{StaticResource VectorNetworkDrive}"
+                          Margin="0 0 0 8" />
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="MSIX app attach" />
+                    <TextBlock Style="{StaticResource ButtonDescription}" Text="Create VHD and .ps1 scripts for app attach" />
+                </StackPanel>
+            </Button>
+        </WrapPanel>
+
+        <Label Margin="0 16 0 8" Content="Package authoring" Style="{StaticResource FormLabel}" />
+        <WrapPanel>
+            <Button Command="{Binding ShowPackDialog}">
+                <StackPanel>
+                    <Path Style="{StaticResource LargeIcon}"
+                      Data="{StaticResource VectorPack}"
+                      Margin="0 0 0 8" />
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Pack MSIX" />
+                    <TextBlock Style="{StaticResource ButtonDescription}" Text="Convert a folder to an MSIX format" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding ShowUnpackDialog}">
+                <StackPanel>
+                    <Path 
+                        Style="{StaticResource LargeIcon}"
+                        Data="{StaticResource VectorUnpack}"
+                      Margin="0 0 0 8" />
+                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Unpack MSIX" />
+                    <TextBlock Style="{StaticResource ButtonDescription}" Text="Unpack an MSIX package to a folder" />
+                </StackPanel>
+            </Button>
+
+            <Button Command="{Binding ShowModificationPackageDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                           Data="{StaticResource VectorTransform}"
@@ -47,32 +81,9 @@
             </Button>
         </WrapPanel>
 
-        <Label Margin="0 16 0 8" Content="Package authoring" Style="{StaticResource FormLabel}" />
-        <WrapPanel>
-            <Button>
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                      Data="{StaticResource VectorPack}"
-                      Margin="0 0 0 8" />
-                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Pack MSIX" />
-                    <TextBlock Style="{StaticResource ButtonDescription}" Text="Convert a folder to an MSIX format" />
-                </StackPanel>
-            </Button>
-            <Button>
-                <StackPanel>
-                    <Path 
-                        Style="{StaticResource LargeIcon}"
-                        Data="{StaticResource VectorUnpack}"
-                      Margin="0 0 0 8" />
-                    <TextBlock Style="{StaticResource ButtonLabel}" Text="Unpack MSIX" />
-                    <TextBlock Style="{StaticResource ButtonDescription}" Text="Unpack an MSIX package to a folder" />
-                </StackPanel>
-            </Button>
-        </WrapPanel>
-
         <Label Margin="0 16 0 8" Content="Code signing" Style="{StaticResource FormLabel}" />
         <WrapPanel>
-            <Button>
+            <Button Command="{Binding ShowSignPackageDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                       Data="{StaticResource VectorSign}"
@@ -81,7 +92,7 @@
                     <TextBlock Style="{StaticResource ButtonDescription}" Text="Sign with local certificate or Device Guard" />
                 </StackPanel>
             </Button>
-            <Button>
+            <Button Command="{Binding ShowNewSelfSignedDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                           Data="{StaticResource VectorSelfSign}"
@@ -90,7 +101,7 @@
                     <TextBlock Style="{StaticResource ButtonDescription}" Text="Create a new certificate for test and demo purposes" />
                 </StackPanel>
             </Button>
-            <Button>
+            <Button IsEnabled="False">
                 <StackPanel>
                     <Path 
                         Style="{StaticResource LargeIcon}"
@@ -100,7 +111,7 @@
                     <TextBlock Style="{StaticResource ButtonDescription}" Text="Install certificate or import it from a package" />
                 </StackPanel>
             </Button>
-            <Button>
+            <Button Command="{Binding ShowExtractCertificateDialog}">
                 <StackPanel>
                     <Path 
                         Style="{StaticResource LargeIcon}"
@@ -115,7 +126,7 @@
         <Label Content="Administration and troubleshooting" Margin="0 16 0 8" Style="{StaticResource FormLabel}" />
         <WrapPanel>
 
-            <Button>
+            <Button Command="{Binding ShowDependencyGraphDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                           Data="{StaticResource VectorDependencies}"
@@ -124,7 +135,7 @@
                     <TextBlock Style="{StaticResource ButtonDescription}" Text="Show nested dependencies between packages and OS" />
                 </StackPanel>
             </Button>
-            <Button>
+            <Button Command="{Binding ShowUpdateImpactDialog}">
                 <StackPanel>
                     <Path Style="{StaticResource LargeIcon}"
                       Data="{StaticResource VectorCheckmark}"

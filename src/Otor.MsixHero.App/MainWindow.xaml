@@ -9,12 +9,15 @@
         ExtendViewIntoTitleBar="True"
         xmlns:regions="http://prismlibrary.com/"
         xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
+        xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+        xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
         mc:Ignorable="d"
         TintOpacity="0.2"
         Margin="0"
         Padding="0"
         TintColor="#0173C7"
         Title="MainWindow" Height="800" Width="1024">
+
     <Grid
         Margin="0">
         <Border

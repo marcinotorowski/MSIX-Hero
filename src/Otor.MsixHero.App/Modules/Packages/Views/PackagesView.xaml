@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.Packages.Constants"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Commands"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <commands:RoutedCommandHandlers.Commands>

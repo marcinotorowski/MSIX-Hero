@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using Otor.MsixHero.App.Commands;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
 using Otor.MsixHero.App.Controls.PackageExpert.Views;
 using Otor.MsixHero.App.Hero;
