@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.View.UnpackView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             mc:Ignorable="d" 
+             Background="#ffffff"
+             d:DataContext="{d:DesignInstance viewModel:UnpackViewModel}">
+    <mvvm:Dialog.WindowStyle>
+        <Style TargetType="Window">
+            <Setter Property="SizeToContent" Value="Manual" />
+            <Setter Property="Width" Value="550" />
+            <Setter Property="Height" Value="550" />
+            <Setter Property="MinWidth" Value="500" />
+            <Setter Property="MinHeight" Value="350" />
+        </Style>
+    </mvvm:Dialog.WindowStyle>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <dialog:ChangeableDialog 
+        Dialog="{Binding}"
+        OkButtonLabel="Unpack package"
+        Icon="{StaticResource VectorUnpack}">
+        <dialog:ChangeableDialog.DialogContentTemplate>
+            <DataTemplate>
+                <ScrollViewer Margin="0 16 0 0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <AdornerDecorator>
+                        <StackPanel>
+
+                            <TextBlock
+                                controls:RequiredAdorner.IsRequired="True" 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Full path to an MSIX package" />
+                            <DockPanel>
+                                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
+                                <TextBox TabIndex="4" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            </DockPanel>
+
+                            <TextBlock
+                                controls:RequiredAdorner.IsRequired="True"
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Full path to an folder where files will be extracted" Margin="0 16 0 6" />
+                            <DockPanel>
+                                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                                <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                            </DockPanel>
+
+                            <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
+                        </StackPanel>
+                    </AdornerDecorator>
+                </ScrollViewer>
+            </DataTemplate>
+        </dialog:ChangeableDialog.DialogContentTemplate>
+        <dialog:ChangeableDialog.SuccessContentTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="Your package has been successfully unpacked." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock TextAlignment="Center">
+                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing unpacked files</Hyperlink>
+                    </TextBlock>
+                    <TextBlock TextAlignment="Center">
+                    <Hyperlink Command="{Binding ResetCommand}">Unpack another package</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </dialog:ChangeableDialog.SuccessContentTemplate>
+    </dialog:ChangeableDialog>
+</UserControl>

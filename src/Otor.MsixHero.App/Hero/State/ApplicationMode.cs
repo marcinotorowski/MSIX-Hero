@@ -2,7 +2,7 @@
 {
     public enum ApplicationMode
     {
-        Overview,
+        Dashboard,
 
         Packages,
 

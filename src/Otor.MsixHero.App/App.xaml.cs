@@ -5,21 +5,20 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
-using Otor.MsixHero.App.Modules.Editors;
-using Otor.MsixHero.App.Modules.Editors.AppAttach;
-using Otor.MsixHero.App.Modules.Editors.AppInstaller;
-using Otor.MsixHero.App.Modules.Editors.Dependencies;
-using Otor.MsixHero.App.Modules.Editors.Packaging;
-using Otor.MsixHero.App.Modules.Editors.Signing;
-using Otor.MsixHero.App.Modules.Editors.Updates;
-using Otor.MsixHero.App.Modules.Editors.Winget;
+using Otor.MsixHero.App.Modules.Dashboard;
+using Otor.MsixHero.App.Modules.Dialogs.AppAttach;
+using Otor.MsixHero.App.Modules.Dialogs.AppInstaller;
+using Otor.MsixHero.App.Modules.Dialogs.Dependencies;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging;
+using Otor.MsixHero.App.Modules.Dialogs.Signing;
+using Otor.MsixHero.App.Modules.Dialogs.Updates;
+using Otor.MsixHero.App.Modules.Dialogs.Winget;
 using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
 using Otor.MsixHero.App.Modules.Main.Shell.Views;
-using Otor.MsixHero.App.Modules.Overview;
-using Otor.MsixHero.App.Modules.Packages;
+using Otor.MsixHero.App.Modules.PackageManagement;
 using Otor.MsixHero.App.Modules.SystemView;
-using Otor.MsixHero.App.Modules.Volumes;
+using Otor.MsixHero.App.Modules.VolumeManagement;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
@@ -82,20 +81,20 @@ namespace Otor.MsixHero.App
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule(new ModuleInfo(typeof(MainModule), ModuleNames.Main, InitializationMode.WhenAvailable));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(PackagesModule), ModuleNames.Packages, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(PackageManagementModule), ModuleNames.PackageManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), ModuleNames.EventViewer, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SystemViewModule), ModuleNames.SystemView, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(VolumesModule), ModuleNames.Volumes, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(OverviewModule), ModuleNames.Overview, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeManagementModule), ModuleNames.VolumeManagement, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(DashboardModule), ModuleNames.Dashboard, InitializationMode.OnDemand));
             
-            moduleCatalog.AddModule(new ModuleInfo(typeof(SigningModule), DialogModuleNames.Signing, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(AppInstallerModule), DialogModuleNames.AppInstaller, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(PackagingModule), DialogModuleNames.Packaging, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(DependenciesModule), DialogModuleNames.Dependencies, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(UpdatesModule), DialogModuleNames.Updates, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(Modules.Editors.Volumes.VolumesModule), DialogModuleNames.Volumes, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(WingetModule), DialogModuleNames.Winget, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), DialogModuleNames.AppAttach, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(SigningModule), ModuleNames.Dialogs.Signing, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(AppInstallerModule), ModuleNames.Dialogs.AppInstaller, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(PackagingModule), ModuleNames.Dialogs.Packaging, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(DependenciesModule), ModuleNames.Dialogs.Dependencies, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(UpdatesModule), ModuleNames.Dialogs.Updates, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(Modules.Dialogs.Volumes.VolumesModule), ModuleNames.Dialogs.Volumes, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(WingetModule), ModuleNames.Dialogs.Winget, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), ModuleNames.Dialogs.AppAttach, InitializationMode.OnDemand));
             
             base.ConfigureModuleCatalog(moduleCatalog);
         }
@@ -108,7 +107,7 @@ namespace Otor.MsixHero.App
 
 
             var app = this.Container.Resolve<IMsixHeroApplication>();
-            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Overview));
+            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Dashboard));
         }
 
         protected override Window CreateShell()

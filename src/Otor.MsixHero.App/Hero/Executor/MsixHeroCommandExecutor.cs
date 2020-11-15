@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Controls;
-using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
-using Otor.MsixHero.App.Modules.Overview.Constants;
-using Otor.MsixHero.App.Modules.Packages.Constants;
-using Otor.MsixHero.App.Modules.Volumes.Constants;
+using Otor.MsixHero.App.Modules.PackageManagement;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
@@ -149,29 +145,29 @@ namespace Otor.MsixHero.App.Hero.Executor
             switch (command.NewMode)
             {
                 case ApplicationMode.Packages:
-                    this.moduleManager.LoadModule(ModuleNames.Packages);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Packages);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(PackagesNavigationPaths.Search);
+                    this.moduleManager.LoadModule(ModuleNames.PackageManagement);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.PackageManagement);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.PackageManagementPaths.Search);
                     break;
-                case ApplicationMode.Overview:
-                    this.moduleManager.LoadModule(ModuleNames.Overview);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Overview);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(OverviewNavigationPaths.Search);
+                case ApplicationMode.Dashboard:
+                    this.moduleManager.LoadModule(ModuleNames.Dashboard);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.Dashboard);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.DashboardPaths.Search);
                     break;
                 case ApplicationMode.VolumeManager:
-                    this.moduleManager.LoadModule(ModuleNames.Volumes);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.Volumes);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(VolumesNavigationPaths.Search);
+                    this.moduleManager.LoadModule(ModuleNames.VolumeManagement);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.VolumeManagement);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.VolumeManagementPaths.Search);
                     break;
                 case ApplicationMode.SystemStatus:
                     this.moduleManager.LoadModule(ModuleNames.SystemView);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.SystemView);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(PathNames.Empty);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.SystemView);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.Empty);
                     break;
                 case ApplicationMode.EventViewer:
                     this.moduleManager.LoadModule(ModuleNames.EventViewer);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(PathNames.EventViewer);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(PathNames.Empty);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.EventViewer);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.Empty);
                     break;
             }
 
@@ -281,13 +277,13 @@ namespace Otor.MsixHero.App.Hero.Executor
             switch (this.ApplicationState.Packages.SelectedPackages.Count)
             {
                 case 0:
-                    this.regionManager.Regions[PackagesRegionNames.Details].RequestNavigate(new Uri(PackagesNavigationPaths.ZeroSelection, UriKind.Relative), parameters);
+                    this.regionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.ZeroSelection, UriKind.Relative), parameters);
                     break;
                 case 1:
-                    this.regionManager.Regions[PackagesRegionNames.Details].RequestNavigate(new Uri(PackagesNavigationPaths.SingleSelection, UriKind.Relative), parameters);
+                    this.regionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.SingleSelection, UriKind.Relative), parameters);
                     break;
                 default:
-                    this.regionManager.Regions[PackagesRegionNames.Details].NavigationService.RequestNavigate(new Uri(PackagesNavigationPaths.MultipleSelection, UriKind.Relative), parameters);
+                    this.regionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), parameters);
                     break;
             }
             return Task.FromResult(selected);

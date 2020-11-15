@@ -11,7 +11,7 @@ namespace Otor.MsixHero.App.Modules.Main
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<Control>(PathNames.Empty);
+            containerRegistry.RegisterForNavigation<Control>(NavigationPaths.Empty);
         }
         
         public void OnInitialized(IContainerProvider containerProvider)

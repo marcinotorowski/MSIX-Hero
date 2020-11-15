@@ -14,9 +14,9 @@
              xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
              xmlns:psf="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.View"
-             xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.Packages.ViewModels.Items"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
+             xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 

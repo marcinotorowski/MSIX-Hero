@@ -36,32 +36,32 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
             this.SidebarItems = new ObservableCollection<SidebarItemViewModel>
             {
                 new SidebarItemViewModel(
-                    ApplicationMode.Overview,
-                    PathNames.Overview,
+                    ApplicationMode.Dashboard,
+                    NavigationPaths.Dashboard,
                     "Overview",
                     TabOverview),
 
                 new SidebarItemViewModel(
                     ApplicationMode.Packages,
-                    PathNames.Packages,
+                    NavigationPaths.PackageManagement,
                     "Packages",
                     TabPackages),
 
                 new SidebarItemViewModel(
                     ApplicationMode.VolumeManager,
-                    PathNames.Volumes,
+                    NavigationPaths.VolumeManagement,
                     "Volumes",
                     TabVolumes),
 
                 new SidebarItemViewModel(
                     ApplicationMode.EventViewer,
-                    PathNames.EventViewer,
+                    NavigationPaths.EventViewer,
                     "Event viewer",
                     TabEventViewer),
 
                 new SidebarItemViewModel(
                     ApplicationMode.SystemStatus, 
-                    PathNames.SystemView,
+                    NavigationPaths.SystemView,
                     "System overview",
                     TabSystemStatus)
             };
