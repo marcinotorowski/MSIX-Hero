@@ -2,6 +2,7 @@
 {
     public enum RecommendationStatus
     {
+        Loading,
         Success,
         Warning,
         Error

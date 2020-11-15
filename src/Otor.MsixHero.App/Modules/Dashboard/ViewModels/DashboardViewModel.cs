@@ -1,20 +1,29 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Input;
+using Otor.MsixHero.App.Hero.Commands.Dashboard;
+using Otor.MsixHero.App.Hero.Events.Base;
+using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Modularity;
 using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
 {
-    public class DashboardViewModel
+    public class DashboardViewModel : NotifyPropertyChanged
     {
         private readonly IInteractionService interactionService;
         private readonly IDialogService dialogService;
         private readonly IModuleManager moduleManager;
+        private string searchKey;
 
-        public DashboardViewModel(IInteractionService interactionService, IDialogService dialogService, IModuleManager moduleManager)
+        public DashboardViewModel(
+            IEventAggregator eventAggregator,
+            IInteractionService interactionService, 
+            IDialogService dialogService, 
+            IModuleManager moduleManager)
         {
             this.interactionService = interactionService;
             this.dialogService = dialogService;
@@ -34,6 +43,19 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.OpenCertificateManager = new DelegateCommand<object>(param => this.OnOpenCertificateManager(param is bool boolParam && boolParam));
             this.OpenAppsFeatures = new DelegateCommand(this.OnOpenAppsFeatures);
             this.OpenDevSettings = new DelegateCommand(this.OnOpenDevSettings);
+
+            eventAggregator.GetEvent<UiExecutedEvent<SetToolFilterCommand>>().Subscribe(this.OnSetToolFilterCommand);
+        }
+
+        public string SearchKey
+        {
+            get => this.searchKey;
+            private set => this.SetField(ref this.searchKey, value);
+        }
+
+        private void OnSetToolFilterCommand(UiExecutedPayload<SetToolFilterCommand> obj)
+        {
+            this.SearchKey = obj.Command.SearchKey;
         }
 
         public ICommand ShowNewSelfSignedDialog { get; }

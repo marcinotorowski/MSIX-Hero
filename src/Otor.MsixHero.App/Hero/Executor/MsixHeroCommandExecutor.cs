@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Hero.Commands;
+using Otor.MsixHero.App.Hero.Commands.Dashboard;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
@@ -62,10 +63,12 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             detector.Subscribe(this);
 
+            this.Handlers[typeof(SetToolFilterCommand)] = (command, token, progress) => this.SetToolFilter((SetToolFilterCommand)command);
+
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
             this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
             this.Handlers[typeof(SetVolumeFilterCommand)] = (command, token, progress) => this.SetVolumeFilter((SetVolumeFilterCommand)command);
-
+            
             this.Handlers[typeof(GetPackagesCommand)] = (command, token, progress) => this.GetPackages((GetPackagesCommand)command, token, progress);
             this.Handlers[typeof(StopPackageCommand)] = (command, token, progress) => this.StopPackage((StopPackageCommand)command, token);
             this.Handlers[typeof(CheckForUpdatesCommand)] = (command, token, progress) => this.CheckForUpdates((CheckForUpdatesCommand)command, token);
@@ -189,6 +192,12 @@ namespace Otor.MsixHero.App.Hero.Executor
         private Task SetVolumeFilter(SetVolumeFilterCommand command)
         {
             this.ApplicationState.Volumes.SearchKey = command.SearchKey;
+            return Task.FromResult(true);
+        }
+
+        private Task SetToolFilter(SetToolFilterCommand command)
+        {
+            this.ApplicationState.Dashboard.SearchKey = command.SearchKey;
             return Task.FromResult(true);
         }
 

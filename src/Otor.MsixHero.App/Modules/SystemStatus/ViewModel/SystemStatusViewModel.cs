@@ -70,6 +70,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
         {
 #pragma warning disable 4014
             this.IsLoading = true;
+            await Task.Delay(400).ConfigureAwait(false);
             try
             {
                 var allTasks = this.Items.Select(t => t.Refresh());

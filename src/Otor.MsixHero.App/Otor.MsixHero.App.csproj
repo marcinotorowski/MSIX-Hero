@@ -134,6 +134,9 @@
     <Page Update="Controls\PsfContent\View\PsfContentView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Controls\TransitionContentControl\Theme.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="Controls\Volume\Theme.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>

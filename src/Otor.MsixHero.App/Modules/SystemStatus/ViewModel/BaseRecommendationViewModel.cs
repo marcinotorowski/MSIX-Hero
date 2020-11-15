@@ -10,7 +10,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
     {
         private readonly Lazy<Geometry> iconProvider;
         private bool isExpanded;
-        private string summary;
+        private string summary = "Checking your system...";
         private RecommendationStatus status;
 
         protected BaseRecommendationViewModel()

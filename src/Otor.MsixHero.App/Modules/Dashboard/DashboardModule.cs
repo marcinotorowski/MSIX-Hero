@@ -10,7 +10,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>(NavigationPaths.Dashboard);
-            containerRegistry.RegisterForNavigation<DashboardSearchView>(NavigationPaths.DashboardPaths.Search);
+            containerRegistry.RegisterForNavigation<DashboardSearchView, DashboardSearchViewModel>(NavigationPaths.DashboardPaths.Search);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

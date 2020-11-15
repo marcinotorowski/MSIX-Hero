@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
@@ -21,8 +23,15 @@
             UseLayoutRounding="True">
             <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Sidebar}" />
         </Border>
-        <Border Background="White">
-            <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Main}" />
+        <Border Background="White" ClipToBounds="True">
+            <transitionContentControl:TransitioningContentControl 
+                Transition="Drop"
+                Direction="Left"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                regions:RegionManager.RegionName="{x:Static modules:RegionNames.Main}" />
         </Border>
     </DockPanel>
 </UserControl>

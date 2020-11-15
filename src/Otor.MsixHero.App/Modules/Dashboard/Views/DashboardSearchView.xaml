@@ -5,12 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Dashboard.ViewModels"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              Focusable="False"
-             d:DesignHeight="58" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesSearchViewModel}">
+             d:DesignHeight="58" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:DashboardSearchViewModel}">
     <UserControl.CommandBindings>
-        <CommandBinding Command="Find" Executed="CommandBinding_OnExecuted"></CommandBinding>
+        <CommandBinding Command="Find" Executed="CommandBinding_OnExecuted" />
     </UserControl.CommandBindings>
 
     <Grid Margin="6 0 0 6"
@@ -23,6 +24,7 @@
             BorderBrush="#11000000"
             Padding="26 0 100 0"
             Background="#ccffffff"
+            Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}"
             VerticalContentAlignment="Center" HorizontalAlignment="Stretch"
             x:Name="SearchBox" >
             <TextBox.Style>
