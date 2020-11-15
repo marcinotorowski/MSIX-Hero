@@ -22,6 +22,10 @@
   <ItemGroup>
     <None Remove="Controls\CertificateSelector\Images\microsoftlogo.png" />
     <None Remove="Modules\PackageManagement\Views\mock2.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\AppPackage.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
@@ -45,6 +49,14 @@
 
   <ItemGroup>
     <Resource Include="Controls\CertificateSelector\Images\microsoftlogo.png" />
+    <Resource Include="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\SystemStatus\View\Logos\AppPackage.png" />
+    <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
     <Resource Include="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
@@ -206,6 +218,9 @@
     </Page>
     <Page Update="Modules\PackageManagement\Views\PackagesSingleDetailsView.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\SystemStatus\View\SystemStatusView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\VolumeManagement\Views\VolumesListView.xaml">
       <SubType>Designer</SubType>

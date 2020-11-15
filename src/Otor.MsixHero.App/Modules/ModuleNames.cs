@@ -6,7 +6,7 @@
         public const string PackageManagement = "msix-hero-package-management-module";
         public const string VolumeManagement = "msix-hero-volume-management-module";
         public const string EventViewer = "msix-hero-event-viewer-module";
-        public const string SystemView = "msix-hero-system-view-module";
+        public const string SystemStatus = "msix-hero-system-status-module";
         public const string Dashboard = "msix-hero-tools-dashboard-module";
 
         public static class Dialogs

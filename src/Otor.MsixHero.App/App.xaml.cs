@@ -17,7 +17,7 @@ using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
 using Otor.MsixHero.App.Modules.Main.Shell.Views;
 using Otor.MsixHero.App.Modules.PackageManagement;
-using Otor.MsixHero.App.Modules.SystemView;
+using Otor.MsixHero.App.Modules.SystemStatus;
 using Otor.MsixHero.App.Modules.VolumeManagement;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
@@ -83,7 +83,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(MainModule), ModuleNames.Main, InitializationMode.WhenAvailable));
             moduleCatalog.AddModule(new ModuleInfo(typeof(PackageManagementModule), ModuleNames.PackageManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(EventViewerModule), ModuleNames.EventViewer, InitializationMode.OnDemand));
-            moduleCatalog.AddModule(new ModuleInfo(typeof(SystemViewModule), ModuleNames.SystemView, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(SystemStatusModule), ModuleNames.SystemStatus, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeManagementModule), ModuleNames.VolumeManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(DashboardModule), ModuleNames.Dashboard, InitializationMode.OnDemand));
             
@@ -105,9 +105,8 @@ namespace Otor.MsixHero.App
             var regionManager = this.Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
 
-
             var app = this.Container.Resolve<IMsixHeroApplication>();
-            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Dashboard));
+            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Packages));
         }
 
         protected override Window CreateShell()

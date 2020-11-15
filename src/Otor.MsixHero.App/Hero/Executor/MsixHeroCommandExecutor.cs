@@ -160,8 +160,8 @@ namespace Otor.MsixHero.App.Hero.Executor
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.VolumeManagementPaths.Search);
                     break;
                 case ApplicationMode.SystemStatus:
-                    this.moduleManager.LoadModule(ModuleNames.SystemView);
-                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.SystemView);
+                    this.moduleManager.LoadModule(ModuleNames.SystemStatus);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.SystemStatus);
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.Empty);
                     break;
                 case ApplicationMode.EventViewer:

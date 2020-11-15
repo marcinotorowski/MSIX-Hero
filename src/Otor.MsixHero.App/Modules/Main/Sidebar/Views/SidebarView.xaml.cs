@@ -1,7 +1,5 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
-using Prism.Modularity;
-using Prism.Regions;
+using Otor.MsixHero.Lib.Infrastructure.Progress;
 
 namespace Otor.MsixHero.App.Modules.Main.Sidebar.Views
 {
@@ -10,9 +8,26 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.Views
     /// </summary>
     public partial class SidebarView
     {
-        public SidebarView()
+        private readonly IBusyManager busyManager;
+
+        public SidebarView(IBusyManager busyManager)
         {
-            InitializeComponent();
+            this.busyManager = busyManager;
+            this.InitializeComponent();
+
+            this.busyManager.StatusChanged += this.OnBusyManagerStatusChanged;
+        }
+
+        private void OnBusyManagerStatusChanged(object sender, IBusyStatusChange e)
+        {
+            if (Application.Current.CheckAccess())
+            {
+                this.IsEnabled = !e.IsBusy;
+            }
+            else
+            {
+                Application.Current.Dispatcher.Invoke(() => this.IsEnabled = !e.IsBusy);
+            }
         }
     }
 }

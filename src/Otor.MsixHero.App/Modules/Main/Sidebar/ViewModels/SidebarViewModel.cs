@@ -3,17 +3,15 @@ using System.Linq;
 using System.Windows.Media;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
+using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
-using Prism.Modularity;
-using Prism.Regions;
+using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 {
     public class SidebarViewModel : NotifyPropertyChanged
     {
-        private readonly IRegionManager regionManager;
-        private readonly IModuleManager moduleManager;
         private readonly IMsixHeroApplication application;
 
         private static readonly Geometry TabPackages = Geometry.Parse("M 16 4 L 15.625 4.15625 L 9.625 6.5625 L 9 6.8125 L 9 13.53125 L 3.59375 15.875 L 3 16.15625 L 3 24.21875 L 3.5 24.53125 L 9.5 27.875 L 9.96875 28.125 L 10.4375 27.90625 L 16 25.125 L 21.5625 27.90625 L 22.03125 28.125 L 22.5 27.875 L 28.5 24.53125 L 29 24.21875 L 29 16.15625 L 28.40625 15.875 L 23 13.53125 L 23 6.8125 L 22.375 6.5625 L 16.375 4.15625 Z M 16 6.1875 L 19.28125 7.46875 L 16 8.75 L 12.71875 7.46875 Z M 11 8.9375 L 15 10.46875 L 15 15.34375 L 11 13.5625 Z M 21 8.9375 L 21 13.5625 L 17 15.34375 L 17 10.46875 Z M 10 15.3125 L 13.625 16.90625 L 10 18.6875 L 6.375 16.875 Z M 22 15.3125 L 25.625 16.875 L 22 18.6875 L 18.375 16.90625 L 19.5 16.40625 Z M 5 18.40625 L 9 20.40625 L 9 25.3125 L 5 23.0625 Z M 27 18.40625 L 27 23.0625 L 23 25.3125 L 23 20.40625 Z M 15 18.46875 L 15 23.375 L 11 25.375 L 11 20.40625 Z M 17 18.46875 L 21 20.40625 L 21 25.375 L 17 23.375 Z");
@@ -28,10 +26,8 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 
         private SidebarItemViewModel selectedItem;
 
-        public SidebarViewModel(IRegionManager regionManager, IModuleManager moduleManager, IMsixHeroApplication application)
+        public SidebarViewModel(IMsixHeroApplication application, IEventAggregator eventAggregator)
         {
-            this.regionManager = regionManager;
-            this.moduleManager = moduleManager;
             this.application = application;
             this.SidebarItems = new ObservableCollection<SidebarItemViewModel>
             {
@@ -61,12 +57,14 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 
                 new SidebarItemViewModel(
                     ApplicationMode.SystemStatus, 
-                    NavigationPaths.SystemView,
+                    NavigationPaths.SystemStatus,
                     "System overview",
                     TabSystemStatus)
             };
 
             this.selectedItem = this.SidebarItems.First();
+
+            eventAggregator.GetEvent<UiExecutedEvent<SetCurrentModeCommand>>().Subscribe(this.OnSetCurrentMode);
         }
 
         public ObservableCollection<SidebarItemViewModel> SidebarItems { get; }
@@ -83,6 +81,12 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 
                 this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(value.Screen));
             }
+        }
+
+        private void OnSetCurrentMode(UiExecutedPayload<SetCurrentModeCommand> obj)
+        {
+            var current = this.application.ApplicationState.CurrentMode;
+            this.SelectedItem = this.SidebarItems.FirstOrDefault(item => current == item.Screen);
         }
     }
 }

@@ -8,7 +8,7 @@
         public const string PackageManagement = BaseNavigation + "-package-management";
         public const string VolumeManagement = BaseNavigation + "-volume-management";
         public const string EventViewer = BaseNavigation + "-event-viewer";
-        public const string SystemView = BaseNavigation + "-system-view";
+        public const string SystemStatus = BaseNavigation + "-system-status";
         public const string Dashboard = BaseNavigation + "-dasboard";
         public const string Empty = BaseNavigation + "-empty";
 
