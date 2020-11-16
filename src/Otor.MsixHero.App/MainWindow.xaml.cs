@@ -27,14 +27,24 @@ namespace Otor.MsixHero.App
     /// </summary>
     public partial class MainWindow
     {
+        private readonly WindowChromeBehavior behavior;
+
         public MainWindow(IInteractionService interactionService, IDialogService dialogService, IModuleManager moduleManager)
         {
             InitializeComponent();
 
-            var b = new WindowChromeBehavior();
-            b.IgnoreTaskbarOnMaximize = false;
-            b.TryToBeFlickerFree = true;
-            Interaction.GetBehaviors(this).Add(b);
+            this.behavior = new WindowChromeBehavior();
+            this.behavior.IgnoreTaskbarOnMaximize = false;
+            this.behavior.TryToBeFlickerFree = true;
+            this.behavior.ResizeBorderThickness = this.WindowState == WindowState.Maximized ? new Thickness(0) : SystemParameters.WindowResizeBorderThickness;
+            Interaction.GetBehaviors(this).Add(this.behavior);
+
+            this.StateChanged += OnStateChanged;
+        }
+
+        private void OnStateChanged(object sender, EventArgs e)
+        {
+            this.behavior.ResizeBorderThickness = this.WindowState == WindowState.Maximized ? new Thickness(0) : SystemParameters.WindowResizeBorderThickness;
         }
 
         private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)

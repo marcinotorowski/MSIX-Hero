@@ -1,0 +1,174 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.EventViewer.Views.EventViewerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:mvvm1="clr-namespace:Otor.MsixHero.App.Mvvm"
+             x:Name="Root"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.ViewModels"
+             mc:Ignorable="d" 
+             Background="#ffffff"
+             d:DesignWidth="600"
+             d:DesignHeight="200"
+             d:DataContext="{d:DesignInstance viewModels:EventViewerViewModel}">
+
+    <controls:ProgressOverlay 
+        IsShown="{Binding Progress.IsLoading}" Message="{Binding Progress.Message}" Progress="{Binding Progress.Progress}" CancelCommand="{Binding Progress.Cancel}" SupportsCancelling="{Binding Progress.SupportsCancelling}">
+        <AdornerDecorator>
+            <DockPanel>
+                <WrapPanel DockPanel.Dock="Top">
+                    <Button 
+                        IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+                        Command="Refresh" 
+                        Style="{StaticResource ActionButton}">
+                        <controls:LabelWithIcon 
+                            Icon16x16="M 7.5 1 C 3.914063 1 1 3.914063 1 7.5 C 1 11.085938 3.914063 14 7.5 14 C 11.085938 14 14 11.085938 14 7.5 L 14 7 L 13 7 L 13 7.5 C 13 10.542969 10.542969 13 7.5 13 C 4.457031 13 2 10.542969 2 7.5 C 2 4.457031 4.457031 2 7.5 2 C 9.140625 2 10.597656 2.722656 11.605469 3.859375 L 10.464844 5 L 14 5 L 14 1.464844 L 12.3125 3.152344 C 11.121094 1.835938 9.410156 1 7.5 1 Z"
+                            Content="Refresh"
+                            Style="{StaticResource ActionLabelWithIcon}" />
+                    </Button>
+                </WrapPanel>
+                <ListView  
+                    ItemsSource="{Binding LogsView}"
+                    FocusVisualStyle="{x:Null}"
+                    IsSynchronizedWithCurrentItem="False"
+                    VirtualizingPanel.IsVirtualizing="True"
+                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                    x:Name="ListView"
+                    Foreground="Black"
+                    BorderThickness="0"
+                    Padding="0"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+                    <ListView.InputBindings>
+                        <KeyBinding Modifiers="Control" Key="F" Command="Search" />
+                    </ListView.InputBindings>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="10" />
+                            <Setter Property="BorderThickness" Value="0 0 0 0" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListViewItem">
+                                        <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                            <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
+                                                <GridViewRowPresenter Margin="{TemplateBinding Padding}"  />
+                                            </Border>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                    <Setter Property="Background" Value="#E6F2FA" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="#B1D6F0" />
+                                    <Setter Property="Background" Value="#CDE6F7" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView x:Name="GridView">
+                            <GridView.Columns>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Level" Content="Level" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border ToolTip="{Binding Level}" x:Name="Border" Margin="0 -8" Width="24" Height="24" Background="CornflowerBlue" SnapsToDevicePixels="True" UseLayoutRounding="True">
+                                                <Path x:Name="Path" Data="M 16 4 C 13.800781 4 12 5.800781 12 8 C 12 10.199219 13.800781 12 16 12 C 18.199219 12 20 10.199219 20 8 C 20 5.800781 18.199219 4 16 4 Z M 16 6 C 17.117188 6 18 6.882813 18 8 C 18 9.117188 17.117188 10 16 10 C 14.882813 10 14 9.117188 14 8 C 14 6.882813 14.882813 6 16 6 Z M 11 13 L 11 18 L 13 18 L 13 23 L 11 23 L 11 28 L 21 28 L 21 23 L 19 23 L 19 13 Z M 13 15 L 17 15 L 17 25 L 19 25 L 19 26 L 13 26 L 13 25 L 15 25 L 15 16 L 13 16 Z" Fill="White" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Path.LayoutTransform>
+                                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                                    </Path.LayoutTransform>
+                                                </Path>
+                                            </Border>
+                                            <DataTemplate.Triggers>
+                                                <DataTrigger Binding="{Binding Level}" Value="Warning">
+                                                    <Setter Property="Background" TargetName="Border" Value="DarkOrange" />
+                                                    <Setter TargetName="Path" Property="Data" Value="M 16 3.21875 L 15.125 4.71875 L 3.125 25.5 L 2.28125 27 L 29.71875 27 L 28.875 25.5 L 16.875 4.71875 Z M 16 7.21875 L 26.25 25 L 5.75 25 Z M 15 14 L 15 20 L 17 20 L 17 14 Z M 15 21 L 15 23 L 17 23 L 17 21 Z" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Level}" Value="Error">
+                                                    <Setter Property="Background" TargetName="Border" Value="IndianRed" />
+                                                    <Setter TargetName="Path" Property="Data" Value="M 9.4375 5 L 9.15625 5.5 L 3.15625 15.5 L 2.84375 16 L 3.15625 16.5 L 9.15625 26.5 L 9.4375 27 L 22.5625 27 L 22.84375 26.5 L 28.84375 16.5 L 29.15625 16 L 28.84375 15.5 L 22.84375 5.5 L 22.5625 5 Z M 10.53125 7 L 21.46875 7 L 26.84375 16 L 21.46875 25 L 10.53125 25 L 5.15625 16 Z M 15 10 L 15 18 L 17 18 L 17 10 Z M 15 20 L 15 22 L 17 22 L 17 20 Z" />
+                                                </DataTrigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="PackageName" Content="App" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding PackageName}" controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="DateTime" Content="Created" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{mvvm1:CultureAwareBinding Path=DateTime}" controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="Message" Content="Message" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding Message}" controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ActivityId" Content="ActivityId" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{mvvm1:CultureAwareBinding Path=ActivityId}" controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="User" Content="User" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding User}" controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Click="GridHeaderOnClick" Tag="ThreadId" Content="ThreadId" />
+                                    </GridViewColumn.Header>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{mvvm1:CultureAwareBinding Path=ThreadId}" controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+        </AdornerDecorator>
+    </controls:ProgressOverlay>
+</UserControl>

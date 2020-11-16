@@ -97,6 +97,9 @@
     <Compile Update="Modules\Dialogs\Winget\YamlEditor\View\WingetView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\EventViewer\Views\EventViewerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\PackageManagement\Views\PackagesManyDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -215,6 +218,14 @@
     </Page>
     <Page Update="Modules\Dashboard\Views\DashboardSearchView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\EventViewer\Views\EventViewerSearchView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\EventViewer\Views\EventViewerView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\PackageManagement\Views\PackagesManyDetailsView.xaml">
       <SubType>Designer</SubType>

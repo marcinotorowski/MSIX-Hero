@@ -29,6 +29,13 @@
             public const string Search = BaseVolumeManagementNavigation + "-search";
         }
 
+        public static class EventViewerPaths
+        {
+            private const string BaseEventViewerNavigation = BaseNavigation + "-event-viewer";
+
+            public const string Search = BaseEventViewerNavigation + "-search";
+        }
+
         public static class DashboardPaths
         {
             private const string BaseDashboardNavigation = BaseNavigation + "-dashboard";

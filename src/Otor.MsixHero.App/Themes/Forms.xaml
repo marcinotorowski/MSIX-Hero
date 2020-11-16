@@ -2,6 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Text.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <Style TargetType="{x:Type TextBox}" x:Key="{x:Type TextBox}">
         <Setter Property="MinHeight" Value="30" />
         <Setter Property="BorderBrush" Value="#ccc" />

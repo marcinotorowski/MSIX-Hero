@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Dashboard;
+using Otor.MsixHero.App.Hero.Commands.EventViewer;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
@@ -64,6 +65,8 @@ namespace Otor.MsixHero.App.Hero.Executor
             detector.Subscribe(this);
 
             this.Handlers[typeof(SetToolFilterCommand)] = (command, token, progress) => this.SetToolFilter((SetToolFilterCommand)command);
+            
+            this.Handlers[typeof(SetEventViewerFilterCommand)] = (command, token, progress) => this.SetEventViewerFilter((SetEventViewerFilterCommand)command);
 
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
             this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
@@ -170,7 +173,7 @@ namespace Otor.MsixHero.App.Hero.Executor
                 case ApplicationMode.EventViewer:
                     this.moduleManager.LoadModule(ModuleNames.EventViewer);
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.EventViewer);
-                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.Empty);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.EventViewerPaths.Search);
                     break;
             }
 
@@ -198,6 +201,12 @@ namespace Otor.MsixHero.App.Hero.Executor
         private Task SetToolFilter(SetToolFilterCommand command)
         {
             this.ApplicationState.Dashboard.SearchKey = command.SearchKey;
+            return Task.FromResult(true);
+        }
+
+        private Task SetEventViewerFilter(SetEventViewerFilterCommand command)
+        {
+            this.ApplicationState.EventViewer.SearchKey = command.SearchKey;
             return Task.FromResult(true);
         }
 
@@ -341,17 +350,10 @@ namespace Otor.MsixHero.App.Hero.Executor
             var results = await manager.GetInstalledPackages(mode, cancellationToken, progressData).ConfigureAwait(false);
 
             // this.packageListSynchronizer.EnterWriteLock();
-            try
-            {
-                await this.detector.StopListening(cancellationToken).ConfigureAwait(false);
-                this.ApplicationState.Packages.AllPackages.Clear();
-                this.ApplicationState.Packages.AllPackages.AddRange(results);
-                await this.detector.Listen(this.ApplicationState.Packages.AllPackages, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                // this.packageListSynchronizer.ExitWriteLock();
-            }
+            await this.detector.StopListening(cancellationToken).ConfigureAwait(false);
+            this.ApplicationState.Packages.AllPackages.Clear();
+            this.ApplicationState.Packages.AllPackages.AddRange(results);
+            await this.detector.Listen(this.ApplicationState.Packages.AllPackages, cancellationToken).ConfigureAwait(false);
 
             switch (mode)
             {
