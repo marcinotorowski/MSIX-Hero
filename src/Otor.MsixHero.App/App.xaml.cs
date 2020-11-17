@@ -10,6 +10,7 @@ using Otor.MsixHero.App.Modules.Dialogs.AppAttach;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging;
+using Otor.MsixHero.App.Modules.Dialogs.Settings;
 using Otor.MsixHero.App.Modules.Dialogs.Signing;
 using Otor.MsixHero.App.Modules.Dialogs.Updates;
 using Otor.MsixHero.App.Modules.Dialogs.Winget;
@@ -95,6 +96,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(Modules.Dialogs.Volumes.VolumesModule), ModuleNames.Dialogs.Volumes, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(WingetModule), ModuleNames.Dialogs.Winget, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), ModuleNames.Dialogs.AppAttach, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(SettingsModule), ModuleNames.Dialogs.Settings, InitializationMode.OnDemand));
             
             base.ConfigureModuleCatalog(moduleCatalog);
         }

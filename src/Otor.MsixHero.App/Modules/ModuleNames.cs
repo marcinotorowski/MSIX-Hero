@@ -14,14 +14,15 @@
             private const string Base = "msix-hero-dialog-";
 
             public const string AppAttach = Base + "app-attach";
-            public const string AppInstaller = Base + "app-appinstaller";
-            public const string Dependencies = Base + "app-dependencies";
+            public const string AppInstaller = Base + "appinstaller";
+            public const string Dependencies = Base + "dependencies";
             public const string Packaging = Base + "app-packaging";
-            public const string Signing = Base + "app-signing";
-            public const string Updates = Base + "app-updates";
-            public const string Volumes = Base + "app-volumes";
+            public const string Signing = Base + "signing";
+            public const string Updates = Base + "updates";
+            public const string Volumes = Base + "volumes";
             // ReSharper disable once IdentifierTypo
-            public const string Winget = Base + "app-winget";
+            public const string Winget = Base + "winget";
+            public const string Settings = Base + "settings";
         }
     }
 }

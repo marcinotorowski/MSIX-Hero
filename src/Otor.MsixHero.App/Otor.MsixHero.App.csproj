@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <None Remove="Controls\CertificateSelector\Images\microsoftlogo.png" />
+    <None Remove="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
+    <None Remove="Modules\Dialogs\Settings\View\Images\sidebar.png" />
     <None Remove="Modules\PackageManagement\Views\mock2.png" />
     <None Remove="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png" />
     <None Remove="Modules\SystemStatus\View\Logos\AppPackage.png" />
@@ -32,6 +34,7 @@
   <ItemGroup>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.94" />
     <PackageReference Include="FluentWPF" Version="0.8.0" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
     <PackageReference Include="GraphX" Version="3.0.0" />
     <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.1" />
     <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
@@ -49,6 +52,8 @@
 
   <ItemGroup>
     <Resource Include="Controls\CertificateSelector\Images\microsoftlogo.png" />
+    <Resource Include="Modules\Dialogs\Settings\View\Images\no-sidebar.png" />
+    <Resource Include="Modules\Dialogs\Settings\View\Images\sidebar.png" />
     <Resource Include="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -178,6 +183,9 @@
     <Page Update="Modules\Dialogs\Packaging\Unpack\View\UnpackView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Settings\View\SettingsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\Signing\CertificateExport\View\CertificateExportView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

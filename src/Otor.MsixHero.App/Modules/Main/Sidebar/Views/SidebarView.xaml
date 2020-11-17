@@ -8,8 +8,87 @@
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:SidebarViewModel}">
-    <StackPanel>
+    <DockPanel
+        Width="60">
+        <DockPanel.Resources>
+            <Style TargetType="Button">
+                <Setter Property="Height" Value="60" />
+                <Setter Property="Width" Value="60" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="Transparent">
+                                <Ellipse 
+                                        Visibility="{TemplateBinding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Fill="#eeeeee"
+                                        Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                </Ellipse>
+
+                                <Ellipse 
+                                    x:Name="PART_Background"
+                                    Fill="#0173C7"
+                                    Opacity="0"
+                                    Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Ellipse.RenderTransform>
+                                        <ScaleTransform ScaleX="0.0" ScaleY="0.0" CenterX="20.5" CenterY="20.5" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+
+                                <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation 
+                                                    Duration="00:00:0.3"
+                                                    To="1.0"
+                                                    From="0.0"
+                                                    AutoReverse="True"
+                                                    AccelerationRatio="0.5"
+                                                    DecelerationRatio="0.5"
+                                                    Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                                    Storyboard.TargetName="PART_Background">
+                                                </DoubleAnimation>
+                                                <DoubleAnimation 
+                                                    Duration="00:00:0.3"
+                                                    To="1.0"
+                                                    From="0.0"
+                                                    AutoReverse="True"
+                                                    AccelerationRatio="0.5"
+                                                    DecelerationRatio="0.5"
+                                                    Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                                    Storyboard.TargetName="PART_Background">
+                                                </DoubleAnimation>
+                                                <DoubleAnimation 
+                                                    Duration="00:00:0.3"
+                                                    To="0.3"
+                                                    From="0.0"
+                                                    AutoReverse="True"
+                                                    AccelerationRatio="0.5"
+                                                    DecelerationRatio="0.5"
+                                                    Storyboard.TargetProperty="Opacity"
+                                                    Storyboard.TargetName="PART_Background">
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value="0.4" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Resources>
         <ListBox 
+            DockPanel.Dock="Top"
             SelectedItem="{Binding SelectedItem}"
             SelectionMode="Single"
             Width="60"
@@ -24,6 +103,7 @@
                     <Setter Property="Height" Value="60" />
                     <Setter Property="Width" Value="60" />
                     <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="IsHitTestVisible" Value="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected, Converter={StaticResource NegativeConverter}}" />
                     <Setter Property="ToolTip" Value="{Binding Title}" />
                     <Setter Property="Template">
                         <Setter.Value>
@@ -36,14 +116,21 @@
                                     </Border>
 
                                     <Ellipse 
+                                        Visibility="{TemplateBinding IsMouseOver, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Fill="#eeeeee"
+                                        Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    </Ellipse>
+
+                                    <Ellipse 
                                         x:Name="PART_Background"
-                                        Fill="#B1D6F0"
+                                        Fill="#0173C7"
                                         Opacity="0"
                                         Width="41" Height="41" VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <Ellipse.RenderTransform>
                                             <ScaleTransform ScaleX="0.0" ScaleY="0.0" CenterX="20.5" CenterY="20.5" />
                                         </Ellipse.RenderTransform>
                                     </Ellipse>
+                                    <!--Fill="#B1D6F0"-->
 
                                     <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
                                 </Grid>
@@ -73,7 +160,7 @@
                                                     </DoubleAnimation>
                                                     <DoubleAnimation 
                                                         Duration="00:00:0.3"
-                                                        To="1.0"
+                                                        To="0.3"
                                                         From="0.0"
                                                         AccelerationRatio="0.5"
                                                         DecelerationRatio="0.5"
@@ -107,7 +194,7 @@
                                                     <DoubleAnimation 
                                                         Duration="00:00:0.3"
                                                         To="0.0"
-                                                        From="1.0"
+                                                        From="0.3"
                                                         AccelerationRatio="0.5"
                                                         DecelerationRatio="0.5"
                                                         Storyboard.TargetProperty="Opacity"
@@ -140,5 +227,19 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </StackPanel>
+
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
+            <Button 
+                ToolTip="Configure MSIX Hero settings..."
+                Command="{Binding SettingsCommand}">
+                <Viewbox Width="24" Height="24">
+                    <Path 
+                        Data="{StaticResource VectorGear}"
+                        Width="32"
+                        Height="32"
+                        Fill="#0173C7" />
+                </Viewbox>
+            </Button>
+        </StackPanel>
+    </DockPanel>
 </UserControl>
