@@ -12,7 +12,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<PackageManagementView, PackageManagementViewModel>(NavigationPaths.PackageManagement);
-            containerRegistry.RegisterForNavigation<PackagesSearchView>(NavigationPaths.PackageManagementPaths.Search);
+            containerRegistry.RegisterForNavigation<PackagesSearchView, PackagesSearchViewModel>(NavigationPaths.PackageManagementPaths.Search);
             containerRegistry.RegisterForNavigation<PackagesNoDetailsView>(NavigationPaths.PackageManagementPaths.ZeroSelection);
             containerRegistry.RegisterForNavigation<PackagesSingleDetailsView>(NavigationPaths.PackageManagementPaths.SingleSelection);
             containerRegistry.RegisterForNavigation<PackagesManyDetailsView>(NavigationPaths.PackageManagementPaths.MultipleSelection);

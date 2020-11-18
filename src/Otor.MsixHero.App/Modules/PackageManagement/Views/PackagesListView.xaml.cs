@@ -27,7 +27,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Views
         private readonly IConfigurationService configService;
         private IList<MenuItem> tools;
         // ReSharper disable once NotAccessedField.Local
-        private readonly PackagesListCommandHandler commandHandler;
+        private readonly PackagesManagementCommandHandler commandHandler;
 
         public PackagesListView(
             IMsixHeroApplication application, 
@@ -48,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Views
             this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
             this.ListBox.PreviewKeyUp += ListBoxOnKeyUp;
 
-            this.commandHandler = new PackagesListCommandHandler(this, application, interactionService, packageManagerProvider, busyManager);
+            this.commandHandler = new PackagesManagementCommandHandler(this, application, interactionService, packageManagerProvider, busyManager);
         }
 
         private void ListBoxOnKeyDown(object sender, KeyEventArgs e)

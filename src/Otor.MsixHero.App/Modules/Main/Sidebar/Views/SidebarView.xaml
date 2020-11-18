@@ -82,7 +82,30 @@
                 </Setter>
                 <Style.Triggers>
                     <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value="0.4" />
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation 
+                                        AccelerationRatio="0.5"
+                                        DecelerationRatio="0.5"
+                                        Duration="00:00:0.3"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="0.4" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation 
+                                        AccelerationRatio="0.5"
+                                        DecelerationRatio="0.5"
+                                        Duration="00:00:0.3"
+                                        Storyboard.TargetProperty="Opacity"
+                                        To="1.0" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -210,7 +233,30 @@
                     </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.4" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                            AccelerationRatio="0.5"
+                                            DecelerationRatio="0.5"
+                                            Duration="00:00:0.3"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.4" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation 
+                                            AccelerationRatio="0.5"
+                                            DecelerationRatio="0.5"
+                                            Duration="00:00:0.3"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="1.0" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
                     </Style.Triggers>
                 </Style>

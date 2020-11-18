@@ -17,16 +17,16 @@ using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
+namespace Otor.MsixHero.App.Modules.PackageManagement
 {
-    public class PackagesListCommandHandler
+    public class PackagesManagementCommandHandler
     {
         private readonly IMsixHeroApplication application;
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly IBusyManager busyManager;
 
-        public PackagesListCommandHandler(
+        public PackagesManagementCommandHandler(
             UIElement parent, 
             IMsixHeroApplication application, 
             IInteractionService interactionService,

@@ -11,7 +11,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<VolumeManagementView, VolumeManagementViewModel>(NavigationPaths.VolumeManagement);
-            containerRegistry.RegisterForNavigation<VolumesSearchView>(NavigationPaths.VolumeManagementPaths.Search);
+            containerRegistry.RegisterForNavigation<VolumesSearchView, VolumesSearchViewModel>(NavigationPaths.VolumeManagementPaths.Search);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

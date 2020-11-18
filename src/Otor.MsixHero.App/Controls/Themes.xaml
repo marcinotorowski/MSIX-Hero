@@ -6,6 +6,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Buttons.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Themes/Icons.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Volume/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TransitionContentControl/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>

@@ -69,6 +69,14 @@
     <Style TargetType="Button" x:Key="ActionButton" BasedOn="{StaticResource ActionButtonBase}">
     </Style>
 
+    <Style TargetType="Button" x:Key="ActionButtonHideWhenDisabled" BasedOn="{StaticResource ActionButtonBase}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="ToggleButton" x:Key="ActionPopupToggleButton" BasedOn="{StaticResource ActionButtonBase}">
         <Setter Property="Template">
             <Setter.Value>
@@ -126,6 +134,22 @@
                 <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
                 <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
                 <Setter Property="TextBlock.Foreground" Value="White" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="ActionPopupToggleButtonHideWhenDisabled" BasedOn="{StaticResource ActionPopupToggleButton}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ToggleButton" x:Key="ActionToggleButtonHideWhenDisabled" BasedOn="{StaticResource ActionToggleButton}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Visibility" Value="Collapsed" />
             </Trigger>
         </Style.Triggers>
     </Style>

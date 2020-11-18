@@ -157,6 +157,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
                 this.Items.Add(new InstalledPackageViewModel(item));
             }
         }
+
         private bool IsPackageVisible(InstalledPackageViewModel item)
         {
             var signatureFlags = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.AllSources;
