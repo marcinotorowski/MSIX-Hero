@@ -20,6 +20,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Users;
+using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -36,6 +37,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
     {
         private readonly IInterProcessCommunicationManager interProcessCommunicationManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
+        private ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider;
         private readonly IRunningDetector runningDetector;
         private readonly IDialogService dialogService;
         private readonly string packagePath;
@@ -45,6 +47,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             string packagePath,
             IInterProcessCommunicationManager interProcessCommunicationManager,
             ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider,
+            ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService,
             IRunningDetector runningDetector,
@@ -52,6 +55,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         {
             this.interProcessCommunicationManager = interProcessCommunicationManager;
             this.appxPackageManagerProvider = appxPackageManagerProvider;
+            this.appxVolumeManagerProvider = appxVolumeManagerProvider;
             this.runningDetector = runningDetector;
             this.packagePath = packagePath;
             this.dialogService = dialogService;
@@ -83,8 +87,10 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                     // Load add-ons
                     var taskAddOns = this.GetAddOns(manifest, cts.Token);
 
-                    // Load users
+                    // Load drive
+                    var taskDisk = this.Disk.Load(this.LoadDisk());
 
+                    // Load users
                     Task<FoundUsersViewModel> taskUsers;
                     try
                     {
@@ -99,7 +105,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                     await this.PackageSupportFramework.Load(taskPsf).ConfigureAwait(false);
                     await this.AddOns.Load(taskAddOns).ConfigureAwait(false);
                     await this.Users.Load(taskUsers).ConfigureAwait(false);
-
+                    
                     // Wait for them all
                     var allTasks = Task.WhenAll(taskLoadPackage, taskLoadSignature, taskPsf, taskAddOns, taskUsers);
                     this.Progress.MonitorProgress(allTasks, cts, progress);
@@ -108,7 +114,16 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             }
         }
 
+        public async Task<PackageDriveViewModel> LoadDisk()
+        {
+            var disk = new PackageDriveViewModel(this.appxVolumeManagerProvider);
+            await disk.Load(this.packagePath);
+            return disk;
+        }
+
         public TrustViewModel Trust { get; }
+
+        public AsyncProperty<PackageDriveViewModel> Disk { get; } = new AsyncProperty<PackageDriveViewModel>();
 
         public AsyncProperty<PackageExpertPropertiesViewModel> Manifest { get; } = new AsyncProperty<PackageExpertPropertiesViewModel>();
 

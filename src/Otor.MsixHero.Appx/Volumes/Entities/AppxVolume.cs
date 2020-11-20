@@ -24,6 +24,9 @@ namespace Otor.MsixHero.Appx.Volumes.Entities
         [XmlAttribute]
         public long AvailableFreeSpace { get; set; }
 
+        public long OccupiedSpace => this.Capacity - this.AvailableFreeSpace;
+        public int Percent => this.AvailableFreeSpace == 0 ? 0 : (int)(100 * (float)(Capacity - AvailableFreeSpace) / AvailableFreeSpace);
+
         [XmlAttribute]
         public bool IsDriveReady { get; set; }
 

@@ -26,6 +26,7 @@
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunPackage}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.DependencyViewer}" Command="{Binding CommandHandler.ViewDependencies}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.ChangeVolume}" Command="{Binding CommandHandler.ChangeVolume}" />
         <commands:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
         <commands:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
         <commands:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />

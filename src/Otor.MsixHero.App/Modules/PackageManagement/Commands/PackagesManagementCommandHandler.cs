@@ -68,11 +68,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.RemovePackage = new DelegateCommand(this.OnRemovePackage, this.CanRemovePackage);
             this.Copy = new DelegateCommand<object>(this.OnCopy, this.CanCopy);
             this.ViewDependencies = new DelegateCommand(this.OnViewDependencies, this.CanViewDependencies);
+            this.ChangeVolume = new DelegateCommand(this.OnChangeVolume, this.CanChangeVolume);
         }
 
         public ICommand Refresh { get; }
 
         public ICommand ViewDependencies { get; }
+
+        public ICommand ChangeVolume { get; }
 
         public ICommand AddPackage { get; }
 
@@ -391,6 +394,23 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private bool CanCheckUpdates()
         {
             return this.application.ApplicationState.Packages.SelectedPackages.Any(p => p.SignatureKind == SignatureKind.Store || p.AppInstallerUri != null);
+        }
+
+        private bool CanChangeVolume() => this.GetSingleOrDefaultSelection()?.InstallLocation != null;
+
+        private void OnChangeVolume()
+        {
+            var selection = this.GetSingleOrDefaultSelection();
+            if (selection?.InstallLocation == null)
+            {
+                return;
+            }
+
+            this.moduleManager.LoadModule(ModuleNames.Dialogs.Volumes);
+            IDialogParameters parameters = new DialogParameters();
+            parameters.Add("file", this.GetSingleOrDefaultSelection().InstallLocation);
+
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesChangeVolume, parameters, this.OnDialogOpened);
         }
 
         private void OnViewDependencies()

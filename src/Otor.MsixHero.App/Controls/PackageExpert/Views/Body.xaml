@@ -18,6 +18,7 @@
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
              xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items"
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
@@ -591,7 +592,7 @@
         <TabItem
             Header="Installation">
             <TabControl Margin="0 -7 0 0">
-                <TabItem DataContext="{Binding Manifest.CurrentValue}">
+                <TabItem>
                     <TabItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock>
@@ -614,6 +615,8 @@
                                 </TextBlock>
 
                                 <source:StoreSource FamilyName="{Binding FamilyName}" />
+
+
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type sources:AppInstallerPackageSource}">
@@ -687,7 +690,31 @@
                         </DataTemplate>
                     </TabItem.Resources>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <ContentControl Content="{Binding Model.Source}" />
+                        <StackPanel>
+                            <ContentControl Content="{Binding Manifest.CurrentValue.Model.Source}" />
+
+                            <controls:ProgressOverlay IsShown="{Binding Disk.IsLoading}">
+                                <StackPanel>
+
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
+
+                                    <volume:VolumeControl
+                                        DataContext="{Binding Disk.CurrentValue}"
+                                        IsDefault="{Binding Disk.IsDefault}"
+                                        IsOffline="{Binding Disk.IsOffline}"
+                                        Label="{Binding Disk.DiskLabel}"
+                                        Path="{Binding Disk.PackageStorePath}"
+                                        OccupiedSize="{Binding Disk.OccupiedSpace}"
+                                        TotalSize="{Binding Disk.Capacity}" />
+
+                                    <TextBlock HorizontalAlignment="Left" Margin="0 10 0 0">
+                                        <Hyperlink Command="{x:Static hero:MsixHeroCommands.ChangeVolume}">
+                                            <Run Text="Change install directory..." />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </controls:ProgressOverlay>
+                        </StackPanel>
                     </ScrollViewer>
                 </TabItem>
                 <TabItem>

@@ -10,6 +10,7 @@ using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes;
@@ -44,6 +45,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 
         private readonly IInterProcessCommunicationManager ipcManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
         private readonly IRunningDetector runningDetector;
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
@@ -55,9 +57,10 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         public PackageExpertControl(IEventAggregator eventAggregator,
             IInterProcessCommunicationManager ipcManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
+            ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
             IRunningDetector runningDetector,
             IInteractionService interactionService,
-            ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
             IDialogService dialogService,
             IConfigurationService configurationService
         )
@@ -66,6 +69,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.context.PropertyChanged += this.OnPropertyChanged;
             this.ipcManager = ipcManager;
             this.packageManagerProvider = packageManagerProvider;
+            this.volumeManagerProvider = volumeManagerProvider;
             this.runningDetector = runningDetector;
             this.interactionService = interactionService;
             this.signingManagerProvider = signingManagerProvider;
@@ -147,6 +151,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 newFilePath,
                 sender.ipcManager,
                 sender.packageManagerProvider,
+                sender.volumeManagerProvider,
                 sender.signingManagerProvider,
                 sender.interactionService,
                 sender.runningDetector,
