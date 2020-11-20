@@ -6,18 +6,15 @@ using System.Windows;
 using System.Windows.Controls;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
 using Otor.MsixHero.App.Controls.PackageExpert.Views;
-using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Common;
 using Prism.Events;
 using Prism.Regions;
@@ -53,14 +50,9 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         private readonly IDialogService dialogService;
         private readonly IConfigurationService configurationService;
         private readonly ObservableObject<object> context;
-        private readonly PackageExpertCommandHandler commandHandler;
         private ActionBar actionBar;
 
-        public PackageExpertControl(
-            IMsixHeroApplication application,
-            IBusyManager busyManager,
-            IRegionManager regionManager,
-            IEventAggregator eventAggregator,
+        public PackageExpertControl(IEventAggregator eventAggregator,
             IInterProcessCommunicationManager ipcManager,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             IRunningDetector runningDetector,
@@ -81,16 +73,6 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.configurationService = configurationService;
 
             eventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.CreateTools, ThreadOption.UIThread);
-            
-            this.commandHandler = new PackageExpertCommandHandler(
-                this,
-                regionManager,
-                application,
-                busyManager,
-                packageManagerProvider,
-                configurationService, 
-                interactionService, 
-                new FileInvoker(interactionService));
         }
 
         public override void OnApplyTemplate()
@@ -140,11 +122,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             private set => SetValue(ErrorMessagePropertyKey, value);
         }
 
-        public bool IsLoading
-        {
-            get => (bool)GetValue(IsLoadingProperty);
-            private set => SetValue(IsLoadingPropertyKey, value);
-        }
+        public bool IsLoading => (bool)GetValue(IsLoadingProperty);
 
         public string FilePath
         {
@@ -179,14 +157,12 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 await newDataContext.Load().ConfigureAwait(true);
                 sender.Package = newDataContext;
                 sender.ErrorMessage = null;
-                sender.commandHandler.Package = newDataContext.Manifest.CurrentValue.Model;
             }
             catch (Exception exception)
             {
                 sender.Package = null;
                 sender.ErrorMessage = "Could not load details. " + exception.Message;
                 Logger.Warn($"Could not load details of package '{newFilePath}'.");
-                sender.commandHandler.Package = null;
             }
         }
     }

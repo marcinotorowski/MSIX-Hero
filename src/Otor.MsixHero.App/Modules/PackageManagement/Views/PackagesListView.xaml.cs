@@ -10,10 +10,7 @@ using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Modules.PackageManagement.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items;
-using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Views
@@ -26,29 +23,23 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Views
         private readonly IMsixHeroApplication application;
         private readonly IConfigurationService configService;
         private IList<MenuItem> tools;
-        // ReSharper disable once NotAccessedField.Local
-        private readonly PackagesManagementCommandHandler commandHandler;
 
         public PackagesListView(
             IMsixHeroApplication application, 
-            IConfigurationService configService,
-            IInteractionService interactionService,
-            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
-            IBusyManager busyManager
-            )
+            IConfigurationService configService)
         {
             this.application = application;
             this.configService = configService;
+
             application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(payload => this.tools = null);
             application.EventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesFailed, ThreadOption.UIThread);
             application.EventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuting);
             application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCancelled, ThreadOption.UIThread);
             application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
+            
             this.InitializeComponent();
             this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
             this.ListBox.PreviewKeyUp += ListBoxOnKeyUp;
-
-            this.commandHandler = new PackagesManagementCommandHandler(this, application, interactionService, packageManagerProvider, busyManager);
         }
 
         private void ListBoxOnKeyDown(object sender, KeyEventArgs e)

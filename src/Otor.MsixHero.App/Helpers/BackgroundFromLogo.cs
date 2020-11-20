@@ -87,20 +87,20 @@ namespace Otor.MsixHero.App.Helpers
             {
                 targetColor = new System.Windows.Media.Color
                 {
-                    A = 175,
-                    R = 155,
-                    B = 155,
-                    G = 155
+                    A = 60,
+                    R = 1,
+                    G = 115,
+                    B = 199
                 };
             }
             else
             {
                 targetColor = new System.Windows.Media.Color
                 {
-                    A = Math.Min(c.A, (byte)80),
+                    A = Math.Min(c.A, (byte)60),
                     R = c.R,
-                    B = c.B,
-                    G = c.G
+                    G = c.G,
+                    B = c.B
                 };
             }
 

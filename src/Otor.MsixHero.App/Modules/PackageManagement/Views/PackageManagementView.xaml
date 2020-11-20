@@ -5,10 +5,32 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+             xmlns:commands1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels"
+             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" 
+             d:DataContext="{d:DesignInstance viewModels:PackageManagementViewModel}">
+
+    <commands:RoutedCommandHandlers.Commands>
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.AddPackage}" Command="{Binding CommandHandler.AddPackage}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenExplorer}" Command="{Binding CommandHandler.OpenExplorer}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenExplorerUser}" Command="{Binding CommandHandler.OpenUserExplorer}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenManifest}" Command="{Binding CommandHandler.OpenManifest}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenConfigJson}" Command="{Binding CommandHandler.OpenConfigJson}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenStore}" Command="{Binding CommandHandler.OpenStore}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.CheckUpdates}" Command="{Binding CommandHandler.CheckUpdates}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunPackage}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.DependencyViewer}" Command="{Binding CommandHandler.ViewDependencies}" />
+        <commands:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
+        <commands:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
+        <commands:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />
+        <commands:RoutedCommandHandler RoutedCommand="New" Command="{Binding CommandHandler.AddPackage}" />
+    </commands:RoutedCommandHandlers.Commands>
 
     <Grid>
         <Grid.ColumnDefinitions>

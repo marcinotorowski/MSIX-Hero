@@ -7,27 +7,42 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
+             d:DesignHeight="155" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
     <Border 
         DataContext="{Binding Manifest.CurrentValue}" 
         helpers:BackgroundFromLogo.LogoColor="{Binding TileColor}"
-        Background="#00000000">
+        Background="#ffffff">
         <Grid ClipToBounds="True">
             <Image 
                 VerticalAlignment="Top"
-                Height="148"
-                Opacity="0.22"
+                Opacity="0.16"
                 Stretch="Fill" 
+                Height="155"
                 Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}"
                 RenderTransformOrigin="0.5 0.5"
                 RenderOptions.BitmapScalingMode="NearestNeighbor">
                 <Image.RenderTransform>
-                    <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+                    <ScaleTransform ScaleX="1.2" ScaleY="3.2" />
                 </Image.RenderTransform>
                 <Image.Effect>
-                    <BlurEffect Radius="100"/>
+                    <BlurEffect Radius="42"/>
                 </Image.Effect>
             </Image>
+
+            <TextBlock
+                MaxHeight="90"
+                TextAlignment="Right"
+                HorizontalAlignment="Stretch"
+                FontSize="75"
+                Opacity="0.5"
+                Margin="0 55 0 0"
+                TextWrapping="Wrap"
+                Foreground="White" Text="{Binding DisplayName}">
+
+                <TextBlock.Effect>
+                    <BlurEffect Radius="20"/>
+                </TextBlock.Effect>
+            </TextBlock>
 
             <Rectangle Opacity="0.03" ClipToBounds="True">
                 <Rectangle.Fill>
@@ -40,7 +55,7 @@
             </Rectangle>
 
             <Border 
-                DockPanel.Dock="Top" MinHeight="148" >
+                DockPanel.Dock="Top" Height="155" >
                 <Border.Resources>
                     <!--
             Background="#EFEFEF"
@@ -91,7 +106,7 @@
                 <StackPanel Margin="12">
                     <DockPanel VerticalAlignment="Top">
                         <Border 
-                    Background="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                    Background="#11333333"
                     Width="48" 
                     Height="48">
                             <Border 

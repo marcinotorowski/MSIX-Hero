@@ -77,6 +77,7 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IDependencyMapper, DependencyMapper>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
+            containerRegistry.RegisterSingleton<PrismServices>();
         }
         
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
