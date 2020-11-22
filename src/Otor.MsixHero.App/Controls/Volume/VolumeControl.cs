@@ -6,12 +6,10 @@ namespace Otor.MsixHero.App.Controls.Volume
 {
     public class VolumeControl : Control
     {
-        private static readonly DependencyPropertyKey CaptionPropertyKey = DependencyProperty.RegisterReadOnly("Caption", typeof(string), typeof(VolumeControl), new PropertyMetadata(null));
         private static readonly DependencyPropertyKey DisplayNamePropertyKey = DependencyProperty.RegisterReadOnly("DisplayName", typeof(string), typeof(VolumeControl), new PropertyMetadata(null));
         private static readonly DependencyPropertyKey PercentPropertyKey = DependencyProperty.RegisterReadOnly("Percent", typeof(double), typeof(VolumeControl), new PropertyMetadata(0.0));
         private static readonly DependencyPropertyKey ThresholdReachedPropertyKey = DependencyProperty.RegisterReadOnly("ThresholdReached", typeof(bool), typeof(VolumeControl), new PropertyMetadata(false));
         
-        public static readonly DependencyProperty CaptionProperty = CaptionPropertyKey.DependencyProperty;
         public static readonly DependencyProperty DisplayNameProperty = DisplayNamePropertyKey.DependencyProperty;
         public static readonly DependencyProperty PercentProperty = PercentPropertyKey.DependencyProperty;
         public static readonly DependencyProperty ThresholdReachedProperty = ThresholdReachedPropertyKey.DependencyProperty;
@@ -40,12 +38,6 @@ namespace Otor.MsixHero.App.Controls.Volume
         {
             get => (bool)GetValue(IsOfflineProperty);
             set => SetValue(IsOfflineProperty, value);
-        }
-
-        public string Caption
-        {
-            get => (string)GetValue(CaptionProperty);
-            private set => SetValue(CaptionPropertyKey, value);
         }
 
         public bool ThresholdReached
@@ -170,45 +162,11 @@ namespace Otor.MsixHero.App.Controls.Volume
             if (this.TotalSize == 0)
             {
                 this.Percent = double.NaN;
-                this.Caption = "Unknown size";
                 this.ThresholdReached = false;
             }
 
-            var sizeFree = FormatSize(this.TotalSize - this.OccupiedSize);
-            var sizeTotal = FormatSize(this.TotalSize);
-            this.Caption = $"{sizeFree} free of {sizeTotal}";
             this.Percent = 100.0 * OccupiedSize / TotalSize;
             this.ThresholdReached = this.Percent >= 90.0;
-        }
-
-        private static string FormatSize(long sizeInBytes)
-        {
-            if (sizeInBytes < 1000)
-            {
-                return sizeInBytes + " B";
-            }
-
-            var units = new[] { "TB", "GB", "MB", "KB" };
-
-            double size = sizeInBytes;
-            for (var i = units.Length - 1; i >= 0; i--)
-            {
-                size /= 1024.0;
-
-                if (size < 1024)
-                {
-                    return $"{size:0} {units[i]}";
-                }
-
-                if (size < 10 * 1024 && i > 0)
-                {
-                    i--;
-                    size = Math.Floor(100.0 * size / 1024) / 100;
-                    return $"{size:0.00} {units[i]}";
-                }
-            }
-
-            return $"{size:0} {units[0]}";
         }
     }
 }

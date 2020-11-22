@@ -46,7 +46,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         private readonly IInterProcessCommunicationManager ipcManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
-        private readonly IRunningDetector runningDetector;
+        private readonly IRunningAppsDetector runningDetector;
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
         private readonly IDialogService dialogService;
@@ -59,7 +59,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
-            IRunningDetector runningDetector,
+            IRunningAppsDetector runningDetector,
             IInteractionService interactionService,
             IDialogService dialogService,
             IConfigurationService configurationService

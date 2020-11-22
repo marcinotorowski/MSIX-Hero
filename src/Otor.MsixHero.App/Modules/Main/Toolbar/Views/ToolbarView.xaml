@@ -12,7 +12,14 @@
         <Border
             WindowChrome.IsHitTestVisibleInChrome="True"
             Background="#0173C7" Height="58" Width="60" DockPanel.Dock="Left">
-            <Path Fill="White" Width="16" Height="16" Data="M 1 2 L 1 3 L 14 3 L 14 2 Z M 1 7 L 1 8 L 14 8 L 14 7 Z M 1 12 L 1 13 L 14 13 L 14 12 Z" />
+            <!--<Path Fill="White" Width="16" Height="16" Data="M 1 2 L 1 3 L 14 3 L 14 2 Z M 1 7 L 1 8 L 14 8 L 14 7 Z M 1 12 L 1 13 L 14 13 L 14 12 Z" />-->
+            <Image 
+                RenderOptions.BitmapScalingMode="HighQuality"
+                Source="/Resources/msix-hero-32.png" 
+                Width="32"
+                Height="32"
+                Stretch="None"
+                SnapsToDevicePixels="True" UseLayoutRounding="True" />
         </Border>
 
         <ContentControl 

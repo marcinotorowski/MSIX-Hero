@@ -7,7 +7,6 @@
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
              xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
-             xmlns:commands1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels"
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
              mc:Ignorable="d" 
@@ -23,10 +22,17 @@
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenStore}" Command="{Binding CommandHandler.OpenStore}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.CheckUpdates}" Command="{Binding CommandHandler.CheckUpdates}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RunTool}" Command="{Binding CommandHandler.RunTool}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RunPackage}" Command="{Binding CommandHandler.RunPackage}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.StartPackage}" Command="{Binding CommandHandler.StartApp}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.RemovePackage}" Command="{Binding CommandHandler.RemovePackage}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.DependencyViewer}" Command="{Binding CommandHandler.ViewDependencies}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.ChangeVolume}" Command="{Binding CommandHandler.ChangeVolume}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.MountRegistry}" Command="{Binding CommandHandler.MountRegistry}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.DismountRegistry}" Command="{Binding CommandHandler.DismountRegistry}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.AppInstaller}" Command="{Binding CommandHandler.ShowAppInstallerDialog}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.Winget}" Command="{Binding CommandHandler.ShowWingetDialog}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ShowModificationPackageDialog}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.StartPackage}" Command="{Binding CommandHandler.StartApp}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.StopPackage}" Command="{Binding CommandHandler.StopApp}" />
         <commands:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
         <commands:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
         <commands:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />

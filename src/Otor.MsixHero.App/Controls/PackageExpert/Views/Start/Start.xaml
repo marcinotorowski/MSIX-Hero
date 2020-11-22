@@ -12,6 +12,7 @@
     xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
     xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d" 
     MinWidth="250"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
@@ -32,9 +33,12 @@
                 <DataTemplate DataType="{x:Type items:AppxApplicationViewModel}">
                     <Button
                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                        Command="{x:Static commands:MsixHeroCommands.RunPackage}"
+                        Command="{x:Static commands:MsixHeroCommands.StartPackage}"
                         CommandParameter="{Binding Id}"
                         Style="{StaticResource ButtonSquare}">
+                        <b:Interaction.Behaviors>
+                            <helpers:ButtonClosePopup />
+                        </b:Interaction.Behaviors>
 
                         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Grid.RowDefinitions>
@@ -97,7 +101,7 @@
         <Separator Margin="0 0" />
 
 
-        <Label Style="{StaticResource FormLabelThin}" Height="28" Margin="8 8 8 0" Content="Execute in package context" Padding="0" VerticalContentAlignment="Center" />
+        <Label Style="{StaticResource FormLabelThin}" Height="28" Margin="8 8 8 0" Content="Execute in package context" VerticalContentAlignment="Center" />
         <ItemsControl ItemsSource="{Binding ElementName=Root, Path=Tools}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="packageExpert:ToolItem">
@@ -107,6 +111,9 @@
                         Command="{x:Static commands:MsixHeroCommands.RunTool}"
                         CommandParameter="{Binding Model}"
                         Style="{StaticResource ButtonRectangle}">
+                        <b:Interaction.Behaviors>
+                            <helpers:ButtonClosePopup />
+                        </b:Interaction.Behaviors>
                         <DockPanel>
                             <Image 
                                 Source="{Binding Icon}" 

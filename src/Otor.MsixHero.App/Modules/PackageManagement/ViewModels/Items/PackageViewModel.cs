@@ -82,8 +82,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items
 
         public bool IsRunning
         {
-            get => this.isRunning;
-            set => this.SetField(ref this.isRunning, value);
+            get => this.Model.IsRunning;
+            set
+            {
+                if (this.Model.IsRunning == value)
+                {
+                    return;
+                }
+
+                this.Model.IsRunning = value;
+                this.OnPropertyChanged();
+            }
         }
 
         public string UserDataPath

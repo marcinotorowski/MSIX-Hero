@@ -33,10 +33,10 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.ShowAppAttachDialog = new DelegateCommand(this.OnShowAppAttachDialog);
             this.ShowAppInstallerDialog = new DelegateCommand(this.OnShowAppInstallerDialog);
             this.ShowModificationPackageDialog = new DelegateCommand(this.OnShowModificationPackageDialog);
+            this.ShowWingetDialog = new DelegateCommand(this.OnShowWingetDialog);
             this.ShowUnpackDialog = new DelegateCommand(this.OnShowUnpackDialog);
             this.ShowUpdateImpactDialog = new DelegateCommand(this.OnShowUpdateImpactDialog);
             this.ShowDependencyGraphDialog = new DelegateCommand(this.OnShowDependencyGraphDialog);
-            this.ShowWingetDialog = new DelegateCommand(this.OnShowWingetDialog);
             this.ShowNewSelfSignedDialog = new DelegateCommand(this.OnShowNewSelfSignedDialog);
             this.ShowExtractCertificateDialog = new DelegateCommand(this.OnShowExtractCertificateDialog);
             this.ShowSignPackageDialog = new DelegateCommand(this.OnShowSignPackageDialog);
@@ -58,25 +58,25 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.SearchKey = obj.Command.SearchKey;
         }
 
+        public ICommand ShowAppInstallerDialog { get; }
+
+        public ICommand ShowModificationPackageDialog { get; }
+
+        public ICommand ShowWingetDialog { get; }
+
         public ICommand ShowNewSelfSignedDialog { get; }
 
         public ICommand ShowExtractCertificateDialog { get; }
 
         public ICommand ShowPackDialog { get; }
 
-        public ICommand ShowAppInstallerDialog { get; }
-
         public ICommand ShowAppAttachDialog { get; }
-
-        public ICommand ShowModificationPackageDialog { get; }
 
         public ICommand ShowUnpackDialog { get; }
 
         public ICommand ShowUpdateImpactDialog { get; }
 
         public ICommand ShowDependencyGraphDialog { get; }
-
-        public ICommand ShowWingetDialog { get; }
 
         public ICommand ShowSignPackageDialog { get; }
 
@@ -89,7 +89,8 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         private void OnShowDependencyGraphDialog()
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
-            this.DialogExecute("All supported files|*.msix;*.appx;AppxManifest.xml|Packages|*.msix;*.appx|Manifest files|AppxManifest.xml", NavigationPaths.DialogPaths.DependenciesGraph);
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, this.OnDialogClosed);
+            // this.DialogExecute("All supported files|*.msix;*.appx;AppxManifest.xml|Packages|*.msix;*.appx|Manifest files|AppxManifest.xml", NavigationPaths.DialogPaths.DependenciesGraph);
         }
 
         private void OnOpenAppsFeatures()
@@ -152,13 +153,15 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         private void OnShowWingetDialog()
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
-            this.DialogExecute("Winget manifests (*.yaml)|*.yaml|All files|*.*", NavigationPaths.DialogPaths.WingetYamlEditor, "yaml");
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, this.OnDialogClosed);
+            // this.DialogExecute("Winget manifests (*.yaml)|*.yaml|All files|*.*", NavigationPaths.DialogPaths.WingetYamlEditor, "yaml");
         }
 
         private void OnShowAppInstallerDialog()
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
-            this.DialogExecute("App installer files|*.appinstaller|All files|*.*", NavigationPaths.DialogPaths.AppInstallerEditor);
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, this.OnDialogClosed);
+            // this.DialogExecute("App installer files|*.appinstaller|All files|*.*", NavigationPaths.DialogPaths.AppInstallerEditor);
         }
 
         private void OnShowModificationPackageDialog()

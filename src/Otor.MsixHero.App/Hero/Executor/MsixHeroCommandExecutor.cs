@@ -11,8 +11,6 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
-using Otor.MsixHero.App.Modules.PackageManagement;
-using Otor.MsixHero.App.Modules.VolumeManagement;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
@@ -42,7 +40,7 @@ namespace Otor.MsixHero.App.Hero.Executor
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
-        private readonly IRunningDetector detector;
+        private readonly IRunningAppsDetector detector;
 
         public MsixHeroCommandExecutor(
             IModuleManager moduleManager,
@@ -52,7 +50,7 @@ namespace Otor.MsixHero.App.Hero.Executor
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             ISelfElevationProxyProvider<IAppxLogManager> logManagerProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
-            IRunningDetector detector) : base(eventAggregator)
+            IRunningAppsDetector detector) : base(eventAggregator)
         {
             this.moduleManager = moduleManager;
             this.regionManager = regionManager;
@@ -238,24 +236,6 @@ namespace Otor.MsixHero.App.Hero.Executor
             this.ApplicationState.Volumes.SelectedVolumes.Clear();
             this.ApplicationState.Volumes.SelectedVolumes.AddRange(selected);
 
-            var parameters = new NavigationParameters
-            {
-                { "volumes", this.ApplicationState.Volumes.SelectedVolumes }
-            };
-
-            switch (this.ApplicationState.Volumes.SelectedVolumes.Count)
-            {
-                case 0:
-                    this.regionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.ZeroSelection, UriKind.Relative), parameters);
-                    break;
-                case 1:
-                    this.regionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.SingleSelection, UriKind.Relative), parameters);
-                    break;
-                default:
-                    this.regionManager.Regions[VolumeManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.MultipleSelection, UriKind.Relative), parameters);
-                    break;
-            }
-
             return Task.FromResult(selected);
         }
 
@@ -306,25 +286,7 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             this.ApplicationState.Packages.SelectedPackages.Clear();
             this.ApplicationState.Packages.SelectedPackages.AddRange(selected);
-
-            var parameters = new NavigationParameters
-            {
-                { "packages", this.ApplicationState.Packages.SelectedPackages }
-            };
-
-            switch (this.ApplicationState.Packages.SelectedPackages.Count)
-            {
-                case 0:
-                    this.regionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.ZeroSelection, UriKind.Relative), parameters);
-                    break;
-                case 1:
-                    this.regionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.SingleSelection, UriKind.Relative), parameters);
-                    break;
-                default:
-                    this.regionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), parameters);
-                    break;
-            }
-
+            
             return Task.FromResult(selected);
         }
 
@@ -332,7 +294,9 @@ namespace Otor.MsixHero.App.Hero.Executor
 
         private async Task<IList<InstalledPackage>> GetPackages(GetPackagesCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)
         {
-            SelfElevationLevel level = SelfElevationLevel.HighestAvailable;
+            this.detector.StartListening();
+
+            var level = SelfElevationLevel.HighestAvailable;
 
             if (command.FindMode == PackageFindMode.AllUsers)
             {
@@ -367,14 +331,16 @@ namespace Otor.MsixHero.App.Hero.Executor
             }
 
             var selected = this.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToArray();
-
             var results = await manager.GetInstalledPackages(mode, cancellationToken, progressData).ConfigureAwait(false);
 
             // this.packageListSynchronizer.EnterWriteLock();
-            await this.detector.StopListening(cancellationToken).ConfigureAwait(false);
             this.ApplicationState.Packages.AllPackages.Clear();
             this.ApplicationState.Packages.AllPackages.AddRange(results);
-            await this.detector.Listen(this.ApplicationState.Packages.AllPackages, cancellationToken).ConfigureAwait(false);
+            
+            foreach (var item in this.detector.GetCurrentlyRunning(this.ApplicationState.Packages.AllPackages))
+            {
+                item.IsRunning = true;
+            }
 
             switch (mode)
             {
@@ -384,25 +350,6 @@ namespace Otor.MsixHero.App.Hero.Executor
                 case PackageFindMode.AllUsers:
                     this.ApplicationState.Packages.Mode = PackageContext.AllUsers;
                     break;
-            }
-
-            // await this.Invoke(this, new SelectPackagesCommand(), cancellationToken).ConfigureAwait(false);
-            if (selected.Any())
-            {
-                this.ApplicationState.Packages.SelectedPackages.Clear();
-
-                try
-                {
-                    this.packageListSynchronizer.EnterReadLock();
-                    foreach (var item in this.ApplicationState.Packages.AllPackages.Where(p => selected.Contains(p.ManifestLocation)))
-                    {
-                        this.ApplicationState.Packages.SelectedPackages.Add(item);
-                    }
-                }
-                finally
-                {
-                    this.packageListSynchronizer.ExitReadLock();
-                }
             }
 
             switch (mode)
@@ -416,6 +363,8 @@ namespace Otor.MsixHero.App.Hero.Executor
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            await this.Invoke(this, new SelectPackagesCommand(selected), cancellationToken).ConfigureAwait(false);
 
             return results;
         }
@@ -438,10 +387,14 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             this.ApplicationState.Volumes.AllVolumes.Clear();
             this.ApplicationState.Volumes.AllVolumes.AddRange(results);
-
+            
             if (selected.Any())
             {
-                this.ApplicationState.Volumes.SelectedVolumes = this.ApplicationState.Volumes.AllVolumes.Where(v => selected.Contains(v.PackageStorePath)).ToList();
+                await this.Invoke(this, new SelectVolumesCommand(selected), cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await this.Invoke(this, new SelectVolumesCommand(new string[0]), cancellationToken).ConfigureAwait(false);
             }
 
             return results;

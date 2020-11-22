@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
-                    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls">
+                    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+                    xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Icons.xaml" />
@@ -86,7 +87,27 @@
                                     Maximum="100"
                                     Value="{TemplateBinding Percent}" />
 
-                            <TextBlock Foreground="Gray" Text="{TemplateBinding Caption}" />
+                            <TextBlock Foreground="Gray">
+                                <TextBlock.Text>
+                                    <MultiBinding ConverterParameter="{x:Static converters:VolumeSizeCaptionConverterMode.OccupiedTotal}">
+                                        <MultiBinding.Converter>
+                                            <converters:VolumeSizeCaptionConverter />
+                                        </MultiBinding.Converter>
+                                        <MultiBinding.Bindings>
+                                            <Binding Mode="OneWay" Path="OccupiedSize">
+                                                <Binding.RelativeSource>
+                                                    <RelativeSource Mode="TemplatedParent" />
+                                                </Binding.RelativeSource>
+                                            </Binding>
+                                            <Binding Mode="OneWay" Path="TotalSize">
+                                                <Binding.RelativeSource>
+                                                    <RelativeSource Mode="TemplatedParent" />
+                                                </Binding.RelativeSource>
+                                            </Binding>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
 
                         </StackPanel>
                     </DockPanel>

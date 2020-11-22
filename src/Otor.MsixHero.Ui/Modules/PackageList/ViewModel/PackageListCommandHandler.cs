@@ -295,24 +295,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             Process.Start(process);
         }
 
-        private async void MountRegistryExecute()
-        {
-            var selection = this.application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
-            {
-                return;
-            }
-
-            try
-            {
-                var manager = await this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
-                await manager.MountRegistry(selection.First(), true).ConfigureAwait(false);
-            }
-            catch (Exception exception)
-            {
-                this.interactionService.ShowError("Could not mount the registry.", exception);
-            }
-        }
         private async void DeprovisionExecute()
         {
             var selection = this.application.ApplicationState.Packages.SelectedPackages;
@@ -350,6 +332,47 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             }
         }
 
+        private bool CanExecuteStopApp()
+        {
+            if (this.application.ApplicationState.Packages.ActivePackageNames == null)
+            {
+                return false;
+            }
+
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            var selected = selection.First();
+            if (selected?.InstallLocation == null)
+            {
+                return false;
+            }
+
+            return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageId) == true;
+        }
+
+        private async void MountRegistryExecute()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            try
+            {
+                var manager = await this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                await manager.MountRegistry(selection.First(), true).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                this.interactionService.ShowError("Could not mount the registry.", exception);
+            }
+        }
+
         private async void DismountRegistryExecute()
         {
             var selection = this.application.ApplicationState.Packages.SelectedPackages;
@@ -373,7 +396,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                 this.interactionService.ShowError("Could not dismount the registry.", exception);
             }
         }
-        
+
         private bool CanExecuteMountRegistry()
         {
             var selection = this.application.ApplicationState.Packages.SelectedPackages;
@@ -398,28 +421,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
             {
                 return false;
             }
-        }
-        
-        private bool CanExecuteStopApp()
-        {
-            if (this.application.ApplicationState.Packages.ActivePackageNames == null)
-            {
-                return false;
-            }
-
-            var selection = this.application.ApplicationState.Packages.SelectedPackages;
-            if (selection.Count != 1)
-            {
-                return false;
-            }
-
-            var selected = selection.First();
-            if (selected?.InstallLocation == null)
-            {
-                return false;
-            }
-
-            return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageId) == true;
         }
 
         private bool CanExecuteDismountRegistry()
@@ -832,7 +833,6 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.ViewModel
                     await manager.Remove(selection, allUsersRemoval, progress: p1).ConfigureAwait(false);
 
                     await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
-                    await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
                 }
             }
             catch (Exception exception)

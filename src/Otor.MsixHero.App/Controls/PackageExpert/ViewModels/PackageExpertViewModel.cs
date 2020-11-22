@@ -37,8 +37,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
     {
         private readonly IInterProcessCommunicationManager interProcessCommunicationManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
-        private ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider;
-        private readonly IRunningDetector runningDetector;
+        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider;
+        private readonly IRunningAppsDetector runningDetector;
         private readonly IDialogService dialogService;
         private readonly string packagePath;
         private ICommand findUsers;
@@ -50,7 +50,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService,
-            IRunningDetector runningDetector,
+            IRunningAppsDetector runningDetector,
             IDialogService dialogService)
         {
             this.interProcessCommunicationManager = interProcessCommunicationManager;

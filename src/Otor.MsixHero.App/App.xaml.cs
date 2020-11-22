@@ -72,7 +72,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
             containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();
             containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();
-            containerRegistry.RegisterSingleton<IRunningDetector, RunningDetector>();
+            containerRegistry.RegisterSingleton<IRunningAppsDetector, RunningAppsDetector>();
             containerRegistry.RegisterSingleton<IInterProcessCommunicationManager, InterProcessCommunicationManager>();
             containerRegistry.Register<IDependencyMapper, DependencyMapper>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();

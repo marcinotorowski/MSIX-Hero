@@ -10,6 +10,8 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.Appx.Diagnostic.Registry;
+using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
@@ -35,6 +37,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private readonly IDialogService dialogService;
         private readonly IModuleManager moduleManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider;
         private readonly IBusyManager busyManager;
         private readonly FileInvoker fileInvoker;
 
@@ -44,6 +47,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             IConfigurationService configurationService,
             PrismServices prismServices,
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider,
             IBusyManager busyManager)
         {
             this.application = application;
@@ -52,6 +56,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.dialogService = prismServices.DialogService;
             this.moduleManager = prismServices.ModuleManager;
             this.packageManagerProvider = packageManagerProvider;
+            this.registryManagerProvider = registryManagerProvider;
             this.busyManager = busyManager;
             this.fileInvoker = new FileInvoker(this.interactionService);
 
@@ -64,12 +69,24 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.OpenStore = new DelegateCommand(this.OnOpenStore, this.CanOpenStore);
             this.CheckUpdates = new DelegateCommand(this.OnCheckUpdates, this.CanCheckUpdates);
             this.RunTool = new DelegateCommand<object>(this.OnRunTool, this.CanRunTool);
-            this.RunPackage = new DelegateCommand<object>(this.OnRunPackage, this.CanRunPackage);
             this.RemovePackage = new DelegateCommand(this.OnRemovePackage, this.CanRemovePackage);
             this.Copy = new DelegateCommand<object>(this.OnCopy, this.CanCopy);
             this.ViewDependencies = new DelegateCommand(this.OnViewDependencies, this.CanViewDependencies);
             this.ChangeVolume = new DelegateCommand(this.OnChangeVolume, this.CanChangeVolume);
+            this.ShowAppInstallerDialog = new DelegateCommand<object>(this.OnShowAppInstallerDialog);
+            this.ShowModificationPackageDialog = new DelegateCommand<object>(this.OnShowModificationPackageDialog);
+            this.ShowWingetDialog = new DelegateCommand<object>(this.OnShowWingetDialog);
+            this.MountRegistry = new DelegateCommand(this.OnMountRegistry, this.CanMountRegistry);
+            this.DismountRegistry = new DelegateCommand(this.OnDismountRegistry, this.CanDismountRegistry);
+            this.StartApp = new DelegateCommand<object>(this.OnStartApp, this.CanStartApp);
+            this.StopApp = new DelegateCommand(this.OnStopApp, this.CanStopApp);
         }
+
+        public ICommand ShowAppInstallerDialog { get; }
+
+        public ICommand ShowModificationPackageDialog { get; }
+
+        public ICommand ShowWingetDialog { get; }
 
         public ICommand Refresh { get; }
 
@@ -92,12 +109,283 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         public ICommand CheckUpdates { get; }
 
         public ICommand RunTool { get; }
-
-        public ICommand RunPackage { get; }
-
+        
         public ICommand RemovePackage { get; }
 
         public ICommand Copy { get; }
+
+        public ICommand MountRegistry { get; }
+
+        public ICommand DismountRegistry { get; }
+
+        public ICommand StartApp { get; }
+
+        public ICommand StopApp { get; }
+
+        private async void OnStopApp()
+        {
+            var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
+            if (package == null)
+            {
+                return;
+            }
+
+            if (package.SignatureKind == SignatureKind.System)
+            {
+                var buttons = new[]
+                {
+                    "Stop this system app",
+                    "Leave the app running"
+                };
+
+                if (this.interactionService.ShowMessage("This is a system app. Are you sure you want to stop it?\r\nStopping a system app may have unexpected side-effects.",
+                    buttons, "Stopping a system app", systemButtons: InteractionResult.None) != 0)
+                {
+                    return;
+                }
+            }
+
+            var executor = this.application.CommandExecutor
+                .WithBusyManager(this.busyManager, OperationType.Other)
+                .WithErrorHandling(this.interactionService, true);
+
+            await executor.Invoke(this, new StopPackageCommand(package), CancellationToken.None).ConfigureAwait(false);
+        }
+
+        //private async void OnStartApp()
+        //{
+        //    var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
+        //    if (package == null)
+        //    {
+        //        return;
+        //    }
+
+        //    try
+        //    {
+        //        var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+        //        await manager.Run(package.ManifestLocation).ConfigureAwait(false);
+        //    }
+        //    catch (InvalidOperationException exception)
+        //    {
+        //        this.interactionService.ShowError("Could not start the app. " + exception.Message, exception);
+        //    }
+
+        //    catch (Exception exception)
+        //    {
+        //        this.interactionService.ShowError("Could not start the app.", exception);
+        //    }
+        //}
+
+        //private bool CanStartApp()
+        //{
+        //    var package = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
+        //    return package?.InstallLocation != null;
+        //}
+
+        private bool CanStopApp()
+        {
+            if (this.application.ApplicationState.Packages.ActivePackageNames == null)
+            {
+                return false;
+            }
+
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            var selected = selection.First();
+            if (selected?.InstallLocation == null)
+            {
+                return false;
+            }
+
+            return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageId) == true;
+        }
+
+        private void OnShowWingetDialog(object commandParameter)
+        {
+            if (!(commandParameter is DialogTarget dialogTarget))
+            {
+                dialogTarget = DialogTarget.Selection;
+            }
+
+            switch (dialogTarget)
+            {
+                case DialogTarget.Empty:
+                    this.OpenEmptyDialog(
+                        ModuleNames.Dialogs.Winget,
+                        NavigationPaths.DialogPaths.WingetYamlEditor);
+                    break;
+                case DialogTarget.Ask:
+                    this.OpenBrowseDialog(
+                        ModuleNames.Dialogs.Winget,
+                        NavigationPaths.DialogPaths.WingetYamlEditor,
+                        "yaml",
+                        "Winget manifests (*.yaml)|*.yaml|All files|*.*");
+                    break;
+                case DialogTarget.Selection:
+                    this.OpenSelectionDialog(
+                        ModuleNames.Dialogs.Winget,
+                        NavigationPaths.DialogPaths.WingetYamlEditor,
+                        "msix");
+                    break;
+            }
+        }
+
+        private void OnShowModificationPackageDialog(object commandParameter)
+        {
+            if (!(commandParameter is DialogTarget dialogTarget))
+            {
+                dialogTarget = DialogTarget.Selection;
+            }
+
+            switch (dialogTarget)
+            {
+                case DialogTarget.Empty:
+                    this.OpenEmptyDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingModificationPackage);
+                    break;
+                case DialogTarget.Ask:
+                    this.OpenBrowseDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingModificationPackage,
+                        "file",
+                        "MSIX packages (*.msix)|*.msix|All files|*.*");
+                    break;
+                case DialogTarget.Selection:
+                    this.OpenSelectionDialog(
+                        ModuleNames.Dialogs.Packaging,
+                        NavigationPaths.DialogPaths.PackagingModificationPackage);
+                    break;
+            }
+        }
+
+        private void OnShowAppInstallerDialog(object commandParameter)
+        {
+            if (!(commandParameter is DialogTarget dialogTarget))
+            {
+                dialogTarget = DialogTarget.Selection;
+            }
+
+            switch (dialogTarget)
+            {
+                case DialogTarget.Empty:
+                    this.OpenEmptyDialog(
+                        ModuleNames.Dialogs.AppInstaller,
+                        NavigationPaths.DialogPaths.AppInstallerEditor);
+                    break;
+                case DialogTarget.Ask:
+                    this.OpenBrowseDialog(
+                        ModuleNames.Dialogs.AppInstaller,
+                        NavigationPaths.DialogPaths.AppInstallerEditor,
+                        "file",
+                        "App installer files|*.appinstaller|All files|*.*");
+                    break;
+                case DialogTarget.Selection:
+                    this.OpenSelectionDialog(
+                        ModuleNames.Dialogs.AppInstaller,
+                        NavigationPaths.DialogPaths.AppInstallerEditor);
+                    break;
+            }
+        }
+
+        private async void OnMountRegistry()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            try
+            {
+                var manager = await this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                await manager.MountRegistry(selection.First(), true).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                this.interactionService.ShowError("Could not mount the registry.", exception);
+            }
+        }
+
+        private async void OnDismountRegistry()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return;
+            }
+
+            if (selection.First().InstallLocation == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var manager = await this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
+                await manager.DismountRegistry(selection.First()).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                this.interactionService.ShowError("Could not dismount the registry.", exception);
+            }
+        }
+
+        private bool CanMountRegistry()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            var selected = selection.First();
+            if (selected?.InstallLocation == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var manager = this.registryManagerProvider.GetProxyFor().GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
+                return regState == RegistryMountState.NotMounted;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private bool CanDismountRegistry()
+        {
+            var selection = this.application.ApplicationState.Packages.SelectedPackages;
+            if (selection.Count != 1)
+            {
+                return false;
+            }
+
+            var selected = selection.First();
+            if (selected.InstallLocation == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var manager = this.registryManagerProvider.GetProxyFor().GetAwaiter().GetResult();
+                var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
+                return regState == RegistryMountState.Mounted;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         private async void OnRefresh()
         {
@@ -195,7 +483,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
         private bool CanAddPackage(object forAllUsers) => true;
 
-        private async void OnRunPackage(object parameter)
+        private async void OnStartApp(object parameter)
         {
             var selection = this.GetSingleOrDefaultSelection();
             if (selection == null)
@@ -219,7 +507,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
         }
 
-        private bool CanRunPackage(object parameter) => parameter != null;
+        private bool CanStartApp(object parameter) => this.IsSingleSelected();
 
         private bool CanRunTool(object parameter)
         {
@@ -485,16 +773,6 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     await manager.Remove(this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray(), progress: p1).ConfigureAwait(false);
 
                     await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
-                    var select = this.application.ApplicationState.Packages.AllPackages.FirstOrDefault();
-
-                    if (select == null)
-                    {
-                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(select.ManifestLocation)).ConfigureAwait(false);
-                    }
                 }
             }
             catch (Exception exception)
@@ -646,6 +924,60 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             var rootDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Packages", selection.PackageFamilyName, "LocalCache");
             Process.Start("explorer.exe", "/e," + rootDir);
+        }
+        
+        private void OpenBrowseDialog(
+            string moduleName,
+            string navigationPath,
+            string fileParameterName = "file",
+            string fileFilter = "All files |*.*")
+        {
+            if (!this.interactionService.SelectFile(fileFilter, out var selected))
+            {
+                return;
+            }
+
+            var parameters = new DialogParameters
+            {
+                { fileParameterName, selected }
+            };
+
+            this.moduleManager.LoadModule(moduleName);
+            this.dialogService.ShowDialog(navigationPath, parameters, this.OnDialogClosed);
+        }
+
+        private void OpenEmptyDialog(
+            string moduleName,
+            string navigationPath)
+        {
+            var parameters = new DialogParameters();
+            this.moduleManager.LoadModule(moduleName);
+            this.dialogService.ShowDialog(navigationPath, parameters, this.OnDialogClosed);
+        }
+
+        private void OpenSelectionDialog(
+            string moduleName,
+            string navigationPath,
+            string fileParameterName = "file",
+            Func<InstalledPackage, string> valueGetter = null)
+        {
+            var selected = this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault();
+            if (selected == null)
+            {
+                return;
+            }
+                
+            var parameters = new DialogParameters
+            {
+                { fileParameterName, valueGetter == null ? selected.ManifestLocation : valueGetter(selected) }
+            };
+
+            this.moduleManager.LoadModule(moduleName);
+            this.dialogService.ShowDialog(navigationPath, parameters, this.OnDialogClosed);
+        }
+
+        private void OnDialogClosed(IDialogResult obj)
+        {
         }
     }
 }
