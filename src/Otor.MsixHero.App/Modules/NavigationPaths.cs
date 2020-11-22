@@ -27,6 +27,9 @@
             private const string BaseVolumeManagementNavigation = BaseNavigation + "volume-management";
 
             public const string Search = BaseVolumeManagementNavigation + "search";
+            public const string SingleSelection = BaseVolumeManagementNavigation + "single";
+            public const string MultipleSelection = BaseVolumeManagementNavigation + "multiple";
+            public const string ZeroSelection = BaseVolumeManagementNavigation + "nothing";
         }
 
         public static class EventViewerPaths

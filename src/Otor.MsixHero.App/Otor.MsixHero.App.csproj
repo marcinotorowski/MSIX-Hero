@@ -28,6 +28,7 @@
     <None Remove="Modules\SystemStatus\View\Logos\AppPackage.png" />
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.png" />
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
+    <None Remove="Modules\VolumeManagement\Views\test.png" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
@@ -62,6 +63,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
+    <Resource Include="Modules\VolumeManagement\Views\test.png" />
     <Resource Include="Resources\icons8-sugar-cube-48.png" />
   </ItemGroup>
 
@@ -111,10 +113,10 @@
     <Compile Update="Modules\PackageManagement\Views\PackagesSingleDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\VolumeManagement\Views\VolumesListView.xaml.cs">
+    <Compile Update="Modules\VolumeManagement\Views\VolumesManyDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\VolumeManagement\Views\VolumesDetailsView.xaml.cs">
+    <Compile Update="Modules\VolumeManagement\Views\VolumesListView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\VolumeManagement\Views\VolumeManagementView.xaml.cs">
@@ -244,10 +246,14 @@
     <Page Update="Modules\SystemStatus\View\SystemStatusView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-    <Page Update="Modules\VolumeManagement\Views\VolumesListView.xaml">
+    <Page Update="Modules\VolumeManagement\Views\VolumesNoDetailsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\VolumeManagement\Views\VolumesManyDetailsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\VolumeManagement\Views\VolumesDetailsView.xaml">
+    <Page Update="Modules\VolumeManagement\Views\VolumesListView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\VolumeManagement\Views\VolumeManagementView.xaml">

@@ -12,13 +12,15 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
         {
             containerRegistry.RegisterForNavigation<VolumeManagementView, VolumeManagementViewModel>(NavigationPaths.VolumeManagement);
             containerRegistry.RegisterForNavigation<VolumesSearchView, VolumesSearchViewModel>(NavigationPaths.VolumeManagementPaths.Search);
+            containerRegistry.RegisterForNavigation<VolumesNoDetailsView>(NavigationPaths.VolumeManagementPaths.ZeroSelection);
+            containerRegistry.RegisterForNavigation<VolumesSingleDetailsView, VolumesSingleDetailsViewModel>(NavigationPaths.VolumeManagementPaths.SingleSelection);
+            containerRegistry.RegisterForNavigation<VolumesManyDetailsView>(NavigationPaths.VolumeManagementPaths.MultipleSelection);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(VolumeManagementRegionNames.Master, typeof(VolumesListView));
-            regionManager.RegisterViewWithRegion(VolumeManagementRegionNames.Details, typeof(VolumesDetailsView));
             regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(VolumesSearchView));
         }
     }

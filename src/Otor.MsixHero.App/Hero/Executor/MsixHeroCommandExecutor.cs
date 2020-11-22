@@ -12,6 +12,7 @@ using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
 using Otor.MsixHero.App.Modules.PackageManagement;
+using Otor.MsixHero.App.Modules.VolumeManagement;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
@@ -236,6 +237,25 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             this.ApplicationState.Volumes.SelectedVolumes.Clear();
             this.ApplicationState.Volumes.SelectedVolumes.AddRange(selected);
+
+            var parameters = new NavigationParameters
+            {
+                { "volumes", this.ApplicationState.Volumes.SelectedVolumes }
+            };
+
+            switch (this.ApplicationState.Volumes.SelectedVolumes.Count)
+            {
+                case 0:
+                    this.regionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.ZeroSelection, UriKind.Relative), parameters);
+                    break;
+                case 1:
+                    this.regionManager.Regions[VolumeManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.SingleSelection, UriKind.Relative), parameters);
+                    break;
+                default:
+                    this.regionManager.Regions[VolumeManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.MultipleSelection, UriKind.Relative), parameters);
+                    break;
+            }
+
             return Task.FromResult(selected);
         }
 
@@ -304,6 +324,7 @@ namespace Otor.MsixHero.App.Hero.Executor
                     this.regionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), parameters);
                     break;
             }
+
             return Task.FromResult(selected);
         }
 

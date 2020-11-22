@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.VolumeManagement.Views.VolumesNoDetailsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
+            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Button Style="{StaticResource ActionButton}" Visibility="Hidden"/>
+            </WrapPanel>
+        </Border>
+
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Nothing selected" />
+    </DockPanel>
+</UserControl>

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:regions="http://prismlibrary.com/"
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.VolumeManagement"
+             xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -18,7 +19,11 @@
             </Border>
         </Border>
 
-        <ContentControl Grid.Column="1" regions:RegionManager.RegionName="{x:Static constants:VolumeManagementRegionNames.Details}" />
+        <transitionContentControl:TransitioningContentControl 
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            ClipToBounds="True"
+            Transition="Drop" Grid.Column="1" regions:RegionManager.RegionName="{x:Static constants:VolumeManagementRegionNames.Details}" />
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="10" Background="Transparent" HorizontalAlignment="Left" ResizeBehavior="PreviousAndCurrent" ResizeDirection="Columns" />
     </Grid>
