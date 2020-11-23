@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Markdig.Extensions.TaskLists;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
@@ -18,7 +17,6 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 using Otor.MsixHero.Ui.Hero.Commands;
 using Otor.MsixHero.Ui.Hero.Commands.Logs;
 using Otor.MsixHero.Ui.Hero.Commands.Packages;
@@ -275,18 +273,10 @@ namespace Otor.MsixHero.Ui.Hero.Executor
 
             var results = await manager.GetInstalledPackages(mode, cancellationToken, progressData).ConfigureAwait(false);
 
-            // this.packageListSynchronizer.EnterWriteLock();
-            try
-            {
-                await this.detector.StopListening(cancellationToken).ConfigureAwait(false);
-                this.ApplicationState.Packages.AllPackages.Clear();
-                this.ApplicationState.Packages.AllPackages.AddRange(results);
-                await this.detector.Listen(this.ApplicationState.Packages.AllPackages, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                // this.packageListSynchronizer.ExitWriteLock();
-            }
+            await this.detector.StopListening(cancellationToken).ConfigureAwait(false);
+            this.ApplicationState.Packages.AllPackages.Clear();
+            this.ApplicationState.Packages.AllPackages.AddRange(results);
+            await this.detector.Listen(this.ApplicationState.Packages.AllPackages, cancellationToken).ConfigureAwait(false);
 
             switch (mode)
             {

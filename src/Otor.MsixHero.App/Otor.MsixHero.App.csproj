@@ -39,7 +39,7 @@
     <PackageReference Include="FluentWPF" Version="0.8.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.3.2" />
     <PackageReference Include="GraphX" Version="3.0.0" />
-    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.1.1" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.0.1" />
     <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
     <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
   </ItemGroup>

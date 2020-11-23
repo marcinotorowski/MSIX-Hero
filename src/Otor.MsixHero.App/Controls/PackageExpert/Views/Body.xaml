@@ -693,7 +693,9 @@
                         <StackPanel>
                             <ContentControl Content="{Binding Manifest.CurrentValue.Model.Source}" />
 
-                            <controls:ProgressOverlay IsShown="{Binding Disk.IsLoading}">
+                            <controls:ProgressOverlay 
+                                Visibility="Collapsed"
+                                IsShown="{Binding Disk.IsLoading}">
                                 <StackPanel>
 
                                     <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />

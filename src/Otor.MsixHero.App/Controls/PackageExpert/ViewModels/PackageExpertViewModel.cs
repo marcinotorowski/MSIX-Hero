@@ -88,7 +88,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                     var taskAddOns = this.GetAddOns(manifest, cts.Token);
 
                     // Load drive
-                    var taskDisk = this.Disk.Load(this.LoadDisk());
+                    // var taskDisk = this.Disk.Load(this.LoadDisk());
 
                     // Load users
                     Task<FoundUsersViewModel> taskUsers;

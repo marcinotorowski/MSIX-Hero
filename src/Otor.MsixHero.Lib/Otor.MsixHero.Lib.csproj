@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
-    <PackageReference Include="ControlzEx" Version="4.3.2" />
+    <PackageReference Include="ControlzEx" Version="4.4.0" />
     <PackageReference Include="DiscUtils.Ntfs" Version="0.15.1-ci0007" />
     <PackageReference Include="DiscUtils.Vhd" Version="0.15.1-ci0007" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.3" />
@@ -20,7 +20,7 @@
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
     <PackageReference Include="System.Management.Automation" Version="7.0.3" />
-    <PackageReference Include="YamlDotNet" Version="8.1.2" />
+    <PackageReference Include="YamlDotNet" Version="9.1.0" />
   </ItemGroup>
 
   <ItemGroup>
