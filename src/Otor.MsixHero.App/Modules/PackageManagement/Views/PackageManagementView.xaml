@@ -33,6 +33,7 @@
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.ModificationPackage}" Command="{Binding CommandHandler.ShowModificationPackageDialog}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.StartPackage}" Command="{Binding CommandHandler.StartApp}" />
         <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.StopPackage}" Command="{Binding CommandHandler.StopApp}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.Settings}" Command="{Binding CommandHandler.Settings}" />
         <commands:RoutedCommandHandler RoutedCommand="Copy" Command="{Binding CommandHandler.Copy}" />
         <commands:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding CommandHandler.RemovePackage}" />
         <commands:RoutedCommandHandler RoutedCommand="Refresh" Command="{Binding CommandHandler.Refresh}" />

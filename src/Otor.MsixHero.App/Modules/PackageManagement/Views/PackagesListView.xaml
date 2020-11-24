@@ -25,14 +25,19 @@
                 <MenuItem.Icon>
                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
                 </MenuItem.Icon>
-                <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" ">
+                <MenuItem Header="Publisher" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorTextInputForm}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallCertificate}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" ">
+                <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" ">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorTextInputForm}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" ">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDigits}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}">
@@ -40,72 +45,69 @@
                         <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPackage}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" ">
+                <Separator />
+                <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" ">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorNumberInputForm}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Publisher}" InputGestureText=" ">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorTextInputForm}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallPublisher}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Publisher (raw)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
-                    <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUser}" />
-                    </MenuItem.Icon>
-                </MenuItem>
+                <Separator />
                 <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.InstallPath}" InputGestureText=" ">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorSettingsFolder}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Open...">
                 <MenuItem.Icon>
-                    <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                 </MenuItem.Icon>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Install folder">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Manifest file">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 9.59375 L 25.71875 9.28125 L 19.71875 3.28125 L 19.40625 3 Z M 8 5 L 18 5 L 18 11 L 24 11 L 24 27 L 8 27 Z M 20 6.4375 L 22.5625 9 L 20 9 Z" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallManifest}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Header="Config.json">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallGear}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Header="User folder">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDirectory}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallUserFolder}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <Separator />
             <MenuItem Header="Check for updates" Command="{x:Static commands:MsixHeroCommands.CheckUpdates}">
                 <MenuItem.Icon>
-                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorUpdates}" />
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallAppInstaller}" />
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Analyze dependencies" Command="{x:Static commands:MsixHeroCommands.DependencyViewer}">
                 <!-- CommandParameter="{x:Static viewModel:VariableContextCommandParameter.Selection}">-->
                 <MenuItem.Icon>
-                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDependencies}" />
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDependencies}" />
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
             <MenuItem Header="Remove for...">
                 <MenuItem.Icon>
-                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemove}" />
                 </MenuItem.Icon>
                 <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroCommands.RemovePackage}" InputGestureText="Del">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDeleteUser}" />
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemoveMinus}" />
                     </MenuItem.Icon>
                     <MenuItem.CommandParameter>
                         <system:Boolean>False</system:Boolean>
@@ -123,12 +125,12 @@
             <Separator />
             <MenuItem Command="{x:Static commands:MsixHeroCommands.StartPackage}" Header="Start app">
                 <MenuItem.Icon>
-                    <Path Style="{StaticResource MediumIcon}" Data="M 9 5.15625 L 9 26.84375 L 10.53125 25.84375 L 25.84375 16 L 10.53125 6.15625 Z M 11 8.8125 L 22.15625 16 L 11 23.1875 Z" />
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStart}" />
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Command="{x:Static commands:MsixHeroCommands.StopPackage}" Header="Stop app">
                 <MenuItem.Icon>
-                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorStop}" />
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStop}" />
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Run command in context..." x:Name="ContextMenuRunCommand" />
@@ -219,13 +221,13 @@
                         Command="Refresh" 
                         Style="{StaticResource ActionButton}">
                         <controls:LabelWithIcon 
-                            Icon16x16="M 7.5 1 C 3.914063 1 1 3.914063 1 7.5 C 1 11.085938 3.914063 14 7.5 14 C 11.085938 14 14 11.085938 14 7.5 L 14 7 L 13 7 L 13 7.5 C 13 10.542969 10.542969 13 7.5 13 C 4.457031 13 2 10.542969 2 7.5 C 2 4.457031 4.457031 2 7.5 2 C 9.140625 2 10.597656 2.722656 11.605469 3.859375 L 10.464844 5 L 14 5 L 14 1.464844 L 12.3125 3.152344 C 11.121094 1.835938 9.410156 1 7.5 1 Z"
+                            Icon16x16="{StaticResource SmallRefresh}"
                             Content="Refresh"
                             Style="{StaticResource ActionLabelWithIcon}" />
                     </Button>
                     <ToggleButton Style="{StaticResource ActionPopupToggleButton}" x:Name="ButtonInstall">
                         <controls:LabelWithIcon 
-                            Icon16x16="M 7 1 L 7 7 L 1 7 L 1 8 L 7 8 L 7 14 L 8 14 L 8 8 L 14 8 L 14 7 L 8 7 L 8 1 Z"
+                            Icon16x16="{StaticResource SmallPlus}"
                             Content="Install"
                             Style="{StaticResource ActionLabelWithIcon}" />
                     </ToggleButton>

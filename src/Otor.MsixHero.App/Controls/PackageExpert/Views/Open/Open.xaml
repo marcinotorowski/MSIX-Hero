@@ -32,7 +32,7 @@
                     <helpers:ButtonClosePopup />
                 </b:Interaction.Behaviors>
                 <DockPanel>
-                    <Path Style="{StaticResource LargeIcon}" Data="M 5 3 L 5 29 L 17 29 L 17 32 L 32 32 L 32 19 L 25 19 L 25 15.414062 L 27 13.414062 L 27 3 L 23 3 L 22 3 L 5 3 z M 7 5 L 21 5 L 21 13.414062 L 23 15.414062 L 23 19 L 17 19 L 17 20 L 17 27 L 7 27 L 7 5 z M 23 5 L 25 5 L 25 12.585938 L 24 13.585938 L 23 12.585938 L 23 5 z M 19 21 L 21 21 L 21 23 L 19 23 L 19 21 z M 23 21 L 30 21 L 30 23 L 23 23 L 23 21 z M 19 25 L 30 25 L 30 30 L 19 30 L 19 25 z" DockPanel.Dock="Left" Margin="0 0 8 0" />
+                    <Path Fill="Black" Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" DockPanel.Dock="Left" Margin="1 0 4 0" />
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonLabel}" Text="Installation folder" />
                         <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Path=Manifest.CurrentValue.RootDirectory}" />
@@ -58,7 +58,7 @@
                 Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}"
                 Style="{StaticResource ButtonRectangle}">
                 <DockPanel>
-                    <Path Style="{StaticResource LargeIcon}" Data="M 6 3 L 6 29 L 26 29 L 26 13.4375 L 27.71875 11.71875 L 28 11.40625 L 28 3 Z M 8 5 L 22 5 L 22 11.40625 L 22.28125 11.71875 L 24 13.4375 L 24 27 L 8 27 Z M 24 5 L 26 5 L 26 10.5625 L 25 11.5625 L 24 10.5625 Z M 16 11 C 13.800781 11 12 12.800781 12 15 C 12 16.113281 12.476563 17.117188 13.21875 17.84375 C 11.886719 18.746094 11 20.28125 11 22 L 13 22 C 13 20.332031 14.332031 19 16 19 C 17.667969 19 19 20.332031 19 22 L 21 22 C 21 20.28125 20.113281 18.746094 18.78125 17.84375 C 19.523438 17.117188 20 16.113281 20 15 C 20 12.800781 18.199219 11 16 11 Z M 16 13 C 17.117188 13 18 13.882813 18 15 C 18 16.117188 17.117188 17 16 17 C 14.882813 17 14 16.117188 14 15 C 14 13.882813 14.882813 13 16 13 Z" DockPanel.Dock="Left" Margin="0 0 8 0" />
+                    <Path Style="{StaticResource SmallIcon}" Fill="Black" Data="{StaticResource SmallUserFolder}" DockPanel.Dock="Left" Margin="1 0 4 0" />
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonLabel}" Text="Physical user data directory" />
                         <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Manifest.CurrentValue.UserDirectory}" />
@@ -99,7 +99,7 @@
                 </b:Interaction.Behaviors>
                 <HeaderedContentControl>
                     <HeaderedContentControl.Header>
-                        <Path Margin="0 0 0 8" Style="{StaticResource LargeIcon}" Data="M 5 5 L 5 6 L 5 27 L 27 27 L 27 5 L 5 5 z M 7 7 L 25 7 L 25 25 L 7 25 L 7 7 z M 13.292969 11.292969 L 8.5859375 16 L 13.292969 20.707031 L 14.707031 19.292969 L 11.414062 16 L 14.707031 12.707031 L 13.292969 11.292969 z M 18.707031 11.292969 L 17.292969 12.707031 L 20.585938 16 L 17.292969 19.292969 L 18.707031 20.707031 L 23.414062 16 L 18.707031 11.292969 z" />
+                        <Path Margin="0 0 0 8" Style="{StaticResource LargeIcon}" Data="{StaticResource VectorManifest}" />
                     </HeaderedContentControl.Header>
                     <StackPanel>
                         <TextBlock Style="{StaticResource ButtonLabel}" Text="Package manifest" />

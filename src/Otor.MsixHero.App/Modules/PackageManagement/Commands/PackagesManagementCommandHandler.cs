@@ -80,6 +80,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.DismountRegistry = new DelegateCommand(this.OnDismountRegistry, this.CanDismountRegistry);
             this.StartApp = new DelegateCommand<object>(this.OnStartApp, this.CanStartApp);
             this.StopApp = new DelegateCommand(this.OnStopApp, this.CanStopApp);
+            this.Settings = new DelegateCommand(this.OnSettings);
         }
 
         public ICommand ShowAppInstallerDialog { get; }
@@ -89,6 +90,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         public ICommand ShowWingetDialog { get; }
 
         public ICommand Refresh { get; }
+
+        public ICommand Settings { get; }
 
         public ICommand ViewDependencies { get; }
 
@@ -121,6 +124,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         public ICommand StartApp { get; }
 
         public ICommand StopApp { get; }
+
+        private void OnSettings()
+        {
+            this.moduleManager.LoadModule(ModuleNames.Dialogs.Settings);
+            var parameters = new DialogParameters {{"tab", "tools"}};
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.Settings, parameters, this.OnDialogOpened);
+        }
 
         private async void OnStopApp()
         {
