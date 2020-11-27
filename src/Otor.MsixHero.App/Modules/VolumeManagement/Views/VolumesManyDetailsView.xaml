@@ -19,7 +19,11 @@
                 </Button>
             </WrapPanel>
         </Border>
-        
-        <TextBlock Text="Multiple selection" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+        <StackPanel VerticalAlignment="Center">
+            <Image Source="/Resources/msix-hero-32.png" DockPanel.Dock="Top" Stretch="None" />
+            <Label Margin="0 7 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Multiple items selected" Style="{StaticResource FormLabelThin}" />
+            <TextBlock Foreground="#999" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="Select any volume to display its properties." />
+        </StackPanel>
     </DockPanel>
 </UserControl>

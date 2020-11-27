@@ -13,11 +13,18 @@ using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Infrastructure.Services
 {
-    public class LocalConfigurationService : IConfigurationService
+    public class LocalConfigurationService : IConfigurationService, IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
+        private readonly AutoResetEvent lockObject = new AutoResetEvent(true);
+
         private Configuration.Configuration currentConfiguration;
+
+        void IDisposable.Dispose()
+        {
+            this.lockObject.Dispose();
+        }
 
         public async Task<Configuration.Configuration> GetCurrentConfigurationAsync(bool preferCached =  true, CancellationToken token = default)
         {
@@ -26,34 +33,51 @@ namespace Otor.MsixHero.Infrastructure.Services
                 return this.currentConfiguration;
             }
 
-            var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify), "msix-hero", "config.json");
-
-            if (!File.Exists(file))
-            {
-                var cfg = FixConfiguration(new Configuration.Configuration());
-                cfg.Update = new UpdateConfiguration
-                {
-                    HideNewVersionInfo = false,
-                    // ReSharper disable once PossibleNullReferenceException
-                    LastShownVersion = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(3)
-                };
-
-                return cfg;
-            }
-
-            var fileContent = await File.ReadAllTextAsync(file, token).ConfigureAwait(false);
+            var waited = this.lockObject.WaitOne();
 
             try
             {
-                this.currentConfiguration = FixConfiguration(JsonConvert.DeserializeObject<Configuration.Configuration>(fileContent, new ResolvablePathConverter()));
-            }
-            catch (Exception e)
-            {
-                this.currentConfiguration = FixConfiguration(new Configuration.Configuration());
-                Logger.Warn(e, "Could not read the settings. Default settings will be used.");
-            }
+                if (this.currentConfiguration != null && preferCached)
+                {
+                    return this.currentConfiguration;
+                }
 
-            return this.currentConfiguration;
+                var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify), "msix-hero", "config.json");
+
+                if (!File.Exists(file))
+                {
+                    var cfg = FixConfiguration(new Configuration.Configuration());
+                    cfg.Update = new UpdateConfiguration
+                    {
+                        HideNewVersionInfo = false,
+                        // ReSharper disable once PossibleNullReferenceException
+                        LastShownVersion = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(3)
+                    };
+
+                    return cfg;
+                }
+
+                var fileContent = await File.ReadAllTextAsync(file, token).ConfigureAwait(false);
+
+                try
+                {
+                    this.currentConfiguration = FixConfiguration(JsonConvert.DeserializeObject<Configuration.Configuration>(fileContent, new ResolvablePathConverter()));
+                }
+                catch (Exception e)
+                {
+                    this.currentConfiguration = FixConfiguration(new Configuration.Configuration());
+                    Logger.Warn(e, "Could not read the settings. Default settings will be used.");
+                }
+
+                return this.currentConfiguration;
+            }
+            finally
+            {
+                if (waited)
+                {
+                    this.lockObject.Set();
+                }
+            }
         }
 
         public Configuration.Configuration GetCurrentConfiguration(bool preferCached = true)
@@ -75,29 +99,40 @@ namespace Otor.MsixHero.Infrastructure.Services
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify), "msix-hero", "config.json");
-
-            var jsonString = JsonConvert.SerializeObject(configuration, new JsonSerializerSettings
+            var waited = this.lockObject.WaitOne();
+            try
             {
-                Converters = new List<JsonConverter>
+                var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.DoNotVerify), "msix-hero", "config.json");
+
+                var jsonString = JsonConvert.SerializeObject(configuration, new JsonSerializerSettings
                 {
-                    new ResolvablePathConverter()
-                },
-                DefaultValueHandling = DefaultValueHandling.Include,
-                DateParseHandling = DateParseHandling.DateTime,
-                TypeNameHandling = TypeNameHandling.None,
-                Formatting = Formatting.Indented,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+                    Converters = new List<JsonConverter>
+                    {
+                        new ResolvablePathConverter()
+                    },
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    DateParseHandling = DateParseHandling.DateTime,
+                    TypeNameHandling = TypeNameHandling.None,
+                    Formatting = Formatting.Indented,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
 
-            var dirInfo = new FileInfo(file).Directory;
-            if (dirInfo != null && !dirInfo.Exists)
-            {
-                dirInfo.Create();
+                var dirInfo = new FileInfo(file).Directory;
+                if (dirInfo != null && !dirInfo.Exists)
+                {
+                    dirInfo.Create();
+                }
+
+                await File.WriteAllTextAsync(file, jsonString, cancellationToken).ConfigureAwait(false);
+                this.currentConfiguration = configuration;
             }
-
-            await File.WriteAllTextAsync(file, jsonString, cancellationToken).ConfigureAwait(false);
-            this.currentConfiguration = configuration;
+            finally
+            {
+                if (waited)
+                {
+                    this.lockObject.Set();
+                }
+            }
         }
 
         public void SetCurrentConfiguration(Configuration.Configuration configuration)
@@ -126,6 +161,11 @@ namespace Otor.MsixHero.Infrastructure.Services
         private static Configuration.Configuration FixConfiguration(Configuration.Configuration result)
         {
             var defaults = GetDefault();
+
+            if (result == null)
+            {
+                result = new Configuration.Configuration();
+            }
 
             if (result.Signing == null)
             {

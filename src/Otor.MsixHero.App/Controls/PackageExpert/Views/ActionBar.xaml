@@ -16,7 +16,7 @@
     xmlns:more="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.More"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
     mc:Ignorable="d" >
-    <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
+    <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
         <DockPanel>
             <WrapPanel DockPanel.Dock="Right">
                 <ToggleButton 

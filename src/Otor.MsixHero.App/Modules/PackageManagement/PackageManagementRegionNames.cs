@@ -2,10 +2,14 @@
 {
     public static class PackageManagementRegionNames
     {
-        public const string Master = "msix-hero-packages-list";
+        private const string Base = "msix-hero-packages-";
 
-        public const string Details = "msix-hero-packages-details";
+        public const string Master = Base + "list";
 
-        public const string PackageExpert = "package-expert";
+        public const string Details = Base + "details";
+
+        public const string PackageExpert = Base + "package-expert";
+        
+        public const string PopupFilter = Base + "popup-filter";
     }
 }

@@ -6,13 +6,9 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
-            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Button Style="{StaticResource ActionButton}" Visibility="Hidden"/>
-            </WrapPanel>
-        </Border>
-
-        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Nothing selected" />
-    </DockPanel>
+    <StackPanel VerticalAlignment="Center">
+        <Image Source="/Resources/msix-hero-32.png" DockPanel.Dock="Top" Stretch="None" />
+        <Label Margin="0 7 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Nothing selected" Style="{StaticResource FormLabelThin}" />
+        <TextBlock Foreground="#999" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="Select any package to display its properties." />
+    </StackPanel>
 </UserControl>

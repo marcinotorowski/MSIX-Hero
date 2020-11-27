@@ -79,7 +79,7 @@
             </b:Interaction.Behaviors>
         </Button>
 
-        <Label Content="Registry" />
+        <Label Content="Other" />
 
         <Button 
             Style="{StaticResource ActionButton}"
@@ -98,6 +98,17 @@
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroCommands.DismountRegistry}">
             <controls:LabelWithIcon Content="Dismount registry file" Icon16x16="{StaticResource SmallRegistry}" />
+            <b:Interaction.Behaviors>
+                <helpers:ButtonClosePopup />
+            </b:Interaction.Behaviors>
+        </Button>
+
+        <Button 
+            Style="{StaticResource ActionButton}"
+            CommandParameter="{x:Static commands1:DialogTarget.Selection}"
+            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
+            Command="{x:Static commands:MsixHeroCommands.ChangeVolume}">
+            <controls:LabelWithIcon Content="Change volume..." Icon16x16="{StaticResource SmallForward}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>

@@ -268,7 +268,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
             {
                 if (!item.IsRunning)
                 {
-                    // return false;
+                    return false;
                 }
             }
 

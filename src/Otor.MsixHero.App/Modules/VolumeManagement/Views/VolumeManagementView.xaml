@@ -22,6 +22,8 @@
         <transitionContentControl:TransitioningContentControl 
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            VerticalAlignment="Stretch"
             ClipToBounds="True"
             Transition="Drop" Grid.Column="1" regions:RegionManager.RegionName="{x:Static constants:VolumeManagementRegionNames.Details}" />
 
