@@ -1,6 +1,6 @@
 ﻿<UserControl 
     x:Name="Root"
-    x:Class="Otor.MsixHero.App.Modules.PackageManagement.Views.PackagesListView"
+    x:Class="Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views.PackagesListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,9 +11,9 @@
     xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
-    xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels"
     xmlns:packageManagement="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
+    xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesListViewModel}">
@@ -367,7 +367,8 @@
                             </Border>
                             <StackPanel DockPanel.Dock="Right">
                                 <TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                <TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                                <!--<TextBlock controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />-->
+                                <TextBlock Text="{Binding InstallDate, Mode=OneTime, StringFormat='d'}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
                             </StackPanel>
 
                             <StackPanel Margin="10 0">

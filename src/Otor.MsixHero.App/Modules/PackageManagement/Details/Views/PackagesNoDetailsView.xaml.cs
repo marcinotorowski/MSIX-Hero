@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.Views
+namespace Otor.MsixHero.App.Modules.PackageManagement.Details.Views
 {
     /// <summary>
     /// Interaction logic for PackagesDetailsView.xaml

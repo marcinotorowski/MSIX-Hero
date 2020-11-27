@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
 using Otor.MsixHero.App.Controls.PsfContent.ViewModel;
 using Otor.MsixHero.App.Helpers;
-using Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging;

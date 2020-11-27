@@ -1,4 +1,8 @@
 ﻿using Otor.MsixHero.App.Controls.PackageExpert;
+using Otor.MsixHero.App.Modules.PackageManagement.Details.Views;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views;
+using Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels;
+using Otor.MsixHero.App.Modules.PackageManagement.Search.Views;
 using Otor.MsixHero.App.Modules.PackageManagement.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.Views;
 using Prism.Ioc;

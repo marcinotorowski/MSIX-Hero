@@ -8,7 +8,7 @@ using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
+namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 {
     public enum ClearFilter
     {

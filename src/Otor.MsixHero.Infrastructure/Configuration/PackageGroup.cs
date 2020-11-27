@@ -8,6 +8,8 @@
 
         Type,
 
-        Architecture
+        Architecture,
+
+        InstallDate
     }
 }

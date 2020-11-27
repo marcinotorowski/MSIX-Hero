@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters">
+                    xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
+                    xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels">
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:BooleanToHiddenVisibilityConverter x:Key="BooleanToHiddenVisibilityConverter" />
     <converters:NegativeConverter x:Key="NegativeConverter" />
@@ -10,4 +11,5 @@
     <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     <converters:NegativeEnumToVisibilityConverter x:Key="NegativeEnumToVisibilityConverter" />
+    <converters:GroupNameConverter x:Key="GroupConverter" />
 </ResourceDictionary>

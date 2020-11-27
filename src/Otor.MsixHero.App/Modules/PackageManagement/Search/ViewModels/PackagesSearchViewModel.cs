@@ -10,7 +10,7 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Events;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
+namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 {
     public class PackagesSearchViewModel : NotifyPropertyChanged
     {

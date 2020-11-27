@@ -4,12 +4,10 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {
     public class InstalledPackageViewModel : NotifyPropertyChanged
     {
-        private bool isRunning;
-
         public InstalledPackageViewModel(InstalledPackage package)
         {
             this.Model = package;
@@ -43,7 +41,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items
 
         public string Image => this.Model.Image;
 
-        public DateTime InstallDate { get => this.Model.InstallDate; }
+        public DateTime InstallDate => this.Model.InstallDate;
 
         public string TileColor => this.Model.TileColor;
 
@@ -106,5 +104,4 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items
             return installedPackageViewModel.Model;
         }
     }
-
 }

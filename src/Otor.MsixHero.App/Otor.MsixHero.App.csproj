@@ -114,10 +114,10 @@
     <Compile Update="Modules\EventViewer\Views\EventViewerView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\PackageManagement\Views\PackagesManyDetailsView.xaml.cs">
+    <Compile Update="Modules\PackageManagement\Details\Views\PackagesManyDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Modules\PackageManagement\Views\PackagesSingleDetailsView.xaml.cs">
+    <Compile Update="Modules\PackageManagement\Details\Views\PackagesSingleDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\VolumeManagement\Views\VolumesManyDetailsView.xaml.cs">
@@ -244,10 +244,10 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\PackageManagement\Views\PackagesManyDetailsView.xaml">
+    <Page Update="Modules\PackageManagement\Details\Views\PackagesManyDetailsView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\PackageManagement\Views\PackagesSingleDetailsView.xaml">
+    <Page Update="Modules\PackageManagement\Details\Views\PackagesSingleDetailsView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\SystemStatus\View\SystemStatusView.xaml">

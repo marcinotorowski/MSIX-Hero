@@ -5,12 +5,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Data;
+using Otor.MsixHero.App.Converters;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
-using Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
@@ -22,7 +22,7 @@ using Prism;
 using Prism.Events;
 using Prism.Regions;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {
     public class PackagesListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {
@@ -150,11 +150,20 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
 
         private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> eventPayload)
         {
-            this.Items.Clear();
+            this.packagesSync.EnterWriteLock();
 
-            foreach (var item in eventPayload.Result)
+            try
             {
-                this.Items.Add(new InstalledPackageViewModel(item));
+                this.Items.Clear();
+
+                foreach (var item in eventPayload.Result)
+                {
+                    this.Items.Add(new InstalledPackageViewModel(item));
+                }
+            }
+            finally
+            {
+                this.packagesSync.ExitWriteLock();
             }
         }
 
@@ -275,7 +284,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
             if (!string.IsNullOrWhiteSpace(this.application.ApplicationState.Packages.SearchKey) && item.DisplayName.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
                    && item.DisplayPublisherName.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
                    && item.Version.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   && item.Architecture.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1)
+                   //&& item.Architecture.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                   )
             {
                 return false;
             }
@@ -285,10 +295,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
 
         private void OnActivePackageIndication(ActivePackageFullNames obj)
         {
+            this.packagesSync.EnterReadLock();
             try
             {
-                this.packagesSync.EnterReadLock();
-
                 foreach (var item in this.Items)
                 {
                     item.IsRunning = obj.Running.Contains(item.ProductId);
@@ -365,6 +374,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
                     case PackageGroup.Architecture:
                         groupProperty = nameof(InstalledPackageViewModel.Architecture);
                         break;
+                    case PackageGroup.InstallDate:
+                        groupProperty = nameof(InstalledPackageViewModel.InstallDate);
+                        break;
                     case PackageGroup.Type:
                         groupProperty = nameof(InstalledPackageViewModel.Type);
                         break;
@@ -383,7 +395,15 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
                     if (pgd == null || pgd.PropertyName != groupProperty)
                     {
                         this.ItemsCollection.GroupDescriptions.Clear();
-                        this.ItemsCollection.GroupDescriptions.Add(new PropertyGroupDescription(groupProperty));
+
+                        if (groupProperty == nameof(InstalledPackageViewModel.InstallDate))
+                        {
+                            this.ItemsCollection.GroupDescriptions.Add(new PropertyGroupDescription(groupProperty, GroupDateConverter.Instance));
+                        }
+                        else
+                        {
+                            this.ItemsCollection.GroupDescriptions.Add(new PropertyGroupDescription(groupProperty));
+                        }
                     }
                 }
 

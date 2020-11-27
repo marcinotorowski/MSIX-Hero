@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.Views.Converters
+namespace Otor.MsixHero.App.Modules.PackageManagement.Search.Converters
 {
     public class FilterHeaderVisibilityConverter : IValueConverter
     {

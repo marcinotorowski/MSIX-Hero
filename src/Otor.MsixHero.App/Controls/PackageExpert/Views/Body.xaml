@@ -16,9 +16,9 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.View"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
-             xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items"
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
+             xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
@@ -615,8 +615,6 @@
                                 </TextBlock>
 
                                 <source:StoreSource FamilyName="{Binding FamilyName}" />
-
-
                             </StackPanel>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type sources:AppInstallerPackageSource}">

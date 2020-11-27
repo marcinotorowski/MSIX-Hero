@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.Views
+namespace Otor.MsixHero.App.Modules.PackageManagement.Search.Views
 {
     /// <summary>
     /// Interaction logic for PackagesSearchView.

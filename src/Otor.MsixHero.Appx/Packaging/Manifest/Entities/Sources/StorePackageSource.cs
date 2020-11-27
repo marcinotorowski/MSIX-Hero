@@ -1,4 +1,5 @@
-﻿namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources
+﻿
+namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources
 {
     public class StorePackageSource : AppxSource
     {

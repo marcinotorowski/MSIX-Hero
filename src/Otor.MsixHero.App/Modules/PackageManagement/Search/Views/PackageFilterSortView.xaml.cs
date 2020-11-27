@@ -1,8 +1,8 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
-using Otor.MsixHero.App.Modules.PackageManagement.ViewModels;
+using Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.Views
+namespace Otor.MsixHero.App.Modules.PackageManagement.Search.Views
 {
     /// <summary>
     /// Interaction logic for PackageFilterSortView.xaml

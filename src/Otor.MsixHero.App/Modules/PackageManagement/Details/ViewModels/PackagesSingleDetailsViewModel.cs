@@ -4,7 +4,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Prism.Regions;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
+namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
 {
     public class PackagesSingleDetailsViewModel : NotifyPropertyChanged, INavigationAware
     {

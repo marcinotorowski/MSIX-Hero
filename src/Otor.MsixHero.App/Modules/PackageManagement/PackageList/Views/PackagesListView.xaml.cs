@@ -8,12 +8,11 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Hero.Events.Base;
-using Otor.MsixHero.App.Modules.PackageManagement.ViewModels;
-using Otor.MsixHero.App.Modules.PackageManagement.ViewModels.Items;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 
-namespace Otor.MsixHero.App.Modules.PackageManagement.Views
+namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 {
     /// <summary>
     /// Interaction logic for PackagesListView.
