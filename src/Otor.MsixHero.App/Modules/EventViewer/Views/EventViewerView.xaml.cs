@@ -1,95 +1,46 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using Otor.MsixHero.App.Controls;
+﻿using System.Windows;
+using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Modules.EventViewer.ViewModels;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
-using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
+using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Views
 {
     /// <summary>
     /// Interaction logic for EventViewerView.
     /// </summary>
-    public partial class EventViewerView
+    public partial class EventViewerView : INavigationAware
     {
-        private SortAdorner sortAdorner;
-        private string currentSortColumn;
-        private bool currentSortDescending;
-
+        private readonly IMsixHeroApplication application;
         private readonly EventViewerCommandHandler commandHandler;
-        // private int lastHashCode;
 
         public EventViewerView(IMsixHeroApplication application, IInteractionService interactionService, IBusyManager busyManager)
         {
+            this.application = application;
             this.InitializeComponent();
-            this.IsVisibleChanged += OnIsVisibleChanged;
             this.commandHandler = new EventViewerCommandHandler(this, application, interactionService, busyManager);
         }
 
-        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void RegionOnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if ((bool)e.NewValue && this.currentSortColumn == null)
-            {
-                Application.Current.Dispatcher.InvokeAsync(
-                () =>
-                {
-                    this.SetSorting("DateTime", true);
-                }, 
-                DispatcherPriority.ApplicationIdle);
-            }
+            this.application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
 
-        private void SetSorting(string columnName, bool descending)
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            SortAdorner newSortAdorner = null;
-
-            foreach (var item in this.GridView.Columns.Select(c => c.Header).OfType<GridViewColumnHeader>().Where(c => c.Tag is string))
-            {
-                var layer = AdornerLayer.GetAdornerLayer(item);
-                if (layer == null)
-                {
-                    continue;
-                }
-
-                if (this.sortAdorner != null)
-                {
-                    layer.Remove(this.sortAdorner);
-                }
-
-                if ((string)item.Tag == columnName)
-                {
-                    newSortAdorner = new SortAdorner(item, descending ? ListSortDirection.Descending : ListSortDirection.Ascending);
-                    layer.Add(newSortAdorner);
-                    this.currentSortColumn = columnName;
-                    break;
-                }
-            }
-
-            this.sortAdorner = newSortAdorner;
-            ((EventViewerViewModel) this.DataContext).Sort(columnName, descending);
+            this.application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
-        
-        private void GridHeaderOnClick(object sender, RoutedEventArgs e)
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            var tag = (string)((GridViewColumnHeader)sender).Tag;
+            return true;
+        }
 
-            if (this.currentSortColumn == tag)
-            {
-                this.currentSortDescending = !this.currentSortDescending;
-            }
-            else
-            {
-                this.currentSortDescending = false;
-            }
-
-            this.currentSortColumn = tag;
-
-            this.SetSorting(this.currentSortColumn, this.currentSortDescending);
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
         }
     }
 }

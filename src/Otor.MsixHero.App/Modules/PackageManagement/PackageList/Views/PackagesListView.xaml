@@ -16,7 +16,7 @@
     xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
-    d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesListViewModel}">
+    d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance elements:PackagesListViewModel}">
 
     <UserControl.Resources>
         <system:Boolean x:Key="True">True</system:Boolean>

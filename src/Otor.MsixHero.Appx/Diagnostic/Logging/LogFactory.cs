@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Management.Automation;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
@@ -8,54 +10,125 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
 {
     internal class LogFactory
     {
-        public Log CreateFromPowerShellObject(PSObject source)
+        public Log CreateFromPowerShellObject(PSObject source, string logName)
         {
-            var log = new Log();
-
-            var properties = source.Properties;
-            if (properties == null)
+            var log = new Log
             {
-                return log;
+                Source = logName.StartsWith("microsoft-windows-", StringComparison.OrdinalIgnoreCase) ? logName.Remove(0, "microsoft-windows-".Length) : logName
+            };
+
+            if (source.BaseObject is EventLogRecord eventLogRecord)
+            {
+                log.Source = eventLogRecord.ContainerLog.IndexOf('/') == -1 ? eventLogRecord.ContainerLog : eventLogRecord.ContainerLog.Remove(0, eventLogRecord.ContainerLog.IndexOf('/') + 1);
+                log.ActivityId = eventLogRecord.ActivityId;
+                if (eventLogRecord.TimeCreated.HasValue)
+                {
+                    log.DateTime = eventLogRecord.TimeCreated.Value;
+                }
+
+                log.Level = eventLogRecord.LevelDisplayName;
+                log.Message = eventLogRecord.FormatDescription();
+
+
+                log.ThreadId = eventLogRecord.ThreadId ?? 0;
+
+                log.OpcodeDisplayName = eventLogRecord.OpcodeDisplayName;
+
+                var account = (NTAccount)eventLogRecord.UserId.Translate(typeof(NTAccount));
+                try
+                {
+                    log.User = account.ToString();
+                }
+                catch (Exception)
+                {
+                    log.User = eventLogRecord.UserId.ToString();
+                }
+            }
+            else
+            {
+                var properties = source.Properties;
+                if (properties == null)
+                {
+                    return log;
+                }
+
+                foreach (var item in properties)
+                {
+                    switch (item.Name)
+                    {
+                        case "Message":
+                            log.Message = (string)item.Value;
+                            break;
+                        case "ThreadId":
+                            log.ThreadId = (int)item.Value;
+                            break;
+                        case "TimeCreated":
+                            log.DateTime = (DateTime)item.Value;
+                            break;
+                        case "LevelDisplayName":
+                            log.Level = (string)item.Value;
+                            break;
+                        case "UserId":
+                            var sid = (SecurityIdentifier)item.Value;
+                            var account = (NTAccount)sid.Translate(typeof(NTAccount));
+                            try
+                            {
+                                log.User = account.ToString();
+                            }
+                            catch (Exception)
+                            {
+                                log.User = sid.ToString();
+                            }
+
+                            break;
+                    }
+                }
             }
 
-            foreach (var item in properties)
+            if (!string.IsNullOrWhiteSpace(log.Message))
             {
-                switch (item.Name)
+                var reg = Regex.Match(log.Message, @"\b([\w\.\-]+)(?:_~)?_[a-z0-9]{13}\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                if (reg.Success)
                 {
-                    case "Message":
-                        log.Message = (string)item.Value;
-                        var reg = Regex.Match(log.Message ?? string.Empty, @"\b([\w\.\-]+)_[a-z0-9]{13}\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                    log.PackageName = reg.Groups[1].Value.TrimEnd('_');
+                }
+                else
+                {
+                    reg = Regex.Match(log.Message, @"\bDeleted\\([\w\.\-]+)(?:_~)?_[a-z0-9]{13}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                    if (reg.Success)
+                    {
+                        log.PackageName = reg.Groups[1].Value.TrimEnd('_');
+                    }
+                    else
+                    {
+                        reg = Regex.Match(log.Message, @"\b(?:file:///(?<mainpath>[^\s]+))?(?<filename>[^/\ ]+)\.(?<extension>msix|appx|appxbundle|appinstaller|msixbundle)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
                         if (reg.Success)
                         {
-                            log.PackageName = reg.Groups[1].Value.TrimEnd('_');
-                        }
+                            if (reg.Groups["mainpath"].Success)
+                            {
+                                log.FilePath = Uri.UnescapeDataString(reg.Groups["mainpath"].Value + reg.Groups["filename"].Value + "." + reg.Groups["extension"]).Replace('/', '\\');
 
-                        break;
-                    case "Id":
-                        log.ActivityId = (int)item.Value;
-                        break;
-                    case "ThreadId":
-                        log.ThreadId = (int)item.Value;
-                        break;
-                    case "TimeCreated":
-                        log.DateTime = (DateTime)item.Value;
-                        break;
-                    case "LevelDisplayName":
-                        log.Level = (string)item.Value;
-                        break;
-                    case "UserId":
-                        var sid = (SecurityIdentifier)item.Value;
-                        var account = (NTAccount)sid.Translate(typeof(NTAccount));
-                        try
-                        {
-                            log.User = account.ToString();
+                                if (!string.IsNullOrWhiteSpace(log.FilePath))
+                                {
+                                    log.PackageName = Path.GetFileName(log.FilePath);
+                                }
+                            }
+                            else
+                            {
+                                log.FilePath = Uri.UnescapeDataString(reg.Groups["filename"].Value + "." + reg.Groups["extension"]).Replace('/', '\\');
+                                log.PackageName = log.FilePath;
+                            }
                         }
-                        catch (Exception)
-                        {
-                            log.User = sid.ToString();
-                        }
+                    }
+                }
 
-                        break;
+                if (log.Level == "Error")
+                {
+                    reg = Regex.Match(log.Message, @"\b0x[0-9A-F]{8}\b");
+                    if (reg.Success)
+                    {
+                        log.ErrorCode = reg.Value;
+                    }
                 }
             }
 

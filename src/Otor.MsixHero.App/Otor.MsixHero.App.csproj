@@ -67,7 +67,7 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
-    <Resource Include="Modules\VolumeManagement\Views\Images\acryllicbg.png" />
+    <Resource Include="Resources\acryllicbg.png" />
     <Resource Include="Resources\icons8-sugar-cube-48.png" />
     <Resource Include="Resources\msix-hero-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -109,6 +109,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\Dialogs\Winget\YamlEditor\View\WingetView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\EventViewer\Details\Views\EventViewerDetailsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\EventViewer\Views\EventViewerView.xaml.cs">
@@ -236,7 +239,11 @@
     <Page Update="Modules\Dashboard\Views\DashboardSearchView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
-    <Page Update="Modules\EventViewer\Views\EventViewerSearchView.xaml">
+    <Page Update="Modules\EventViewer\Details\Views\EventViewerDetailsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\EventViewer\Search\Views\EventViewerSearchView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

@@ -77,6 +77,7 @@ namespace Otor.MsixHero.App.Hero.Executor
             this.Handlers[typeof(SelectPackagesCommand)] = (command, token, progress) => this.SelectPackages((SelectPackagesCommand)command);
 
             this.Handlers[typeof(GetLogsCommand)] = (command, token, progress) => this.GetLogs((GetLogsCommand)command, token, progress);
+            this.Handlers[typeof(SelectLogCommand)] = (command, token, progress) => this.SelectLog((SelectLogCommand)command);
             this.Handlers[typeof(OpenEventViewerCommand)] = (command, token, progress) => this.OpenEventViewer((OpenEventViewerCommand)command, token, progress);
 
             this.Handlers[typeof(SetPackageFilterCommand)] = (command, token, progress) => this.SetPackageFilter((SetPackageFilterCommand)command);
@@ -249,6 +250,12 @@ namespace Otor.MsixHero.App.Hero.Executor
         {
             var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             return await manager.CheckForUpdates(command.PackageFullName, cancellationToken).ConfigureAwait(false);
+        }
+
+        private Task<Log> SelectLog(SelectLogCommand command)
+        {
+            this.ApplicationState.EventViewer.SelectedLog = command.SelectedLog;
+            return Task.FromResult(command.SelectedLog);
         }
 
         private Task<IList<InstalledPackage>> SelectPackages(SelectPackagesCommand command)

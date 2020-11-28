@@ -37,6 +37,7 @@
             private const string BaseEventViewerNavigation = BaseNavigation + "event-viewer";
 
             public const string Search = BaseEventViewerNavigation + "search";
+            public const string Details = BaseEventViewerNavigation + "details";
         }
 
         public static class DashboardPaths

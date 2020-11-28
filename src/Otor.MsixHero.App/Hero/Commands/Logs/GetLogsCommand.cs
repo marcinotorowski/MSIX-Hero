@@ -6,7 +6,7 @@ namespace Otor.MsixHero.App.Hero.Commands.Logs
 {
     public class GetLogsCommand : UiCommand<IList<Log>>
     {
-        public GetLogsCommand() : this(250)
+        public GetLogsCommand() : this(0)
         {
         }
 

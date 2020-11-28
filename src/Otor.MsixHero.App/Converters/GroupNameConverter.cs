@@ -8,10 +8,6 @@ namespace Otor.MsixHero.App.Converters
 {
     public class GroupNameConverter : IValueConverter
     {
-        private GroupNameConverter()
-        {
-        }
-
         public static GroupNameConverter Instance = new GroupNameConverter();
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

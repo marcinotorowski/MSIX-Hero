@@ -20,7 +20,6 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.Views
         {
             InitializeComponent();
             this.application = application;
-            this.application = application;
 
             application.EventAggregator.GetEvent<UiFailedEvent<GetVolumesCommand>>().Subscribe(this.OnGetVolumesFailed, ThreadOption.UIThread);
             application.EventAggregator.GetEvent<UiExecutingEvent<GetVolumesCommand>>().Subscribe(this.OnGetVolumesExecuting);
