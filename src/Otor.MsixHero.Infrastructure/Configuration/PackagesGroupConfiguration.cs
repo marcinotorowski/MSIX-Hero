@@ -2,9 +2,9 @@
 
 namespace Otor.MsixHero.Infrastructure.Configuration
 {
-    public class GroupConfiguration : BaseJsonSetting
+    public class PackagesGroupConfiguration : BaseJsonSetting
     {
-        public GroupConfiguration()
+        public PackagesGroupConfiguration()
         {
             this.GroupMode = PackageGroup.None;
         }

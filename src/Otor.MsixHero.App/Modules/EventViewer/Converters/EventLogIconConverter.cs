@@ -18,6 +18,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
                         return this.IconWarning;
                     case "Error":
                         return this.IconError;
+                    case "Verbose":
+                        return this.IconVerbose;
                 }
             }
 
@@ -29,6 +31,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
         public Geometry IconWarning { get; set; }
 
         public Geometry IconInformation { get; set; }
+
+        public Geometry IconVerbose { get; set; }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

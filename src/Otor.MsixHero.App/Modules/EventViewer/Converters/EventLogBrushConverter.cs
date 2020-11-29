@@ -18,6 +18,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
                         return this.BrushWarning;
                     case "Error":
                         return this.BrushError;
+                    case "Verbose":
+                        return this.BrushVerbose;
                 }
             }
 
@@ -29,6 +31,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
         public Brush BrushWarning { get; set; }
 
         public Brush BrushInformation { get; set; }
+        
+        public Brush BrushVerbose { get; set; }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

@@ -27,7 +27,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
                     return;
                 }
 
-                this.application.CommandExecutor.Invoke(this, new SetEventViewerFilterCommand(value));
+                var currentFilter = this.application.ApplicationState.EventViewer.Filter;
+                this.application.CommandExecutor.Invoke(this, new SetEventViewerFilterCommand(currentFilter, value));
             }
         }
 

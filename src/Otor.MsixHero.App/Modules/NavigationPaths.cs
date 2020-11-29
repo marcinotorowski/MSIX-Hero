@@ -38,6 +38,7 @@
 
             public const string Search = BaseEventViewerNavigation + "search";
             public const string Details = BaseEventViewerNavigation + "details";
+            public const string NoDetails = BaseEventViewerNavigation + "no-details";
         }
 
         public static class DashboardPaths

@@ -150,11 +150,11 @@ namespace Otor.MsixHero.Infrastructure.Services
         private static Configuration.Configuration GetDefault()
         {
             var result = new Configuration.Configuration();
-            result.List.Sidebar.Visible = true;
-            result.List.Tools.Add(new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe", AsAdmin = true });
-            result.List.Tools.Add(new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" });
-            result.List.Tools.Add(new ToolListConfiguration { Name = "Command Prompt", Path = "cmd.exe" });
-            result.List.Tools.Add(new ToolListConfiguration { Name = "PowerShell Console", Path = "powershell.exe" });
+            result.Packages.Sidebar.Visible = true;
+            result.Packages.Tools.Add(new ToolListConfiguration { Name = "Registry editor", Path = "regedit.exe", AsAdmin = true });
+            result.Packages.Tools.Add(new ToolListConfiguration { Name = "Notepad", Path = "notepad.exe" });
+            result.Packages.Tools.Add(new ToolListConfiguration { Name = "Command Prompt", Path = "cmd.exe" });
+            result.Packages.Tools.Add(new ToolListConfiguration { Name = "PowerShell Console", Path = "powershell.exe" });
             return result;
         }
 
@@ -182,34 +182,49 @@ namespace Otor.MsixHero.Infrastructure.Services
                 result.Packer = defaults.Packer;
             }
 
-            if (result.List == null)
+            if (result.Events == null)
             {
-                result.List = defaults.List;
+                result.Events = defaults.Events;
             }
 
-            if (result.List.Tools == null || !result.List.Tools.Any())
+            if (result.Events.Filter == null)
             {
-                result.List.Tools = defaults.List.Tools;
+                result.Events.Filter = defaults.Events.Filter;
             }
 
-            if (result.List.Sidebar == null)
+            if (result.Events.Sorting == null)
             {
-                result.List.Sidebar = defaults.List.Sidebar;
+                result.Events.Sorting = defaults.Events.Sorting;
             }
 
-            if (result.List.Filter == null)
+            if (result.Packages == null)
             {
-                result.List.Filter = defaults.List.Filter;
+                result.Packages = defaults.Packages;
             }
 
-            if (result.List.Sorting == null)
+            if (result.Packages.Tools == null || !result.Packages.Tools.Any())
             {
-                result.List.Sorting = defaults.List.Sorting;
+                result.Packages.Tools = defaults.Packages.Tools;
             }
 
-            if (result.List.Group == null)
+            if (result.Packages.Sidebar == null)
             {
-                result.List.Group = defaults.List.Group;
+                result.Packages.Sidebar = defaults.Packages.Sidebar;
+            }
+
+            if (result.Packages.Filter == null)
+            {
+                result.Packages.Filter = defaults.Packages.Filter;
+            }
+
+            if (result.Packages.Sorting == null)
+            {
+                result.Packages.Sorting = defaults.Packages.Sorting;
+            }
+
+            if (result.Packages.Group == null)
+            {
+                result.Packages.Group = defaults.Packages.Group;
             }
 
             if (result.AppInstaller == null)

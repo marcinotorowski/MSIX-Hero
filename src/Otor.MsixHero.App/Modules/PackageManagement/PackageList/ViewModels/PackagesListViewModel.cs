@@ -69,7 +69,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
         public string SearchKey
         {
             get => this.application.ApplicationState.Packages.SearchKey;
-            set => this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this.application.CommandExecutor.ApplicationState.Packages.PackageFilter, value));
+            set => this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this.application.CommandExecutor.ApplicationState.Packages.Filter, value));
         }
 
         public bool IsActive
@@ -169,7 +169,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         private bool IsPackageVisible(InstalledPackageViewModel item)
         {
-            var signatureFlags = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.AllSources;
+            var signatureFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.AllSources;
             if (signatureFlags != 0 && signatureFlags != PackageFilter.AllSources)
             {
                 switch (item.SignatureKind)
@@ -200,7 +200,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var addonFlags = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.MainAppsAndAddOns;
+            var addonFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.MainAppsAndAddOns;
             if (addonFlags != 0 && addonFlags != PackageFilter.MainAppsAndAddOns)
             {
                 if (item.IsAddon)
@@ -219,7 +219,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var archFilter = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.AllArchitectures;
+            var archFilter = this.application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
             if (archFilter != PackageFilter.AllArchitectures && archFilter != 0)
             {
                 switch (item.Model.Architecture?.ToLowerInvariant())
@@ -272,7 +272,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var isRunningFilter = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.InstalledAndRunning;
+            var isRunningFilter = this.application.ApplicationState.Packages.Filter & PackageFilter.InstalledAndRunning;
             if (isRunningFilter == PackageFilter.Running)
             {
                 if (!item.IsRunning)

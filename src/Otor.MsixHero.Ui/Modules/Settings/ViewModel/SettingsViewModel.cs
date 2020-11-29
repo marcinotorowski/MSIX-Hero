@@ -62,7 +62,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
             this.AllSettings.AddChildren(
                 this.TabSigning,
-                this.SidebarDefaultState = new ChangeableProperty<bool>(config.List.Sidebar.Visible),
+                this.SidebarDefaultState = new ChangeableProperty<bool>(config.Packages.Sidebar.Visible),
                 this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration.ConfirmDeletion),
                 this.TabEditors,
@@ -269,7 +269,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
             if (this.SidebarDefaultState.IsTouched)
             {
-                newConfiguration.List.Sidebar.Visible = this.SidebarDefaultState.CurrentValue;
+                newConfiguration.Packages.Sidebar.Visible = this.SidebarDefaultState.CurrentValue;
             }
 
             if (this.SwitchToContextualTabAfterSelection.IsTouched)
@@ -440,8 +440,8 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel
 
             if (toolsTouched)
             {
-                newConfiguration.List.Tools.Clear();
-                newConfiguration.List.Tools.AddRange(this.Tools.Items.Select(t => (ToolListConfiguration)t));
+                newConfiguration.Packages.Tools.Clear();
+                newConfiguration.Packages.Tools.AddRange(this.Tools.Items.Select(t => (ToolListConfiguration)t));
             }
 
             await this.configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);

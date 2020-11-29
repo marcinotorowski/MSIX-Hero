@@ -84,7 +84,7 @@ namespace Otor.MsixHero.Ui.Modules.Main.ViewModel
             if (tools == null)
             {
                 var config = this.configurationService.GetCurrentConfiguration();
-                tools = config?.List?.Tools ?? Enumerable.Empty<ToolListConfiguration>();
+                tools = config?.Packages?.Tools ?? Enumerable.Empty<ToolListConfiguration>();
             }
 
             foreach (var item in tools)

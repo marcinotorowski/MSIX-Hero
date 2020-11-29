@@ -2,6 +2,7 @@
 using Otor.MsixHero.App.Modules.Dashboard.Views;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
 
 namespace Otor.MsixHero.App.Modules.Dashboard
 {

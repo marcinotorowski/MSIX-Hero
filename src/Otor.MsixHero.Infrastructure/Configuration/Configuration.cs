@@ -7,7 +7,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
     {
         public Configuration()
         {
-            this.List = new ListConfiguration();
+            this.Packages = new PackagesConfiguration();
+            this.Events = new EventsConfiguration();
             this.Signing = new SigningConfiguration();
             this.Packer = new PackerConfiguration();
             this.AppInstaller = new AppInstallerConfiguration();
@@ -21,8 +22,11 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         [DataMember(Name = "ui")]
         public UiConfiguration UiConfiguration { get; set; }
 
-        [DataMember(Name = "list")]
-        public ListConfiguration List { get; set; }
+        [DataMember(Name = "packages")]
+        public PackagesConfiguration Packages { get; set; }
+
+        [DataMember(Name = "events")]
+        public EventsConfiguration Events { get; set; }
 
         [DataMember(Name = "signing")]
         public SigningConfiguration Signing { get; set; }

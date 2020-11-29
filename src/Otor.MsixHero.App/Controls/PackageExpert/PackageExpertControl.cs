@@ -91,7 +91,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             if (tools == null)
             {
                 var cfg = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
-                tools = cfg.List?.Tools;
+                tools = cfg.Packages?.Tools;
             }
 
             this.Tools.Clear();

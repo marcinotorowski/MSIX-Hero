@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -15,6 +15,7 @@ using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism;
@@ -28,7 +29,6 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
         private readonly IBusyManager busyManager;
         private readonly IInteractionService interactionService;
         private bool firstRun = true;
-        private string searchKey;
         private bool isActive;
 
         public EventViewerListViewModel(
@@ -51,8 +51,59 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             this.Progress = new ProgressProperty();
             this.application.EventAggregator.GetEvent<UiExecutedEvent<GetLogsCommand, IList<Log>>>().Subscribe(this.OnGetLogs, ThreadOption.UIThread);
             this.application.EventAggregator.GetEvent<UiExecutedEvent<SetEventViewerFilterCommand>>().Subscribe(this.OnSetEventViewerFilterCommand, ThreadOption.UIThread);
+            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetEventViewerSortingCommand>>().Subscribe(this.OnSetEventViewerSortingCommand, ThreadOption.UIThread);
+            this.SetSortingAndGrouping();
         }
-        
+
+        private void SetSortingAndGrouping()
+        {
+            var currentSort = this.application.ApplicationState.EventViewer.SortMode;
+            var currentSortDescending = this.application.ApplicationState.EventViewer.SortDescending;
+
+            using (this.LogsView.DeferRefresh())
+            {
+                string sortProperty;
+
+                switch (currentSort)
+                {
+                    case EventSort.Date:
+                        sortProperty = nameof(LogViewModel.DateTime);
+                        break;
+                    case EventSort.Type:
+                        sortProperty = nameof(LogViewModel.Level);
+                        break;
+                    case EventSort.PackageName:
+                        sortProperty = nameof(LogViewModel.PackageName);
+                        break;
+                    default:
+                        sortProperty = null;
+                        break;
+                }
+
+                if (sortProperty == null)
+                {
+                    this.LogsView.SortDescriptions.Clear();
+                }
+                else
+                {
+                    var sd = this.LogsView.SortDescriptions.FirstOrDefault();
+                    if (sd.PropertyName != sortProperty || sd.Direction != (currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending))
+                    {
+                        this.LogsView.SortDescriptions.Clear();
+                        this.LogsView.SortDescriptions.Add(new SortDescription(sortProperty, currentSortDescending ? ListSortDirection.Descending : ListSortDirection.Ascending));
+                    }
+                }
+
+                if (this.LogsView.GroupDescriptions.Any())
+                {
+                    var gpn = ((PropertyGroupDescription)this.LogsView.GroupDescriptions[0]).PropertyName;
+                    if (this.LogsView.GroupDescriptions.Any() && this.LogsView.SortDescriptions.All(sd => sd.PropertyName != gpn))
+                    {
+                        this.LogsView.SortDescriptions.Insert(0, new SortDescription(gpn, ListSortDirection.Ascending));
+                    }
+                }
+            }
+        }
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
             if (e.Type != OperationType.EventsLoading)
@@ -69,8 +120,13 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
 
         private void OnSetEventViewerFilterCommand(UiExecutedPayload<SetEventViewerFilterCommand> obj)
         {
-            this.SearchKey = obj.Command.SearchKey;
+            this.OnPropertyChanged(nameof(SearchKey));
             this.LogsView.Refresh();
+        }
+
+        private void OnSetEventViewerSortingCommand(UiExecutedPayload<SetEventViewerSortingCommand> obj)
+        {
+            this.SetSortingAndGrouping();
         }
 
         private void OnGetLogs(UiExecutedPayload<GetLogsCommand, IList<Log>> obj)
@@ -85,15 +141,11 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
         
         public string SearchKey
         {
-            get => this.searchKey;
+            get => this.application.ApplicationState.EventViewer.SearchKey;
             set
             {
-                if (!this.SetField(ref this.searchKey, value))
-                {
-                    return;
-                }
-
-                this.application.CommandExecutor.Invoke(this, new SetEventViewerFilterCommand(value));
+                var currentFilter = this.application.ApplicationState.EventViewer.Filter;
+                this.application.CommandExecutor.Invoke(this, new SetEventViewerFilterCommand(currentFilter, value));
             }
         }
         
@@ -115,41 +167,65 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
 
         private bool Filter(object obj)
         {
-            if (string.IsNullOrEmpty(this.searchKey))
-            {
-                return true;
-            }
-
             var filtered = (LogViewModel)obj;
 
-            if (filtered.Message != null && filtered.Message.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            var filterLevel = this.application.ApplicationState.EventViewer.Filter & EventFilter.AllLevels;
+            if (filterLevel != 0)
             {
-                return true;
+                switch (filtered.Level)
+                {
+                    case "Error":
+                        if (!filterLevel.HasFlag(EventFilter.Error))
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case "Warning":
+                        if (!filterLevel.HasFlag(EventFilter.Warning))
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case "Information":
+                        if (!filterLevel.HasFlag(EventFilter.Info))
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case "Verbose":
+                        if (!filterLevel.HasFlag(EventFilter.Verbose))
+                        {
+                            return false;
+                        }
+
+                        break;
+                }
             }
 
-            if (filtered.Level != null && filtered.Level.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
+            var searchKey = this.application.ApplicationState.EventViewer.SearchKey;
+            if (!string.IsNullOrEmpty(searchKey))
             {
-                return true;
-            }
+                var searchMatch = false;
+                if (filtered.OpcodeDisplayName != null)
+                {
+                    searchMatch = filtered.OpcodeDisplayName.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) != -1;
+                }
 
-            if (filtered.User != null && filtered.User.IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                return true;
-            }
+                if (!searchMatch && filtered.Message != null)
+                {
+                    searchMatch = filtered.Message.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase) != -1;
+                }
 
-            if (filtered.DateTime != default && filtered.DateTime.ToString(CultureInfo.CurrentUICulture).IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                return true;
+                if (!searchMatch)
+                {
+                    return false;
+                }
             }
-
-            if (
-                filtered.ActivityId.ToString().IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1 ||
-                filtered.ThreadId.ToString(CultureInfo.CurrentUICulture).IndexOf(this.SearchKey, StringComparison.OrdinalIgnoreCase) != -1)
-            {
-                return true;
-            }
-
-            return false;
+            
+            return true;
         }
 
         public bool IsActive

@@ -1,8 +1,13 @@
 ﻿using System.Windows.Controls;
+using Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels;
 using Otor.MsixHero.App.Modules.Main.Sidebar.Views;
+using Otor.MsixHero.App.Modules.Main.Toolbar.ViewModels;
 using Otor.MsixHero.App.Modules.Main.Toolbar.Views;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
+using Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
 using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.Main
@@ -19,6 +24,9 @@ namespace Otor.MsixHero.App.Modules.Main
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(RegionNames.Sidebar, typeof(SidebarView));
             regionManager.RegisterViewWithRegion(RegionNames.Toolbar, typeof(ToolbarView));
+
+            ViewModelLocationProvider.Register<SidebarView, SidebarViewModel>();
+            ViewModelLocationProvider.Register<ToolbarView, ToolbarViewModel>();
         }
     }
 }

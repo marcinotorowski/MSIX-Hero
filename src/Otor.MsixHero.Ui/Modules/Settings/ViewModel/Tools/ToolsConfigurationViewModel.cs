@@ -22,7 +22,7 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools
             this.interactionService = interactionService;
             this.configuration = configuration;
 
-            var items = configuration?.List?.Tools;
+            var items = configuration?.Packages?.Tools;
             if (items == null)
             {
                 this.Items = new ValidatedChangeableCollection<ToolViewModel>();
@@ -56,10 +56,10 @@ namespace Otor.MsixHero.Ui.Modules.Settings.ViewModel.Tools
         {
             base.Commit();
             
-            this.configuration.List.Tools.Clear();
+            this.configuration.Packages.Tools.Clear();
             foreach (var item in this.Items)
             {
-                this.configuration.List.Tools.Add(item);
+                this.configuration.Packages.Tools.Add(item);
             }
         }
 

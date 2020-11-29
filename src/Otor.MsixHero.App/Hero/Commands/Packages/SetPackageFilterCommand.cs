@@ -5,19 +5,19 @@ namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
     public class SetPackageFilterCommand : UiCommand
     {
-        public SetPackageFilterCommand(
-            PackageFilter packageFilter, 
-            string searchKey)
-        {
-            this.PackageFilter = packageFilter;
-            this.SearchKey = searchKey;
-        }
-
         public SetPackageFilterCommand()
         {
         }
-        
-        public PackageFilter PackageFilter { get; set; }
+
+        public SetPackageFilterCommand(
+            PackageFilter filter, 
+            string searchKey)
+        {
+            this.Filter = filter;
+            this.SearchKey = searchKey;
+        }
+
+        public PackageFilter Filter { get; set; }
         
         public string SearchKey { get; set; }
     }

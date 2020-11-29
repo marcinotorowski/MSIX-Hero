@@ -4,25 +4,25 @@ using System.Runtime.Serialization;
 namespace Otor.MsixHero.Infrastructure.Configuration
 {
     [DataContract]
-    public class ListConfiguration : BaseJsonSetting
+    public class PackagesConfiguration : BaseJsonSetting
     {
-        public ListConfiguration()
+        public PackagesConfiguration()
         {
             this.Sidebar = new SidebarListConfiguration();
             this.Tools = new List<ToolListConfiguration>();
-            this.Filter = new FilterConfiguration();
-            this.Group = new GroupConfiguration();
-            this.Sorting = new SortConfiguration();
+            this.Filter = new PackagesFilterConfiguration();
+            this.Group = new PackagesGroupConfiguration();
+            this.Sorting = new PackagesSortConfiguration();
         }
 
         [DataMember(Name = "filter")]
-        public FilterConfiguration Filter { get; set; }
+        public PackagesFilterConfiguration Filter { get; set; }
 
         [DataMember(Name = "group")]
-        public GroupConfiguration Group { get; set; }
+        public PackagesGroupConfiguration Group { get; set; }
 
         [DataMember(Name = "sorting")]
-        public SortConfiguration Sorting { get; set; }
+        public PackagesSortConfiguration Sorting { get; set; }
 
         [DataMember(Name = "sidebar")]
         public SidebarListConfiguration Sidebar { get; set; }

@@ -66,6 +66,7 @@ namespace Otor.MsixHero.App.Hero.Executor
             this.Handlers[typeof(SetToolFilterCommand)] = (command, token, progress) => this.SetToolFilter((SetToolFilterCommand)command);
             
             this.Handlers[typeof(SetEventViewerFilterCommand)] = (command, token, progress) => this.SetEventViewerFilter((SetEventViewerFilterCommand)command);
+            this.Handlers[typeof(SetEventViewerSortingCommand)] = (command, token, progress) => this.SetEventViewerSorting((SetEventViewerSortingCommand)command);
 
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
             this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
@@ -105,9 +106,9 @@ namespace Otor.MsixHero.App.Hero.Executor
             this.ApplicationState.Packages.GroupMode = command.GroupMode;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Group ??= new GroupConfiguration();
-            cleanConfig.List.Group.GroupMode = this.ApplicationState.Packages.GroupMode;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Group ??= new PackagesGroupConfiguration();
+            cleanConfig.Packages.Group.GroupMode = this.ApplicationState.Packages.GroupMode;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
             return this.ApplicationState.Packages.GroupMode;
         }
@@ -117,9 +118,9 @@ namespace Otor.MsixHero.App.Hero.Executor
             this.ApplicationState.Packages.ShowSidebar = command.IsVisible;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Sidebar ??= new SidebarListConfiguration();
-            cleanConfig.List.Sidebar.Visible = this.ApplicationState.Packages.ShowSidebar;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Sidebar ??= new SidebarListConfiguration();
+            cleanConfig.Packages.Sidebar.Visible = this.ApplicationState.Packages.ShowSidebar;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 
@@ -137,10 +138,10 @@ namespace Otor.MsixHero.App.Hero.Executor
             }
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Sorting ??= new SortConfiguration();
-            cleanConfig.List.Sorting.SortingMode = this.ApplicationState.Packages.SortMode;
-            cleanConfig.List.Sorting.Descending = this.ApplicationState.Packages.SortDescending;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Sorting ??= new PackagesSortConfiguration();
+            cleanConfig.Packages.Sorting.SortingMode = this.ApplicationState.Packages.SortMode;
+            cleanConfig.Packages.Sorting.Descending = this.ApplicationState.Packages.SortDescending;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 
@@ -182,13 +183,13 @@ namespace Otor.MsixHero.App.Hero.Executor
 
         private async Task SetPackageFilter(SetPackageFilterCommand command)
         {
-            this.ApplicationState.Packages.PackageFilter = command.PackageFilter;
+            this.ApplicationState.Packages.Filter = command.Filter;
             this.ApplicationState.Packages.SearchKey = command.SearchKey;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Filter ??= new FilterConfiguration();
-            cleanConfig.List.Filter.PackageFilter = command.PackageFilter;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Filter ??= new PackagesFilterConfiguration();
+            cleanConfig.Packages.Filter.Filter = command.Filter;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 
@@ -204,10 +205,38 @@ namespace Otor.MsixHero.App.Hero.Executor
             return Task.FromResult(true);
         }
 
-        private Task SetEventViewerFilter(SetEventViewerFilterCommand command)
+        private async Task SetEventViewerSorting(SetEventViewerSortingCommand command)
+        {
+            this.ApplicationState.EventViewer.SortMode = command.SortMode;
+
+            if (command.Descending.HasValue)
+            {
+                this.ApplicationState.EventViewer.SortDescending = command.Descending.Value;
+            }
+            else
+            {
+                this.ApplicationState.EventViewer.SortDescending = !this.ApplicationState.EventViewer.SortDescending;
+            }
+
+            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
+            cleanConfig.Events ??= new EventsConfiguration();
+            cleanConfig.Events.Sorting ??= new EventsSortConfiguration();
+            cleanConfig.Events.Sorting.SortingMode = this.ApplicationState.EventViewer.SortMode;
+            cleanConfig.Events.Sorting.Descending = this.ApplicationState.EventViewer.SortDescending;
+            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
+        }
+
+        private async Task SetEventViewerFilter(SetEventViewerFilterCommand command)
         {
             this.ApplicationState.EventViewer.SearchKey = command.SearchKey;
-            return Task.FromResult(true);
+            this.ApplicationState.EventViewer.Filter = command.Filter;
+
+            var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
+            cleanConfig.Events ??= new EventsConfiguration();
+            cleanConfig.Events.Filter ??= new EventsFilterConfiguration();
+            cleanConfig.Events.Filter.Filter = command.Filter;
+            
+            await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 
         private Task<IList<AppxVolume>> SelectVolumes(SelectVolumesCommand command)

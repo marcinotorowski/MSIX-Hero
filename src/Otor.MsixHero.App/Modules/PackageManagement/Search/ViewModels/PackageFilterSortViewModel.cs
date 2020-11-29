@@ -60,61 +60,61 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 
         public bool FilterStore
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.Store);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.Store);
             set => this.SetPackageFilter(PackageFilter.Store, value);
         }
 
         public bool FilterAddOn
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.Addons);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.Addons);
             set => this.SetPackageFilter(PackageFilter.Addons, value);
         }
 
         public bool FilterMainApp
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.MainApps);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.MainApps);
             set => this.SetPackageFilter(PackageFilter.MainApps, value);
         }
 
         public bool FilterSideLoaded
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.Developer);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.Developer);
             set => this.SetPackageFilter(PackageFilter.Developer, value);
         }
 
         public bool FilterSystem
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.System);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.System);
             set => this.SetPackageFilter(PackageFilter.System, value);
         }
 
         public bool FilterX64
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.x64);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.x64);
             set => this.SetPackageFilter(PackageFilter.x64, value);
         }
 
         public bool FilterX86
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.x86);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.x86);
             set => this.SetPackageFilter(PackageFilter.x86, value);
         }
 
         public bool FilterArm
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.Arm);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.Arm);
             set => this.SetPackageFilter(PackageFilter.Arm, value);
         }
 
         public bool FilterArm64
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.Arm64);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.Arm64);
             set => this.SetPackageFilter(PackageFilter.Arm64, value);
         }
 
         public bool FilterNeutral
         {
-            get => this.application.ApplicationState.Packages.PackageFilter.HasFlag(PackageFilter.Neutral);
+            get => this.application.ApplicationState.Packages.Filter.HasFlag(PackageFilter.Neutral);
             set => this.SetPackageFilter(PackageFilter.Neutral, value);
         }
 
@@ -122,7 +122,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         {
             get
             {
-                var val = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.AllSources;
+                var val = this.application.ApplicationState.Packages.Filter & PackageFilter.AllSources;
                 if (val == 0 || val == PackageFilter.AllSources)
                 {
                     return "(all)";
@@ -152,7 +152,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         {
             get
             {
-                var val = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.MainAppsAndAddOns;
+                var val = this.application.ApplicationState.Packages.Filter & PackageFilter.MainAppsAndAddOns;
                 if (val == 0 || val == PackageFilter.MainAppsAndAddOns)
                 {
                     return "(all)";
@@ -177,7 +177,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         {
             get
             {
-                var val = this.application.ApplicationState.Packages.PackageFilter & PackageFilter.AllArchitectures;
+                var val = this.application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
                 if (val == 0 || val == PackageFilter.AllArchitectures)
                 {
                     return "(all)";
@@ -209,17 +209,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                     selected++;
                 }
 
-                return $"({selected}/6)";
+                return $"({selected}/5)";
             }
         }
 
 
         public bool FilterRunning
         {
-            get => (this.application.ApplicationState.Packages.PackageFilter & PackageFilter.InstalledAndRunning) == PackageFilter.Running;
+            get => (this.application.ApplicationState.Packages.Filter & PackageFilter.InstalledAndRunning) == PackageFilter.Running;
             set
             {
-                var newValue = this.application.ApplicationState.Packages.PackageFilter & ~PackageFilter.InstalledAndRunning;
+                var newValue = this.application.ApplicationState.Packages.Filter & ~PackageFilter.InstalledAndRunning;
                 if (value)
                 {
                     newValue |= PackageFilter.Running;
@@ -268,7 +268,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
 
         private void SetPackageFilter(PackageFilter packageFilter, bool isSet)
         {
-            var currentFilter = this.application.ApplicationState.Packages.PackageFilter;
+            var currentFilter = this.application.ApplicationState.Packages.Filter;
             if (isSet)
             {
                 currentFilter |= packageFilter;

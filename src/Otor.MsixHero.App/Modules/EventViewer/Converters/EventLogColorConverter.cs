@@ -18,6 +18,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
                         return this.ColorWarning;
                     case "Error":
                         return this.ColorError;
+                    case "Verbose":
+                        return this.ColorVerbose;
                 }
             }
 
@@ -29,6 +31,8 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Converters
         public Color ColorWarning { get; set; }
 
         public Color ColorInformation { get; set; }
+
+        public Color ColorVerbose { get; set; }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

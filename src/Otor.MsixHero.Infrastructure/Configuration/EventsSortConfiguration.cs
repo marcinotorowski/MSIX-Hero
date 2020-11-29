@@ -2,16 +2,16 @@
 
 namespace Otor.MsixHero.Infrastructure.Configuration
 {
-    public class PackagesSortConfiguration : BaseJsonSetting
+    public class EventsSortConfiguration : BaseJsonSetting
     {
-        public PackagesSortConfiguration()
+        public EventsSortConfiguration()
         {
-            this.SortingMode = PackageSort.Name;
-            this.Descending = false;
+            this.SortingMode = EventSort.Date;
+            this.Descending = true;
         }
 
         [DataMember(Name= "sortingMode")]
-        public PackageSort SortingMode { get; set; }
+        public EventSort SortingMode { get; set; }
 
         [DataMember(Name = "descending")]
         public bool Descending { get; set; }

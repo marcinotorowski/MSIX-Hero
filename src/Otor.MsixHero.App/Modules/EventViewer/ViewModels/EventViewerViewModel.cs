@@ -24,8 +24,16 @@ namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
         private void OnSelectLogCommand(UiExecutedPayload<SelectLogCommand> command)
         {
             var parameters = new NavigationParameters();
-            parameters.Add("selection", this.application.ApplicationState.EventViewer.SelectedLog);
-            prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.Details, UriKind.Relative), parameters);
+
+            if (command.Command.SelectedLog == null)
+            {
+                prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.NoDetails, UriKind.Relative), parameters);
+            }
+            else
+            {
+                parameters.Add("selection", this.application.ApplicationState.EventViewer.SelectedLog);
+                prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.Details, UriKind.Relative), parameters);
+            }
         }
     }
 }

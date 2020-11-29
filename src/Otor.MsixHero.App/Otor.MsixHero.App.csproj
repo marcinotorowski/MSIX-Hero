@@ -111,7 +111,13 @@
     <Compile Update="Modules\Dialogs\Winget\YamlEditor\View\WingetView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\EventViewer\Details\Views\EventViewerNoDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\EventViewer\Details\Views\EventViewerDetailsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\EventViewer\Search\Views\EventViewerFilterSortView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Modules\EventViewer\Views\EventViewerView.xaml.cs">
@@ -239,11 +245,19 @@
     <Page Update="Modules\Dashboard\Views\DashboardSearchView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+    <Page Update="Modules\EventViewer\Details\Views\EventViewerNoDetailsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Modules\EventViewer\Details\Views\EventViewerDetailsView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Modules\EventViewer\Search\Views\EventViewerSearchView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\EventViewer\Search\Views\EventViewerFilterSortView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

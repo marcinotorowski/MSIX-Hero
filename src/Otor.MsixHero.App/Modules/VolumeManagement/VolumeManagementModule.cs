@@ -2,6 +2,7 @@
 using Otor.MsixHero.App.Modules.VolumeManagement.Views;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
 using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.VolumeManagement
@@ -21,7 +22,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(VolumeManagementRegionNames.Master, typeof(VolumesListView));
-            regionManager.RegisterViewWithRegion(RegionNames.Search, typeof(VolumesSearchView));
+            ViewModelLocationProvider.Register<VolumesListView, VolumesListViewModel>();
         }
     }
 }

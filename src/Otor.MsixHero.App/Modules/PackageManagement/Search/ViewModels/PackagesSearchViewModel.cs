@@ -45,7 +45,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         public string SearchKey
         {
             get => this.application.ApplicationState.Packages.SearchKey;
-            set => this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this.application.CommandExecutor.ApplicationState.Packages.PackageFilter, value));
+            set => this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this.application.CommandExecutor.ApplicationState.Packages.Filter, value));
         }
 
         public bool IsAllUsers

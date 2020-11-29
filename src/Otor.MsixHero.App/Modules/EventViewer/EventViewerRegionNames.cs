@@ -7,5 +7,7 @@
         public const string List = Base + "list";
 
         public const string Details = Base + "details";
+
+        public const string PopupFilter = Base + "popup-filter";
     }
 }

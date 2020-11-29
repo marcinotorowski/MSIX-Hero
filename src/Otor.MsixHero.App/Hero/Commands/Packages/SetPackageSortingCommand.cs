@@ -13,8 +13,8 @@ namespace Otor.MsixHero.App.Hero.Commands.Packages
 
         public SetPackageSortingCommand(PackageSort sortMode, bool? descending = null)
         {
-            SortMode = sortMode;
-            Descending = descending;
+            this.SortMode = sortMode;
+            this.Descending = descending;
         }
 
         public PackageSort SortMode { get; set; }

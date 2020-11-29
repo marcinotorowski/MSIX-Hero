@@ -88,9 +88,9 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             this.ApplicationState.Packages.GroupMode = command.GroupMode;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Group ??= new GroupConfiguration();
-            cleanConfig.List.Group.GroupMode = this.ApplicationState.Packages.GroupMode;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Group ??= new PackagesGroupConfiguration();
+            cleanConfig.Packages.Group.GroupMode = this.ApplicationState.Packages.GroupMode;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
             return this.ApplicationState.Packages.GroupMode;
         }
@@ -100,9 +100,9 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             this.ApplicationState.Packages.ShowSidebar = command.IsVisible;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Sidebar ??= new SidebarListConfiguration();
-            cleanConfig.List.Sidebar.Visible = this.ApplicationState.Packages.ShowSidebar;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Sidebar ??= new SidebarListConfiguration();
+            cleanConfig.Packages.Sidebar.Visible = this.ApplicationState.Packages.ShowSidebar;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 
@@ -120,10 +120,10 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             }
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Sorting ??= new SortConfiguration();
-            cleanConfig.List.Sorting.SortingMode = this.ApplicationState.Packages.SortMode;
-            cleanConfig.List.Sorting.Descending = this.ApplicationState.Packages.SortDescending;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Sorting ??= new PackagesSortConfiguration();
+            cleanConfig.Packages.Sorting.SortingMode = this.ApplicationState.Packages.SortMode;
+            cleanConfig.Packages.Sorting.Descending = this.ApplicationState.Packages.SortDescending;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 
@@ -139,9 +139,9 @@ namespace Otor.MsixHero.Ui.Hero.Executor
             this.ApplicationState.Packages.SearchKey = command.SearchKey;
 
             var cleanConfig = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-            cleanConfig.List ??= new ListConfiguration();
-            cleanConfig.List.Filter ??= new FilterConfiguration();
-            cleanConfig.List.Filter.PackageFilter = command.PackageFilter;
+            cleanConfig.Packages ??= new PackagesConfiguration();
+            cleanConfig.Packages.Filter ??= new PackagesFilterConfiguration();
+            cleanConfig.Packages.Filter.Filter = command.PackageFilter;
             await this.configurationService.SetCurrentConfigurationAsync(cleanConfig).ConfigureAwait(false);
         }
 

@@ -46,11 +46,14 @@ namespace Otor.MsixHero.App.Hero
                     return;
                 }
 
-                this.ApplicationState.Packages.PackageFilter = configuration.List?.Filter?.PackageFilter ?? PackageFilter.Default;
-                this.ApplicationState.Packages.ShowSidebar = configuration.List?.Sidebar?.Visible != false;
-                this.ApplicationState.Packages.SortMode = configuration.List?.Sorting?.SortingMode ?? PackageSort.Name;
-                this.ApplicationState.Packages.SortDescending = configuration.List?.Sorting?.Descending == true;
-                this.ApplicationState.Packages.GroupMode = configuration.List?.Group?.GroupMode ?? PackageGroup.None;
+                this.ApplicationState.Packages.Filter = configuration.Packages?.Filter?.Filter ?? PackageFilter.Default;
+                this.ApplicationState.Packages.ShowSidebar = configuration.Packages?.Sidebar?.Visible != false;
+                this.ApplicationState.Packages.SortMode = configuration.Packages?.Sorting?.SortingMode ?? PackageSort.Name;
+                this.ApplicationState.Packages.SortDescending = configuration.Packages?.Sorting?.Descending == true;
+                this.ApplicationState.Packages.GroupMode = configuration.Packages?.Group?.GroupMode ?? PackageGroup.None;
+
+                this.ApplicationState.EventViewer.SortMode = configuration.Events?.Sorting?.SortingMode ?? EventSort.Date;
+                this.ApplicationState.EventViewer.SortDescending = configuration.Events?.Sorting?.Descending == true;
             }
             catch (Exception e)
             {

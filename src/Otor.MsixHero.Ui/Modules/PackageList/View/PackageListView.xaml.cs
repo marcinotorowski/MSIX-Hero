@@ -430,7 +430,7 @@ namespace Otor.MsixHero.Ui.Modules.PackageList.View
             }
             
             this.tools = new List<MenuItem>();
-            var configuredTools = this.configService.GetCurrentConfiguration().List.Tools;
+            var configuredTools = this.configService.GetCurrentConfiguration().Packages.Tools;
             
             foreach (var item in configuredTools)
             {

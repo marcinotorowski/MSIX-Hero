@@ -19,7 +19,7 @@ namespace Otor.MsixHero.App.Hero.State
 
         public List<InstalledPackage> SelectedPackages { get; }
 
-        public PackageFilter PackageFilter { get; set; }
+        public PackageFilter Filter { get; set; }
         
         public string SearchKey { get; set; }
 
