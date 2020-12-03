@@ -141,6 +141,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
 
+        public IReadOnlyCollection<IChangeable> GetChildren()
+        {
+            return this.children;
+        }
+
         public virtual void Commit()
         {
             try

@@ -3,7 +3,7 @@
 namespace Otor.MsixHero.Cli.Verbs
 {
     [Verb("appattach", HelpText = "Creates VHD disk fro app attach.")]
-    public class AppAttachVerb
+    public class AppAttachVerb : BaseVerb
     {
         [Option('p', "package", HelpText = "Full path to MSIX package to be converted to VHD.", Required = true)]
         public string Package { get; set; }

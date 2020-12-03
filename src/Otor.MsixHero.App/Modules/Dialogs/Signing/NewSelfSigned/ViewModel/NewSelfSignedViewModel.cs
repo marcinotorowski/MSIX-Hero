@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -16,7 +17,7 @@ using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 {
-    public class NewSelfSignedViewModel : ChangeableDialogViewModel
+    public class NewSelfSignedViewModel : ChangeableAutomatedDialogViewModel<NewCertVerb>
     {
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private bool isSubjectTouched;
@@ -38,8 +39,34 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 
             this.PublisherName.ValueChanged += this.PublisherNameOnValueChanged;
             this.PublisherFriendlyName.ValueChanged += this.PublisherFriendlyNameOnValueChanged;
+
+            this.RegisterForCommandLineGeneration(this.PublisherFriendlyName, this.PublisherName, this.ValidUntil, this.Password, this.OutputPath);
         }
-        
+
+        protected override void UpdateVerbData()
+        {
+            this.Verb.ValidUntil = this.ValidUntil.CurrentValue;
+            this.Verb.Password = this.Password.CurrentValue;
+            this.Verb.DisplayName = this.PublisherFriendlyName.CurrentValue;
+            this.Verb.Subject = this.PublisherName.CurrentValue;
+            this.Verb.OutputFolder = this.OutputPath.CurrentValue;
+
+            if (string.IsNullOrEmpty(this.Verb.DisplayName))
+            {
+                this.Verb.DisplayName = "<display-name>";
+            }
+
+            if (string.IsNullOrEmpty(this.Verb.Subject))
+            {
+                this.Verb.DisplayName = "<name>";
+            }
+
+            if (string.IsNullOrEmpty(this.Verb.OutputFolder))
+            {
+                this.Verb.DisplayName = "<output-directory>";
+            }
+        }
+
         public ValidatedChangeableProperty<string> PublisherName { get; }
         
         public ValidatedChangeableProperty<string> PublisherFriendlyName { get; }

@@ -3,7 +3,7 @@
 namespace Otor.MsixHero.Cli.Verbs
 {
     [Verb("pack", HelpText = "Pack a folder")]
-    public class PackVerb
+    public class PackVerb : BaseVerb
     {
         [Option('d', "directory", Required = true)]
         public string Directory { get; set; }

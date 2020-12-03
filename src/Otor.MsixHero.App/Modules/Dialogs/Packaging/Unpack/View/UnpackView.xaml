@@ -7,8 +7,11 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel"
              mc:Ignorable="d" 
              Background="#ffffff"
+             d:DesignWidth="500"
+             d:DesignHeight="300"
              d:DataContext="{d:DesignInstance viewModel:UnpackViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -31,35 +34,41 @@
     <dialog:ChangeableDialog 
         Dialog="{Binding}"
         OkButtonLabel="Unpack package"
+        SupportsCommandLineBuilding="True"
+        SilentCommandLine="{Binding SilentCommandLine}"
         Icon="{StaticResource VectorUnpack}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
-                <ScrollViewer Margin="0 16 0 0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <AdornerDecorator>
-                        <StackPanel>
+                <DockPanel>
+                    
+                    <ScrollViewer Margin="0 16 0 0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <AdornerDecorator>
+                            <StackPanel>
 
-                            <TextBlock
+                                <TextBlock
                                 controls:RequiredAdorner.IsRequired="True" 
                                 Style="{StaticResource LabelTextBlock}"
                                 Text="Full path to an MSIX package" />
-                            <DockPanel>
-                                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
-                                <TextBox TabIndex="4" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                            </DockPanel>
+                                <DockPanel>
+                                    <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
+                                    <TextBox TabIndex="4" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                </DockPanel>
 
-                            <TextBlock
+                                <TextBlock
                                 controls:RequiredAdorner.IsRequired="True"
                                 Style="{StaticResource LabelTextBlock}"
                                 Text="Full path to an folder where files will be extracted" Margin="0 16 0 6" />
-                            <DockPanel>
-                                <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
-                                <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
-                            </DockPanel>
+                                <DockPanel>
+                                    <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
+                                    <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
+                                </DockPanel>
 
-                            <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
-                        </StackPanel>
-                    </AdornerDecorator>
-                </ScrollViewer>
+                                <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
+
+                            </StackPanel>
+                        </AdornerDecorator>
+                    </ScrollViewer>
+                </DockPanel>
             </DataTemplate>
         </dialog:ChangeableDialog.DialogContentTemplate>
         <dialog:ChangeableDialog.SuccessContentTemplate>

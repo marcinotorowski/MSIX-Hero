@@ -7,6 +7,7 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel"
              d:DesignWidth="455"
              mc:Ignorable="d" 
              Background="#ffffff"
@@ -37,6 +38,8 @@
     <dialog:ChangeableDialog
         Dialog="{Binding}"
         OkButtonLabel="Update selected packages"
+        SupportsCommandLineBuilding="True"
+        SilentCommandLine="{Binding SilentCommandLine}"
         Icon="{StaticResource VectorSign}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>

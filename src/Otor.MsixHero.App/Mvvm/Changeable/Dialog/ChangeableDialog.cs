@@ -12,7 +12,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ChangeableDialog),  new FrameworkPropertyMetadata(typeof(ChangeableDialog)));
         }
 
-        public static readonly DependencyProperty OkButtonVisibilityProperty =  DependencyProperty.Register("OkButtonVisibility", typeof(Visibility), typeof(ChangeableDialog), new PropertyMetadata(System.Windows.Visibility.Visible));
+        public static readonly DependencyProperty OkButtonVisibilityProperty =  DependencyProperty.Register("OkButtonVisibility", typeof(Visibility), typeof(ChangeableDialog), new PropertyMetadata(Visibility.Visible));
         
         public static readonly DependencyProperty SuccessContentTemplateProperty = DependencyProperty.Register("SuccessContentTemplate", typeof(DataTemplate), typeof(ChangeableDialog), new PropertyMetadata(null));
 
@@ -35,9 +35,33 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
         public static readonly DependencyProperty FooterProperty =  DependencyProperty.Register("Footer", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
 
         public static readonly DependencyProperty ShowShieldProperty = DependencyProperty.Register("ShowShield", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
-        
+
+        public static readonly DependencyProperty SupportsCommandLineBuildingProperty = DependencyProperty.Register("SupportsCommandLineBuilding", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
+
         public static readonly DependencyProperty ShowHeaderProperty = DependencyProperty.Register("ShowHeader", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty SilentCommandLineProperty = DependencyProperty.Register("SilentCommandLine", typeof(string), typeof(ChangeableDialog), new PropertyMetadata(null));
         
+        public static readonly DependencyProperty ShowSilentCommandLineProperty = DependencyProperty.Register("ShowSilentCommandLine", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
+
+        public bool SupportsCommandLineBuilding
+        {
+            get => (bool)GetValue(SupportsCommandLineBuildingProperty);
+            set => SetValue(SupportsCommandLineBuildingProperty, value);
+        }
+
+        public bool ShowSilentCommandLine
+        {
+            get => (bool)GetValue(ShowSilentCommandLineProperty);
+            set => SetValue(ShowSilentCommandLineProperty, value);
+        }
+
+        public string SilentCommandLine
+        {
+            get => (string)GetValue(SilentCommandLineProperty);
+            set => SetValue(SilentCommandLineProperty, value);
+        }
+
         public ChangeableDialogViewModel Dialog
         {
             get => (ChangeableDialogViewModel)this.GetValue(DialogProperty);

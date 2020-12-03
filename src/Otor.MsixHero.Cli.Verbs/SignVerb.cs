@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using CommandLine;
-using Org.BouncyCastle.Ocsp;
 using Otor.MsixHero.Appx.Signing;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
     [Verb("sign", HelpText = "Sign a package")]
-    public class SignVerb
+    public class SignVerb : BaseVerb
     {
         [Value(1, MetaName = "file path", HelpText = "Full paths to one or more files (separated by space).")]
         public IEnumerable<string> FilePath { get; set; }

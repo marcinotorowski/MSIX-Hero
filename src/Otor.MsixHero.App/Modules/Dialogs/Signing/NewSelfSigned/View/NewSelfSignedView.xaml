@@ -7,6 +7,7 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="400"
              d:DesignWidth="400"
@@ -32,6 +33,8 @@
 
     <dialog:ChangeableDialog
         Dialog="{Binding}"
+        SupportsCommandLineBuilding="True"
+        SilentCommandLine="{Binding SilentCommandLine}"
         Icon="{StaticResource VectorSelfSign}"
         OkButtonLabel="Generate certificate">
 

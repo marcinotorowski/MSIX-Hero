@@ -87,10 +87,14 @@
                                         Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Title}" />
                                 </DockPanel>
                             </Border>
+
                             <Border Background="#F7F7F7" DockPanel.Dock="Bottom">
                                 <DockPanel>
                                     <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
-                                        <ContentPresenter Content="{TemplateBinding Footer}" />
+                                        <CheckBox
+                                            Visibility="{TemplateBinding SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                            IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="Show silent command line" Margin="0 0 4 0" VerticalAlignment="Center" />
+                                        <ContentPresenter Content="{TemplateBinding Footer}" VerticalAlignment="Center" />
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
@@ -128,6 +132,20 @@
                                     </StackPanel>
                                 </DockPanel>
                             </Border>
+
+                            <TextBox 
+                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                BorderThickness="0" 
+                                DockPanel.Dock="Bottom"
+                                MaxHeight="60"
+                                HorizontalScrollBarVisibility="Disabled"
+                                VerticalScrollBarVisibility="Auto"
+                                Background="#333" 
+                                BorderBrush="Transparent" 
+                                Padding="5" 
+                                TextWrapping="Wrap"
+                                Foreground="White" 
+                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
 
                             <Grid>
 
@@ -218,16 +236,14 @@
                                     </Border.Style>
                                     <StackPanel VerticalAlignment="Center">
                                         <Path Style="{StaticResource AnimatedSuccess}" />
-                                        <ContentControl 
-                                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
-                                            Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
-                                            ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
-                                            ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}">
-                                            <ContentControl.LayoutTransform>
+
+                                        <StackPanel
+                                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}">
+                                            <StackPanel.LayoutTransform>
                                                 <ScaleTransform ScaleY="0" />
-                                            </ContentControl.LayoutTransform>
-                                            <ContentControl.Style>
-                                                <Style TargetType="ContentControl">
+                                            </StackPanel.LayoutTransform>
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
                                                     <Style.Triggers>
                                                         <Trigger Property="Tag">
                                                             <Trigger.Value>
@@ -252,8 +268,36 @@
                                                         </Trigger>
                                                     </Style.Triggers>
                                                 </Style>
-                                            </ContentControl.Style>
-                                        </ContentControl>
+                                            </StackPanel.Style>
+
+                                            <ContentControl 
+                                                Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
+                                                ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
+                                                ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}" />
+
+                                            <TextBlock 
+                                                Margin="16 16 16 4"
+                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Text="This operation can be automated by executing the following command line:" 
+                                                TextWrapping="Wrap" />
+
+                                            <TextBox 
+                                                MaxHeight="60"
+                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                BorderThickness="0" 
+                                                DockPanel.Dock="Bottom"
+                                                Background="#444" 
+                                                BorderBrush="Transparent" 
+                                                HorizontalScrollBarVisibility="Disabled"
+                                                VerticalScrollBarVisibility="Auto"
+                                                Padding="5" 
+                                                FontFamily="Consolas"
+                                                TextWrapping="Wrap"
+                                                Margin="16 4"
+                                                Foreground="#fff" 
+                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
+
+                                        </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </Grid>

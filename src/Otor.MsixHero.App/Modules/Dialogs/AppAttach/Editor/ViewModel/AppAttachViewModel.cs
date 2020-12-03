@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -12,7 +13,7 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 {
-    public class AppAttachViewModel : ChangeableDialogViewModel
+    public class AppAttachViewModel : ChangeableAutomatedDialogViewModel<AppAttachVerb>
     {
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory;
@@ -35,6 +36,29 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             this.SizeMode = new ChangeableProperty<AppAttachSizeMode>();
             this.FixedSize = new ValidatedChangeableProperty<string>("Fixed size", "100", this.ValidateFixedSize);
             this.AddChildren(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+
+            this.RegisterForCommandLineGeneration(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+        }
+
+        protected override void UpdateVerbData()
+        {
+            this.Verb.Package = this.InputPath.CurrentValue;
+            this.Verb.CreateScript = this.GenerateScripts.CurrentValue;
+            this.Verb.ExtractCertificate = this.ExtractCertificate.CurrentValue;
+
+            if (string.IsNullOrEmpty(this.Verb.Package))
+            {
+                this.Verb.Package = "<path-to-msix>";
+            }
+
+            if (this.SizeMode.CurrentValue == AppAttachSizeMode.Auto)
+            {
+                this.Verb.Size = 0;
+            }
+            else
+            {
+                this.Verb.Size = !uint.TryParse(this.FixedSize.CurrentValue, out var parsed) ? 0 : parsed;
+            }
         }
 
         public ChangeableFileProperty InputPath { get; }

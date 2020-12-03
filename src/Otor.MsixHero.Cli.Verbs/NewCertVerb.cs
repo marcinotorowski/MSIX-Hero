@@ -4,7 +4,7 @@ using CommandLine;
 namespace Otor.MsixHero.Cli.Verbs
 {
     [Verb("newcert", HelpText = "Create new certificate for self-signing.")]
-    public class NewCertVerb
+    public class NewCertVerb : BaseVerb
     {
         [Option('n', "name", HelpText = "Certificate name", Required = true)]
         public string DisplayName { get; set; }

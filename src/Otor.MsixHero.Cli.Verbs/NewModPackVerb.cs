@@ -3,7 +3,7 @@
 namespace Otor.MsixHero.Cli.Verbs
 {
     [Verb("newmodpack", HelpText = "Create a new modification package.")]
-    public class NewModPackVerb
+    public class NewModPackVerb : BaseVerb
     {
         [Value(0, HelpText = "Path to the output file. If the specified value has extension .msix, a packaged package will be created. Otherwise, the value is treated as a folder where unpacked resources will be saved.", Required = true)]
         public string OutputPath { get; set; }

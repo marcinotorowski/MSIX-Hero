@@ -3,7 +3,7 @@
 namespace Otor.MsixHero.Cli.Verbs
 {
     [Verb("unpack", HelpText = "Unpack a folder")]
-    public class UnpackVerb
+    public class UnpackVerb : BaseVerb
     {
         [Option('p', "package", Required = true)]
         public string Package { get; set; }

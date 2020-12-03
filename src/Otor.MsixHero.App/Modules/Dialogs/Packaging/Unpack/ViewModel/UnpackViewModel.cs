@@ -7,18 +7,18 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging.Packer;
+using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 {
-    public class UnpackViewModel : ChangeableDialogViewModel
+    public class UnpackViewModel : ChangeableAutomatedDialogViewModel<UnpackVerb>
     {
         private readonly IAppxPacker appxPacker;
         private ICommand openSuccessLink;
         private ICommand reset;
-
         public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService) : base("Unpack MSIX package", interactionService)
         {
             this.appxPacker = appxPacker;
@@ -34,6 +34,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
             this.AddChildren(this.InputPath, this.OutputPath, this.CreateFolder);
+            this.RegisterForCommandLineGeneration(this.InputPath, this.OutputPath, this.CreateFolder);
+        }
+
+        protected override void UpdateVerbData()
+        {
+            this.Verb.Directory = this.GetOutputPath();
+            this.Verb.Package = this.InputPath.CurrentValue;
+
+            if (string.IsNullOrEmpty(this.Verb.Directory))
+            {
+                this.Verb.Directory = "<output-directory>";
+            }
+
+            if (string.IsNullOrEmpty(this.Verb.Package))
+            {
+                this.Verb.Package = "<source-package>";
+            }
         }
         
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)

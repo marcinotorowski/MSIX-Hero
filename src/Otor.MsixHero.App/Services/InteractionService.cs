@@ -303,10 +303,9 @@ namespace Otor.MsixHero.App.Services
             }
 
             dlg.CheckFileExists = false;
-            throw new NotImplementedException();
-            ///var result = dlg.ShowDialog() == DialogResult.OK;
-            //selectedFile = dlg.FileName;
-            //return result;
+            var result = dlg.ShowDialog() == true;
+            selectedFile = dlg.FileName;
+            return result;
         }
 
         public bool SaveFile(string filterString, out string selectedFile)
