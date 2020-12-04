@@ -66,6 +66,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
         protected override void UpdateVerbData()
         {
             this.Verb.FilePath = this.Files;
+            if (!this.Verb.FilePath.Any())
+            {
+                this.Verb.FilePath = new[] { "<path-to-msix>" };
+            }
+
             this.Verb.IncreaseVersion = this.IncreaseVersion.CurrentValue;
             this.Verb.NoPublisherUpdate = !this.OverrideSubject.CurrentValue;
 

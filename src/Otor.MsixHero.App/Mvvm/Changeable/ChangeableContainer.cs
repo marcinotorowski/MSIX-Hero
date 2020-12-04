@@ -7,6 +7,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 {
     public class ChangeableContainer : NotifyPropertyChanged, IDisposable, IValidatedContainerChangeable, IDataErrorInfo
     {
+        // ReSharper disable once InconsistentNaming
+        protected bool displayValidationErrors = true;
         private readonly HashSet<IChangeable> children = new HashSet<IChangeable>();
         private readonly HashSet<IChangeable> touchedChildren = new HashSet<IChangeable>();
         private readonly HashSet<IValidatedChangeable> invalidChildren = new HashSet<IValidatedChangeable>();
@@ -16,7 +18,6 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         private bool suppressListening;
         private bool isValidated;
         private string validationMessage;
-        protected bool displayValidationErrors = true;
 
         public ChangeableContainer() : this(true)
         {
@@ -36,6 +37,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     continue;
                 }
+
+                item.Changed += this.OnSubItemChanged;
 
                 if (item is IChangeableValue valueItem)
                 {
@@ -82,6 +85,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 this.OnPropertyChanged(nameof(IsValid));
             }
         }
+
+        public event EventHandler<EventArgs> Changed;
 
         public string Error => this.ValidationMessage;
 
@@ -235,11 +240,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     continue;
                 }
 
+                item.Changed -= this.OnSubItemChanged;
+
                 item.IsDirtyChanged -= this.OnSubItemDirtyChanged;
                 item.IsTouchedChanged -= this.OnSubItemTouchedChanged;
 
-                item.IsDirtyChanged += this.OnSubItemDirtyChanged;
-                item.IsTouchedChanged += this.OnSubItemTouchedChanged;
+                item.IsDirtyChanged -= this.OnSubItemDirtyChanged;
+                item.IsTouchedChanged -= this.OnSubItemTouchedChanged;
 
                 if (item is IValidatedChangeable changeableValue)
                 {
@@ -280,6 +287,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     continue;
                 }
 
+                item.Changed += this.OnSubItemChanged;
                 item.IsDirtyChanged -= this.OnSubItemDirtyChanged;
                 item.IsTouchedChanged -= this.OnSubItemTouchedChanged;
 
@@ -446,6 +454,20 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 this.CustomValidation?.Invoke(this, validationArgs);
                 this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
             }
+
+            this.Changed?.Invoke(this, new EventArgs());
+        }
+
+        private void OnSubItemChanged(object sender, EventArgs e)
+        {
+            if (this.isValidated)
+            {
+                var validationArgs = new ContainerValidationArgs(this.invalidChildren.Any() ? this.invalidChildren.First().ValidationMessage : null);
+                this.CustomValidation?.Invoke(this, validationArgs);
+                this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
+            }
+
+            this.Changed?.Invoke(this, new EventArgs());
         }
 
         private void OnSubItemDirtyChanged(object sender, ValueChangedEventArgs<bool> e)

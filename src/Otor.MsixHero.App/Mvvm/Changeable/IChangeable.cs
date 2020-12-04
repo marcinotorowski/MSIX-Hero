@@ -35,6 +35,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         event EventHandler<ValueChangedEventArgs<bool>> IsDirtyChanged;
 
         event EventHandler<ValueChangedEventArgs<bool>> IsTouchedChanged;
+
+        event EventHandler<EventArgs> Changed;
     }
 
     public interface IChangeable<T> : IChangeableValue

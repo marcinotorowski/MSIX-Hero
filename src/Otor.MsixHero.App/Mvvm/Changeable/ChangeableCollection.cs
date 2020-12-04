@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Otor.MsixHero.App.Mvvm.Changeable
 {
-    public class ChangeableCollection<T> : ObservableCollection<T>, IChangeable
+    public class ChangeableCollection<T> : ObservableCollection<T>, IChangeableValue
     {
         private bool isTouched, isDirty;
 
@@ -39,16 +39,24 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
         }
 
+        public event EventHandler<EventArgs> Changed;
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        
+        public event EventHandler<ValueChangingEventArgs> ValueChanging;
+
         protected override void ClearItems()
         {
             base.ClearItems();
             this.IsTouched = true;
             this.IsDirty = !this.originalItems.SequenceEqual(this);
+            this.Changed?.Invoke(this, new EventArgs());
         }
 
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
+            this.Changed?.Invoke(this, new EventArgs());
 
             if (item is IChangeableValue newChangeableValue)
             {
@@ -91,6 +99,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         protected override void MoveItem(int oldIndex, int newIndex)
         {
             base.MoveItem(oldIndex, newIndex);
+            this.Changed?.Invoke(this, new EventArgs());
 
             if (!this.monitorChildren)
             {
@@ -105,6 +114,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             var item = this[index];
             base.RemoveItem(index);
+            this.Changed?.Invoke(this, new EventArgs());
 
             if (item is IChangeableValue oldChangeableValue)
             {
@@ -137,6 +147,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             var oldItem = this[index];
             base.SetItem(index, item);
+            this.Changed?.Invoke(this, new EventArgs());
 
             if (oldItem is IChangeableValue oldChangeableValue)
             {
@@ -200,6 +211,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     this.IsDirty = !this.originalItems.SequenceEqual(this) || this.OfType<IChangeable>().Any(i => i.IsDirty);
                 }
             }
+
+            this.Changed?.Invoke(this, new EventArgs());
         }
 
         public bool IsDirty
@@ -291,6 +304,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         public void Touch()
         {
             this.IsTouched = true;
+            this.Changed?.Invoke(this, new EventArgs());
         }
 
         public event EventHandler<ValueChangedEventArgs<bool>> IsDirtyChanged;

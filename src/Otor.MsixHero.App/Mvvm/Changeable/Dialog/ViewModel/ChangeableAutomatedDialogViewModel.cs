@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -15,25 +15,20 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel
 
         protected abstract string GenerateSilentCommandLine();
         
-        public void RegisterForCommandLineGeneration(params IChangeableValue[] toSubscribe)
+        public void RegisterForCommandLineGeneration(params IChangeable[] toSubscribe)
+        {
+            this.RegisterForCommandLineGeneration(((IEnumerable<IChangeable>) toSubscribe));
+        }
+        
+        public void RegisterForCommandLineGeneration(IEnumerable<IChangeable> toSubscribe)
         {
             foreach (var item in toSubscribe)
             {
-                item.ValueChanged += this.OnItemChanged;
-            }
-        }
-        
-        public void RegisterForCommandLineGeneration(params IChangeable[] toSubscribe)
-        {
-            this.RegisterForCommandLineGeneration(toSubscribe.OfType<IChangeableValue>().ToArray());
-            
-            foreach (var item in toSubscribe.OfType<ChangeableContainer>())
-            {
-                this.RegisterForCommandLineGeneration(item.GetChildren().ToArray());
+                item.Changed += this.OnItemChanged;
             }
         }
 
-        private void OnItemChanged(object sender, ValueChangedEventArgs e)
+        private void OnItemChanged(object sender, EventArgs e)
         {
             this.OnPropertyChanged(nameof(this.SilentCommandLine));
         }

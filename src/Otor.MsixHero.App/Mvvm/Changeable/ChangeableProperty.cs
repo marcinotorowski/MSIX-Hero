@@ -91,6 +91,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     var args = new ValueChangedEventArgs(oldValue, value, this.OriginalValue, wasDirty, wasTouched);
                     valueChanged(this, args);
                 }
+
+                this.Changed?.Invoke(this, new EventArgs());
             }
         }
 
@@ -129,6 +131,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
             }
         }
+
+        public event EventHandler<EventArgs> Changed;
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
