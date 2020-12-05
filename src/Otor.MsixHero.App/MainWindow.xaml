@@ -9,6 +9,7 @@
         fw:AcrylicWindow.ExtendViewIntoTitleBar="True"
         xmlns:regions="http://prismlibrary.com/"
         xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
+        xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
         mc:Ignorable="d"
         TintColor="#0173C7"
         TintOpacity="0.2"
@@ -225,7 +226,14 @@
         </Style>
     </fw:AcrylicWindow.Style>
 
-    <ContentControl
-        Margin="0"
-        Padding="0" regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}" />
+    <Grid>
+        <ContentControl
+            Margin="0"
+            Padding="0" regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}" />
+        <controls:NotificationArea
+            MaxItems="3"
+            Margin="8 63  8 8"
+            x:Name="WindowArea"
+            Position="TopRight" />
+    </Grid>
 </fw:AcrylicWindow>

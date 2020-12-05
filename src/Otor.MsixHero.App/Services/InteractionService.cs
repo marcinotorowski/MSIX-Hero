@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Windows.Forms;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
+using Notifications.Wpf.Core;
 using Ookii.Dialogs.Wpf;
 using Otor.MsixHero.Infrastructure.Services;
 using Application = System.Windows.Application;
-using DialogResult = Prism.Services.Dialogs.DialogResult;
 using MessageBox = System.Windows.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -18,23 +19,65 @@ namespace Otor.MsixHero.App.Services
 {
     public class InteractionService : IInteractionService
     {
+        private readonly INotificationManager notificationManager;
         private readonly SynchronizationContext context;
 
-        public InteractionService()
+        public InteractionService(INotificationManager notificationManager)
         {
+            this.notificationManager = notificationManager;
             this.context = SynchronizationContext.Current;
         }
 
         public InteractionResult Confirm(string body, string title = null, InteractionType type = InteractionType.Asterisk, InteractionButton buttons = InteractionButton.OK)
         {
-            var targetType = (MessageBoxIcon)(int)type;
-            var targetButtons = (MessageBoxButtons)(int)buttons;
+            var targetType = (MessageBoxImage)(int)type;
+            var targetButtons = (MessageBoxButton)(int)buttons;
 
-            throw new NotImplementedException();
-            //var result = MessageBox.Show(ap body, title, targetButtons, targetType);
-            //return (InteractionResult)(int)result;
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var result = MessageBox.Show(Application.Current.MainWindow, body, title, targetButtons, targetType);
+            return (InteractionResult)(int)result;
         }
 
+        public Task ShowToast(string title, string message, InteractionType type = InteractionType.Information, Action clickCallback = null)
+        {
+            NotificationType toastType;
+
+            switch (type)
+            {
+                case InteractionType.None:
+                    toastType = NotificationType.Success;
+                    break;
+                case InteractionType.Error:
+                    toastType = NotificationType.Error;
+                    break;
+                case InteractionType.Warning:
+                    toastType = NotificationType.Warning;
+                    break;
+                default:
+                    toastType = NotificationType.Information;
+                    break;
+            }
+
+            if (clickCallback == null)
+            {
+                return this.notificationManager.ShowAsync(new NotificationContent()
+                {
+                    Message = message,
+                    Type = toastType,
+                    Title = title
+                }, 
+                "WindowArea");
+            }
+
+            return this.notificationManager.ShowAsync(new NotificationContent()
+                {
+                    Message = message,
+                    Type = toastType,
+                    Title = title
+                },
+                "WindowArea", 
+                onClick: clickCallback);
+        }
 
         public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = InteractionResult.None)
         {

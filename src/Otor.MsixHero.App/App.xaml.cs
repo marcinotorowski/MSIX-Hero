@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Notifications.Wpf.Core;
+using Notifications.Wpf.Core.Controls;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
@@ -20,6 +22,7 @@ using Otor.MsixHero.App.Modules.Main.Shell.Views;
 using Otor.MsixHero.App.Modules.PackageManagement;
 using Otor.MsixHero.App.Modules.SystemStatus;
 using Otor.MsixHero.App.Modules.VolumeManagement;
+using Otor.MsixHero.App.Modules.WhatsNew;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
@@ -65,6 +68,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IAppxContentBuilder, AppxContentBuilder>();
             containerRegistry.RegisterSingleton<IElevatedClient, Client>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
+            containerRegistry.RegisterSingleton<INotificationManager>(() => new NotificationManager(NotificationPosition.TopRight));
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
@@ -88,6 +92,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(SystemStatusModule), ModuleNames.SystemStatus, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeManagementModule), ModuleNames.VolumeManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(DashboardModule), ModuleNames.Dashboard, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(WhatsNewModule), ModuleNames.WhatsNew, InitializationMode.OnDemand));
             
             moduleCatalog.AddModule(new ModuleInfo(typeof(SigningModule), ModuleNames.Dialogs.Signing, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppInstallerModule), ModuleNames.Dialogs.AppInstaller, InitializationMode.OnDemand));
@@ -109,7 +114,8 @@ namespace Otor.MsixHero.App
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
 
             var app = this.Container.Resolve<IMsixHeroApplication>();
-            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Packages));
+            // app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Packages));
+            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
         }
 
         protected override Window CreateShell()

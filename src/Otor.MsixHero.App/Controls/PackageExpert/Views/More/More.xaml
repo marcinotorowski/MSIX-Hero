@@ -18,6 +18,7 @@
             </Style>
         </StackPanel.Resources>
         <Button 
+            Visibility="Collapsed"
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroCommands.PackageExpert}">

@@ -50,11 +50,11 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
         private const string PresentationGroup = "PresentationStates";
         private const string NormalState = "Normal";
         private bool _isTransitioning;
-        private Storyboard? _startingTransition;
-        private Storyboard? _completingTransition;
-        private Grid? _container;
-        private Image? _previousImageSite;
-        private ContentPresenter? _currentContentPresentationSite;
+        private Storyboard _startingTransition;
+        private Storyboard _completingTransition;
+        private Grid _container;
+        private Image _previousImageSite;
+        private ContentPresenter _currentContentPresentationSite;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TransitioningContentControl"/> class.
@@ -67,12 +67,12 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
         /// <summary>
         /// Occurs when a transition has completed.
         /// </summary>
-        public event RoutedEventHandler? TransitionCompleted;
+        public event RoutedEventHandler TransitionCompleted;
 
         /// <summary>
         /// Occurs when a transition has started.
         /// </summary>
-        public event RoutedEventHandler? TransitionStarted;
+        public event RoutedEventHandler TransitionStarted;
 
         /// <summary>
         /// Represents the type of transition that a TransitioningContentControl will perform.
@@ -149,7 +149,7 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
         /// <value>The duration.</value>
         public TimeSpan Duration { get => (TimeSpan)GetValue(TransitionDurationProperty); set => SetValue(TransitionDurationProperty, value); }
 
-        private Storyboard? StartingTransition
+        private Storyboard StartingTransition
         {
             get => _startingTransition;
             set
@@ -162,7 +162,7 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
             }
         }
 
-        private Storyboard? CompletingTransition
+        private Storyboard CompletingTransition
         {
             get => _completingTransition;
             set
@@ -261,7 +261,7 @@ namespace Otor.MsixHero.App.Controls.TransitionContentControl
             }
         }
 
-        private void OnTransitionCompleted(object? sender, EventArgs e)
+        private void OnTransitionCompleted(object sender, EventArgs e)
         {
             AbortTransition();
 

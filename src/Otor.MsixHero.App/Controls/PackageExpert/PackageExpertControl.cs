@@ -38,6 +38,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         private static readonly DependencyPropertyKey IsLoadingPropertyKey = DependencyProperty.RegisterReadOnly("IsLoading", typeof(string), typeof(PackageExpertControl), new PropertyMetadata(null));
         public static readonly DependencyProperty IsLoadingProperty = IsLoadingPropertyKey.DependencyProperty;
 
+        public static readonly DependencyProperty ShowActionBarProperty = DependencyProperty.Register("ShowActionBar", typeof(bool), typeof(PackageExpertControl), new PropertyMetadata(true));
+
         static PackageExpertControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PackageExpertControl), new FrameworkPropertyMetadata(typeof(PackageExpertControl)));
@@ -124,6 +126,12 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         {
             get => (string)GetValue(ErrorMessageProperty);
             private set => SetValue(ErrorMessagePropertyKey, value);
+        }
+
+        public bool ShowActionBar
+        {
+            get => (bool)GetValue(ShowActionBarProperty);
+            set => SetValue(ShowActionBarProperty, value);
         }
 
         public bool IsLoading => (bool)GetValue(IsLoadingProperty);

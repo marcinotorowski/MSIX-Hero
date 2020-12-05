@@ -10,6 +10,7 @@
         public const string EventViewer = BaseNavigation + "event-viewer";
         public const string SystemStatus = BaseNavigation + "system-status";
         public const string Dashboard = BaseNavigation + "dasboard";
+        public const string WhatsNew = BaseNavigation + "whatsnew";
         public const string Empty = BaseNavigation + "empty";
 
         public static class PackageManagementPaths

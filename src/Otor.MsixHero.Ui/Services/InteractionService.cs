@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using Ookii.Dialogs.Wpf;
@@ -106,6 +107,12 @@ namespace Otor.MsixHero.Ui.Services
             }
 
             return clickedIndex;
+        }
+
+        public Task ShowToast(string title, string message, InteractionType type = InteractionType.Asterisk,
+            Action clickCallback = null)
+        {
+            throw new NotImplementedException();
         }
 
         public InteractionResult ShowError(string body, Exception exception, InteractionResult buttons = InteractionResult.Close)

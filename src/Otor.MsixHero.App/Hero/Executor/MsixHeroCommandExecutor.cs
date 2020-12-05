@@ -161,6 +161,11 @@ namespace Otor.MsixHero.App.Hero.Executor
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.Dashboard);
                     this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.DashboardPaths.Search);
                     break;
+                case ApplicationMode.WhatsNew:
+                    this.moduleManager.LoadModule(ModuleNames.WhatsNew);
+                    this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.WhatsNew);
+                    this.regionManager.Regions[RegionNames.Search].RequestNavigate(NavigationPaths.Empty);
+                    break;
                 case ApplicationMode.VolumeManager:
                     this.moduleManager.LoadModule(ModuleNames.VolumeManagement);
                     this.regionManager.Regions[RegionNames.Main].RequestNavigate(NavigationPaths.VolumeManagement);

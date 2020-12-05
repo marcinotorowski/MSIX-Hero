@@ -447,23 +447,33 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
 
                     AppxManifestSummary appxReader;
-
-                    var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
-
                     if (!string.Equals(".appinstaller", Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
                     {
-                        appxReader = await AppxManifestSummaryBuilder.FromFile(packagePath, AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
+                        appxReader = await AppxManifestSummaryBuilder.FromFile(packagePath, AppxManifestSummaryBuilderMode.Properties | AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
+
+#pragma warning disable 4014
+                        this.interactionService.ShowToast("App installed", $"{appxReader.DisplayName ?? appxReader.Name} has been just installed.", InteractionType.None);
+#pragma warning restore 4014
                     }
                     else
                     {
                         appxReader = null;
+
+#pragma warning disable 4014
+                        this.interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.", InteractionType.None);
+#pragma warning restore 4014
                     }
 
+                    var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                    
                     if (appxReader != null)
                     {
                         var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
                         if (selected != null)
                         {
+                            //this.application.ApplicationState.Packages.SelectedPackages.Clear();
+                            //this.application.ApplicationState.Packages.SelectedPackages.Add(selected);
+
                             await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.ManifestLocation)).ConfigureAwait(false);
                         }
                     }
@@ -780,7 +790,25 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     var p2 = wrappedProgress.GetChildProgress(30);
 
                     var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
-                    await manager.Remove(this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray(), progress: p1).ConfigureAwait(false);
+                    var removedPackageNames = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
+                    var removedPackages = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
+                    await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);
+
+                    await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
+
+                    switch (removedPackages.Length)
+                    {
+                        case 1:
+#pragma warning disable 4014
+                            this.interactionService.ShowToast("App removed", $"{removedPackageNames.FirstOrDefault()} has been just removed.", InteractionType.None);
+#pragma warning restore 4014
+                            break;
+                        default:
+#pragma warning disable 4014
+                            this.interactionService.ShowToast("Apps removed", $"{removedPackages.Length} apps has been just removed.", InteractionType.None);
+#pragma warning restore 4014
+                            break;
+                    }
 
                     await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
                 }

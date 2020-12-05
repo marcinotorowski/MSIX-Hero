@@ -14,7 +14,17 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
             this.Icon = icon;
             this.Name = name;
             this.Title = title;
+            this.IsVisible = true;
         }
+
+        public SidebarItemViewModel(ApplicationMode screen, string name)
+        {
+            this.Screen = screen;
+            this.Name = name;
+            this.IsVisible = false;
+        }
+
+        public bool IsVisible { get; }
 
         public ApplicationMode Screen { get; }
 

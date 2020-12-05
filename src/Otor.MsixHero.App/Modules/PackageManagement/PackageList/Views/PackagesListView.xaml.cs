@@ -76,19 +76,24 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 
         private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand> obj)
         {
-            this.ListBox.SelectedItems.Clear();
-
-            foreach (var item in this.ListBox.Items.OfType<InstalledPackageViewModel>())
+            try
             {
-                if (!this.application.ApplicationState.Packages.SelectedPackages.Contains(item.Model))
+                this.ListBox.SelectedItems.Clear();
+
+                foreach (var item in this.ListBox.Items.OfType<InstalledPackageViewModel>())
                 {
-                    continue;
+                    if (!this.application.ApplicationState.Packages.SelectedPackages.Contains(item.Model))
+                    {
+                        continue;
+                    }
+
+                    this.ListBox.SelectedItems.Add(item);
                 }
-
-                this.ListBox.SelectedItems.Add(item);
             }
-
-            this.ListBox.SelectionChanged += this.OnSelectionChanged;
+            finally
+            {
+                this.ListBox.SelectionChanged += this.OnSelectionChanged;
+            }
         }
 
         private void PackageContextMenu_OnContextMenuOpening(object sender, ContextMenuEventArgs e)

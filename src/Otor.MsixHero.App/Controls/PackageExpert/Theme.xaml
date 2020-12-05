@@ -183,6 +183,7 @@
                                 Visibility="Collapsed"
                                 DataContext="{TemplateBinding Package}">
                                 <views:ActionBar 
+                                    Visibility="{TemplateBinding ShowActionBar, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     x:Name="PART_ActionBar"
                                     DockPanel.Dock="Top" />
                                 <views:Header DockPanel.Dock="Top" />

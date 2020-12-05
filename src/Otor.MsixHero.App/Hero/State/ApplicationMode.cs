@@ -10,6 +10,8 @@
 
         SystemStatus,
 
-        EventViewer
+        EventViewer,
+
+        WhatsNew
     }
 }
