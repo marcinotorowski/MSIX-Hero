@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.WhatsNew.Views.Tabs.WhatsNew2"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="700">
+
+    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Uniform" MaxWidth="700">
+        <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="700">
+
+            <Label DockPanel.Dock="Top" Style="{StaticResource Label}">Command line for the current dialog</Label>
+
+            <Canvas Width="700" Height="400" HorizontalAlignment="Left">
+                <Image DockPanel.Dock="Left" Source="whatsnew2.0b.png" HorizontalAlignment="Left" Stretch="None" VerticalAlignment="Top" />
+                <TextBlock Canvas.Left="350" Canvas.Bottom="310" Width="336" Canvas.Right="0" Text="In dialogs that support it, tick the Show silent command line checkbox to see the command line, which can be used to fully automate the operation, using the current dialog settings and preferences." TextWrapping="Wrap" />
+            </Canvas>
+        </DockPanel>
+    </Viewbox>
+</UserControl>

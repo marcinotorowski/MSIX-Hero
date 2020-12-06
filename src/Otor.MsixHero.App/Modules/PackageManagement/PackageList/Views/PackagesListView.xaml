@@ -16,6 +16,7 @@
     xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
+    FocusVisualStyle="{x:Null}"
     d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance elements:PackagesListViewModel}">
 
     <UserControl.Resources>
@@ -285,6 +286,7 @@
         </Border>
 
         <controls:ProgressOverlay 
+            FocusVisualStyle="{x:Null}"
             Message="{Binding Progress.Message}"
             Progress="{Binding Progress.Progress}"
             CancelCommand="{Binding Progress.Cancel}"

@@ -5,20 +5,89 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.ViewModels"
+             xmlns:whatsNew="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew"
+             xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:WhatsNewViewModel}">
-    <StackPanel Margin="8">
-        <Label FontSize="36" Style="{StaticResource Label}">Welcome to MSIX Hero 2.0</Label>
-        <TextBlock Text="MSIX Hero has been updated to version 2.0.0.1" />
-        <TextBlock>
+    <DockPanel Margin="16">
+        <Label DockPanel.Dock="Top" FontSize="36" Style="{StaticResource Label}">Welcome to MSIX Hero 2.0</Label>
+        <TextBlock DockPanel.Dock="Top" Text="MSIX Hero has been updated to version 2.0.0.1" />
+        <TextBlock DockPanel.Dock="Top">
             <Hyperlink>
                 <Run Text="Click here to read release notes for this version" />
             </Hyperlink>
         </TextBlock>
-        <Button Command="{Binding Dismiss}" Content="Close this screen and jump to Packages overview" HorizontalAlignment="Left" Margin="0 20 0 0" />
+        <Button DockPanel.Dock="Top" Command="{Binding Dismiss}" Content="Close this screen and jump to Packages overview" HorizontalAlignment="Left" Margin="0 20 0 0" />
 
-        <Separator Margin="0 10 " />
-        <Image Source="whatsnew2.0.png" HorizontalAlignment="Left" Margin="0 10 0 0" Stretch="None" />
-    </StackPanel>
+        <Separator DockPanel.Dock="Top" Margin="0 10 " />
+
+        <TabControl 
+            SelectedIndex="0"
+            mvvm:RegionManager.RegionName="{x:Static whatsNew:WhatsNewRegionNames.Master}">
+            <TabControl.Style>
+                <Style TargetType="TabControl">
+                    <Setter Property="ItemContainerStyle">
+                        <Setter.Value>
+                            <Style TargetType="TabItem">
+                                <Setter Property="BorderBrush" Value="#bbb" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Height" Value="32" />
+                                <Setter Property="Width" Value="32" />
+                                <Setter Property="Padding" Value="8" />
+                                <Setter Property="BorderThickness" Value="4" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabItem">
+                                            <Border>
+                                                <Border
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Margin="{TemplateBinding Padding}" 
+                                                    CornerRadius="48" 
+                                                    Background="{TemplateBinding Background}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabControl">
+                                <Border>
+                                    <DockPanel>
+                                        <Border DockPanel.Dock="Bottom">
+                                            <StackPanel 
+                                                HorizontalAlignment="Center"
+                                                IsItemsHost="True"
+                                                Orientation="Horizontal"
+                                                x:Name="HeaderPanel">
+                                            </StackPanel>
+                                        </Border>
+                                        <Border DockPanel.Dock="Top">
+                                        <transitionContentControl:TransitioningContentControl 
+                                                x:Name="PART_SelectedContentHost" 
+                                                HorizontalContentAlignment="Stretch"
+                                                VerticalContentAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                HorizontalAlignment="Stretch"
+                                                Content="{TemplateBinding SelectedContent}" />
+                                        </Border>
+                                    </DockPanel>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Style>
+        </TabControl>
+    </DockPanel>
 </UserControl>
