@@ -24,6 +24,7 @@
             // ReSharper disable once IdentifierTypo
             public const string Winget = Base + "winget";
             public const string Settings = Base + "settings";
+            public const string Help = Base + "help";
         }
     }
 }

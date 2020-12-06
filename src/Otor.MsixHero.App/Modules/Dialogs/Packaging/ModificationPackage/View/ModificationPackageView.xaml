@@ -9,7 +9,6 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.View"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">

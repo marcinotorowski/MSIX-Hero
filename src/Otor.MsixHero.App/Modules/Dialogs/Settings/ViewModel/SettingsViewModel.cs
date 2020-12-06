@@ -60,11 +60,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true)
             );
 
+            
             this.AllSettings.AddChildren(
                 this.TabSigning,
-                this.SidebarDefaultState = new ChangeableProperty<bool>(config.Packages.Sidebar.Visible),
-                this.SwitchToContextualTabAfterSelection = new ChangeableProperty<bool>(config.UiConfiguration.SwitchToContextTabAfterSelection),
-                this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration.ConfirmDeletion),
+                this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration?.ConfirmDeletion != false),
+                this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration == null ? Infrastructure.Configuration.DefaultScreen.Packages : config.UiConfiguration.DefaultScreen),
+                this.ShowReleaseNotes = new ChangeableProperty<bool>(config.Update?.HideNewVersionInfo != true),
                 this.TabEditors,
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config),
                 this.TabOther
@@ -205,11 +206,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
         public ChangeableProperty<bool> PackerSignByDefault { get; }
 
-        public ChangeableProperty<bool> SidebarDefaultState { get; }
-
-        public ChangeableProperty<bool> SwitchToContextualTabAfterSelection { get; }
-
         public ChangeableProperty<bool> ConfirmDeletion { get; }
+
+        public ChangeableProperty<bool> ShowReleaseNotes { get; }
+
+        public ChangeableProperty<DefaultScreen> DefaultScreen { get; }
 
         public string EntryPoint
         {
@@ -267,19 +268,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 newConfiguration.Packer.SignByDefault = this.PackerSignByDefault.CurrentValue;
             }
 
-            if (this.SidebarDefaultState.IsTouched)
-            {
-                newConfiguration.Packages.Sidebar.Visible = this.SidebarDefaultState.CurrentValue;
-            }
-
-            if (this.SwitchToContextualTabAfterSelection.IsTouched)
-            {
-                newConfiguration.UiConfiguration.SwitchToContextTabAfterSelection = this.SwitchToContextualTabAfterSelection.CurrentValue;
-            }
-
             if (this.ConfirmDeletion.IsTouched)
             {
                 newConfiguration.UiConfiguration.ConfirmDeletion = this.ConfirmDeletion.CurrentValue;
+            }
+
+            if (this.DefaultScreen.IsTouched)
+            {
+                newConfiguration.UiConfiguration.DefaultScreen = this.DefaultScreen.CurrentValue;
+            }
+
+            if (this.ShowReleaseNotes.IsTouched)
+            {
+                newConfiguration.Update.HideNewVersionInfo = !this.ShowReleaseNotes.CurrentValue;
             }
 
             if (this.CertificateSelector.IsTouched)

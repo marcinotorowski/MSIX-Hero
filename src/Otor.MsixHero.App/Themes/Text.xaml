@@ -65,8 +65,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type Label}" x:Key="FormLabel">
-        <Setter Property="FontSize" Value="14" />
+    <Style TargetType="{x:Type Label}" x:Key="FormLabel" BasedOn="{StaticResource FormLabelThin}">
         <Setter Property="Margin" Value="0 0 0 6" />
     </Style>
 

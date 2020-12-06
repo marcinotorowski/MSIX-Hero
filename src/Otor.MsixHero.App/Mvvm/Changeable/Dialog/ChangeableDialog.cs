@@ -1,10 +1,12 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 
 namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
 {
+    [TemplatePart(Name = "PART_CopyCommandLine")]
     public class ChangeableDialog : Control
     {
         static ChangeableDialog()
@@ -43,6 +45,20 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
         public static readonly DependencyProperty SilentCommandLineProperty = DependencyProperty.Register("SilentCommandLine", typeof(string), typeof(ChangeableDialog), new PropertyMetadata(null));
         
         public static readonly DependencyProperty ShowSilentCommandLineProperty = DependencyProperty.Register("ShowSilentCommandLine", typeof(bool), typeof(ChangeableDialog), new PropertyMetadata(false));
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            // ReSharper disable once UsePatternMatching
+            var button = this.GetTemplateChild("PART_CopyCommandLine") as ButtonBase;
+            if (button != null)
+            {
+                button.Click += (o, e) =>
+                {
+                    Clipboard.SetText(this.SilentCommandLine);
+                };
+            }
+        }
 
         public bool SupportsCommandLineBuilding
         {

@@ -10,6 +10,7 @@
              xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.CertificateSelector.View"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel"
              mc:Ignorable="d" 
              d:DesignWidth="400"
              d:DesignHeight="333"

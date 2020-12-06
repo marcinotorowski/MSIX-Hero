@@ -37,6 +37,7 @@
     <None Remove="Modules\WhatsNew\Views\whatsnew2.0.png" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
     <None Remove="Resources\msix-hero-32.png" />
+    <None Remove="Resources\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,6 +86,7 @@
     <Resource Include="Resources\msix-hero-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\msix-hero-64.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -213,6 +215,9 @@
     <Page Update="Modules\Dialogs\Dependencies\Graph\View\DependencyViewerView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Help\View\HelpView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\Packaging\ModificationPackage\View\ModificationPackageDialogContent.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

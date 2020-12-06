@@ -9,7 +9,6 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DesignWidth="400"
              d:DesignHeight="400"
              d:DataContext="{d:DesignInstance viewModel:AppAttachViewModel}">

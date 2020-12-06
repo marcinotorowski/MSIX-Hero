@@ -8,8 +8,8 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DesignWidth="700"
              d:DesignHeight="400"
              d:DataContext="{d:DesignInstance viewModel:DependencyViewerViewModel}">

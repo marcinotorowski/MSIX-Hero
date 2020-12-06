@@ -74,6 +74,8 @@
             public const string WingetYamlEditor = BaseDialogsNavigation + "winget-yaml-editor";
 
             public const string Settings = BaseDialogsNavigation + "settings";
+            
+            public const string About = BaseDialogsNavigation + "about";
         }
     }
 }

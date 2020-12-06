@@ -172,6 +172,11 @@ namespace Otor.MsixHero.Infrastructure.Services
                 result.Signing = defaults.Signing;
             }
 
+            if (result.UiConfiguration == null)
+            {
+                result.UiConfiguration = defaults.UiConfiguration;
+            }
+
             if (result.Signing.DefaultOutFolder == null)
             {
                 result.Signing.DefaultOutFolder = defaults.Signing.DefaultOutFolder;

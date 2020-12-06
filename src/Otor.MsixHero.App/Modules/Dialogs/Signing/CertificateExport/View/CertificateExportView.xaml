@@ -7,8 +7,8 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:CertificateExportViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">

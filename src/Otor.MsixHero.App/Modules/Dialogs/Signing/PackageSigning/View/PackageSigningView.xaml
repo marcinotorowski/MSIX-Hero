@@ -10,7 +10,6 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel"
              d:DesignWidth="455"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:PackageSigningViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">

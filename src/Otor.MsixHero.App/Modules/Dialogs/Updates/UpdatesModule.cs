@@ -1,4 +1,5 @@
-﻿using Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View;
+﻿using Otor.MsixHero.App.Controls;
+using Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View;
 using Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -9,7 +10,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterForNavigation<UpdateImpactView, UpdateImpactViewModel>(NavigationPaths.DialogPaths.UpdatesUpdateImpact);
+            containerRegistry.RegisterDialog<UpdateImpactView, UpdateImpactViewModel>(NavigationPaths.DialogPaths.UpdatesUpdateImpact);
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

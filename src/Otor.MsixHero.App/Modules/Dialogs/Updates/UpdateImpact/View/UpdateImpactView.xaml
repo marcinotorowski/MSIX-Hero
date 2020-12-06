@@ -10,8 +10,8 @@
              xmlns:packageHeader="clr-namespace:Otor.MsixHero.App.Controls.PackageHeader"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DesignWidth="700"
              d:DesignHeight="400"
              d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
@@ -43,7 +43,7 @@
         OkButtonLabel="Analyze update impact"
         Icon="{StaticResource VectorCompare}">
         <dialog:ChangeableDialog.DialogContentTemplate>
-            <DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:UpdateImpactViewModel}">
                 <controls:ProgressOverlay
                     Progress="{Binding Progress.Progress}"
                     Message="{Binding Progress.Message}"

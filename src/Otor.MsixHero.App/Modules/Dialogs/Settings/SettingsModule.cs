@@ -1,4 +1,5 @@
-﻿using Otor.MsixHero.App.Modules.Dialogs.Settings.View;
+﻿using Otor.MsixHero.App.Controls;
+using Otor.MsixHero.App.Modules.Dialogs.Settings.View;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Prism.Ioc;
 using Prism.Modularity;

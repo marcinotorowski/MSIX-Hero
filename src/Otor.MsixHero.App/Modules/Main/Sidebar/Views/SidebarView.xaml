@@ -283,6 +283,17 @@
 
         <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <Button 
+                ToolTip="About MSIX Hero..."
+                Command="Help">
+                <Viewbox Width="24" Height="24">
+                    <Path 
+                        Data="{StaticResource VectorBulb}"
+                        Width="32"
+                        Height="32"
+                        Fill="#0173C7" />
+                </Viewbox>
+            </Button>
+            <Button 
                 ToolTip="Configure MSIX Hero settings..."
                 Command="{Binding SettingsCommand}">
                 <Viewbox Width="24" Height="24">

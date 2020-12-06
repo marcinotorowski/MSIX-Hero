@@ -6,49 +6,50 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="960">
 
-    <Viewbox VerticalAlignment="Top" Stretch="Uniform" MaxWidth="960" HorizontalAlignment="Left">
-        <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="960">
-            <Label DockPanel.Dock="Top" Style="{StaticResource Label}">New UI</Label>
-
-            <Image DockPanel.Dock="Left" Source="whatsnew2.0.png" HorizontalAlignment="Left" Stretch="None" VerticalAlignment="Top" />
-            <Grid Width="442" VerticalAlignment="Top" Margin="10 0 0 0">
-                <TextBlock 
-                FontSize="12"
-                Margin="0 27 0 0"
-                TextWrapping="Wrap" 
-                HorizontalAlignment="Left" 
-                TextAlignment="Left" 
-                Text="Click here to change between packages installed for the current user and for packages installed for all users." />
-
-                <StackPanel
-                Margin="0 94 0 0">
+    <DockPanel>
+        <Label DockPanel.Dock="Top" Style="{StaticResource Label}">New UI</Label>
+        <Viewbox VerticalAlignment="Top" Stretch="Uniform" MaxWidth="960" HorizontalAlignment="Left">
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="960">
+                <Image DockPanel.Dock="Left" Source="whatsnew2.0.png" HorizontalAlignment="Left" Stretch="None" VerticalAlignment="Top" />
+                <Grid Width="442" VerticalAlignment="Top" Margin="10 0 0 0">
                     <TextBlock 
-                    FontSize="12"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left" 
-                    Text="Click here to sort, filter and group the list of installed packages." />
-                    <TextBlock 
-                    FontSize="12"
-                    Margin="0 4 0 0"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left">
-                    <Run Text=" NEW IN 2.0 " Background="{StaticResource Otor.MsixHero.Brushes.Accent}" FontWeight="Bold" Foreground="White" />
-                    <Run Text="Group and sort by the installation date" />
-                    </TextBlock>
+                        FontSize="12"
+                        Margin="0 27 0 0"
+                        TextWrapping="Wrap" 
+                        HorizontalAlignment="Left" 
+                        TextAlignment="Left" 
+                        Text="Click here to change between packages installed for the current user and for packages installed for all users." />
 
-                </StackPanel>
+                    <StackPanel
+                         Margin="0 94 0 0">
+                        <TextBlock 
+                            FontSize="12"
+                            TextWrapping="Wrap" 
+                            HorizontalAlignment="Left" 
+                            TextAlignment="Left" 
+                            Text="Click here to sort, filter and group the list of installed packages." />
+                        <TextBlock 
+                            FontSize="12"
+                            Margin="0 4 0 0"
+                            TextWrapping="Wrap" 
+                            HorizontalAlignment="Left" 
+                            TextAlignment="Left">
+                            <Run Text=" NEW IN 2.0 " Background="{StaticResource Otor.MsixHero.Brushes.Accent}" FontWeight="Bold" Foreground="White" />
+                            <Run Text="Group and sort by the installation date" />
+                        </TextBlock>
 
-                <StackPanel Margin="0 158 0 0">
-                    <TextBlock 
-                    FontSize="12"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left" 
-                    Text="Click here to jump to the selection of available tools and wizards." />
-                </StackPanel>
-            </Grid>
-        </DockPanel>
-    </Viewbox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0 158 0 0">
+                        <TextBlock 
+                            FontSize="12"
+                            TextWrapping="Wrap" 
+                            HorizontalAlignment="Left" 
+                            TextAlignment="Left" 
+                            Text="Click here to jump to the selection of available tools and wizards." />
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </Viewbox>
+    </DockPanel>
 </UserControl>

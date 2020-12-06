@@ -11,7 +11,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="400"
              d:DesignWidth="400"
-             Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">

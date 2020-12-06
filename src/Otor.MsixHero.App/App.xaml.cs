@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using Notifications.Wpf.Core;
 using Notifications.Wpf.Core.Controls;
+using Otor.MsixHero.App.Controls;
+using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Update;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Executor;
@@ -11,6 +15,7 @@ using Otor.MsixHero.App.Modules.Dashboard;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach;
 using Otor.MsixHero.App.Modules.Dialogs.AppInstaller;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies;
+using Otor.MsixHero.App.Modules.Dialogs.Help;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging;
 using Otor.MsixHero.App.Modules.Dialogs.Settings;
 using Otor.MsixHero.App.Modules.Dialogs.Signing;
@@ -47,6 +52,8 @@ using Otor.MsixHero.Lib.Proxy;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
+using Prism.Services.Dialogs;
+using SourceChord.FluentWPF;
 
 namespace Otor.MsixHero.App
 {
@@ -82,6 +89,7 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
+            containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
         }
         
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -103,6 +111,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(WingetModule), ModuleNames.Dialogs.Winget, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), ModuleNames.Dialogs.AppAttach, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SettingsModule), ModuleNames.Dialogs.Settings, InitializationMode.OnDemand));
+            moduleCatalog.AddModule(new ModuleInfo(typeof(HelpModule), ModuleNames.Dialogs.Help, InitializationMode.OnDemand));
             
             base.ConfigureModuleCatalog(moduleCatalog);
         }
@@ -114,8 +123,19 @@ namespace Otor.MsixHero.App
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
 
             var app = this.Container.Resolve<IMsixHeroApplication>();
-            // app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.Packages));
-            app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
+            var config = this.Container.Resolve<IConfigurationService>();
+            
+            var releaseNotesHelper = new ReleaseNotesHelper(config);
+
+            if (releaseNotesHelper.ShouldShowInitialReleaseNotes())
+            {
+                app.CommandExecutor.Invoke(null, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
+            }
+            else
+            {
+                var helper = new InitialScreen(app, config);
+                helper.GoToDefaultScreenAsync();
+            }
         }
 
         protected override Window CreateShell()

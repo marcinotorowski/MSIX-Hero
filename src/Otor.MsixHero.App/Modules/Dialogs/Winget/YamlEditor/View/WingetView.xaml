@@ -11,7 +11,6 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View"
              mc:Ignorable="d" 
-             Background="#ffffff"
              d:DataContext="{d:DesignInstance viewModel:WingetViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="Window">

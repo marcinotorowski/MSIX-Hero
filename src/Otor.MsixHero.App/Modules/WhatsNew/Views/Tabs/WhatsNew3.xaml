@@ -6,15 +6,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="700">
 
-    <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Uniform" MaxWidth="700">
-        <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="700">
+    <DockPanel>
+        <Label DockPanel.Dock="Top" Style="{StaticResource Label}">Command line for the current dialog</Label>
 
-            <Label DockPanel.Dock="Top" Style="{StaticResource Label}">Command line for the current dialog</Label>
+        <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Uniform" MaxWidth="700">
+            <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center" MinWidth="700">
 
-            <Canvas Width="700" Height="400" HorizontalAlignment="Left">
-                <Image DockPanel.Dock="Left" Source="whatsnew2.0b.png" HorizontalAlignment="Left" Stretch="None" VerticalAlignment="Top" />
-                <TextBlock Canvas.Left="350" Canvas.Bottom="310" Width="336" Canvas.Right="0" Text="In dialogs that support it, tick the Show silent command line checkbox to see the command line, which can be used to fully automate the operation, using the current dialog settings and preferences." TextWrapping="Wrap" />
-            </Canvas>
-        </DockPanel>
-    </Viewbox>
+                <Canvas Width="700" Height="400" HorizontalAlignment="Left">
+                    <Image DockPanel.Dock="Left" Source="whatsnew2.0b.png" HorizontalAlignment="Left" Stretch="None" VerticalAlignment="Top" />
+                    <TextBlock Canvas.Left="350" Canvas.Bottom="310" Width="336" Canvas.Right="0" Text="In dialogs that support it, tick the Show silent command line checkbox to see the command line, which can be used to fully automate the operation, using the current dialog settings and preferences." TextWrapping="Wrap" />
+                </Canvas>
+            </DockPanel>
+        </Viewbox>
+    </DockPanel>
 </UserControl>

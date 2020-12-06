@@ -29,15 +29,15 @@
             mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.Search}" />
 
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center" >
-            
-            <TextBlock Foreground="White" Text="{Binding Title}">
+
+            <TextBlock Foreground="White" Text="{Binding Title, Converter={StaticResource UppercaseConverter}}">
                 <TextBlock.Effect>
                     <BlurEffect
                         Radius="8.0"
                         KernelType="Box"/>
                 </TextBlock.Effect>
             </TextBlock>
-            <TextBlock Text="{Binding Title}" />
+            <TextBlock Text="{Binding Title, Converter={StaticResource UppercaseConverter}}" />
         </Grid>
     </DockPanel>
     
