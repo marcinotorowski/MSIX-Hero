@@ -23,10 +23,10 @@
   xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build">
-  <Identity Name="MSIXHero" Version="1.0.0.0" Publisher="E=marcin@otorowski.com, CN=Marcin Otorowski, O=Marcin Otorowski, S=zachodniopomorskie, C=PL" ProcessorArchitecture="neutral" />
+  <Identity Name="MSIXHero-Preview" Version="2.0.0.0" Publisher="E=marcin@otorowski.com, CN=Marcin Otorowski, O=Marcin Otorowski, S=zachodniopomorskie, C=PL" ProcessorArchitecture="neutral" />
   <Applications>
     <Application Id="MSIXHero" Executable="MSIXHero.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="MSIX Hero" Description="Your companion and ultimate toolkit to the MSIX world" BackgroundColor="#0173C7" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
+      <uap:VisualElements DisplayName="MSIX Hero (Preview)" Description="Your companion and ultimate toolkit to the MSIX world" BackgroundColor="#0173C7" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Wide310x150Logo="Assets\Square310x150Logo.png" Square310x310Logo="Assets\Square310x310Logo.png" Square71x71Logo="Assets\Square71x71Logo.png" />
       </uap:VisualElements>
       <Extensions />
