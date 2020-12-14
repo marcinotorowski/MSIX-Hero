@@ -209,45 +209,41 @@
 
         <TabControl Margin="12 0 0 0">
             <TabItem Header="Properties">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <AdornerDecorator>
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Message" />
+                            <TextBox 
+                                Style="{StaticResource DataValueTextBlock}"
+                                VerticalScrollBarVisibility="Auto"
+                                MaxHeight="300"
+                                VerticalContentAlignment="Top"
+                                TextWrapping="Wrap"
+                                Text="{Binding Message, Mode=OneWay}" />
 
-                <StackPanel>
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package name" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding PackageName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                    <TextBlock Style="{StaticResource DataHeader}" Text="Message" />
-                    <TextBox 
-                        Style="{StaticResource DataValueTextBlock}"
-                        VerticalScrollBarVisibility="Auto"
-                        MaxHeight="300"
-                        VerticalContentAlignment="Top"
-                        TextWrapping="Wrap"
-                        Text="{Binding Message, Mode=OneWay}" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package file path" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding FilePath, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package name" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding PackageName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="User" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding User, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package file path" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" 
-                             Text="{Binding FilePath, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Activity ID" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ActivityId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="User" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" 
-                             Text="{Binding User, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Thread ID" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ThreadId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Activity ID" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" 
-                             Text="{Binding ActivityId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Opcode Display Name" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding OpcodeDisplayName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Thread ID" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" 
-                             Text="{Binding ThreadId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Opcode Display Name" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" 
-                             Text="{Binding OpcodeDisplayName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
-
-                    <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Error code" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <TextBox Style="{StaticResource DataValueTextBlock}" 
-                             Text="{Binding ErrorCode, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                </StackPanel>
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Error code" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ErrorCode, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </StackPanel>
+                    </AdornerDecorator>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </DockPanel>
