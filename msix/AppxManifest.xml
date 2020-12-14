@@ -32,7 +32,7 @@
       <Extensions />
     </Application>
     <Application Id="MSIXHeroCLI" Executable="MSIXHeroCLI.exe" EntryPoint="Windows.FullTrustApplication">
-      <uap:VisualElements DisplayName="MSIX Hero CLI" Description="Command Line Interface for MSIX Hero" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" BackgroundColor="#0173C7" AppListEntry="none" />
+      <uap:VisualElements DisplayName="MSIX Hero CLI (Preview)" Description="Command Line Interface for MSIX Hero" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" BackgroundColor="#0173C7" AppListEntry="none" />
       <Extensions>
         <uap3:Extension Category="windows.appExecutionAlias" EntryPoint="Windows.FullTrustApplication" Executable="MSIXHeroCLI.exe">
           <uap3:AppExecutionAlias>
@@ -50,7 +50,7 @@
     <rescap:Capability Name="packageManagement" />
   </Capabilities>
   <Properties>
-    <DisplayName>MSIX Hero</DisplayName>
+    <DisplayName>MSIX Hero (Preview)</DisplayName>
     <PublisherDisplayName>Marcin Otorowski</PublisherDisplayName>
     <Description>Your companion and ultimate toolkit to the MSIX world</Description>
     <Logo>Assets\logo.png</Logo>
