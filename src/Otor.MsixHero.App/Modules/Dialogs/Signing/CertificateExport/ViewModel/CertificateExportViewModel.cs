@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
@@ -6,6 +7,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -13,7 +15,13 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 {
-    public class CertificateExportViewModel : ChangeableDialogViewModel
+    public enum CertOperationType
+    {
+        Import,
+        Extract,
+    }
+
+    public class CertificateExportViewModel : ChangeableAutomatedDialogViewModel
     {
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
 
@@ -23,74 +31,129 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
             this.InputPath = new ChangeableFileProperty("Path to signed MSIX file", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                Filter = "MSIX files|*.msix"
+                Filter = "All supported files|*.msix;*.cer|MSIX files|*.msix|Certificates|*.cer"
             };
 
-            this.OutputPath = new ChangeableFileProperty("Path to certificate", interactionService, ChangeableFileProperty.ValidatePath)
+            this.ExtractCertificate = new ChangeableFileProperty("Path to certificate", interactionService, ChangeableFileProperty.ValidatePath)
             {
                 Filter = "Certificate files|*.cer",
                 OpenForSaving = true
             };
             
-            this.SaveToFile = new ChangeableProperty<bool>(true);
-            this.SaveToStore = new ChangeableProperty<bool>(true);
-
-            var customValidationContainer = new ChangeableContainer(this.SaveToFile, this.SaveToStore);
-
-            this.AddChildren(this.InputPath, this.OutputPath, customValidationContainer);
+            this.OperationType = new ChangeableProperty<CertOperationType>();
+            this.CanExtract = new ChangeableProperty<bool>();
+            
+            this.AddChildren(this.InputPath, this.ExtractCertificate, this.OperationType, this.CanExtract);
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
-            this.SaveToStore.ValueChanged += this.SaveToStoreOnValueChanged;
-            customValidationContainer.CustomValidation += this.CustomCheckboxValidation;
+            this.OperationType.ValueChanged += this.OperationTypeOnValueChanged;
+            
+            this.RegisterForCommandLineGeneration(this.OperationType, this.InputPath, this.ExtractCertificate);
         }
 
-        private void SaveToStoreOnValueChanged(object sender, ValueChangedEventArgs e)
+        protected override string GenerateSilentCommandLine()
+        {
+            switch (this.OperationType.CurrentValue)
+            {
+                case CertOperationType.Extract:
+                {
+                    var verb = new ExtractCertVerb
+                    {
+                        Output = this.ExtractCertificate.CurrentValue,
+                        File = this.InputPath.CurrentValue
+                    };
+
+                    if (string.IsNullOrEmpty(verb.Output))
+                    {
+                        verb.Output = "<output-path>";
+                    }
+
+                    if (string.IsNullOrEmpty(verb.File))
+                    {
+                        verb.File = "<input-path>";
+                    }
+
+                    return verb.ToCommandLineString();
+                }
+                
+                case CertOperationType.Import:
+                {
+                    var verb = new TrustVerb()
+                    {
+                        File = this.InputPath.CurrentValue
+                    };
+                        
+                    if (string.IsNullOrEmpty(verb.File))
+                    {
+                        verb.File = "<input-path>";
+                    }
+
+                    return verb.ToCommandLineString();
+                }
+
+                default:
+                {
+                    throw new NotSupportedException();
+                }
+            }
+        }
+
+        public ChangeableProperty<CertOperationType> OperationType { get; private set; }
+
+        public ChangeableProperty<bool> CanExtract { get; private set; }
+        
+        private void OperationTypeOnValueChanged(object sender, EventArgs eventArgs)
         {
             this.OnPropertyChanged(nameof(IsAdminRequired));
-        }
-
-        private void CustomCheckboxValidation(object sender, ContainerValidationArgs e)
-        {
-            if (!e.IsValid)
-            {
-                return;
-            }
-
-            if (!this.SaveToFile.CurrentValue && !this.SaveToStore.CurrentValue)
-            {
-                e.SetError("Please select where to save the certificate (file or cert store)");
-            }
-            else if (this.CertificateDetails.HasValue && this.CertificateDetails.CurrentValue == null)
-            {
-                e.SetError("The selected file is unsigned.");
-            }
+            this.OnPropertyChanged(nameof(CanExtract));
+            this.OnPropertyChanged(nameof(OkButtonLabel));
         }
 
         public AsyncProperty<CertificateViewModel> CertificateDetails { get; } = new AsyncProperty<CertificateViewModel>();
 
         public ChangeableFileProperty InputPath { get; }
 
-        public ChangeableFileProperty OutputPath { get; }
+        public ChangeableFileProperty ExtractCertificate { get; }
 
-        public ChangeableProperty<bool> SaveToFile { get; }
+        public string OkButtonLabel
+        {
+            get
+            {
+                switch (this.OperationType.CurrentValue)
+                {
+                    case CertOperationType.Extract:
+                        return "Extract certificate";
+                    case CertOperationType.Import:
+                        return "Import certificate";
+                    default:
+                        throw new NotSupportedException();
+                }
+            }
+        }
 
-        public ChangeableProperty<bool> SaveToStore { get; }
-
-        public bool IsAdminRequired => this.SaveToStore.CurrentValue;
+        public bool IsAdminRequired => this.OperationType.CurrentValue == CertOperationType.Import;
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            if (this.SaveToFile.CurrentValue)
+            switch (this.OperationType.CurrentValue)
             {
-                var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
-                await manager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
-            }
+                case CertOperationType.Import:
+                {
+                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+                    await manager.Trust(this.InputPath.CurrentValue, cancellationToken).ConfigureAwait(false);
+                    break;
+                }
 
-            if (this.SaveToStore.CurrentValue)
-            {
-                var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(false);
-                await manager.Trust(this.InputPath.CurrentValue, cancellationToken).ConfigureAwait(false);
+                case CertOperationType.Extract:
+                {
+                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                    await manager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.ExtractCertificate.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    break;
+                }
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return true;
@@ -116,9 +179,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             var value = (string)e.NewValue;
-            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue))
+            if (string.IsNullOrEmpty(this.ExtractCertificate.CurrentValue))
             {
-                this.OutputPath.CurrentValue = value + ".cer";
+                this.ExtractCertificate.CurrentValue = value + ".cer";
+            }
+            
+            var ext = Path.GetExtension(this.InputPath.CurrentValue);
+            if (!string.Equals(".msix", ext, StringComparison.OrdinalIgnoreCase))
+            {
+                this.CanExtract.CurrentValue = false;
+            }
+            else
+            {
+                this.CanExtract.CurrentValue = true;
             }
 
 #pragma warning disable 4014

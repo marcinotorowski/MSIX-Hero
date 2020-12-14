@@ -19,6 +19,8 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
         public string Subject => this.personalCertificate.Subject;
 
         public string DigestAlgorithm => this.personalCertificate.DigestAlgorithm;
+        
+        public string Thumbprint => this.personalCertificate.Thumbprint;
 
         public CertificateStoreType StoreType => this.personalCertificate.StoreType;
 

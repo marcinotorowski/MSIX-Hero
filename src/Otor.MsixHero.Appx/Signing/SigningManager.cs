@@ -645,6 +645,7 @@ namespace Otor.MsixHero.Appx.Signing
             var cert = new PersonalCertificate
             {
                 Issuer = certificate.Issuer,
+                Thumbprint = certificate.GetCertHashString(),
                 Subject = certificate.Subject,
                 DigestAlgorithm = (read.SigAlgName.EndsWith("withRSA", StringComparison.OrdinalIgnoreCase) ? read.SigAlgName.Substring(0, read.SigAlgName.Length - "withRSA".Length) : read.SigAlgName).Replace("-", string.Empty),
                 StoreType = certStoreType

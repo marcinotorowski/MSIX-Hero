@@ -153,21 +153,6 @@
                 </StackPanel>
             </Button>
             <Button 
-                IsEnabled="False">
-                <StackPanel>
-                    <Path 
-                        Style="{StaticResource LargeIcon}"
-                        Data="{StaticResource VectorImport}"
-                        Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Install certificate" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Install certificate or import it from a package" />
-                </StackPanel>
-            </Button>
-            <Button 
                 Command="{Binding ShowExtractCertificateDialog}">
                 <StackPanel>
                     <Path 
@@ -176,10 +161,10 @@
                         Margin="0 0 0 8" />
                     <TextBlock 
                         controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Extract certificate" />
+                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Extract or install certificate" />
                     <TextBlock 
                         controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Extract a certificate from already signed package" />
+                        Style="{StaticResource ButtonDescription}" Text="Install certificates or extract them from signed package" />
                 </StackPanel>
             </Button>
         </WrapPanel>

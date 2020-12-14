@@ -16,7 +16,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.View
         
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
         {
-            var pathOutput = ((CertificateExportViewModel)this.DataContext).OutputPath.CurrentValue;
+            var pathOutput = ((CertificateExportViewModel)this.DataContext).ExtractCertificate.CurrentValue;
             Process.Start("explorer.exe", "/select," + pathOutput);
         }
     }
