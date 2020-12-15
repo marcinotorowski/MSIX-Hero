@@ -180,14 +180,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetAllVolumes()
         {
-            var mgr = await this.volumeManagerFactory.GetProxyFor().ConfigureAwait(false);
+            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
             var disks = await mgr.GetAll().ConfigureAwait(false);
             return disks.Where(d => !d.IsOffline).Select(r => new VolumeCandidateViewModel(r)).Concat(new[] { new VolumeCandidateViewModel(new AppxVolume()) }).ToList();
         }
 
         private async Task<VolumeCandidateViewModel> GetCurrentVolume(string packagePath)
         {
-            var mgr = await this.volumeManagerFactory.GetProxyFor().ConfigureAwait(false);
+            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
             var disk = await mgr.GetVolumeForPath(packagePath).ConfigureAwait(false);
             if (disk == null)
             {

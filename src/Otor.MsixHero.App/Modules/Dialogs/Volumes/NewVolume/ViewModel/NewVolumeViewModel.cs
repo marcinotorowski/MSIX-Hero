@@ -101,7 +101,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetLetters()
         {
-            var mgr = await this.volumeManager.GetProxyFor().ConfigureAwait(false);
+            var mgr = await this.volumeManager.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
             var disks = await mgr.GetAvailableDrivesForAppxVolume(true).ConfigureAwait(false);
             return disks.Select(r => new VolumeCandidateViewModel(r)).ToList();
         }

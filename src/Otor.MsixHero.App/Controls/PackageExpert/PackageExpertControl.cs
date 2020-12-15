@@ -90,6 +90,11 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 
         private async void CreateTools(IReadOnlyCollection<ToolListConfiguration> tools)
         {
+            if (this.actionBar == null)
+            {
+                return;
+            }
+            
             if (tools == null)
             {
                 var cfg = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);

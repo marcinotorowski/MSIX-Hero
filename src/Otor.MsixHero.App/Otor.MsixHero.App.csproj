@@ -96,6 +96,10 @@
     <Compile Update="Controls\PsfContent\View\PsfContentView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Dialogs\Views\PackageExpertDialogView - Copy.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>PackageExpertDialogView.xaml.cs</DependentUpon>
+    </Compile>
     <Compile Update="Modules\Dialogs\AppAttach\Editor\View\AppAttachView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

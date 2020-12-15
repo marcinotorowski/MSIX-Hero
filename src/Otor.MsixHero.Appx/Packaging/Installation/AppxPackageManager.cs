@@ -560,6 +560,48 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             return package;
         }
 
+        public async Task<bool> IsInstalled(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            PackageFindMode actualMode = mode;
+            if (actualMode == PackageFindMode.Auto)
+            {
+                var isAdmin = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false);
+                if (isAdmin)
+                {
+                    actualMode = PackageFindMode.AllUsers;
+                }
+                else
+                {
+                    actualMode = PackageFindMode.CurrentUser;
+                }
+            }
+
+            string pkgFullName;
+            
+            using (var src = FileReaderFactory.GetFileReader(manifestPath))
+            {
+                var manifestReader = new AppxManifestReader();
+                var parsed = await manifestReader.Read(src, false, cancellationToken).ConfigureAwait(false);
+                pkgFullName = parsed.FullName;
+            }
+            
+            switch (actualMode)
+            {
+                case PackageFindMode.CurrentUser:
+                    var pkg = await Task.Run(
+                        () => PackageManager.Value.FindPackageForUser(string.Empty, pkgFullName), 
+                        cancellationToken).ConfigureAwait(false);
+                    return pkg != null;
+                case PackageFindMode.AllUsers:
+                    var pkgAllUsers = await Task.Run(
+                        () => PackageManager.Value.FindPackage(pkgFullName),
+                        cancellationToken).ConfigureAwait(false);
+                    return pkgAllUsers != null;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
         private async Task<List<InstalledPackage>> GetInstalledPackages(string packageName, PackageFindMode mode, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
             var list = new List<InstalledPackage>();

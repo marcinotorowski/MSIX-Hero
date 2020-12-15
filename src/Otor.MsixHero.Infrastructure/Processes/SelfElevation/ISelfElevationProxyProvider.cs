@@ -6,6 +6,6 @@ namespace Otor.MsixHero.Infrastructure.Processes.SelfElevation
 {
     public interface ISelfElevationProxyProvider<T> where T : ISelfElevationAware
     {
-        Task<T> GetProxyFor(SelfElevationLevel selfElevationLevel = SelfElevationLevel.AsInvoker, CancellationToken cancellationToken = default);
+        Task<T> GetProxyFor(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken = default);
     }
 }

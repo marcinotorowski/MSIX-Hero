@@ -27,6 +27,7 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             yield return typeof(GetByManifestPathDto);
             yield return typeof(GetByIdentityDto);
             yield return typeof(GetInstalledPackagesDto);
+            yield return typeof(CheckIfInstalledDto);
             yield return typeof(GetModificationPackagesDto);
             yield return typeof(GetUsersForPackageDto);
             yield return typeof(RemoveDto);
@@ -76,6 +77,27 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
                 }
 
                 object proxiedObject = await this.SelfElevationAwareObject.GetByIdentity(getByIdentityDto.Source, mode, cancellationToken, progress).ConfigureAwait(false);
+                return (TCommandResult)proxiedObject;
+            }
+
+            if (command is CheckIfInstalledDto checkIfInstalledDto)
+            {
+                // todo: replace by simple enum
+                PackageFindMode mode;
+                switch (checkIfInstalledDto.Context)
+                {
+                    case PackageContext.CurrentUser:
+                        mode = PackageFindMode.CurrentUser;
+                        break;
+                    case PackageContext.AllUsers:
+                        mode = PackageFindMode.AllUsers;
+                        break;
+                    default:
+                        mode = PackageFindMode.Auto;
+                        break;
+                }
+
+                object proxiedObject = await this.SelfElevationAwareObject.IsInstalled(checkIfInstalledDto.ManifestFilePath, mode, cancellationToken, progress).ConfigureAwait(false);
                 return (TCommandResult)proxiedObject;
             }
 

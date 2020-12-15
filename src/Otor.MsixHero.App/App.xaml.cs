@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Media;
 using Notifications.Wpf.Core;
 using Notifications.Wpf.Core.Controls;
 using Otor.MsixHero.App.Controls;
+using Otor.MsixHero.App.Controls.PackageExpert;
+using Otor.MsixHero.App.Dialogs.ViewModels;
+using Otor.MsixHero.App.Dialogs.Views;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Helpers.Update;
 using Otor.MsixHero.App.Hero;
@@ -51,9 +53,9 @@ using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Lib.Proxy;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
-using SourceChord.FluentWPF;
 
 namespace Otor.MsixHero.App
 {
@@ -90,6 +92,11 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
             containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
+            
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.PackageManagement);
+            }
         }
         
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -116,15 +123,14 @@ namespace Otor.MsixHero.App
             base.ConfigureModuleCatalog(moduleCatalog);
         }
 
-        protected override void Initialize()
+        private void InitializeMainWindow()
         {
-            base.Initialize();
             var regionManager = this.Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
 
             var app = this.Container.Resolve<IMsixHeroApplication>();
             var config = this.Container.Resolve<IConfigurationService>();
-            
+
             var releaseNotesHelper = new ReleaseNotesHelper(config);
 
             if (releaseNotesHelper.ShouldShowInitialReleaseNotes())
@@ -137,11 +143,50 @@ namespace Otor.MsixHero.App
                 helper.GoToDefaultScreenAsync();
             }
         }
+        
+        private void InitializePackageExpert()
+        {
+            ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
+            var regionManager = this.Container.Resolve<IRegionManager>();
+            regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(PackageExpertControl));
+            var par = new DialogParameters
+            {
+                {
+                    "package", 
+                    Environment.GetCommandLineArgs()[1]
+                }
+            };
+
+            var dialogService = this.Container.Resolve<IDialogService>();
+            dialogService.Show(NavigationPaths.PackageManagement, par, r => {});
+            // regionManager.Regions[RegionNames.Root].RequestNavigate(new Uri(NavigationPaths.PackageManagement, UriKind.Relative), par);
+        }
+        
+        protected override void Initialize()
+        {
+            base.Initialize();
+            
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                this.InitializePackageExpert();
+            }
+            else
+            {
+                this.InitializeMainWindow();
+            }
+        }
 
         protected override Window CreateShell()
         {
-            var w = this.Container.Resolve<MainWindow>();
-            return w;
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                return null;
+                // return this.Container.Resolve<PackageExpertDialogView>();
+            }
+            else
+            {
+                return this.Container.Resolve<MainWindow>();
+            }
         }
 
         public void Dispose()

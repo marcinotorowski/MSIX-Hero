@@ -133,6 +133,29 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             return this.client.Invoke(proxyObject, cancellationToken, progress);
         }
 
+        public async Task<bool> IsInstalled(string manifestPath, PackageFindMode mode = PackageFindMode.CurrentUser, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            if (mode == PackageFindMode.Auto)
+            {
+                if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    mode = PackageFindMode.AllUsers;
+                }
+                else
+                {
+                    mode = PackageFindMode.CurrentUser;
+                }
+            }
+
+            var proxyObject = new CheckIfInstalledDto
+            {
+                ManifestFilePath = manifestPath,
+                Context = mode == PackageFindMode.CurrentUser ? PackageContext.CurrentUser : PackageContext.AllUsers
+            };
+
+            return await this.client.Get(proxyObject, cancellationToken, progress);
+        }
+
         public Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var proxyObject = new GetInstalledPackagesDto

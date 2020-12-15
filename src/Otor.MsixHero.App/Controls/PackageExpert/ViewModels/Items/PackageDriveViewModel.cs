@@ -6,6 +6,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
@@ -27,7 +28,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 
         private async Task<AppxVolume> GetDisk(string filePath)
         {
-            var mgr = await this.volumeManagerFactory.GetProxyFor().ConfigureAwait(false);
+            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
             var disk = await mgr.GetVolumeForPath(filePath).ConfigureAwait(false);
             if (disk == null)
             {

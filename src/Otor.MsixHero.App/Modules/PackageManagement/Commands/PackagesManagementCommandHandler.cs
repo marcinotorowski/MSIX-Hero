@@ -361,7 +361,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             try
             {
-                var manager = this.registryManagerProvider.GetProxyFor().GetAwaiter().GetResult();
+                var manager = this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).GetAwaiter().GetResult();
                 var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.NotMounted;
             }
@@ -387,7 +387,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             try
             {
-                var manager = this.registryManagerProvider.GetProxyFor().GetAwaiter().GetResult();
+                var manager = this.registryManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).GetAwaiter().GetResult();
                 var regState = manager.GetRegistryMountState(selected.InstallLocation, selected.Name).GetAwaiter().GetResult();
                 return regState == RegistryMountState.Mounted;
             }
@@ -513,7 +513,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             try
             {
-                var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+                var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                 await manager.Run(selection.ManifestLocation, (string)parameter).ConfigureAwait(false);
             }
             catch (InvalidOperationException exception)
@@ -789,7 +789,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     var p1 = wrappedProgress.GetChildProgress(70);
                     var p2 = wrappedProgress.GetChildProgress(30);
 
-                    var manager = await this.packageManagerProvider.GetProxyFor().ConfigureAwait(false);
+                    var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                     var removedPackageNames = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
                     var removedPackages = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
                     await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);

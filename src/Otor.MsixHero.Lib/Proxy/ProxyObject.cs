@@ -9,6 +9,7 @@ namespace Otor.MsixHero.Lib.Proxy
 {
     [Serializable]
     [XmlInclude(typeof(GetInstalledPackagesDto))]
+    [XmlInclude(typeof(CheckIfInstalledDto))]
     [XmlInclude(typeof(RunDto))]
     [XmlInclude(typeof(MountRegistryDto))]
     [XmlInclude(typeof(DismountRegistryDto))]
