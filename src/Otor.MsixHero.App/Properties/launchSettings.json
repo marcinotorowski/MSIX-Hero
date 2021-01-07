@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Otor.MsixHero.App": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\marci\\Downloads\\ConEmuPack.msix\""
+      "commandName": "Project"
     }
   }
 }

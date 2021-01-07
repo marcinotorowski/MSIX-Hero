@@ -98,7 +98,7 @@
             </StackPanel>
         </Border>
 
-        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"  Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
+        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"  Background="#FFDDDD" Padding="8" DockPanel.Dock="Bottom">
             <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
         </Border>
 

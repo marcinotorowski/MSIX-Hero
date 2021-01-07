@@ -212,17 +212,17 @@
                                     <Grid Background="White">
 
                                         <DockPanel>
-                                            <Border  Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
+                                            <Border Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
                                                 <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Error}" VerticalAlignment="Center" />
                                             </Border>
 
                                             <ContentPresenter 
-                                            x:Name="PART_ContentPresenter"
-                                            Margin="16 0 16 16" 
-                                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
-                                            Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
-                                            ContentTemplate="{TemplateBinding DialogContentTemplate}" 
-                                            ContentTemplateSelector="{TemplateBinding DialogContentTemplateSelector}">
+                                                x:Name="PART_ContentPresenter"
+                                                Margin="16 0 16 16" 
+                                                Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}"
+                                                Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
+                                                ContentTemplate="{TemplateBinding DialogContentTemplate}" 
+                                                ContentTemplateSelector="{TemplateBinding DialogContentTemplateSelector}">
 
                                                 <ContentPresenter.Style>
                                                     <Style TargetType="ContentPresenter">

@@ -37,10 +37,46 @@
                     Text="Certificate to sign the package" />
 
                 <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
-                    <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" Content="No certificate" x:Name="AskMe" />
-                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" Content="Sign with PFX file" x:Name="PfxFile" />
-                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" Content="Sign with installed certificate" x:Name="CertStore" />
-                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" Content="Sign with Device Guard" x:Name="CertDeviceGuard" />
+                    <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" x:Name="AskMe">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Data="{StaticResource SmallNone}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="No certificate" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" x:Name="PfxFile">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Data="{StaticResource SmallLicense}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="Sign with PFX file" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" x:Name="CertStore">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Data="{StaticResource SmallDiploma}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="Sign with installed certificate" />
+                        </DockPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" x:Name="CertDeviceGuard">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Data="{StaticResource SmallCloudLink}" 
+                                Margin="0 0 4 0" 
+                                VerticalAlignment="Center" />
+                            <TextBlock VerticalAlignment="Center" Text="Sign with Device Guard" />
+                        </DockPanel>
+                    </ComboBoxItem>
                 </ComboBox>
 
                 <StackPanel 
@@ -220,15 +256,25 @@
                         <helpers:ComboBoxTemplateSelector>
                             <helpers:ComboBoxTemplateSelector.ListTemplate>
                                 <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
-                                    <StackPanel>
+                                    <StackPanel Margin="2">
                                         <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
-                                        <TextBlock Text="{Binding Subject}" Opacity="0.6" />
+                                        <TextBlock Text="{Binding Subject}" Margin="0 1" Opacity="0.6" />
+                                        <DockPanel>
+                                            <Path Style="{StaticResource SmallIconWithAutoColor}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
+                                            <TextBlock Text="{Binding Model.Date}" Opacity="0.6" VerticalAlignment="Center" />
+                                        </DockPanel>
                                     </StackPanel>
                                 </DataTemplate>
                             </helpers:ComboBoxTemplateSelector.ListTemplate>
                             <helpers:ComboBoxTemplateSelector.SelectedTemplate>
                                 <DataTemplate DataType="{x:Type viewModel:CertificateViewModel}">
-                                    <TextBlock Text="{Binding DisplayName}" />
+                                    <StackPanel Margin="2">
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                        <DockPanel Margin="0 1 0 0">
+                                            <Path Style="{StaticResource SmallIconWithAutoColor}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
+                                            <TextBlock Text="{Binding Model.Date}" Opacity="0.6" VerticalAlignment="Center" />
+                                        </DockPanel>
+                                    </StackPanel>
                                 </DataTemplate>
                             </helpers:ComboBoxTemplateSelector.SelectedTemplate>
                         </helpers:ComboBoxTemplateSelector>
