@@ -283,6 +283,11 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
         {
             switch ((CertificateSource) e.NewValue)
             {
+                case CertificateSource.Unknown:
+                    this.PfxPath.IsValidated = false;
+                    this.SelectedPersonalCertificate.IsValidated = false;
+                    this.DeviceGuard.IsValidated = false;
+                    break;
                 case CertificateSource.Personal:
                     this.PfxPath.IsValidated = false;
                     this.SelectedPersonalCertificate.IsValidated = true;
