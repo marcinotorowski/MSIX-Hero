@@ -1,0 +1,7 @@
+install:
+- pwsh: dotnet tool restore
+build_script:
+- pwsh: dotnet cake
+artifacts:
+- path: out/bin
+  name: MSIX-Hero
