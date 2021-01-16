@@ -91,11 +91,14 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
-            containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.PackageManagement);
+            }
+            else
+            {
+                containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             }
         }
         
