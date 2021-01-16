@@ -1,3 +1,4 @@
+#tool "nuget:?package=nuget.commandline&version=5.3.0"
 var target = Argument("target", "Build");
 var configuration = Argument("configuration", "PublishCore");
 
@@ -75,6 +76,7 @@ Task("Publish .NET Framework")
 .Does(() =>
 {
     Information("Building Otor.MsixHero.DeviceGuardLoginHelper.csproj...");
+    NuGetRestore("./src/Otor.MsixHero.DeviceGuardLoginHelper/Otor.MsixHero.DeviceGuardLoginHelper.csproj", new NuGetRestoreSettings { NoCache = true });
     MSBuild("./src/Otor.MsixHero.DeviceGuardLoginHelper/Otor.MsixHero.DeviceGuardLoginHelper.csproj", new MSBuildSettings {
         Verbosity = Verbosity.Minimal,
         ToolVersion = MSBuildToolVersion.VS2019,
