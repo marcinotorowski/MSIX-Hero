@@ -70,6 +70,11 @@ Task("Determine version").Does(() =>{
     }
 
     Information("Product version is '" + version + "'");
+
+    if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+    {
+        BuildSystem.AppVeyor.UpdateBuildVersion(version);
+    }
 });
 
 Task("Publish .NET Framework")
