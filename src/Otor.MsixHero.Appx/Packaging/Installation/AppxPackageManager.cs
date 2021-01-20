@@ -578,7 +578,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             string pkgFullName;
             
-            using (var src = FileReaderFactory.GetFileReader(manifestPath))
+            using (var src = FileReaderFactory.CreateFileReader(manifestPath))
             {
                 var manifestReader = new AppxManifestReader();
                 var parsed = await manifestReader.Read(src, false, cancellationToken).ConfigureAwait(false);

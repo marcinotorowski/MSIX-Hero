@@ -1,87 +1,34 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Winget.Yaml.Entities;
 using YamlDotNet.Serialization;
 
 namespace Otor.MsixHero.Winget.Yaml
 {
+    /// <summary>
+    /// A class used to read WinGet definition from a YAML file.
+    /// </summary>
     public class YamlReader
     {
+        /// <summary>
+        /// Reads WinGet definition from a stream and returns a task representing the asynchronous operation.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The asynchronous task that represents the operation.</returns>
         public async Task<YamlDefinition> ReadAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            using (var textReader = new StreamReader(stream, leaveOpen: true))
-            {
-                return await this.ReadAsync(textReader, cancellationToken).ConfigureAwait(false);
-            }
+            using var textReader = new StreamReader(stream, leaveOpen: true);
+            return await this.ReadAsync(textReader, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<string> ValidateAsync(string yamlPath, IAppxPackageManager packageManager, bool throwIfWingetMissing = false, CancellationToken cancellationToken = default)
-        {
-            var pkg = await Task.Run(() => AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
-            if (pkg == null)
-            {
-                pkg = await Task.Run(() => AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Microsoft.WindowsTerminal_8wekyb3d8bbwe").FirstOrDefault(), cancellationToken).ConfigureAwait(false);
-            }
-
-            if (pkg == null)
-            {
-                if (throwIfWingetMissing)
-                {
-                    throw new FileNotFoundException("winget not found.", "winget");
-                }
-
-                return null;
-            }
-
-            const string cmd = "cmd.exe";
-            var outputPath = Path.GetTempFileName();
-            var args = $"/c winget validate \"{yamlPath}\" >> {outputPath}";
-            try
-            {
-                var psi = new ProcessStartInfo(cmd, args)
-                {
-                    UseShellExecute = true,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true
-                };
-
-                var p = Process.Start(psi);
-                if (p == null)
-                {
-                    if (throwIfWingetMissing)
-                    {
-                        throw new InvalidOperationException("Could not start winget.");
-                    }
-
-                    return null;
-                }
-
-                p.WaitForExit();
-
-                return await File.ReadAllTextAsync(outputPath, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (File.Exists(outputPath))
-                {
-                    File.Delete(outputPath);
-                }
-            }
-        }
-
-        public async Task<YamlDefinition> ReadAsync(string yamlContent, CancellationToken cancellationToken = default)
-        {
-            using (var textReader = new StringReader(yamlContent))
-            {
-                return await this.ReadAsync(textReader, cancellationToken).ConfigureAwait(false);
-            }
-        }
-
+        /// <summary>
+        /// Reads WinGet definition from a string and returns a text reader representing the asynchronous operation.
+        /// </summary>
+        /// <param name="textReader">The text reader.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The asynchronous task that represents the operation.</returns>
         public Task<YamlDefinition> ReadAsync(TextReader textReader, CancellationToken cancellationToken = default)
         {
             return Task.Run(() =>
@@ -93,6 +40,11 @@ namespace Otor.MsixHero.Winget.Yaml
             cancellationToken);
         }
 
+        /// <summary>
+        /// Reads WinGet definition from a stream.
+        /// </summary>
+        /// <param name="stream">The input stream.</param>
+        /// <returns>The WinGet definition.</returns>
         public YamlDefinition Read(Stream stream)
         {
             using (var textReader = new StreamReader(stream, leaveOpen: true))
@@ -101,14 +53,12 @@ namespace Otor.MsixHero.Winget.Yaml
             }
         }
 
-        public YamlDefinition Read(string yamlContent)
-        {
-            using (var textReader = new StringReader(yamlContent))
-            {
-                return this.Read(textReader);
-            }
-        }
 
+        /// <summary>
+        /// Reads WinGet definition from a text reader.
+        /// </summary>
+        /// <param name="textReader">The input textReader.</param>
+        /// <returns>The WinGet definition.</returns>
         public YamlDefinition Read(TextReader textReader)
         {
             var deserializerBuilder = new DeserializerBuilder().IgnoreUnmatchedProperties();

@@ -25,22 +25,7 @@ namespace Otor.MsixHero.Tests.Winget
                 File.Delete(testFile);
             }
         }
-
-        [Test]
-        public void ReadMsi()
-        {
-            var msi = @"C:\Users\marci\Downloads\ssl\marcinotorowski\doublecmd-0.9.8.x86_64-win64.msi";
-            var m = new Msi();
-            var props = m.GetProperties(msi);
-        }
-
-        [Test]
-        public void TestWebHashing()
-        {
-            var url = "https://msixhero.net/msix-hero.appinstaller";
-            var hash = new YamlUtils().CalculateHashAsync(new Uri(url)).Result;
-        }
-
+        
         [Test]
         public void TestNegativeCases()
         {

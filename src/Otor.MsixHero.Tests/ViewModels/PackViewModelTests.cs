@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
@@ -12,8 +13,6 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Ui.Domain;
-using Otor.MsixHero.Ui.Modules.Dialogs.Pack.ViewModel;
 
 namespace Otor.MsixHero.Tests.ViewModels
 {

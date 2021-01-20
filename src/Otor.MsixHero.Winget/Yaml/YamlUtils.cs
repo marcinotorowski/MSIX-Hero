@@ -283,7 +283,6 @@ namespace Otor.MsixHero.Winget.Yaml
                 Publisher = fileVersionInfo.CompanyName?.Trim(),
                 Description = fileVersionInfo.FileDescription?.Trim(),
                 License = fileVersionInfo.LegalCopyright ?? fileVersionInfo.LegalTrademarks,
-                // Language = fileVersionInfo.Language?.Trim(),
                 Installers = new List<YamlInstaller>
                 {
                     new YamlInstaller
@@ -379,6 +378,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
                 if (details.Applications?.Any() == true)
                 {
+                    // Exclude some unrelated PSF stuff - they are not the right choice for the app moniker.
                     var candidateForAppMoniker = details.Applications.Select(a => a.Executable)
                         .FirstOrDefault(a => 
                             !string.IsNullOrEmpty(a) && !a.StartsWith("psf", StringComparison.OrdinalIgnoreCase) &&
@@ -420,42 +420,7 @@ namespace Otor.MsixHero.Winget.Yaml
             {
                 return;
             }
-
-#pragma warning disable 618
-            // determine installer type from any child
-            /* This is according to the docu wrong!
-            if (!definition.InstallerType.HasValue)
-            {
-                if (definition.Installers.Any())
-                {
-                    var deducedType = definition.Installers.Select(t => t.InstallerType).Where(d => d != null).Distinct().Take(2).ToArray();
-                    if (deducedType.Length == 1)
-                    {
-                        definition.InstallerType = deducedType[0];
-                    }
-                }
-
-                if (!definition.InstallerType.HasValue)
-                {
-                    var extensions = definition.Installers.Select(s => Path.GetExtension(s.Url)).Where(d => d != null).Distinct().Take(2).ToArray();
-                    if (extensions.Length == 1 && extensions[0] != null)
-                    {
-                        switch (extensions[0].ToLower())
-                        {
-                            case ".msi":
-                                definition.InstallerType = YamlInstallerType.msi;
-                                break;
-                            case ".exe":
-                                definition.InstallerType = YamlInstallerType.exe;
-                                break;
-                            case ".msix":
-                                definition.InstallerType = YamlInstallerType.msix;
-                                break;
-                        }
-                    }
-                }
-            }*/
-
+            
             // propagate installer type from parent to all children without the type
             if (definition.Installers != null && definition.InstallerType != null)
             {

@@ -30,19 +30,22 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             using (var reader = new StringReader(stringBuilder.ToString()))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                var csvConfiguration = new CsvConfiguration(
+                    CultureInfo.InvariantCulture, 
+                    hasHeaderRecord: true, 
+                    trimOptions: TrimOptions.Trim);
+                
+                
+                using (var csv = new CsvReader(reader, csvConfiguration))
                 {
-                    csv.Configuration.HasHeaderRecord = true;
-                    csv.Configuration.TrimOptions = TrimOptions.Trim;
-
                     try
                     {
                         return await csv.GetRecordsAsync<AppProcess>().ToListAsync(cancellationToken).ConfigureAwait(false);
                     }
                     catch (BadDataException e)
                     {
-                        Logger.Error($"Invalid data format. Index={e.ReadingContext.CurrentIndex}, CharPos={e.ReadingContext.CharPosition}, ColCount={e.ReadingContext.ColumnCount}, Field={e.ReadingContext.Field}, Row={e.ReadingContext.Row}, Raw={e.ReadingContext.RawRecord}, RawRow={e.ReadingContext.RawRow}", e);
-                        Logger.Warn("CSV content:\r\n" + stringBuilder.ToString());
+                        Logger.Error($"Invalid data format.", e);
+                        Logger.Warn("CSV content:\r\n" + stringBuilder);
                         throw;
                     }
                 }
@@ -62,10 +65,9 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             using (var reader = new StringReader(stringBuilder.ToString()))
             {
-                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture, hasHeaderRecord: true, trimOptions: TrimOptions.Trim);
+                using (var csv = new CsvReader(reader, csvConfig))
                 {
-                    csv.Configuration.HasHeaderRecord = true;
-                    csv.Configuration.TrimOptions = TrimOptions.Trim;
                     return await csv.GetRecordsAsync<AppProcessVerbose>().ToListAsync(cancellationToken).ConfigureAwait(false);
                 }
             }

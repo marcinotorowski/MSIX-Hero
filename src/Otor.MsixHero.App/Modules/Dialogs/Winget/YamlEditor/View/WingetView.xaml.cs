@@ -1,4 +1,4 @@
-﻿namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View
+﻿namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.View
 {
     /// <summary>
     /// Interaction logic for WingetView.

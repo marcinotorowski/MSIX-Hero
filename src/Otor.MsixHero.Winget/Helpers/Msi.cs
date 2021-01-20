@@ -34,6 +34,7 @@ namespace Otor.MsixHero.Winget.Helpers
         static extern uint MsiCloseHandle(IntPtr hAny);
 
         [StructLayout(LayoutKind.Sequential)]
+        // ReSharper disable once InconsistentNaming
         internal struct FILETIME
         {
             /// <summary>Low-order part of the file time.</summary>
@@ -108,10 +109,8 @@ namespace Otor.MsixHero.Winget.Helpers
                     dictionary[propName] = szValueBuf.ToString();
                 }
 
-                uint dataType;
                 var stringValue = new StringBuilder("") { Capacity = 255 };
-                int bufSize = 0;
-                uint intValue;
+                var bufSize = 0;
                 var timeValue = new FILETIME();
 
                 uint sis;
@@ -123,8 +122,8 @@ namespace Otor.MsixHero.Winget.Helpers
                 var ret = MsiSummaryInfoGetProperty(
                     sis,
                 7,
-                out dataType,
-                out intValue,
+                out _,
+                out _,
                 ref timeValue,
                 stringValue,
                 ref bufSize);
@@ -133,11 +132,11 @@ namespace Otor.MsixHero.Winget.Helpers
                 {
                     bufSize++;
                     stringValue.Capacity = bufSize;
-                    ret = MsiSummaryInfoGetProperty(
+                    MsiSummaryInfoGetProperty(
                         sis,
                         7,
-                        out dataType,
-                        out intValue,
+                        out _,
+                        out _,
                         ref timeValue,
                         stringValue,
                         ref bufSize);

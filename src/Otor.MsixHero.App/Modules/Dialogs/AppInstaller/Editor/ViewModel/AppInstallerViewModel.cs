@@ -19,6 +19,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
     public class AppInstallerViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly AppInstallerBuilder appInstallerBuilder;
+        private readonly AppInstallerFeatureSupportHelper appInstallerFeatureSupportHelper = new AppInstallerFeatureSupportHelper();
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
         private ICommand openSuccessLink;
@@ -107,8 +108,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         {
             get
             {
-                var minWin10 = this.appInstallerBuilder.GetMinimumSupportedWindowsVersion(this.GetCurrentAppInstallerConfig());
-                return $"Windows 10 {minWin10.Item1}";
+                var minWin10 = this.appInstallerFeatureSupportHelper.GetLowestSupportedWindows10Build(this.GetCurrentAppInstallerConfig());
+                return $"Windows 10 {minWin10}";
             }
         }
         

@@ -14,21 +14,27 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
         public static string GetPackageFamilyName(string name, string publisherId)
         {
             string packageFamilyName = null;
-            PACKAGE_ID packageId = new PACKAGE_ID
+            var packageId = new PACKAGE_ID
             {
                 name = name,
                 publisher = publisherId
             };
+            
             uint packageFamilyNameLength = 0;
-            //First get the length of the Package Name -> Pass NULL as Output Buffer
-            if (PackageFamilyNameFromId(packageId, ref packageFamilyNameLength, null) == 122) //ERROR_INSUFFICIENT_BUFFER
+
+            // determine the length (null buffer, should always return 122)
+            // ReSharper disable once InvertIf
+            if (PackageFamilyNameFromId(packageId, ref packageFamilyNameLength, null) == 122)
             {
-                StringBuilder packageFamilyNameBuilder = new StringBuilder((int)packageFamilyNameLength);
+                // insufficient buffer
+                
+                var packageFamilyNameBuilder = new StringBuilder((int)packageFamilyNameLength);
                 if (PackageFamilyNameFromId(packageId, ref packageFamilyNameLength, packageFamilyNameBuilder) == 0)
                 {
                     packageFamilyName = packageFamilyNameBuilder.ToString();
                 }
             }
+            
             return packageFamilyName;
         }
         
@@ -37,7 +43,7 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             var parsedVersion = Version.Parse(version);
 
             string packageFullName = null;
-            PACKAGE_ID packageId = new PACKAGE_ID
+            var packageId = new PACKAGE_ID
             {
                 name = name,
                 publisher = publisherId,
@@ -47,10 +53,14 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             };
 
             uint packageFamilyNameLength = 0;
-            //First get the length of the Package Name -> Pass NULL as Output Buffer
-            if (PackageFullNameFromId(packageId, ref packageFamilyNameLength, null) == 122) //ERROR_INSUFFICIENT_BUFFER
+
+            // determine the length (null buffer, should always return 122)
+            // ReSharper disable once InvertIf
+            if (PackageFullNameFromId(packageId, ref packageFamilyNameLength, null) == 122)
             {
-                StringBuilder packageFamilyNameBuilder = new StringBuilder((int)packageFamilyNameLength);
+                // insufficient buffer
+
+                var packageFamilyNameBuilder = new StringBuilder((int)packageFamilyNameLength);
                 if (PackageFullNameFromId(packageId, ref packageFamilyNameLength, packageFamilyNameBuilder) == 0)
                 {
                     packageFullName = packageFamilyNameBuilder.ToString();
@@ -89,7 +99,7 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
                 Version = version;
             }
 
-            public PackageVersion(ushort major, ushort minor, ushort build, ushort revision) : this()
+            private PackageVersion(ushort major, ushort minor, ushort build, ushort revision) : this()
             {
                 Revision = revision;
                 Build = build;

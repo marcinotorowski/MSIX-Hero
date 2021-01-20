@@ -7,30 +7,26 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
-using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Winget.Yaml;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
+namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 {
-    public class WingetViewModel : ChangeableDialogViewModel, IDialogAware
+    public class WinGetViewModel : ChangeableDialogViewModel, IDialogAware
     {
+        private readonly YamlValidator yamlValidator = new YamlValidator();
         private readonly IInteractionService interactionService;
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManager;
         private ICommand openSuccessLink;
         private ICommand reset;
         private ICommand open;
         private string yamlPath;
 
-        public WingetViewModel(IInteractionService interactionService, ISelfElevationProxyProvider<IAppxPackageManager> packageManager) : base("Create winget manifest", interactionService)
+        public WinGetViewModel(IInteractionService interactionService) : base("Create winget manifest", interactionService)
         {
             this.interactionService = interactionService;
-            this.packageManager = packageManager;
             this.AddChild(this.Definition = new WingetDefinitionViewModel(interactionService));
         }
 
@@ -83,9 +79,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                     return false;
                 }
 
-                var yamlReader = new YamlReader();
-                var pkgManager = await this.packageManager.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
-                var validationDetails = await yamlReader.ValidateAsync(tempPath, pkgManager, false, cancellationToken).ConfigureAwait(false);
+                var validationDetails = await yamlValidator.ValidateAsync(tempPath, false, cancellationToken).ConfigureAwait(false);
 
                 if (validationDetails != null)
                 {

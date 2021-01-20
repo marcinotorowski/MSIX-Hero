@@ -101,12 +101,13 @@ namespace Otor.MsixHero.AppInstaller
 
             using (var textWriter = new Utf8StringWriter())
             {
-                var ns = this.GetMinimumSupportedWindowsVersion(config).Item2;
-
+                var supportHelper = new AppInstallerFeatureSupportHelper();
+                var lowestNamespace = supportHelper.GetLowestCommonNamespace(config);
+                
                 var xmlns = new XmlSerializerNamespaces();
-                xmlns.Add("", ns);
+                xmlns.Add("", lowestNamespace);
 
-                switch (ns)
+                switch (lowestNamespace)
                 {
                     case "http://schemas.microsoft.com/appx/appinstaller/2017":
                         new XmlSerializer(typeof(AppInstallerConfig2017)).Serialize(textWriter, new AppInstallerConfig2017(config), xmlns);
@@ -117,6 +118,8 @@ namespace Otor.MsixHero.AppInstaller
                     case "http://schemas.microsoft.com/appx/appinstaller/2018":
                         new XmlSerializer(typeof(AppInstallerConfig2018)).Serialize(textWriter, new AppInstallerConfig2018(config), xmlns);
                         break;
+                    default:
+                        throw new NotSupportedException("This feature set is not supported.");
                 }
 
                 if (File.Exists(file))
@@ -128,55 +131,7 @@ namespace Otor.MsixHero.AppInstaller
                 await File.WriteAllTextAsync(file, textWriter.ToString(), enc, cancellationToken).ConfigureAwait(false);
             }
         }
-
-        public Tuple<int, string> GetMinimumSupportedWindowsVersion(AppInstallerConfig config)
-        {
-            var maximum = 1709;
-            var maximumNamespace = 20170;
-
-            if (config.UpdateSettings != null)
-            {
-                if (config.UpdateSettings.ForceUpdateFromAnyVersion)
-                {
-                    maximum = Math.Max(maximum, 1809);
-                    maximumNamespace = Math.Max(maximumNamespace, 20172);
-                }
-
-                if (config.UpdateSettings.AutomaticBackgroundTask != null)
-                {
-                    maximum = Math.Max(maximum, 1803);
-                    maximumNamespace = Math.Max(maximumNamespace, 20172);
-                }
-
-                if (config.UpdateSettings.OnLaunch != null)
-                {
-                    if (config.UpdateSettings.OnLaunch.UpdateBlocksActivation || config.UpdateSettings.OnLaunch.ShowPrompt)
-                    {
-                        maximum = Math.Max(maximum, 1903);
-                        maximumNamespace = Math.Max(maximumNamespace, 20180);
-                    }
-                }
-            }
-
-            var ns = "http://schemas.microsoft.com/appx/appinstaller/";
-            if (maximumNamespace % 10 == 0)
-            {
-                ns += (maximumNamespace / 10);
-            }
-            else
-            {
-                var minor = maximumNamespace % 10;
-                var major = (maximumNamespace - minor) / 10;
-
-                ns += major;
-                if (minor != 0)
-                {
-                    ns += "/" + minor;
-                }
-            }
-            return new Tuple<int, string>(maximum, ns);
-        }
-
+        
         public AppxPackageArchitecture MainPackageArchitecture { get; set; }
 
         public AppInstallerConfig Build(PackageType packageType = PackageType.Package)

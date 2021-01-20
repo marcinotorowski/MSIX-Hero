@@ -10,12 +10,14 @@ namespace Otor.MsixHero.Winget.Helpers
 {
     public class InstallerTypeDetector
     {
+        // ReSharper disable once IdentifierTypo
         private static IEnumerable<byte?[]> GetNsisSignature()
         {
             yield return new byte?[] { 0x4e, 0x75, 0x6c, 0x6c, 0x73, 0x6f, 0x66, 0x74, 0x49, 0x6e, 0x73, 0x74 };
         }
 
-        private static IEnumerable<byte?[]> GetInnoSignature()
+        // ReSharper disable once IdentifierTypo
+        private static IEnumerable<byte?[]> GetInnoSetupSignature()
         {
             yield return new byte?[] { 0x49, 0x6e, 0x6e, 0x6f, 0x20, 0x53, 0x65, 0x74, 0x75, 0x70 };
         }
@@ -41,25 +43,25 @@ namespace Otor.MsixHero.Winget.Helpers
             switch (fileInfo.Extension.ToLowerInvariant())
             {
                 case ".msix":
+                // ReSharper disable once StringLiteralTypo
                 case ".msixbundle":
                     return YamlInstallerType.msix;
                 case ".appx":
+                // ReSharper disable once StringLiteralTypo
                 case ".appxbundle":
                     return YamlInstallerType.appx;
                 case ".msi":
                     return YamlInstallerType.msi;
             }
 
-            using (var fs = File.OpenRead(fileName))
+            await using var fs = File.OpenRead(fileName);
+            var recognized = await this.DetectSetupType(fs, cancellationToken).ConfigureAwait(false);
+            if (recognized == YamlInstallerType.none && fileInfo.Extension.ToLowerInvariant() == ".exe")
             {
-                var recognized = await this.DetectSetupType(fs, cancellationToken).ConfigureAwait(false);
-                if (recognized == YamlInstallerType.none && fileInfo.Extension.ToLowerInvariant() == ".exe")
-                {
-                    return YamlInstallerType.exe;
-                }
-
-                return recognized;
+                return YamlInstallerType.exe;
             }
+
+            return recognized;
         }
 
         public async Task<YamlInstallerType> DetectSetupType(Stream fileStream, CancellationToken cancellationToken = default)
@@ -74,7 +76,7 @@ namespace Otor.MsixHero.Winget.Helpers
                 }
             }
 
-            foreach (var item in GetInnoSignature())
+            foreach (var item in GetInnoSetupSignature())
             {
                 fileStream.Seek(0, SeekOrigin.Begin);
                 var index = await this.Find(fileStream, item, cancellationToken).ConfigureAwait(false);
@@ -101,35 +103,36 @@ namespace Otor.MsixHero.Winget.Helpers
 
                 // ReSharper disable once PossibleInvalidOperationException
                 var takeBytes = toFind.Skip(i).TakeWhile(b => b.HasValue).Select(b => b.Value).ToArray();
-                var index = 0L;
 
-                if (takeBytes.Length != 0)
+                if (takeBytes.Length == 0)
                 {
-                    i += takeBytes.Length;
+                    continue;
+                }
+                
+                i += takeBytes.Length;
 
-                    index = await FindChunk(stream, readBytesNumber, takeBytes, cancellationToken).ConfigureAwait(false);
-                    if (index == -1)
+                var index = await FindChunk(stream, readBytesNumber, takeBytes, cancellationToken).ConfigureAwait(false);
+                if (index == -1)
+                {
+                    if (firstIndex == -1)
                     {
-                        if (firstIndex == -1)
-                        {
-                            return -1;
-                        }
-
-                        i = 0;
-
-                        // we need to seek the stream back, so that we can restart searching the needle.
-                        stream.Seek(firstIndex + 1, SeekOrigin.Begin);
-                        firstIndex = -1;
+                        return -1;
                     }
-                    else
+
+                    i = 0;
+
+                    // we need to seek the stream back, so that we can restart searching the needle.
+                    stream.Seek(firstIndex + 1, SeekOrigin.Begin);
+                    firstIndex = -1;
+                }
+                else
+                {
+                    if (firstIndex == -1)
                     {
-                        if (firstIndex == -1)
-                        {
-                            firstIndex = index;
-                        }
-
-                        stream.Seek(firstIndex + i, SeekOrigin.Begin);
+                        firstIndex = index;
                     }
+
+                    stream.Seek(firstIndex + i, SeekOrigin.Begin);
                 }
             }
 
@@ -154,7 +157,7 @@ namespace Otor.MsixHero.Winget.Helpers
                     return -1;
                 }
 
-                var found = bm.Search(searchBuffer, 0);
+                var found = bm.Search(searchBuffer);
                 if (found != -1)
                 {
                     return offset + found;

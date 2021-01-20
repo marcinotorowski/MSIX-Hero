@@ -84,7 +84,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 
         public async Task<TrustStatus> LoadSignature(CancellationToken cancellationToken)
         {
-            using (var source = FileReaderFactory.GetFileReader(this.packagePath))
+            using (var source = FileReaderFactory.CreateFileReader(this.packagePath))
             {
                 if (source is ZipArchiveFileReaderAdapter zipFileReader)
                 {

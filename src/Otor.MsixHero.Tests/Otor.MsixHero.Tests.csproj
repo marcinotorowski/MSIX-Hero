@@ -13,6 +13,7 @@
     <None Remove="Resources\MSIX.Commander_1.0.7.5-x64.msix" />
     <None Remove="Resources\nsis.exe" />
     <None Remove="Resources\resources.pri" />
+    <None Remove="Resources\SamplePackages\CreatedByMsixHero.msix" />
     <None Remove="Resources\wintrust.dll.ini" />
     <None Remove="UpdateImpact\update.xml" />
   </ItemGroup>
@@ -28,6 +29,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\resources.pri" />
+    <Content Include="Resources\SamplePackages\CreatedByMsixHero.msix">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Resources\wintrust.dll.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -46,8 +50,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Appveyor.TestLogger" Version="2.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.0-preview-20201020-06" />
-    <PackageReference Include="Moq" Version="4.15.1" />
+    <PackageReference Include="Moq" Version="4.16.0" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.0.0-alpha.1">
       <PrivateAssets>all</PrivateAssets>
@@ -56,6 +61,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Otor.MsixHero.App\Otor.MsixHero.App.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.AppInstaller\Otor.MsixHero.AppInstaller.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />

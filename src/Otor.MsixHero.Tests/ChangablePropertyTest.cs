@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using Otor.MsixHero.Ui.Domain;
+using Otor.MsixHero.App.Mvvm.Changeable;
 
 namespace Otor.MsixHero.Tests
 {

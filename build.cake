@@ -28,6 +28,7 @@ Task("Clean output folder")
 
 Task("Build")
     .IsDependentOn("Clean output folder")
+    .IsDependentOn("Test")
     .IsDependentOn("Publish .NET Core")
     .IsDependentOn("Trim publish folder")
     .IsDependentOn("Copy artifacts")
@@ -94,13 +95,48 @@ Task("Publish .NET Framework")
     CopyDirectory(src, tgt);
 });
 
+Task("Test")
+    .Does(() => {           
+
+        var projectDir = System.IO.Path.Combine("src", "Otor.MsixHero.Tests");
+        var unitTestCsProj = System.IO.Path.Combine(projectDir, "Otor.MsixHero.Tests.csproj");
+        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "netcoreapp3.1");
+        var unitTestDll = System.IO.Path.Combine(publishDir, "Otor.MsixHero.Tests.dll");
+        
+        Information("Building unit tests...");        
+        DotNetCoreBuild(unitTestCsProj, new DotNetCoreBuildSettings()
+        {
+            Configuration = configuration,
+            OutputDirectory = publishDir
+        });
+        
+        Information("Executing unit tests..."); 
+        var testSettings = new DotNetCoreTestSettings();
+        
+        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+        {
+            testSettings.Logger = "Appveyor;LogFileName=test-result.trx";
+        }
+
+        DotNetCoreTest(unitTestDll, testSettings);
+        /*
+        var resultsFile = System.IO.Path.Combine("TestResults", "test-result.trx");
+        Information("Results has been saved in " + resultsFile);
+        if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
+        {
+            Information("Updating AppVeyor test results...");
+            BuildSystem.AppVeyor.UploadTestResults(resultsFile, AppVeyorTestResultsType.NUnit3);
+        } */       
+    });
+
 Task("Publish .NET Core")
+    .IsDependentOn("Test")
     .IsDependentOn("Clean output folder")
     .IsDependentOn("Determine version")
     .IsDependentOn("Copy artifacts")
     .Does(() =>
 {
-    Information("Publishing 'Otor.MsixHero.sln'...");
+    Information("Publishing solution...");
     var settings = new DotNetCorePublishSettings
     {
         Configuration = configuration,

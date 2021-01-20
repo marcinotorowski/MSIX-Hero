@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using YamlDotNet.Serialization;
 using Version = System.Version;
 
-// https://docs.microsoft.com/en-us/windows/package-manager/package/manifest?tabs=minschema%2Ccompschema
-// https://github.com/microsoft/winget-cli/blob/master/doc/ManifestSpecv0.1.md
 namespace Otor.MsixHero.Winget.Yaml.Entities
 {
+    /// <see>
+    /// https://docs.microsoft.com/en-us/windows/package-manager/package/manifest?tabs=minschema%2Ccompschema
+    /// https://github.com/microsoft/winget-cli/blob/master/doc/ManifestSpecv0.1.md
+    /// </see>
     public class YamlDefinition
     {
         [YamlMember(Order = 1)]

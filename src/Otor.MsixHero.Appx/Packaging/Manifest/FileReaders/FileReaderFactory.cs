@@ -5,7 +5,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
     public class FileReaderFactory
     {
-        public static IAppxFileReader GetFileReader(string path)
+        public static IAppxFileReader CreateFileReader(string path)
         {
             if (string.IsNullOrEmpty(path))
             {

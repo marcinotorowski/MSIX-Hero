@@ -69,7 +69,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         {
             using (var cts = new CancellationTokenSource())
             {
-                using (var reader = FileReaderFactory.GetFileReader(this.packagePath))
+                using (var reader = FileReaderFactory.CreateFileReader(this.packagePath))
                 {
                     var canElevate = await UserHelper.IsAdministratorAsync(cts.Token) || await this.interProcessCommunicationManager.Test(cts.Token);
                     var progress = new Progress<ProgressData>();
@@ -142,7 +142,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                     {
                        
 #pragma warning disable 4014
-                        using (var reader = FileReaderFactory.GetFileReader(this.packagePath))
+                        using (var reader = FileReaderFactory.CreateFileReader(this.packagePath))
                         {
                             var manifest = await this.LoadManifest(reader).ConfigureAwait(false);
                             await this.Users.Load(this.GetUsers(manifest, true)).ConfigureAwait(false);

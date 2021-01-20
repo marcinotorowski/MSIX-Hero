@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Management.Automation" Version="7.0.3" />
-    <PackageReference Include="YamlDotNet" Version="9.1.0" />
+    <PackageReference Include="YamlDotNet" Version="9.1.5-issue-templates-0002" />
   </ItemGroup>
 
   <ItemGroup>

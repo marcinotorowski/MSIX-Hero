@@ -34,6 +34,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.System
             result.NativeFamilyName = name;
             return result;
         }
+        
         public static AppxTargetOperatingSystem GetOperatingSystemFromNameAndVersion(string version)
         {
             return GetOperatingSystemFromNameAndVersion("Windows.Desktop", version);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -13,10 +12,10 @@ using Otor.MsixHero.Appx.Diagnostic.System;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.Manifest.Helpers;
 using Otor.MsixHero.Appx.Psf;
 using Otor.MsixHero.Infrastructure.Logging;
 
@@ -253,41 +252,41 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         /*
-                             *<Application EntryPoint="SparklerApp.App" Executable="XD.exe" Id="App">
-                                <uap:VisualElements BackgroundColor="#2D001E" Description="Adobe XD" DisplayName="Adobe XD" Square150x150Logo="Assets\xd_med_tile.png" Square44x44Logo="Assets\xd_app_list_icon.png">
-                                  <uap:DefaultTile Square310x310Logo="Assets\xd_large_tile.png" Square71x71Logo="Assets\xd_small_tile.png" Wide310x150Logo="Assets\xd_wide_tile.png">
-                                    <uap:ShowNameOnTiles>
-                                      <uap:ShowOn Tile="square150x150Logo" />
-                                      <uap:ShowOn Tile="wide310x150Logo" />
-                                      <uap:ShowOn Tile="square310x310Logo" />
-                                    </uap:ShowNameOnTiles>
-                                  </uap:DefaultTile>
-                                  <uap:SplashScreen BackgroundColor="#FFFFFF" Image="Assets\xd_splash.png" />
-                                </uap:VisualElements>
+                         <Application EntryPoint="SparklerApp.App" Executable="XD.exe" Id="App">
+                            <uap:VisualElements BackgroundColor="#2D001E" Description="Adobe XD" DisplayName="Adobe XD" Square150x150Logo="Assets\xd_med_tile.png" Square44x44Logo="Assets\xd_app_list_icon.png">
+                              <uap:DefaultTile Square310x310Logo="Assets\xd_large_tile.png" Square71x71Logo="Assets\xd_small_tile.png" Wide310x150Logo="Assets\xd_wide_tile.png">
+                                <uap:ShowNameOnTiles>
+                                  <uap:ShowOn Tile="square150x150Logo" />
+                                  <uap:ShowOn Tile="wide310x150Logo" />
+                                  <uap:ShowOn Tile="square310x310Logo" />
+                                </uap:ShowNameOnTiles>
+                              </uap:DefaultTile>
+                              <uap:SplashScreen BackgroundColor="#FFFFFF" Image="Assets\xd_splash.png" />
+                            </uap:VisualElements>
 
-                             <Application Id="RayEval" Executable="PsfLauncher32.exe" EntryPoint="Windows.FullTrustApplication">
-                                <uap:VisualElements DisplayName="RayEval" Description="RayEval Raynet GmbH" BackgroundColor="transparent" 
-                                    Square150x150Logo="Assets\Square150x150Logo.scale-100.png" Square44x44Logo="Assets\Square44x44Logo.scale-100.png">
-                                    <uap:DefaultTile Wide310x150Logo="Assets\Square310x150Logo.scale-100.png" Square310x310Logo="Assets\Square310x310Logo.scale-100.png" Square71x71Logo="Assets\Square71x71Logo.scale-100.png" />
-                                </uap:VisualElements>
-                                <Extensions />
-                            </Application>
-                             *
-                             */
+                         <Application Id="RayEval" Executable="PsfLauncher32.exe" EntryPoint="Windows.FullTrustApplication">
+                            <uap:VisualElements DisplayName="RayEval" Description="RayEval Raynet GmbH" BackgroundColor="transparent" 
+                                Square150x150Logo="Assets\Square150x150Logo.scale-100.png" Square44x44Logo="Assets\Square44x44Logo.scale-100.png">
+                                <uap:DefaultTile Wide310x150Logo="Assets\Square310x150Logo.scale-100.png" Square310x310Logo="Assets\Square310x310Logo.scale-100.png" Square71x71Logo="Assets\Square71x71Logo.scale-100.png" />
+                            </uap:VisualElements>
+                            <Extensions />
+                        </Application>  
+                        */
 
-                        var appxApplication = new AppxApplication();
+                        var appxApplication = new AppxApplication
+                        {
+                            EntryPoint = node.Attribute("EntryPoint")?.Value,
+                            StartPage = node.Attribute("StartPage")?.Value,
+                            Executable = node.Attribute("Executable")?.Value,
+                            Id = node.Attribute("Id")?.Value,
+                            Extensions = new List<AppxExtension>()
+                        };
 
-                        appxApplication.EntryPoint = node.Attribute("EntryPoint")?.Value;
-                        appxApplication.StartPage = node.Attribute("StartPage")?.Value;
-                        appxApplication.Executable = node.Attribute("Executable")?.Value;
-                        appxApplication.Id = node.Attribute("Id")?.Value;
 
                         /*
-                             *<Extensions><desktop6:Extension Category="windows.service" Executable="VFS\ProgramFilesX86\RayPackStudio\FloatingLicenseServer\FloatingLicenseServer.exe" EntryPoint="Windows.FullTrustApplication"><desktop6:Service Name="PkgSuiteFloatingLicenseServer" StartupType="auto" StartAccount="networkService" /></desktop6:Extension></Extensions>
-                             *
-                             */
+                        <Extensions><desktop6:Extension Category="windows.service" Executable="VFS\ProgramFilesX86\RayPackStudio\FloatingLicenseServer\FloatingLicenseServer.exe" EntryPoint="Windows.FullTrustApplication"><desktop6:Service Name="PkgSuiteFloatingLicenseServer" StartupType="auto" StartAccount="networkService" /></desktop6:Extension></Extensions>
+                        */
 
-                        appxApplication.Extensions = new List<AppxExtension>();
                         var nodeExtensions = node.Elements().FirstOrDefault(e => e.Name.LocalName == "Extensions");
 
                         if (nodeExtensions != null)
@@ -429,8 +428,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                                 case "TargetDeviceFamily":
                                 {
                                     /*
-                                         * <TargetDeviceFamily MaxVersionTested="10.0.15063.0" MinVersion="10.0.15063.0" Name="Windows.Universal" />
-                                         */
+                                    <TargetDeviceFamily MaxVersionTested="10.0.15063.0" MinVersion="10.0.15063.0" Name="Windows.Universal" />
+                                    */
 
                                     var minVersion = node.Attribute("MinVersion")?.Value;
                                     var maxVersion = node.Attribute("MaxVersionTested")?.Value;
@@ -448,8 +447,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                                 case "PackageDependency":
                                 {
                                     /*
-                                         * <PackageDependency MinVersion="1.4.24201.0" Name="Microsoft.NET.Native.Runtime.1.4" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
-                                         */
+                                    <PackageDependency MinVersion="1.4.24201.0" Name="Microsoft.NET.Native.Runtime.1.4" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" />
+                                    */
 
                                     var minVersion = node.Attribute("MinVersion")?.Value;
                                     var name = node.Attribute("Name")?.Value;
@@ -507,10 +506,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                         buildKeyValues[attrName] = attrVersion;
                     }
 
-                    if (this.DetectAdvancedInstaller(buildKeyValues, out var buildInfo)
-                        || this.DetectVisualStudio(buildKeyValues, out buildInfo)
-                        || this.DetectRayPack(buildKeyValues, fileReader, out buildInfo)
-                        || this.DetectMsixHero(buildKeyValues, out buildInfo))
+                    var appDetector = new AuthoringAppDetector(fileReader);
+                    if (appDetector.TryDetectAny(buildKeyValues, out var buildInfo))
                     {
                         appxPackage.BuildInfo = buildInfo;
                     }
@@ -680,183 +677,6 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             }
 
             return list;
-        }
-
-        private bool DetectVisualStudio(Dictionary<string, string> buildValues, out BuildInfo buildInfo)
-        {
-            buildInfo = null;
-
-            if (buildValues == null || !buildValues.Any())
-            {
-                return false;
-            }
-
-            if (!buildValues.TryGetValue("VisualStudio", out var visualStudio))
-            {
-                return false;
-            }
-
-            buildInfo = new BuildInfo
-            {
-                ProductName = "Microsoft Visual Studio",
-                ProductVersion = visualStudio,
-
-            };
-
-            if (buildValues.TryGetValue("OperatingSystem", out var win10))
-            {
-                var firstUnit = win10.Split(' ')[0];
-                buildInfo.OperatingSystem = Windows10Parser.GetOperatingSystemFromNameAndVersion(firstUnit).ToString();
-            }
-
-            buildInfo.Components = buildValues;
-            return true;
-        }
-
-        private bool DetectAdvancedInstaller(Dictionary<string, string> buildValues, out BuildInfo buildInfo)
-        {
-            buildInfo = null;
-
-            if (buildValues == null || !buildValues.Any())
-            {
-                return false;
-            }
-
-            if (!buildValues.TryGetValue("AdvancedInstaller", out var advInst))
-            {
-                return false;
-            }
-
-            buildValues.TryGetValue("ProjectLicenseType", out var projLic);
-            buildInfo = new BuildInfo
-            {
-                ProductLicense = projLic,
-                ProductName = "Advanced Installer",
-                ProductVersion = advInst
-            };
-
-            if (buildValues.TryGetValue("OperatingSystem", out var os))
-            {
-                var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
-                buildInfo.OperatingSystem = win10Version.ToString();
-            }
-
-            return true;
-        }
-
-        private bool DetectMsixHero(Dictionary<string, string> buildValues, out BuildInfo buildInfo)
-        {
-            buildInfo = null;
-
-            if (buildValues == null || !buildValues.Any())
-            {
-                return false;
-            }
-
-            if (!buildValues.TryGetValue("MsixHero", out var msixHero))
-            {
-                return false;
-            }
-
-            buildInfo = new BuildInfo
-            {
-                ProductName = "MSIX Hero",
-                ProductVersion = msixHero
-            };
-
-            if (buildValues.TryGetValue("OperatingSystem", out var os))
-            {
-                var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
-                buildInfo.OperatingSystem = win10Version.ToString();
-            }
-
-            return true;
-        }
-
-        private bool DetectRayPack(Dictionary<string, string> buildValues, IAppxFileReader fileReader, out BuildInfo buildInfo)
-        {
-            buildInfo = null;
-
-            if (buildValues == null || !buildValues.Any())
-            {
-                // Detect RayPack by taking a look at the metadata of PsfLauncher.
-                const string fileLauncher = "PsfLauncher.exe";
-                if (fileReader.FileExists(fileLauncher))
-                {
-                    using (var launcher = fileReader.GetFile(fileLauncher))
-                    {
-                        FileVersionInfo fileVersionInfo;
-                        if (launcher is FileStream fileStream)
-                        {
-                            fileVersionInfo = FileVersionInfo.GetVersionInfo(fileStream.Name);
-                        }
-                        else
-                        {
-                            var tempFilePath = Path.GetTempFileName();
-                            try
-                            {
-                                using (var fs = File.OpenWrite(tempFilePath))
-                                {
-                                    launcher.CopyTo(fs);
-                                    fs.Flush();
-                                }
-
-                                fileVersionInfo = FileVersionInfo.GetVersionInfo(tempFilePath);
-                            }
-                            finally
-                            {
-                                File.Delete(tempFilePath);
-                            }
-                        }
-                        
-                        if (fileVersionInfo.ProductName != null && fileVersionInfo.ProductName.StartsWith("Raynet", StringComparison.OrdinalIgnoreCase))
-                        {
-                            var pv = fileVersionInfo.ProductVersion;
-                            buildInfo = new BuildInfo
-                            {
-                                ProductName = "RayPack " + Version.Parse(pv).ToString(2),
-                                ProductVersion = fileVersionInfo.ProductVersion
-                            };
-
-                            return true;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // Detect RayPack 6.2 which uses build meta data like this:
-                // <build:Item Name="OperatingSystem" Version="6.2.9200.0" /><build:Item Name="Raynet.RaySuite.Common.Appx" Version="6.2.5306.1168" /></build:Metadata>
-                if (buildValues.TryGetValue("Raynet.RaySuite.Common.Appx", out var rayPack))
-                {
-                    if (Version.TryParse(rayPack, out var parsedVersion))
-                    {
-                        buildInfo = new BuildInfo
-                        {
-                            ProductName = $"RayPack {parsedVersion.Major}.{parsedVersion.Minor}",
-                            ProductVersion = $"(MSIX builder v{parsedVersion})"
-                        };
-                    }
-                    else
-                    {
-                        buildInfo = new BuildInfo
-                        {
-                            ProductName = "RayPack",
-                            ProductVersion = $"(MSIX builder v{rayPack})"
-                        };
-                    }
-
-                    if (buildValues.TryGetValue("OperatingSystem", out var os))
-                    {
-                        var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
-                        buildInfo.OperatingSystem = win10Version.ToString();
-                    }
-
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

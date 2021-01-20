@@ -11,7 +11,7 @@ using Otor.MsixHero.Winget.Yaml;
 using Otor.MsixHero.Winget.Yaml.Entities;
 using Prism.Commands;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
+namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 {
     public class WingetInstallerViewModel : ChangeableContainer
     {
