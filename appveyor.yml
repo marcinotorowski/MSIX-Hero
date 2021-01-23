@@ -1,3 +1,7 @@
+branches:
+  only:
+  - develop
+  - master
 install:
 - pwsh: dotnet tool restore
 build_script:
