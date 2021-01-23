@@ -10,7 +10,7 @@ Bug reports, feature improvements and pull requests are welcome.
 The project is written almost exclusively in .NET Core 3.1. Minor parts use .NET Framework 4.7 and PowerShell.
 
 ## Official binaries ###
-You can download official binaries (signed + deployable via MSIX/appinstaller) from the official website: https://msixhero.net/download
+You can download official binaries (signed + deployable via MSIX/appinstaller) from the official website: https://msixhero.net/get
 
 ## Building
 The built process is straightforward. You can simply open `Otor.MsixHero.sln`, restore nuget packages and run the project. Alternatively, use the provided build script `build.ps1` to start the build. This starts a cake script that restores Nuget packages, builds all necessary projects, performas a clean-up and copies results to the `/out` subfolder. For each assembly, the build script takes the major and minor version from the last tag (pattern vMAJOR.MINOR) and the third unit comes from number of commits since that tag (starting with 0).
