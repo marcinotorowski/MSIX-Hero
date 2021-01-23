@@ -15,9 +15,9 @@ if (string.IsNullOrEmpty(outFolder))
 var binFolder = System.IO.Path.Combine(outFolder, "bin");
 var msixFolder = System.IO.Path.Combine(outFolder, "msix");
 
-var shouldSign = HasArgument("Sign")
-    ? Argument<bool>("Sign")
-    : false;
+var shouldSign = HasArgument("Sign");    
+var shouldTest = !HasArgument("SkipTest");
+var certName = HasArgument("CertName") ? Argument<string>("CertName") : "Marcin Otorowski";
 
 Task("Clean output folder")
     .Does(() =>
@@ -50,14 +50,14 @@ Task("Determine version").Does(() =>{
 
     var v = string.Join("\r\n", redirectedStandardOutput);
 
-    var r = System.Text.RegularExpressions.Regex.Match(v, @"v(\d+\.\d+)\-(\d+)\-g([a-z0-9]+)");
+    var r = System.Text.RegularExpressions.Regex.Match(v, @"v(\d+\.\d+).*-(\d+)-g([a-z0-9]+)");
     if (r.Success)
     {
         version = r.Groups[1].Value + "." +r.Groups[2].Value + ".0";
     }
     else
     {
-        r = System.Text.RegularExpressions.Regex.Match(v, @"v(\d+\.\d+)\.(\d+)(?:\.\d+)*\-(\d+)\-g([a-z0-9]+)");
+        r = System.Text.RegularExpressions.Regex.Match(v, @"v(\d+\.\d+)\.(\d+)(?:\.\d+)*.*\-(\d+)\-g([a-z0-9]+)");
         if (r.Success)
         {
             var cnt = int.Parse(r.Groups[2].Value) +int.Parse(r.Groups[3].Value);
@@ -97,6 +97,12 @@ Task("Publish .NET Framework")
 
 Task("Test")
     .Does(() => {           
+
+        if (!shouldTest)
+        {
+            Information("Skipping tests due to the presence of the --SkipTest switch.");
+            return;
+        }
 
         var projectDir = System.IO.Path.Combine("src", "Otor.MsixHero.Tests");
         var unitTestCsProj = System.IO.Path.Combine(projectDir, "Otor.MsixHero.Tests.csproj");
@@ -228,7 +234,7 @@ Task("Sign files")
         StartProcess(
             System.IO.Path.Combine(binFolder, "redistr", "sdk", "x64", "signtool.exe"),
                 new ProcessSettings {
-                    Arguments = "sign /n \"Marcin Otorowski\" /t http://time.certum.pl/ /fd sha256 /d \"MSIX Hero\" /v " + string.Join(" ", allFiles.Select(s => "\"" + s + "\"")),
+                    Arguments = "sign /n \"" + certName + "\" /t http://time.certum.pl/ /fd sha256 /d \"MSIX Hero\" /v " + string.Join(" ", allFiles.Select(s => "\"" + s + "\"")),
                     RedirectStandardOutput = false
                 });
     });
