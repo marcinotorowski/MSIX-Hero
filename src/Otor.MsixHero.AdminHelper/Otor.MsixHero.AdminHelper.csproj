@@ -8,7 +8,7 @@
     <Product>MSIX Hero</Product>
     <Authors>Marcin Otorowski</Authors>
     <Description>A helper for self-elevation of the main MSIX Hero App.</Description>
-    <Copyright>Copyright (c) 2020 by Marcin Otorowski</Copyright>
+    <Copyright>Copyright (c) 2021 by Marcin Otorowski</Copyright>
     <OutputPath>$(SolutionDir)src\bin\</OutputPath>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>

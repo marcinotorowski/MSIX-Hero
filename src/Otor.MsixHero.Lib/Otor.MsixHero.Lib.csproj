@@ -2,12 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Copyright>Copyright (c) 2020 by Marcin Otorowski</Copyright>
+    <Copyright>Copyright (c) 2021 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
     <Product>MSIX Hero</Product>
     <OutputPath>$(SolutionDir)src\bin\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RepositoryUrl>https://github.com/marcinotorowski/msix-hero/</RepositoryUrl>
+    <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
