@@ -22,4 +22,4 @@ The built process is straightforward. You can simply open `Otor.MsixHero.sln`, r
 ## Build status ##
 Branches *develop* and *master* are built automatically using AppVeyor CI.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/qg51ctiga8ada0ib?svg=true)](https://ci.appveyor.com/project/marcinotorowski/msix-hero)
+[![Build status](https://ci.appveyor.com/api/projects/status/ukp54g7jnwa3g177?svg=true)](https://ci.appveyor.com/project/marcinotorowski/msix-hero-bj0mu)
