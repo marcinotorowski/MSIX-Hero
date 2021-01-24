@@ -58,6 +58,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="OffregLib.Forked" Version="0.7.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -80,6 +81,15 @@
     <Resource Include="Resources\MSIX.Commander_1.0.7.5-x64.msix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="C:\Users\marci\.nuget\packages\offreglib.forked\0.7.2\contentFiles\any\netcoreapp3.1\offreg.x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="C:\Users\marci\.nuget\packages\offreglib.forked\0.7.2\contentFiles\any\netcoreapp3.1\offreg.x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

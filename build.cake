@@ -96,6 +96,7 @@ Task("Publish .NET Framework")
 });
 
 Task("Test")
+    .IsDependentOn("Determine version")
     .Does(() => {           
 
         if (!shouldTest)
