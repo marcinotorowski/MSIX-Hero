@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using External.EricZimmerman.Registry;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities;
 using Otor.MsixHero.Appx.Psf.Entities.Descriptor;
+using Registry;
 
 namespace Otor.MsixHero.Appx.Psf
 {

@@ -27,11 +27,11 @@
     <PackageReference Include="chausner.PriFormat.Forked" Version="1.0.0" />
     <PackageReference Include="Microsoft.Acs.Dgss.Client" Version="1.0.8" />
     <PackageReference Include="Microsoft.Identity.Client" Version="4.25.0" />
+    <PackageReference Include="Registry" Version="1.1.1.2" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Registry\Otor.MsixHero.Registry.csproj" />
   </ItemGroup>
