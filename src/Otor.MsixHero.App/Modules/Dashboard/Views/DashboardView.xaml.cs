@@ -137,11 +137,11 @@ namespace Otor.MsixHero.App.Modules.Dashboard.Views
 
             if (e.NewValue is string newText && !string.IsNullOrEmpty(newText))
             {
-                button.Visibility = content.Any(t => t.Text?.IndexOf(newText, StringComparison.OrdinalIgnoreCase) > -1) ? Visibility.Visible : Visibility.Collapsed;
+                //button.Visibility = content.Any(t => t.Text?.IndexOf(newText, StringComparison.OrdinalIgnoreCase) > -1) ? Visibility.Visible : Visibility.Collapsed;
             }
             else
             {
-                button.Visibility = Visibility.Visible;
+                //button.Visibility = Visibility.Visible;
             }
         }
     }

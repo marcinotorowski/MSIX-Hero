@@ -108,11 +108,9 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
             
-            if (Environment.GetCommandLineArgs().Length > 1)
-            {
-                containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.PackageManagement);
-            }
-            else
+            containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.DialogPaths.PackageExpert);
+
+            if (Environment.GetCommandLineArgs().Length < 2)
             {
                 containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             }
@@ -147,6 +145,9 @@ namespace Otor.MsixHero.App
             var regionManager = this.Container.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
 
+            ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
+            regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));
+            
             var app = this.Container.Resolve<IMsixHeroApplication>();
             var config = this.Container.Resolve<IConfigurationService>();
 
@@ -167,7 +168,7 @@ namespace Otor.MsixHero.App
         {
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
             var regionManager = this.Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(PackageExpertControl));
+            regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));
             var par = new DialogParameters
             {
                 {
@@ -177,7 +178,7 @@ namespace Otor.MsixHero.App
             };
 
             var dialogService = this.Container.Resolve<IDialogService>();
-            dialogService.Show(NavigationPaths.PackageManagement, par, r => {});
+            dialogService.Show(NavigationPaths.DialogPaths.PackageExpert, par, r => {});
             // regionManager.Regions[RegionNames.Root].RequestNavigate(new Uri(NavigationPaths.PackageManagement, UriKind.Relative), par);
         }
         

@@ -14,192 +14,229 @@
             <Setter Property="Width" Value="180" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
         </Style>
+
+        <Style TargetType="StackPanel" x:Key="Group">
+            <Setter Property="Margin" Value="0 0 32 16" />
+        </Style>
     </UserControl.Resources>
-    <StackPanel x:Name="Host" Margin="20">
-        <StackPanel.Resources>
-            <Style TargetType="TextBlock" x:Key="TextHeader">
-                <Setter Property="FontFamily" Value="{StaticResource SourceSansPro}" />
-                <Setter Property="FontSize" Value="18" />
-            </Style>
-        </StackPanel.Resources>
-        <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Developing" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
-        <WrapPanel>
-            <Button
-                views:ToolButton.SearchText="{Binding SearchKey}"
-                Command="{Binding ShowAppInstallerDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                      Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="App installer" />
-                    <TextBlock
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Create or open an .appinstaller file" />
-                </StackPanel>
-            </Button>
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="Host" Margin="20">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock" x:Key="TextHeader">
+                    <Setter Property="FontFamily" Value="{StaticResource SourceSansPro}" />
+                    <Setter Property="FontSize" Value="18" />
+                </Style>
+            </StackPanel.Resources>
 
-            <Button 
-                views:ToolButton.SearchText="{Binding SearchKey}"
-                Command="{Binding ShowWingetDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                      Data="{StaticResource VectorConsole}"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Winget manifest (.yaml)" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Create or open a .yaml file used by winget" />
-                </StackPanel>
-            </Button>
+            <StackPanel Style="{StaticResource Group}">
+                <Button 
+                    Width="250"
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Left"
+                    Command="Open">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Style="{StaticResource LargeIcon}"
+                      Data="{StaticResource VectorOpen}"
+                      Margin="0 0 8 0" />
+                        <StackPanel>
+                            <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonLabel}" FontSize="14" Text="Open" />
+                            <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonDescription}" Text="Opens any supported file" />
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 
-            <Button 
-                views:ToolButton.SearchText="{Binding SearchKey}"
-                Command="{Binding ShowAppAttachDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                          Data="{StaticResource VectorNetworkDrive}"
-                          Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="MSIX app attach" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Create VHD and .ps1 scripts for app attach" />
-                </StackPanel>
-            </Button>
-        </WrapPanel>
+            <WrapPanel HorizontalAlignment="Left" MaxWidth="1200">
 
-        <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Package authoring" Margin="0 16 0 8" Style="{StaticResource TextHeader}" />
-        <WrapPanel>
-            <Button 
-                views:ToolButton.SearchText="{Binding SearchKey}"
-                Command="{Binding ShowPackDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                      Data="{StaticResource VectorPack}"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Pack MSIX" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Convert a folder to an MSIX format" />
-                </StackPanel>
-            </Button>
-            <Button 
-                Command="{Binding ShowUnpackDialog}">
-                <StackPanel>
-                    <Path 
-                        Style="{StaticResource LargeIcon}"
-                        Data="{StaticResource VectorUnpack}"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Unpack MSIX" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Unpack an MSIX package to a folder" />
-                </StackPanel>
-            </Button>
+                <StackPanel Style="{StaticResource Group}">
 
-            <Button 
-                Command="{Binding ShowModificationPackageDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                          Data="{StaticResource VectorTransform}"
-                          Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Modification package" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Create a basic modification package" />
-                </StackPanel>
-            </Button>
-        </WrapPanel>
+                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Package authoring" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
+                    <WrapPanel>
+                        <Button 
+                            views:ToolButton.SearchText="{Binding SearchKey}"
+                            Command="{Binding ShowPackDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                    Data="{StaticResource VectorPack}"
+                                    Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Pack MSIX" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Convert a folder to an MSIX format" />
+                            </StackPanel>
+                        </Button>
+                        <Button 
+                            Command="{Binding ShowUnpackDialog}">
+                            <StackPanel>
+                                <Path 
+                                    Style="{StaticResource LargeIcon}"
+                                    Data="{StaticResource VectorUnpack}"
+                                    Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Unpack MSIX" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Unpack an MSIX package to a folder" />
+                            </StackPanel>
+                        </Button>
 
-        <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Code signing" Margin="0 16 0 8" Style="{StaticResource TextHeader}" />
-        <WrapPanel>
-            <Button 
-                Command="{Binding ShowSignPackageDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                      Data="{StaticResource VectorSign}"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Sign MSIX package" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Sign with local certificate or Device Guard" />
+                        <Button 
+                            Command="{Binding ShowModificationPackageDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                      Data="{StaticResource VectorTransform}"
+                                      Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Modification package" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Create a basic modification package" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
                 </StackPanel>
-            </Button>
-            <Button 
-                Command="{Binding ShowNewSelfSignedDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                          Data="{StaticResource VectorSelfSign}"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Self-signed certificate" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Create a new certificate for test and demo purposes" />
-                </StackPanel>
-            </Button>
-            <Button 
-                Command="{Binding ShowExtractCertificateDialog}">
-                <StackPanel>
-                    <Path 
-                        Style="{StaticResource LargeIcon}"
-                        Data="{StaticResource VectorExport}"
-                        Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Extract or install certificate" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Install certificates or extract them from signed package" />
-                </StackPanel>
-            </Button>
-        </WrapPanel>
-        
-        <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Administration and troubleshooting" Margin="0 16 0 8" Style="{StaticResource TextHeader}" />
-        <WrapPanel>
 
-            <Button 
-                Command="{Binding ShowDependencyGraphDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                          Data="{StaticResource VectorDependencies}"
-                          Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Dependency graph" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Show nested dependencies between packages and OS" />
+                <StackPanel Style="{StaticResource Group}">
+                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Developing" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
+                    <WrapPanel>
+                        <Button
+                            views:ToolButton.SearchText="{Binding SearchKey}"
+                            Command="{Binding ShowAppInstallerDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                    Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z"
+                                    Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="App installer" />
+                                <TextBlock
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Create or open an .appinstaller file" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button 
+                            views:ToolButton.SearchText="{Binding SearchKey}"
+                            Command="{Binding ShowWingetDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                    Data="{StaticResource VectorConsole}"
+                                    Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Winget manifest (.yaml)" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Create or open a .yaml file used by winget" />
+                            </StackPanel>
+                        </Button>
+
+                        <Button 
+                            views:ToolButton.SearchText="{Binding SearchKey}"
+                            Command="{Binding ShowAppAttachDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                     Data="{StaticResource VectorNetworkDrive}"
+                                     Margin="0 0 0 8" />
+                                <TextBlock 
+                                     controls:Highlighter.Selection="{Binding SearchKey}"
+                                     Style="{StaticResource ButtonLabel}" FontSize="14" Text="MSIX app attach" />
+                                <TextBlock 
+                                     controls:Highlighter.Selection="{Binding SearchKey}"
+                                     Style="{StaticResource ButtonDescription}" Text="Create VHD and .ps1 scripts for app attach" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
                 </StackPanel>
-            </Button>
-            <Button 
-                Command="{Binding ShowUpdateImpactDialog}">
-                <StackPanel>
-                    <Path Style="{StaticResource LargeIcon}"
-                      Data="{StaticResource VectorCheckmark}"
-                      Margin="0 0 0 8" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonLabel}" FontSize="14" Text="Update impact" />
-                    <TextBlock 
-                        controls:Highlighter.Selection="{Binding SearchKey}"
-                        Style="{StaticResource ButtonDescription}" Text="Analyze update impact on file and resources" />
+
+                <StackPanel Style="{StaticResource Group}">
+                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Code signing" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
+                    <WrapPanel>
+                        <Button 
+                            Command="{Binding ShowSignPackageDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                  Data="{StaticResource VectorSign}"
+                                  Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Sign MSIX package" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Sign with local certificate or Device Guard" />
+                            </StackPanel>
+                        </Button>
+                        <Button 
+                            Command="{Binding ShowNewSelfSignedDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                    Data="{StaticResource VectorSelfSign}"
+                                    Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Self-signed certificate" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Create a new certificate for test and demo purposes" />
+                            </StackPanel>
+                        </Button>
+                        <Button 
+                            Command="{Binding ShowExtractCertificateDialog}">
+                            <StackPanel>
+                                <Path 
+                                    Style="{StaticResource LargeIcon}"
+                                    Data="{StaticResource VectorExport}"
+                                    Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Extract or install certificate" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Install certificates or extract them from signed package" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
                 </StackPanel>
-            </Button>
-        </WrapPanel>
-    </StackPanel>
+
+                <StackPanel Style="{StaticResource Group}">
+                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Administration and troubleshooting" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
+                    <WrapPanel>
+
+                        <Button 
+                            Command="{Binding ShowDependencyGraphDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                      Data="{StaticResource VectorDependencies}"
+                                      Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Dependency graph" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Show nested dependencies between packages and OS" />
+                            </StackPanel>
+                        </Button>
+                        <Button 
+                            Command="{Binding ShowUpdateImpactDialog}">
+                            <StackPanel>
+                                <Path Style="{StaticResource LargeIcon}"
+                                  Data="{StaticResource VectorCheckmark}"
+                                  Margin="0 0 0 8" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Update impact" />
+                                <TextBlock 
+                                    controls:Highlighter.Selection="{Binding SearchKey}"
+                                    Style="{StaticResource ButtonDescription}" Text="Analyze update impact on file and resources" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </WrapPanel>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

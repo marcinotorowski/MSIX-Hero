@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Input;
+using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero.Commands.Dashboard;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;
@@ -33,6 +34,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         private readonly IInteractionService interactionService;
         private readonly IDialogService dialogService;
         private readonly IModuleManager moduleManager;
+        private readonly DialogOpener dialogOpener;
         private string searchKey;
 
         public DashboardViewModel(
@@ -41,6 +43,8 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             IDialogService dialogService, 
             IModuleManager moduleManager)
         {
+            this.dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
+            
             this.interactionService = interactionService;
             this.dialogService = dialogService;
             this.moduleManager = moduleManager;
@@ -56,6 +60,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.ShowNewSelfSignedDialog = new DelegateCommand(this.OnShowNewSelfSignedDialog);
             this.ShowExtractCertificateDialog = new DelegateCommand(this.OnShowExtractCertificateDialog);
             this.ShowSignPackageDialog = new DelegateCommand(this.OnShowSignPackageDialog);
+            this.OpenFileDialog = new DelegateCommand(this.OnOpenFileDialog);
             this.OpenCertificateManager = new DelegateCommand<object>(param => this.OnOpenCertificateManager(param is bool boolParam && boolParam));
             this.OpenAppsFeatures = new DelegateCommand(this.OnOpenAppsFeatures);
             this.OpenDevSettings = new DelegateCommand(this.OnOpenDevSettings);
@@ -97,6 +102,8 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         public ICommand ShowSignPackageDialog { get; }
 
         public ICommand OpenCertificateManager { get; }
+        
+        public ICommand OpenFileDialog { get; }
 
         public ICommand OpenAppsFeatures { get; }
 
@@ -106,7 +113,6 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, this.OnDialogClosed);
-            // this.DialogExecute("All supported files|*.msix;*.appx;AppxManifest.xml|Packages|*.msix;*.appx|Manifest files|AppxManifest.xml", NavigationPaths.DialogPaths.DependenciesGraph);
         }
 
         private void OnOpenAppsFeatures()
@@ -145,19 +151,9 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.UpdatesUpdateImpact, new DialogParameters(), this.OnDialogClosed);
         }
 
-        private void DialogExecute(string filter, string path, string parameterName = "file")
+        private void OnOpenFileDialog()
         {
-            if (!this.interactionService.SelectFile(filter, out var selected))
-            {
-                return;
-            }
-
-            var parameters = new DialogParameters
-            {
-                { parameterName, selected }
-            };
-
-            this.dialogService.ShowDialog(path, parameters, this.OnDialogClosed);
+            this.dialogOpener.ShowFileDialog(DialogOpenerType.AllSupported);
         }
 
         private void OnShowPackDialog()
@@ -170,14 +166,12 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, this.OnDialogClosed);
-            // this.DialogExecute("Winget manifests (*.yaml)|*.yaml|All files|*.*", NavigationPaths.DialogPaths.WingetYamlEditor, "yaml");
         }
 
         private void OnShowAppInstallerDialog()
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, this.OnDialogClosed);
-            // this.DialogExecute("App installer files|*.appinstaller|All files|*.*", NavigationPaths.DialogPaths.AppInstallerEditor);
         }
 
         private void OnShowModificationPackageDialog()

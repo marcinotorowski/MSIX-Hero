@@ -23,5 +23,6 @@ namespace Otor.MsixHero.App.Modules
         public const string Root = "msix-hero-root";
         public const string Main = "msix-hero-main";
         public const string Search = "msix-hero-search";
+        public const string PackageExpert = "msix-hero-package-expert";
     }
 }

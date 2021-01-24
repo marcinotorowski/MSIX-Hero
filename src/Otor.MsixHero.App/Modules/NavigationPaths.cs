@@ -72,6 +72,7 @@ namespace Otor.MsixHero.App.Modules
             public const string AppAttachEditor = BaseDialogsNavigation + "appattach-editor";
             public const string AppInstallerEditor = BaseDialogsNavigation + "appinstaller-editor";
             public const string DependenciesGraph = BaseDialogsNavigation + "dependencies-graph";
+            public const string PackageExpert = BaseDialogsNavigation + "package-expert";
 
             public const string PackagingPack = BaseDialogsNavigation + "packaging-pack";
             public const string PackagingUnpack = BaseDialogsNavigation + "packaging-unpack";

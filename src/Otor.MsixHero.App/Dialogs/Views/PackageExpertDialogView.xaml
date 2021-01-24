@@ -106,7 +106,7 @@
         <Border Background="White" DockPanel.Dock="Top">
             <ContentControl 
                 mvvm:RegionManager.RegionContext="{Binding FilePath}"
-                mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.Root}" />
+                mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.PackageExpert}" />
         </Border>
     </DockPanel>
 </UserControl>

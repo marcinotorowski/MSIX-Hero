@@ -18,7 +18,9 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
+using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.Infrastructure.Services;
 using Prism.Modularity;
 using Prism.Services.Dialogs;
 
@@ -31,13 +33,15 @@ namespace Otor.MsixHero.App
     {
         private readonly IModuleManager moduleManager;
         private readonly IDialogService dialogService;
+        private readonly DialogOpener dialogOpener;
 
-        public MainWindow(IModuleManager moduleManager, IDialogService dialogService)
+        public MainWindow(IModuleManager moduleManager, IDialogService dialogService, IInteractionService interactionService)
         {
             this.moduleManager = moduleManager;
             this.dialogService = dialogService;
             InitializeComponent();
             this.Loaded += OnLoaded;
+            this.dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -49,6 +53,11 @@ namespace Otor.MsixHero.App
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Help);
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.About);
+        }
+
+        private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.dialogOpener.ShowFileDialog();
         }
     }
 }

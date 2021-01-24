@@ -22,6 +22,7 @@
     Width="1024">
     <Window.CommandBindings>
         <CommandBinding Command="Help" Executed="HelpExecuted" /> 
+        <CommandBinding Command="Open" Executed="OpenExecuted" /> 
     </Window.CommandBindings>
     <fw:AcrylicWindow.Resources>
 
