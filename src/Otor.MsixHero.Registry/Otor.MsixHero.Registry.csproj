@@ -16,10 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\external\LordMike.OffregLib\LordMike.OffregLib.csproj" />
+    <PackageReference Include="OffregLib.Forked" Version="0.7.2" />
   </ItemGroup>
 
 </Project>
