@@ -74,7 +74,16 @@ Task("Determine version").Does(() =>{
 
     if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
     {
-        BuildSystem.AppVeyor.UpdateBuildVersion(version);
+        if (BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest)
+        {   
+            // For Pull Requests, add some artificial ending
+            BuildSystem.AppVeyor.UpdateBuildVersion(version + "-pr" + BuildSystem.AppVeyor.Environment.PullRequest.Number);            
+        }
+        else
+        {
+            BuildSystem.AppVeyor.UpdateBuildVersion(version);
+        }
+
     }
 });
 
