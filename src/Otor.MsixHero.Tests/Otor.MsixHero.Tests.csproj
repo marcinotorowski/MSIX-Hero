@@ -58,7 +58,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="OffregLib.Forked" Version="0.7.2.1" />
+    <PackageReference Include="OffregLib.Forked" Version="0.7.3" />
   </ItemGroup>
 
   <ItemGroup>
