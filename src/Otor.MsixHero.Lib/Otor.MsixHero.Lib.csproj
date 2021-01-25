@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\external\External.EricZimmerman.Registry\External.EricZimmerman.Registry.csproj" />
     <ProjectReference Include="..\otor.msixhero.appx\otor.msixhero.appx.csproj" />
   </ItemGroup>
 
