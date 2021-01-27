@@ -172,21 +172,21 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
         {
             if (command is AddDto addDto)
             {
-                AddPackageOptions addDtoOptions = 0;
+                AddAppxPackageOptions addDtoOptions = 0;
 
                 if (addDto.AllUsers)
                 {
-                    addDtoOptions |= AddPackageOptions.AllUsers;
+                    addDtoOptions |= AddAppxPackageOptions.AllUsers;
                 }
 
                 if (addDto.AllowDowngrade)
                 {
-                    addDtoOptions |= AddPackageOptions.AllowDowngrade;
+                    addDtoOptions |= AddAppxPackageOptions.AllowDowngrade;
                 }
 
                 if (addDto.KillRunningApps)
                 {
-                    addDtoOptions |= AddPackageOptions.KillRunningApps;
+                    addDtoOptions |= AddAppxPackageOptions.KillRunningApps;
                 }
 
                 return this.SelfElevationAwareObject.Add(addDto.FilePath, addDtoOptions, cancellationToken, progress);

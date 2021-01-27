@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
     <Copyright>Copyright (c) 2021 by Marcin Otorowski</Copyright>
     <Authors>Marcin Otorowski</Authors>
     <Company>Marcin Otorowski</Company>
@@ -17,31 +17,16 @@
     <PackageReference Include="ControlzEx" Version="4.4.0" />
     <PackageReference Include="DiscUtils.Ntfs" Version="0.15.1-ci0007" />
     <PackageReference Include="DiscUtils.Vhd" Version="0.15.1-ci0007" />
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.3" />
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.0-preview.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
-    <PackageReference Include="System.Management.Automation" Version="7.0.3" />
+    <PackageReference Include="System.Management.Automation" Version="7.2.0-preview.2" />
     <PackageReference Include="YamlDotNet" Version="9.1.5-issue-templates-0002" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\otor.msixhero.appx\otor.msixhero.appx.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Windows">
-      <HintPath>C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.18362.0\Facade\windows.winmd</HintPath>
-      <IsWinMDFile>true</IsWinMDFile>
-    </Reference>
-    <Reference Include="Windows.Foundation.FoundationContract">
-      <HintPath>C:\Program Files (x86)\Windows Kits\10\References\10.0.18362.0\Windows.Foundation.FoundationContract\3.0.0.0\Windows.Foundation.FoundationContract.winmd</HintPath>
-      <IsWinMDFile>true</IsWinMDFile>
-    </Reference>
-    <Reference Include="Windows.Foundation.UniversalApiContract">
-      <HintPath>C:\Program Files (x86)\Windows Kits\10\References\10.0.18362.0\Windows.Foundation.UniversalApiContract\8.0.0.0\Windows.Foundation.UniversalApiContract.winmd</HintPath>
-      <IsWinMDFile>true</IsWinMDFile>
-    </Reference>
   </ItemGroup>
 
 </Project>

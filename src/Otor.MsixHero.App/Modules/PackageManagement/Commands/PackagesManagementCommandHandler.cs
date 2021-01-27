@@ -442,14 +442,14 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 }
             }
 
-            AddPackageOptions options = 0;
+            AddAppxPackageOptions options = 0;
 
             if (forAllUsers)
             {
-                options |= AddPackageOptions.AllUsers;
+                options |= AddAppxPackageOptions.AllUsers;
             }
 
-            options |= AddPackageOptions.KillRunningApps;
+            options |= AddAppxPackageOptions.KillRunningApps;
 
             var context = this.busyManager.Begin();
             try
