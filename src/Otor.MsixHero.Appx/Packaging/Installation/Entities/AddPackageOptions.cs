@@ -19,7 +19,7 @@ using System;
 namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
 {
     [Flags]
-    public enum AddPackageOptions
+    public enum AddAppxPackageOptions
     {
         AllUsers = 1,
         AllowDowngrade = 2,

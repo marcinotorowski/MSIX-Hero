@@ -200,7 +200,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             await task.ConfigureAwait(false);
         }
 
-        public async Task Add(string filePath, AddPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task Add(string filePath, AddAppxPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (SideloadingChecker.GetStatus() < SideloadingStatus.Sideloading)
             {
@@ -219,12 +219,12 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 DeploymentOptions deploymentOptions = 0;
 
-                if (options.HasFlag(AddPackageOptions.AllowDowngrade))
+                if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                 {
                     deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
                 }
 
-                if (options.HasFlag(AddPackageOptions.KillRunningApps))
+                if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
                 {
                     deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
                     deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
@@ -240,19 +240,19 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
             else if (string.Equals(".appinstaller", Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
             {
-                if (options.HasFlag(AddPackageOptions.AllUsers))
+                if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                 {
                     throw new NotSupportedException("Cannot install a package from .appinstaller for all users.");
                 }
 
                 AddPackageByAppInstallerOptions deploymentOptions = 0;
 
-                if (options.HasFlag(AddPackageOptions.AllowDowngrade))
+                if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                 {
                     throw new NotSupportedException("Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.");
                 }
 
-                if (options.HasFlag(AddPackageOptions.KillRunningApps))
+                if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
                 {
                     deploymentOptions |= AddPackageByAppInstallerOptions.ForceTargetAppShutdown;
                 }
@@ -272,18 +272,18 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                     DeploymentOptions deploymentOptions = 0;
 
-                    if (options.HasFlag(AddPackageOptions.AllowDowngrade))
+                    if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                     {
                         deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
                     }
 
-                    if (options.HasFlag(AddPackageOptions.KillRunningApps))
+                    if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
                     {
                         deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
                         deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
                     }
 
-                    if (options.HasFlag(AddPackageOptions.AllUsers))
+                    if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                     {
                         var deploymentResult = await AsyncOperationHelper.ConvertToTask(
                             PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),

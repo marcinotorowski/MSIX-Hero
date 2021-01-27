@@ -177,12 +177,17 @@ namespace Otor.MsixHero.Appx.Volumes
 
             foreach (var item in results)
             {
-                var baseType = item.BaseObject.GetType();
-                var name = (string)baseType.GetProperty("Name")?.GetValue(item.BaseObject);
-                var packageStorePath = (string)baseType.GetProperty("PackageStorePath")?.GetValue(item.BaseObject);
-                var isOffline = (bool?)baseType.GetProperty("IsOffline")?.GetValue(item.BaseObject) == true;
-                var isSystemVolume = (bool?)baseType.GetProperty("IsSystemVolume")?.GetValue(item.BaseObject) == true;
-
+                var packageStorePath = (string)item.Properties.FirstOrDefault(p => p.Name == "PackageStorePath")?.Value;
+                if (string.IsNullOrEmpty(packageStorePath))
+                {
+                    Logger.Warn("Empty path for " + item);
+                    continue;
+                }
+                
+                var isOffline = true == (bool?)item.Properties.FirstOrDefault(p => p.Name == "IsOffline")?.Value;
+                var name = (string)item.Properties.FirstOrDefault(p => p.Name == "Name")?.Value;
+                var isSystemVolume = true == (bool?)item.Properties.FirstOrDefault(p => p.Name == "IsSystemVolume")?.Value;
+                
                 list.Add(new AppxVolume { Name = name, PackageStorePath = packageStorePath, IsOffline = isOffline, IsSystem = isSystemVolume });
             }
 

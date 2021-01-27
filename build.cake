@@ -98,7 +98,7 @@ Task("Publish .NET Framework")
         Configuration = "Release"
         });
 
-    var src = System.IO.Path.Combine("src", "bin", "netcoreapp3.1", "DGSS");
+    var src = System.IO.Path.Combine("src", "bin", "net5.0-windows", "DGSS");
     var tgt = System.IO.Path.Combine(binFolder, "DGSS");
     Information("Copying '" + src + "' to '" + tgt + "'...");
     CopyDirectory(src, tgt);
@@ -116,7 +116,7 @@ Task("Test")
 
         var projectDir = System.IO.Path.Combine("src", "Otor.MsixHero.Tests");
         var unitTestCsProj = System.IO.Path.Combine(projectDir, "Otor.MsixHero.Tests.csproj");
-        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "netcoreapp3.1");
+        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "net5.0-windows");
         var unitTestDll = System.IO.Path.Combine(publishDir, "Otor.MsixHero.Tests.dll");
         
         Information("Building unit tests...");        

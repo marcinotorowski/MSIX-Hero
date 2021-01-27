@@ -260,14 +260,14 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
             return this.client.Get(proxyObject, cancellationToken, progress);
         }
 
-        public Task Add(string filePath, AddPackageOptions options = (AddPackageOptions) 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public Task Add(string filePath, AddAppxPackageOptions options = (AddAppxPackageOptions) 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             var proxyObject = new AddDto
             {
                 FilePath = filePath,
-                AllUsers = options.HasFlag(AddPackageOptions.AllUsers),
-                AllowDowngrade = options.HasFlag(AddPackageOptions.AllowDowngrade),
-                KillRunningApps = options.HasFlag(AddPackageOptions.KillRunningApps)
+                AllUsers = options.HasFlag(AddAppxPackageOptions.AllUsers),
+                AllowDowngrade = options.HasFlag(AddAppxPackageOptions.AllowDowngrade),
+                KillRunningApps = options.HasFlag(AddAppxPackageOptions.KillRunningApps)
             };
 
             return this.client.Invoke(proxyObject, cancellationToken, progress);
