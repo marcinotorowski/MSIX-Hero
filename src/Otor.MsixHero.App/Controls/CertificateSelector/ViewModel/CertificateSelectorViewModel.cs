@@ -209,8 +209,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                         {
                             EncodedAccessToken = crypto.Protect(result.AccessToken),
                             EncodedRefreshToken = crypto.Protect(result.RefreshToken),
-                            Subject = result.Subject,
-                            UseV1 = false
+                            Subject = result.Subject
                         };
                     }
                     else
@@ -219,7 +218,6 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                         {
                             EncodedAccessToken = crypto.Protect(result.AccessToken),
                             EncodedRefreshToken = crypto.Protect(result.RefreshToken),
-                            UseV1 = this.DeviceGuard.CurrentValue.UseV1,
                             Subject = result.Subject
                         };
                     }

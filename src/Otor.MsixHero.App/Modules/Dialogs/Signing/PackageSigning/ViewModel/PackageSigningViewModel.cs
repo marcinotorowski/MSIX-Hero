@@ -96,7 +96,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             {
                 if (signConfig?.Source == CertificateSource.DeviceGuard && 
                     signConfig.DeviceGuard.Subject == this.CertificateSelector.DeviceGuard.CurrentValue.Subject &&
-                    signConfig.DeviceGuard.UseV1 == this.CertificateSelector.DeviceGuard.CurrentValue.UseV1 &&
                     signConfig.DeviceGuard.EncodedAccessToken == this.CertificateSelector.DeviceGuard.CurrentValue.EncodedAccessToken &&
                     signConfig.DeviceGuard.EncodedRefreshToken == this.CertificateSelector.DeviceGuard.CurrentValue.EncodedRefreshToken)
                 {
@@ -104,14 +103,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                     this.Verb.DeviceGuardInteractive = false;
                     this.Verb.DeviceGuardFile = null;
                     this.Verb.DeviceGuardSubject = null;
-                    this.Verb.DeviceGuardVersion1 = false;
                 }
                 else
                 {
                     this.Verb.DeviceGuardInteractive = true;
                     this.Verb.DeviceGuardFile = null;
                     this.Verb.DeviceGuardSubject = this.CertificateSelector.DeviceGuard.CurrentValue?.Subject;
-                    this.Verb.DeviceGuardVersion1 = this.CertificateSelector.DeviceGuard.CurrentValue?.UseV1 ?? false;
                 }
             }
             else
@@ -119,7 +116,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 this.Verb.DeviceGuardInteractive = false;
                 this.Verb.DeviceGuardFile = null;
                 this.Verb.DeviceGuardSubject = null;
-                this.Verb.DeviceGuardVersion1 = false;
             }
 
             if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Pfx)

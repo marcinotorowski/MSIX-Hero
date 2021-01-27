@@ -31,7 +31,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
         private static readonly ILog Logger = LogManager.GetLogger(typeof(DeviceGuardHelper));
 
 
-        public async Task<string> GetSubjectFromDeviceGuardSigning(string accessToken, string refreshToken, bool useDgssV1, CancellationToken cancellationToken = default)
+        public async Task<string> GetSubjectFromDeviceGuardSigning(string accessToken, string refreshToken, CancellationToken cancellationToken = default)
         {
             string tempFile = null;
             try
@@ -45,7 +45,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                 var helper = new DgssTokenCreator();
                 tempFile = await helper.CreateDeviceGuardJsonTokenFile(cfg, cancellationToken).ConfigureAwait(false);
 
-                return await this.GetSubjectFromDeviceGuardSigning(tempFile, useDgssV1, cancellationToken).ConfigureAwait(false);
+                return await this.GetSubjectFromDeviceGuardSigning(tempFile, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -56,7 +56,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
             }
         }
 
-        public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, bool useDgssV1, CancellationToken cancellationToken = default)
+        public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, CancellationToken cancellationToken = default)
         {
             Logger.Info("Getting certificate subject for Device Guard signing...");
 
@@ -81,7 +81,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
                 var sdk = new MsixSdkWrapper();
                 Logger.Debug($"Signing temporary file path {tempFilePath}");
-                await sdk.SignPackageWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, useDgssV1, null, cancellationToken).ConfigureAwait(false);
+                await sdk.SignPackageWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
 
                 using (var fromSignedFile = X509Certificate.CreateFromSignedFile(tempFilePath))
                 {

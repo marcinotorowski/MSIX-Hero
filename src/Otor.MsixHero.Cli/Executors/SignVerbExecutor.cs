@@ -115,7 +115,7 @@ namespace Otor.MsixHero.Cli.Executors
                 if (cfg.Subject == null && !this.Verb.NoPublisherUpdate)
                 {
                     await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
-                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(cfg.AccessToken, cfg.RefreshToken, this.Verb.DeviceGuardVersion1);
+                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(cfg.AccessToken, cfg.RefreshToken);
                     await this.Console.WriteSuccess("New publisher name is " + cfg.Subject).ConfigureAwait(false);
                 }
 
@@ -237,11 +237,6 @@ namespace Otor.MsixHero.Cli.Executors
                 {
                     return await this.GetSetError(nameof(SignVerb.ThumbPrint), nameof(SignVerb.DeviceGuardSubject));
                 }
-
-                if (this.Verb.DeviceGuardVersion1)
-                {
-                    return await this.GetSetError(nameof(SignVerb.ThumbPrint), nameof(SignVerb.DeviceGuardVersion1));
-                }
             }
 
             if (this.Verb.PfxFilePath != null)
@@ -264,11 +259,6 @@ namespace Otor.MsixHero.Cli.Executors
                 if (this.Verb.UseMachineStore)
                 {
                     return await this.GetSetError(nameof(SignVerb.PfxFilePath), nameof(SignVerb.UseMachineStore));
-                }
-
-                if (this.Verb.DeviceGuardVersion1)
-                {
-                    return await this.GetSetError(nameof(SignVerb.ThumbPrint), nameof(SignVerb.DeviceGuardVersion1));
                 }
             }
 
@@ -331,7 +321,7 @@ namespace Otor.MsixHero.Cli.Executors
                 foreach (var path in this.Verb.FilePath)
                 {
                     await this.Console.WriteInfo($"Signing '{path}' with Device Guard...");
-                    await this.signingManager.SignPackageWithDeviceGuard(path, updatePublisherName, cfg, this.Verb.DeviceGuardVersion1, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this.signingManager.SignPackageWithDeviceGuard(path, updatePublisherName, cfg, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                     await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
                     await this.Console.ShowCertSummary(signingManager, path);
                 }
@@ -365,7 +355,7 @@ namespace Otor.MsixHero.Cli.Executors
                 if (!this.Verb.NoPublisherUpdate)
                 {
                     await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
-                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json, this.Verb.DeviceGuardVersion1).ConfigureAwait(false);
+                    cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json).ConfigureAwait(false);
                     await this.Console.WriteSuccess("New publisher name is " + cfg.Subject).ConfigureAwait(false);
                 }
             }

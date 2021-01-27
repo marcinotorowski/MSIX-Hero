@@ -120,7 +120,6 @@ namespace Otor.MsixHero.Lib.Proxy.Signing
         public async Task SignPackageWithDeviceGuard(string package,
             bool updatePublisher,
             DeviceGuardConfig config,
-            bool useDgssV1 = false,
             string timestampUrl = null,
             IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
             CancellationToken cancellationToken = default,
@@ -128,7 +127,7 @@ namespace Otor.MsixHero.Lib.Proxy.Signing
         {
             var manager = await this.managerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
-            await manager.SignPackageWithDeviceGuard(package, updatePublisher, config, useDgssV1, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
+            await manager.SignPackageWithDeviceGuard(package, updatePublisher, config, timestampUrl, increaseVersion, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task SignPackageWithInstalled(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)

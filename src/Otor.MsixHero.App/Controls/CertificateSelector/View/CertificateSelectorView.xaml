@@ -187,40 +187,6 @@
                                 </StackPanel>
                             </DockPanel>
                         </Border>
-
-                        <TextBlock
-                            DockPanel.Dock="Top" 
-                            Style="{StaticResource LabelTextBlock}"
-                            Text="Version" 
-                            Margin="0 16 0 6" />
-
-                        <ComboBox 
-                            Margin="0"
-                            SelectedValuePath="Tag"
-                            SelectedValue="{Binding DeviceGuard.CurrentValue.UseV1}">
-                            <ComboBoxItem Content="Use Device Guard signing version 1 (legacy)">
-                                <ComboBoxItem.Tag>
-                                    <system:Boolean>True</system:Boolean>
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                            <ComboBoxItem Content="Use Device Guard signing version 2 (recommended)">
-                                <ComboBoxItem.Tag>
-                                    <system:Boolean>False</system:Boolean>
-                                </ComboBoxItem.Tag>
-                            </ComboBoxItem>
-                        </ComboBox>
-                        <Border Background="LightYellow" Visibility="{Binding DeviceGuard.CurrentValue.UseV1, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <DockPanel>
-                                <Path
-                                    Margin="5 5 -5 5"
-                                    Data="{StaticResource VectorBulb}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}">
-                                    <Path.LayoutTransform>
-                                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                                    </Path.LayoutTransform>
-                                </Path>
-                                <TextBlock Margin="10" Text="This API in version 1 is going to be deprecated soon. Consider using version 2 instead." TextWrapping="Wrap" />
-                            </DockPanel>
-                        </Border>
                     </StackPanel>
 
                 </StackPanel>

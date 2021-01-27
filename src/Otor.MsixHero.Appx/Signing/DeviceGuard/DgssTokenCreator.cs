@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
-using System.Net.Http;
 using System.Reflection;
 using System.Security;
 using System.Security.Authentication;
@@ -37,15 +36,13 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(DgssTokenCreator));
 
-        private static readonly string[] Scope = { "https://onestore.microsoft.com/user_impersonation" };
-
         public async Task<DeviceGuardConfig> SignIn(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             Logger.Info("Signing in to AzureAD...");
             progress?.Report(new ProgressData(50, "Waiting for authentication..."));
             var tokens = new DeviceGuardConfig();
             var pipeName = "msixhero-" + Guid.NewGuid().ToString("N");
-            using (var namedPipeServer = new NamedPipeServerStream(pipeName, PipeDirection.In))
+            await using (var namedPipeServer = new NamedPipeServerStream(pipeName, PipeDirection.In))
             {
                 var entry = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
@@ -116,7 +113,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                 progress?.Report(new ProgressData(75, "Verifying signing capabilities..."));
                 tempJsonFile = await this.CreateDeviceGuardJsonTokenFile(tokens, cancellationToken).ConfigureAwait(false);
                 progress?.Report(new ProgressData(98, "Verifying signing capabilities..."));
-                var subject = await dgh.GetSubjectFromDeviceGuardSigning(tempJsonFile, false, cancellationToken).ConfigureAwait(false);
+                var subject = await dgh.GetSubjectFromDeviceGuardSigning(tempJsonFile, cancellationToken).ConfigureAwait(false);
                 tokens.Subject = subject;
             }
             finally
@@ -165,53 +162,6 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
             }
 
             return tmpFile;
-        }
-
-        private class MsixHeroClientFactory : IMsalHttpClientFactory
-        {
-            public event EventHandler<string> GotRefreshToken;
-
-            private void RaiseGotRefreshToken(string token)
-            {
-                this.GotRefreshToken?.Invoke(this, token);
-            }
-
-            public HttpClient GetHttpClient() => new HttpClient(new MsixHeroDelegationHandler(this));
-
-            private class MsixHeroDelegationHandler : DelegatingHandler
-            {
-                private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixHeroDelegationHandler));
-                private readonly MsixHeroClientFactory clientFactory;
-
-                public MsixHeroDelegationHandler(MsixHeroClientFactory clientFactory)
-                {
-                    this.InnerHandler = new HttpClientHandler();
-                    this.clientFactory = clientFactory;
-                }
-
-                protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-                {
-                    var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                    if (request.Method != HttpMethod.Post)
-                    {
-                        return response;
-                    }
-
-                    try
-                    {
-                        var responseText = await response.Content.ReadAsStringAsync();
-                        var responseJson = JObject.Parse(responseText);
-                        this.clientFactory.RaiseGotRefreshToken(responseJson.Property("refresh_token")?.Value<string>());
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Warn(ex, "Unable to retrieve the refresh token due to the following exception: {0}.", ex.Message);
-                        this.clientFactory.RaiseGotRefreshToken(null);
-                    }
-
-                    return response;
-                }
-            }
         }
     }
 }

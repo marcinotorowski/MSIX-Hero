@@ -434,7 +434,6 @@ namespace Otor.MsixHero.Appx.Signing
         public async Task SignPackageWithDeviceGuard(string package,
             bool updatePublisher,
             DeviceGuardConfig config,
-            bool useDgss1 = false,
             string timestampUrl = null,
             IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None,
             CancellationToken cancellationToken = default,
@@ -449,7 +448,7 @@ namespace Otor.MsixHero.Appx.Signing
                 if (publisherName == null)
                 {
                     var dgh = new DeviceGuardHelper();
-                    publisherName = await dgh.GetSubjectFromDeviceGuardSigning(dgssTokenPath, useDgss1, cancellationToken).ConfigureAwait(false);
+                    publisherName = await dgh.GetSubjectFromDeviceGuardSigning(dgssTokenPath, cancellationToken).ConfigureAwait(false);
                 }
 
                 var localCopy = await this.PreparePackageForSigning(package, updatePublisher, increaseVersion, publisherName, cancellationToken).ConfigureAwait(false);
@@ -460,7 +459,7 @@ namespace Otor.MsixHero.Appx.Signing
                     
                     var sdk = new MsixSdkWrapper();
                     progress?.Report(new ProgressData(25, "Signing with Device Guard..."));
-                    await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, useDgss1, timestampUrl, cancellationToken).ConfigureAwait(false);
+                    await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, timestampUrl, cancellationToken).ConfigureAwait(false);
                     progress?.Report(new ProgressData(75, "Signing with Device Guard..."));
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 

@@ -33,7 +33,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixSdkWrapper));
 
-        public async Task SignPackageWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, bool useDgssV1, string timestampUrl, CancellationToken cancellationToken = default)
+        public async Task SignPackageWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder();
 
@@ -45,15 +45,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
             }
 
-            string libPath;
-            if (useDgssV1)
-            {
-                libPath = GetSdkPath("dgsslib.dll");
-            }
-            else
-            {
-                libPath = GetSdkPath("Microsoft.Acs.Dlib.dll");
-            }
+            var libPath = GetSdkPath("Microsoft.Acs.Dlib.dll");
 
             signToolArguments.AppendFormat(" /dlib \"{0}\"", libPath);
             signToolArguments.AppendFormat(" /dmdf \"{0}\"", dgssTokenPath);

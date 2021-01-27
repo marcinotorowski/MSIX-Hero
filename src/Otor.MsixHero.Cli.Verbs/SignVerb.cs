@@ -46,10 +46,7 @@ namespace Otor.MsixHero.Cli.Verbs
 
         [Option("dg", HelpText = "A switch for interactive Device Guard signing (you will be asked for AzureAD credentials).", SetName = "Device Guard Signing")]
         public bool DeviceGuardInteractive { get; set; }
-
-        [Option("dgv1", Default = false, Required = false, HelpText = "A switch determining whether the obsolete Device Guard Signing Service version 1 will be used. Using this parameter is not recommended.", SetName = "Device Guard Signing")]
-        public bool DeviceGuardVersion1 { get; set; }
-
+        
         [Option("dgp", HelpText = "Publisher name used for signing with Device Guard.", SetName = "Device Guard Signing")]
         public string DeviceGuardSubject { get; set; }
 

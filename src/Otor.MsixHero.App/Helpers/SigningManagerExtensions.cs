@@ -39,7 +39,7 @@ namespace Otor.MsixHero.App.Helpers
             IProgress<ProgressData> progress = default)
         {
             var tokens = configuration.FromConfiguration();
-            return signingManager.SignPackageWithDeviceGuard(package, true, tokens, configuration.UseV1, timestampUrl, increaseVersion, cancellationToken, progress);
+            return signingManager.SignPackageWithDeviceGuard(package, true, tokens, timestampUrl, increaseVersion, cancellationToken, progress);
         }
 
         private static DeviceGuardConfig FromConfiguration(this DeviceGuardConfiguration configuration)

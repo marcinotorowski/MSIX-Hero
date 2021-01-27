@@ -54,7 +54,7 @@ namespace Otor.MsixHero.Appx.Signing
 
         Task SignPackageWithInstalled(string package, bool updatePublisher, PersonalCertificate certificate, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
 
-        Task SignPackageWithDeviceGuard(string package, bool updatePublisher, DeviceGuardConfig config, bool useDgssV1 = false, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
+        Task SignPackageWithDeviceGuard(string package, bool updatePublisher, DeviceGuardConfig config, string timestampUrl = null, IncreaseVersionMethod increaseVersion = IncreaseVersionMethod.None, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null);
 
         Task<TrustStatus> IsTrusted(string certificateFileOrSignedFile, CancellationToken cancellationToken = default);
         

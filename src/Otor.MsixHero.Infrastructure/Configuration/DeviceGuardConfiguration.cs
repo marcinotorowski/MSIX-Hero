@@ -30,9 +30,6 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         [DataMember(Name = "refreshToken")]
         public string EncodedRefreshToken { get; set; }
 
-        [DataMember(Name = "useV1")]
-        public bool UseV1 { get; set; }
-
         [DataMember(Name = "subject")]
         public string Subject { get; set; }
     }
