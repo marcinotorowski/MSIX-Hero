@@ -95,8 +95,8 @@ namespace Otor.MsixHero.Winget.Yaml.Entities
         [YamlMember(Order = int.MaxValue)]
         public string InstallLocation { get; set; }
 
-        [YamlMember(Order = int.MaxValue)]
+        [YamlMember(Order = int.MaxValue, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
         [Obsolete("This property should probably be not used...")]
-        public YamlInstallerType? InstallerType { get; set; }
+        public YamlInstallerType InstallerType { get; set; }
     }
 }

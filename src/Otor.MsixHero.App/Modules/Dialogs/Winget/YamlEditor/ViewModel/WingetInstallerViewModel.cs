@@ -43,7 +43,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
                 this.SystemAppId = new ValidatedChangeableProperty<string>("System AppId"),
                 this.SignatureSha256 = new ValidatedChangeableProperty<string>("Signature hash", ValidatorFactory.ValidateSha256(false)),
-                this.Scope = new ChangeableProperty<YamlScope?>(),
+                this.Scope = new ChangeableProperty<YamlScope>(),
                 this.SilentCommand = new ChangeableProperty<string>(),
                 this.CustomCommand = new ChangeableProperty<string>(),
                 this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>("Installer type", ValidateInstallerType),
@@ -57,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         {
             this.Model = installer;
 
-            if (useNullValues || installer.Arch != null)
+            if (useNullValues || installer.Arch != default)
             {
                 this.Architecture.CurrentValue = installer?.Arch ?? YamlArchitecture.none;
             }
@@ -72,7 +72,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                 this.SignatureSha256.CurrentValue = installer?.SignatureSha256;
             }
 
-            if (useNullValues || installer.Scope != null)
+            if (useNullValues || installer.Scope != default)
             {
                 this.Scope.CurrentValue = installer?.Scope ?? YamlScope.none;
             }
@@ -87,12 +87,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                 this.CustomCommand.CurrentValue = installer?.Switches?.Custom;
             }
 
-            if (useNullValues || installer.InstallerType != null)
+            if (useNullValues || installer.InstallerType != default)
             {
                 this.InstallerType.CurrentValue = installer?.InstallerType ?? YamlInstallerType.none;
             }
 
-            if (useNullValues || installer.Arch != null)
+            if (useNullValues || installer.Arch != default)
             {
                 this.SilentCommandWithProgress.CurrentValue = installer?.Switches?.SilentWithProgress;
             }
@@ -104,7 +104,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 
         public ChangeableProperty<YamlInstallerType> InstallerType { get; }
 
-        public ChangeableProperty<YamlScope?> Scope { get; }
+        public ChangeableProperty<YamlScope> Scope { get; }
 
         public ChangeableProperty<string> SystemAppId { get; }
 
@@ -233,7 +233,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 
             if (this.Architecture.CurrentValue == YamlArchitecture.none)
             {
-                this.Model.Arch = null;
+                this.Model.Arch = 0;
             }
             else
             {
@@ -242,7 +242,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 
             if (this.Scope.CurrentValue == YamlScope.none)
             {
-                this.Model.Scope = null;
+                this.Model.Scope = default;
             }
             else
             {

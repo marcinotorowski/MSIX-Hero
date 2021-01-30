@@ -42,8 +42,8 @@ Installers:
     
     public class YamlInstaller
     {
-        [YamlMember(Order = 1)]
-        public YamlArchitecture? Arch { get; set; }
+        [YamlMember(Order = 1, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        public YamlArchitecture Arch { get; set; }
 
         [YamlMember(Order = 2)]
         public string Url { get; set; }
@@ -54,11 +54,11 @@ Installers:
         [YamlMember(Order = 4)]
         public string SignatureSha256 { get; set; }
 
-        [YamlMember(Order = 5)]
-        public YamlInstallerType? InstallerType { get; set; }
+        [YamlMember(Order = 5, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        public YamlInstallerType InstallerType { get; set; }
 
-        [YamlMember(Order = 6)]
-        public YamlScope? Scope { get; set; }
+        [YamlMember(Order = 6, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
+        public YamlScope Scope { get; set; }
 
         [YamlMember(Order = 7)]
         public YamlSwitches Switches { get; set; }

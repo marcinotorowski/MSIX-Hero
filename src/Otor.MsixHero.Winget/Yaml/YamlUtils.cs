@@ -437,15 +437,18 @@ namespace Otor.MsixHero.Winget.Yaml
                 return;
             }
             
-            // propagate installer type from parent to all children without the type
-            if (definition.Installers != null && definition.InstallerType != null)
+            // propagate installer type from parent to all children without the type. This property should normally be left
+            // unused, but this is to retain compatibility with some earlier YAML formats.
+#pragma warning disable 618
+            if (definition.Installers != null && definition.InstallerType != default)
             {
-                foreach (var installer in definition.Installers.Where(i => i.InstallerType == null))
+                foreach (var installer in definition.Installers.Where(i => i.InstallerType == default))
                 {
                     installer.InstallerType = definition.InstallerType;
                 }
             }
-
+#pragma warning restore 618
+            
             if (definition.Id == null && !string.IsNullOrEmpty(definition.Publisher) && !string.IsNullOrEmpty(definition.Name))
             {
                 definition.Id = (definition.Publisher + "." + definition.Name).Replace(" ", string.Empty);

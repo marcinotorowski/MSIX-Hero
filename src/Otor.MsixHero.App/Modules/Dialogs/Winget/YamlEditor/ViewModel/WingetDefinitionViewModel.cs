@@ -41,7 +41,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         protected readonly YamlReader YamlReader = new YamlReader();
         protected readonly YamlUtils YamlUtils = new YamlUtils();
         private bool isLoading;
-        private YamlDefinition model;
+        private YamlDefinition model = new YamlDefinition();
         private bool autoId = true;
         private ICommand loadFromSetup;
         private ICommand generateSha256, openSha256;
