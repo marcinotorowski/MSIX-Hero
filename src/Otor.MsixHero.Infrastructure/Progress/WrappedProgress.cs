@@ -22,34 +22,45 @@ namespace Otor.MsixHero.Infrastructure.Progress
 {
     public class WrappedProgress : IDisposable
     {
+        private readonly IList<ChildProgress> childProgressElements = new List<ChildProgress>();
         private readonly IProgress<ProgressData> parent;
-        private double totalWeight;
-        private readonly IDictionary<Progress, double> weights = new Dictionary<Progress, double>();
-        private readonly IDictionary<Progress, int> lastProgress = new Dictionary<Progress, int>();
+        private readonly bool sealOnceStarted;
+        private bool hasReported;
 
-        public WrappedProgress(IProgress<ProgressData> parent)
+        public WrappedProgress(IProgress<ProgressData> parent, bool sealOnceStarted = true)
         {
             this.parent = parent;
+            this.sealOnceStarted = sealOnceStarted;
         }
 
-        public IProgress<ProgressData> GetChildProgress(double weight)
+        public IProgress<ProgressData> GetChildProgress(double weight = 1.0)
         {
             if (this.parent == null)
             {
-                return null;
+                // If the parent is null, we return an instance of a progress but its results are always 
+                // swallowed (not used anywhere).
+                return new ChildProgress(weight);
             }
 
-            var progress = new Progress();
-            this.weights[progress] = weight;
-            this.lastProgress[progress] = 0;
+            if (weight <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(weight), "The weight must be greater than zero.");
+            }
+
+            if (this.hasReported && this.sealOnceStarted)
+            {
+                throw new InvalidOperationException("Cannot add a new progress after at least one of already added has reported anything.");
+            }
+            
+            var progress = new ChildProgress(weight);
+            this.childProgressElements.Add(progress);
             progress.ProgressChanged += this.OnProgressChanged;
-            totalWeight += weight;
             return progress;
         }
 
         public void Dispose()
         {
-            foreach (var item in this.weights.Keys)
+            foreach (var item in this.childProgressElements)
             {
                 item.ProgressChanged -= this.OnProgressChanged;
             }
@@ -57,31 +68,50 @@ namespace Otor.MsixHero.Infrastructure.Progress
 
         private void OnProgressChanged(object sender, ProgressData e)
         {
-            if (!this.weights.Any())
+            this.hasReported = true;
+            var coercedProgress = Math.Max(0.0, Math.Min(100.0, e.Progress));
+            
+            // If this event handler is fired, then the count of progress elements must be 1 or higher. Empty list is not possible.
+            if (this.childProgressElements.Count == 1)
             {
+                // Short way, no need to calculate weights etc.
+                this.parent.Report(new ProgressData((int)coercedProgress, e.Message));
                 return;
             }
 
-            if (this.weights.Count == 1)
-            {
-                this.parent.Report(e);
-                return;
-            }
-
-            var progressInstance = (Progress)sender;
-            var weight = this.weights[progressInstance];
-            this.lastProgress[progressInstance] = (int)(weight * e.Progress);
-
-            var val = 0;
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var key in this.weights.Keys)
-            {
-                val += this.lastProgress[key];
-            }
-
-            var p = new ProgressData((int) (1.0 * val / this.totalWeight), e.Message);
-            Console.WriteLine("Reporting progress {0}% {1}..", p.Progress, p.Message);
+            var weightedSum = this.childProgressElements.Sum(progress => progress.Weight * Math.Max(0.0, Math.Min(100.0, progress.Last.Progress)));
+            var sumWeights = this.childProgressElements.Sum(progress => progress.Weight);     
+            
+            var p = new ProgressData((int)(weightedSum / sumWeights), e.Message);
             this.parent.Report(p);
+        }
+
+        private class ChildProgress : IProgress<ProgressData>
+        {
+            public ChildProgress(double weight)
+            {
+                if (weight <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(weight), "The weight must be greater than zero.");
+                }    
+                
+                this.Weight = weight;
+                this.Last = new ProgressData(0, null);
+            }
+
+            // ReSharper disable once MemberCanBePrivate.Local
+            public double Weight { get; private set; }
+
+            // ReSharper disable once MemberCanBePrivate.Local
+            public ProgressData Last { get; private set; }
+            
+            public void Report(ProgressData value)
+            {
+                this.Last = value;
+                this.ProgressChanged?.Invoke(this, value);
+            }
+            
+            public event EventHandler<ProgressData> ProgressChanged;
         }
     }
 }

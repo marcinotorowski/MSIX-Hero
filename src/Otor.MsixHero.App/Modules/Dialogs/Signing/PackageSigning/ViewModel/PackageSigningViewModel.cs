@@ -212,21 +212,29 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
-            foreach (var file in this.Files)
+            using (var progressAll = new WrappedProgress(progress))
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                switch (this.CertificateSelector.Store.CurrentValue)
+                // ReSharper disable once AccessToDisposedClosure
+                var progressForFiles = this.Files.ToDictionary(p => p, p => progressAll.GetChildProgress(1.0));
+                
+                foreach (var file in this.Files)
                 {
-                    case CertificateSource.Pfx:
-                        await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                        break;
-                    case CertificateSource.Personal:
-                        await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                        break;
-                    case CertificateSource.DeviceGuard:
-                        await manager.SignPackageWithDeviceGuardFromUi(file,  this.CertificateSelector.DeviceGuard.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                        break;
+                    var currentProgress = progressForFiles[file];
+                    
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    switch (this.CertificateSelector.Store.CurrentValue)
+                    {
+                        case CertificateSource.Pfx:
+                            await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                            break;
+                        case CertificateSource.Personal:
+                            await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                            break;
+                        case CertificateSource.DeviceGuard:
+                            await manager.SignPackageWithDeviceGuardFromUi(file, this.CertificateSelector.DeviceGuard.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                            break;
+                    }
                 }
             }
 

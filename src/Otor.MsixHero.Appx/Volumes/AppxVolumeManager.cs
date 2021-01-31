@@ -281,8 +281,8 @@ namespace Otor.MsixHero.Appx.Volumes
         public async Task Delete(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using var wrappedProgress = new WrappedProgress(progress);
-            var p1 = wrappedProgress.GetChildProgress(50);
-            var p2 = wrappedProgress.GetChildProgress(50);
+            var p1 = wrappedProgress.GetChildProgress();
+            var p2 = wrappedProgress.GetChildProgress();
             var allVolumes = await this.GetAll(cancellationToken, p1).ConfigureAwait(false);
             
             var volume = allVolumes.FirstOrDefault(v => string.Equals(name, v.Name, StringComparison.OrdinalIgnoreCase));
@@ -297,8 +297,8 @@ namespace Otor.MsixHero.Appx.Volumes
         public async Task Mount(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using var wrappedProgress = new WrappedProgress(progress);
-            var p1 = wrappedProgress.GetChildProgress(50);
-            var p2 = wrappedProgress.GetChildProgress(50);
+            var p1 = wrappedProgress.GetChildProgress();
+            var p2 = wrappedProgress.GetChildProgress();
             var allVolumes = await this.GetAll(cancellationToken, p1).ConfigureAwait(false);
             
             var volume = allVolumes.FirstOrDefault(v => string.Equals(name, v.Name, StringComparison.OrdinalIgnoreCase));
@@ -313,8 +313,8 @@ namespace Otor.MsixHero.Appx.Volumes
         public async Task Dismount(string name, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using var wrappedProgress = new WrappedProgress(progress);
-            var p1 = wrappedProgress.GetChildProgress(50);
-            var p2 = wrappedProgress.GetChildProgress(50);
+            var p1 = wrappedProgress.GetChildProgress();
+            var p2 = wrappedProgress.GetChildProgress();
             var allVolumes = await this.GetAll(cancellationToken, p1).ConfigureAwait(false);
             
             var volume = allVolumes.FirstOrDefault(v => string.Equals(name, v.Name, StringComparison.OrdinalIgnoreCase));
@@ -338,8 +338,8 @@ namespace Otor.MsixHero.Appx.Volumes
         public async Task SetDefault(string drivePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             using var wrappedProgress = new WrappedProgress(progress);
-            var p1 = wrappedProgress.GetChildProgress(50);
-            var p2 = wrappedProgress.GetChildProgress(50);
+            var p1 = wrappedProgress.GetChildProgress();
+            var p2 = wrappedProgress.GetChildProgress();
             var allVolumes = await this.GetAll(cancellationToken, p1).ConfigureAwait(false);
 
             drivePath = GetDriveLetterFromPath(drivePath);

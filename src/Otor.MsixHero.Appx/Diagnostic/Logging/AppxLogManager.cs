@@ -52,7 +52,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
                 for (var index = 0; index < logNames.Length; index++)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    progresses[index] = wrapperProgress.GetChildProgress(100.0);
+                    progresses[index] = wrapperProgress.GetChildProgress();
                 }
 
                 var allTasks = new List<Task<IList<Log>>>();
@@ -61,8 +61,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
                     cancellationToken.ThrowIfCancellationRequested();
                     var item = logNames[index];
                     var itemProgress = progresses[index];
-                    var logName = (string)item.BaseObject;
-
+                    
                     allTasks.Add(this.GetLogsFromProvider(item, maxCount, cancellationToken, itemProgress));
                 }
 
