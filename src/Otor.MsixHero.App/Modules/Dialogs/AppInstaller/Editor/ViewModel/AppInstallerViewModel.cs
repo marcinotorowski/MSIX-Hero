@@ -21,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Controls.PackageSelector.ViewModel;
+using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.AppInstaller;
@@ -231,12 +232,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             {
                 if (this.previousPath != null)
                 {
-                    if (!this.interactionService.SelectFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out selected))
+                    // ReSharper disable once StringLiteralTypo
+                    if (!this.interactionService.SelectFile(this.previousPath, new DialogFilterBuilder("*.appinstaller").BuildFilter(), out selected))
                     {
                         return;
                     }
                 }
-                else if (!this.interactionService.SelectFile("Appinstaller files|*.appinstaller|All files|*.*", out selected))
+                // ReSharper disable once StringLiteralTypo
+                else if (!this.interactionService.SelectFile(new DialogFilterBuilder("*.appinstaller").BuildFilter(), out selected))
                 {
                     return;
                 }

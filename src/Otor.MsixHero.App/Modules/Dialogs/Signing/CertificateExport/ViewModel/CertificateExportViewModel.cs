@@ -47,12 +47,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
             this.InputPath = new ChangeableFileProperty("Path to signed MSIX file", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                Filter = "All supported files|*.msix;*.cer|MSIX files|*.msix|Certificates|*.cer"
+                Filter = new DialogFilterBuilder("*.msix", "*.cer").BuildFilter()
             };
 
             this.ExtractCertificate = new ChangeableFileProperty("Path to certificate", interactionService, ChangeableFileProperty.ValidatePath)
             {
-                Filter = "Certificate files|*.cer",
+                Filter = new DialogFilterBuilder("*.cer").BuildFilter(),
                 OpenForSaving = true
             };
             

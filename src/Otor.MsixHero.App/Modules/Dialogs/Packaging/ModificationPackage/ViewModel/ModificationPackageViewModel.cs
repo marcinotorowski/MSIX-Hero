@@ -302,7 +302,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         {
             this.SourcePath = new ChangeableFileProperty("Parent package path", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                Filter = "Packages|*.msix;*.appx;Appxmanifest.xml|All files|*.*",
+                // ReSharper disable once StringLiteralTypo
+                Filter = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml").BuildFilter(),
                 IsValidated = true
             };
 
@@ -383,7 +384,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.SourceRegistryFile = new ChangeableFileProperty(".REG file to include", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = false,
-                Filter = "Registry files (*.reg)|*.reg",
+                Filter = new DialogFilterBuilder("*.reg").BuildFilter(),
                 OpenForSaving = false
             };
 

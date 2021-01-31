@@ -153,7 +153,9 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
 
         private void OnOpenFileDialog()
         {
-            this.dialogOpener.ShowFileDialog(DialogOpenerType.AllSupported);
+            // ReSharper disable once StringLiteralTypo
+            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.yaml");
+            this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 
         private void OnShowPackDialog()

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -132,7 +131,7 @@ namespace Otor.MsixHero.App.Services
             taskDialog.WindowTitle = title ?? "MSIX Hero";
 
             int clickedIndex = -1;
-            EventHandler<TaskDialogItemClickedEventArgs> handler = (sender, args) =>
+            EventHandler<TaskDialogItemClickedEventArgs> handler = (_, args) =>
             {
                 var b = args.Item as TaskDialogButton;
                 if (b == null)
@@ -158,7 +157,7 @@ namespace Otor.MsixHero.App.Services
                     dispatcher.Invoke(() =>
                     {
                         this.context.Send(
-                            state => taskDialog.ShowDialog(Application.Current.MainWindow),
+                            _ => taskDialog.ShowDialog(Application.Current.MainWindow),
                             null);
                     },
                         DispatcherPriority.SystemIdle);
@@ -252,7 +251,7 @@ namespace Otor.MsixHero.App.Services
                 dispatcher.Invoke(() =>
                 {
                     this.context.Send(
-                        state => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
+                        _ => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
                         null);
                 },
                 DispatcherPriority.SystemIdle);
@@ -322,7 +321,7 @@ namespace Otor.MsixHero.App.Services
                 dispatcher.Invoke(() =>
                 {
                     this.context.Send(
-                        state => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
+                        _ => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
                         null);
                 },
                 DispatcherPriority.SystemIdle);
@@ -384,7 +383,7 @@ namespace Otor.MsixHero.App.Services
 
         public bool SelectFile(out string selectedFile)
         {
-            return this.SelectFile(null, "All files (*.*)|*.*", out selectedFile);
+            return this.SelectFile(null, out selectedFile);
         }
 
         public bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles)
@@ -443,64 +442,6 @@ namespace Otor.MsixHero.App.Services
             if (string.IsNullOrEmpty(filterString))
             {
                 return "All files (*.*)|*.*";
-            }
-
-            var items = filterString.Split('|');
-            if (items.Length > 2)
-            {
-                var sb = new StringBuilder();
-                var supportedPatterns = new List<string>();
-
-                var hasAll = false;
-                for (var i = 0; i + 1 < items.Length; i += 2)
-                {
-                    var first = items[i]; // the caption
-                    var second = items[i + 1]; // the filter
-
-                    if (!supportedPatterns.Contains(second) && second != "*.*")
-                    {
-                        supportedPatterns.Add(second);
-                    }
-
-                    if (sb.Length > 0)
-                    {
-                        sb.Append('|');
-                    }
-
-                    if (second.Contains("*.*"))
-                    {
-                        hasAll = true;
-                    }
-
-                    sb.Append(first);
-                    sb.Append('|');
-                    sb.Append(second);
-                }
-
-                if (!hasAll)
-                {
-                    sb.Append("|All files|*.*");
-                }
-
-                if (supportedPatterns.Count > 1)
-                {
-                    var supported = string.Join(";", supportedPatterns);
-                    sb.Insert(0, "All supported files|" + supported + "|");
-                }
-
-                filterString = sb.ToString();
-            }
-            else if (items.Length == 1 && items[0].StartsWith("*.", StringComparison.Ordinal))
-            {
-                if (items[0] == "*.*")
-                {
-                    filterString = "All files|*.*";
-                }
-                else
-                {
-                    var fileExt = items[0].Substring(2);
-                    filterString = $"{fileExt.ToUpperInvariant()} files ({filterString})|{filterString}|All files|*.*";
-                }
             }
 
             return filterString;

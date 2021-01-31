@@ -20,6 +20,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging.Packer;
@@ -41,8 +42,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 
             this.OutputPath = new ChangeableFolderProperty("Target directory", interactionService, ChangeableFolderProperty.ValidatePath);
             this.InputPath = new ChangeableFileProperty("Source package path", interactionService, ChangeableFileProperty.ValidatePath)
-            { 
-                Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
+            {
+                Filter = new DialogFilterBuilder("*.msix", "*.appx").BuildFilter()
             };
             
             this.CreateFolder = new ChangeableProperty<bool>(true);

@@ -73,7 +73,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved)
             {
                 IsValidated = false,
-                Filter = "PFX files|*.pfx", 
+                Filter = new DialogFilterBuilder("*.pfx").BuildFilter(),
                 Validators = new []
                 {
                     ChangeableFileProperty.ValidatePathAndPresence

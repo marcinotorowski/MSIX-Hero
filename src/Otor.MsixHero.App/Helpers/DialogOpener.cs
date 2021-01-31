@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Otor.MsixHero.App.Modules;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Modularity;
@@ -13,10 +11,12 @@ namespace Otor.MsixHero.App.Helpers
     public enum DialogOpenerType
     {
         Package = 2 << 0,
-        WinGet = 2 << 1,
-        AppInstaller = 2 << 2,
-        AllSupported = Package | WinGet | AppInstaller
+        Manifest = 2 << 1,
+        WinGet = 2 << 2,
+        AppInstaller = 2 << 3,
+        AllSupported = Package | WinGet | AppInstaller | Manifest
     }
+
 
     public class DialogOpener
     {
@@ -30,62 +30,7 @@ namespace Otor.MsixHero.App.Helpers
             this.dialogService = dialogService;
             this.interactionService = interactionService;
         }
-
-        public void ShowFileDialog()
-        {
-            this.ShowFileDialog(DialogOpenerType.AllSupported);
-        }
-
-        public void ShowFileDialog(DialogOpenerType openerType)
-        {
-            var filter = new StringBuilder();
-            
-            var hasPackage = openerType.HasFlag(DialogOpenerType.Package);
-            var hasAppInstaller = openerType.HasFlag(DialogOpenerType.AppInstaller);
-            var hasWinGet = openerType.HasFlag(DialogOpenerType.WinGet);
-            
-            var hasAny = hasWinGet || hasPackage || hasAppInstaller;
-            if (!hasAny)
-            {
-                hasPackage = true;
-                hasAppInstaller = true;
-                hasWinGet = true;
-            }
-
-            var hasSingle = (hasPackage ? 1 : 0) + (hasWinGet ? 1 : 0) + (hasAppInstaller ? 1 : 0) == 1;
-            
-            if (!hasSingle)
-            {
-                filter.Append("All supported files|");
-                filter.Append(string.Join(';', new[]
-                {
-                    hasPackage ? "*.msix;*.appx" : null,
-                    hasWinGet ? "*.yaml" : null,
-                    hasAppInstaller ? "*.appinstaller" : null,
-                }.Where(ext => ext != null)));
-                filter.Append('|');
-            }
-
-            if (hasPackage)
-            {
-                filter.Append("Packages and modifications (*.msix;*.appx)|*.msix;*.appx|");
-            }
-
-            if (hasWinGet)
-            {
-                filter.Append("Winget manifests (*.yaml)|*.yaml|");
-            }
-
-            if (hasAppInstaller)
-            {
-                filter.Append("App installer (*.appinstaller) | *.appinstaller | ");
-            }
-
-            filter.Append("All files (*.*)|*.*");
-
-            this.ShowFileDialog(filter.ToString());
-        }
-
+        
         public void ShowFileDialog(string filter)
         {
             if (!this.interactionService.SelectFile(filter, out var selectedFile))
@@ -104,6 +49,12 @@ namespace Otor.MsixHero.App.Helpers
                 return;
             }
 
+            if (file.Name.Equals("AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
+            {
+                this.OpenMsix(file);
+                return;
+            }
+            
             switch (file.Extension.ToLowerInvariant())
             {
                 case ".msix":

@@ -187,7 +187,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             }
             else
             {
-                var interactionResult = this.interactionService.SelectFiles(filterString: "MSIX packages (*.msix)|*.msix", out string[] selection);
+                var interactionResult = this.interactionService.SelectFiles(filterString: new DialogFilterBuilder("*.msix").BuildFilter(), out string[] selection);
                 if (!interactionResult || !selection.Any())
                 {
                     return;

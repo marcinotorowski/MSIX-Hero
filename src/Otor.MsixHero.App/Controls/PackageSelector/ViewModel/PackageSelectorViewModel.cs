@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
@@ -310,18 +310,13 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
 
         private string GetFilterString(bool allowPackages, bool allowBundles, bool allowManifests)
         {
-            var extensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var names = new StringBuilder();
-            var supportedExtensionsCount = 0;
-
+            var filterBuilder = new DialogFilterBuilder();
+            
             if (allowPackages)
             {
                 if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Package)
                 {
-                    extensions.Add("*.msix");
-                    extensions.Add("*.appx");
-                    names.Append("Packages|*.msix;*.appx|");
-                    supportedExtensionsCount++;
+                    filterBuilder.AddFilters("*.msix", "*.appx");
                 }
             }
 
@@ -329,25 +324,18 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
             {
                 if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle)
                 {
-                    extensions.Add("*.appxbundle");
-                    names.Append("Bundles|*.appxbundle|");
-                    supportedExtensionsCount++;
+                    // ReSharper disable once StringLiteralTypo
+                    filterBuilder.AddFilters("*.appxbundle");
                 }
             }
 
             if (allowManifests)
             {
-                extensions.Add("appxmanifest.xml");
-                names.Append("Manifest files|appxmanifest.xml|");
-                supportedExtensionsCount++;
+                // ReSharper disable once StringLiteralTypo
+                filterBuilder.AddFilters("appxmanifest.xml");
             }
 
-            if (supportedExtensionsCount > 1)
-            {
-                return $"All supported files|{string.Join(";", extensions)}|{names}All files|*.*";
-            }
-
-            return $"{names}All files|*.*";
+            return filterBuilder.BuildFilter();
         }
 
         private void PackageTypeOnValueChanged(object sender, ValueChangedEventArgs e)

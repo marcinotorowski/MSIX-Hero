@@ -58,7 +58,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
             this.Path = new ChangeableFileProperty("Path to the package", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
-                Filter = "MSIX/APPX packages|*.msix;*.appx|Manifest files|AppxManifest.xml|All files|*.*"
+                // ReSharper disable once StringLiteralTypo
+                Filter = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml").BuildFilter()
             };
 
             this.AddChildren(this.Path);

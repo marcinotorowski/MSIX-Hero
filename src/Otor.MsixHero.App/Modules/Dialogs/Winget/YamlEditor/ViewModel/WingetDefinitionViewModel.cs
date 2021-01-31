@@ -243,7 +243,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         
         private async void OnLoadFromSetup()
         {
-            if (!this.interactionService.SelectFile("MSIX packages|*.msix|MSIX manifests|AppxManifest.xml|Executables|*.exe|Windows Installer|*.msi", out var selected))
+            // ReSharper disable once StringLiteralTypo
+            if (!this.interactionService.SelectFile(new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.exe", "*.msi").BuildFilter(), out var selected))
             {
                 return;
             }

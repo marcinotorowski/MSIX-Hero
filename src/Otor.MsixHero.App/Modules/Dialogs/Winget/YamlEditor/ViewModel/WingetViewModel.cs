@@ -167,7 +167,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                 this.State.IsSaved = false;
             }
 
-            if (!this.interactionService.SelectFile("*.yaml", out var selectedFile))
+            if (!this.interactionService.SelectFile(new DialogFilterBuilder("*.yaml").BuildFilter(), out var selectedFile))
             {
                 return;
             }

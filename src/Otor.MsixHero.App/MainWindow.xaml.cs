@@ -58,7 +58,9 @@ namespace Otor.MsixHero.App
 
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.dialogOpener.ShowFileDialog();
+            // ReSharper disable once StringLiteralTypo
+            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.yaml");
+            this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 
         private void OnFileDropped(object sender, DragEventArgs e)

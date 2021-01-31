@@ -59,7 +59,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.OutputPath = new ChangeableFileProperty("Target package path", interactionService, ChangeableFileProperty.ValidatePath)
             {
                 OpenForSaving = true,
-                Filter = "MSIX/APPX packages|*.msix;*.appx|All files|*.*"
+                Filter = new DialogFilterBuilder("*.msix", "*.appx").BuildFilter()
             };
 
             this.Sign = new ChangeableProperty<bool>(signByDefault);
