@@ -16,7 +16,7 @@
 
 using System.Windows;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.View
+namespace Otor.MsixHero.App.Helpers
 {
     internal class DropFileObject : DependencyObject
     {

@@ -17,6 +17,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.View

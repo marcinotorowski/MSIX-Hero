@@ -14,7 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
@@ -58,6 +59,35 @@ namespace Otor.MsixHero.App
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.dialogOpener.ShowFileDialog();
+        }
+
+        private void OnFileDropped(object sender, DragEventArgs e)
+        {
+            DropFileObject.SetIsDragging((DependencyObject)sender, false);
+            var hasData = e.Data.GetDataPresent("FileDrop");
+            if (!hasData)
+            {
+                return;
+            }
+
+            var data = e.Data.GetData("FileDrop") as string[];
+            if (data == null || !data.Any())
+            {
+                return;
+            }
+
+            var dropped = new FileInfo(data.First());
+            this.dialogOpener.OpenFile(dropped);
+        }
+
+        private void OnDragEnter(object sender, DragEventArgs e)
+        {
+            DropFileObject.SetIsDragging((DependencyObject)sender, true);
+        }
+
+        private void OnDragLeave(object sender, DragEventArgs e)
+        {
+            DropFileObject.SetIsDragging((DependencyObject)sender, false);
         }
     }
 }

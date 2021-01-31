@@ -8,6 +8,8 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.CertificateSelector.View"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
              xmlns:local="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.View"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel"
+             xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:PackageSigningViewModel}">
 
@@ -61,7 +63,7 @@
                                     <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
                                         <Setter Property="Background" Value="#eee" />
                                         <Style.Triggers>
-                                            <Trigger Property="local:DropFileObject.IsDragging" Value="True">
+                                            <Trigger Property="helpers:DropFileObject.IsDragging" Value="True">
                                                 <Setter Property="Background" Value="#ddd" />
                                                 <Setter Property="Opacity" Value="0.3" />
                                             </Trigger>
@@ -72,7 +74,7 @@
                             <TextBlock 
                             Text="Release Left Mouse Button to drop the files here" 
                             VerticalAlignment="Center" HorizontalAlignment="Center" 
-                            Visibility="{Binding ElementName=ListBox, Path=(local:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            Visibility="{Binding ElementName=ListBox, Path=(helpers:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" 
                             IsHitTestVisible="False" />
                         </Grid>
                     </DockPanel>

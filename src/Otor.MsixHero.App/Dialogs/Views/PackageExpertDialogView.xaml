@@ -36,11 +36,7 @@
                                     x:Name="PART_Package"
                                     Visibility="Collapsed"
                                     DataContext="{TemplateBinding Package}">
-                                    <!--<views:ActionBar 
-                                        Visibility="{TemplateBinding ShowActionBar, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                        x:Name="PART_ActionBar"
-                                        DockPanel.Dock="Top" />-->
-
+                                   
                                     <StackPanel Visibility="Collapsed" Orientation="Horizontal" DockPanel.Dock="Top">
                                         <Button
                                             Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=DataContext.IsInstalled.CurrentValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
