@@ -119,16 +119,14 @@
                             </Border>
                         </Border>
 
-                        <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
-                            <views:Pill
-                            Icon="{StaticResource SmallPublisher}"
-                            ToolTip="{Binding Publisher}"
-                            Content="{Binding PublisherDisplayName}" />
-                        </WrapPanel>
-
                         <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
                             <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='Unnamed', TargetNullValue='Unnamed'}" />
-                            <TextBlock FontWeight="Bold" Text="{Binding Version, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" FontFamily="{StaticResource SourceSansPro}" />
+                            <TextBlock Margin="0 2 0 0" TextTrimming="CharacterEllipsis" FontFamily="{StaticResource SourceSansPro}">
+                                <Run Text="Version" Foreground="#aa000000" />
+                                <Run FontWeight="Bold" Text="{Binding Version, Mode=OneWay, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" />
+                                <Run Text="| Publisher" Foreground="#aa000000" />
+                                <Run ToolTip="{Binding Publisher}" FontWeight="Bold" Text="{Binding PublisherDisplayName, Mode=OneWay, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" />
+                            </TextBlock>
                         </StackPanel>
                     </DockPanel>
 
