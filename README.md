@@ -7,7 +7,7 @@ MSIX Hero is an open source MSIX manager and toolkit. The list of features is av
 Bug reports, feature improvements and pull requests are welcome.
 
 ## Tech stack
-The project is written almost exclusively in .NET Core 3.1. Minor parts use .NET Framework 4.7 and PowerShell.
+The project is written almost exclusively in .NET 5.0. Minor parts use .NET Framework 4.7 and PowerShell.
 
 ## Official binaries ###
 You can download official binaries (signed + deployable via MSIX/appinstaller) from the official website: https://msixhero.net/get
