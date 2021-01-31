@@ -95,10 +95,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     throw new FormatException("The manifest is malformed. There is no root element.");
                 }
 
+                // var b4 = XNamespace.Get("http://schemas.microsoft.com/appx/2018/bundle");
+                // var b5 = XNamespace.Get("http://schemas.microsoft.com/appx/2019/bundle");
                 var ns = XNamespace.Get("http://schemas.microsoft.com/appx/2013/bundle");
-                var b4 = XNamespace.Get("http://schemas.microsoft.com/appx/2018/bundle");
-                var b5 = XNamespace.Get("http://schemas.microsoft.com/appx/2019/bundle");
-
+                
                 var identity = document.Root.Element(ns + "Identity");
                 if (identity == null)
                 {
@@ -632,10 +632,26 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     package.DisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.DisplayName);
                     package.Description = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.Description);
                     package.PublisherDisplayName = StringLocalizer.Localize(priFullPath, package.Name, package.FullName, package.PublisherDisplayName);
+
+                    if (string.IsNullOrEmpty(package.DisplayName))
+                    {
+                        package.DisplayName = package.Name;
+                    }
+                    
+                    if (string.IsNullOrEmpty(package.PublisherDisplayName))
+                    {
+                        package.PublisherDisplayName = package.Publisher;
+                    }
                     
                     foreach (var app in package.Applications ?? Enumerable.Empty<AppxApplication>())
                     {
                         app.DisplayName = StringLocalizer.Localize(priFullPath, app.Id, package.FullName, app.DisplayName);
+                        
+                        if (string.IsNullOrEmpty(app.DisplayName))
+                        {
+                            app.DisplayName = app.Id;
+                        }    
+                        
                         app.Description = StringLocalizer.Localize(priFullPath, app.Id, package.FullName, app.Description);
                     }
                 }

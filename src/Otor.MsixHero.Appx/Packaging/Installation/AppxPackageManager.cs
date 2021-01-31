@@ -837,7 +837,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 hasRegistry = await registryManager.GetRegistryMountState(installLocation, item.Id.Name, cancellationToken, progress).ConfigureAwait(false);
             }
 
-            var pkg = new InstalledPackage()
+            var pkg = new InstalledPackage
             {
                 DisplayName = details.DisplayName,
                 Name = item.Id.Name,
@@ -871,10 +871,19 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 var priFile = Path.Combine(installLocation, "resources.pri");
 
-                var appId = pkg.Name;
-                pkg.DisplayName = StringLocalizer.Localize(priFile, appId, pkg.PackageId, pkg.DisplayName);
-                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, appId, pkg.PackageId, pkg.DisplayPublisherName);
-                pkg.Description = StringLocalizer.Localize(priFile, appId, pkg.PackageId, pkg.Description);
+                pkg.DisplayName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageId, pkg.DisplayName);
+                pkg.DisplayPublisherName = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageId, pkg.DisplayPublisherName);
+                pkg.Description = StringLocalizer.Localize(priFile, pkg.Name, pkg.PackageId, pkg.Description);
+
+                if (string.IsNullOrEmpty(pkg.DisplayName))
+                {
+                    pkg.DisplayName = pkg.Name;
+                }
+                
+                if (string.IsNullOrEmpty(pkg.DisplayPublisherName))
+                {
+                    pkg.DisplayPublisherName = pkg.Publisher;
+                }
             }
 
             return pkg;
