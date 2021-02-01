@@ -49,29 +49,25 @@ Task("Determine version").Does(() =>{
      );
 
     var v = string.Join("\r\n", redirectedStandardOutput);
+    Information("> " + v);
 
-    var r = System.Text.RegularExpressions.Regex.Match(v, @"v(\d+\.\d+).*-(\d+)-g([a-z0-9]+)");
-    if (r.Success)
-    {
-        version = r.Groups[1].Value + "." +r.Groups[2].Value + ".0";
-    }
-    else
-    {
-        r = System.Text.RegularExpressions.Regex.Match(v, @"v(\d+\.\d+)\.(\d+)(?:\.\d+)*.*\-(\d+)\-g([a-z0-9]+)");
-        if (r.Success)
-        {
-            var cnt = int.Parse(r.Groups[2].Value) +int.Parse(r.Groups[3].Value);
-            version = r.Groups[1].Value + "." + cnt + ".0";
-        }
-    }
-
-    if (version == null)
-    {
+    var r = System.Text.RegularExpressions.Regex.Match(v, @"^v(?<major>\d+)\.(?<minor>\d+)(?:\.(?<revision>\d+))?.*-(?<offset>\d+)-g(?<commit>[a-fA-F0-9]+)$");   
+    if (!r.Success)
+    {        
         throw new Exception("Unexpected git version " + v);
     }
 
-    Information("Product version is '" + version + "'");
+    int revision = 0;
+    if (r.Groups["revision"].Success)
+    {
+        revision = int.Parse(r.Groups["revision"].Value);
+    }
 
+    revision += int.Parse(r.Groups["offset"].Value);
+    version = r.Groups["major"].Value + "." + r.Groups["minor"].Value + "." + revision;
+
+    Information("Product version is '" + version + "'");
+    
     if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
     {
         if (BuildSystem.AppVeyor.Environment.PullRequest.IsPullRequest)
