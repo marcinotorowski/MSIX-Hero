@@ -30,14 +30,14 @@ namespace Otor.MsixHero.App.Mvvm.Commands
             typeof(ICommand),
             typeof(RoutedCommandHandler),
             new PropertyMetadata(default(ICommand)));
-
+        
         /// <summary> The command that should be executed when the RoutedCommand fires. </summary>
         public ICommand Command
         {
             get => (ICommand)GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
         }
-
+        
         /// <summary> The command that triggers <see cref="ICommand"/>. </summary>
         public ICommand RoutedCommand { get; set; }
 
@@ -55,18 +55,16 @@ namespace Otor.MsixHero.App.Mvvm.Commands
         ///  binding for the current routed command. </param>
         internal void Register(FrameworkElement owner)
         {
-            var binding = new CommandBinding(RoutedCommand, HandleExecuted, HandleCanExecute);
+            var binding = new CommandBinding(this.RoutedCommand, this.HandleExecuted, this.HandleCanExecute);
             owner.CommandBindings.Add(binding);
         }
-
-        /// <summary> Proxy to the current Command.CanExecute(object). </summary>
+        
         private void HandleCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = Command?.CanExecute(e.Parameter) == true;
             e.Handled = true;
         }
-
-        /// <summary> Proxy to the current Command.Execute(object). </summary>
+        
         private void HandleExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             Command?.Execute(e.Parameter);

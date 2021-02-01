@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
         <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
-            <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
+            <WrapPanel Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Button 
                     Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 

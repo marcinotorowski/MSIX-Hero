@@ -42,7 +42,7 @@
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDigits}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}">
+                <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPackage}" />
                     </MenuItem.Icon>
@@ -141,7 +141,7 @@
 
     <DockPanel>
         <Border DockPanel.Dock="Top" Height="44">
-            <DockPanel>
+            <DockPanel IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}">
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <ToggleButton
                         x:Name="ButtonFiltering"

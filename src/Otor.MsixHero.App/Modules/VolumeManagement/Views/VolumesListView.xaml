@@ -14,7 +14,9 @@
              x:Name="Root"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance elements:VolumesListViewModel}">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Height="44">
+        <Border 
+            IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+            DockPanel.Dock="Top" Height="44">
             <WrapPanel>
                 <Button 
                     Command="Refresh"
