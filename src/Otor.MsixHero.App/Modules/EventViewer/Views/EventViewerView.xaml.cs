@@ -17,7 +17,7 @@
 using System.Windows;
 using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero;
-using Otor.MsixHero.App.Modules.EventViewer.ViewModels;
+using Otor.MsixHero.App.Modules.EventViewer.Commands;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Regions;

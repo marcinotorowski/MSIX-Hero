@@ -36,7 +36,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
             this.prismServices = prismServices;
             application.EventAggregator.GetEvent<UiExecutedEvent<SelectLogCommand>>().Subscribe(this.OnSelectLogCommand);
         }
-
+        
         private void OnSelectLogCommand(UiExecutedPayload<SelectLogCommand> command)
         {
             var parameters = new NavigationParameters();

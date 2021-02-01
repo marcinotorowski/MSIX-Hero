@@ -45,7 +45,8 @@
                         </Popup>
                     </StackPanel>
 
-                    <WrapPanel DockPanel.Dock="Left">
+                    <WrapPanel IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
+                               DockPanel.Dock="Left">
                         <Button 
                             IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
                             Command="Refresh" 
@@ -71,6 +72,15 @@
                     <ListBox.InputBindings>
                         <KeyBinding Modifiers="Control" Key="F" Command="Find" />
                     </ListBox.InputBindings>
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy to clipboard" Command="Copy">
+                                <MenuItem.Icon>
+                                    <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding" Value="10" />

@@ -14,16 +14,7 @@
              d:DesignHeight="450" d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
 
     <DockPanel DataContext="{Binding SelectedLog}">
-
         <DockPanel.Resources>
-
-            <converters:EventLogColorConverter 
-                x:Key="ColorConverter" 
-                ColorInformation="#2B579A"
-                ColorWarning="DarkOrange"
-                ColorVerbose="Gray"
-                ColorError="IndianRed" />
-
             <converters:EventLogBrushConverter 
                 x:Key="BrushConverter" 
                 BrushInformation="#2B579A"
@@ -44,8 +35,8 @@
             <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
 
                 <Button 
-                    IsEnabled="False"
-                     Style="{StaticResource ActionButton}">
+                    Command="Copy"
+                    Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallCdRom}"
@@ -215,7 +206,7 @@
                             <TextBlock Style="{StaticResource DataHeader}" Text="Message" />
                             <TextBox 
                                 Style="{StaticResource DataValueTextBlock}"
-                                VerticalScrollBarVisibility="Auto"
+                                VerticalScrollBarVisibility="Hidden"
                                 MaxHeight="300"
                                 VerticalContentAlignment="Top"
                                 TextWrapping="Wrap"
