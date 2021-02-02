@@ -206,8 +206,8 @@ namespace Otor.MsixHero.App.Helpers
             _thisWeek = _today.Subtract(TimeSpan.FromDays(((int)_today.DayOfWeek + 6) % 7));
             _lastWeek = _thisWeek.Subtract(TimeSpan.FromDays(7));
             _thisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            _lastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, 1);
-            _last6Months = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 6, 1);
+            _lastMonth = _today.AddMonths(-1);
+            _last6Months = _today.AddMonths(-6);
             _thisYear = new DateTime(DateTime.Now.Year, 1, 1);
             _lastYear = new DateTime(DateTime.Now.Year - 1, 1, 1);
             _lastRefreshDate = DateTime.Now.Date;
