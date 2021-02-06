@@ -14,25 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using GraphX.Controls;
+using QuickGraph;
 
-namespace Otor.MsixHero.Dependencies.Domain
+namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
 {
-    public class InstalledPackageGraphElement : GraphElement
+    public class DependencyGraphArea : GraphArea<DependencyVertex, DependencyEdge, BidirectionalGraph<DependencyVertex, DependencyEdge>>
     {
-        public InstalledPackageGraphElement(int id, InstalledPackage package) : base(id)
-        {
-            this.Package = package;
-            this.PackageName = package.Name;
-        }
-
-        public InstalledPackage Package { get; }
-
-        public string PackageName { get; }
-
-        public override string ToString()
-        {
-            return this.PackageName;
-        }
     }
 }

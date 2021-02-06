@@ -28,18 +28,5 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View
         {
             this.InitializeComponent();
         }
-
-        private void ToggleButton_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (((ToggleButton)sender).IsChecked == true)
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void BeforeButtonClick(object sender, MouseButtonEventArgs e)
-        {
-            this.ToggleButton.IsChecked = false;
-        }
     }
 }

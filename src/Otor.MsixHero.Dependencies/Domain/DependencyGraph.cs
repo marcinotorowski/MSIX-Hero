@@ -20,8 +20,14 @@ namespace Otor.MsixHero.Dependencies.Domain
 {
     public class DependencyGraph
     {
-        public IList<GraphElement> Elements { get; set; }
+        public DependencyGraph()
+        {
+            this.Elements = new List<GraphElement>();
+            this.Relations = new List<Relation>();
+        }
 
-        public IList<Relation> Relations { get; set; }
+        public IList<GraphElement> Elements { get; }
+
+        public IList<Relation> Relations { get; }
     }
 }

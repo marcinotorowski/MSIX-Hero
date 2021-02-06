@@ -18,13 +18,10 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.Dependencies.Domain
 {
-    public class RootGraphElement : GraphElement
+    public class RootGraphElement : PackageGraphElement
     {
-        public RootGraphElement(AppxPackage package) : base(0)
+        public RootGraphElement(AppxPackage package) : base(0, package)
         {
-            this.Package = package;
         }
-
-        public AppxPackage Package { get; }
     }
 }

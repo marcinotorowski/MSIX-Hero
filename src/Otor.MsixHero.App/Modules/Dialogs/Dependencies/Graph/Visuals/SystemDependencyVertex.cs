@@ -14,12 +14,23 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using GraphX.Controls;
-using QuickGraph;
+using System;
+using GraphX.Common.Enums;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model
+namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
 {
-    public class DependencyGraphArea : GraphArea<DependencyVertex, DependencyEdge, BidirectionalGraph<DependencyVertex, DependencyEdge>>
+    public class SystemDependencyVertex : DependencyVertex
     {
+        public SystemDependencyVertex(string caption)
+        {
+            this.Shape = VertexShape.Ellipse;
+            this.Text = caption;
+        }
+
+        public SystemDependencyVertex(Version version)
+        {
+            this.Shape = VertexShape.Ellipse;
+            this.Text = "Windows " + version;
+        }
     }
 }

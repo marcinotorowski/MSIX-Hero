@@ -14,11 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GraphX.Common.Enums;
-using Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View
 {
@@ -91,6 +95,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View
             public void ExportJpg()
             {
                 this.graphArea.ExportAsImageDialog(ImageType.JPEG);
+            }
+
+            public void ExportClipboard()
+            {
+                throw new NotImplementedException();
             }
 
             public void Print()
