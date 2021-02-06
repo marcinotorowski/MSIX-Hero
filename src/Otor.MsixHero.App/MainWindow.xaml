@@ -17,6 +17,7 @@
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     mc:Ignorable="d"
     TintColor="#0173C7"
+    FallbackColor="#ccc"
     TintOpacity="0.2"
     Margin="0"
     Padding="0"
