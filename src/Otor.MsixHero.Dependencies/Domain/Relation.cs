@@ -28,7 +28,7 @@ namespace Otor.MsixHero.Dependencies.Domain
         public GraphElement Left { get; }
 
         public string RelationDescription { get; }
-
+        
         public GraphElement Right { get; }
 
         public override string ToString()

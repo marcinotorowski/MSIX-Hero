@@ -14,19 +14,21 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using GraphX.Common.Enums;
 using GraphX.Common.Models;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model
+namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
 {
-    public class DependencyVertex : VertexBase
+    public class DependencyEdge : EdgeBase<DependencyVertex>
     {
-        /// <summary>
-        /// Some string property for example purposes
-        /// </summary>
-        public string Text { get; set; }
+        public DependencyEdge(DependencyVertex source, DependencyVertex target, double weight = 1) : base(source, target, weight)
+        {
+        }
 
-        public VertexShape Shape { get; set; } = VertexShape.Rectangle;
+        public DependencyEdge() : base(null, null, 1)
+        {
+        }
+
+        public string Text { get; set; }
 
         public override string ToString()
         {

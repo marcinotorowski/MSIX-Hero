@@ -16,7 +16,7 @@
 
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model
+namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals
 {
     public class RootDependencyVertex : DependencyVertex
     {
@@ -36,6 +36,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model
         public string Architecture => this.packageDependency.ProcessorArchitecture.ToString();
 
         public string Version => this.packageDependency.Version;
+
+        public string FullName => this.packageDependency.FullName;
 
         public string PublisherDisplayName => this.packageDependency.PublisherDisplayName;
     }

@@ -51,36 +51,12 @@
         </dialog:ChangeableDialog.DialogContentTemplate>
         <dialog:ChangeableDialog.Footer>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <ToggleButton 
+                <StackPanel 
                     Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    PreviewMouseDown="ToggleButton_OnPreviewMouseDown"
-                    Content="Export + print..." 
-                    x:Name="ToggleButton">
-                </ToggleButton>
-
-                <Popup 
-                    Placement="Top"
-                    PlacementTarget="{Binding ElementName=ToggleButton}"
-                    AllowsTransparency="True" 
-                    StaysOpen="False"
-                    IsOpen="{Binding ElementName=ToggleButton, Path=IsChecked}">
-                    <Border 
-                        DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}, Path=PlacementTarget.DataContext}" 
-                        Background="White" BorderBrush="Black" BorderThickness="1">
-                        <StackPanel MinWidth="200" Margin="8">
-                            <Label Style="{StaticResource FormLabel}" Content="Export" />
-                            <WrapPanel Margin="-4 -4 -4 14">
-                                <Button PreviewMouseUp="BeforeButtonClick" Command="{Binding Export}" CommandParameter=".png" Content="Export graph as PNG" Margin="4" />
-                                <Button PreviewMouseUp="BeforeButtonClick" Command="{Binding Export}" CommandParameter=".jpg" Content="Export graph as JPG" Margin="4" />
-                            </WrapPanel>
-
-                            <Label Style="{StaticResource FormLabel}" Content="Print" />
-                            <WrapPanel Margin="-4">
-                                <Button PreviewMouseUp="BeforeButtonClick" Command="{Binding Print}" CommandParameter="*.pdf" Content="Print" Margin="4" />
-                            </WrapPanel>
-                        </StackPanel>
-                    </Border>
-                </Popup>
+                    Orientation="Horizontal">
+                    <Button Command="{Binding Export}" CommandParameter=".png" Content="Export..." Margin="4" />
+                    <Button Command="{Binding Print}" CommandParameter="*.pdf" Content="Print..." Margin="4" />
+                </StackPanel>
             </StackPanel>
         </dialog:ChangeableDialog.Footer>
     </dialog:ChangeableDialog>

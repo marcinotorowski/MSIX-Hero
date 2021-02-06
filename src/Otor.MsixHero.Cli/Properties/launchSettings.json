@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Otor.MsixHero.Cli": {
-      "commandName": "Project",
-      "commandLineArgs": "sign \"C:\\Users\\marci\\Documents\\DEV\\MSIX-Hero\\Source\\out\\msix\\msix-hero-1.4.27.0.msix\""
+      "commandName": "Project"
     }
   }
 }

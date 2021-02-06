@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:graphx="http://schemas.panthernet.ru/graphx/"
              xmlns:packageHeader="clr-namespace:Otor.MsixHero.App.Controls.PackageHeader"
-             xmlns:model="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel"
+             xmlns:model="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:DependencyViewerViewModel}">
     <DockPanel>
@@ -102,58 +102,76 @@
             </StackPanel>
         </Grid>
 
+
+        <Border
+            Margin="-8 0 -8 -16"
+            Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
+            Background="#fff" 
+            DockPanel.Dock="Bottom">
+            <StackPanel SnapsToDevicePixels="True" UseLayoutRounding="True" Orientation="Horizontal" Margin="4">
+                <TextBlock Text="Legend" VerticalAlignment="Center" Margin="0 0 8 0" />
+                <Border BorderBrush="#486984" BorderThickness="2" Background="#FFD700" Margin="4" VerticalAlignment="Center">
+                    <TextBlock Text="Analyzed package" Margin="8 4" FontSize="11" />
+                </Border>
+                <Border BorderBrush="#00B0FF" BorderThickness="2" Background="#00B0FF" Margin="4" VerticalAlignment="Center">
+                    <TextBlock Foreground="White" FontWeight="Bold" Text="System dependency" Margin="8 4" FontSize="11" />
+                </Border>
+                <Border BorderBrush="#666666" BorderThickness="2" Background="#CCCCCC" Margin="4" VerticalAlignment="Center">
+                    <TextBlock Text="Package dependency" Margin="8 4" FontSize="11" />
+                </Border>
+                <TextBlock FontWeight="Bold" FontSize="8" Text="A" Margin="8 4 4 4" VerticalAlignment="Center" />
+                <Canvas Width="48" Height="16" Margin="0 4">
+                    <Rectangle RadiusX="4" RadiusY="4" Fill="#fff" StrokeThickness="1" Stroke="Black" Width="24" Height="8" Canvas.Left="8" />
+                    <Line Canvas.Top="11" Width="40" Canvas.Left="0" StrokeThickness="2" Stroke="Black" VerticalAlignment="Center" X1="0" X2="64" />
+                    <Path Data="M 0 0 8 4 0 8" Fill="Black" Canvas.Right="0" Canvas.Top="7" />
+                </Canvas>
+                <TextBlock FontWeight="Bold" FontSize="8" VerticalAlignment="Center" Text="B" Margin="4 4 8 4" />
+                <TextBlock Text="(B) depends on (A)" VerticalAlignment="Center" Margin="0 4" />
+            </StackPanel>
+        </Border>
+
+
         <Border DockPanel.Dock="Top" 
                 Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="Tabs">
             <Border.Resources>
                 <Style TargetType="graphx:VertexControl">
                     <Setter Property="graphx:DragBehaviour.IsDragEnabled" Value="True" />
                     <Setter Property="graphx:DragBehaviour.UpdateEdgesOnMove"  Value="True" />
-                    <!--<Setter Property="VertexShape" Value="{Binding Shape}"></Setter>-->
+                    <Setter Property="Background" Value="Transparent" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="graphx:VertexControl">
                                 <Border>
                                     <Border.Resources>
-                                        <DataTemplate DataType="{x:Type model:PackageDependencyVertex}">
-                                            <Border Background="#eee" MaxWidth="280" MaxHeight="50" BorderBrush="#486984" BorderThickness="2" Padding="4">
-                                                <DockPanel>
-                                                    <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
-                                                    <Border Background="{Binding TileColor}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                        <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                            <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
-                                                        </Border>
-                                                    </Border>
-                                                    <StackPanel DockPanel.Dock="Right">
-                                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                                        <TextBlock Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
-                                                    </StackPanel>
-                                                    <StackPanel Margin="10 0">
-                                                        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
-                                                        <TextBlock Text="{Binding PublisherDisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
-                                                    </StackPanel>
-                                                </DockPanel>
-                                            </Border>
-                                        </DataTemplate>
                                         <DataTemplate DataType="{x:Type model:SystemDependencyVertex}">
-                                            <Border BorderBrush="#00b0ff" BorderThickness="2">
+                                            <Border Background="Transparent" BorderBrush="#00b0ff" BorderThickness="2">
                                                 <StackPanel>
                                                     <Path Margin="10 7" Fill="#00b0ff" HorizontalAlignment="Center" Data="M20 25.026L5.011 25 5.012 37.744 20 39.818zM22 25.03L22 40.095 42.995 43 43 25.066zM20 8.256L5 10.38 5.014 23 20 23zM22 7.973L22 23 42.995 23 42.995 5z" Width="48" Height="48" />
 
                                                     <Border Background="#00b0ff">
                                                         <TextBlock 
-                                                        Foreground="White"
-                                                        HorizontalAlignment="Center" 
-                                                        Text="{Binding Text}" 
-                                                        TextAlignment="Center" 
-                                                        VerticalAlignment="Center" 
-                                                        Margin="4" 
-                                                        FontWeight="Bold" />
+                                                            Foreground="White"
+                                                            HorizontalAlignment="Center" 
+                                                            Text="{Binding Text}" 
+                                                            TextAlignment="Center" 
+                                                            VerticalAlignment="Center"
+                                                            Margin="4" 
+                                                            FontWeight="Bold" />
                                                     </Border>
                                                 </StackPanel>
                                             </Border>
                                         </DataTemplate>
                                         <DataTemplate DataType="{x:Type model:RootDependencyVertex}">
-                                            <Border Background="Gold" MaxWidth="280" MaxHeight="50" BorderBrush="#486984" BorderThickness="2" Padding="8">
+                                            <Border
+                                                ToolTipService.Placement="Bottom"
+                                                Background="Gold" MaxWidth="280" MaxHeight="50" BorderBrush="#486984" BorderThickness="2" Padding="8">
+                                                <Border.ToolTip>
+                                                    <StackPanel Margin="4">
+                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"></TextBlock>
+                                                        <TextBlock Text="{Binding FullName}"></TextBlock>
+                                                    </StackPanel>
+                                                </Border.ToolTip>
+
                                                 <DockPanel>
                                                     <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
                                                     <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -162,12 +180,39 @@
                                                         </Border>
                                                     </Border>
                                                     <StackPanel DockPanel.Dock="Right">
-                                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                                        <TextBlock Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" />
+                                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" Foreground="Black" />
+                                                        <TextBlock Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" Foreground="Black" />
                                                     </StackPanel>
                                                     <StackPanel Margin="10 0">
-                                                        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" />
-                                                        <TextBlock Text="{Binding PublisherDisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                                        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Foreground="Black" />
+                                                        <TextBlock Text="{Binding PublisherDisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" Foreground="Black" />
+                                                    </StackPanel>
+                                                </DockPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                        <DataTemplate DataType="{x:Type model:InstalledDependencyVertex}">
+                                            <Border
+                                                ToolTipService.Placement="Bottom"
+                                                Background="#ccc" MaxWidth="280" MaxHeight="50" BorderBrush="#666666" BorderThickness="2" Padding="8">
+                                                <Border.ToolTip>
+                                                    <StackPanel Margin="4">
+                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"></TextBlock>
+                                                        <TextBlock Text="{Binding FullName}"></TextBlock>
+                                                    </StackPanel>
+                                                </Border.ToolTip>
+                                                <DockPanel>
+                                                    <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                            <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                        </Border>
+                                                    </Border>
+                                                    <StackPanel DockPanel.Dock="Right">
+                                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" Foreground="Black" />
+                                                        <TextBlock Text="{Binding Architecture, Mode=OneTime}" DockPanel.Dock="Right" VerticalAlignment="Center" TextAlignment="Right"  Opacity="0.65" Foreground="Black" />
+                                                    </StackPanel>
+                                                    <StackPanel Margin="10 0">
+                                                        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Foreground="Black" />
+                                                        <TextBlock Text="{Binding PublisherDisplayName, Mode=OneTime}" TextTrimming="CharacterEllipsis" Opacity="0.65" Foreground="Black" />
                                                     </StackPanel>
                                                 </DockPanel>
                                             </Border>
@@ -186,7 +231,6 @@
                     <Setter Property="AlignToEdge" Value="True" />
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="BorderThickness" Value="0" />
-                    <Setter Property="Background" Value="Transparent" />
                     <Setter Property="LabelVerticalOffset" Value="10" />
                     <Setter Property="FontSize" Value="9" />
                 </Style>

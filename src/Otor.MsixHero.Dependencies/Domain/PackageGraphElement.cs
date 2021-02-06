@@ -14,25 +14,19 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using GraphX.Common.Models;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Model
+namespace Otor.MsixHero.Dependencies.Domain
 {
-    public class DependencyEdge : EdgeBase<DependencyVertex>
+    public class PackageGraphElement : GraphElement
     {
-        public DependencyEdge(DependencyVertex source, DependencyVertex target, double weight = 1) : base(source, target, weight)
+        public PackageGraphElement(int id, AppxPackage package) : base(id)
         {
+            this.Package = package;
+            this.PackageName = package.DisplayName;
         }
-
-        public DependencyEdge() : base(null, null, 1)
-        {
-        }
-
-        public string Text { get; set; }
-
-        public override string ToString()
-        {
-            return Text;
-        }
+        public string PackageName { get; }
+        
+        public AppxPackage Package { get; }
     }
 }

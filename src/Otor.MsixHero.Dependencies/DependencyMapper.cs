@@ -21,7 +21,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
@@ -35,7 +34,6 @@ namespace Otor.MsixHero.Dependencies
     public class DependencyMapper : IDependencyMapper
     {
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManager;
-        private IList<InstalledPackage> packages;
 
         public DependencyMapper(ISelfElevationProxyProvider<IAppxPackageManager> packageManager)
         {
@@ -44,265 +42,214 @@ namespace Otor.MsixHero.Dependencies
 
         public async Task<DependencyGraph> GetGraph(string initialPackage, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            progress?.Report(new ProgressData(0, "Reading manifest..."));
+            progress?.Report(new ProgressData(0, $"Reading {Path.GetFileName(initialPackage)}..."));
 
             var reader = new AppxManifestReader();
-            if (string.Equals("appxmanifest.xml", Path.GetFileName(initialPackage), StringComparison.OrdinalIgnoreCase))
-            {
-                using (IAppxFileReader fileReader = new FileInfoFileReaderAdapter(initialPackage))
-                {
-                    var pkg = await reader.Read(fileReader, cancellationToken).ConfigureAwait(false);
-                    return await this.GetGraph(pkg, cancellationToken, progress).ConfigureAwait(false);
-                }
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-            using (IAppxFileReader fileReader = new ZipArchiveFileReaderAdapter(initialPackage))
-            {
-                var pkg = await reader.Read(fileReader, cancellationToken).ConfigureAwait(false);
-                return await this.GetGraph(pkg, cancellationToken, progress).ConfigureAwait(false);
-            }
+            using var fileReader = FileReaderFactory.CreateFileReader(initialPackage);
+            var pkg = await reader.Read(fileReader, cancellationToken).ConfigureAwait(false);
+            return await this.GetGraph(pkg, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task<DependencyGraph> GetGraph(AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var dependencies = new List<GraphElement>();
-            var relations = new List<Relation>();
+            var dependencyGraph = new DependencyGraph();
+            
+            var list = await this.GetConsideredPackages(package, cancellationToken, progress).ConfigureAwait(false);
+            
+            var packages = this.GetPackageDependencies(0, list).ToList();
+            var operatingSystems = this.GetOperatingSystemDependencies(packages.Count, list).ToList();
+            
+            var unresolvedDependencies = new List<MissingPackageGraphElement>();
 
-            var installedPackages = new Dictionary<string, InstalledPackageGraphElement>();
-            var missingPackages = new Dictionary<string, MissingPackageGraphElement>();
-            var operatingSystems = new Dictionary<string, OperatingSystemGraphElement>();
-
-            var toProcess = new Queue<AppxPackage>();
-            toProcess.Enqueue(package);
-
-            RootGraphElement rootGraphElement = null;
-            GraphElement current;
-            while (toProcess.TryDequeue(out var file))
+            var id = packages.Count + operatingSystems.Count;
+            foreach (var pkg in packages)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                if (!dependencies.Any())
+                foreach (var packageDependency in pkg.Package.PackageDependencies)
                 {
-                    rootGraphElement = new RootGraphElement(file);
-                    current = rootGraphElement;
-                    dependencies.Add(current);
-                }
-                else
-                {
-                    current = dependencies.OfType<InstalledPackageGraphElement>().FirstOrDefault(f => f.PackageName == file.Name);
-                }
-                
-                foreach (var item in file.OperatingSystemDependencies ?? Enumerable.Empty<AppxOperatingSystemDependency>())
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var family = item.Minimum.NativeFamilyName;
-                    if (family.Contains("windows", StringComparison.OrdinalIgnoreCase))
+                    var findDependency = packages.FirstOrDefault(depPkg => depPkg.Package.Name == packageDependency.Name && depPkg.Package.Publisher == packageDependency.Publisher);
+                    if (findDependency != null)
                     {
-                        family = "Windows";
-                    }
-
-                    if (!operatingSystems.TryGetValue(family, out var os))
-                    {
-                        os = new OperatingSystemGraphElement(dependencies.Count + 1, family);
-                        dependencies.Add(os);
-                        os.MaxRequiredVersion = Version.Parse(item.Minimum.TechnicalVersion);
-                        if (string.IsNullOrEmpty(item.Minimum.MarketingCodename))
-                        {
-                            os.MaxRequiredCaption = item.Minimum.Name;
-                        }
-                        else
-                        {
-                            os.MaxRequiredCaption = item.Minimum.Name + Environment.NewLine + item.Minimum.MarketingCodename;
-                        }
-
-                        operatingSystems[family] = os;
-                    }
-                    else if (os.MaxRequiredVersion < Version.Parse(item.Minimum.TechnicalVersion))
-                    {
-                        os.MaxRequiredVersion = Version.Parse(item.Minimum.TechnicalVersion);
-                        os.MaxRequiredCaption = item.Minimum.Name + System.Environment.NewLine + item.Minimum.MarketingCodename;
-                    }
-
-                    relations.Add(new Relation(current, item.Minimum.TechnicalVersion + "+", os));
-                }
-
-                var mgr = await this.packageManager.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
-                var mainPackages = await mgr.GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken).ConfigureAwait(false);
-                foreach (var main in mainPackages)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (installedPackages.TryGetValue(main.Name, out var installedMain))
-                    {
-                        relations.Add(new Relation(installedMain, "modifies", current));
-                    }
-                    else if (missingPackages.TryGetValue(main.Name, out var missingMain))
-                    {
-                        relations.Add(new Relation(missingMain, "modifies", current));
-                    }
-                    else if (rootGraphElement.Package.Name == main.Name)
-                    {
-                        relations.Add(new Relation(missingMain, "modifies", rootGraphElement));
+                        dependencyGraph.Relations.Add(new Relation(findDependency, packageDependency.Version + "˄", pkg));
                     }
                     else
                     {
-                        installedMain = new InstalledPackageGraphElement(dependencies.Count + 1, main);
-                        installedPackages[main.Name] = installedMain;
-                        dependencies.Add(installedMain);
-                        relations.Add(new Relation(current, "modifies", installedMain));
-
-                        using (IAppxFileReader subReader = new FileInfoFileReaderAdapter(main.ManifestLocation))
+                        var findUnresolved = unresolvedDependencies.FirstOrDefault(unresolved => unresolved.PackageName == packageDependency.Name);
+                        if (findUnresolved == null)
                         {
-                            var mr = new AppxManifestReader();
-                            toProcess.Enqueue(await mr.Read(subReader, cancellationToken).ConfigureAwait(false));
+                            id++;
+                            findUnresolved = new MissingPackageGraphElement(id, packageDependency.Name);
+                            unresolvedDependencies.Add(findUnresolved);
+                            dependencyGraph.Elements.Add(findUnresolved);
                         }
+
+                        dependencyGraph.Relations.Add(new Relation(findUnresolved, packageDependency.Version + "˄", pkg));
                     }
                 }
 
-                foreach (var item in file.MainPackages ?? Enumerable.Empty<AppxMainPackageDependency>())
+                foreach (var systemDependency in pkg.Package.OperatingSystemDependencies)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var needsLookup = true;
-                    if (installedPackages.TryGetValue(item.Name, out var installedMain))
-                    {
-                        needsLookup = false;
-                        relations.Add(new Relation(current, "modifies", installedMain));
-                    }
-
-                    if (missingPackages.TryGetValue(item.Name, out var missingMain))
-                    {
-                        needsLookup = false;
-                        relations.Add(new Relation(current, "modifies", missingMain));
-                    }
-
-                    if (rootGraphElement.Package.Name == item.Name)
-                    {
-                        needsLookup = false;
-                        relations.Add(new Relation(current, "modifies", rootGraphElement));
-                    }
-
-                    if (needsLookup)
-                    {
-                        if (this.packages == null)
-                        {
-                            this.packages = await this.GetInstalled(cancellationToken, progress).ConfigureAwait(false);
-                        }
-
-                        var find = this.packages.FirstOrDefault(p => p.Name == item.Name);
-                        if (find == null)
-                        {
-                            missingMain = new MissingPackageGraphElement(dependencies.Count + 1, item.Name);
-                            missingPackages[item.Name] = missingMain;
-                            dependencies.Add(missingMain);
-                            relations.Add(new Relation(current, "modifies", missingMain));
-                        }
-                        else
-                        {
-                            using (IAppxFileReader subReader = new FileInfoFileReaderAdapter(find.ManifestLocation))
-                            {
-                                var mr = new AppxManifestReader();
-                                toProcess.Enqueue(await mr.Read(subReader).ConfigureAwait(false));
-                            }
-                                
-                            installedMain = new InstalledPackageGraphElement(dependencies.Count + 1, find);
-                            installedPackages[item.Name] = installedMain;
-                            dependencies.Add(installedMain);
-                            relations.Add(new Relation(current, "modifies", installedMain));
-                        }
-                    }
+                    var findSystem = operatingSystems.First(os => os.OperatingSystem == GetOsFamily(systemDependency));
+                    dependencyGraph.Relations.Add(new Relation(findSystem, findSystem.MaxRequiredVersion + "˄", pkg));
                 }
 
-                foreach (var item in file.PackageDependencies ?? Enumerable.Empty<AppxPackageDependency>())
+                foreach (var mainPackage in pkg.Package.MainPackages)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var needsLookup = true;
-                    if (installedPackages.TryGetValue(item.Name, out var installed))
+                    var findParent = packages.FirstOrDefault(depPkg => depPkg.Package.Name == mainPackage.Name);
+                    if (findParent != null)
                     {
-                        needsLookup = false;
-                        relations.Add(new Relation(current, item.Version + "+", installed));
+                        dependencyGraph.Relations.Add(new Relation(findParent, "main package", pkg));
                     }
-
-                    if (missingPackages.TryGetValue(item.Name, out var missing))
+                    else
                     {
-                        needsLookup = false;
-                        relations.Add(new Relation(current, item.Version + "+", missing));
-                    }
-
-                    if (rootGraphElement.Package.Name == item.Name)
-                    {
-                        needsLookup = false;
-                        relations.Add(new Relation(current, item.Version + "+", rootGraphElement));
-                    }
-
-                    if (needsLookup)
-                    {
-                        if (this.packages == null)
+                        var findUnresolved = unresolvedDependencies.FirstOrDefault(unresolved => unresolved.PackageName == mainPackage.Name);
+                        if (findUnresolved == null)
                         {
-                            this.packages = await this.GetInstalled(cancellationToken, progress).ConfigureAwait(false);
+                            id++;
+                            findUnresolved = new MissingPackageGraphElement(id, mainPackage.Name);
+                            unresolvedDependencies.Add(findUnresolved);
+                            dependencyGraph.Elements.Add(findUnresolved);
                         }
 
-                        var myArch = file.ProcessorArchitecture.ToString();
-                        var find = this.packages.FirstOrDefault(p => p.Name == item.Name && p.Architecture == myArch) ?? this.packages.FirstOrDefault(p => p.Name == item.Name);
-                        if (find == null || find.Version < Version.Parse(item.Version))
-                        {
-                            missing = new MissingPackageGraphElement(dependencies.Count + 1, item.Name);
-                            missingPackages[item.Name] = missing;
-                            dependencies.Add(missing);
-                            relations.Add(new Relation(current, item.Version + "+", missing));
-                        }
-                        else
-                        {
-                            using (IAppxFileReader subReader = new FileInfoFileReaderAdapter(find.ManifestLocation))
-                            {
-                                var mr = new AppxManifestReader();
-                                toProcess.Enqueue(await mr.Read(subReader).ConfigureAwait(false));
-                            }
-
-                            installed = new InstalledPackageGraphElement(dependencies.Count + 1, find);
-                            installedPackages[item.Name] = installed;
-                            dependencies.Add(installed);
-                            relations.Add(new Relation(current, item.Version + "+", installed));
-                        }
+                        dependencyGraph.Relations.Add(new Relation(findUnresolved, "main package", pkg));
                     }
                 }
             }
 
-            return new DependencyGraph
+            foreach (var pkg in packages)
             {
-                Elements = dependencies,
-                Relations = relations
-            };
+                dependencyGraph.Elements.Add(pkg);
+            }
+
+            foreach (var os in operatingSystems)
+            {
+                dependencyGraph.Elements.Add(os);
+            }
+
+            return dependencyGraph;
         }
 
-        private async Task<IList<InstalledPackage>> GetInstalled(CancellationToken cancellationToken, IProgress<ProgressData> progress)
+        private IEnumerable<PackageGraphElement> GetPackageDependencies(int startNumberingAt, IEnumerable<AppxPackage> packages)
         {
-            EventHandler<ProgressData> progressChanged = null;
-
-            if (progress != null)
-            {
-                progressChanged = (sender, args) =>
+            var id = startNumberingAt;
+            
+            foreach (var pkg in packages)
+            {   
+                if (id == 0)
                 {
-                    progress.Report(new ProgressData(args.Progress, "Reading dependencies..."));
+                    yield return new RootGraphElement(pkg);
+                }
+                else
+                {
+                    yield return new PackageGraphElement(id, pkg);
+                }
+                
+                id++;
+            }
+        }
+
+        private static string GetOsFamily(AppxOperatingSystemDependency system)
+        {
+            return GetOsFamily(system.Minimum);
+        }
+
+        private static string GetOsFamily(AppxTargetOperatingSystem system)
+        {
+            return (system.NativeFamilyName.Contains("windows", StringComparison.OrdinalIgnoreCase) ? "Windows" : system.NativeFamilyName) + "-" + Version.Parse(system.TechnicalVersion).ToString(2);
+        }
+
+        private IEnumerable<OperatingSystemGraphElement> GetOperatingSystemDependencies(int startNumberingAt, IEnumerable<AppxPackage> packages)
+        {
+            var id = startNumberingAt;
+            foreach (var system in packages
+                .SelectMany(pkg => pkg.OperatingSystemDependencies)
+                .GroupBy(GetOsFamily))
+            {
+                id++;
+                var highestMinimumRequiredSystemVersion = system.Select(item => Version.Parse(item.Minimum.TechnicalVersion)).Max();
+                var highestMinimumRequiresSystem = system.First(s => Version.Parse(s.Minimum.TechnicalVersion) == highestMinimumRequiredSystemVersion).Minimum;
+                
+                var family = system.Key;
+                yield return new OperatingSystemGraphElement(id, family)
+                {
+                    MaxRequiredCaption = string.IsNullOrEmpty(highestMinimumRequiresSystem.MarketingCodename) ? highestMinimumRequiresSystem.Name : highestMinimumRequiresSystem.Name + Environment.NewLine + highestMinimumRequiresSystem.MarketingCodename,
+                    MaxRequiredVersion = Version.Parse(highestMinimumRequiresSystem.TechnicalVersion)
                 };
             }
+        }
+        
+        private async Task<IList<AppxPackage>> GetConsideredPackages(AppxPackage startPackage, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        {
+            var progressForGettingPackages = new RangeProgress(progress, 0, 70);
+            var progressForGettingAddOns = new RangeProgress(progress, 70, 90);
+            var progressForCalculation = new RangeProgress(progress, 90, 100);
+            
+            var manager = await this.packageManager.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            var allPackages = await manager.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
+            var consideredPackages = new List<AppxPackage> { startPackage };
+            var addOnPackages = new List<AppxPackage>();
 
-            var p = new Progress();
-            try
+            var manifestReader = new AppxManifestReader();
+
+            progressForGettingAddOns.Report(new ProgressData(0, "Reading optional packages..."));
+            foreach (var addOnPackage in allPackages.Where(installedPackage => installedPackage.IsOptional))
             {
-                if (progress != null)
+                using var fileReader = FileReaderFactory.CreateFileReader(addOnPackage.ManifestLocation);
+                addOnPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
+            }
+
+            progressForCalculation.Report(new ProgressData(0, "Reading relations..."));
+            for (var i = 0; i < consideredPackages.Count; i++)
+            {
+                var currentPkg = consideredPackages[i];
+
+                var matchingAddOns = addOnPackages.Where(addOnPackage => addOnPackage.MainPackages.Any(dep => dep.Name == currentPkg.Name));
+                foreach (var matchingAddOn in matchingAddOns)
                 {
-                    p.ProgressChanged += progressChanged;
+                    if (consideredPackages.Any(existing => existing.Publisher == matchingAddOn.Publisher && existing.Name == matchingAddOn.Name))
+                    {
+                        // we have already processes this package
+                        continue;
+                    }
+
+                    consideredPackages.Add(matchingAddOn);
+                }
+                
+                foreach (var dependency in currentPkg.PackageDependencies)
+                {
+                    if (consideredPackages.Any(existing => existing.Publisher == dependency.Publisher && existing.Name == dependency.Name))
+                    {
+                        // we have already processes this package
+                        continue;
+                    }
+                    
+                    var candidate = allPackages.FirstOrDefault(installedPackage => installedPackage.Name == dependency.Name && installedPackage.Publisher == dependency.Publisher && installedPackage.Version >= Version.Parse(dependency.Version));
+
+                    if (candidate != null)
+                    {
+                        using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestLocation);
+                        consideredPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
+                    }
                 }
 
-                var mgr = await this.packageManager.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
-                return await mgr.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, p).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (progress != null)
+                foreach (var dependency in currentPkg.MainPackages)
                 {
-                    p.ProgressChanged -= progressChanged;
+                    if (consideredPackages.Any(existing => existing.Name == dependency.Name))
+                    {
+                        // we have already processes this package
+                        continue;
+                    }
+
+                    var candidate = allPackages.FirstOrDefault(installedPackage => installedPackage.Name == dependency.Name);
+
+                    if (candidate != null)
+                    {
+                        using var fileReader = FileReaderFactory.CreateFileReader(candidate.ManifestLocation);
+                        consideredPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
+                    }
                 }
             }
+            
+            return consideredPackages;
         }
     }
 }
