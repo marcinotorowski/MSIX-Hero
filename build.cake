@@ -64,7 +64,7 @@ Task("Determine version").Does(() =>{
     }
 
     revision += int.Parse(r.Groups["offset"].Value);
-    version = r.Groups["major"].Value + "." + r.Groups["minor"].Value + "." + revision;
+    version = r.Groups["major"].Value + "." + r.Groups["minor"].Value + "." + revision + ".0";
 
     Information("Product version is '" + version + "'");
     
@@ -278,7 +278,7 @@ Task("Prepare MSIX")
     .Does(() => {
         Information("Updating manifest file '" + System.IO.Path.Combine(binFolder, "AppxManifest.xml") + "' with version '" + version + "'...");
         var file = System.IO.File.ReadAllText(System.IO.Path.Combine(binFolder, "AppxManifest.xml"));
-        file = System.Text.RegularExpressions.Regex.Replace(file, "<Identity Name=\"MSIXHero\" Version=\"([0-9\\.]+)\"", "<Identity Name=\"MSIXHero\" Version=\"" + version + "\"");
+        file = System.Text.RegularExpressions.Regex.Replace(file, "<Identity Name=\"([^\"]*)\" Version=\"([0-9\\.]+)\"", "<Identity Name=\"$1\" Version=\"" + version + "\"");        
         System.IO.File.WriteAllText(System.IO.Path.Combine(binFolder, "AppxManifest.xml"), file);
     });
 
