@@ -1,3 +1,16 @@
+# 2.0.46
+See https://msixhero.net/2021/02/07/msix-hero-2-0-new-features-ui-open-source/
+
+### Improvements ###
+* Improved dependency viewer with legend and better captions (#86)
+* Add fallback color to acryllic windows (301edbd3)
+* Removed "Preview" branding and changed the identity to public (f01bd937)
+* Some minor UI improvements (f632a678)
+* All changes from 2.0.0 (alpha) and 2.0.39 (beta)
+
+### Bug fixes ###
+* (Regression) Fix crash to desktop when grouping packages by install date (#84)
+
 # 2.0.39 (beta) #
 See https://msixhero.net/2021/02/01/msix-hero-2-0-39-beta/
 
