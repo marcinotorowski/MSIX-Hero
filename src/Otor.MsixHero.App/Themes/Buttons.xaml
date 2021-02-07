@@ -86,7 +86,10 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Background="{TemplateBinding Background}">
                         <DockPanel Margin="{TemplateBinding Padding}">
-                            <Path VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="16" Height="16" DockPanel.Dock="Right" Margin="4 0 0 0" Data="M 1.726563 4.015625 L 1.023438 4.734375 L 7.5 11.074219 L 13.972656 4.734375 L 13.277344 4.015625 L 7.5 9.675781 Z" Fill="{TemplateBinding Foreground}" />
+                            <Path 
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="True"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Width="10" Height="5" DockPanel.Dock="Right" Margin="6 0 2 0" Data="M 0 0 10 0 5 5 Z" Fill="{TemplateBinding Foreground}" />
                             <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </DockPanel>
                     </Border>

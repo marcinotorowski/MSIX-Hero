@@ -72,6 +72,9 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
         }
 
         // ReSharper disable once PossibleNullReferenceException
+        public string CurrentVersionLine => (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(2);
+
+        // ReSharper disable once PossibleNullReferenceException
         public string CurrentVersion => (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version.ToString(3);
 
         public ICommand Dismiss

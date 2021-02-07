@@ -14,7 +14,7 @@
         <Label DockPanel.Dock="Top" FontSize="36" Style="{StaticResource Label}">
             <TextBlock>
                 <Run Text="Welcome to MSIX Hero" />
-                <Run Text="{Binding CurrentVersion, Mode=OneWay, FallbackValue='1.0'}" />
+                <Run Text="{Binding CurrentVersionLine, Mode=OneWay, FallbackValue='1.0'}" />
             </TextBlock>
         </Label>
         <TextBlock DockPanel.Dock="Top">
@@ -27,13 +27,15 @@
             </Hyperlink>
         </TextBlock>
 
-        <CheckBox IsChecked="{Binding ShowUpdateScreen}" DockPanel.Dock="Top" Content="Show this screen each time MSIX Hero gets updated" Margin="0 10" />
+        <Button Background="#BEE6FD" BorderBrush="#BEE6FD" Padding="16 8" FontSize="16" DockPanel.Dock="Top" Command="{Binding Dismiss}" Content="{Binding Caption, FallbackValue='Close this dialog and jump to the Packages screen'}" HorizontalAlignment="Left" Margin="0 12 0 4" />
 
-        <Button Background="#BEE6FD" BorderBrush="#BEE6FD" Padding="16 8" FontSize="16" DockPanel.Dock="Top" Command="{Binding Dismiss}" Content="{Binding Caption}" HorizontalAlignment="Left" Margin="0 0 0 0" />
+        <CheckBox IsChecked="{Binding ShowUpdateScreen}" DockPanel.Dock="Top" Content="Display this information after each update" Margin="0 4" />
 
-        <Separator DockPanel.Dock="Top" Margin="0 10 " />
+        <Separator DockPanel.Dock="Top" Margin="0 8 " />
 
+        <Label Margin="0 0 0 8" DockPanel.Dock="Top" FontSize="24" Style="{StaticResource Label}" Content="What's new in version 2.0" />
         <TabControl 
+            Margin="16"
             SelectedIndex="0"
             mvvm:RegionManager.RegionName="{x:Static whatsNew:WhatsNewRegionNames.Master}">
             <TabControl.Style>
@@ -84,7 +86,7 @@
                                             </StackPanel>
                                         </Border>
                                         <Border DockPanel.Dock="Top">
-                                        <transitionContentControl:TransitioningContentControl 
+                                            <transitionContentControl:TransitioningContentControl 
                                                 x:Name="PART_SelectedContentHost" 
                                                 HorizontalContentAlignment="Stretch"
                                                 VerticalContentAlignment="Stretch"
@@ -100,5 +102,6 @@
                 </Style>
             </TabControl.Style>
         </TabControl>
+
     </DockPanel>
 </UserControl>
