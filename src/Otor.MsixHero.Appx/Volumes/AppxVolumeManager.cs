@@ -134,30 +134,29 @@ namespace Otor.MsixHero.Appx.Volumes
             {
                 return null;
             }
-
-            var baseType = item.BaseObject.GetType();
-            var name = (string)baseType.GetProperty("Name")?.GetValue(item.BaseObject);
-            var packageStorePath = (string)baseType.GetProperty("PackageStorePath")?.GetValue(item.BaseObject);
-
             
-
-
-
+            var name = (string)item.Properties.FirstOrDefault(p => p.Name == "Name")?.Value;
+            var packageStorePath = (string)item.Properties.FirstOrDefault(p => p.Name == "PackageStorePath")?.Value;
+            
             var letter = packageStorePath != null && packageStorePath.Length > 2 && packageStorePath[1] == ':' ? packageStorePath.Substring(0, 1) + ":\\" : null;
 
             var appxVolume = new AppxVolume { Name = name, PackageStorePath = packageStorePath };
 
-            if (letter != null)
+            if (letter == null)
             {
-                var drive = DriveInfo.GetDrives().First(d => d.RootDirectory.FullName.StartsWith(letter, StringComparison.OrdinalIgnoreCase));
-                if (drive != null)
-                {
-                    appxVolume.IsDriveReady = drive.IsReady;
-                    appxVolume.DiskLabel = drive.VolumeLabel;
-                    appxVolume.Capacity = drive.TotalSize;
-                    appxVolume.AvailableFreeSpace = drive.AvailableFreeSpace;
-                }
+                return appxVolume;
             }
+            
+            var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.RootDirectory.FullName.StartsWith(letter, StringComparison.OrdinalIgnoreCase));
+            if (drive == null)
+            {
+                return appxVolume;
+            }
+                
+            appxVolume.IsDriveReady = drive.IsReady;
+            appxVolume.DiskLabel = drive.VolumeLabel;
+            appxVolume.Capacity = drive.TotalSize;
+            appxVolume.AvailableFreeSpace = drive.AvailableFreeSpace;
 
             return appxVolume;
         }
