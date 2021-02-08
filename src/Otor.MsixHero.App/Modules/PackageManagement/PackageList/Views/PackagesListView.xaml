@@ -103,6 +103,11 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
+            <MenuItem Header="Change volume..." Command="{x:Static commands:MsixHeroCommands.ChangeVolume}" >
+                <MenuItem.Icon>
+                    <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallForward}" />
+                </MenuItem.Icon>
+            </MenuItem>
             <MenuItem Header="Remove for...">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemove}" />
