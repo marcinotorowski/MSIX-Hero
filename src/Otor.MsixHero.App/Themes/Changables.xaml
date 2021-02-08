@@ -51,6 +51,7 @@
     <Style TargetType="dialog:ChangeableDialog">
         <Setter Property="ShowShield" Value="False" />
         <Setter Property="Background" Value="#ffffff" />
+        <Setter Property="Foreground" Value="Black" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialog:ChangeableDialog">
@@ -92,7 +93,20 @@
 
                                     <TextBlock 
                                         Margin="8 0 0 0" 
-                                        Foreground="{DynamicResource SystemControlAcrylicWindowForegroundBrush}"
+                                        Foreground="White"
+                                        VerticalAlignment="Center" 
+                                        HorizontalAlignment="Left" 
+                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Title}">
+                                        <TextBlock.Effect>
+                                            <BlurEffect
+                                                Radius="2.0"
+                                                KernelType="Box"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+
+                                    <TextBlock 
+                                        Margin="8 0 0 0" 
+                                        Foreground="Black"
                                         VerticalAlignment="Center" 
                                         HorizontalAlignment="Left" 
                                         Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Title}" />

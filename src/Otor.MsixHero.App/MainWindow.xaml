@@ -17,7 +17,7 @@
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     mc:Ignorable="d"
     TintColor="#0173C7"
-    FallbackColor="#ccc"
+    FallbackColor="#eaeaea"
     TintOpacity="0.2"
     Margin="0"
     Padding="0"
@@ -27,8 +27,8 @@
     Height="800" 
     Width="1024">
     <Window.CommandBindings>
-        <CommandBinding Command="Help" Executed="HelpExecuted" /> 
-        <CommandBinding Command="Open" Executed="OpenExecuted" /> 
+        <CommandBinding Command="Help" Executed="HelpExecuted" />
+        <CommandBinding Command="Open" Executed="OpenExecuted" />
     </Window.CommandBindings>
     <fw:AcrylicWindow.Resources>
 
@@ -241,6 +241,7 @@
     <Grid>
         <ContentControl
             Margin="0"
+            Foreground="Black"
             Padding="0" regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}" />
         <controls:NotificationArea
             MaxItems="3"

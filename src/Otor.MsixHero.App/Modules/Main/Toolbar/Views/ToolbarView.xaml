@@ -37,6 +37,13 @@
                         KernelType="Box"/>
                 </TextBlock.Effect>
             </TextBlock>
+            <TextBlock Foreground="White" Text="{Binding Title, Converter={StaticResource UppercaseConverter}}">
+                <TextBlock.Effect>
+                    <BlurEffect
+                        Radius="2.0"
+                        KernelType="Box"/>
+                </TextBlock.Effect>
+            </TextBlock>
             <TextBlock Text="{Binding Title, Converter={StaticResource UppercaseConverter}}" />
         </Grid>
     </DockPanel>

@@ -28,7 +28,8 @@ namespace Otor.MsixHero.App.Controls
             // ReSharper disable once PossibleNullReferenceException
             this.TintColor = (Color)ColorConverter.ConvertFromString("#0173C7");
             this.TintOpacity = 0.2;
-            this.FallbackColor = Color.FromRgb(204, 204, 204);
+            this.Foreground = Brushes.Black;
+            this.FallbackColor = Color.FromRgb(234, 234, 234);
         }
 
         public IDialogResult Result { get; set; }
