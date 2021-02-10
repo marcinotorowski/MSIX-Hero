@@ -16,6 +16,7 @@
 
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Updates.Entities;
+using Otor.MsixHero.Appx.Updates.Entities.Appx;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 {
@@ -26,14 +27,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
             this.Type = type;
         }
 
-        public FileViewModel(ComparedFile changedFile) : this(FileType.Changed)
+        public FileViewModel(AppxFile changedFile) : this(FileType.Changed)
         {
             this.Name = changedFile.Name;
             this.UpdateImpact = changedFile.UpdateImpact;
             this.SizeDifference = changedFile.SizeDifference;
         }
 
-        public FileViewModel(FileType type, ComparedFile file) : this(type)
+        public FileViewModel(FileType type, AppxFile file) : this(type)
         {
             this.Name = file.Name;
             this.UpdateImpact = file.UpdateImpact;

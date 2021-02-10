@@ -1,8 +1,10 @@
-﻿namespace Otor.MsixHero.Appx.Updates.Entities
+﻿using Otor.MsixHero.Appx.Updates.Entities.Comparison;
+
+namespace Otor.MsixHero.Appx.Updates.Entities.Appx
 {
-    public class ComparedBlock
+    public class AppxBlock
     {
-        public ComparedBlock(string hash, long compressedSize)
+        public AppxBlock(string hash, long compressedSize)
         {
             this.Hash = hash;
             this.CompressedSize = compressedSize;

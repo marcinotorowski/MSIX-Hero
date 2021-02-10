@@ -1,6 +1,8 @@
-﻿namespace Otor.MsixHero.Appx.Updates.Entities
+﻿using Otor.MsixHero.Appx.Updates.Entities.Comparison;
+
+namespace Otor.MsixHero.Appx.Updates.Entities.Appx
 {
-    public class ComparedChart
+    public class LayoutBar
     {
         public long Position { get; set; }
         

@@ -1,4 +1,4 @@
-﻿namespace Otor.MsixHero.Appx.Updates.Entities
+﻿namespace Otor.MsixHero.Appx.Updates.Entities.Comparison
 {
     public abstract class BaseDuplicateFiles
     {

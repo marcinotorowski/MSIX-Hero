@@ -1,23 +1,28 @@
-﻿namespace Otor.MsixHero.Appx.Updates.Entities
-{
-    public class ComparisonResult : BaseCompared
-    {
-        public ComparedFiles NewFiles { get; set; }
+﻿using Otor.MsixHero.Appx.Updates.Entities.Appx;
+using Otor.MsixHero.Appx.Updates.Entities.Comparison;
 
-        public ComparedFiles DeletedFiles { get; set; }
-        
+namespace Otor.MsixHero.Appx.Updates.Entities
+{
+    public class ComparisonResult
+    {
+        public AddedFiles AddedFiles { get; set; }
+
+        public DeletedFiles DeletedFiles { get; set; }
+
+        public ChangedFiles ChangedFiles { get; set; }
+
+        public UnchangedFiles UnchangedFiles { get; set; }
+
         public ComparedDuplicateFiles DuplicateFiles { get; set; }
 
-        public ComparedFiles ChangedFiles { get; set; }
+        public long UpdateImpact { get; set; }
 
-        public ComparedFiles UnchangedFiles { get; set; }
+        public long ActualUpdateImpact { get; set; }
+
+        public long SizeDifference { get; set; }
+
+        public AppxBlockLayout OldPackageLayout { get; set; }
         
-        public long BaseTotalCompressedSize { get; set; }
-
-        public long TargetTotalCompressedSize { get; set; }
-
-        public ComparisonChart BaseChart { get; set; }
-
-        public ComparisonChart TargetChart { get; set; }
+        public AppxBlockLayout NewPackageLayout { get; set; }
     }
 }

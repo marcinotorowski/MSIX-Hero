@@ -1,21 +1,25 @@
 ﻿using System.Collections.Generic;
+using Otor.MsixHero.Appx.Updates.Entities.Comparison;
 
-namespace Otor.MsixHero.Appx.Updates.Entities
+namespace Otor.MsixHero.Appx.Updates.Entities.Appx
 {
-    public class ComparedFile
+    public class AppxFile
     {
-        public ComparedFile(string name, long uncompressedSize, IEnumerable<ComparedBlock> blocks = null)
+        public AppxFile(string name, long uncompressedSize, ushort headerSize = 30, IEnumerable<AppxBlock> blocks = null)
         {
             this.Name = name;
             this.UncompressedSize = uncompressedSize;
-            this.Blocks = blocks == null ? new List<ComparedBlock>() : new List<ComparedBlock>(blocks);
+            this.HeaderSize = headerSize;
+            this.Blocks = blocks == null ? new List<AppxBlock>() : new List<AppxBlock>(blocks);
         }
+
+        public ushort HeaderSize { get; }
 
         public string Name { get; }
 
         public long UncompressedSize { get; }
 
-        public IList<ComparedBlock> Blocks { get; }
+        public IList<AppxBlock> Blocks { get; }
 
         public long UpdateImpact { get; set; }
 
