@@ -92,10 +92,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                     var task = this.updateImpactAnalyzer.Analyze(this.Path1.CurrentValue, this.Path2.CurrentValue, cts.Token);
                     this.Progress.MonitorProgress(task, cts);
                     var result = await task.ConfigureAwait(false);
-
-                    result.OldPackage.Path = this.Path1.CurrentValue;
-                    result.NewPackage.Path = this.Path2.CurrentValue;
-
                     await this.Results.Load(Task.FromResult(new ComparisonViewModel(result))).ConfigureAwait(false);
                 }
             }

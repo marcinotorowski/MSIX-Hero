@@ -21,20 +21,21 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Otor.MsixHero.Appx.Updates.Entities.Blocks;
+using Otor.MsixHero.Appx.Updates.Entities;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
 {
     public class PackageBlocksControl : FrameworkElement, IDisposable
     {
-        public static readonly DependencyProperty BlocksProperty = DependencyProperty.Register("Blocks", typeof(IList<Block>), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(null, OnBlocksChanged));
+        public static readonly DependencyProperty BlocksProperty = DependencyProperty.Register("Blocks", typeof(IList<ComparedChart>), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(null, OnBlocksChanged));
         public static readonly DependencyProperty BrushAddedProperty = DependencyProperty.Register("BrushAdded", typeof(Brush), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(Brushes.ForestGreen, FrameworkPropertyMetadataOptions.AffectsRender));
         public static readonly DependencyProperty BrushDeletedProperty = DependencyProperty.Register("BrushDeleted", typeof(Brush), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(Brushes.Red, FrameworkPropertyMetadataOptions.AffectsRender));
+        public static readonly DependencyProperty BrushDuplicatedProperty = DependencyProperty.Register("BrushDuplicated", typeof(Brush), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(Brushes.DodgerBlue, FrameworkPropertyMetadataOptions.AffectsRender));
         public static readonly DependencyProperty BrushChangedProperty = DependencyProperty.Register("BrushChanged", typeof(Brush), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(Brushes.Orange, FrameworkPropertyMetadataOptions.AffectsRender));
         public static readonly DependencyProperty BackgroundProperty = DependencyProperty.Register("Background", typeof(Brush), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(Brushes.LightGray, FrameworkPropertyMetadataOptions.AffectsRender));
         public static readonly DependencyProperty ReferenceLengthProperty = DependencyProperty.Register("ReferenceLength", typeof(long), typeof(PackageBlocksControl), new FrameworkPropertyMetadata(0L, FrameworkPropertyMetadataOptions.AffectsRender));
 
-        private ObservableCollection<Block> observable;
+        private ObservableCollection<ComparedChart> observable;
 
         ~PackageBlocksControl()
         {
@@ -45,6 +46,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
         {
             get => (Brush)GetValue(BrushChangedProperty);
             set => SetValue(BrushChangedProperty, value);
+        }
+        
+        public Brush BrushDuplicated
+        {
+            get => (Brush)GetValue(BrushDuplicatedProperty);
+            set => SetValue(BrushDuplicatedProperty, value);
         }
         
         public long ReferenceLength
@@ -71,9 +78,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
             set => SetValue(BackgroundProperty, value);
         }
         
-        public IList<Block> Blocks
+        public IList<ComparedChart> Blocks
         {
-            get => (IList<Block>)GetValue(BlocksProperty);
+            get => (IList<ComparedChart>)GetValue(BlocksProperty);
             set => SetValue(BlocksProperty, value);
         }
 
@@ -85,7 +92,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
                 return;
             }
 
-            var sum = this.Blocks.Sum(b => b.Length);
+            var sum = this.Blocks.Last().Position + this.Blocks.Last().Size;
             var totalBlockSize = Math.Max(sum, this.ReferenceLength);
 
             var pen = new Pen(Brushes.Transparent, 0);
@@ -105,27 +112,27 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
                 var block = this.Blocks[i];
 
                 Brush brush;
-
-                var allBlocks = this.Blocks.Skip(i).TakeWhile(b => b.BlockType == block.BlockType).Select(b => b.Length).ToList();
-                i += allBlocks.Count;
-
-                switch (block.BlockType)
+                
+                switch (block.Status)
                 {
-                    case BlockType.Changed:
+                    case ComparisonStatus.Changed:
                         brush = this.BrushChanged;
                         break;
-                    case BlockType.Deleted:
+                    case ComparisonStatus.Old:
                         brush = this.BrushDeleted;
                         break;
-                    case BlockType.Added:
+                    case ComparisonStatus.New:
                         brush = this.BrushAdded;
+                        break;
+                    case ComparisonStatus.Duplicate:
+                        brush = this.BrushDuplicated;
                         break;
                     default:
                         continue;
                 }
 
                 var beginDraw = new Point(this.RenderSize.Width * block.Position / totalBlockSize, 0);
-                var size = new Size(Math.Max(1, this.RenderSize.Width * allBlocks.Sum() / totalBlockSize), this.RenderSize.Height);
+                var size = new Size(Math.Max(1, this.RenderSize.Width * block.Size / totalBlockSize), this.RenderSize.Height);
                 drawingContext.DrawRectangle(brush, pen, new Rect(beginDraw, size));
             }
         }
@@ -156,14 +163,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
 
         private static void OnBlocksChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue is ObservableCollection<Block> oldObservable)
+            if (e.OldValue is ObservableCollection<ComparedChart> oldObservable)
             {
                 var that = (PackageBlocksControl)d;
                 oldObservable.CollectionChanged -= that.ObservableOnCollectionChanged;
                 that.observable = null;
             }
 
-            if (e.NewValue is ObservableCollection<Block> observable)
+            if (e.NewValue is ObservableCollection<ComparedChart> observable)
             {
                 var that = (PackageBlocksControl) d;
                 that.observable = observable;

@@ -24,17 +24,15 @@ using System.Windows.Data;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Updates.Entities;
-using Otor.MsixHero.Appx.Updates.Entities.Blocks;
-using Otor.MsixHero.Appx.Updates.Serialization.ComparePackage;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 {
     public class ComparisonViewModel : NotifyPropertyChanged
     {
-        private readonly UpdateImpactResult model;
+        private readonly ComparisonResult model;
         private UpdateImpactViewFilter updateImpactViewFilter;
 
-        public ComparisonViewModel(UpdateImpactResult model)
+        public ComparisonViewModel(ComparisonResult model)
         {
             this.model = model;
             this.Files = new ObservableCollection<FileViewModel>();
@@ -93,26 +91,34 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 
         public PackageContentDetailsViewModel Content2 { get; private set; }
 
-        public ICollection<Block> NewBlocks { get; private set; }
+        public ICollection<ComparedChart> NewBlocks { get; private set; }
 
-        public ICollection<Block> OldBlocks { get; private set; }
+        public ICollection<ComparedChart> OldBlocks { get; private set; }
+
+        public ICollection<ComparedChart> NewFiles { get; private set; }
+
+        public ICollection<ComparedChart> OldFiles { get; private set; }
         
         public long OldBlocksSize { get; private set; }
 
         public long NewBlocksSize { get; private set; }
+        
+        public long OldFilesSize { get; private set; }
+
+        public long NewFilesSize { get; private set; }
 
         public ObservableCollection<FileViewModel> Files { get; }
 
-        private Task<IList<FileViewModel>> LoadFiles(UpdateImpactResult updateImpact)
+        private Task<IList<FileViewModel>> LoadFiles(ComparisonResult updateImpact)
         {
             return Task.Run(() =>
             {
                 var col = new List<FileViewModel>();
 
-                var deleted = updateImpact.Comparison?.Package?.DeletedFiles?.Items ?? Enumerable.Empty<File>();
-                var unchanged = updateImpact.Comparison?.Package?.UnchangedFiles?.Items ?? Enumerable.Empty<File>();
-                var changed = updateImpact.Comparison?.Package?.ChangedFiles?.Items ?? Enumerable.Empty<ChangedFile>();
-                var added = updateImpact.Comparison?.Package?.AddedFiles?.Items ?? Enumerable.Empty<File>();
+                var deleted = updateImpact.DeletedFiles?.Files ?? Enumerable.Empty<ComparedFile>();
+                var unchanged = updateImpact.UnchangedFiles?.Files ?? Enumerable.Empty<ComparedFile>();
+                var changed = updateImpact.ChangedFiles?.Files ?? Enumerable.Empty<ComparedFile>();
+                var added = updateImpact.NewFiles?.Files ?? Enumerable.Empty<ComparedFile>();
 
                 col.AddRange(deleted.Select(deletedFile => new FileViewModel(FileType.Deleted, deletedFile)));
                 col.AddRange(added.Select(addedFile => new FileViewModel(FileType.Added, addedFile)));
@@ -134,43 +140,50 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
             this.Files.AddRange(results.Result);
         }
 
-        private void SetValues(UpdateImpactResult updateImpact)
+        private void SetValues(ComparisonResult comparePackage)
         {
 #pragma warning disable 4014
-            var task = this.LoadFiles(updateImpact);
+            var task = this.LoadFiles(comparePackage);
             task.ContinueWith(this.LoadView, CancellationToken.None, TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
 #pragma warning restore 4014
 
-            this.Content1 = new PackageContentDetailsViewModel(updateImpact.OldPackage.Manifest, updateImpact.OldPackage.Path);
-            this.Content2 = new PackageContentDetailsViewModel(updateImpact.NewPackage.Manifest, updateImpact.NewPackage.Path);
+            // this.Content1 = new PackageContentDetailsViewModel(updateImpact.OldPackage.Manifest, updateImpact.OldPackage.Path);
+            // this.Content2 = new PackageContentDetailsViewModel(updateImpact.NewPackage.Manifest, updateImpact.NewPackage.Path);
+            
+            this.NewTotalSize = comparePackage.TargetTotalSize;
+            this.OldTotalSize = comparePackage.BaseTotalSize;
 
-            var comparePackage = updateImpact.Comparison;
+            this.DeletedFilesSize = comparePackage.DeletedFiles.BaseTotalSize;
+            this.AddedFilesSize = comparePackage.NewFiles.TargetTotalSize;
+            this.UnchangedFilesSize = comparePackage.UnchangedFiles.TargetTotalSize;
+            this.ChangedFilesNewSize = comparePackage.ChangedFiles.TargetTotalSize;
+            this.ChangedFilesOldSize = comparePackage.ChangedFiles.BaseTotalSize;
 
-            this.NewTotalSize = comparePackage.Package.Size;
-            this.OldTotalSize = comparePackage.Package.Size - comparePackage.Package.SizeDifference;
+            this.AddedFilesCount = comparePackage.NewFiles.Files.Count;
+            this.DeletedFilesCount = comparePackage.DeletedFiles.Files.Count;
+            this.ChangedFileCount = comparePackage.ChangedFiles.Files.Count;
+            this.UnchangedFilesCount = comparePackage.UnchangedFiles.Files.Count;
 
-            this.DeletedFilesSize = comparePackage.Package.DeletedSize;
-            this.AddedFilesSize = comparePackage.Package.AddedSize;
-            this.UnchangedFilesSize = comparePackage.Package.UnchangedFiles.Size;
-            this.ChangedFilesNewSize = comparePackage.Package.Size - comparePackage.Package.AddedSize - comparePackage.Package.UnchangedFiles.Size;
-            this.ChangedFilesOldSize = this.ChangedFilesNewSize - comparePackage.Package.ChangedFiles.SizeDifference;
+            this.NetSizeDifference = comparePackage.SizeDifference;
+            this.RequiredDownload = comparePackage.UpdateImpact;
 
-            this.AddedFilesCount = comparePackage.Package.AddedFiles.Items.Count;
-            this.DeletedFilesCount = comparePackage.Package.DeletedFiles.Items.Count;
-            this.ChangedFileCount = comparePackage.Package.ChangedFiles.Items.Count;
-            this.UnchangedFilesCount = comparePackage.Package.UnchangedFiles.Items.Count;
+            this.OldCompressedSize = comparePackage.BaseTotalCompressedSize;
+            this.NewCompressedSize = comparePackage.TargetTotalCompressedSize;
 
-            this.NetSizeDifference = comparePackage.Package.SizeDifference;
-            this.RequiredDownload = comparePackage.Package.UpdateImpact;
+            this.OldBlocks = comparePackage.BaseChart.Blocks;
+            this.NewBlocks = comparePackage.TargetChart.Blocks;
 
-            this.OldCompressedSize = updateImpact.OldPackage?.Size;
-            this.NewCompressedSize = updateImpact.NewPackage?.Size;
+            this.OldFiles = comparePackage.BaseChart.Files;
+            this.NewFiles = comparePackage.TargetChart.Files;
 
-            this.OldBlocks = updateImpact.OldPackage.Blocks;
-            this.NewBlocks = updateImpact.NewPackage.Blocks;
+            this.OldBlocksSize = comparePackage.DeletedFiles.Files.SelectMany(f => f.Blocks).Where(b => b.Status == ComparisonStatus.Old).Sum(b => b.CompressedSize) +
+                                 comparePackage.ChangedFiles.Files.SelectMany(f => f.Blocks).Where(b => b.Status == ComparisonStatus.Old).Sum(b => b.CompressedSize);
+            
+            this.NewBlocksSize = comparePackage.NewFiles.Files.SelectMany(f => f.Blocks).Where(b => b.Status == ComparisonStatus.New).Sum(b => b.CompressedSize) +
+                                 comparePackage.ChangedFiles.Files.SelectMany(f => f.Blocks).Where(b => b.Status == ComparisonStatus.New).Sum(b => b.CompressedSize);
 
-            this.OldBlocksSize = this.OldBlocks.Sum(b => b.Length);
-            this.NewBlocksSize = this.NewBlocks.Sum(b => b.Length);
+            this.OldFilesSize = comparePackage.BaseTotalSize;
+            this.NewFilesSize = comparePackage.TargetTotalSize;
         }
 
         private bool FilterFiles(object obj)

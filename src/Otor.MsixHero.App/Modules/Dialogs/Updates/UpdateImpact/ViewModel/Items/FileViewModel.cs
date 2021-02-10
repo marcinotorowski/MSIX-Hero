@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Updates.Serialization.ComparePackage;
+using Otor.MsixHero.Appx.Updates.Entities;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 {
@@ -26,18 +26,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
             this.Type = type;
         }
 
-        public FileViewModel(ChangedFile changedFile) : this(FileType.Changed)
+        public FileViewModel(ComparedFile changedFile) : this(FileType.Changed)
         {
             this.Name = changedFile.Name;
             this.UpdateImpact = changedFile.UpdateImpact;
             this.SizeDifference = changedFile.SizeDifference;
         }
 
-        public FileViewModel(FileType type, File file) : this(type)
+        public FileViewModel(FileType type, ComparedFile file) : this(type)
         {
             this.Name = file.Name;
             this.UpdateImpact = file.UpdateImpact;
-            this.SizeDifference = type == FileType.Unchanged ? 0 : file.Size;
+            this.SizeDifference = type == FileType.Unchanged ? 0 : file.SizeDifference;
         }
 
         public FileType Type { get; }

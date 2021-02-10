@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Updates.Entities;
@@ -22,6 +23,6 @@ namespace Otor.MsixHero.Appx.Updates
 {
     public interface IAppxUpdateImpactAnalyzer
     {
-        Task<UpdateImpactResult> Analyze(string package1Path, string package2Path, CancellationToken cancellationToken = default);
+        Task<ComparisonResult> Analyze(string file1, string file2, CancellationToken cancellationToken = default);
     }
 }
