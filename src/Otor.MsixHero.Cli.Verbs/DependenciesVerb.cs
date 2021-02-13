@@ -18,19 +18,10 @@ using CommandLine;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("dependencies", HelpText = "Creates a bitmap representing package dependencies")]
+    [Verb("dependencies", HelpText = "Creates a list of relations between package dependencies, including nested dependencies, add-ons and system dependencies.")]
     public class DependenciesVerb : BaseVerb
     {
-        [Option('p', "package", HelpText = "The path to the package.", Required = true)]
+        [Value(1, HelpText = "The path to the package.", Required = true)]
         public string Path { get; set; }
-        
-        [Option('o', "output", HelpText = "The output path (full path with extension .PNG).", Required = true)]
-        public string Output { get; set; }
-
-        [Option('w', "width", HelpText = "The width (in px).", Required = false)]
-        public double? Width { get; set; }
-
-        [Option('h', "height", HelpText = "The height (in px).", Required = false)]
-        public double? Height { get; set; }
     }
 }
