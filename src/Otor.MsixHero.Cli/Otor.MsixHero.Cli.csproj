@@ -10,7 +10,7 @@
     <Authors>Marcin Otorowski</Authors>
     <Product>MSIX Hero CLI</Product>
     <Description>Command Line Interface for MSIX Hero</Description>
-    <Copyright>(C) 2020 by Marcin Otorowski</Copyright>
+    <Copyright>(C) 2021 by Marcin Otorowski</Copyright>
     <PackageId>MSIX Hero Command Line Interface</PackageId>
     <PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
