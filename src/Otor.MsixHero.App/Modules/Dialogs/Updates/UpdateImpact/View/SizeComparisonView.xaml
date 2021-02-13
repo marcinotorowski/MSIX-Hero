@@ -26,41 +26,71 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="56" />
             </Grid.RowDefinitions>
 
-            <!--<Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />-->
+            <Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />
             <Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />
             <Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />
             <Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="3" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />
-            <Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />
-            <Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />
+            <!--<Border Margin="-8 0" Height="1" SnapsToDevicePixels="True" UseLayoutRounding="True" Grid.ColumnSpan="9" Grid.Column="0" Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Background="#ddd" />-->
 
-            <!--<TextBlock VerticalAlignment="Center" Padding="15 20" Text="Package size" Grid.Column="4" Grid.Row="0" TextAlignment="Center" />-->
-            <TextBlock VerticalAlignment="Center" Padding="15 20" Text="Uncompressed file size" Grid.Column="4" Grid.Row="1" TextAlignment="Center" />
-            <TextBlock VerticalAlignment="Center" Padding="15 20" Text="Removed / added files" Grid.Column="4" Grid.Row="2" TextAlignment="Center" />
-            <TextBlock VerticalAlignment="Center" Padding="15 20" Text="Unchanged files" Grid.Column="4" Grid.Row="3" TextAlignment="Center" />
-            <TextBlock VerticalAlignment="Center" Padding="15 20" Text="Changed files" Grid.Column="4" Grid.Row="4" TextAlignment="Center" />
-            <TextBlock VerticalAlignment="Center" Padding="15 20" Text="Duplicated files" Grid.Column="4" Grid.Row="5" TextAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" Padding="15 0" Text="Removed files" Grid.Column="4" Grid.Row="0" TextAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" Padding="15 0" Text="Added files" Grid.Column="4" Grid.Row="1" TextAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" Padding="15 0" Text="Unchanged files" Grid.Column="4" Grid.Row="2" TextAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" Padding="15 0" Text="Changed files" Grid.Column="4" Grid.Row="3" TextAlignment="Center" />
+            <TextBlock VerticalAlignment="Center" Padding="15 0" Text="∑ Total" Grid.Column="4" Grid.Row="4" TextAlignment="Center" />
+
+            <TextBlock VerticalAlignment="Center" Padding="15 0" Text="Duplicated files" Grid.Column="4" Grid.Row="6" TextAlignment="Center" />
 
             <Label 
                 Style="{StaticResource Label}" 
                 VerticalAlignment="Center" 
                 Margin="0" 
-                Content="{Binding ComparisonModel.OldPackageLayout.FileSize, Converter={StaticResource SizeConverter}}" 
+                Content="-" 
+                Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" />
+
+            <Label 
+                Style="{StaticResource Label}" 
+                VerticalAlignment="Center" 
+                Margin="0" 
+                Content="-" 
                 Grid.Column="2" Grid.Row="1" HorizontalContentAlignment="Center" />
 
-            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="1"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Label 
+                Style="{StaticResource Label}" 
+                VerticalAlignment="Center" 
+                Margin="0" 
+                Content="-" 
+                Grid.Column="6" Grid.Row="0" HorizontalContentAlignment="Center" />
+
+            <Label 
+                Style="{StaticResource Label}" 
+                VerticalAlignment="Center" 
+                Margin="0" 
+                Content="-" 
+                Grid.Column="7" Grid.Row="0" HorizontalContentAlignment="Center" />
+
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="4" VerticalAlignment="Center">
+                <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.OldPackageLayout.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
+                <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
+                    <Run Text="in" />
+                    <Run Text="{Binding ComparisonModel.OldPackageLayout.FileCount, Mode=OneWay}" />
+                    <Run Text="files" />
+                </TextBlock>
+            </StackPanel>
+
+            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="4"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center" Content="100%" />
             </Border>
 
-            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#33ff0000">
+            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="0"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#33ff0000">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -70,7 +100,7 @@
                     </Label.Content>
                 </Label>
             </Border>
-            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="3"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#ddd">
+            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#ddd">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -80,7 +110,7 @@
                     </Label.Content>
                 </Label>
             </Border>
-            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="4"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#FFDAAD">
+            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="3"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#FFDAAD">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -90,7 +120,7 @@
                     </Label.Content>
                 </Label>
             </Border>
-            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="5"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="AliceBlue">
+            <Border Margin="0 0 16 0" Padding="16 0" Grid.Column="1" Grid.Row="6"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="AliceBlue">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -101,10 +131,10 @@
                 </Label>
             </Border>
 
-            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="1"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="4"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="100%" HorizontalContentAlignment="Center" />
             </Border>
-            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#3300ff00">
+            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="1"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#3300ff00">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -114,7 +144,7 @@
                     </Label.Content>
                 </Label>
             </Border>
-            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="3"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#ddd">
+            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="2"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#ddd">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -124,7 +154,7 @@
                     </Label.Content>
                 </Label>
             </Border>
-            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="4"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#FFDAAD">
+            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="3"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#FFDAAD">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -134,7 +164,7 @@
                     </Label.Content>
                 </Label>
             </Border>
-            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="5"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="AliceBlue">
+            <Border Margin="16 0 0 0" Padding="16 0" Grid.Column="7" Grid.Row="6"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="AliceBlue">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" HorizontalContentAlignment="Center">
                     <Label.Content>
                         <MultiBinding Converter="{StaticResource PercentConverter}">
@@ -145,7 +175,7 @@
                 </Label>
             </Border>
 
-            <StackPanel Grid.Column="2" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.DeletedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />
@@ -154,7 +184,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="3" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="2" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.UnchangedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />
@@ -163,7 +193,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="4" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="3" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" Content="{Binding ComparisonModel.ChangedFiles.OldPackageFileSize, Converter={StaticResource SizeConverter}}" Margin="0" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />
@@ -172,7 +202,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="5" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="6" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" Content="{Binding ComparisonModel.OldPackageDuplication.FileSize, Converter={StaticResource SizeConverter}}" Margin="0" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />
@@ -181,10 +211,16 @@
                 </TextBlock>
             </StackPanel>
 
-            <!--<Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.NewPackageLayout.Size, Converter={StaticResource SizeConverter}}" Grid.Column="6" Grid.Row="0" HorizontalContentAlignment="Center" />-->
-            <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.NewPackageLayout.FileSize, Converter={StaticResource SizeConverter}}" Grid.Column="6" Grid.Row="1" HorizontalContentAlignment="Center" />
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="4" VerticalAlignment="Center">
+                <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.NewPackageLayout.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
+                <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
+                    <Run Text="in" />
+                    <Run Text="{Binding ComparisonModel.NewPackageLayout.FileCount, Mode=OneWay}" />
+                    <Run Text="files" />
+                </TextBlock>
+            </StackPanel>
 
-            <StackPanel Grid.Column="6" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Grid.Column="6" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.AddedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                             <Run Text="in" />
@@ -193,7 +229,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="3" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="2" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.UnchangedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />
@@ -202,7 +238,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="4" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="3" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.ChangedFiles.OldPackageFileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />
@@ -211,7 +247,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="5" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="6" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.NewPackageDuplication.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
                                                     <Run Text="in" />

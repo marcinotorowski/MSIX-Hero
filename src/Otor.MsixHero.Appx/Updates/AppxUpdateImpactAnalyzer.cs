@@ -23,12 +23,18 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates.Entities;
+using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Updates
 {
     public class AppxUpdateImpactAnalyzer : IAppxUpdateImpactAnalyzer
     {
-        public async Task<UpdateImpactResults> Analyze(string package1Path, string package2Path, bool ignoreVersionCheck = false, CancellationToken cancellationToken = default)
+        public async Task<UpdateImpactResults> Analyze(
+            string package1Path,
+            string package2Path,
+            bool ignoreVersionCheck = false,
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progressReporter = default)
         {
             var type1 = GetPackageTypeFromFile(package1Path);
             if (type1 == PackageType.Unsupported)
@@ -51,7 +57,7 @@ namespace Otor.MsixHero.Appx.Updates
                     case PackageType.Msix:
                     {
                         var comparer = new MsixUpdateImpactAnalyzer();
-                        var result = await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        var result = await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken, progressReporter).ConfigureAwait(false);
                         result.OldPackage = package1Path;
                         result.NewPackage = package2Path;
                         return result;
@@ -62,7 +68,7 @@ namespace Otor.MsixHero.Appx.Updates
                         var comparer = new AppxBlockMapUpdateImpactAnalyzer();
                         var appxBlock1 = Path.Join(Path.GetDirectoryName(package1Path), "AppxBlockMap.xml");
                         var appxBlock2 = Path.Join(Path.GetDirectoryName(package2Path), "AppxBlockMap.xml");
-                        var result = await comparer.Analyze(appxBlock1, appxBlock2, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        var result = await comparer.Analyze(appxBlock1, appxBlock2, ignoreVersionCheck, cancellationToken, progressReporter).ConfigureAwait(false);
                         result.OldPackage = package1Path;
                         result.NewPackage = package2Path;
                         return result;
@@ -71,7 +77,7 @@ namespace Otor.MsixHero.Appx.Updates
                     case PackageType.Bundle:
                     {
                         var comparer = new BundleUpdateImpactAnalyzer();
-                        var result =await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        var result =await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken, progressReporter).ConfigureAwait(false);
                         result.OldPackage = package1Path;
                         result.NewPackage = package2Path;
                         return result;
@@ -80,7 +86,7 @@ namespace Otor.MsixHero.Appx.Updates
                     case PackageType.AppxBlockMap:
                     {
                         var comparer = new AppxBlockMapUpdateImpactAnalyzer();
-                        var result = await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        var result = await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken, progressReporter).ConfigureAwait(false);
                         result.OldPackage = package1Path;
                         result.NewPackage = package2Path;
                         return result;
@@ -158,7 +164,7 @@ namespace Otor.MsixHero.Appx.Updates
                     }
 
                     var comparer = new AppxBlockMapUpdateImpactAnalyzer();
-                    var result = await comparer.Analyze(appxBlock1, appxBlock2, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                    var result = await comparer.Analyze(appxBlock1, appxBlock2, ignoreVersionCheck, cancellationToken, progressReporter).ConfigureAwait(false);
                     result.OldPackage = package1Path;
                     result.NewPackage = package2Path;
                     return result;

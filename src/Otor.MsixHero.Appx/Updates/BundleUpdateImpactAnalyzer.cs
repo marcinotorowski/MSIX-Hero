@@ -20,12 +20,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates.Entities;
+using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Updates
 {
     public class BundleUpdateImpactAnalyzer : IAppxUpdateImpactAnalyzer
     {
-        public Task<UpdateImpactResults> Analyze(string msixBundlePath1, string msixBundlePath2, bool ignoreVersionCheck = false, CancellationToken cancellationToken = default)
+        public Task<UpdateImpactResults> Analyze(
+            string msixBundlePath1, 
+            string msixBundlePath2, 
+            bool ignoreVersionCheck = false, 
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progressReporter = default)
         {
             if (msixBundlePath1 == null)
             {

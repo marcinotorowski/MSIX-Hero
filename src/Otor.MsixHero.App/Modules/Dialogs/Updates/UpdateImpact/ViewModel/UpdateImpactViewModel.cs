@@ -63,6 +63,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             this.Compare = new DelegateCommand(this.CompareExecuted);
             this.IsValidated = false;
             this.Export = new DelegateCommand(this.OnExport, this.CanExport);
+            this.New = new DelegateCommand(this.OnNew);
             
             this.Path1.ValueChanged += this.Path1OnValueChanged;
             this.Path2.ValueChanged += this.Path2OnValueChanged;
@@ -83,6 +84,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             this.Results.CurrentValue.Export(selectedFile);
         }
 
+        private void OnNew()
+        {
+            if (this.Results.CurrentValue == null)
+            {
+                return;
+            }
+            
+            this.Results.Reset();
+        }
+
         public ICommand Compare { get; }
         
         public ChangeableFileProperty Path1 { get; }
@@ -96,6 +107,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
         public ProgressProperty Progress { get; } = new ProgressProperty();
 
         public ChangeableProperty<ComparisonViewModel> Results { get; } = new ChangeableProperty<ComparisonViewModel>();
+        
+        public ICommand New { get; set; }
         
         public ICommand Export { get; set; }
         
@@ -132,11 +145,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
 
                 var task1 = manifestParser.Read(file1, cts.Token);
                 var task2 = manifestParser.Read(file2, cts.Token);
-                var taskCompare = this.updateImpactAnalyzer.Analyze(this.Path1.CurrentValue, this.Path2.CurrentValue, ignorePackageVersionError, cts.Token);
+
+                var progress = new Progress<ProgressData>();
+                var taskCompare = this.updateImpactAnalyzer.Analyze(this.Path1.CurrentValue, this.Path2.CurrentValue, ignorePackageVersionError, cts.Token, progress);
 
                 var taskComplete = Task.WhenAll(task1, task2, taskCompare);
 
-                this.Progress.MonitorProgress(taskComplete, cts);
+                this.Progress.MonitorProgress(taskComplete, cts, progress);
                 await taskComplete.ConfigureAwait(false);
                 var result = await taskCompare.ConfigureAwait(false);
 

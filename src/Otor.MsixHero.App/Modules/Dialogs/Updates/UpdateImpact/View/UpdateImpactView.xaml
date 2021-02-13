@@ -6,10 +6,7 @@
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:packageHeader="clr-namespace:Otor.MsixHero.App.Controls.PackageHeader"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View"
-             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              mc:Ignorable="d" 
@@ -27,6 +24,7 @@
     </mvvm:Dialog.WindowStyle>
     <commands:RoutedCommandHandlers.Commands>
         <commands:RoutedCommandHandler RoutedCommand="Save" Command="{Binding Export}" />
+        <commands:RoutedCommandHandler RoutedCommand="New" Command="{Binding New}" />
     </commands:RoutedCommandHandlers.Commands>
     <UserControl.Resources>
         <ResourceDictionary>
@@ -49,7 +47,10 @@
             </DataTemplate>
         </dialog:ChangeableDialog.DialogContentTemplate>
         <dialog:ChangeableDialog.Footer>
-            <Button IsEnabled="{Binding Results.HasValue}" Content="Export to XML..." Command="Save" VerticalAlignment="Center" />
+            <StackPanel Visibility="{Binding Results.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="New comparison" Command="New" VerticalAlignment="Center" Margin="0 0 4 0" />
+                <Button Content="Export to XML..." Command="Save" VerticalAlignment="Center" />
+            </StackPanel>
         </dialog:ChangeableDialog.Footer>
     </dialog:ChangeableDialog>
 </UserControl>

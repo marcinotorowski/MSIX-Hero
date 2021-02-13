@@ -112,7 +112,7 @@
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Size comparison">
-                    <ScrollViewer>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <view:SizeComparisonView />
                     </ScrollViewer>
                 </TabItem>
