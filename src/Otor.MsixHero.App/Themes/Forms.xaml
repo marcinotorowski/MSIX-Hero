@@ -16,6 +16,9 @@
             <Trigger Property="IsReadOnly" Value="True">
                 <Setter Property="Background" Value="#eeeeee" />
             </Trigger>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="Background" Value="#FFEEC6" />
+            </Trigger>
         </Style.Triggers>
     </Style>
 
@@ -25,6 +28,11 @@
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="Background" Value="#FFEEC6" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="CheckBox" x:Key="{x:Type CheckBox}">
@@ -44,6 +52,11 @@
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="Background" Value="#FFEEC6" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="ComboBox" x:Key="{x:Type ComboBox}">
@@ -52,6 +65,11 @@
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="Background" Value="#FFEEC6" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="TextBox" x:Key="DataValueTextBlock" BasedOn="{StaticResource TextBlock}">

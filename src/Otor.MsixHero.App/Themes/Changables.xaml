@@ -226,8 +226,22 @@
                                     <Grid Background="White">
 
                                         <DockPanel>
-                                            <Border Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#22FF0000" Padding="8" DockPanel.Dock="Bottom">
-                                                <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Error}" VerticalAlignment="Center" />
+                                            <Border Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#FFE39E" Padding="8" DockPanel.Dock="Bottom">
+
+                                                <DockPanel>
+                                                    <Border
+                                                        DockPanel.Dock="Left"
+                                                        VerticalAlignment="Center"
+                                                        Margin="0 0 8 0"
+                                                        CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
+                                                        <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                                                    </Border>
+
+                                                    <TextBlock 
+                                                        VerticalAlignment="Center"
+                                                        DockPanel.Dock="Right"
+                                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.Error}" />
+                                                </DockPanel>
                                             </Border>
 
                                             <ContentPresenter 

@@ -45,7 +45,7 @@
     </UserControl.CommandBindings>
 
     <DockPanel>
-        <Border Background="Transparent" DockPanel.Dock="Top">
+        <Border Background="Transparent" TextBlock.Foreground="Black" DockPanel.Dock="Top">
             <DockPanel>
                 <Border 
                     Width="42"
@@ -78,7 +78,18 @@
                     </TextBlock>
                     <TextBlock 
                         Margin="8 0 0 0" 
-                        Foreground="{DynamicResource SystemControlAcrylicWindowForegroundBrush}"
+                        Foreground="White"
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Left" 
+                        Text="SETTINGS - MSIX HERO">
+                        <TextBlock.Effect>
+                            <BlurEffect
+                                Radius="2.0"
+                                KernelType="Box"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock 
+                        Margin="8 0 0 0" 
                         VerticalAlignment="Center" 
                         HorizontalAlignment="Left" 
                         Text="SETTINGS - MSIX HERO" />
@@ -98,28 +109,46 @@
             </StackPanel>
         </Border>
 
-        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"  Background="#FFDDDD" Padding="8" DockPanel.Dock="Bottom">
-            <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
+        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"  Background="#FFE39E" Padding="8" DockPanel.Dock="Bottom">
+            <DockPanel>
+                <Border
+                    DockPanel.Dock="Left"
+                    VerticalAlignment="Center"
+                    Margin="0 0 8 0"
+                    CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
+                    <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                </Border>
+
+                <TextBlock Text="{Binding AllSettings.ValidationMessage}" VerticalAlignment="Center" />
+            </DockPanel>
+            
         </Border>
 
         <Border Background="White">
-            <TabControl SelectedIndex="1" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
-                <TabItem Visibility="Collapsed" Header="General">
+            <TabControl SelectedIndex="0" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
+                <TabItem Header="Interface">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <UniformGrid HorizontalAlignment="Left" Rows="1" Columns="2">
-                            <Border Margin="0 0 8 8">
-                                <StackPanel>
-                                    <Image Source="Images/sidebar.png" Stretch="None" />
-                                    <RadioButton IsChecked="{Binding SidebarDefaultState.CurrentValue}" GroupName="g1" Content="With sidebar" Margin="0 8 0 0" />
-                                </StackPanel>
-                            </Border>
-                            <Border Margin="0 0 8 8">
-                                <StackPanel>
-                                    <Image Source="Images/no-sidebar.png" Stretch="None" />
-                                    <RadioButton IsChecked="{Binding SidebarDefaultState.CurrentValue, Converter={StaticResource NegativeConverter}}" Content="Without sidebar" Margin="0 8 0 0" />
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
+                        <StackPanel>
+                            <Label Style="{StaticResource FormLabel}">Start-up</Label>
+
+                            <TextBlock Style="{StaticResource DataHeader}" Text="Initial screen" Margin="0  0 0 6" />
+                            <ComboBox 
+                                SelectedValuePath="Tag"
+                                SelectedValue="{Binding DefaultScreen.CurrentValue}">
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Dashboard}">Tools dashboard</ComboBoxItem>
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Packages}">Packages</ComboBoxItem>
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Volumes}">Volumes</ComboBoxItem>
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Events}">Event viewer</ComboBoxItem>
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.System}">System state</ComboBoxItem>
+                            </ComboBox>
+
+                            <TextBlock Text="Release notes" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <CheckBox IsChecked="{Binding ShowReleaseNotes.CurrentValue}" Content="Show Release Notes after each update of MSIX Hero" />
+
+                            <Label Style="{StaticResource FormLabel}" Margin="0 20 0 6">Prompts</Label>
+
+                            <CheckBox IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="Confirm removal of items" />
+                        </StackPanel>
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Signing">
@@ -261,36 +290,40 @@
                                     <DataTemplate DataType="{x:Type tools:ToolViewModel}">
                                         <DockPanel>
                                             <Image x:Name="PART_Image" Width="24" Height="24" 
-                                           Stretch="UniformToFill" 
-                                           SnapsToDevicePixels="True" 
-                                           UseLayoutRounding="True" 
-                                           VerticalAlignment="Center" 
-                                           Margin="0 0 6 0">
+                                               Stretch="UniformToFill" 
+                                               SnapsToDevicePixels="True" 
+                                               UseLayoutRounding="True" 
+                                               VerticalAlignment="Center" 
+                                               Margin="0 0 6 0">
                                                 <Image.Source>
                                                     <Binding Path="Image" />
                                                 </Image.Source>
                                             </Image>
 
                                             <Viewbox 
-                                        Visibility="Collapsed" 
-                                        Width="24" 
-                                        Height="24" 
-                                        x:Name="PART_ImageFallback"
-                                        SnapsToDevicePixels="True" 
-                                        UseLayoutRounding="True" 
-                                        VerticalAlignment="Center" 
-                                        Margin="0 0 6 0">
+                                                Visibility="Collapsed" 
+                                                Width="24" 
+                                                Height="24" 
+                                                x:Name="PART_ImageFallback"
+                                                SnapsToDevicePixels="True" 
+                                                UseLayoutRounding="True" 
+                                                VerticalAlignment="Center" 
+                                                Margin="0 0 6 0">
                                                 <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
                                             </Viewbox>
 
                                             <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
-                                            ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
-                                            ToolTipService.ShowDuration="10000" 
-                                            Margin="6 -4 0 -4" Width="24" Height="24" 
-                                            Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
-                                                <Viewbox VerticalAlignment="Center" HorizontalAlignment="Center" Width="24" Height="24">
-                                                    <Path Data="{StaticResource VectorError}" Width="32" Height="32" Fill="IndianRed" />
-                                                </Viewbox>
+                                                ToolTipService.HasDropShadow="False" ToolTipService.InitialShowDelay="50" 
+                                                ToolTipService.ShowDuration="10000" 
+                                                Margin="6 -4 0 -4" Width="24" Height="24" 
+                                                Background="Transparent" VerticalAlignment="Center" DockPanel.Dock="Right" Visibility="Collapsed" x:Name="PART_Error">
+
+                                                <Border
+                                                    VerticalAlignment="Center"
+                                                    Margin="0 0 0 0"
+                                                    CornerRadius="14" Width="14" Height="14" Background="IndianRed" HorizontalAlignment="Right">
+                                                    <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                                                </Border>
                                             </Border>
 
                                             <TextBlock Text="{Binding Name.CurrentValue}" VerticalAlignment="Center" Margin="0" />
@@ -418,37 +451,12 @@
                         </ScrollViewer>
                     </Grid>
                 </TabItem>
-                <TabItem Header="UI">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel>
-                            <Label Margin="0 0 0 6" Style="{StaticResource FormLabel}">Start-up</Label>
-
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Initial screen" Margin="0  0 0 6" />
-                            <ComboBox 
-                            SelectedValuePath="Tag"
-                            SelectedValue="{Binding DefaultScreen.CurrentValue}">
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Dashboard}">Tools dashboard</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Packages}">Packages</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Volumes}">Volumes</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Events}">Event viewer</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.System}">System state</ComboBoxItem>
-                            </ComboBox>
-
-                            <TextBlock Text="Release notes" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                            <CheckBox IsChecked="{Binding ShowReleaseNotes.CurrentValue}" Content="Show Release Notes after each update of MSIX Hero" />
-
-                            <Label Style="{StaticResource FormLabel}" Margin="0 20 0 6">Prompts</Label>
-
-                            <CheckBox IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="Confirm removal of items" />
-                        </StackPanel>
-                    </ScrollViewer>
-                </TabItem>
                 <TabItem Header="Other">
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding TabOther}" />
                     </b:Interaction.Behaviors>
                     <StackPanel>
-                        <Label Margin="0 0 0 6" Content="Certificates" Style="{StaticResource FormLabel}" />
+                        <Label Content="Certificates" Style="{StaticResource FormLabel}" />
 
                         <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <DockPanel Margin="0 0 0 16">
@@ -456,7 +464,7 @@
                             <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <Label Margin="0 0 0 6" Content="Packing" Style="{StaticResource FormLabel}" />
+                        <Label Content="Packing" Style="{StaticResource FormLabel}" />
                         <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 16">
                             <TextBlock Text="Sign packages after packing" TextWrapping="Wrap" />
                         </CheckBox>

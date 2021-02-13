@@ -36,7 +36,11 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.Views
 
         private void OnBusyManagerStatusChanged(object sender, IBusyStatusChange e)
         {
-            if (Application.Current.CheckAccess())
+            if (Application.Current == null)
+            {
+                this.IsEnabled = !e.IsBusy;
+            }
+            else if (Application.Current.CheckAccess())
             {
                 this.IsEnabled = !e.IsBusy;
             }

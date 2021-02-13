@@ -27,8 +27,10 @@
                             IsItemsHost="True"
                             KeyboardNavigation.TabIndex="1"
                             Background="Transparent" />
+
                         <Border x:Name="Border"
                                 Grid.Row="1"
+                                Margin="0 4 0 0"
                                 BorderThickness="1"
                                 CornerRadius="2"
                                 KeyboardNavigation.TabNavigation="Local"
@@ -92,22 +94,36 @@
 
                             <Border Background="Transparent">
                                 <Border x:Name="PART_Root">
-                                    <ContentPresenter 
-                                        Margin="0 11 0 8"
-                                        IsHitTestVisible="False"
-                                        x:Name="ContentSite"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Left"
-                                        ContentSource="Header"
-                                        TextBlock.FontSize="13"
-                                        RecognizesAccessKey="True" />
+                                    <Grid>
+                                        <ContentPresenter 
+                                            Margin="8 13 8 11"
+                                            IsHitTestVisible="False"
+                                            x:Name="ContentSite"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"
+                                            ContentSource="Header"
+                                            TextBlock.FontSize="13"
+                                            RecognizesAccessKey="True" />
+                                        <Border 
+                                            Margin="0 2 0 0"
+                                            CornerRadius="14" Width="14" Height="14" Background="IndianRed" 
+                                            VerticalAlignment="Center" HorizontalAlignment="Right" Visibility="Collapsed" x:Name="ValidationBadge">
+                                            <TextBlock Text="!" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10" LineHeight="10" LineStackingStrategy="BlockLineHeight" FontWeight="Bold" Foreground="White" />
+                                            <Border.RenderTransform>
+                                                <TranslateTransform X="10" />
+                                            </Border.RenderTransform>
+                                        </Border>
+                                    </Grid>
                                 </Border>
                             </Border>
                         </DockPanel>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="ContentSite" Property="TextBlock.Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                        </Trigger>
                         <Trigger Property="validation:ValidatedTabItem.IsValid" Value="False">
-                            <Setter Property="Background" TargetName="PART_Root">
+                        <!--    <Setter Property="Background" TargetName="PART_Root">
                                 <Setter.Value>
                                     <RadialGradientBrush Center="0.5 1" GradientOrigin="0.5 1" RadiusX="0.7" RadiusY="0.75" MappingMode="RelativeToBoundingBox">
                                         <RadialGradientBrush.GradientStops>
@@ -116,7 +132,8 @@
                                         </RadialGradientBrush.GradientStops>
                                     </RadialGradientBrush>
                                 </Setter.Value>
-                            </Setter>
+                            </Setter>-->
+                            <Setter TargetName="ValidationBadge" Property="Visibility" Value="Visible" />
                             <Setter Property="ToolTip" TargetName="PART_Root" Value="{Binding RelativeSource={RelativeSource Self}, Path=(validation:ValidatedTabItem.ValidationMessage)}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -217,7 +234,7 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Left"
                                     ContentSource="Header"
-                                    Margin="0 8 0 6"
+                                    Margin="3 8 3 6"
                                     TextBlock.FontSize="11"
                                     RecognizesAccessKey="True" />
                             </Border>
