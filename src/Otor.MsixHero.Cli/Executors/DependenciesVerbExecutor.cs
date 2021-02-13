@@ -16,7 +16,6 @@
 
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Dependencies;
