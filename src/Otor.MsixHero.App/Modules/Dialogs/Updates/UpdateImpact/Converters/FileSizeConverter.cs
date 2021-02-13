@@ -18,7 +18,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
+namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.Converters
 {
     public class FileSizeConverter : IValueConverter
     {

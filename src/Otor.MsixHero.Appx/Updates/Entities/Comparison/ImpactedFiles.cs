@@ -14,14 +14,19 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Xml.Serialization;
+
 namespace Otor.MsixHero.Appx.Updates.Entities.Comparison
 {
-    public abstract class ImpactedFiles : BaseFiles, IImpactedFiles
+    public abstract class ImpactedFiles : BaseFiles
     {
+        [XmlAttribute("updateImpact")]
         public long UpdateImpact { get; set; }
-
+        
+        [XmlIgnore]
         public long ActualUpdateImpact { get; set; }
 
+        [XmlAttribute("sizeDiff")]
         public long SizeDifference { get; set; }
     }
 }

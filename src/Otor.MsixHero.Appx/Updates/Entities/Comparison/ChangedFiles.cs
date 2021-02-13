@@ -15,34 +15,50 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Updates.Entities.Appx;
 
 namespace Otor.MsixHero.Appx.Updates.Entities.Comparison
 {
-    public class ChangedFiles : IImpactedFiles
+    [XmlRoot("changed")]
+    public class ChangedFiles
     {
-        public IList<AppxFile> OldPackageFiles { get; set; }
+        [XmlArray("oldPackage")]
+        [XmlArrayItem("file")]
+        public List<AppxFile> OldPackageFiles { get; set; }
+
+        [XmlArray("newPackage")]
+        [XmlArrayItem("file")]
+        public List<AppxFile> NewPackageFiles { get; set; }
         
-        public IList<AppxFile> NewPackageFiles { get; set; }
-        
+        [XmlAttribute("fileCount")]
         public long FileCount { get; set; }
-        
+
+        [XmlAttribute("oldPackageFileSize")]
         public long OldPackageFileSize { get; set; }
 
+        [XmlAttribute("oldPackageBlockCount")]
         public long OldPackageBlockCount { get; set; }
 
+        [XmlAttribute("oldPackageBlockSize")]
         public long OldPackageBlockSize { get; set; }
 
+        [XmlAttribute("newPackageFileSize")]
         public long NewPackageFileSize { get; set; }
-        
+
+        [XmlAttribute("newPackageBlockCount")]
         public long NewPackageBlockCount { get; set; }
-        
+
+        [XmlAttribute("newPackageBlockSize")]
         public long NewPackageBlockSize { get; set; }
 
+        [XmlAttribute("updateImpact")]
         public long UpdateImpact { get; set; }
         
+        [XmlIgnore]
         public long ActualUpdateImpact { get; set; }
-        
+
+        [XmlAttribute("sizeDiff")]
         public long SizeDifference { get; set; }
     }
 }

@@ -23,6 +23,6 @@ namespace Otor.MsixHero.Appx.Updates
 {
     public interface IAppxUpdateImpactAnalyzer
     {
-        Task<ComparisonResult> Analyze(string file1, string file2, CancellationToken cancellationToken = default);
+        Task<UpdateImpactResults> Analyze(string file1, string file2, bool ignoreVersionCheck = false, CancellationToken cancellationToken = default);
     }
 }

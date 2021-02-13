@@ -14,20 +14,13 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.Appx.Updates.Entities.Appx
+namespace Otor.MsixHero.Appx.Updates.Entities
 {
-    public class AppxBlockLayout
+    public enum UpgradeImpactError
     {
-        public long BlockSize { get; set; }
-
-        public long BlockCount { get; set; }
-
-        public long FileSize { get; set; }
-        
-        public long FileCount { get; set; }
-        
-        public long Size { get; set; }
-        
-        public PackageLayout Layout { get; set; }
+        Unknown,
+        WrongPackageFormat,
+        WrongFamilyName,
+        WrongPackageVersion
     }
 }

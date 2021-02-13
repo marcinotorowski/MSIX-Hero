@@ -174,7 +174,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 return false;
             }
 
-            if (!this.interactionService.SaveFile(this.previousPath, "Appinstaller files|*.appinstaller|All files|*.*", out var selected))
+            var settings = new FileDialogSettings("Appinstaller files|*.appinstaller|All files|*.*", this.previousPath);
+            if (!this.interactionService.SaveFile(settings, out var selected))
             {
                 return false;
             }
@@ -233,13 +234,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 if (this.previousPath != null)
                 {
                     // ReSharper disable once StringLiteralTypo
-                    if (!this.interactionService.SelectFile(this.previousPath, new DialogFilterBuilder("*.appinstaller").BuildFilter(), out selected))
+                    var settings = new FileDialogSettings(new DialogFilterBuilder("*.appinstaller").BuildFilter(), this.previousPath);
+                    if (!this.interactionService.SelectFile(settings, out selected))
                     {
                         return;
                     }
                 }
                 // ReSharper disable once StringLiteralTypo
-                else if (!this.interactionService.SelectFile(new DialogFilterBuilder("*.appinstaller").BuildFilter(), out selected))
+                else if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.appinstaller").BuildFilter()), out selected))
                 {
                     return;
                 }

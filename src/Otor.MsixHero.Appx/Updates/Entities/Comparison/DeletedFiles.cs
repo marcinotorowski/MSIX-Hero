@@ -14,8 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Xml.Serialization;
+
 namespace Otor.MsixHero.Appx.Updates.Entities.Comparison
 {
+    [XmlRoot("deleted")]
     public class DeletedFiles : ImpactedFiles
     {
     }

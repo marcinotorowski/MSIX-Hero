@@ -330,9 +330,14 @@ namespace Otor.MsixHero.App.Services
             return (InteractionResult)result;
         }
 
-        public bool SelectFile(string initialFile, string filterString, out string selectedFile)
+        public bool SelectFile(out string selectedFile)
         {
-            if (!SelectFile(initialFile, filterString, false, out var selection))
+            return this.SelectFile(new FileDialogSettings(), out selectedFile);
+        }
+
+        public bool SelectFile(FileDialogSettings settings, out string selectedFile)
+        {
+            if (!SelectFile(settings, false, out var selection))
             {
                 selectedFile = null;
                 return false;
@@ -342,16 +347,16 @@ namespace Otor.MsixHero.App.Services
             return true;
         }
 
-        public bool SaveFile(string initialFile, string filterString, out string selectedFile)
+        public bool SaveFile(FileDialogSettings settings, out string selectedFile)
         {
             var dlg = new SaveFileDialog
             {
-                Filter = PrepareFilterString(filterString)
+                Filter = PrepareFilterString(settings.Filter)
             };
 
-            if (initialFile != null)
+            if (settings.InitialSelection != null)
             {
-                var fileInfo = new FileInfo(initialFile);
+                var fileInfo = new FileInfo(settings.InitialSelection);
                 if (fileInfo.Directory != null && fileInfo.Directory.Exists)
                 {
                     dlg.InitialDirectory = fileInfo.Directory.FullName;
@@ -366,34 +371,19 @@ namespace Otor.MsixHero.App.Services
             return result;
         }
 
-        public bool SaveFile(string filterString, out string selectedFile)
-        {
-            return this.SaveFile(null, filterString, out selectedFile);
-        }
-
         public bool SaveFile(out string selectedFile)
         {
-            return this.SaveFile(null, null, out selectedFile);
+            return this.SaveFile(new FileDialogSettings(), out selectedFile);
         }
-
-        public bool SelectFile(string filterString, out string selectedFile)
+                
+        public bool SelectFiles(FileDialogSettings settings, out string[] selectedFiles)
         {
-            return this.SelectFile(null, filterString, out selectedFile);
+            return SelectFile(settings, true, out selectedFiles);
         }
-
-        public bool SelectFile(out string selectedFile)
+        
+        public bool SelectFiles(out string[] selectedFiles)
         {
-            return this.SelectFile(null, out selectedFile);
-        }
-
-        public bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles)
-        {
-            return SelectFile(initialFile, filterString, true, out selectedFiles);
-        }
-
-        public bool SelectFiles(string filterString, out string[] selectedFiles)
-        {
-            return SelectFile(null, filterString, true, out selectedFiles);
+            return SelectFile(new FileDialogSettings(), true, out selectedFiles);
         }
 
         public bool SelectFolder(string initialFolder, out string selectedFolder)
@@ -413,14 +403,14 @@ namespace Otor.MsixHero.App.Services
             return this.SelectFolder(null, out selectedFolder);
         }
 
-        private static bool SelectFile(string initialFile, string filterString, bool withMultiSelection, out string[] selectedFiles)
+        private static bool SelectFile(FileDialogSettings fileDialogSettings, bool withMultiSelection, out string[] selectedFiles)
         {
             var dlg = new OpenFileDialog();
 
-            dlg.Filter = PrepareFilterString(filterString);
-            if (initialFile != null)
+            dlg.Filter = PrepareFilterString(fileDialogSettings.Filter);
+            if (fileDialogSettings.InitialSelection != null)
             {
-                var fileInfo = new FileInfo(initialFile);
+                var fileInfo = new FileInfo(fileDialogSettings.InitialSelection);
                 if (fileInfo.Directory != null && fileInfo.Directory.Exists)
                 {
                     dlg.InitialDirectory = fileInfo.Directory.FullName;
@@ -429,6 +419,11 @@ namespace Otor.MsixHero.App.Services
                 dlg.FileName = fileInfo.FullName;
             }
 
+            if (!string.IsNullOrEmpty(fileDialogSettings.DialogTitle))
+            {
+                dlg.Title = fileDialogSettings.DialogTitle;
+            }    
+            
             dlg.CheckFileExists = true;
             dlg.Multiselect = withMultiSelection;
 

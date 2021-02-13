@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates.Entities;
 
@@ -27,7 +28,7 @@ namespace Otor.MsixHero.Appx.Updates
 {
     public class AppxUpdateImpactAnalyzer : IAppxUpdateImpactAnalyzer
     {
-        public async Task<ComparisonResult> Analyze(string package1Path, string package2Path, CancellationToken cancellationToken = default)
+        public async Task<UpdateImpactResults> Analyze(string package1Path, string package2Path, bool ignoreVersionCheck = false, CancellationToken cancellationToken = default)
         {
             var type1 = GetPackageTypeFromFile(package1Path);
             if (type1 == PackageType.Unsupported)
@@ -41,6 +42,8 @@ namespace Otor.MsixHero.Appx.Updates
                 throw new ArgumentException($"File {Path.GetFileName(package2Path)} is not supported.");
             }
 
+            await AssertPackagesUpgradable(package1Path, package2Path, ignoreVersionCheck).ConfigureAwait(false);
+            
             if (type1 == type2)
             {
                 switch (type1)
@@ -48,7 +51,10 @@ namespace Otor.MsixHero.Appx.Updates
                     case PackageType.Msix:
                     {
                         var comparer = new MsixUpdateImpactAnalyzer();
-                        return await comparer.Analyze(package1Path, package2Path, cancellationToken).ConfigureAwait(false);
+                        var result = await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        result.OldPackage = package1Path;
+                        result.NewPackage = package2Path;
+                        return result;
                     }
 
                     case PackageType.Manifest:
@@ -56,19 +62,28 @@ namespace Otor.MsixHero.Appx.Updates
                         var comparer = new AppxBlockMapUpdateImpactAnalyzer();
                         var appxBlock1 = Path.Join(Path.GetDirectoryName(package1Path), "AppxBlockMap.xml");
                         var appxBlock2 = Path.Join(Path.GetDirectoryName(package2Path), "AppxBlockMap.xml");
-                        return await comparer.Analyze(appxBlock1, appxBlock2, cancellationToken).ConfigureAwait(false);
+                        var result = await comparer.Analyze(appxBlock1, appxBlock2, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        result.OldPackage = package1Path;
+                        result.NewPackage = package2Path;
+                        return result;
                     }
 
                     case PackageType.Bundle:
                     {
                         var comparer = new BundleUpdateImpactAnalyzer();
-                        return await comparer.Analyze(package1Path, package2Path, cancellationToken).ConfigureAwait(false);
-                        }
+                        var result =await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        result.OldPackage = package1Path;
+                        result.NewPackage = package2Path;
+                        return result;
+                    }
 
                     case PackageType.AppxBlockMap:
                     {
                         var comparer = new AppxBlockMapUpdateImpactAnalyzer();
-                        return await comparer.Analyze(package1Path, package2Path, cancellationToken).ConfigureAwait(false);
+                        var result = await comparer.Analyze(package1Path, package2Path, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                        result.OldPackage = package1Path;
+                        result.NewPackage = package2Path;
+                        return result;
                     }
                 }
             }
@@ -143,7 +158,10 @@ namespace Otor.MsixHero.Appx.Updates
                     }
 
                     var comparer = new AppxBlockMapUpdateImpactAnalyzer();
-                    return await comparer.Analyze(appxBlock1, appxBlock2, cancellationToken).ConfigureAwait(false);
+                    var result = await comparer.Analyze(appxBlock1, appxBlock2, ignoreVersionCheck, cancellationToken).ConfigureAwait(false);
+                    result.OldPackage = package1Path;
+                    result.NewPackage = package2Path;
+                    return result;
                 }
                 finally
                 {
@@ -156,7 +174,64 @@ namespace Otor.MsixHero.Appx.Updates
 
             throw new NotSupportedException();
         }
-        
+
+        private static async Task AssertPackagesUpgradable(string package1Path, string package2Path, bool ignoreVersionCheck = false)
+        {
+            if (string.IsNullOrEmpty(package1Path))
+            {
+                throw new ArgumentNullException(nameof(package1Path));
+            }
+
+            if (string.IsNullOrEmpty(package2Path))
+            {
+                throw new ArgumentNullException(nameof(package2Path));
+            }
+            
+            var manifestReader = new AppxManifestReader();
+            string packageFamily1, packageFamily2, version1, version2, name1, name2;
+
+            try
+            {
+                using var fileReader1 = FileReaderFactory.CreateFileReader(package1Path);
+                var file1 = await manifestReader.Read(fileReader1).ConfigureAwait(false);
+                packageFamily1 = file1.FamilyName;
+                version1 = file1.Version;
+                name1 = file1.DisplayName;
+            }
+            catch (Exception e)
+            {
+                throw new UpdateImpactException($"Could not read the package. File {package1Path} has invalid or unsupported format.", UpgradeImpactError.WrongPackageFormat, e);
+            }
+            
+            try
+            {
+                using var fileReader2 = FileReaderFactory.CreateFileReader(package2Path);
+                var file2 = await manifestReader.Read(fileReader2).ConfigureAwait(false);
+                packageFamily2 = file2.FamilyName;
+                version2 = file2.Version;
+                name2 = file2.DisplayName;
+            }
+            catch (Exception e)
+            {
+                throw new UpdateImpactException($"Could not read the package. File {package2Path} has invalid or unsupported format.", UpgradeImpactError.WrongPackageFormat, e);
+            }
+
+            if (!string.Equals(packageFamily1, packageFamily2))
+            {
+                throw new UpdateImpactException($"Package '{name2}' cannot upgrade the package '{name1}' because they do not share the same family name.", UpgradeImpactError.WrongFamilyName);
+            }
+
+            if (ignoreVersionCheck)
+            {
+                return;
+            }
+            
+            if (Version.Parse(version2) <= Version.Parse(version1))
+            {
+                throw new UpdateImpactException($"Package '{name2}' version '{version2}' cannot update the package '{name1}' version '{version1}'. The version of the upgrade package must be higher than '{version1}'.", UpgradeImpactError.WrongPackageVersion);
+            }
+        }
+
         private static PackageType GetPackageTypeFromFile(string filePath)
         {
             switch (Path.GetExtension(filePath).ToLowerInvariant())

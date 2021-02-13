@@ -33,7 +33,7 @@ namespace Otor.MsixHero.App.Helpers
         
         public void ShowFileDialog(string filter)
         {
-            if (!this.interactionService.SelectFile(filter, out var selectedFile))
+            if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(filter), out var selectedFile))
             {
                 return;
             }

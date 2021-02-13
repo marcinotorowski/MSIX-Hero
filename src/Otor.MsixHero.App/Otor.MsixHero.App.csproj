@@ -265,7 +265,7 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Modules\Dialogs\Updates\UpdateImpact\View\RelativeIndicator.xaml">
+    <Page Update="Modules\Dialogs\Updates\UpdateImpact\View\Controls\RelativeIndicator.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\Updates\UpdateImpact\View\UpdateImpactView.xaml">

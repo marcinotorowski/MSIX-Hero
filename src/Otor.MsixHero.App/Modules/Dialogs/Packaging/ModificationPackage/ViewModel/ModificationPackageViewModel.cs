@@ -162,7 +162,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
                 case ModificationPackageBuilderAction.Msix:
                 case ModificationPackageBuilderAction.SignedMsix:
-                    if (!this.interactionService.SaveFile("MSIX Modification Packages|*.msix", out selectedPath))
+                    if (!this.interactionService.SaveFile(FileDialogSettings.FromFilterString("MSIX Modification Packages|*.msix"), out selectedPath))
                     {
                         return false;
                     }

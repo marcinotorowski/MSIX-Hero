@@ -1,10 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 using Otor.MsixHero.Appx.Updates.Entities.Comparison;
 
 namespace Otor.MsixHero.Appx.Updates.Entities.Appx
 {
+    [Serializable]
+    [XmlRoot("file")]
     public class AppxFile
     {
+        public AppxFile()
+        {
+        }
+
         public AppxFile(string name, long uncompressedSize, ushort headerSize = 30, IEnumerable<AppxBlock> blocks = null)
         {
             this.Name = name;
@@ -13,18 +21,25 @@ namespace Otor.MsixHero.Appx.Updates.Entities.Appx
             this.Blocks = blocks == null ? new List<AppxBlock>() : new List<AppxBlock>(blocks);
         }
 
-        public ushort HeaderSize { get; }
+        [XmlAttribute("name")]
+        public string Name { get; set; }
 
-        public string Name { get; }
+        [XmlAttribute("headerSize")]
+        public ushort HeaderSize { get; set; }
 
-        public long UncompressedSize { get; }
+        [XmlAttribute("size")]
+        public long UncompressedSize { get; set; }
 
-        public IList<AppxBlock> Blocks { get; }
+        [XmlElement("block")]
+        public List<AppxBlock> Blocks { get; set; }
 
+        [XmlAttribute("updateImpact")]
         public long UpdateImpact { get; set; }
 
+        [XmlAttribute("sizeDiff")]
         public long SizeDifference { get; set; }
 
+        [XmlAttribute("type")]
         public ComparisonStatus Status { get; set; }
 
         public override string ToString()

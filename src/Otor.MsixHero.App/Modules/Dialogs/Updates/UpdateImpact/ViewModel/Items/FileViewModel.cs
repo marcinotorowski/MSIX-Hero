@@ -15,7 +15,6 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Appx.Updates.Entities.Appx;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items

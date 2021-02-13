@@ -75,10 +75,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
             }
 
             string selected;
-            var userSelected = 
-                string.IsNullOrEmpty(this.yamlPath) || !File.Exists(this.yamlPath)
-                    ? this.interactionService.SaveFile("*.yaml", out selected)
-                    : this.interactionService.SaveFile(this.yamlPath, "*.yaml", out selected);
+
+            FileDialogSettings settings;
+            if (string.IsNullOrEmpty(this.yamlPath) || !File.Exists(this.yamlPath))
+            {
+                settings = FileDialogSettings.FromFilterString("*.yaml");
+            }    
+            else
+            {
+                settings = new FileDialogSettings("*.yaml", null, this.yamlPath);
+            }
+            
+            var userSelected = this.interactionService.SaveFile(settings, out selected);
 
             if (!userSelected)
             {
@@ -167,7 +175,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                 this.State.IsSaved = false;
             }
 
-            if (!this.interactionService.SelectFile(new DialogFilterBuilder("*.yaml").BuildFilter(), out var selectedFile))
+            if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.yaml").BuildFilter()), out var selectedFile))
             {
                 return;
             }

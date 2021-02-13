@@ -14,14 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Data;
-using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Appx.Updates.Entities.Appx;
@@ -30,17 +27,45 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 {
     public class ComparisonViewModel : NotifyPropertyChanged
     {
-        private UpdateImpactViewFilter updateImpactViewFilter;
+        private UpdateImpactViewFilter updateImpactViewFilter = UpdateImpactViewFilter.OnlyUpdateRelevant;
 
-        public ComparisonViewModel(ComparisonResult model)
+        public ComparisonViewModel(UpdateImpactResults comparePackage)
         {
+            this.ComparisonModel = comparePackage;
+
+            var deleted = comparePackage.DeletedFiles?.Files ?? Enumerable.Empty<AppxFile>();
+            var unchanged = comparePackage.UnchangedFiles?.Files ?? Enumerable.Empty<AppxFile>();
+            var changedNew = comparePackage.ChangedFiles?.NewPackageFiles ?? Enumerable.Empty<AppxFile>();
+            var added = comparePackage.AddedFiles?.Files ?? Enumerable.Empty<AppxFile>();
+
             this.Files = new ObservableCollection<FileViewModel>();
-            this.SetValues(model);
+            this.Files.AddRange(deleted.Select(deletedFile => new FileViewModel(FileType.Deleted, deletedFile)));
+            this.Files.AddRange(added.Select(addedFile => new FileViewModel(FileType.Added, addedFile)));
+            this.Files.AddRange(unchanged.Select(unchangedFile => new FileViewModel(FileType.Unchanged, unchangedFile)));
+            this.Files.AddRange(changedNew.Select(changedFile => new FileViewModel(changedFile)));
+            
             this.FilesView = CollectionViewSource.GetDefaultView(this.Files);
             this.FilesView.Filter = this.FilterFiles;
-        }
+            this.FilesView.SortDescriptions.Add(new SortDescription(nameof(FileViewModel.UpdateImpact), ListSortDirection.Descending));
 
+            if (comparePackage.NewPackageDuplication?.Duplicates?.Any() == true)
+            {
+                this.Duplicates = new ObservableCollection<DuplicatedElementViewModel>(comparePackage.NewPackageDuplication.Duplicates.Select(d => new DuplicatedElementViewModel(d)));
+            }
+            else
+            {
+                this.Duplicates = new ObservableCollection<DuplicatedElementViewModel>();
+            }
+
+            this.DuplicatesView = CollectionViewSource.GetDefaultView(this.Duplicates);
+            this.DuplicatesView.SortDescriptions.Add(new SortDescription(nameof(DuplicatedElementViewModel.DefaultSorting), ListSortDirection.Descending));
+        }
+        
+        public ObservableCollection<DuplicatedElementViewModel> Duplicates { get; }
+        
         public ICollectionView FilesView { get; }
+        
+        public ICollectionView DuplicatesView { get; }
 
         public UpdateImpactViewFilter UpdateImpactFilter
         {
@@ -56,58 +81,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
             }
         }
         
-        public PackageContentDetailsViewModel Content1 { get; private set; }
-
-        public PackageContentDetailsViewModel Content2 { get; private set; }
-
         public ObservableCollection<FileViewModel> Files { get; }
-
-        private Task<IList<FileViewModel>> LoadFiles(ComparisonResult updateImpact)
-        {
-            return Task.Run(() =>
-            {
-                var col = new List<FileViewModel>();
-
-                var deleted = updateImpact.DeletedFiles?.Files ?? Enumerable.Empty<AppxFile>();
-                var unchanged = updateImpact.UnchangedFiles?.Files ?? Enumerable.Empty<AppxFile>();
-                var changedNew = updateImpact.ChangedFiles?.NewPackageFiles ?? Enumerable.Empty<AppxFile>();
-                var added = updateImpact.AddedFiles?.Files ?? Enumerable.Empty<AppxFile>();
-
-                col.AddRange(deleted.Select(deletedFile => new FileViewModel(FileType.Deleted, deletedFile)));
-                col.AddRange(added.Select(addedFile => new FileViewModel(FileType.Added, addedFile)));
-                col.AddRange(unchanged.Select(unchangedFile => new FileViewModel(FileType.Unchanged, unchangedFile)));
-                col.AddRange(changedNew.Select(changedFile => new FileViewModel(changedFile)));
-
-                return (IList<FileViewModel>)col;
-            });
-        }
-
-        private void LoadView(Task<IList<FileViewModel>> results)
-        {
-            if (results.IsFaulted || results.IsCanceled)
-            {
-                return;
-            }
-
-            this.Files.Clear();
-            this.Files.AddRange(results.Result);
-        }
-
-        private void SetValues(ComparisonResult comparePackage)
-        {
-#pragma warning disable 4014
-            //var task = this.LoadFiles(comparePackage);
-            //task.ContinueWith(this.LoadView, CancellationToken.None, TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
-#pragma warning restore 4014
-
-            // this.Content1 = new PackageContentDetailsViewModel(updateImpact.OldPackage.Manifest, updateImpact.OldPackage.Path);
-            // this.Content2 = new PackageContentDetailsViewModel(updateImpact.NewPackage.Manifest, updateImpact.NewPackage.Path);
-
-            this.ComparisonModel = comparePackage;
-            this.OnPropertyChanged(nameof(ComparisonModel));
-        }
-
-        public ComparisonResult ComparisonModel { get; private set; }
+        
+        public UpdateImpactResults ComparisonModel { get; private set; }
         
         private bool FilterFiles(object obj)
         {
@@ -127,6 +103,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
             }
 
             return true;
+        }
+
+        public void Export(string filePath)
+        {
+            this.ComparisonModel.Export(new FileInfo(filePath));
         }
     }
 }

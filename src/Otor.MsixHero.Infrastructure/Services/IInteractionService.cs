@@ -24,22 +24,18 @@ namespace Otor.MsixHero.Infrastructure.Services
     {
         InteractionResult Confirm(string body, string title = null, InteractionType type = InteractionType.Information, InteractionButton buttons = InteractionButton.OK);
 
-        bool SelectFile(string initialFile, string filterString, out string selectedFile);
-
-        bool SaveFile(string initialFile, string filterString, out string selectedFile);
-
-        bool SelectFile(string filterString, out string selectedFile);
-
-        bool SaveFile(string filterString, out string selectedFile);
-
-        bool SelectFiles(string initialFile, string filterString, out string[] selectedFiles);
-
-        bool SelectFiles(string filterString, out string[] selectedFiles);
-
         bool SelectFile(out string selectedFile);
-
+        
+        bool SelectFile(FileDialogSettings settings, out string selectedFile);
+        
         bool SaveFile(out string selectedFile);
+        
+        bool SaveFile(FileDialogSettings settings, out string selectedFile);
 
+        bool SelectFiles(out string[] selectedFiles);
+        
+        bool SelectFiles(FileDialogSettings settings, out string[] selectedFiles);
+        
         bool SelectFolder(string initialFile, out string selectedFolder);
 
         bool SelectFolder(out string selectedFolder);

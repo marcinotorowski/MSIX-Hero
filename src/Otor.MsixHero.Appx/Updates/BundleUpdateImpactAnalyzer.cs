@@ -25,7 +25,7 @@ namespace Otor.MsixHero.Appx.Updates
 {
     public class BundleUpdateImpactAnalyzer : IAppxUpdateImpactAnalyzer
     {
-        public Task<ComparisonResult> Analyze(string msixBundlePath1, string msixBundlePath2, CancellationToken cancellationToken = default)
+        public Task<UpdateImpactResults> Analyze(string msixBundlePath1, string msixBundlePath2, bool ignoreVersionCheck = false, CancellationToken cancellationToken = default)
         {
             if (msixBundlePath1 == null)
             {

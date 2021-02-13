@@ -29,18 +29,17 @@ namespace Otor.MsixHero.Appx.Updates
 {
     public class AppxBlockMapUpdateImpactAnalyzer : IAppxUpdateImpactAnalyzer
     {
-        public async Task<ComparisonResult> Analyze(string file1, string file2, CancellationToken cancellationToken = default)
+        public async Task<UpdateImpactResults> Analyze(string file1, string file2, bool ignoreVersionCheck, CancellationToken cancellationToken = default)
         {
-            await using (var stream1 = File.OpenRead(file1))
-            {
-                await using (var stream2 = File.OpenRead(file2))
-                {
-                    return await this.Analyze(stream1, stream2, cancellationToken).ConfigureAwait(false);
-                }
-            }
+            await using var stream1 = File.OpenRead(file1);
+            await using var stream2 = File.OpenRead(file2);
+            var result = await this.Analyze(stream1, stream2, cancellationToken).ConfigureAwait(false);
+            result.OldPackage = file1;
+            result.NewPackage = file2;
+            return result;
         }
 
-        public async Task<ComparisonResult> Analyze(Stream appxBlockMap1, Stream appxBlockMap2, CancellationToken cancellationToken = default)
+        public async Task<UpdateImpactResults> Analyze(Stream appxBlockMap1, Stream appxBlockMap2, CancellationToken cancellationToken = default)
         {
             var files1 = await this.GetFiles(appxBlockMap1, cancellationToken).ConfigureAwait(false);
             var files2 = await this.GetFiles(appxBlockMap2, cancellationToken).ConfigureAwait(false);
@@ -144,34 +143,83 @@ namespace Otor.MsixHero.Appx.Updates
                 }
             }
 
-            var duplicates = new Dictionary<string, IList<AppxFile>>();
+            var duplicates1 = new Dictionary<string, IList<AppxFile>>();
+            var duplicates2 = new Dictionary<string, IList<AppxFile>>();
 
             using (var md5 = MD5.Create())
             {
+                foreach (var file in filesInOldPackage.Values)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    var hash = string.Join(System.Environment.NewLine, file.Blocks.Select(b => b.Hash));
+                    var allBlocksHash = System.Text.Encoding.ASCII.GetString(md5.ComputeHash(System.Text.Encoding.ASCII.GetBytes(hash)));
+
+                    if (!duplicates1.TryGetValue(allBlocksHash, out var list))
+                    {
+                        list = new List<AppxFile>();
+                        duplicates1[allBlocksHash] = list;
+                    }
+
+                    list.Add(file);
+                }
+                
                 foreach (var file in filesInNewPackage.Values)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var hash = string.Join(System.Environment.NewLine, file.Blocks.Select(b => b.Hash));
                     var allBlocksHash = System.Text.Encoding.ASCII.GetString(md5.ComputeHash(System.Text.Encoding.ASCII.GetBytes(hash)));
 
-                    if (!duplicates.TryGetValue(allBlocksHash, out var list))
+                    if (!duplicates2.TryGetValue(allBlocksHash, out var list))
                     {
                         list = new List<AppxFile>();
-                        duplicates[allBlocksHash] = list;
+                        duplicates2[allBlocksHash] = list;
                     }
 
                     list.Add(file);
                 }
             }
 
-            var duplicatedFiles = new ComparedDuplicateFiles
+            var duplicatedFiles1 = new AppxDuplication
             {
                 Duplicates = new List<ComparedDuplicate>(),
-                TargetTotalFileCount = duplicates.Count(d => d.Value.Count > 1) * 2,
-                TargetTotalFileSize = duplicates.Where(d => d.Value.Count > 1).Sum(d => d.Value[0].UncompressedSize)
+                FileCount = duplicates1.Count(d => d.Value.Count > 1) * 2,
+                FileSize = duplicates1.Where(d => d.Value.Count > 1).Sum(d => d.Value[0].UncompressedSize)
+            };
+
+            var duplicatedFiles2 = new AppxDuplication
+            {
+                Duplicates = new List<ComparedDuplicate>(),
+                FileCount = duplicates2.Count(d => d.Value.Count > 1) * 2,
+                FileSize = duplicates2.Where(d => d.Value.Count > 1).Sum(d => d.Value[0].UncompressedSize)
             };
             
-            foreach (var file in duplicates.Where(d => d.Value.Count > 1))
+            foreach (var file in duplicates1.Where(d => d.Value.Count > 1))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var duplicate = new ComparedDuplicate
+                {
+                    Files = new List<ComparedDuplicateFile>()
+                };
+
+                foreach (var df in file.Value)
+                {
+                    var mdf = new ComparedDuplicateFile
+                    {
+                        Name = df.Name,
+                        PossibleSizeReduction = df.UncompressedSize,
+                        PossibleImpactReduction = df.Blocks.Sum(d => blocksInPackage1[d.Hash].CompressedSize)
+                    };
+
+                    duplicate.Files.Add(mdf);
+                }
+
+                duplicate.PossibleSizeReduction = duplicate.Files[0].PossibleSizeReduction * (duplicate.Files.Count - 1);
+                duplicate.PossibleImpactReduction = duplicate.Files[0].PossibleImpactReduction * (duplicate.Files.Count - 1);
+
+                duplicatedFiles1.Duplicates.Add(duplicate);
+            }
+
+            foreach (var file in duplicates2.Where(d => d.Value.Count > 1))
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 var duplicate = new ComparedDuplicate
@@ -194,11 +242,13 @@ namespace Otor.MsixHero.Appx.Updates
                 duplicate.PossibleSizeReduction = duplicate.Files[0].PossibleSizeReduction * (duplicate.Files.Count - 1);
                 duplicate.PossibleImpactReduction = duplicate.Files[0].PossibleImpactReduction * (duplicate.Files.Count - 1);
 
-                duplicatedFiles.Duplicates.Add(duplicate);
+                duplicatedFiles2.Duplicates.Add(duplicate);
             }
-            
-            duplicatedFiles.PossibleImpactReduction = duplicatedFiles.Duplicates.Sum(d => d.PossibleImpactReduction);
-            duplicatedFiles.PossibleSizeReduction = duplicatedFiles.Duplicates.Sum(d => d.PossibleSizeReduction);
+
+            duplicatedFiles1.PossibleImpactReduction = duplicatedFiles1.Duplicates.Sum(d => d.PossibleImpactReduction);
+            duplicatedFiles1.PossibleSizeReduction = duplicatedFiles1.Duplicates.Sum(d => d.PossibleSizeReduction);
+            duplicatedFiles2.PossibleImpactReduction = duplicatedFiles2.Duplicates.Sum(d => d.PossibleImpactReduction);
+            duplicatedFiles2.PossibleSizeReduction = duplicatedFiles2.Duplicates.Sum(d => d.PossibleSizeReduction);
             
             cancellationToken.ThrowIfCancellationRequested();
             var changedFiles = new ChangedFiles
@@ -232,7 +282,7 @@ namespace Otor.MsixHero.Appx.Updates
                 FileCount = filesInNewPackage.Values.Count(s => s.Status == ComparisonStatus.New),
                 SizeDifference = filesInNewPackage.Values.Where(s => s.Status == ComparisonStatus.New).Sum(f => f.SizeDifference),
                 FileSize = filesInNewPackage.Values.Where(s => s.Status == ComparisonStatus.New).Sum(f => f.UncompressedSize),
-                Files = filesInNewPackage.Values.Where(f => f.Status == ComparisonStatus.Changed).ToList()
+                Files = filesInNewPackage.Values.Where(f => f.Status == ComparisonStatus.New).ToList()
             };
             
             cancellationToken.ThrowIfCancellationRequested();
@@ -260,9 +310,9 @@ namespace Otor.MsixHero.Appx.Updates
             };
             
             cancellationToken.ThrowIfCancellationRequested();
-            var comparisonResult = new ComparisonResult
+            var comparisonResult = new UpdateImpactResults
             {
-                OldPackageLayout = new AppxBlockLayout
+                OldPackageLayout = new AppxLayout
                 {
                     FileSize = filesInOldPackage.Sum(f => f.Value.UncompressedSize),
                     FileCount = filesInOldPackage.Count,
@@ -274,7 +324,7 @@ namespace Otor.MsixHero.Appx.Updates
                         Files = this.GetChartForFiles(filesInOldPackage)
                     }
                 },
-                NewPackageLayout = new AppxBlockLayout
+                NewPackageLayout = new AppxLayout
                 {
                     FileSize = filesInNewPackage.Sum(f => f.Value.UncompressedSize),
                     FileCount = filesInNewPackage.Count,
@@ -286,12 +336,13 @@ namespace Otor.MsixHero.Appx.Updates
                         Files = this.GetChartForFiles(filesInNewPackage)
                     }
                 },
+                OldPackageDuplication = duplicatedFiles1,
+                NewPackageDuplication = duplicatedFiles2,
                 UpdateImpact =
                     blocksInPackage2.Where(b => b.Value.Status == ComparisonStatus.New).Sum(b => b.Value.UpdateImpact) +
                     blocksInPackage1.Sum(b => b.Value.UpdateImpact),
                 ChangedFiles = changedFiles,
                 DeletedFiles = deletedFiles,
-                DuplicateFiles = duplicatedFiles,
                 AddedFiles = addedFiles,
                 UnchangedFiles = unchangedFiles
             };
@@ -360,7 +411,7 @@ namespace Otor.MsixHero.Appx.Updates
                         long.TryParse(blockSize.Value, out blockLength);
                     }
                     
-                    file.Blocks.Add(new AppxBlock(fileBlock.Attribute("Hash")?.Value, blockLength));
+                    file.Blocks.Add(new AppxBlock(fileBlock.Attribute("Hash")?.Value, blockLength) { Status = ComparisonStatus.Unchanged });
                 }
 
                 list.Add(file);
@@ -369,7 +420,7 @@ namespace Otor.MsixHero.Appx.Updates
             return list;
         }
 
-        private IList<LayoutBar> GetChartForBlocks(SortedDictionary<string, AppxFile> files)
+        private List<LayoutBar> GetChartForBlocks(SortedDictionary<string, AppxFile> files)
         {
             var spaces = new List<LayoutBar>();
 
@@ -422,7 +473,7 @@ namespace Otor.MsixHero.Appx.Updates
             return spaces;
         }
 
-        private IList<LayoutBar> GetChartForFiles(SortedDictionary<string, AppxFile> files)
+        private List<LayoutBar> GetChartForFiles(SortedDictionary<string, AppxFile> files)
         {
             var spaces = new List<LayoutBar>();
 

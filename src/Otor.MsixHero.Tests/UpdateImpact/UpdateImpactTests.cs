@@ -1,12 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Xml.Linq;
-using Namotion.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Updates;
 
@@ -16,70 +9,76 @@ namespace Otor.MsixHero.Tests.UpdateImpact
     public class UpdateImpactTests
     {   
         [Test]
-        public void Test()
+        public void TestUpgradeImpact()
         {
-            var pkg1 = @"C:\Users\marci\Documents\DEV\MSIX-Hero\Archive\msix-hero-0.6.0.0\AppxBlockMap.xml";
-            var pkg2 = @"C:\Users\marci\Documents\DEV\MSIX-Hero\Archive\msix-hero-0.7.0.0\AppxBlockMap.xml";
-            
-            using var stream1 = File.OpenRead(pkg1);
-            using var stream2 = File.OpenRead(pkg2);
-            var files1 = new List<AppxFile>(this.ReadFiles(stream1));
-            var files2 = new List<AppxFile>(this.ReadFiles(stream2));
+            var names = typeof(UpdateImpactTests).Assembly.GetManifestResourceNames();
+            var previous = names.First(a => a.EndsWith(".previous.xml"));
+            var next = names.First(a => a.EndsWith(".next.xml"));
 
-            var presentInBoth = new HashSet<string>(files1.Select(f => f.Name).Union(files2.Select(f => f.Name)));
-            
-            var newFiles = files2.Except(files1).Where(f => !presentInBoth.Contains(f.Name)).ToList();
-            var oldFiles = files1.Except(files2).Where(f => !presentInBoth.Contains(f.Name)).ToList();
-            var unchangedFiles = files1.Intersect(files2).ToList();
-            var changedFiles1 = files1.Except(oldFiles).Except(unchangedFiles).ToList();
-            var changedFiles2 = files2.Except(newFiles).Except(unchangedFiles).ToList();
-            
-            var sumNewFiles = newFiles.Sum(s => s.Size);
-            var sumOldFiles = oldFiles.Sum(s => s.Size);
-            var sumUnchangedFiles = unchangedFiles.Sum(s => s.Size);
-            var sumChangedFiles1 = changedFiles1.Sum(s => s.Size);
-            var sumChangedFiles2 = changedFiles2.Sum(s => s.Size);
-        }
-        
-        private IEnumerable<AppxFile> ReadFiles(Stream stream)
-        {
-            IList<AppxFile> list = new List<AppxFile>();
-            var document = XDocument.Load(stream, LoadOptions.None);
-            var blockMap = document.Root;
-            if (blockMap == null || blockMap.Name.LocalName != "BlockMap")
+            var comparer = new AppxBlockMapUpdateImpactAnalyzer();
+            using var stream1 = typeof(UpdateImpactTests).Assembly.GetManifestResourceStream(previous);
+            using var stream2 = typeof(UpdateImpactTests).Assembly.GetManifestResourceStream(next);
+
+            if (stream2 == null || stream1 == null)
             {
-                return list;
+                throw new InvalidOperationException();
             }
             
-            var ns = XNamespace.Get("http://schemas.microsoft.com/appx/2010/blockmap");
+            var compare = comparer.Analyze(stream1, stream2).Result;
+            
+            Assert.AreEqual(1406036, compare.UpdateImpact);
+            Assert.AreEqual(403522, compare.SizeDifference);
+            Assert.AreEqual(294784, compare.AddedFiles.FileSize);
+            Assert.AreEqual(1406036, compare.AddedFiles.BlockSize);
+            Assert.AreEqual(108523, compare.AddedFiles.UpdateImpact);
+            Assert.AreEqual(1, compare.AddedFiles.FileCount);
+            Assert.AreEqual(294784, compare.AddedFiles.SizeDifference);
+            Assert.AreEqual(72, compare.AddedFiles.BlockCount);
 
-            foreach (var item in blockMap.Elements(ns + "File"))
-            {
-                long.TryParse(item.Attribute("Size")?.Value ?? "0", out var fileSize);
+            Assert.AreEqual(66144, compare.DeletedFiles.FileSize);
+            Assert.AreEqual(1270988, compare.DeletedFiles.BlockSize);
+            Assert.AreEqual(2, compare.DeletedFiles.FileCount);
+            Assert.AreEqual(67, compare.DeletedFiles.BlockCount);
+            Assert.AreEqual(0, compare.DeletedFiles.UpdateImpact);
+            Assert.AreEqual(-66144, compare.DeletedFiles.SizeDifference);
 
-                var fileName = item.Attribute("Name")?.Value;
-                var file = new AppxFile(fileName, fileSize);
-                
-                foreach (var fileBlock in item.Elements(ns + "Block"))
-                {
-                    long blockLength;
-                    var blockSize = fileBlock.Attribute("Size");
-                    if (blockSize == null)
-                    {
-                        blockLength = fileSize;
-                    }
-                    else
-                    {
-                        long.TryParse(blockSize.Value, out blockLength);
-                    }
-
-                    file.Blocks.Add(new AppxBlock(fileBlock.Attribute("Hash")?.Value, blockLength));
-                }
-
-                list.Add(file);
-            }
-
-            return list;
+            Assert.AreEqual(18, compare.ChangedFiles.FileCount);
+            Assert.AreEqual(4023390, compare.ChangedFiles.OldPackageFileSize);
+            Assert.AreEqual(71, compare.ChangedFiles.OldPackageBlockCount);
+            Assert.AreEqual(1337955, compare.ChangedFiles.OldPackageBlockSize);
+            Assert.AreEqual(4198272, compare.ChangedFiles.NewPackageFileSize);
+            Assert.AreEqual(73, compare.ChangedFiles.NewPackageBlockCount);
+            Assert.AreEqual(1395168, compare.ChangedFiles.NewPackageBlockSize);
+            Assert.AreEqual(1297513, compare.ChangedFiles.UpdateImpact);
+            Assert.AreEqual(174882, compare.ChangedFiles.SizeDifference);
+            
+            Assert.AreEqual(64379562, compare.UnchangedFiles.FileSize);
+            Assert.AreEqual(23685618, compare.UnchangedFiles.BlockSize);
+            Assert.AreEqual(244, compare.UnchangedFiles.FileCount);
+            Assert.AreEqual(1116, compare.UnchangedFiles.BlockCount);
+            
+            Assert.AreEqual(24956606, compare.OldPackageLayout.BlockSize);
+            Assert.AreEqual(1183, compare.OldPackageLayout.BlockCount);
+            Assert.AreEqual(68469096, compare.OldPackageLayout.FileSize);
+            Assert.AreEqual(264, compare.OldPackageLayout.FileCount);
+            Assert.AreEqual(24975386, compare.OldPackageLayout.Size);
+            
+            Assert.AreEqual(25091654, compare.NewPackageLayout.BlockSize);
+            Assert.AreEqual(1188, compare.NewPackageLayout.BlockCount);
+            Assert.AreEqual(68872618, compare.NewPackageLayout.FileSize);
+            Assert.AreEqual(263, compare.NewPackageLayout.FileCount);
+            Assert.AreEqual(25110368, compare.NewPackageLayout.Size);
+            
+            Assert.AreEqual(335503, compare.OldPackageDuplication.PossibleSizeReduction);
+            Assert.AreEqual(103374, compare.OldPackageDuplication.PossibleImpactReduction);
+            Assert.AreEqual(335503, compare.OldPackageDuplication.FileSize);
+            Assert.AreEqual(96, compare.OldPackageDuplication.FileCount);
+            
+            Assert.AreEqual(335503, compare.NewPackageDuplication.PossibleSizeReduction);
+            Assert.AreEqual(103374, compare.NewPackageDuplication.PossibleImpactReduction);
+            Assert.AreEqual(335503, compare.NewPackageDuplication.FileSize);
+            Assert.AreEqual(96, compare.NewPackageDuplication.FileCount);
+            
         }
     }
 }

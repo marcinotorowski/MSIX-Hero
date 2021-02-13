@@ -25,7 +25,7 @@ namespace Otor.MsixHero.Appx.Updates
 {
     public class MsixUpdateImpactAnalyzer : IAppxUpdateImpactAnalyzer
     {
-        public async Task<ComparisonResult> Analyze(string msixPath1, string msixPath2, CancellationToken cancellationToken = default)
+        public async Task<UpdateImpactResults> Analyze(string msixPath1, string msixPath2, bool ignoreVersionCheck = false, CancellationToken cancellationToken = default)
         {
             if (msixPath1 == null)
             {
@@ -56,7 +56,10 @@ namespace Otor.MsixHero.Appx.Updates
                         await using (var file2 = fileReader2.GetFile("AppxBlockMap.xml"))
                         {
                             var reader = new AppxBlockMapUpdateImpactAnalyzer();
-                            return await reader.Analyze(file1, file2, cancellationToken).ConfigureAwait(false);
+                            var result = await reader.Analyze(file1, file2, cancellationToken).ConfigureAwait(false);
+                            result.OldPackage = msixPath1;
+                            result.NewPackage = msixPath2;
+                            return result;
                         }
                     }
                 }
