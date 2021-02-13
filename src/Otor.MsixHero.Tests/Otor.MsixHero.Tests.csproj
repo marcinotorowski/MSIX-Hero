@@ -15,7 +15,8 @@
     <None Remove="Resources\resources.pri" />
     <None Remove="Resources\SamplePackages\CreatedByMsixHero.msix" />
     <None Remove="Resources\wintrust.dll.ini" />
-    <None Remove="UpdateImpact\update.xml" />
+    <None Remove="UpdateImpact\next.xml" />
+    <None Remove="UpdateImpact\previous.xml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,9 +45,8 @@
     <EmbeddedResource Include="Resources\nsis.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="UpdateImpact\update.xml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateImpact\next.xml" />
+    <EmbeddedResource Include="UpdateImpact\previous.xml" />
   </ItemGroup>
 
   <ItemGroup>

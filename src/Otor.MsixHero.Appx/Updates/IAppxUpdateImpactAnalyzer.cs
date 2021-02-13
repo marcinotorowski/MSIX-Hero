@@ -14,14 +14,22 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Updates.Entities;
+using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Updates
 {
     public interface IAppxUpdateImpactAnalyzer
     {
-        Task<UpdateImpactResult> Analyze(string package1Path, string package2Path, CancellationToken cancellationToken = default);
+        Task<UpdateImpactResults> Analyze(
+            string file1, 
+            string file2, 
+            bool ignoreVersionCheck = false, 
+            CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progressReporter = default);
     }
 }

@@ -52,6 +52,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public bool OpenForSaving { get; set; }
 
+        public string Prompt { get; set; }
+        
         public static Func<string, string> ValidatePath
         {
             get
@@ -110,14 +112,16 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     {
                         if (string.IsNullOrEmpty(this.CurrentValue))
                         {
-                            if (this.interactionService.SaveFile(this.Filter, out var newValue))
+                            var settings = new FileDialogSettings(this.Filter, this.Prompt);
+                            if (this.interactionService.SaveFile(settings, out var newValue))
                             {
                                 this.CurrentValue = newValue;
                             }
                         }
                         else
                         {
-                            if (this.interactionService.SaveFile(this.CurrentValue, this.Filter, out var newValue))
+                            var settings = new FileDialogSettings(this.Filter, this.Prompt, this.CurrentValue);
+                            if (this.interactionService.SaveFile(settings, out var newValue))
                             {
                                 this.CurrentValue = newValue;
                             }
@@ -127,14 +131,16 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     {
                         if (string.IsNullOrEmpty(this.CurrentValue))
                         {
-                            if (this.interactionService.SelectFile(this.Filter, out var newValue))
+                            var settings = new FileDialogSettings(this.Filter, this.Prompt);
+                            if (this.interactionService.SelectFile(settings, out var newValue))
                             {
                                 this.CurrentValue = newValue;
                             }
                         }
                         else
                         {
-                            if (this.interactionService.SelectFile(this.CurrentValue, this.Filter, out var newValue))
+                            var settings = new FileDialogSettings(this.Filter, this.Prompt, this.CurrentValue);
+                            if (this.interactionService.SelectFile(settings, out var newValue))
                             {
                                 this.CurrentValue = newValue;
                             }

@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View.FilesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
+             xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:FileSizeConverter x:Key="SizeConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <AdornerDecorator>
+        <DockPanel IsVisibleChanged="FilesDockVisibilityChanged">
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 6" DockPanel.Dock="Top">
+                <RadioButton GroupName="g1" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.None}}" Content="All files" Margin="0 0 16 0" />
+                <RadioButton GroupName="g2" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.OnlyChanged}}" Content="Only changes" Margin="0 0 16 0" />
+                <RadioButton GroupName="g3" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.OnlyUpdateRelevant}}" Content="Only impacting update" Margin="0 0 16 0" />
+            </StackPanel>
+            <ListView ItemsSource="{Binding Results.CurrentValue.FilesView}" x:Name="FileGrid">
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn Width="100">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Type" Content="Type" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="4" Padding="4 2" Margin="0 -4" Background="LightGray" x:Name="Border">
+                                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                                            <TextBlock x:Name="Text" Foreground="Black" Text="{Binding Type}" />
+                                        </Border>
+                                        <DataTemplate.Triggers>
+                                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Added}">
+                                                <Setter Property="Background" TargetName="Border" Value="MediumSeaGreen" />
+                                                <Setter Property="Foreground" TargetName="Text" Value="White" />
+                                            </DataTrigger>
+                                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Deleted}">
+                                                <Setter Property="Background" TargetName="Border" Value="IndianRed" />
+                                                <Setter Property="Foreground" TargetName="Text" Value="White" />
+                                            </DataTrigger>
+                                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Changed}">
+                                                <Setter Property="Background" TargetName="Border" Value="Orange" />
+                                                <Setter Property="Foreground" TargetName="Text" Value="White" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <GridViewColumn DisplayMemberBinding="{Binding Name}" Width="400">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Name" Content="Name" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <GridViewColumn DisplayMemberBinding="{Binding SizeDifference, Converter={StaticResource SizeConverter}}" Width="60">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Size" Content="Size" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <GridViewColumn DisplayMemberBinding="{Binding UpdateImpact, Converter={StaticResource SizeConverter}}" Width="120">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="UpdateImpact" Content="Update impact" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+    </AdornerDecorator>
+</UserControl>

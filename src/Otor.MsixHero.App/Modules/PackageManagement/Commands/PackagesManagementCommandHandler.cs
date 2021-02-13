@@ -429,7 +429,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             {
                 if (forAllUsers)
                 {
-                    if (!this.interactionService.SelectFile(new DialogFilterBuilder( "*.msix", "*.appx").BuildFilter(), out packagePath))
+                    if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder( "*.msix", "*.appx").BuildFilter()), out packagePath))
                     {
                         return;
                     }
@@ -438,7 +438,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 {
                     if (!this.interactionService.SelectFile(
                         // ReSharper disable StringLiteralTypo
-                        new DialogFilterBuilder("*.msix", "*.appx", "*.appxbundle", "*.appinstaller", "appxmanifest.xml").BuildFilter(), out packagePath))
+                        FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.msix", "*.appx", "*.appxbundle", "*.appinstaller", "appxmanifest.xml").BuildFilter()), out packagePath))
                         // ReSharper restore StringLiteralTypo
                     {
                         return;
@@ -1022,7 +1022,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             string fileParameterName = "file",
             string fileFilter = null)
         {
-            if (!this.interactionService.SelectFile(fileFilter, out var selected))
+            if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(fileFilter), out var selected))
             {
                 return;
             }

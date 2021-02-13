@@ -33,7 +33,7 @@ namespace Otor.MsixHero.Cli
     {
         static async Task Main(string[] args)
         {
-            var p = Parser.Default.ParseArguments<SignVerb, PackVerb, UnpackVerb, NewCertVerb, TrustVerb, AppAttachVerb, NewModPackVerb, ExtractCertVerb, DependenciesVerb>(args);
+            var p = Parser.Default.ParseArguments<SignVerb, PackVerb, UnpackVerb, NewCertVerb, TrustVerb, AppAttachVerb, NewModPackVerb, ExtractCertVerb, DependenciesVerb, UpdateImpactVerb>(args);
             await p.WithParsedAsync<SignVerb>(Run);
             await p.WithParsedAsync<PackVerb>(Run);
             await p.WithParsedAsync<UnpackVerb>(Run);
@@ -42,6 +42,7 @@ namespace Otor.MsixHero.Cli
             await p.WithParsedAsync<TrustVerb>(Run);
             await p.WithParsedAsync<ExtractCertVerb>(Run);
             await p.WithParsedAsync<AppAttachVerb>(Run);
+            await p.WithParsedAsync<UpdateImpactVerb>(Run);
             await p.WithParsedAsync<DependenciesVerb>(Run);
             await p.WithNotParsedAsync(Run);
         }
@@ -76,10 +77,18 @@ namespace Otor.MsixHero.Cli
             return exitCode;
         }
 
+        private static async Task<int> Run(UpdateImpactVerb arg)
+        {
+            var console = new ConsoleImpl(Console.Out, Console.Error);
+            var executor = new UpdateImpactVerbExecutor(arg, console);
+            var exitCode = await executor.Execute().ConfigureAwait(false);
+            Environment.ExitCode = exitCode;
+            return exitCode;
+        }
+
         private static async Task<int> Run(TrustVerb arg)
         {
             var console = new ConsoleImpl(Console.Out, Console.Error);
-            
             var signingManager = new SigningManager();
             var executor = new TrustVerbExecutor(arg, signingManager, console);
             var exitCode = await executor.Execute().ConfigureAwait(false);

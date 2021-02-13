@@ -261,7 +261,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void ReplaceIconExecute()
         {
-            var result = this.interactionService.SelectFile("Icon files|*.ico|Executable files|*.exe;*.dll", out var selectedIcon);
+            var result = this.interactionService.SelectFile(FileDialogSettings.FromFilterString("Icon files|*.ico|Executable files|*.exe;*.dll"), out var selectedIcon);
             if (result)
             {
                 this.Selected.Icon.CurrentValue = selectedIcon;

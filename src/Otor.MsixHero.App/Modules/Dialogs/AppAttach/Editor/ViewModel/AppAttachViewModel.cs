@@ -97,7 +97,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                 return false;
             }
 
-            if (!this.interactionService.SaveFile(this.OutputPath, "Virtual disks|*.vhd", out var output))
+            var settings = new FileDialogSettings("Virtual disks|*.vhd", this.OutputPath);
+            if (!this.interactionService.SaveFile(settings, out var output))
             {
                 return false;
             }
