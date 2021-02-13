@@ -131,12 +131,20 @@
                         <CheckBox 
                             IsEnabled="{Binding IsIncludeVfsFoldersEnabled}" 
                             IsChecked="{Binding IncludeVfsFolders.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                            Content="VFS folder structure from the parent package"
-                            Margin="0 0 0 6" />
+                            Margin="0 0 0 6">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="VFS folder structure from the parent package" VerticalAlignment="Center" />
+                                <Control 
+                                    ToolTip="If this option is selected, creating uncompressed sources for a modification package will also create empty folders, matching the original VFS structure of the parent package. This is useful for win32 add-ons and modification packages authoring."
+                                    Style="{StaticResource HelpIcon}" 
+                                    VerticalAlignment="Center" 
+                                    Margin="2 -2" />
+                            </StackPanel>
+                        </CheckBox>
                         <Border Visibility="{Binding IsIncludeVfsFoldersEnabled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
                         Background="#fafafa" Margin="22 -3 0 16">
                             <TextBlock TextWrapping="Wrap" Margin="6" Foreground="#555">
-                        <Run Text="This option is not available for signed or unsigned MSIX output type or if the parent package path is not set." />
+                                <Run Text="This option is available only when the output file is uncompressed (AppxManifest.xml) and the parent package is selected from an existing package path." />
                             </TextBlock>
                         </Border>
                         <CheckBox IsChecked="{Binding IncludeFiles.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Content="Files and directories from disk" Margin="0 0 0 3" />
@@ -146,7 +154,7 @@
                             <TextBox 
                         Text="{Binding SourceFolder.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
                         </DockPanel>
-                        <CheckBox Content="Registry keys and values" Margin="0 0 0 3" IsChecked="{Binding IncludeRegistry.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        <CheckBox Content="Registry keys and values" Margin="0 3 0 3" IsChecked="{Binding IncludeRegistry.CurrentValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                         <TextBlock Style="{StaticResource DataHeader}" Margin="22 0 0 6" Text="Import registry from the specified *.reg file:" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <DockPanel Margin="22 0 0 16" Visibility="{Binding IncludeRegistry.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Button Content="..." DockPanel.Dock="Right" Margin="4 0 0 0" Command="{Binding SourceRegistryFile.Browse}" />

@@ -41,6 +41,7 @@
 
     <Geometry x:Key="SmallOk">M 7.679688 0.957031 C 4.097656 0.855469 1.105469 3.691406 1.003906 7.273438 C 0.902344 10.855469 3.738281 13.851563 7.320313 13.953125 C 10.902344 14.050781 13.898438 11.21875 14 7.632813 C 14.019531 6.882813 13.90625 6.160156 13.6875 5.484375 L 12.863281 6.261719 C 12.960938 6.695313 13.011719 7.144531 13 7.609375 C 12.914063 10.640625 10.378906 13.035156 7.347656 12.953125 C 4.316406 12.867188 1.917969 10.332031 2 7.300781 C 2.085938 4.269531 4.621094 1.871094 7.652344 1.953125 C 8.644531 1.984375 9.566406 2.277344 10.359375 2.765625 L 11.109375 2.054688 C 10.125 1.398438 8.953125 0.992188 7.679688 0.957031 Z M 12.5 2.792969 L 6.5 8.792969 L 4.851563 7.148438 L 4.5 6.792969 L 3.792969 7.5 L 4.148438 7.851563 L 6.5 10.207031 L 13.207031 3.5 Z</Geometry>
     <Geometry x:Key="SmallCheckMark">M 14.5 2.792969 L 5.5 11.792969 L 1.851563 8.148438 L 1.5 7.792969 L 0.792969 8.5 L 1.148438 8.851563 L 5.5 13.207031 L 15.207031 3.5 Z</Geometry>
+    <Geometry x:Key="SmallHelp">M 7.5 1 C 3.917969 1 1 3.917969 1 7.5 C 1 11.082031 3.917969 14 7.5 14 C 11.082031 14 14 11.082031 14 7.5 C 14 3.917969 11.082031 1 7.5 1 Z M 7.5 2 C 10.542969 2 13 4.457031 13 7.5 C 13 10.542969 10.542969 13 7.5 13 C 4.457031 13 2 10.542969 2 7.5 C 2 4.457031 4.457031 2 7.5 2 Z M 7.558594 4 C 6.347656 4.070313 5.359375 5.085938 5.359375 6.320313 L 6.359375 6.320313 C 6.359375 5.507813 7.0625 4.871094 7.921875 5.019531 C 8.535156 5.125 9.019531 5.726563 9 6.359375 C 8.984375 6.914063 8.660156 7.265625 8.183594 7.476563 C 7.886719 7.609375 7.605469 7.734375 7.367188 7.984375 C 7.128906 8.234375 7 8.605469 7 9 L 8 9 C 8 8.773438 8.03125 8.738281 8.09375 8.671875 C 8.152344 8.609375 8.316406 8.511719 8.585938 8.390625 C 9.332031 8.066406 9.972656 7.351563 10 6.390625 C 10.035156 5.253906 9.21875 4.226563 8.089844 4.03125 C 7.910156 4.003906 7.730469 3.992188 7.558594 4 Z M 7 10 L 7 11 L 8 11 L 8 10 Z</Geometry>
     <Geometry x:Key="SmallRemoveApp">M 2.5 2 C 1.675781 2 1 2.675781 1 3.5 L 1 12.5 C 1 13.324219 1.675781 14 2.5 14 L 8 14 L 8 13 L 2.5 13 C 2.21875 13 2 12.78125 2 12.5 L 2 5 L 13 5 L 13 8 L 14 8 L 14 3.5 C 14 2.675781 13.324219 2 12.5 2 Z M 2.5 3 L 12.5 3 C 12.78125 3 13 3.21875 13 3.5 L 13 4 L 2 4 L 2 3.5 C 2 3.21875 2.21875 3 2.5 3 Z M 9.851563 9.148438 L 9.148438 9.851563 L 11.792969 12.5 L 9.148438 15.144531 L 9.851563 15.855469 L 12.5 13.207031 L 15.144531 15.855469 L 15.855469 15.144531 L 13.207031 12.5 L 15.855469 9.851563 L 15.144531 9.148438 L 12.5 11.792969 Z</Geometry>
     <Geometry x:Key="SmallProcessor">M 4 1 L 4 2 L 5 2 L 5 1 L 4 1 z M 6 1 L 6 2 L 7 2 L 7 1 L 6 1 z M 8 1 L 8 2 L 9 2 L 9 1 L 8 1 z M 10 1 L 10 2 L 11 2 L 11 1 L 10 1 z M 4.5 3 C 3.6774686 3 3 3.6774686 3 4.5 L 3 10.5 C 3 11.322531 3.6774686 12 4.5 12 L 10.5 12 C 11.322531 12 12 11.322531 12 10.5 L 12 4.5 C 12 3.6774686 11.322531 3 10.5 3 L 4.5 3 z M 1 4 L 1 5 L 2 5 L 2 4 L 1 4 z M 4.5 4 L 10.5 4 C 10.781469 4 11 4.2185314 11 4.5 L 11 10.5 C 11 10.781469 10.781469 11 10.5 11 L 4.5 11 C 4.2185314 11 4 10.781469 4 10.5 L 4 4.5 C 4 4.2185314 4.2185314 4 4.5 4 z M 13 4 L 13 5 L 14 5 L 14 4 L 13 4 z M 5.5 5 A 0.5 0.5 0 0 0 5 5.5 A 0.5 0.5 0 0 0 5.5 6 A 0.5 0.5 0 0 0 6 5.5 A 0.5 0.5 0 0 0 5.5 5 z M 1 6 L 1 7 L 2 7 L 2 6 L 1 6 z M 13 6 L 13 7 L 14 7 L 14 6 L 13 6 z M 1 8 L 1 9 L 2 9 L 2 8 L 1 8 z M 13 8 L 13 9 L 14 9 L 14 8 L 13 8 z M 9.5 9 A 0.5 0.5 0 0 0 9 9.5 A 0.5 0.5 0 0 0 9.5 10 A 0.5 0.5 0 0 0 10 9.5 A 0.5 0.5 0 0 0 9.5 9 z M 1 10 L 1 11 L 2 11 L 2 10 L 1 10 z M 13 10 L 13 11 L 14 11 L 14 10 L 13 10 z M 4 13 L 4 14 L 5 14 L 5 13 L 4 13 z M 6 13 L 6 14 L 7 14 L 7 13 L 6 13 z M 8 13 L 8 14 L 9 14 L 9 13 L 8 13 z M 10 13 L 10 14 L 11 14 L 11 13 L 10 13 z</Geometry>
     <Geometry x:Key="SmallPublisher">M 7.5 1 C 4.132813 1 2 3.523438 2 6.5 C 2 8.019531 2.570313 9.015625 3.085938 9.789063 C 3.597656 10.558594 4 11.082031 4 11.875 L 4 14 L 5 14 L 5 11.875 C 5 10.734375 4.402344 9.96875 3.914063 9.234375 C 3.429688 8.5 3 7.78125 3 6.5 C 3 4.460938 4.070313 2.796875 6 2.226563 L 6 5.28125 C 5.40625 5.628906 5 6.265625 5 7 C 5 8.097656 5.902344 9 7 9 C 7.367188 9 7.710938 8.890625 8.007813 8.714844 L 9.035156 9.742188 C 9.011719 9.828125 9 9.914063 9 10 C 9 10.550781 9.449219 11 10 11 C 10.550781 11 11 10.550781 11 10 C 11 9.449219 10.550781 9 10 9 C 9.914063 9 9.828125 9.011719 9.742188 9.035156 L 8.714844 8.007813 C 8.890625 7.710938 9 7.367188 9 7 C 9 5.902344 8.097656 5 7 5 L 7 2.042969 C 7.167969 2.027344 7.324219 2 7.5 2 C 8.996094 2 9.96875 2.464844 10.640625 3.15625 C 11.316406 3.847656 11.691406 4.796875 11.835938 5.789063 C 11.859375 5.960938 11.914063 6.128906 12 6.289063 L 12.988281 8.0625 C 13.019531 8.113281 13.003906 8.152344 12.949219 8.175781 L 12 8.527344 L 12 10.5 C 12 11.332031 11.65625 11.613281 11.277344 11.800781 C 10.898438 11.992188 10.5 12 10.5 12 L 10 12 L 10 14 L 11 14 L 11 12.875 C 11.234375 12.847656 11.355469 12.878906 11.722656 12.699219 C 12.34375 12.386719 13 11.667969 13 10.5 L 13 9.222656 L 13.328125 9.101563 L 13.335938 9.097656 C 13.921875 8.851563 14.171875 8.132813 13.863281 7.578125 L 12.875 5.804688 C 12.851563 5.761719 12.832031 5.710938 12.824219 5.648438 C 12.65625 4.5 12.222656 3.339844 11.359375 2.457031 C 10.496094 1.574219 9.210938 1 7.5 1 Z M 7 6 C 7.558594 6 8 6.441406 8 7 C 8 7.558594 7.558594 8 7 8 C 6.441406 8 6 7.558594 6 7 C 6 6.441406 6.441406 6 7 6 Z</Geometry>
@@ -147,4 +148,53 @@
     <Geometry x:Key="VectorFilter">M 5 4 L 5 6.34375 L 5.21875 6.625 L 13 16.34375 L 13 28 L 14.59375 26.8125 L 18.59375 23.8125 L 19 23.5 L 19 16.34375 L 26.78125 6.625 L 27 6.34375 L 27 4 Z M 7.28125 6 L 24.71875 6 L 17.53125 15 L 14.46875 15 Z M 15 17 L 17 17 L 17 22.5 L 15 24 Z</Geometry>
     <Geometry x:Key="VectorGroupTree">M 20 5 L 20 8.5 L 12 14.09375 L 12 12 L 2 12 L 2 20 L 12 20 L 12 17.90625 L 20 23.5 L 20 27 L 30 27 L 30 19 L 20 19 L 20 21.09375 L 12.71875 16 L 20 10.90625 L 20 13 L 30 13 L 30 5 Z M 22 7 L 28 7 L 28 11 L 22 11 Z M 4 14 L 10 14 L 10 18 L 4 18 Z M 22 21 L 28 21 L 28 25 L 22 25 Z</Geometry>
     <Geometry x:Key="VectorStop">M 6 6 L 6 26 L 26 26 L 26 6 Z M 8 8 L 24 8 L 24 24 L 8 24 Z</Geometry>
+
+    <Style TargetType="ToolTip">
+        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <TextBlock 
+                            Text="{TemplateBinding Content}" 
+                            TextWrapping="Wrap" 
+                            Margin="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Control}" x:Key="HelpIcon">
+        <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}"/>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Cursor" Value="Help" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="ToolTipService.HasDropShadow" Value="True" />
+        <Setter Property="ToolTipService.Placement" Value="Bottom" />
+        <Setter Property="ToolTipService.ShowDuration" Value="60000" />
+        <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+        <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+        <Setter Property="ToolTipService.VerticalOffset" Value="4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Control">
+                    <Border Background="{TemplateBinding Background}">
+                        <Path Style="{StaticResource SmallIcon}" Fill="{TemplateBinding Foreground}" Data="{StaticResource SmallHelp}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#aaa" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

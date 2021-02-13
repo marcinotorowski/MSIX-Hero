@@ -230,6 +230,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         private void CreateOnValueChanged(object sender, ValueChangedEventArgs e)
         {
             this.TabCertificate.IsValidated = this.Create.CurrentValue == ModificationPackageBuilderAction.SignedMsix;
+            if (this.Create.CurrentValue != ModificationPackageBuilderAction.Manifest)
+            {
+                this.IncludeVfsFolders.CurrentValue = false;
+            }
+            
             this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
         }
 
@@ -356,6 +361,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                         this.ParentPublisher.CurrentValue = read.Publisher;
                     }
                 }
+                
+                this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
             }
             catch (Exception exception)
             {
