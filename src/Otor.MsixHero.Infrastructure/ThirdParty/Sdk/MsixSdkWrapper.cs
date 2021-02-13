@@ -59,7 +59,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
             Logger.Info("Executing {0} {1}", signTool, args);
 
-            Action<string> callBack = data => { };
+            Action<string> callBack = _ => { };
 
             try
             {
@@ -143,7 +143,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
             Logger.Info("Executing {0} {1}", signTool, maskedArgs);
 
-            Action<string> callBack = data => { };
+            Action<string> callBack = _ => { };
 
             try
             {
@@ -200,7 +200,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var signTool = GetSdkPath("signTool.exe", BundleHelper.SdkPath);
             Logger.Info("Executing {0} {1}", signTool, args);
 
-            Action<string> callBack = data => { };
+            Action<string> callBack = _ => { };
 
             try
             {
@@ -227,20 +227,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 throw;
             }
         }
-
-        public async Task ComparePackages(string file1, string file2, string pathToSaveXml, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
-        {
-            var comparePackage = GetSdkPath("ComparePackage.exe", BundleHelper.SdkPath);
-            if (comparePackage == null)
-            {
-                throw new FileNotFoundException("ComparePackage.exe not found.");
-            }
-
-            var arguments = $@"""{file1}"" ""{file2}"" -o -XML ""{pathToSaveXml}""";
-
-            await RunAsync(comparePackage, arguments, cancellationToken, null, 0).ConfigureAwait(false);
-        }
-
+        
         public Task UnpackPackage(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var wrapper = new PackUnPackProgressWrapper(progress);
