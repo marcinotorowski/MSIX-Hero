@@ -36,9 +36,6 @@ namespace Otor.MsixHero.App.Modules.WhatsNew
         {
             var regionManager = containerProvider.Resolve<IRegionManager>();
             regionManager.RegisterViewWithRegion(WhatsNewRegionNames.Master, typeof(WhatsNew1));
-            regionManager.RegisterViewWithRegion(WhatsNewRegionNames.Master, typeof(WhatsNew2));
-            regionManager.RegisterViewWithRegion(WhatsNewRegionNames.Master, typeof(WhatsNew3));
-            regionManager.RegisterViewWithRegion(WhatsNewRegionNames.Master, typeof(WhatsNew4));
             regionManager.RequestNavigate(WhatsNewRegionNames.Master, new Uri("whats-new1", UriKind.Relative));
         }
     }

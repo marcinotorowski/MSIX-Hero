@@ -67,7 +67,7 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
                 new SidebarItemViewModel(
                     ApplicationMode.Dashboard,
                     NavigationPaths.Dashboard,
-                    "Overview",
+                    "Dashboard",
                     TabOverview),
 
                 new SidebarItemViewModel(
