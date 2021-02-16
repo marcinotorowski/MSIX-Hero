@@ -1,4 +1,4 @@
-# 2.0.62
+# 2.0.64
 ### Improvements ###
 * Added context menu item to open the *Change Volume* dialog for the selected package (18ad7af8)
 * Rewritten *Update Impact* analyzer (#94)

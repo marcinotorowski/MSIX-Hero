@@ -79,11 +79,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
             FileDialogSettings settings;
             if (string.IsNullOrEmpty(this.yamlPath) || !File.Exists(this.yamlPath))
             {
-                settings = FileDialogSettings.FromFilterString("*.yaml");
+                settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.yaml").BuildFilter());
             }    
             else
             {
-                settings = new FileDialogSettings("*.yaml", null, this.yamlPath);
+                settings = new FileDialogSettings(new DialogFilterBuilder("*.yaml").BuildFilter(), null, this.yamlPath);
             }
             
             var userSelected = this.interactionService.SaveFile(settings, out selected);
