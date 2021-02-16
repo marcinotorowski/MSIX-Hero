@@ -1,3 +1,24 @@
+# 2.0.62
+### Improvements ###
+* Added context menu item to open the *Change Volume* dialog for the selected package (18ad7af8)
+* Rewritten *Update Impact* analyzer (#94)
+  * Added duplication and bar layout views
+  * Added CLI support via `updateImpact` verb
+  * Improved performance, especially for big packages
+  * Ability to export to XML and start a new comparison
+* Minor UI changes (ef8ecc0d)
+  * Changed colors of invalid input fields from red to yellow
+  * Validation icons are consistent (tab items, input texts, dialogs, the settings view)
+  * Tab items have now bigger padding
+  * Added extra help with tooltip in the *Modification Package* section, checkbox *Copy to VFS*
+
+### Bug fixes ###
+* Fixed a problem with the partition drop-down, which was not showing any value in the *Change Volume* dialog (#90)
+* Fixed a problem with invisible text on Windows 10 with dark mode enabled (#93)
+* Fixed broken CLI verb `dependencies` (f244efde)
+* Fixed a problem with file overview in the *Update impact* dialog, which was not correct for packages having uncompressed Appx blocks (for example ZIP files) (#94)
+* Fixed a problem with *Modification Package* dialog, where the checkbox "Copy to VFS" was not reacting to changes of other controls (#92)
+
 # 2.0.46
 See https://msixhero.net/2021/02/07/msix-hero-2-0-new-features-ui-open-source/
 
