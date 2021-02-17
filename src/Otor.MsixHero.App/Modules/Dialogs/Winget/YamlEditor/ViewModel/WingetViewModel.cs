@@ -17,7 +17,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -33,7 +32,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 {
     public class WinGetViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly YamlValidator yamlValidator = new YamlValidator();
+        private readonly WingetValidateWrapper yamlValidator = new WingetValidateWrapper();
         private readonly IInteractionService interactionService;
         private ICommand openSuccessLink;
         private ICommand reset;
@@ -103,18 +102,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                     return false;
                 }
 
-                var validationDetails = await yamlValidator.ValidateAsync(tempPath, false, cancellationToken).ConfigureAwait(false);
-
-                if (validationDetails != null)
+                var winGetPath = await this.yamlValidator.GetWingetPath(cancellationToken).ConfigureAwait(false);
+                if (winGetPath != null)
                 {
                     progress.Report(new ProgressData(100, "Validating with winget CLI..."));
-                    await Task.Delay(TimeSpan.FromMilliseconds(1000), cancellationToken).ConfigureAwait(false);
 
-                    if (validationDetails.IndexOf("Manifest validation succeeded.", StringComparison.OrdinalIgnoreCase) == -1)
+                    var validationDetails = await yamlValidator.ValidateAsync(tempPath, false, cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(TimeSpan.FromMilliseconds(400), cancellationToken).ConfigureAwait(false);
+                    
+                    if (validationDetails != null)
                     {
-                        var msg = string.Join(Environment.NewLine, validationDetails.Split(Environment.NewLine).Skip(1));
-                        if (1 == this.interactionService.ShowMessage("Winget CLI returned validation errors.", new[] { "Ignore these errors", "Continue editing" }, "Validation errors", msg))
+                        if (1 == this.interactionService.ShowMessage("Winget validation failed. Your package may not be accepted after pushing to the official repo. Press 'See details' to to show detailed warnings.", new[] { "Ignore this warning", "Fix issues"}, "Validation errors", validationDetails))
                         {
+                            this.WingetVerified = false;
+                            this.OnPropertyChanged(nameof(WingetVerified));
                             return false;
                         }
                     }
@@ -124,7 +125,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                         this.OnPropertyChanged(nameof(WingetVerified));
                     }
                 }
-
+                
                 File.Move(tempPath, selected, true);
                 return true;
             }
