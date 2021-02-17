@@ -1,4 +1,16 @@
+# 2.0.68 (unrelesed)
+
+### Improvements ###
+* Better UI messages for winget CLI validation (#97)
+
+### Bug fixes ###
+* Fix wrong owner of various message boxes (#96)
+* Fix wrong checking for winget presence (#97)
+* Fix "Parameter set cannot be resolved" when calling cert-related functions interoping with PS (#98)
+
 # 2.0.64
+See https://msixhero.net/2021/02/16/msix-hero-2-0-64-improved-update-impact-with-cli-support/
+
 ### Improvements ###
 * Added context menu item to open the *Change Volume* dialog for the selected package (18ad7af8)
 * Rewritten *Update Impact* analyzer (#94)
