@@ -107,7 +107,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.PowerShell
             {
                 var cmd2 = session.AddCommand("Import-Module");
                 cmd2.AddParameter("Name", module);
-                cmd2.AddParameter("UseWindowsPowershell");
+                
+                if (string.Equals(module, "Appx", StringComparison.OrdinalIgnoreCase))
+                {
+                    cmd2.AddParameter("UseWindowsPowershell");
+                }
+                
                 if (skipEditionCheck)
                 {
                     cmd2.AddParameter("SkipEditionCheck");

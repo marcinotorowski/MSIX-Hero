@@ -582,8 +582,6 @@ namespace Otor.MsixHero.Appx.Signing
             using var paramPublisherName = cmd.AddParameter("PublisherName", publisherName);
             using var paramPassword = cmd.AddParameter("Password", password);
             using var paramOutputDirectory = cmd.AddParameter("OutputDirectory", outputDirectory.FullName);
-            using var paramPfxOutputFileName = cmd.AddParameter("PfxOutputFileName", null);
-            using var paramCerOutputFileName = cmd.AddParameter("CerOutputFileName", null);
             using var paramCreatePasswordFile = cmd.AddParameter("CreatePasswordFile");
             using var paramNotAfter = cmd.AddParameter("NotAfter", validUntil ?? DateTime.Now.AddDays(365));
 
