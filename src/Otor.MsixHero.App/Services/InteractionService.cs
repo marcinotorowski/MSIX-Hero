@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using Notifications.Wpf.Core;
 using Ookii.Dialogs.Wpf;
@@ -49,7 +50,7 @@ namespace Otor.MsixHero.App.Services
             var targetButtons = (MessageBoxButton)(int)buttons;
 
             // ReSharper disable once AssignNullToNotNullAttribute
-            var result = MessageBox.Show(Application.Current.MainWindow, body, title, targetButtons, targetType);
+            var result = MessageBox.Show(GetActiveWindow(), body, title ?? "MSIX Hero", targetButtons, targetType);
             return (InteractionResult)(int)result;
         }
 
@@ -104,7 +105,11 @@ namespace Otor.MsixHero.App.Services
 
             foreach (var item in buttons)
             {
-                var btn = new TaskDialogButton(ButtonType.Custom) { Text = item };
+                var btn = new TaskDialogButton(ButtonType.Custom)
+                {
+                    Text = item
+                };
+                
                 taskDialog.Buttons.Add(btn);
             }
 
@@ -148,7 +153,7 @@ namespace Otor.MsixHero.App.Services
 
                 if (this.context == null)
                 {
-                    taskDialog.ShowDialog(Application.Current.MainWindow);
+                    taskDialog.ShowDialog(GetActiveWindow());
                 }
 
                 var dispatcher = Application.Current.Dispatcher;
@@ -157,7 +162,7 @@ namespace Otor.MsixHero.App.Services
                     dispatcher.Invoke(() =>
                     {
                         this.context.Send(
-                            _ => taskDialog.ShowDialog(Application.Current.MainWindow),
+                            _ => taskDialog.ShowDialog(GetActiveWindow()),
                             null);
                     },
                         DispatcherPriority.SystemIdle);
@@ -240,7 +245,7 @@ namespace Otor.MsixHero.App.Services
 
             if (this.context == null)
             {
-                return (InteractionResult)(int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType;
+                return (InteractionResult)(int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType;
             }
 
             var result = 0;
@@ -251,7 +256,7 @@ namespace Otor.MsixHero.App.Services
                 dispatcher.Invoke(() =>
                 {
                     this.context.Send(
-                        _ => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
+                        _ => result = (int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType,
                         null);
                 },
                 DispatcherPriority.SystemIdle);
@@ -310,7 +315,7 @@ namespace Otor.MsixHero.App.Services
 
             if (this.context == null)
             {
-                return (InteractionResult)(int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType;
+                return (InteractionResult)(int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType;
             }
 
             var result = 0;
@@ -321,7 +326,7 @@ namespace Otor.MsixHero.App.Services
                 dispatcher.Invoke(() =>
                 {
                     this.context.Send(
-                        _ => result = (int)taskDialog.ShowDialog(Application.Current.MainWindow).ButtonType,
+                        _ => result = (int)taskDialog.ShowDialog(GetActiveWindow()).ButtonType,
                         null);
                 },
                 DispatcherPriority.SystemIdle);
@@ -366,7 +371,7 @@ namespace Otor.MsixHero.App.Services
             }
 
             dlg.CheckFileExists = false;
-            var result = dlg.ShowDialog() == true;
+            var result = dlg.ShowDialog(GetActiveWindow()) == true;
             selectedFile = dlg.FileName;
             return result;
         }
@@ -393,7 +398,7 @@ namespace Otor.MsixHero.App.Services
                 SelectedPath = initialFolder
             };
 
-            var result = dlg.ShowDialog() == true;
+            var result = dlg.ShowDialog(GetActiveWindow()) == true;
             selectedFolder = dlg.SelectedPath;
             return result;
         }
@@ -427,7 +432,7 @@ namespace Otor.MsixHero.App.Services
             dlg.CheckFileExists = true;
             dlg.Multiselect = withMultiSelection;
 
-            var result = dlg.ShowDialog() == true;
+            var result = dlg.ShowDialog(GetActiveWindow()) == true;
             selectedFiles = dlg.FileNames;
             return result;
         }
@@ -440,6 +445,13 @@ namespace Otor.MsixHero.App.Services
             }
 
             return filterString;
+        }
+        
+        private static Window GetActiveWindow()
+        {
+            var ptrActiveWindow = User32Interop.GetActiveWindow();
+            var activeWindow = Application.Current.Windows.OfType<Window>().SingleOrDefault(window => new WindowInteropHelper(window).Handle == ptrActiveWindow) ?? Application.Current.MainWindow;
+            return activeWindow;
         }
     }
 }
