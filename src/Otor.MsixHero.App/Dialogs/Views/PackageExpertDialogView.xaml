@@ -14,7 +14,7 @@
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertDialogViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="970" />
             <Setter Property="Height" Value="680" />

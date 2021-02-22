@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:HelpViewModel}">
@@ -20,7 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="550" />
             <Setter Property="Height" Value="550" />

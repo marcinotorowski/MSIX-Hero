@@ -1,0 +1,45 @@
+﻿// MSIX Hero
+// Copyright (C) 2021 Marcin Otorowski
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// Full notice:
+// https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
+
+using System;
+using System.Windows;
+
+namespace Otor.MsixHero.App.Helpers.Behaviors
+{
+    public class LoadedWeakEventListener
+    {
+        private readonly WeakReference<FrameworkElement> frameworkElement;
+        private readonly BehaviorCollectionEx collection;
+
+        private void OnEvent(object source, EventArgs args)
+        {
+            foreach (var item in this.collection)
+            {
+                if (this.frameworkElement.TryGetTarget(out var obj))
+                {
+                    item.Attach(obj);
+                }
+            }
+        }
+
+        public LoadedWeakEventListener(FrameworkElement source, BehaviorCollectionEx collection)
+        {
+            this.frameworkElement = new WeakReference<FrameworkElement>(source);
+            this.collection = collection;
+            WeakEventManager<FrameworkElement, EventArgs>.AddHandler(source, "Loaded", OnEvent);
+        }
+    }
+}

@@ -9,6 +9,8 @@
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels"
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance viewModels:PackageManagementViewModel}">
@@ -58,7 +60,15 @@
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
-            Grid.Column="1" regions:RegionManager.RegionName="{x:Static constants:PackageManagementRegionNames.Details}" />
+            Grid.Column="1" regions:RegionManager.RegionName="{x:Static constants:PackageManagementRegionNames.Details}">
+            <behaviors:InteractionEx.Behaviors>
+                <behaviors:BehaviorCollectionEx>
+                    <tiers:TierBasedTemplating
+                        Tier0="{StaticResource TransitioningControlTemplateTier0}"
+                        Tier2="{StaticResource TransitioningControlTemplateTier2}" />
+                </behaviors:BehaviorCollectionEx>
+            </behaviors:InteractionEx.Behaviors>
+        </transitionContentControl:TransitioningContentControl>
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="10" Background="Transparent" HorizontalAlignment="Left" ResizeBehavior="PreviousAndCurrent" ResizeDirection="Columns" />
     </Grid>

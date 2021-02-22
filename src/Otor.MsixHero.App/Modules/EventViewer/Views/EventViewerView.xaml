@@ -9,6 +9,8 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.ViewModels"
              xmlns:eventViewer="clr-namespace:Otor.MsixHero.App.Modules.EventViewer"
              xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mc:Ignorable="d" 
              Background="#ffffff"
              d:DesignWidth="600"
@@ -32,7 +34,15 @@
             VerticalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
-            Grid.Column="1" mvvm:RegionManager.RegionName="{x:Static eventViewer:EventViewerRegionNames.Details}" />
+            Grid.Column="1" mvvm:RegionManager.RegionName="{x:Static eventViewer:EventViewerRegionNames.Details}">
+            <behaviors:InteractionEx.Behaviors>
+                <behaviors:BehaviorCollectionEx>
+                    <tiers:TierBasedTemplating
+                        Tier0="{StaticResource TransitioningControlTemplateTier0}"
+                        Tier2="{StaticResource TransitioningControlTemplateTier2}" />
+                </behaviors:BehaviorCollectionEx>
+            </behaviors:InteractionEx.Behaviors>
+        </transitionContentControl:TransitioningContentControl>
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" Width="10" Background="Transparent" HorizontalAlignment="Left" ResizeBehavior="PreviousAndCurrent" ResizeDirection="Columns" />
     </Grid>

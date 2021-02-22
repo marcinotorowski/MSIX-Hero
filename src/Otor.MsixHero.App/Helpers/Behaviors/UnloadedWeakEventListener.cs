@@ -14,16 +14,27 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PackageExpert.Views
+using System;
+using System.Windows;
+
+namespace Otor.MsixHero.App.Helpers.Behaviors
 {
-    /// <summary>
-    /// Interaction logic for Header.xaml
-    /// </summary>
-    public partial class Header
+    public class UnloadedWeakEventListener
     {
-        public Header()
+        private readonly BehaviorCollectionEx collection;
+        
+        private void OnEvent(object source, EventArgs args)
         {
-            InitializeComponent();
+            foreach (var item in this.collection)
+            {
+                item.Detach();
+            }
+        }
+
+        public UnloadedWeakEventListener(FrameworkElement source, BehaviorCollectionEx collection)
+        {
+            this.collection = collection;
+            WeakEventManager<FrameworkElement, EventArgs>.AddHandler(source, "Unloaded", OnEvent);
         }
     }
 }

@@ -7,6 +7,8 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.ViewModels"
              xmlns:whatsNew="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew"
              xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:WhatsNewViewModel}">
@@ -92,7 +94,15 @@
                                                 VerticalContentAlignment="Stretch"
                                                 VerticalAlignment="Stretch"
                                                 HorizontalAlignment="Stretch"
-                                                Content="{TemplateBinding SelectedContent}" />
+                                                Content="{TemplateBinding SelectedContent}">
+                                                <behaviors:InteractionEx.Behaviors>
+                                                    <behaviors:BehaviorCollectionEx>
+                                                        <tiers:TierBasedTemplating
+                                                            Tier0="{StaticResource TransitioningControlTemplateTier0}"
+                                                            Tier2="{StaticResource TransitioningControlTemplateTier2}" />
+                                                    </behaviors:BehaviorCollectionEx>
+                                                </behaviors:InteractionEx.Behaviors>
+                                            </transitionContentControl:TransitioningContentControl>
                                         </Border>
                                     </DockPanel>
                                 </Border>

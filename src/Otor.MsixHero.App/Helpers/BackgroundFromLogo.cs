@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 
 namespace Otor.MsixHero.App.Helpers
@@ -91,6 +92,17 @@ namespace Otor.MsixHero.App.Helpers
 
         private static void OnLogoColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if (e.NewValue == null || e.NewValue == DependencyProperty.UnsetValue)
+            {
+                if (((Border) d).Background is LinearGradientBrush linearBrush && linearBrush.GradientStops.Count > 0)
+                {
+                    // reset animation
+                    linearBrush.GradientStops[0].BeginAnimation(GradientStop.ColorProperty, null);
+                }
+                   
+                return;
+            }
+            
             var c = ((SolidColorBrush)e.NewValue).Color;
             Animate(d, Color.FromArgb(c.A, c.R, c.G, c.B));
         }
@@ -143,7 +155,7 @@ namespace Otor.MsixHero.App.Helpers
             Storyboard.SetTarget(colorAnimation, linearBrush.GradientStops[0]);
             Storyboard.SetTargetProperty(colorAnimation, new PropertyPath(nameof(GradientStop.Color)));
 
-            ((Border) target).Background = linearBrush;
+            ((Border)target).Background = linearBrush;
             var storyboard = new Storyboard();
             storyboard.Children.Add(colorAnimation);
             storyboard.Freeze();

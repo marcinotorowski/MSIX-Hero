@@ -10,6 +10,8 @@
              xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.Converters"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
 
@@ -45,158 +47,178 @@
             </WrapPanel>
         </Border>
 
-        <Border
+        <Grid DockPanel.Dock="Top">
+            <Border HorizontalAlignment="Stretch" Height="155" VerticalAlignment="Top" Background="{StaticResource Otor.MsixHero.Brushes.Accent.Light}">
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedVisibility Tier0="Visible" Tier1="Visible" Tier2="Collapsed" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
+            </Border>
+
+            <Border Height="155" VerticalAlignment="Top" helpers:BackgroundFromLogo.LogoColor="{Binding Converter={StaticResource BrushConverter}}">
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedVisibility Tier0="Collapsed" Tier1="Collapsed" Tier2="Visible" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
+                <Grid>
+
+                    <Border
+                        VerticalAlignment="Top"
+                        Height="155"
+                        Opacity="0.56">
+                        <Border.Background>
+                            <ImageBrush
+                                ViewportUnits="Absolute"
+                                TileMode="Tile"
+                                Stretch="None"
+                                ImageSource="/Resources/acryllicbg.png">
+                                <ImageBrush.Viewport>
+                                    <Rect X="0" Y="0" Width="255" Height="56" />
+                                </ImageBrush.Viewport>
+                            </ImageBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <BlurEffect Radius="42"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <TextBlock
+                        MaxHeight="90"
+                        TextAlignment="Right"
+                        HorizontalAlignment="Stretch"
+                        FontSize="75"
+                        Opacity="0.5"
+                        Margin="0 55 0 0"
+                        TextWrapping="Wrap"
+                        Foreground="White" 
+                        Text="{Binding PackageName}">
+
+                        <TextBlock.Effect>
+                            <BlurEffect Radius="20"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <Rectangle Opacity="0.03" ClipToBounds="True">
+                        <Rectangle.Fill>
+                            <ImageBrush 
+                                ImageSource="/FluentWPF;component/Assets/Images/noise.png"
+                                TileMode="Tile" 
+                                Stretch="None"
+                                ViewportUnits="Absolute" Viewport="0,0,128,128"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+
+                </Grid>
+            </Border>
+
+            <Border 
             DockPanel.Dock="Top"
-            helpers:BackgroundFromLogo.LogoColor="{Binding Converter={StaticResource BrushConverter}}"
             VerticalAlignment="Top">
-            <!--<Border.Background>
+                <!--<Border.Background>
                 <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
                     <GradientStop Color="{Binding Converter={StaticResource ColorConverter}}" Offset="-0.5" />
                     <GradientStop Color="#fff4f4f4" Offset="0.8" />
                 </LinearGradientBrush>
             </Border.Background>-->
-            <Grid ClipToBounds="True">
-                <Border
-                    VerticalAlignment="Top"
-                    Height="155"
-                    Opacity="0.56">
-                    <Border.Background>
-                        <ImageBrush
-                            ViewportUnits="Absolute"
-                            TileMode="Tile"
-                            Stretch="None"
-                            ImageSource="/Resources/acryllicbg.png">
-                            <ImageBrush.Viewport>
-                                <Rect X="0" Y="0" Width="255" Height="56" />
-                            </ImageBrush.Viewport>
-                        </ImageBrush>
-                    </Border.Background>
-                    <Border.Effect>
-                        <BlurEffect Radius="42"/>
-                    </Border.Effect>
-                </Border>
-
-                <TextBlock
-                    MaxHeight="90"
-                    TextAlignment="Right"
-                    HorizontalAlignment="Stretch"
-                    FontSize="75"
-                    Opacity="0.5"
-                    Margin="0 55 0 0"
-                    TextWrapping="Wrap"
-                    Foreground="White" 
-                    Text="{Binding PackageName}">
-
-                    <TextBlock.Effect>
-                        <BlurEffect Radius="20"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-
-                <Rectangle Opacity="0.03" ClipToBounds="True">
-                    <Rectangle.Fill>
-                        <ImageBrush 
-                            ImageSource="/FluentWPF;component/Assets/Images/noise.png"
-                            TileMode="Tile" 
-                            Stretch="None"
-                            ViewportUnits="Absolute" Viewport="0,0,128,128"/>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <Border DockPanel.Dock="Top" Height="155" >
-                    <Border.Resources>
-                        <Style TargetType="views:Pill">
-                            <Setter Property="Background" Value="White" />
-                            <Setter Property="BorderThickness" Value="2" />
-                            <Setter Property="Padding" Value="8 4" />
-                            <Setter Property="BorderBrush" Value="#999" />
-                            <Setter Property="Margin" Value="2" />
-                            <Setter Property="Foreground" Value="#565656" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="views:Pill">
-                                        <Border
+                <Grid ClipToBounds="True">
+                    <Border DockPanel.Dock="Top" Height="155" >
+                        <Border.Resources>
+                            <Style TargetType="views:Pill">
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="BorderThickness" Value="2" />
+                                <Setter Property="Padding" Value="8 4" />
+                                <Setter Property="BorderBrush" Value="#999" />
+                                <Setter Property="Margin" Value="2" />
+                                <Setter Property="Foreground" Value="#565656" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="views:Pill">
+                                            <Border
                                 Padding="{TemplateBinding Padding}"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                            <StackPanel Orientation="Horizontal" Margin="-1 0">
-                                                <Path 
+                                                <StackPanel Orientation="Horizontal" Margin="-1 0">
+                                                    <Path 
                                         x:Name="PART_Icon"
                                         Width="16"
                                         Height="16"
                                         Margin="1 0"
                                         Fill="{TemplateBinding Foreground}"
                                         Data="{TemplateBinding Icon}" />
-                                                <TextBlock 
+                                                    <TextBlock 
                                         x:Name="PART_Text"
                                         Margin="1 0" 
                                         Foreground="{TemplateBinding Foreground}"
                                         Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
-                                            </StackPanel>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="Icon" Value="{x:Null}">
-                                                <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
-                                            </Trigger>
-                                            <Trigger Property="Content" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Border.Resources>
-                    <StackPanel Margin="12">
-                        <DockPanel VerticalAlignment="Top">
-                            <Border 
+                                                </StackPanel>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="Icon" Value="{x:Null}">
+                                                    <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                                <Trigger Property="Content" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Border.Resources>
+                        <StackPanel Margin="12">
+                            <DockPanel VerticalAlignment="Top">
+                                <Border 
                                 Background="{Binding Converter={StaticResource BrushConverter}}"
                                 Width="48" 
                                 Height="48">
-                                <Border>
-                                    <Path 
+                                    <Border>
+                                        <Path 
                                         Fill="White"
                                         Data="{Binding Converter={StaticResource IconConverter}}" 
                                         Style="{StaticResource LargeIcon}" />
+                                    </Border>
                                 </Border>
-                            </Border>
 
-                            <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
+                                <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
 
-                            </WrapPanel>
+                                </WrapPanel>
 
-                            <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                                <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" 
+                                <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                                    <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" 
                                            Text="{Binding OpcodeDisplayName}" />
-                                <TextBlock 
+                                    <TextBlock 
                                     FontWeight="Bold" Text="{Binding Title}" FontFamily="{StaticResource SourceSansPro}" />
-                            </StackPanel>
+                                </StackPanel>
 
-                        </DockPanel>
+                            </DockPanel>
 
-                        <StackPanel Margin="0 12 0 0">
-                            <TextBlock TextWrapping="Wrap">
+                            <StackPanel Margin="0 12 0 0">
+                                <TextBlock TextWrapping="Wrap">
                                 <Run Text="File path:" FontWeight="SemiBold" />
                                 <Run Text="{Binding FilePath, Mode=OneWay, TargetNullValue='n/a'}" />
-                            </TextBlock>
-                            <TextBlock TextWrapping="Wrap">
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap">
                                 <Run Text="Error code:" FontWeight="SemiBold" />
                                 <Run Text="{Binding ErrorCode, Mode=OneWay, TargetNullValue='n/a'}" />
-                            </TextBlock>
-                        </StackPanel>
+                                </TextBlock>
+                            </StackPanel>
 
-                        <WrapPanel Margin="-2 8 0 -2">
-                            <views:Pill
+                            <WrapPanel Margin="-2 8 0 -2">
+                                <views:Pill
                                 ToolTip="Event source"
                                 Icon="{StaticResource SmallMicrosoftWindows}"
                                 Content="{Binding Source}" />
-                            <views:Pill
+                                <views:Pill
                                 Icon="{StaticResource SmallUserFolder}"
                                 Content="{Binding User}" />
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
 
         <TabControl Margin="12 0 0 0">
             <TabItem Header="Properties">

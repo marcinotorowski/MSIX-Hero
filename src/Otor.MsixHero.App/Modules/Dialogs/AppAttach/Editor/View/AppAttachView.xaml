@@ -8,18 +8,20 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DesignWidth="400"
              d:DesignHeight="400"
              d:DataContext="{d:DesignInstance viewModel:AppAttachViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="570" />
             <Setter Property="Height" Value="570" />
             <Setter Property="MinWidth" Value="500" />
             <Setter Property="MinHeight" Value="350" />
         </Style>
+        
     </mvvm:Dialog.WindowStyle>
     <UserControl.Resources>
         <ResourceDictionary>

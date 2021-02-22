@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Windows;
 using System.Windows.Media;
 using Prism.Services.Dialogs;
 using SourceChord.FluentWPF;
@@ -24,12 +25,13 @@ namespace Otor.MsixHero.App.Controls
     {
         public AcrylicDialogWindow()
         {
+            // this.Style = (Style) Application.Current.TryFindResource("Acrylic");
             this.ExtendViewIntoTitleBar = true;
             // ReSharper disable once PossibleNullReferenceException
-            this.TintColor = (Color)ColorConverter.ConvertFromString("#0173C7");
-            this.TintOpacity = 0.2;
-            this.Foreground = Brushes.Black;
-            this.FallbackColor = Color.FromRgb(234, 234, 234);
+            // this.TintColor = (Color)ColorConverter.ConvertFromString("#0173C7");
+            // this.TintOpacity = 0.2;
+            // this.Foreground = Brushes.Black;
+            // this.FallbackColor = Color.FromRgb(234, 234, 234);
         }
 
         public IDialogResult Result { get; set; }

@@ -8,12 +8,13 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="400"
              d:DesignWidth="400"
              d:DataContext="{d:DesignInstance viewModel:NewSelfSignedViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="600" />
             <Setter Property="Height" Value="550" />

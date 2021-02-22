@@ -24,7 +24,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls1:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="550" />
             <Setter Property="Height" Value="550" />
