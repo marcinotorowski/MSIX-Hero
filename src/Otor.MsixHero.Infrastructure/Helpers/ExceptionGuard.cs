@@ -25,9 +25,9 @@ namespace Otor.MsixHero.Infrastructure.Helpers
             Guard<Exception>(lambda);
         }
 
-        public static void Guard<T>(Func<T> lambda)
+        public static T Guard<T>(Func<T> lambda)
         {
-            Guard<Exception, T>(lambda);
+            return Guard<Exception, T>(lambda);
         }
 
         public static void Guard<TException>(Action lambda) where TException : Exception

@@ -22,7 +22,7 @@
              d:DesignWidth="800"
              d:DataContext="{d:DesignInstance viewModel1:SettingsViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls1:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="800" />
             <Setter Property="Title" Value="Settings - MSIX Hero" />
@@ -129,7 +129,61 @@
                 <TabItem Header="Interface">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
-                            <Label Style="{StaticResource FormLabel}">Start-up</Label>
+                            <Label Style="{StaticResource FormLabel}">Visuals and performance</Label>
+
+                            <TextBlock Style="{StaticResource DataHeader}" Text="This setting controls how much Windows 10 acrylic effect, animations and other effects are used." Margin="0  0 0 6" />
+
+                            <Grid Margin="0 0 0 -4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Slider
+                                    Interval="1"
+                                    TickFrequency="1"
+                                    TickPlacement="BottomRight"
+                                    IsSnapToTickEnabled="True"
+                                    Value="{Binding UxLevel.CurrentValue}"
+                                    Margin="0 16"
+                                    Width="24"
+                                    HorizontalAlignment="Left"
+                                    IsDirectionReversed="True"
+                                    Grid.Column="0"
+                                    Grid.Row="0"
+                                    Grid.RowSpan="4"
+                                    Orientation="Vertical" 
+                                    Height="150" Minimum="-1" Maximum="2" />
+
+                                <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="0">
+                                    <TextBlock FontWeight="SemiBold" Text="Automatic (recommended)" />
+                                    <TextBlock Text="The UI adjusts automatically to your hardware and session status." Foreground="#888" />
+                                </StackPanel>
+
+                                <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="1">
+                                    <TextBlock FontWeight="SemiBold" Text="Best performance" />
+                                    <TextBlock Text="Animations, transparency and acrylic effects are always disabled." Foreground="#888" />
+                                </StackPanel>
+
+
+                                <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="2">
+                                    <TextBlock FontWeight="SemiBold" Text="Medium" />
+                                    <TextBlock Text="A compromise between look-and-feel and performance." Foreground="#888" />
+                                </StackPanel>
+
+                                <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="3">
+                                    <TextBlock FontWeight="SemiBold" Text="Best looking" />
+                                    <TextBlock Text="Animations, transparency and acrylic effects are always enabled." Foreground="#888" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Label Margin="0 20 0 6" Style="{StaticResource FormLabel}">Start-up</Label>
 
                             <TextBlock Style="{StaticResource DataHeader}" Text="Initial screen" Margin="0  0 0 6" />
                             <ComboBox 

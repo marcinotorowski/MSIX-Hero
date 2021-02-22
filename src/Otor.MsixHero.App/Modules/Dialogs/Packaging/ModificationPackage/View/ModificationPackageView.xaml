@@ -8,10 +8,11 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.View"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="800" />
             <Setter Property="Height" Value="700" />
@@ -35,17 +36,13 @@
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate DataType="{x:Type viewModel:ModificationPackageViewModel}">
                 <view:ModificationPackageDialogContent />
-               
             </DataTemplate>
         </dialog:ChangeableDialog.DialogContentTemplate>
         <dialog:ChangeableDialog.SuccessContentTemplate>
-            <DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:ModificationPackageViewModel}">
                 <StackPanel>
                     <TextBlock TextAlignment="Center">
                         <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the new file</Hyperlink>
-                    </TextBlock>
-                    <TextBlock TextAlignment="Center" Visibility="{Binding PackageSelection.AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Hyperlink Command="{Binding ResetCommand}">Create another modification package</Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

@@ -6,27 +6,93 @@
              xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mc:Ignorable="d" 
              d:DesignHeight="155" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
+    <UserControl.Resources>
+        <Style TargetType="Border" x:Key="BorderTier0">
+            <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+        </Style>
+
+        <Style TargetType="Border" x:Key="BorderTier2">
+            <Setter Property="helpers:BackgroundFromLogo.LogoColor" Value="{Binding TileColor}" />
+        </Style>
+    </UserControl.Resources>
     <Border 
         DataContext="{Binding Manifest.CurrentValue}" 
-        helpers:BackgroundFromLogo.LogoColor="{Binding TileColor}"
         Background="#ffffff">
+        <behaviors:InteractionEx.Behaviors>
+            <behaviors:BehaviorCollectionEx>
+                <tiers:TierBasedStyling Tier0="{StaticResource BorderTier0}" Tier2="{StaticResource BorderTier2}" />
+            </behaviors:BehaviorCollectionEx>
+        </behaviors:InteractionEx.Behaviors>
+
         <Grid ClipToBounds="True">
-            <Image 
-                VerticalAlignment="Top"
-                Opacity="0.16"
-                Stretch="Fill" 
-                Height="155"
-                Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}"
-                RenderTransformOrigin="0.5 0.5"
-                RenderOptions.BitmapScalingMode="NearestNeighbor">
-                <Image.RenderTransform>
-                    <ScaleTransform ScaleX="1.2" ScaleY="3.2" />
-                </Image.RenderTransform>
-                <Image.Effect>
-                    <BlurEffect Radius="42"/>
-                </Image.Effect>
+            <Grid.Resources>
+                <Style TargetType="Rectangle" x:Key="RectangleTier2">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="Opacity" Value="0.03" />
+                    <Setter Property="Fill">
+                        <Setter.Value>
+                            <ImageBrush 
+                                ImageSource="/FluentWPF;component/Assets/Images/noise.png"
+                                TileMode="Tile" 
+                                Stretch="None"
+                                ViewportUnits="Absolute" 
+                                Viewport="0,0,128,128"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style TargetType="Rectangle" x:Key="RectangleTier0">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+
+                <Style TargetType="Image" x:Key="BackgroundTier2">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="1.2" ScaleY="3.2" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Opacity" Value="0.16" />
+                    <Setter Property="Stretch" Value="Fill" />
+                    <Setter Property="Height" Value="155" />
+                    <Setter Property="RenderTransformOrigin" Value="0.5 0.5" />
+                    <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
+                    <Setter Property="Source" Value="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="42"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style TargetType="Image" x:Key="BackgroundTier0">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+
+                <Style TargetType="TextBlock" x:Key="TextTier2">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <BlurEffect Radius="20"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Opacity" Value="0.5" />
+                </Style>
+
+                <Style TargetType="TextBlock" x:Key="TextTier0">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+            </Grid.Resources>
+            <Image VerticalAlignment="Top" Style="{StaticResource BackgroundTier0}">
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedStyling Tier0="{StaticResource BackgroundTier0}" Tier2="{StaticResource BackgroundTier2}" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
             </Image>
 
             <TextBlock
@@ -34,33 +100,29 @@
                 TextAlignment="Right"
                 HorizontalAlignment="Stretch"
                 FontSize="75"
-                Opacity="0.5"
                 Margin="0 55 0 0"
                 TextWrapping="Wrap"
-                Foreground="White" Text="{Binding DisplayName}">
-
-                <TextBlock.Effect>
-                    <BlurEffect Radius="20"/>
-                </TextBlock.Effect>
+                Foreground="White" 
+                Style="{StaticResource TextTier0}"
+                Text="{Binding DisplayName}">
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedStyling Tier0="{StaticResource TextTier0}" Tier2="{StaticResource TextTier2}" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
             </TextBlock>
 
-            <Rectangle Opacity="0.03" ClipToBounds="True">
-                <Rectangle.Fill>
-                    <ImageBrush 
-                        ImageSource="/FluentWPF;component/Assets/Images/noise.png"
-                        TileMode="Tile" 
-                        Stretch="None"
-                        ViewportUnits="Absolute" Viewport="0,0,128,128"/>
-                </Rectangle.Fill>
+            <Rectangle ClipToBounds="True">
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedStyling Tier0="{StaticResource RectangleTier0}" Tier2="{StaticResource RectangleTier2}" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
             </Rectangle>
 
             <Border 
                 DockPanel.Dock="Top" Height="155" >
                 <Border.Resources>
-                    <!--
-            Background="#EFEFEF"
-                helpers:BackgroundFromLogo.LogoBytes="{Binding Logo}"
-            -->
                     <Style TargetType="views:Pill">
                         <Setter Property="Background" Value="White" />
                         <Setter Property="BorderThickness" Value="2" />
@@ -72,22 +134,22 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="views:Pill">
                                     <Border
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                         <StackPanel Orientation="Horizontal" Margin="-1 0">
                                             <Path 
-                                        x:Name="PART_Icon"
-                                        Width="16"
-                                        Height="16"
-                                        Margin="1 0"
-                                        Fill="{TemplateBinding Foreground}"
-                                        Data="{TemplateBinding Icon}" />
+                                                x:Name="PART_Icon"
+                                                Width="16"
+                                                Height="16"
+                                                Margin="1 0"
+                                                Fill="{TemplateBinding Foreground}"
+                                                Data="{TemplateBinding Icon}" />
                                             <TextBlock 
-                                        x:Name="PART_Text"
-                                        Margin="1 0" 
-                                        Foreground="{TemplateBinding Foreground}"
-                                        Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
+                                                x:Name="PART_Text"
+                                                Margin="1 0" 
+                                                Foreground="{TemplateBinding Foreground}"
+                                                Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
                                         </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -106,16 +168,16 @@
                 <StackPanel Margin="12">
                     <DockPanel VerticalAlignment="Top">
                         <Border 
-                    Background="#11333333"
-                    Width="48" 
-                    Height="48">
+                            Background="#11333333"
+                            Width="48" 
+                            Height="48">
                             <Border 
                             Background="{Binding TileColor, FallbackValue='#cccccc', TargetNullValue='#cccccc'}">
                                 <Image 
-                                SnapsToDevicePixels="True"
-                                UseLayoutRounding="True"
-                                Stretch="Uniform"
-                                Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
+                                    SnapsToDevicePixels="True"
+                                    UseLayoutRounding="True"
+                                    Stretch="Uniform"
+                                    Source="{Binding Logo, FallbackValue={StaticResource DummyLogo}, TargetNullValue={StaticResource DummyLogo}}" />
                             </Border>
                         </Border>
 

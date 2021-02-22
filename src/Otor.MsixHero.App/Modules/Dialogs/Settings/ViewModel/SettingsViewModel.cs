@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
+using Otor.MsixHero.App.Helpers.Tiers;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
 using Otor.MsixHero.App.Mvvm;
@@ -76,12 +77,18 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true)
             );
 
-            
+            var uiLevel = (int) (config.UiConfiguration?.UxTier ?? UxTierLevel.Auto);
+            if (uiLevel < -1 || uiLevel > 2)
+            {
+                uiLevel = -1;
+            }
+
             this.AllSettings.AddChildren(
                 this.TabSigning,
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration?.ConfirmDeletion != false),
                 this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration == null ? Infrastructure.Configuration.DefaultScreen.Packages : config.UiConfiguration.DefaultScreen),
                 this.ShowReleaseNotes = new ChangeableProperty<bool>(config.Update?.HideNewVersionInfo != true),
+                this.UxLevel = new ChangeableProperty<int>(uiLevel),
                 this.TabEditors,
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config),
                 this.TabOther
@@ -225,6 +232,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         public ChangeableProperty<bool> ConfirmDeletion { get; }
 
         public ChangeableProperty<bool> ShowReleaseNotes { get; }
+        
+        public ChangeableProperty<int> UxLevel { get; }
 
         public ChangeableProperty<DefaultScreen> DefaultScreen { get; }
 
@@ -297,6 +306,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             if (this.ShowReleaseNotes.IsTouched)
             {
                 newConfiguration.Update.HideNewVersionInfo = !this.ShowReleaseNotes.CurrentValue;
+            }
+
+            if (this.UxLevel.IsTouched)
+            {
+                newConfiguration.UiConfiguration.UxTier = (UxTierLevel) this.UxLevel.CurrentValue;
+                if (newConfiguration.UiConfiguration.UxTier == UxTierLevel.Auto)
+                {
+                    TierController.SetSystemTier();
+                }
+                else
+                {
+                    TierController.SetCurrentTier(this.UxLevel.CurrentValue);
+                }
             }
 
             if (this.CertificateSelector.IsTouched)

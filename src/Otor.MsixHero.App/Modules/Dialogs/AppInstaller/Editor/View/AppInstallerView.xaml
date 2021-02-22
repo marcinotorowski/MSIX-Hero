@@ -7,12 +7,14 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View"
+             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel"
              mc:Ignorable="d" 
              d:DesignWidth="800"
              d:DesignHeight="800"
              d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="550" />
             <Setter Property="Height" Value="630" />

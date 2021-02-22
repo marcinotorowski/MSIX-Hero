@@ -13,7 +13,7 @@
              d:DesignHeight="300"
              d:DataContext="{d:DesignInstance viewModel:UnpackViewModel}">
     <mvvm:Dialog.WindowStyle>
-        <Style TargetType="Window">
+        <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="550" />
             <Setter Property="Height" Value="550" />

@@ -4,7 +4,9 @@
                     xmlns:dialogs="http://prismlibrary.com/"
                     xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-                    xmlns:helpers1="clr-namespace:Otor.MsixHero.App.Helpers">
+                    xmlns:helpers1="clr-namespace:Otor.MsixHero.App.Helpers"
+                    xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -89,6 +91,11 @@
                                                 Radius="8.0"
                                                 KernelType="Box"/>
                                         </TextBlock.Effect>
+                                        <behaviors:InteractionEx.Behaviors>
+                                            <behaviors:BehaviorCollectionEx>
+                                                <tiers:TierBasedVisibility Tier0="Collapsed" Tier1="Collapsed" Tier2="Visible" />
+                                            </behaviors:BehaviorCollectionEx>
+                                        </behaviors:InteractionEx.Behaviors>
                                     </TextBlock>
 
                                     <TextBlock 
@@ -102,6 +109,11 @@
                                                 Radius="2.0"
                                                 KernelType="Box"/>
                                         </TextBlock.Effect>
+                                        <behaviors:InteractionEx.Behaviors>
+                                            <behaviors:BehaviorCollectionEx>
+                                                <tiers:TierBasedVisibility Tier0="Collapsed" Tier1="Collapsed" Tier2="Visible" />
+                                            </behaviors:BehaviorCollectionEx>
+                                        </behaviors:InteractionEx.Behaviors>
                                     </TextBlock>
 
                                     <TextBlock 

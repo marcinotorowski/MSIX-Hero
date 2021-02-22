@@ -23,6 +23,7 @@ using Otor.MsixHero.App.Controls.PackageExpert;
 using Otor.MsixHero.App.Dialogs.ViewModels;
 using Otor.MsixHero.App.Dialogs.Views;
 using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Helpers.Tiers;
 using Otor.MsixHero.App.Helpers.Update;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
@@ -60,6 +61,8 @@ using Otor.MsixHero.Appx.Updates;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Dependencies;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -150,7 +153,6 @@ namespace Otor.MsixHero.App
             
             var app = this.Container.Resolve<IMsixHeroApplication>();
             var config = this.Container.Resolve<IConfigurationService>();
-
             var releaseNotesHelper = new ReleaseNotesHelper(config);
 
             if (releaseNotesHelper.ShouldShowInitialReleaseNotes())
@@ -178,13 +180,27 @@ namespace Otor.MsixHero.App
             };
 
             var dialogService = this.Container.Resolve<IDialogService>();
-            dialogService.Show(NavigationPaths.DialogPaths.PackageExpert, par, r => {});
+            dialogService.Show(NavigationPaths.DialogPaths.PackageExpert, par, _ => {});
             // regionManager.Regions[RegionNames.Root].RequestNavigate(new Uri(NavigationPaths.PackageManagement, UriKind.Relative), par);
         }
         
         protected override void Initialize()
         {
             base.Initialize();
+            
+            var config = this.GetConfigurationSafe();
+            var tier = config?.UiConfiguration?.UxTier ?? UxTierLevel.Auto;
+            switch (tier)
+            {
+                case UxTierLevel.Basic:
+                case UxTierLevel.Medium:
+                case UxTierLevel.Rich:
+                    TierController.SetCurrentTier((int)tier);
+                    break;
+                default:
+                    TierController.SetSystemTier();
+                    break;
+            }
             
             if (Environment.GetCommandLineArgs().Length > 1)
             {
@@ -194,6 +210,11 @@ namespace Otor.MsixHero.App
             {
                 this.InitializeMainWindow();
             }
+        }
+        
+        private Configuration GetConfigurationSafe()
+        {
+            return ExceptionGuard.Guard(() => this.Container.Resolve<IConfigurationService>().GetCurrentConfiguration());
         }
 
         protected override Window CreateShell()

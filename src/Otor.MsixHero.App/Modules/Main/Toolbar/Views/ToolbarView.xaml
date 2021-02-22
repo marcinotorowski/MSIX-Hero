@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="58" d:DesignWidth="800">
@@ -36,6 +38,11 @@
                         Radius="8.0"
                         KernelType="Box"/>
                 </TextBlock.Effect>
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedVisibility Tier0="Collapsed" Tier1="Collapsed" Tier2="Visible" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
             </TextBlock>
             <TextBlock Foreground="White" Text="{Binding Title, Converter={StaticResource UppercaseConverter}}">
                 <TextBlock.Effect>
@@ -43,7 +50,13 @@
                         Radius="2.0"
                         KernelType="Box"/>
                 </TextBlock.Effect>
+                <behaviors:InteractionEx.Behaviors>
+                    <behaviors:BehaviorCollectionEx>
+                        <tiers:TierBasedVisibility Tier0="Collapsed" Tier1="Collapsed" Tier2="Visible" />
+                    </behaviors:BehaviorCollectionEx>
+                </behaviors:InteractionEx.Behaviors>
             </TextBlock>
+
             <TextBlock Text="{Binding Title, Converter={StaticResource UppercaseConverter}}" />
         </Grid>
     </DockPanel>

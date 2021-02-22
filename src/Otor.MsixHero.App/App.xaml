@@ -9,6 +9,7 @@
                 <!--  FluentWPF Controls  -->
                 <ResourceDictionary Source="pack://application:,,,/FluentWPF;component/Styles/Controls.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/msixhero;component/Themes/Window.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

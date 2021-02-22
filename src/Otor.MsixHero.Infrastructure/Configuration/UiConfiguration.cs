@@ -26,7 +26,15 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         Events = 3,
         System = 4
     }
-
+    
+    public enum UxTierLevel
+    {
+        Auto = -1,
+        Basic = 0,
+        Medium = 1,
+        Rich = 2,
+    }
+    
     [DataContract]
     public class UiConfiguration : BaseJsonSetting
     {
@@ -41,5 +49,11 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         [DataMember(Name = "defaultScreen")]
         public DefaultScreen DefaultScreen { get; set; }
+
+        /// <summary>
+        /// The UI level. Can be 0, 1 or 2, where 2 is the beauty, and 0 is the performance. Any other value should be treated as auto (based on system performance).
+        /// </summary>
+        [DataMember(Name = "uxTier")]
+        public UxTierLevel UxTier { get; set; } = UxTierLevel.Auto;
     }
 }
