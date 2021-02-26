@@ -7,8 +7,9 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:constants="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels"
+             xmlns:viewModels1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackagesSingleDetailsViewModel}">
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels1:PackagesSingleDetailsViewModel}">
     <ContentControl 
         mvvm:RegionManager.RegionContext="{Binding FilePath}"
         mvvm:RegionManager.RegionName="{x:Static constants:PackageManagementRegionNames.PackageExpert}" />
