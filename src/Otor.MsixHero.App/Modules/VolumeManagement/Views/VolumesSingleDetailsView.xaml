@@ -8,6 +8,7 @@
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.VolumeManagement.ViewModels"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters"
+             xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:VolumesSingleDetailsViewModel}">
@@ -53,173 +54,132 @@
             </WrapPanel>
         </Border>
 
-        <Border
-            VerticalAlignment="Top">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
-                    <GradientStop Color="#660173C7" Offset="0.0" />
-                    <GradientStop Color="#fff4f4f4" Offset="0.8" />
-                </LinearGradientBrush>
-            </Border.Background>
-            <Grid ClipToBounds="True">
-                <Border
-                    VerticalAlignment="Top"
-                    Height="155"
-                    Opacity="0.56">
-                    <Border.Background>
-                        <ImageBrush
-                            ViewportUnits="Absolute"
-                            TileMode="Tile"
-                            Stretch="None"
-                            ImageSource="/Resources/acryllicbg.png">
-                            <ImageBrush.Viewport>
-                                <Rect X="0" Y="0" Width="255" Height="56" />
-                            </ImageBrush.Viewport>
-                        </ImageBrush>
-                    </Border.Background>
-                    <Border.Effect>
-                        <BlurEffect Radius="42"/>
-                    </Border.Effect>
-                </Border>
+        <Grid VerticalAlignment="Top" ClipToBounds="True">
 
-                <TextBlock
-                    MaxHeight="90"
-                    TextAlignment="Right"
-                    HorizontalAlignment="Stretch"
-                    FontSize="75"
-                    Opacity="0.5"
-                    Margin="0 55 0 0"
-                    TextWrapping="Wrap"
-                    Foreground="White" Text="{Binding Volume.DiskLabel}">
+            <background:AcrylicBackgroundControl
+                    TintBrush="#0173C7"
+                    TintText="{Binding Volume.DiskLabel}"
+                    Height="155">
+                <background:AcrylicBackgroundControl.TintContent>
+                    <Path 
+                        Fill="Black"
+                        Data="{StaticResource VectorDisk}" 
+                        Style="{StaticResource LargeIcon}" />
+                </background:AcrylicBackgroundControl.TintContent>
+            </background:AcrylicBackgroundControl>
 
-                    <TextBlock.Effect>
-                        <BlurEffect Radius="20"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-
-                <Rectangle Opacity="0.03" ClipToBounds="True">
-                    <Rectangle.Fill>
-                        <ImageBrush 
-                        ImageSource="/FluentWPF;component/Assets/Images/noise.png"
-                        TileMode="Tile" 
-                        Stretch="None"
-                        ViewportUnits="Absolute" Viewport="0,0,128,128"/>
-                    </Rectangle.Fill>
-                </Rectangle>
-
-                <Border DockPanel.Dock="Top" Height="155" >
-                    <Border.Resources>
-                        <Style TargetType="views:Pill">
-                            <Setter Property="Background" Value="White" />
-                            <Setter Property="BorderThickness" Value="2" />
-                            <Setter Property="Padding" Value="8 4" />
-                            <Setter Property="BorderBrush" Value="#999" />
-                            <Setter Property="Margin" Value="2" />
-                            <Setter Property="Foreground" Value="#565656" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="views:Pill">
-                                        <Border
+            <Border DockPanel.Dock="Top" Height="155" >
+                <Border.Resources>
+                    <Style TargetType="views:Pill">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="Padding" Value="8 4" />
+                        <Setter Property="BorderBrush" Value="#999" />
+                        <Setter Property="Margin" Value="2" />
+                        <Setter Property="Foreground" Value="#565656" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="views:Pill">
+                                    <Border
                                 Padding="{TemplateBinding Padding}"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                            <StackPanel Orientation="Horizontal" Margin="-1 0">
-                                                <Path 
+                                        <StackPanel Orientation="Horizontal" Margin="-1 0">
+                                            <Path 
                                         x:Name="PART_Icon"
                                         Width="16"
                                         Height="16"
                                         Margin="1 0"
                                         Fill="{TemplateBinding Foreground}"
                                         Data="{TemplateBinding Icon}" />
-                                                <TextBlock 
+                                            <TextBlock 
                                         x:Name="PART_Text"
                                         Margin="1 0" 
                                         Foreground="{TemplateBinding Foreground}"
                                         Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
-                                            </StackPanel>
-                                        </Border>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="Icon" Value="{x:Null}">
-                                                <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
-                                            </Trigger>
-                                            <Trigger Property="Content" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Border.Resources>
-                    <StackPanel Margin="12">
-                        <DockPanel VerticalAlignment="Top">
-                            <Border 
-                                Background="{StaticResource Otor.MsixHero.Brushes.Accent}"
-                                Width="48" 
-                                Height="48">
-                                <Border>
-                                    <Path 
+                                        </StackPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="Icon" Value="{x:Null}">
+                                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                        <Trigger Property="Content" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Border.Resources>
+                <StackPanel Margin="12">
+                    <DockPanel VerticalAlignment="Top">
+                        <Border 
+                            Background="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                            Width="48" 
+                            Height="48">
+                            <Border>
+                                <Path 
                                         Fill="White"
                                         Data="{StaticResource VectorDisk}" 
                                         Style="{StaticResource LargeIcon}" />
-                                </Border>
                             </Border>
+                        </Border>
 
-                            <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
-                                <views:Pill
+                        <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
+                            <views:Pill
                                     Visibility="{Binding Volume.IsSystem, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     ToolTip="This is a system volume"
                                     Icon="{StaticResource SmallMicrosoftWindows}"
                                     Content="System" />
-                                <views:Pill
+                            <views:Pill
                                     Visibility="{Binding Volume.IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     ToolTip="This is a default volume"
                                     Icon="{StaticResource SmallOk}"
                                     Content="Default" />
-                            </WrapPanel>
+                        </WrapPanel>
 
-                            <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                                <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding Volume.PackageStorePath}" />
-                                <TextBlock FontWeight="Bold" Text="{Binding Volume.Name}" FontFamily="{StaticResource SourceSansPro}" />
-                            </StackPanel>
-                        </DockPanel>
+                        <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
+                            <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding Volume.PackageStorePath}" />
+                            <TextBlock FontWeight="Bold" Text="{Binding Volume.Name}" FontFamily="{StaticResource SourceSansPro}" />
+                        </StackPanel>
+                    </DockPanel>
 
-                        <StackPanel Margin="0 12 0 0">
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding ConverterParameter="{x:Static converters:VolumeSizeCaptionConverterMode.OccupiedFree}">
-                                        <MultiBinding.Converter>
-                                            <converters:VolumeSizeCaptionConverter />
-                                        </MultiBinding.Converter>
-                                        <MultiBinding.Bindings>
-                                            <Binding Path="Volume.OccupiedSpace" Mode="OneWay" />
-                                            <Binding Path="Volume.AvailableFreeSpace" Mode="OneWay" />
-                                        </MultiBinding.Bindings>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                            <ProgressBar Height="10" Margin="0 6 0 0" 
+                    <StackPanel Margin="0 12 0 0">
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding ConverterParameter="{x:Static converters:VolumeSizeCaptionConverterMode.OccupiedFree}">
+                                    <MultiBinding.Converter>
+                                        <converters:VolumeSizeCaptionConverter />
+                                    </MultiBinding.Converter>
+                                    <MultiBinding.Bindings>
+                                        <Binding Path="Volume.OccupiedSpace" Mode="OneWay" />
+                                        <Binding Path="Volume.AvailableFreeSpace" Mode="OneWay" />
+                                    </MultiBinding.Bindings>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                        <ProgressBar Height="10" Margin="0 6 0 0" 
                                          Value="{Binding Volume.OccupiedSpace, Mode=OneWay}" 
                                          Maximum="{Binding Volume.Capacity, Mode=OneWay}" Background="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" Foreground="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                        </StackPanel>
-
-                        <WrapPanel Margin="-2 8 0 -2">
-                            
-                            <views:Pill
-                                Visibility="{Binding Volume.IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="This volume is detached (offline)"
-                                Icon="{StaticResource SmallPlugOut}"
-                                Content="Detached" />
-                            
-                            <views:Pill
-                                Visibility="{Binding Volume.IsOffline, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                                ToolTip="This volume is online"
-                                Icon="{StaticResource SmallPlugin}"
-                                Content="Online" />
-                        </WrapPanel>
                     </StackPanel>
-                </Border>
-            </Grid>
-        </Border>
+
+                    <WrapPanel Margin="-2 8 0 -2">
+
+                        <views:Pill
+                                    Visibility="{Binding Volume.IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    ToolTip="This volume is detached (offline)"
+                                    Icon="{StaticResource SmallPlugOut}"
+                                    Content="Detached" />
+
+                        <views:Pill
+                                    Visibility="{Binding Volume.IsOffline, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                                    ToolTip="This volume is online"
+                                    Icon="{StaticResource SmallPlugin}"
+                                    Content="Online" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
     </DockPanel>
 </UserControl>

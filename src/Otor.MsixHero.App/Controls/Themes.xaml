@@ -2,8 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Otor.MsixHero.App.Controls"
                     xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
-                    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-                    xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
                     xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
 
     <ResourceDictionary.MergedDictionaries>
@@ -11,6 +9,7 @@
         <ResourceDictionary Source="/msixhero;component/Themes/Buttons.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Icons.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Volume/Theme.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Controls/Acrylic/Background/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TreeListView/Theme.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/TransitionContentControl/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
