@@ -49,7 +49,7 @@
                                     <Setter Property="TextDecorations" Value="Underline" />
                                     <Setter Property="Cursor" Value="Hand" />
                                     <Setter Property="FontWeight" Value="SemiBold" />
-                                    <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                    <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Accent}" />
                                 </Trigger>
                             </Style.Triggers>
                         </Style>

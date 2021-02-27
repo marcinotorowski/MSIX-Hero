@@ -52,7 +52,7 @@
                 Width="50"
                 Height="26"
                 StrokeThickness="3" 
-                Stroke="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                Stroke="{StaticResource MsixHero.Brushes.Accent}" />
 
                 <Rectangle 
                 VerticalAlignment="Bottom"
@@ -62,7 +62,7 @@
                 Width="60"
                 Height="26"
                 StrokeThickness="3" 
-                Stroke="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                Stroke="{StaticResource MsixHero.Brushes.Accent}" />
 
                 <Rectangle 
                 VerticalAlignment="Bottom"
@@ -72,28 +72,28 @@
                 Width="400"
                 Height="66"
                 StrokeThickness="3" 
-                Stroke="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                Stroke="{StaticResource MsixHero.Brushes.Accent}" />
 
                 <Line 
                 SnapsToDevicePixels="True"
                 UseLayoutRounding="True"
                 Margin="175,66,0,0"
-                StrokeThickness="6" Stroke="{StaticResource Otor.MsixHero.Brushes.Accent}" X1="0" X2="240" Y1="0" Y2="0" 
+                StrokeThickness="6" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="240" Y1="0" Y2="0" 
                 Height="3"
                 VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Width="235" />
 
                 <Line 
                 Margin="110 0 0 30"
-                StrokeThickness="3" Stroke="{StaticResource Otor.MsixHero.Brushes.Accent}" X1="0" X2="300" 
+                StrokeThickness="3" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="300" 
                 VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="0" />
 
                 <Line 
                     Margin="400 0 0 95"
-                    StrokeThickness="3" Stroke="{StaticResource Otor.MsixHero.Brushes.Accent}" X1="0" X2="10" 
+                    StrokeThickness="3" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="10" 
                     VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="0" />
 
                 <Path Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left"
-                      Fill="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                      Fill="{StaticResource MsixHero.Brushes.Accent}"
                       Data="M 5 5 L 5 11 L 11 11 L 11 5 Z M 13 5 L 13 11 L 19 11 L 19 5 Z M 21 5 L 21 11 L 27 11 L 27 5 Z M 7 7 L 9 7 L 9 9 L 7 9 Z M 15 7 L 17 7 L 17 9 L 15 9 Z M 23 7 L 25 7 L 25 9 L 23 9 Z M 5 13 L 5 19 L 11 19 L 11 13 Z M 13 13 L 13 19 L 19 19 L 19 13 Z M 21 13 L 21 19 L 27 19 L 27 13 Z M 7 15 L 9 15 L 9 17 L 7 17 Z M 15 15 L 17 15 L 17 17 L 15 17 Z M 23 15 L 25 15 L 25 17 L 23 17 Z M 5 21 L 5 27 L 11 27 L 11 21 Z M 13 21 L 13 27 L 19 27 L 19 21 Z M 21 21 L 21 27 L 27 27 L 27 21 Z M 7 23 L 9 23 L 9 25 L 7 25 Z M 15 23 L 17 23 L 17 25 L 15 25 Z M 23 23 L 25 23 L 25 25 L 23 25 Z"
                       Margin="630 0 0 0"></Path>
 

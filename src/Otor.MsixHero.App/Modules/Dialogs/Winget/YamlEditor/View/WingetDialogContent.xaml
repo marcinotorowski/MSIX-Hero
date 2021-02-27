@@ -50,8 +50,8 @@
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" SnapsToDevicePixels="True" UseLayoutRounding="True">
-                                    <Border BorderThickness="0 1 1 1" BorderBrush="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="20" Margin="8 15 0 15" />
-                                    <Rectangle Height="1" VerticalAlignment="Center" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="20" Margin="0 0 8 0" />
+                                    <Border BorderThickness="0 1 1 1" BorderBrush="{StaticResource MsixHero.Brushes.Accent}" Width="20" Margin="8 15 0 15" />
+                                    <Rectangle Height="1" VerticalAlignment="Center" Fill="{StaticResource MsixHero.Brushes.Accent}" Width="20" Margin="0 0 8 0" />
                                 </StackPanel>
 
                                 <Button Grid.Column="2" Content="Load data from MSI/MSIX/EXE..." Command="{Binding LoadFromSetup}" VerticalAlignment="Center" />

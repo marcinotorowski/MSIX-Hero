@@ -51,10 +51,10 @@
                     </Setter>
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                            <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                            <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>

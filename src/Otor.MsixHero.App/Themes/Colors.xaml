@@ -1,7 +1,155 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Color x:Key="Otor.MsixHero.Colors.Accent">#0173C7</Color>
-    <Color x:Key="Otor.MsixHero.Colors.Accent.Light">#CDE6F7</Color>
-    <SolidColorBrush x:Key="Otor.MsixHero.Brushes.Accent" Color="{StaticResource Otor.MsixHero.Colors.Accent}" />
-    <SolidColorBrush x:Key="Otor.MsixHero.Brushes.Accent.Light" Color="{StaticResource Otor.MsixHero.Colors.Accent.Light}" />
+    <Color x:Key="MsixHero.Colors.Accent">#0173C7</Color>
+    <Color x:Key="MsixHero.Colors.Accent.Light1">#CDE6F7</Color>
+    <Color x:Key="MsixHero.Colors.Accent.Light2">#EBF4FA</Color>
+    <Color x:Key="MsixHero.Colors.Background">#FFFFFF</Color>
+    <Color x:Key="MsixHero.Colors.Foreground">#000000</Color>
+    <Color x:Key="MsixHero.Colors.Contrast">#FFFFFF</Color>
+    <Color x:Key="MsixHero.Colors.Light1">#333333</Color>
+    <Color x:Key="MsixHero.Colors.Light2">#666666</Color>
+    <Color x:Key="MsixHero.Colors.Light3">#999999</Color>
+    <Color x:Key="MsixHero.Colors.Light4">#B0B0B0</Color>
+    <Color x:Key="MsixHero.Colors.Light5">#DDDDDD</Color>
+    <Color x:Key="MsixHero.Colors.Light6">#EEEEEE</Color>
+    <Color x:Key="MsixHero.Colors.Validation">#FFEEC6</Color>
+
+    <SolidColorBrush x:Key="MsixHero.Brushes.Accent" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Accent.Light1" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Accent.Light2" Color="{StaticResource MsixHero.Colors.Accent.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background" Color="{StaticResource MsixHero.Colors.Background}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Foreground" Color="{StaticResource MsixHero.Colors.Foreground}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Contrast" Color="{StaticResource MsixHero.Colors.Contrast}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light1" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light2" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light3" Color="{StaticResource MsixHero.Colors.Light3}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light4" Color="{StaticResource MsixHero.Colors.Light4}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light5" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light6" Color="{StaticResource MsixHero.Colors.Light6}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Validation" Color="{StaticResource MsixHero.Colors.Validation}" />
+
+    <SolidColorBrush x:Key="MsixHero.Text.Foreground.Normal.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+    <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light1.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light2.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light3.Brush" Color="{StaticResource MsixHero.Colors.Light3}" />
+    <Thickness x:Key="MsixHero.Button.Normal.Border.Thickness">2</Thickness>
+
+    <!-- Text box -->
+    <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light4}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.TextBox.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.TextBox.Focused.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.TextBox.Editing.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Editing.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Editing.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <!-- Read only text box -->
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Light6}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light4}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Light6}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Focused.Background.Brush" Color="{StaticResource MsixHero.Colors.Light6}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <!-- Button -->
+    <SolidColorBrush x:Key="MsixHero.Button.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.Button.Focused.Background.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.Button.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    
+    <SolidColorBrush x:Key="MsixHero.Button.Pressed.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.Button.Pressed.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <!-- Toggle button -->
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Focused.Background.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Pressed.Background.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Unchecked.Pressed.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Normal.Border.Brush"  Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Focused.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Pressed.Background.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleButton.Checked.Pressed.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <!-- Action bar buttons -->
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Normal.Background.Brush" Color="Transparent" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Normal.Border.Brush" Color="Transparent" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+    
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Pressed.Background.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Pressed.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+   
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+    
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Focused.Background.Brush" Color="Transparent" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ActionButton.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+    
+    <!-- Toggle action bar buttons -->
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Normal.Background.Brush" Color="Transparent" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Normal.Border.Brush" Color="Transparent" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Pressed.Background.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Pressed.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Checked.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Checked.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Checked.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Hovered.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
+
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Focused.Background.Brush" Color="Transparent" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent.Light1}" />
+    <SolidColorBrush x:Key="MsixHero.ToggleActionButton.Focused.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
 </ResourceDictionary>

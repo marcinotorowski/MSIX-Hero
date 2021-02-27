@@ -14,45 +14,45 @@
                     <Rectangle Opacity="{TemplateBinding NoiseOpacity}">
                         <Rectangle.Fill>
                             <ImageBrush 
-                        ImageSource="/FluentWPF;component/Assets/Images/noise.png"
-                        TileMode="Tile" 
-                        Stretch="None"
-                        ViewportUnits="Absolute" 
-                        Viewport="0,0,128,128"/>
+                                ImageSource="/FluentWPF;component/Assets/Images/noise.png"
+                                TileMode="Tile" 
+                                Stretch="None"
+                                ViewportUnits="Absolute" 
+                                Viewport="0,0,128,128"/>
                         </Rectangle.Fill>
                     </Rectangle>
 
                     <Viewbox
-                Margin="0 -20 0 0"
-                x:Name="PART_TintObject"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch"
-                Opacity="0.15" 
-                Stretch="UniformToFill"
-                RenderOptions.BitmapScalingMode="NearestNeighbor">
+                        Margin="-80"
+                        x:Name="PART_TintObject"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Opacity="0.15" 
+                        RenderTransformOrigin="0.5 0.5" 
+                        Stretch="Uniform"
+                        RenderOptions.BitmapScalingMode="NearestNeighbor">
                         <ContentPresenter 
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    RenderTransformOrigin="0.5 0.5" 
-                    Content="{TemplateBinding TintContent}">
-                            <ContentPresenter.RenderTransform>
-                                <RotateTransform Angle="-12" CenterX="0.5" CenterY="0.5" />
-                            </ContentPresenter.RenderTransform>
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding TintContent}">
                         </ContentPresenter>
                         <Viewbox.Effect>
                             <BlurEffect Radius="42"/>
                         </Viewbox.Effect>
+                        <Viewbox.RenderTransform>
+                            <RotateTransform Angle="-12" CenterX="0.5" CenterY="0.5" />
+                        </Viewbox.RenderTransform>
                     </Viewbox>
 
                     <TextBlock 
-                TextAlignment="Right"
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Right"
-                FontSize="75"
-                TextWrapping="NoWrap"
-                Foreground="{TemplateBinding Foreground}" 
-                Opacity="{TemplateBinding TintTextOpacity}" 
-                Text="{TemplateBinding TintText}">
+                        TextAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        FontSize="75"
+                        TextWrapping="NoWrap"
+                        Foreground="{TemplateBinding Foreground}" 
+                        Opacity="{TemplateBinding TintTextOpacity}" 
+                        Text="{TemplateBinding TintText}">
                         <TextBlock.Effect>
                             <BlurEffect Radius="20"/>
                         </TextBlock.Effect>

@@ -67,8 +67,8 @@
                                 </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                                        <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>

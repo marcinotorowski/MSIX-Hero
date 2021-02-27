@@ -10,7 +10,7 @@
     <Style TargetType="{x:Type Path}" x:Key="LargeIcon">
         <Setter Property="Width" Value="32" />
         <Setter Property="Height" Value="32" />
-        <Setter Property="Fill" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource Self}, Path=(TextBlock.Foreground)}" />
         <Setter Property="LayoutTransform">
             <Setter.Value>
                 <ScaleTransform ScaleX="0.9" ScaleY="0.9" />
@@ -21,7 +21,7 @@
     <Style TargetType="{x:Type Path}" x:Key="MediumIcon">
         <Setter Property="Width" Value="32" />
         <Setter Property="Height" Value="32" />
-        <Setter Property="Fill" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource Self}, Path=(TextBlock.Foreground)}" />
         <Setter Property="LayoutTransform">
             <Setter.Value>
                 <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
@@ -32,10 +32,6 @@
     <Style TargetType="{x:Type Path}" x:Key="SmallIcon">
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />
-        <Setter Property="Fill" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-    </Style>
-
-    <Style TargetType="{x:Type Path}" x:Key="SmallIconWithAutoColor" BasedOn="{StaticResource SmallIcon}">
         <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource Self}, Path=(TextBlock.Foreground)}" />
     </Style>
 
@@ -172,7 +168,7 @@
     </Style>
 
     <Style TargetType="{x:Type Control}" x:Key="HelpIcon">
-        <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}"/>
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Accent}"/>
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Width" Value="16" />
         <Setter Property="Cursor" Value="Help" />

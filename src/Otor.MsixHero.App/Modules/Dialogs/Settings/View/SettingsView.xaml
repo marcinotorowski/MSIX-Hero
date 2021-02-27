@@ -50,7 +50,7 @@
                 <Border 
                     Width="42"
                     Height="42"
-                    Background="{StaticResource Otor.MsixHero.Brushes.Accent}">
+                    Background="{StaticResource MsixHero.Brushes.Accent}">
                     <Path 
                         Width="32" 
                         Height="32" 
@@ -363,7 +363,7 @@
                                                 UseLayoutRounding="True" 
                                                 VerticalAlignment="Center" 
                                                 Margin="0 0 6 0">
-                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" />
                                             </Viewbox>
 
                                             <Border ToolTip="{Binding ValidationMessage}" ToolTipService.Placement="Bottom" 
@@ -477,7 +477,7 @@
                                             Tag="{Binding Image}"
                                             SnapsToDevicePixels="True" 
                                             UseLayoutRounding="True">
-                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                                <Path Data="{StaticResource VectorGear}" Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" />
                                                 <Viewbox.Style>
                                                     <Style TargetType="Viewbox">
                                                         <Setter Property="Visibility" Value="Collapsed" />

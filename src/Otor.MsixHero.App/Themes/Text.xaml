@@ -7,7 +7,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="TextBlock" x:Key="DataHeader">
-        <Setter Property="Opacity" Value="0.7" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Text.Foreground.Light2.Brush}" />
         <Setter Property="Margin" Value="0 0 0 2" />
     </Style>
 
@@ -16,7 +16,7 @@
     </Style>
 
     <Style TargetType="TextBlock" x:Key="LabelTextBlock">
-        <Setter Property="Foreground" Value="#666" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Text.Foreground.Light2.Brush}" />
         <Setter Property="Margin" Value="0 0 0 6" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="TextWrapping" Value="Wrap" />
@@ -40,7 +40,7 @@
         <Setter Property="FontWeight" Value="ExtraLight" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0 0 0 10" />
-        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Text.Foreground.Normal.Brush}" />
     </Style>
 
     <Style TargetType="{x:Type Label}" x:Key="FormLabelThin">
@@ -81,7 +81,7 @@
     </Style>
 
     <Style TargetType="TextBlock" x:Key="ButtonDescription">
-        <Setter Property="Foreground" Value="#888" />
+        <Setter Property="Opacity" Value="0.7" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextAlignment" Value="Center" />

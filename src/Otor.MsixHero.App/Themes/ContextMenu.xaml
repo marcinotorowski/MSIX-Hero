@@ -59,7 +59,7 @@
                                 <!-- gestures -->
                             </Grid.ColumnDefinitions>
 
-                            <Rectangle x:Name="focus" Grid.ColumnSpan="4" Opacity="0.2"  Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Visibility="Collapsed" />
+                            <Rectangle x:Name="focus" Grid.ColumnSpan="4" Opacity="0.2"  Fill="{StaticResource MsixHero.Brushes.Accent}" Visibility="Collapsed" />
 
                             <ContentPresenter 
                                 x:Name="Icon"
