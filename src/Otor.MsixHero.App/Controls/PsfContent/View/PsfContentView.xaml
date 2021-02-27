@@ -40,7 +40,7 @@
                     <Trigger Property="IsEnabled" Value="True">
                         <Setter Property="TextDecorations" Value="Underline" />
                         <Setter Property="Cursor" Value="Hand" />
-                        <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Accent}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -52,7 +52,7 @@
                 <Setter Property="Width" Value="32" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="Margin" Value="2" />
-                <Setter Property="Fill" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                <Setter Property="Fill" Value="{StaticResource MsixHero.Brushes.Accent}" />
                 <Setter Property="LayoutTransform">
                     <Setter.Value>
                         <ScaleTransform ScaleX="0.75" ScaleY="0.75" />

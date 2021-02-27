@@ -56,7 +56,7 @@
                         <Setter Property="Foreground" Value="#888" />
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Accent}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>

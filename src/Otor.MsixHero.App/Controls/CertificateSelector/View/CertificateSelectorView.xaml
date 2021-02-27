@@ -40,7 +40,7 @@
                     <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" x:Name="AskMe">
                         <DockPanel>
                             <Path 
-                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Style="{StaticResource SmallIcon}" 
                                 Data="{StaticResource SmallNone}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
@@ -50,7 +50,7 @@
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" x:Name="PfxFile">
                         <DockPanel>
                             <Path 
-                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Style="{StaticResource SmallIcon}" 
                                 Data="{StaticResource SmallLicense}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
@@ -60,7 +60,7 @@
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" x:Name="CertStore">
                         <DockPanel>
                             <Path 
-                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Style="{StaticResource SmallIcon}" 
                                 Data="{StaticResource SmallDiploma}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
@@ -70,7 +70,7 @@
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" x:Name="CertDeviceGuard">
                         <DockPanel>
                             <Path 
-                                Style="{StaticResource SmallIconWithAutoColor}" 
+                                Style="{StaticResource SmallIcon}" 
                                 Data="{StaticResource SmallCloudLink}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
@@ -226,7 +226,7 @@
                                         <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" />
                                         <TextBlock Text="{Binding Subject}" Margin="0 1" Opacity="0.6" />
                                         <DockPanel>
-                                            <Path Style="{StaticResource SmallIconWithAutoColor}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
+                                            <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
                                             <TextBlock Text="{Binding Model.Date}" Opacity="0.6" VerticalAlignment="Center" />
                                         </DockPanel>
                                     </StackPanel>
@@ -237,7 +237,7 @@
                                     <StackPanel Margin="2">
                                         <TextBlock Text="{Binding DisplayName}" />
                                         <DockPanel Margin="0 1 0 0">
-                                            <Path Style="{StaticResource SmallIconWithAutoColor}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
+                                            <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTimeLimit}" VerticalAlignment="Center" Opacity="0.6" Margin="0 0 4 0" />
                                             <TextBlock Text="{Binding Model.Date}" Opacity="0.6" VerticalAlignment="Center" />
                                         </DockPanel>
                                     </StackPanel>

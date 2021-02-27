@@ -7,33 +7,188 @@
 
     <Style TargetType="ButtonBase" x:Key="BaseButton">
         <Setter Property="MinHeight" Value="30" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Padding" Value="10 4" />
-        <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="#DDDDDD" />
-        <Setter Property="Background" Value="#DDDDDD" />
+        <Setter Property="BorderThickness" Value="{StaticResource MsixHero.Button.Normal.Border.Thickness}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Button.Normal.Border.Brush}" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.Button.Normal.Background.Brush}" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Button.Normal.Foreground.Brush}" />
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Button.Normal.Foreground.Brush}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.4" />
             </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Button.Focused.Border.Brush}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Button.Focused.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.Button.Focused.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Button.Focused.Foreground.Brush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Button.Hovered.Border.Brush}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Button.Hovered.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.Button.Hovered.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Button.Hovered.Foreground.Brush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Button.Pressed.Border.Brush}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Button.Pressed.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.Button.Pressed.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Button.Pressed.Foreground.Brush}" />
+            </Trigger>
         </Style.Triggers>
     </Style>
 
+    <ControlTemplate x:Key="PlainButtonTemplate"  TargetType="Button">
+        <Border
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter 
+                ContentTemplate="{TemplateBinding ContentTemplate}"
+                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                Margin="{TemplateBinding Padding}" />
+        </Border>
+    </ControlTemplate>
+
     <Style TargetType="Button" x:Key="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Template" Value="{StaticResource PlainButtonTemplate}" />
     </Style>
 
     <Style TargetType="ToggleButton" x:Key="{x:Type ToggleButton}" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter 
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                            ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            Margin="{TemplateBinding Padding}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="false" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Normal.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Normal.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Normal.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Normal.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="false" />
+                    <Condition Property="IsFocused" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Focused.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Focused.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Focused.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Focused.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="false" />
+                    <Condition Property="IsMouseOver" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Hovered.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Hovered.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Hovered.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Hovered.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="false" />
+                    <Condition Property="IsPressed" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Pressed.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Pressed.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Pressed.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Unchecked.Pressed.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Checked.Normal.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Checked.Normal.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Normal.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Normal.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="true" />
+                    <Condition Property="IsFocused" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Checked.Focused.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Checked.Focused.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Focused.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Focused.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="true" />
+                    <Condition Property="IsMouseOver" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Checked.Hovered.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Checked.Hovered.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Hovered.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Hovered.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsChecked" Value="true" />
+                    <Condition Property="IsPressed" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleButton.Checked.Pressed.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.ToggleButton.Checked.Pressed.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Pressed.Foreground.Brush}" />
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleButton.Checked.Pressed.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="ButtonBase" x:Key="ActionButtonBase">
         <Setter Property="Height" Value="44"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Padding" Value="10 0" />
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Normal.Foreground.Brush}" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Normal.Background.Brush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Normal.Border.Brush}" />
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Normal.Foreground.Brush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="TextBlock.Foreground" Value="#222" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ButtonBase">
@@ -48,7 +203,10 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Hovered.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Hovered.Border.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.5" />
@@ -56,17 +214,22 @@
             <Trigger Property="IsFocused" Value="True">
                 <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="Padding" Value="8 0" />
-                <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Focused.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Focused.Foreground.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Focused.Border.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Focused.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#333" />
-                <Setter Property="BorderBrush" Value="#333" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Pressed.Foreground.Brush}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Pressed.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Pressed.Border.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Pressed.Foreground.Brush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="Button" x:Key="ActionButton" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="Template" Value="{StaticResource PlainButtonTemplate}" />
     </Style>
 
     <Style TargetType="Button" x:Key="ActionButtonHideWhenDisabled" BasedOn="{StaticResource ActionButtonBase}">
@@ -78,6 +241,10 @@
     </Style>
 
     <Style TargetType="ToggleButton" x:Key="ActionPopupToggleButton" BasedOn="{StaticResource ActionButtonBase}">
+        <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Normal.Background.Brush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Normal.Border.Brush}" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Normal.Foreground.Brush}" />
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Normal.Foreground.Brush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ButtonBase">
@@ -98,22 +265,30 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
                 <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="Padding" Value="8 0" />
-                <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Focused.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Focused.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Focused.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Focused.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#333" />
-                <Setter Property="BorderBrush" Value="#333" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Foreground.Brush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -121,22 +296,30 @@
     <Style TargetType="ToggleButton" x:Key="ActionToggleButton" BasedOn="{StaticResource ActionButtonBase}">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderThickness" Value="2" />
+                <Setter Property="BorderThickness" Value="{StaticResource MsixHero.Button.Normal.Border.Thickness}" />
                 <Setter Property="Padding" Value="8 0" />
-                <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#333" />
-                <Setter Property="BorderBrush" Value="#333" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Hovered.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                <Setter Property="BorderBrush" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
-                <Setter Property="TextBlock.Foreground" Value="White" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Checked.Foreground.Brush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Background.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Border.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ToggleActionButton.Pressed.Foreground.Brush}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -160,22 +343,32 @@
     <Style TargetType="ButtonBase" x:Key="ButtonRectangleBase">
         <Setter Property="Padding" Value="8" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter 
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                            Margin="{TemplateBinding Padding}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Normal.Background.Brush}" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Normal.Foreground.Brush}" />
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Normal.Foreground.Brush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Normal.Border.Brush}" />
+        
         <Style.Triggers>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Focused.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Focused.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Focused.Foreground.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Focused.Border.Brush}" />
+            </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Hovered.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Hovered.Border.Brush}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Pressed.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Pressed.Foreground.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Pressed.Foreground.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Pressed.Border.Brush}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.4" />
@@ -187,11 +380,11 @@
         <Setter Property="Height" Value="120" />
         <Setter Property="Width" Value="150" />
         <Setter Property="Padding" Value="4" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource PlainButtonTemplate}" />
     </Style>
 
     <Style TargetType="Button" x:Key="ButtonRectangle" BasedOn="{StaticResource ButtonRectangleBase}">
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Template" Value="{StaticResource PlainButtonTemplate}" />
     </Style>
 </ResourceDictionary>

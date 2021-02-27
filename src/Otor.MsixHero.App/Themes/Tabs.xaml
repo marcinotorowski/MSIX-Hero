@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-                    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
                     xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation">
 
     <ResourceDictionary.MergedDictionaries>
@@ -76,7 +75,7 @@
                                     x:Name="BorderMouseOver" 
                                     Opacity="0"
                                     RenderTransformOrigin="0.5, 0.5"
-                                    VerticalAlignment="Bottom" Height="3" Background="{StaticResource Otor.MsixHero.Brushes.Accent}" Margin="0 0 0 0">
+                                    VerticalAlignment="Bottom" Height="3" Background="{StaticResource MsixHero.Brushes.Accent}" Margin="0 0 0 0">
                                     <Border.RenderTransform>
                                         <ScaleTransform ScaleX="0" />
                                     </Border.RenderTransform>
@@ -120,7 +119,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="ContentSite" Property="TextBlock.Foreground" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                            <Setter TargetName="ContentSite" Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Brushes.Accent}" />
                         </Trigger>
                         <Trigger Property="validation:ValidatedTabItem.IsValid" Value="False">
                         <!--    <Setter Property="Background" TargetName="PART_Root">
@@ -161,7 +160,7 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <ColorAnimation To="{StaticResource MsixHero.Colors.Accent}" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -210,7 +209,7 @@
                                     x:Name="BorderMouseOver" 
                                     Opacity="0"
                                     RenderTransformOrigin="0.5, 0.5"
-                                    VerticalAlignment="Bottom" Height="2" Background="{StaticResource Otor.MsixHero.Brushes.Accent}" Margin="0 0 0 0">
+                                    VerticalAlignment="Bottom" Height="2" Background="{StaticResource MsixHero.Brushes.Accent}" Margin="0 0 0 0">
                                     <Border.RenderTransform>
                                         <ScaleTransform ScaleX="0" />
                                     </Border.RenderTransform>
@@ -263,7 +262,7 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Otor.MsixHero.Colors.Accent}" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
+                                        <ColorAnimation To="{StaticResource MsixHero.Colors.Accent}" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Border" Duration="00:00:0.2" AccelerationRatio="0.5" DecelerationRatio="0.5" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -290,7 +289,7 @@
         <Setter Property="Margin" Value="6 -2 2 -2" />
         <Setter Property="CornerRadius" Value="20" />
         <Setter Property="TextBlock.Foreground" Value="#fff" />
-        <Setter Property="Background" Value="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent}" />
         <Style.Triggers>
             <Trigger Property="Tag">
                 <Trigger.Value>

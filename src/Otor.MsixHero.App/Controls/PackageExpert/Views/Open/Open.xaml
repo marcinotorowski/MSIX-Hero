@@ -14,6 +14,7 @@
         <DockPanel>
 
             <Button 
+                ToolTip="Copy the path to clipboard"
                 Command="Copy"
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
                 CommandParameter="{Binding Manifest.CurrentValue.RootDirectory}"
@@ -22,9 +23,12 @@
                 <b:Interaction.Behaviors>
                     <helpers:ButtonClosePopup />
                 </b:Interaction.Behaviors>
-                <Path Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="16" Height="16" />
+                <Path 
+                    Style="{StaticResource SmallIcon}"
+                    Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" />
             </Button>
             <Button 
+                ToolTip="Copy the path to clipboard"
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
                 Command="{x:Static commands:MsixHeroCommands.OpenExplorer}"
                 Style="{StaticResource ButtonRectangle}">
@@ -32,7 +36,7 @@
                     <helpers:ButtonClosePopup />
                 </b:Interaction.Behaviors>
                 <DockPanel>
-                    <Path Fill="Black" Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" DockPanel.Dock="Left" Margin="1 0 4 0" />
+                    <Path Fill="{Binding RelativeSource={RelativeSource Self}, Path=(TextBlock.Foreground)}" Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" DockPanel.Dock="Left" Margin="1 0 4 0" />
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonLabel}" Text="Installation folder" />
                         <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Style="{StaticResource ButtonDescription}" Text="{Binding Path=Manifest.CurrentValue.RootDirectory}" />
@@ -51,7 +55,10 @@
                 <b:Interaction.Behaviors>
                     <helpers:ButtonClosePopup />
                 </b:Interaction.Behaviors>
-                <Path VerticalAlignment="Center" Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" Fill="{StaticResource Otor.MsixHero.Brushes.Accent}" Width="16" Height="16" />
+                <Path 
+                    Style="{StaticResource SmallIcon}"
+                    VerticalAlignment="Center" 
+                    Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" />
             </Button>
             <Button 
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"

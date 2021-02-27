@@ -8,17 +8,112 @@
 
     <Style TargetType="{x:Type TextBox}" x:Key="{x:Type TextBox}">
         <Setter Property="MinHeight" Value="30" />
-        <Setter Property="BorderBrush" Value="#ccc" />
-        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Normal.Border.Brush}" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Normal.Background.Brush}" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Normal.Foreground.Brush}" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.TextBox.Normal.Foreground.Brush}" />
+        <Setter Property="BorderThickness" Value="{StaticResource MsixHero.Button.Normal.Border.Thickness}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationControlTemplate}" />
         <Style.Triggers>
-            <Trigger Property="IsReadOnly" Value="True">
-                <Setter Property="Background" Value="#eeeeee" />
-            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly" Value="false" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Normal.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Normal.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Normal.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly" Value="false" />
+                    <Condition Property="IsFocused" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Focused.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Focused.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Focused.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly" Value="false" />
+                    <Condition Property="IsMouseOver" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Hovered.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Hovered.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Hovered.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Readonly.Normal.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Readonly.Normal.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Readonly.Normal.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly" Value="true" />
+                    <Condition Property="IsFocused" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Readonly.Focused.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Readonly.Focused.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Readonly.Focused.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsReadOnly" Value="true" />
+                    <Condition Property="IsMouseOver" Value="true" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Readonly.Hovered.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Readonly.Hovered.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Readonly.Hovered.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+
             <Trigger Property="Validation.HasError" Value="True">
-                <Setter Property="Background" Value="#FFEEC6" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Validation}" />
             </Trigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsKeyboardFocusWithin" Value="True" />
+                    <Condition Property="IsReadOnly" Value="False" />
+                    <Condition Property="Validation.HasError" Value="False" />
+                    <Condition Property="IsEnabled" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Editing.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Editing.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Editing.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsFocused" Value="True" />
+                    <Condition Property="IsReadOnly" Value="False" />
+                    <Condition Property="Validation.HasError" Value="False" />
+                    <Condition Property="IsEnabled" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="BorderBrush" Value="{StaticResource MsixHero.TextBox.Editing.Border.Brush}" />
+                    <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Editing.Background.Brush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MsixHero.TextBox.Editing.Foreground.Brush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
         </Style.Triggers>
     </Style>
 

@@ -20,32 +20,28 @@
         </Style>
     </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <StackPanel x:Name="Host" Margin="20">
-            <StackPanel.Resources>
+        <DockPanel x:Name="Host" Margin="20">
+            <DockPanel.Resources>
                 <Style TargetType="TextBlock" x:Key="TextHeader">
                     <Setter Property="FontFamily" Value="{StaticResource SourceSansPro}" />
                     <Setter Property="FontSize" Value="18" />
                 </Style>
-            </StackPanel.Resources>
+            </DockPanel.Resources>
 
-            <StackPanel Style="{StaticResource Group}">
-                <Button 
-                    Width="250"
-                    HorizontalAlignment="Left"
-                    HorizontalContentAlignment="Left"
-                    Command="Open">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Style="{StaticResource LargeIcon}"
-                      Data="{StaticResource VectorOpen}"
-                      Margin="0 0 8 0" />
-                        <StackPanel>
-                            <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonLabel}" FontSize="14" Text="Open" />
-                            <TextBlock HorizontalAlignment="Left" Style="{StaticResource ButtonDescription}" Text="Opens any supported file" />
-                        </StackPanel>
-                    </StackPanel>
-                </Button>
+            <StackPanel DockPanel.Dock="Right" Margin="16 0 0 0">
+                <TextBlock Style="{StaticResource TextHeader}" Text="Other options" Margin="0 0 0 8" />
+                
+                <DockPanel>
+                    <Path Data="{StaticResource SmallOpen}" Style="{StaticResource SmallIcon}" Margin="4" VerticalAlignment="Center" />
+                    <TextBlock Margin="4" VerticalAlignment="Center">
+                        <Hyperlink
+                            Command="Open">
+                            <Run Text="Open MSIX or .appinstaller" />
+                        </Hyperlink>
+                    </TextBlock>
+                </DockPanel>
+
             </StackPanel>
-
             <WrapPanel HorizontalAlignment="Left" MaxWidth="1200">
 
                 <StackPanel Style="{StaticResource Group}">
@@ -237,6 +233,6 @@
                     </WrapPanel>
                 </StackPanel>
             </WrapPanel>
-        </StackPanel>
+        </DockPanel>
     </ScrollViewer>
 </UserControl>

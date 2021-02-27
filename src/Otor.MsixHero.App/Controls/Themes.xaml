@@ -607,7 +607,7 @@
                         UseLayoutRounding="True"
                         SnapsToDevicePixels="True"
                         Margin="0 8 0 0" 
-                        Foreground="{StaticResource Otor.MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
+                        Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
                         Width="200" 
                         HorizontalAlignment="Center" 
                         Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}" />
@@ -691,7 +691,7 @@
                         Opacity="0.0"
                         UseLayoutRounding="True"
                         SnapsToDevicePixels="True"
-                        Margin="0 8 0 0" Foreground="{StaticResource Otor.MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
+                        Margin="0 8 0 0" Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
                         Width="200" HorizontalAlignment="Center" 
                         local:AnimatedProgressBar.Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}">
                     </ProgressBar>
@@ -793,7 +793,7 @@
                         Opacity="0.0"
                         UseLayoutRounding="True"
                         SnapsToDevicePixels="True"
-                        Margin="0 8 0 0" Foreground="{StaticResource Otor.MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
+                        Margin="0 8 0 0" Foreground="{StaticResource MsixHero.Brushes.Accent}" x:Name="PART_ProgressBar" Height="8" 
                         Width="200" HorizontalAlignment="Center" 
                         local:AnimatedProgressBar.Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Progress}">
                         <ProgressBar.RenderTransform>

@@ -115,7 +115,7 @@
                 <StackPanel Margin="12">
                     <DockPanel VerticalAlignment="Top">
                         <Border 
-                            Background="{StaticResource Otor.MsixHero.Brushes.Accent}"
+                            Background="{StaticResource MsixHero.Brushes.Accent}"
                             Width="48" 
                             Height="48">
                             <Border>
@@ -161,7 +161,7 @@
                         </TextBlock>
                         <ProgressBar Height="10" Margin="0 6 0 0" 
                                          Value="{Binding Volume.OccupiedSpace, Mode=OneWay}" 
-                                         Maximum="{Binding Volume.Capacity, Mode=OneWay}" Background="{StaticResource Otor.MsixHero.Brushes.Accent.Light}" Foreground="{StaticResource Otor.MsixHero.Brushes.Accent}" />
+                                         Maximum="{Binding Volume.Capacity, Mode=OneWay}" Background="{StaticResource MsixHero.Brushes.Accent.Light1}" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
                     </StackPanel>
 
                     <WrapPanel Margin="-2 8 0 -2">

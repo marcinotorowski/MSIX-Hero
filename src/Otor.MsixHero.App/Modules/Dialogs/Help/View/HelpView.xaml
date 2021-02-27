@@ -32,7 +32,7 @@
     <DockPanel>
         <Border Background="Transparent" DockPanel.Dock="Top">
             <DockPanel>
-                <Border Width="42" Height="42" Background="{StaticResource Otor.MsixHero.Brushes.Accent}">
+                <Border Width="42" Height="42" Background="{StaticResource MsixHero.Brushes.Accent}">
                     <Path 
                         Width="32" 
                         Height="32" 
@@ -143,7 +143,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#eee" Margin="0 16 0 0" BorderBrush="{StaticResource Otor.MsixHero.Brushes.Accent}" BorderThickness="0 4 0 0">
+                    <Border Background="#eee" Margin="0 16 0 0" BorderBrush="{StaticResource MsixHero.Brushes.Accent}" BorderThickness="0 4 0 0">
                         <StackPanel Margin="8">
                             <Label Content="License" Style="{StaticResource FormLabel}" />
                             <TextBox Padding="0" Margin="0" BorderBrush="Transparent" BorderThickness="0" Background="#eee" 
