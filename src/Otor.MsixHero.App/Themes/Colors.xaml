@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
     <Color x:Key="MsixHero.Colors.Accent">#0173C7</Color>
     <Color x:Key="MsixHero.Colors.Accent.Light1">#CDE6F7</Color>
     <Color x:Key="MsixHero.Colors.Accent.Light2">#EBF4FA</Color>
@@ -12,6 +13,7 @@
     <Color x:Key="MsixHero.Colors.Light4">#B0B0B0</Color>
     <Color x:Key="MsixHero.Colors.Light5">#DDDDDD</Color>
     <Color x:Key="MsixHero.Colors.Light6">#EEEEEE</Color>
+    <Color x:Key="MsixHero.Colors.Light7">#F0F0F0</Color>
     <Color x:Key="MsixHero.Colors.Validation">#FFEEC6</Color>
 
     <SolidColorBrush x:Key="MsixHero.Brushes.Accent" Color="{StaticResource MsixHero.Colors.Accent}" />
@@ -26,6 +28,7 @@
     <SolidColorBrush x:Key="MsixHero.Brushes.Light4" Color="{StaticResource MsixHero.Colors.Light4}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Light5" Color="{StaticResource MsixHero.Colors.Light5}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Light6" Color="{StaticResource MsixHero.Colors.Light6}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light7" Color="{StaticResource MsixHero.Colors.Light7}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Validation" Color="{StaticResource MsixHero.Colors.Validation}" />
 
     <SolidColorBrush x:Key="MsixHero.Text.Foreground.Normal.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
@@ -33,6 +36,7 @@
     <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light2.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
     <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light3.Brush" Color="{StaticResource MsixHero.Colors.Light3}" />
     <Thickness x:Key="MsixHero.Button.Normal.Border.Thickness">2</Thickness>
+    <system:Double x:Key="MsixHero.Button.Height">30</system:Double>
 
     <!-- Text box -->
     <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
@@ -80,6 +84,12 @@
     <SolidColorBrush x:Key="MsixHero.Button.Pressed.Background.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
     <SolidColorBrush x:Key="MsixHero.Button.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
     <SolidColorBrush x:Key="MsixHero.Button.Pressed.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Contrast}" />
+
+    <!-- Radio Button -->
+    <SolidColorBrush x:Key="MsixHero.RadioButton.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light4}" />
+    <SolidColorBrush x:Key="MsixHero.RadioButton.Focused.Border.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
+    <SolidColorBrush x:Key="MsixHero.RadioButton.Hovered.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
+    <SolidColorBrush x:Key="MsixHero.RadioButton.Pressed.Border.Brush" Color="{StaticResource MsixHero.Colors.Accent}" />
 
     <!-- Toggle button -->
 

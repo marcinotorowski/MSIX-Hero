@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
         <ResourceDictionary Source="Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -11,7 +12,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GroupItem}">
                     <StackPanel>
-                        <Border DockPanel.Dock="Top" Background="#F0F0F0" Height="24">
+                        <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Light7}" Height="24">
                             <DockPanel>
                                 <TextBlock DockPanel.Dock="Right" FontWeight="SemiBold" VerticalAlignment="Center" Margin="10 0">
                                     <Run Text="{Binding ItemCount, Mode=OneWay}" />
@@ -46,12 +47,12 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="#B1D6F0" />
-                <Setter Property="Background" Value="#E6F2FA" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Colors.Accent.Light1}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Colors.Accent.Light2}" />
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="BorderBrush" Value="#B1D6F0" />
-                <Setter Property="Background" Value="#CDE6F7" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Colors.Accent.Light2}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Colors.Accent.Light2}" />
             </Trigger>
         </Style.Triggers>
     </Style>

@@ -69,6 +69,16 @@
                 <Grid ClipToBounds="True">
                     <Border Background="{TemplateBinding Background}" />
                     <Border Opacity="{TemplateBinding TintOpacity}" Background="{TemplateBinding TintBrush}" />
+                    <Rectangle Opacity="{TemplateBinding NoiseOpacity}">
+                        <Rectangle.Fill>
+                            <ImageBrush 
+                                ImageSource="/FluentWPF;component/Assets/Images/noise.png"
+                                TileMode="Tile" 
+                                Stretch="None"
+                                ViewportUnits="Absolute" 
+                                Viewport="0,0,128,128"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
                 </Grid>
             </ControlTemplate>
 
