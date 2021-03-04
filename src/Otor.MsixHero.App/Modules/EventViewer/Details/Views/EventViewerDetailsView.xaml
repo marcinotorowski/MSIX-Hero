@@ -34,7 +34,7 @@
 
         </DockPanel.Resources>
 
-        <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
+        <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
             <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
 
                 <Button 

@@ -21,7 +21,7 @@
                             <ContentPresenter Width="32" Content="{TemplateBinding Header}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
 
-                        <Border Width="1" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Stretch" Background="#DDD" Margin="10 0" />
+                        <Border Width="1" SnapsToDevicePixels="True" UseLayoutRounding="True" VerticalAlignment="Stretch" Background="{StaticResource MsixHero.Brushes.Light5}" Margin="10 0" />
 
                         <StackPanel IsItemsHost="True" Margin="0 0 0 10" />
                     </DockPanel>

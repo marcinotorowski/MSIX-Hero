@@ -22,7 +22,9 @@
 
                 <Border 
                     Visibility="{Binding CertificateDetails.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                    Background="#E8FFDD" Margin="0 16 0 0">
+                    TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}"
+                    Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
+                    Margin="0 16 0 0">
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="LayoutTransform">

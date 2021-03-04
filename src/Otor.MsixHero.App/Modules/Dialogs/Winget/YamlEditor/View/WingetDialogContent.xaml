@@ -244,22 +244,7 @@
                                         </WrapPanel>
                                     </Border>
                                 </StackPanel>
-                            </controls1:ProgressOverlay>
-
-                            <!--<ToggleButton HorizontalContentAlignment="Left" IsEnabled="{Binding IsGenerateHashShown, Converter={StaticResource NegativeConverter}}" IsHitTestVisible="{Binding IsGenerateHashShown, Converter={StaticResource NegativeConverter}}" x:Name="Popup" DockPanel.Dock="Right" Margin="4 0 0 0" Content="Generate..." IsChecked="{Binding IsGenerateHashShown, Mode=TwoWay}" />
-                                        <Popup StaysOpen="False" HorizontalOffset="-8" PlacementTarget="{Binding ElementName=Popup}" Placement="Bottom" IsOpen="{Binding IsGenerateHashShown}" AllowsTransparency="True" PopupAnimation="Slide">
-                                            <Border>
-                                                <Border Margin="8" Background="White" BorderThickness="1" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderBrush="#ccc">
-                                                    <Border.Effect>
-                                                        <DropShadowEffect BlurRadius="4" Color="Black" Opacity="0.2" ShadowDepth="0" />
-                                                    </Border.Effect>
-                                                    <StackPanel Margin="4">
-                                                        <Button Content="From installer URL" Margin="4" Command="{Binding GenerateSha256}" />
-                                                        <Button Content="From local file..." Margin="4" Command="{Binding OpenSha256}" />
-                                                    </StackPanel>
-                                                </Border>
-                                            </Border>
-                                        </Popup>-->
+                            </controls1:ProgressOverlay>                           
 
                             <StackPanel Visibility="{Binding IsCommand, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock 

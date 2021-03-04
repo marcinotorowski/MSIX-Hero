@@ -11,7 +11,7 @@
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="500"
-             Background="#ffffff"
+             Background="{StaticResource MsixHero.Brushes.Background}"
              d:DataContext="{d:DesignInstance viewModel:CertificateSelectorViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>

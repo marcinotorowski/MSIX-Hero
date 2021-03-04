@@ -133,12 +133,15 @@
                                 Progress="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Progress, Mode=OneWay}"
                                 Message="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.Progress.Message}">
                                 <DockPanel>
-                                    <Border Background="#F7F7F7" DockPanel.Dock="Bottom">
+                                    <Border 
+                                        TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}" 
+                                        Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
+                                        DockPanel.Dock="Bottom">
                                         <DockPanel>
                                             <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
                                                 <CheckBox
-                                            Visibility="{TemplateBinding SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="Show silent command line" Margin="0 0 4 0" VerticalAlignment="Center" />
+                                                    Visibility="{TemplateBinding SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="Show silent command line" Margin="0 0 4 0" VerticalAlignment="Center" />
                                                 <ContentPresenter Content="{TemplateBinding Footer}" VerticalAlignment="Center" />
                                             </StackPanel>
 
@@ -179,10 +182,11 @@
                                     </Border>
 
                                     <Border
-                                    Background="#333" 
-                                    MaxHeight="60"
-                                    DockPanel.Dock="Bottom"
-                                    Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        Background="{StaticResource MsixHero.Dialog.Console.Background}" 
+                                        TextBlock.Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
+                                        MaxHeight="60"
+                                        DockPanel.Dock="Bottom"
+                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -191,30 +195,30 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBox 
-                                            Grid.Column="0"
-                                            x:Name="CmdLine"
-                                            BorderThickness="0" 
-                                            HorizontalScrollBarVisibility="Disabled"
-                                            VerticalScrollBarVisibility="Auto"
-                                            Background="#333" 
-                                            BorderBrush="Transparent" 
-                                            Padding="5" 
-                                            TextWrapping="Wrap"
-                                            Foreground="White" 
-                                            Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
+                                                Grid.Column="0"
+                                                x:Name="CmdLine"
+                                                BorderThickness="0" 
+                                                HorizontalScrollBarVisibility="Disabled"
+                                                VerticalScrollBarVisibility="Auto"
+                                                Background="{StaticResource MsixHero.Dialog.Console.Background}" 
+                                                BorderBrush="Transparent" 
+                                                Padding="5" 
+                                                TextWrapping="Wrap"
+                                                Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
+                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
 
                                             <Button
-                                            x:Name="PART_CopyCommandLine"
-                                            Grid.Column="1"
-                                            Margin="4 0 0 0" 
-                                            ToolTip="Copy to clipboard"
-                                            VerticalAlignment="Center"
-                                            Width="32" Height="32">
+                                                x:Name="PART_CopyCommandLine"
+                                                Grid.Column="1"
+                                                Margin="4 0 0 0" 
+                                                ToolTip="Copy to clipboard"
+                                                VerticalAlignment="Center"
+                                                Width="32" Height="32">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Cursor" Value="Hand" />
                                                         <Setter Property="Background" Value="Transparent" />
-                                                        <Setter Property="Foreground" Value="White" />
+                                                        <Setter Property="Foreground" Value="{StaticResource MsixHero.Dialog.Console.Foreground}" />
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="Button">
@@ -226,7 +230,7 @@
                                                         </Setter>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="#33ffffff" />
+                                                                <Setter Property="Opacity" Value="0.8" />
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -235,10 +239,14 @@
                                         </Grid>
                                     </Border>
 
-                                    <Grid Background="White">
+                                    <Grid Background="{StaticResource MsixHero.Brushes.Background}">
 
                                         <DockPanel>
-                                            <Border Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#FFE39E" Padding="8" DockPanel.Dock="Bottom">
+                                            <Border 
+                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.HasError, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                                                Background="{StaticResource MsixHero.Brushes.Validation}" 
+                                                Padding="8" 
+                                                DockPanel.Dock="Bottom">
 
                                                 <DockPanel>
                                                     <Border
@@ -373,31 +381,31 @@
                                                     </StackPanel.Style>
 
                                                     <ContentControl 
-                                                Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
-                                                ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
-                                                ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}" />
+                                                        Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog}" 
+                                                        ContentTemplate="{TemplateBinding SuccessContentTemplate}" 
+                                                        ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}" />
 
                                                     <TextBlock 
-                                                Margin="16 16 16 4"
-                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                Text="This operation can be automated by executing the following command line:" 
-                                                TextWrapping="Wrap" />
+                                                        Margin="16 16 16 4"
+                                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                        Text="This operation can be automated by executing the following command line:" 
+                                                        TextWrapping="Wrap" />
 
                                                     <TextBox 
-                                                MaxHeight="60"
-                                                Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                BorderThickness="0" 
-                                                DockPanel.Dock="Bottom"
-                                                Background="#444" 
-                                                BorderBrush="Transparent" 
-                                                HorizontalScrollBarVisibility="Disabled"
-                                                VerticalScrollBarVisibility="Auto"
-                                                Padding="5" 
-                                                FontFamily="Consolas"
-                                                TextWrapping="Wrap"
-                                                Margin="16 4"
-                                                Foreground="#fff" 
-                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
+                                                        MaxHeight="60"
+                                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                        BorderThickness="0" 
+                                                        DockPanel.Dock="Bottom"
+                                                        Background="{StaticResource MsixHero.Dialog.Console.Background}" 
+                                                        BorderBrush="Transparent" 
+                                                        HorizontalScrollBarVisibility="Disabled"
+                                                        VerticalScrollBarVisibility="Auto"
+                                                        Padding="5" 
+                                                        FontFamily="Consolas"
+                                                        TextWrapping="Wrap"
+                                                        Margin="16 4"
+                                                        Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
+                                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
 
                                                 </StackPanel>
                                             </StackPanel>

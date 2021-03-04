@@ -451,6 +451,31 @@
     <Style TargetType="TextBox" x:Key="DataValueTextBlock" BasedOn="{StaticResource TextBlock}">
         <Setter Property="Margin" Value="-1 0 0 8" />
     </Style>
+       
+    <Style TargetType="TextBox" x:Key="SearchBox">
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="Padding" Value="26 0 0 0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="{StaticResource MsixHero.Button.Height}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Background.Translucent1}" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Background.Translucent6}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsKeyboardFocusWithin" Value="False" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Background.Translucent7}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="Background" Value="{StaticResource MsixHero.TextBox.Focused.Background.Brush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
     <Style TargetType="{x:Type GroupItem}" x:Key="GroupStyle">
         <Setter Property="Margin" Value="0"/>

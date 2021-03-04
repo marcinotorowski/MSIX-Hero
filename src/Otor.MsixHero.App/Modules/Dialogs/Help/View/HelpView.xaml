@@ -76,7 +76,7 @@
             </StackPanel>
         </Border>
 
-        <Border Background="White">
+        <Border Background="{StaticResource MsixHero.Brushes.Background}">
             <ScrollViewer Margin="16" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <DockPanel>

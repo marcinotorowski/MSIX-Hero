@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
+        <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 1">
             <WrapPanel Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <Button 
                     Style="{StaticResource ActionButton}">

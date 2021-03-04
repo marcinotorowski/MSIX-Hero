@@ -93,13 +93,16 @@
         </Style>
     </UserControl.Resources>
     <DockPanel>
-        <Border Background="#F7F7F7" DockPanel.Dock="Bottom">
+        <Border
+            TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}" 
+            Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
+            DockPanel.Dock="Bottom">
             <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Padding="8 4" Margin="4" Content="Close" HorizontalAlignment="Right" Click="ButtonBase_OnClick" />
             </StackPanel>
         </Border>
 
-        <Border Background="White" DockPanel.Dock="Top">
+        <Border Background="{StaticResource MsixHero.Brushes.Background}" DockPanel.Dock="Top">
             <ContentControl 
                 mvvm:RegionManager.RegionContext="{Binding FilePath}"
                 mvvm:RegionManager.RegionName="{x:Static modules:RegionNames.PackageExpert}" />

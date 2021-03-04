@@ -142,7 +142,7 @@
                             </StackPanel>
                         </CheckBox>
                         <Border Visibility="{Binding IsIncludeVfsFoldersEnabled, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
-                        Background="#fafafa" Margin="22 -3 0 16">
+                        Background="{StaticResource MsixHero.Dialog.Bar.Background}" Margin="22 -3 0 16">
                             <TextBlock TextWrapping="Wrap" Margin="6" Foreground="#555">
                                 <Run Text="This option is available only when the output file is uncompressed (AppxManifest.xml) and the parent package is selected from an existing package path." />
                             </TextBlock>

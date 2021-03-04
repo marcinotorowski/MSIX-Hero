@@ -133,7 +133,7 @@
                                                 <StackPanel Margin="0 0 0 24">
                                                     <views:BulletItemControl>
                                                         <views:BulletItemControl.Header>
-                                                            <Border Background="#2B579A" Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center">
+                                                            <Border Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center">
                                                                 <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                                     <Image Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                                 </Border>
@@ -158,7 +158,7 @@
                                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" TextWrapping="Wrap" />
                                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" TextWrapping="Wrap">
                                                                         <Run Text="{Binding Psf.Executable, Mode=OneTime}" />
-                                                                        <Run Text="(launched by " Foreground="#777" /><Run Foreground="#777" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="#777" Text=")" />
+                                                                        <Run Text="(launched by " Foreground="{StaticResource MsixHero.Brushes.Light2}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text=")" />
                                                         </TextBlock>
                                                     </views:BulletItemControl>
 
@@ -346,11 +346,11 @@
                             <controls:ZeroOrAny.AnyItemTemplate>
                                 <DataTemplate>
                                     <ItemsControl
-                                                ItemsSource="{Binding AddOns.CurrentValue}">
+                                        ItemsSource="{Binding AddOns.CurrentValue}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
                                                 <DockPanel Margin="0 0 8 8">
-                                                    <Border DockPanel.Dock="Left" Background="#2B579A" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Border DockPanel.Dock="Left" Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                         <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                             <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                         </Border>
@@ -403,7 +403,7 @@
                         <StackPanel DataContext="{Binding Capabilities}">
                             <StackPanel.Resources>
                                 <DataTemplate x:Key="CapabilityTemplate" DataType="{x:Type elements1:CapabilityViewModel}">
-                                    <Border Margin="4" Width="180" Height="60" Background="#fafafa">
+                                    <Border Margin="4" Width="180" Height="60" Background="{StaticResource MsixHero.Brushes.Light7}">
                                         <DockPanel>
                                             <Path VerticalAlignment="Center" Data="{Binding VectorIcon}" Margin="8 0" Style="{StaticResource LargeIcon}" />
                                             <TextBlock Margin="0 0 15 0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding DisplayName, Mode=OneTime}" />

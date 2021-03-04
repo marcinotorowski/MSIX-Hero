@@ -31,6 +31,14 @@
     <SolidColorBrush x:Key="MsixHero.Brushes.Light7" Color="{StaticResource MsixHero.Colors.Light7}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Validation" Color="{StaticResource MsixHero.Colors.Validation}" />
 
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent1" Color="#11ffffff" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent2" Color="#33ffffff" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent3" Color="#55ffffff" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent4" Color="#77ffffff" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent5" Color="#99ffffff" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent6" Color="#bbffffff" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent7" Color="#ddffffff" />
+
     <SolidColorBrush x:Key="MsixHero.Text.Foreground.Normal.Brush" Color="{StaticResource MsixHero.Colors.Foreground}" />
     <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light1.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
     <SolidColorBrush x:Key="MsixHero.Text.Foreground.Light2.Brush" Color="{StaticResource MsixHero.Colors.Light2}" />
@@ -38,6 +46,12 @@
     <Thickness x:Key="MsixHero.Button.Normal.Border.Thickness">2</Thickness>
     <system:Double x:Key="MsixHero.Button.Height">30</system:Double>
 
+    <!-- Dialogs -->
+    <SolidColorBrush x:Key="MsixHero.Dialog.Bar.Background" Color="{StaticResource MsixHero.Colors.Light7}" />
+    <SolidColorBrush x:Key="MsixHero.Dialog.Bar.Foreground" Color="{StaticResource MsixHero.Colors.Foreground}" />
+    <SolidColorBrush x:Key="MsixHero.Dialog.Console.Background" Color="#333" />
+    <SolidColorBrush x:Key="MsixHero.Dialog.Console.Foreground" Color="#FFF" />
+    
     <!-- Text box -->
     <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
     <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light4}" />

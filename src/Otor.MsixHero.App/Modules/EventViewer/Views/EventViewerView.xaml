@@ -12,7 +12,7 @@
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              mc:Ignorable="d" 
-             Background="#ffffff"
+             Background="{StaticResource MsixHero.Brushes.Background}"
              d:DesignWidth="600"
              d:DesignHeight="200"
              d:DataContext="{d:DesignInstance viewModels:EventViewerViewModel}">
@@ -22,7 +22,7 @@
             <ColumnDefinition Width="2*" MinWidth="150" />
         </Grid.ColumnDefinitions>
         <Border Margin="0 0 0 0">
-            <Border Background="White" BorderBrush="#D2D2D2" BorderThickness="0 0 1 0">
+            <Border Background="{StaticResource MsixHero.Dialog.Bar.Background}" BorderBrush="#D2D2D2" BorderThickness="0 0 1 0">
                 <ContentControl x:Name="Region" SizeChanged="RegionOnSizeChanged" mvvm:RegionManager.RegionName="{x:Static eventViewer:EventViewerRegionNames.List}" />
             </Border>
         </Border>

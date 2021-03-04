@@ -18,14 +18,14 @@
         <Border 
             Width="60" 
             DockPanel.Dock="Left" 
-            Background="White"
+            Background="{StaticResource MsixHero.Brushes.Background}"
             BorderBrush="#D2D2D2"
             BorderThickness="0 0 1 0"
             SnapsToDevicePixels="True"
             UseLayoutRounding="True">
             <ContentControl regions:RegionManager.RegionName="{x:Static modules:RegionNames.Sidebar}" />
         </Border>
-        <Border Background="White" ClipToBounds="True">
+        <Border Background="{StaticResource MsixHero.Brushes.Background}" ClipToBounds="True">
             <transitionContentControl:TransitioningContentControl 
                 Transition="Drop"
                 Direction="Left"

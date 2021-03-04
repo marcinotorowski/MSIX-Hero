@@ -162,7 +162,7 @@
                         AllowsTransparency="True" IsOpen="{Binding ElementName=ButtonFiltering, Path=IsChecked}">
 
                         <Border Padding="0 0 18 18">
-                            <Border MinWidth="180" Background="White" BorderBrush="#ccc" BorderThickness="1">
+                            <Border MinWidth="180" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                                 </Border.Effect>
@@ -241,7 +241,7 @@
                         AllowsTransparency="True" IsOpen="{Binding ElementName=ButtonInstall, Path=IsChecked}">
 
                         <Border Padding="0 0 18 18">
-                            <Border Background="White" BorderBrush="#ccc" BorderThickness="1">
+                            <Border Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                                 </Border.Effect>
@@ -349,8 +349,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
                         <DockPanel>
-                            <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
-                            <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Border Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Grid>
                                     <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                         <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />

@@ -10,13 +10,11 @@
     xmlns:start="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Start"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
-    xmlns:commands1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Commands"
-    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     xmlns:more="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.More"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
     mc:Ignorable="d" >
-    <Border DockPanel.Dock="Top" Background="White" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
+    <Border DockPanel.Dock="Top" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#E0E0E0" BorderThickness="0 0 0 0">
         <DockPanel>
             <WrapPanel DockPanel.Dock="Right">
                 <ToggleButton 
@@ -39,7 +37,7 @@
                     <Border 
                         helpers:ButtonClosePopup.PopupOwner="{x:Reference PopupMore}"
                         Padding="0 0 18 18">
-                        <Border Background="White" BorderBrush="#ccc" BorderThickness="1">
+                        <Border Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                             </Border.Effect>
@@ -70,7 +68,7 @@
                     <Border 
                         helpers:ButtonClosePopup.PopupOwner="{x:Reference PopupStart}"
                         Padding="0 0 18 18">
-                        <Border Background="White" BorderBrush="#ccc" BorderThickness="1">
+                        <Border Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                             </Border.Effect>
@@ -98,7 +96,7 @@
                     <Border 
                         helpers:ButtonClosePopup.PopupOwner="{x:Reference PopupOpen}"
                         Padding="0 0 18 18">
-                        <Border Background="White" BorderBrush="#ccc" BorderThickness="1">
+                        <Border Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                             </Border.Effect>

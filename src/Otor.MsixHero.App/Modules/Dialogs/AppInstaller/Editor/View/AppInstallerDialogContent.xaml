@@ -105,7 +105,7 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <Border Height="1" Background="#999" Margin="0 16 0 0" />
+                        <Border Height="1" Background="{StaticResource MsixHero.Brushes.Light3}" Margin="0 16 0 0" />
 
                         <DockPanel Margin="0 6 0 0">
                             <Path 

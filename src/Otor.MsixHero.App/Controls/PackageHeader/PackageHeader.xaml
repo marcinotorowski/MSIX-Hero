@@ -23,8 +23,8 @@
                 </Border.Effect>
             </Border>
         </Border>
-        <Border Margin="6 16 0 0" Background="White" Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Border Background="#2B579A" Width="48" Height="48" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <Border Margin="6 16 0 0" Background="{StaticResource MsixHero.Brushes.Background}" Width="60" Height="60" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Border Background="{StaticResource MsixHero.Brushes.Accent}" Width="48" Height="48" Margin="6 6 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
                 <Border Background="{Binding ElementName=PackageHeaderRoot, Path=TileColor}">
                     <Viewbox Height="48" Width="48" VerticalAlignment="Center" HorizontalAlignment="Center" StretchDirection="DownOnly">
                         <Image Source="{Binding ElementName=PackageHeaderRoot, Path=Logo}" Stretch="None"  />
@@ -35,9 +35,10 @@
 
         <Border Height="30" Margin="80 16 0 0" VerticalAlignment="Top" HorizontalAlignment="Left">
             <DockPanel Height="30">
-                <Border DockPanel.Dock="Right" Background="#44ffffff" Height="30" Margin="10 0">
+                <Grid DockPanel.Dock="Right" Height="30" Margin="10 0">
+                    <Border Background="{StaticResource MsixHero.Brushes.Background}" Opacity="0.2" Height="30" />
                     <Label Content="{Binding ElementName=PackageHeaderRoot, Path=Version}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="{Binding ElementName=PackageHeaderRoot, Path=HeaderForeground}" Margin="10 0" Padding="0" />
-                </Border>
+                </Grid>
 
                 <Label Content="{Binding ElementName=PackageHeaderRoot, Path=PackageName}" VerticalAlignment="Center" VerticalContentAlignment="Center" Foreground="{Binding ElementName=PackageHeaderRoot, Path=HeaderForeground}" FontSize="20" Margin="0" Padding="0">
                     <Label.Style>

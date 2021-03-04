@@ -1,6 +1,6 @@
 ﻿<UserControl x:Class="Otor.MsixHero.App.Controls.PsfContent.View.PsfContentView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             Background="White"
+             Background="{StaticResource MsixHero.Brushes.Background}"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

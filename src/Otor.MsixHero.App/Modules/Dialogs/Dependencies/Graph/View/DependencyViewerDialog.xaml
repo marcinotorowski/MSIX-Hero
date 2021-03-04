@@ -71,18 +71,6 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--<Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="0" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
-                                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="1" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            </Border>
-
-                            <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="1" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
-                                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="2" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            </Border>
-
-                            <Border Background="#ccc" CornerRadius="96" Width="64" Height="64" Grid.Row="2" Grid.Column="0" Margin="0 16 24 16" VerticalAlignment="Center">
-                                <Label VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0" Padding="-20" FontSize="42" TextBlock.LineHeight="42" TextBlock.LineStackingStrategy="BlockLineHeight" Style="{StaticResource Label}" Content="3" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            </Border>-->
-
             <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 0 0 16">
                 <Label Style="{StaticResource FormLabel}" Content="Package to analyze" />
                 <TextBlock Text="Select an MSIX package or a manifest file to be analyzed..." />
@@ -106,7 +94,7 @@
         <Border
             Margin="-8 0 -8 -16"
             Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
-            Background="#fff" 
+            Background="{StaticResource MsixHero.Brushes.Background}" 
             DockPanel.Dock="Bottom">
             <StackPanel SnapsToDevicePixels="True" UseLayoutRounding="True" Orientation="Horizontal" Margin="4">
                 <TextBlock Text="Legend" VerticalAlignment="Center" Margin="0 0 8 0" />
@@ -173,8 +161,7 @@
                                                 </Border.ToolTip>
 
                                                 <DockPanel>
-                                                    <!--<Border Margin="-2" DockPanel.Dock="Left" Background="White" Width="40" Height="40" Padding="2" BorderThickness="2" BorderBrush="#D2D2D2" VerticalAlignment="Center" HorizontalAlignment="Center">-->
-                                                    <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Border Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                         <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                             <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                         </Border>
@@ -201,7 +188,7 @@
                                                     </StackPanel>
                                                 </Border.ToolTip>
                                                 <DockPanel>
-                                                    <Border Background="#2B579A" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Border Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                         <Border Background="{Binding TileColor, Mode=OneTime}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
                                                             <Image Source="{Binding Logo, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                                         </Border>

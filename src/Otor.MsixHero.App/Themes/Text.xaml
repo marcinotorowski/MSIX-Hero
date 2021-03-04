@@ -48,7 +48,7 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0 " />
         <Setter Property="VerticalContentAlignment" Value="Center " />
-        <Setter Property="Foreground" Value="#333" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Light1}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Label">

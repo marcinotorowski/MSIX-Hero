@@ -3,6 +3,9 @@
                     xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
                     xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
     <ControlTemplate TargetType="{x:Type Window}" x:Key="AcrylicWindowTemplate">
         <Border x:Name="windowBorder"
@@ -17,7 +20,7 @@
                 </Grid.RowDefinitions>
                 <ContentPresenter x:Name="windowContent" Grid.Row="0" Grid.RowSpan="2"/>
                 <ResizeGrip x:Name="resizeGrip" Grid.Row="1" HorizontalAlignment="Right" IsTabStop="False" VerticalAlignment="Bottom" Visibility="Collapsed"/>
-                <Grid Grid.Row="0" x:Name="captionGrid" Height="55" TextBlock.Foreground="Black">
+                <Grid Grid.Row="0" x:Name="captionGrid" Height="55" TextBlock.Foreground="{TemplateBinding Foreground}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition />
@@ -107,16 +110,16 @@
     </ControlTemplate>
 
     <Style x:Key="Acrylic" TargetType="{x:Type fw:AcrylicWindow}">
-        <Setter Property="TintColor" Value="#0173C7" />
+        <Setter Property="TintColor" Value="{StaticResource MsixHero.Colors.Accent}" />
         <Setter Property="TintOpacity" Value="0.2"/>
         <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="TextBlock.Foreground" Value="Black"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}"/>
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="{Binding Path=(fw:AccentColors.ImmersiveSystemAccentBrush)}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent}" />
         <Setter Property="Template" Value="{StaticResource AcrylicWindowTemplate}"/>
-        <Setter Property="Background" Value="#CBE1F2"/>
-        <Setter Property="FallbackColor" Value="#CBE1F2" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}"/>
+        <Setter Property="FallbackColor" Value="{StaticResource MsixHero.Colors.Accent.Light1}" />
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome 
@@ -151,8 +154,6 @@
 
         <Style.Triggers>
             <DataTrigger Value="2" Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}">
-                <!--<Setter Property="TintColor" Value="{DynamicResource SystemControlAcrylicWindowTintColor}"/>
-                <Setter Property="FallbackColor" Value="{DynamicResource SystemControlAcrylicWindowFallbackColor}"/>-->
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
@@ -203,8 +204,8 @@
                 </Setter>
             </DataTrigger>
             <Trigger Property="IsActive" Value="False">
-                <Setter Property="FallbackColor" Value="#E0E0E0" />
-                <Setter Property="Background" Value="#E0E0E0" />
+                <Setter Property="FallbackColor" Value="{StaticResource MsixHero.Colors.Light6}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light6}" />
             </Trigger>
             <Trigger Property="WindowState" Value="Maximized">
                 <Setter Property="BorderThickness" Value="8" />

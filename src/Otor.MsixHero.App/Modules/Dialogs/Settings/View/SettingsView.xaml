@@ -97,7 +97,10 @@
             </DockPanel>
         </Border>
 
-        <Border Background="#F7F7F7" DockPanel.Dock="Bottom">
+        <Border
+            TextBlock.Foreground="{StaticResource MsixHero.Dialog.Bar.Foreground}"
+            Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
+            DockPanel.Dock="Bottom">
             <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
                 <Button Padding="8 4" Margin="4" Command="Save" Content="OK">
                     <Button.CommandParameter>
@@ -109,7 +112,8 @@
             </StackPanel>
         </Border>
 
-        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"  Background="#FFE39E" Padding="8" DockPanel.Dock="Bottom">
+        <Border Visibility="{Binding AllSettings.IsValid, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
+            Background="{StaticResource MsixHero.Brushes.Validation}" Padding="8" DockPanel.Dock="Bottom">
             <DockPanel>
                 <Border
                     DockPanel.Dock="Left"
@@ -124,7 +128,7 @@
             
         </Border>
 
-        <Border Background="White">
+        <Border Background="{StaticResource MsixHero.Brushes.Background}">
             <TabControl SelectedIndex="0" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
                 <TabItem Header="Interface">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">

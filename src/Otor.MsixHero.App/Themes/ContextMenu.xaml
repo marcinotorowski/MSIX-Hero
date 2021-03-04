@@ -15,11 +15,12 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ContextMenu">
                     <Border Padding="0 0 6 6" Background="Transparent">
-                        <Border x:Name="Border"
-                                Background="White"
-                                BorderThickness="1"
-                                Margin="0"
-                                BorderBrush="#AAAAAA">
+                        <Border 
+                            x:Name="Border"
+                            Background="{StaticResource MsixHero.Brushes.Background}"
+                            BorderThickness="1"
+                            Margin="0"
+                            BorderBrush="#AAAAAA">
                             <Border.Effect>
                                 <DropShadowEffect 
                                     BlurRadius="4"
@@ -116,7 +117,7 @@
                                     <Border 
                                         Name="SubmenuBorder"
                                         SnapsToDevicePixels="True"
-                                        Background="White"
+                                        Background="{StaticResource MsixHero.Brushes.Background}"
                                         BorderBrush="#AAAAAA"
                                         CornerRadius="0"
                                         BorderThickness="1" >

@@ -48,7 +48,7 @@
             <ColumnDefinition Width="3*" MinWidth="150" />
         </Grid.ColumnDefinitions>
         <Border Margin="0 0 0 0">
-            <Border Background="White" BorderBrush="#D2D2D2" BorderThickness="0 0 1 0">
+            <Border Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#D2D2D2" BorderThickness="0 0 1 0">
                 <ContentControl x:Name="Region" SizeChanged="RegionOnSizeChanged" regions:RegionManager.RegionName="{x:Static constants:PackageManagementRegionNames.Master}" />
             </Border>
         </Border>

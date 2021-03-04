@@ -34,7 +34,7 @@
                             AllowsTransparency="True" IsOpen="{Binding ElementName=ButtonFiltering, Path=IsChecked}">
 
                             <Border Padding="0 0 18 18">
-                                <Border MinWidth="180" Background="White" BorderBrush="#ccc" BorderThickness="1">
+                                <Border MinWidth="180" Background="{StaticResource MsixHero.Brushes.Background}" BorderBrush="#ccc" BorderThickness="1">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="18" Color="#33777777" ShadowDepth="1" Direction="90" />
                                     </Border.Effect>

@@ -14,32 +14,9 @@
         <CommandBinding Command="Find" Executed="CommandBinding_OnExecuted" />
     </UserControl.CommandBindings>
 
-    <Grid Margin="6 0 0 6"
-          Height="30"
-          VerticalAlignment="Bottom">
+    <Grid Margin="6 0 0 6" Height="{StaticResource MsixHero.Button.Height}" VerticalAlignment="Bottom">
 
-        <TextBox
-            WindowChrome.IsHitTestVisibleInChrome="True"
-            BorderThickness="0"
-            BorderBrush="#11000000"
-            Padding="26 0 100 0"
-            Background="#ccffffff"
-            Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}"
-            VerticalContentAlignment="Center" HorizontalAlignment="Stretch"
-            x:Name="SearchBox" >
-            <TextBox.Style>
-                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#efefef" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="Background" Value="#fafafa" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBox.Style>
-        </TextBox>
+        <TextBox Style="{StaticResource SearchBox}" Text="{Binding SearchKey, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}" x:Name="SearchBox"  />
 
         <DockPanel IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
             <Path Fill="Black" Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z" Width="32" Height="32">
@@ -47,7 +24,7 @@
                     <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
                 </Path.LayoutTransform>
             </Path>
-            <TextBlock TextTrimming="CharacterEllipsis" Text="Search in tools..." Foreground="#777" VerticalAlignment="Center" Margin="5 0 0 0">
+            <TextBlock TextTrimming="CharacterEllipsis" Text="Search in tools..." Foreground="{StaticResource MsixHero.Brushes.Light2}" VerticalAlignment="Center" Margin="5 0 0 0">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="Visibility" Value="Collapsed" />
@@ -72,15 +49,26 @@
         </DockPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button ToolTip="Clear" Padding="0" Width="26" MinWidth="26" Click="ClearSearchField" 
-                    FontFamily="Webdings" Height="26" MinHeight="26" 
-                    Margin="2" 
-                    BorderThickness="0" 
-                    Background="Transparent"
-                    Content="&#x72;">
+            <Button 
+                Cursor="Hand"
+                ToolTip="Clear" 
+                Padding="0" 
+                Width="26" 
+                MinWidth="26" 
+                Click="ClearSearchField" 
+                FontFamily="Webdings" 
+                Height="26" 
+                MinHeight="26" 
+                Margin="2" 
+                BorderThickness="0" 
+                Content="&#x72;">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Background" Value="Transparent" />
                         <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light6}" />
+                            </Trigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
