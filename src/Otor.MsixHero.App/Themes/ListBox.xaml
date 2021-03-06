@@ -47,12 +47,12 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Colors.Accent.Light1}" />
-                <Setter Property="Background" Value="{StaticResource MsixHero.Colors.Accent.Light2}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light2}" />
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Colors.Accent.Light2}" />
-                <Setter Property="Background" Value="{StaticResource MsixHero.Colors.Accent.Light2}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent.Light2}" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light2}" />
             </Trigger>
         </Style.Triggers>
     </Style>
