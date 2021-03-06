@@ -10,13 +10,13 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel"
              mc:Ignorable="d" 
-             d:DesignWidth="800"
+             d:DesignWidth="960"
              d:DesignHeight="800"
              d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
-            <Setter Property="Width" Value="550" />
+            <Setter Property="Width" Value="960" />
             <Setter Property="Height" Value="630" />
             <Setter Property="MinWidth" Value="500" />
             <Setter Property="MinHeight" Value="350" />
@@ -52,9 +52,9 @@
                     <TextBlock TextAlignment="Center">
                     <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the .appinstaller file</Hyperlink>
                     </TextBlock>
-                    <!--<TextBlock TextAlignment="Center">
-                    <Hyperlink Command="{Binding ResetCommand}">Create for another package</Hyperlink>
-                    </TextBlock>-->
+                    <TextBlock TextAlignment="Center">
+                        <Hyperlink Command="{Binding ResetCommand}">Continue editing</Hyperlink>
+                    </TextBlock>
                 </StackPanel>
             </DataTemplate>
         </dialog:ChangeableDialog.SuccessContentTemplate>

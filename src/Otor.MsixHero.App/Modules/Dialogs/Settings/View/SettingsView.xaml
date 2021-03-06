@@ -315,16 +315,24 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <Border Width="2" SnapsToDevicePixels="True" UseLayoutRounding="True" Background="#CCCCCC" HorizontalAlignment="Left"
-                            VerticalAlignment="Stretch" Grid.RowSpan="2" Grid.Row="0" Grid.Column="1" />
-
                         <Border
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        BorderBrush="#CCCCCC" BorderThickness="0" SnapsToDevicePixels="True" UseLayoutRounding="True">
-                            <WrapPanel Orientation="Horizontal" Margin="-3">
-                                <Button Command="New" Content="New" Margin="3" />
-                                <Button Command="Delete" Content="Remove" Margin="3" />
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Background="{StaticResource MsixHero.Brushes.Light7}"
+                            SnapsToDevicePixels="True" UseLayoutRounding="True">
+                            <WrapPanel Orientation="Horizontal">
+                                <Button Command="New" Style="{StaticResource ActionButton}">
+                                    <controls1:LabelWithIcon 
+                                        Icon16x16="{StaticResource SmallPlus}"
+                                        Content="New"
+                                        Style="{StaticResource ActionLabelWithIcon}" />
+                                </Button>
+                                <Button Command="Delete" Style="{StaticResource ActionButton}">
+                                    <controls1:LabelWithIcon 
+                                        Icon16x16="{StaticResource SmallRemove}"
+                                        Content="Remove"
+                                        Style="{StaticResource ActionLabelWithIcon}" />
+                                </Button>
                             </WrapPanel>
                         </Border>
 
@@ -334,15 +342,16 @@
                                 <TextBlock Text="Tip: reorder commands by drag-and-drop." Margin="4" TextWrapping="Wrap" />
                             </DockPanel>
                             <ListBox
-                            BorderThickness="0"
-                            DockPanel.Dock="Top" SelectedItem="{Binding Selected}" 
-                            ItemsSource="{Binding Items}" BorderBrush="#ccc" 
-                            SnapsToDevicePixels="True" UseLayoutRounding="True"
-                             dd:DragDrop.IsDragSource="True"
-                             dd:DragDrop.IsDropTarget="True"
-                             dd:DragDrop.DropHandler="{Binding}">
+                                BorderThickness="0"
+                                DockPanel.Dock="Top" SelectedItem="{Binding Selected}" 
+                                ItemsSource="{Binding Items}" BorderBrush="#ccc" 
+                                SnapsToDevicePixels="True" UseLayoutRounding="True"
+                                dd:DragDrop.IsDragSource="True"
+                                dd:DragDrop.IsDropTarget="True"
+                                dd:DragDrop.DropHandler="{Binding}">
                                 <ListBox.Resources>
                                     <system:Boolean x:Key="False">False</system:Boolean>
+                                    <system:Boolean x:Key="True">True</system:Boolean>
                                 </ListBox.Resources>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="{x:Type tools:ToolViewModel}">
@@ -391,12 +400,24 @@
                                                 <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
                                                 <Setter TargetName="PART_ImageFallback" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
+
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsValid}" Value="{StaticResource False}" />
+                                                    <Condition Binding="{Binding IsValidated}" Value="{StaticResource True}" />
+                                                    <Condition Binding="{Binding DisplayValidationErrors}" Value="{StaticResource True}" />
+                                                </MultiDataTrigger.Conditions>
+                                                <MultiDataTrigger.Setters>
+                                                    <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
+                                                </MultiDataTrigger.Setters>
+                                            </MultiDataTrigger>
+
+                                            <!--<DataTrigger Binding="{Binding Name.IsValid}" Value="{StaticResource False}">
                                                 <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Path.IsValid}" Value="{StaticResource False}">
                                                 <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
+                                            </DataTrigger>-->
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -417,6 +438,18 @@
                                 </ListBox.ContextMenu>
                             </ListBox>
                         </DockPanel>
+
+                        <Border
+                            SnapsToDevicePixels="True" 
+                            UseLayoutRounding="True"
+                            Background="{StaticResource MsixHero.Brushes.Light4}" 
+                            Width="1" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Stretch"
+                            Grid.Column="1" 
+                            Grid.Row="0" 
+                            Grid.RowSpan="2" />
+
                         <GridSplitter Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Width="10" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                   ResizeBehavior="PreviousAndNext" ResizeDirection="Columns" />
                         <ScrollViewer Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" VerticalScrollBarVisibility="Auto" 

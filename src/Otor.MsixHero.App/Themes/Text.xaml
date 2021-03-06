@@ -19,6 +19,7 @@
         <Setter Property="Foreground" Value="{StaticResource MsixHero.Text.Foreground.Light2.Brush}" />
         <Setter Property="Margin" Value="0 0 0 6" />
         <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="TextAlignment" Value="Left" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 

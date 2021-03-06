@@ -6,6 +6,49 @@
         <ResourceDictionary Source="Converters.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="GridSplitter">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Light5}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Border Background="{TemplateBinding Background}">
+                        <Canvas x:Name="Circles" Width="17" Height="3">
+                            <Ellipse Width="3" Height="3" Fill="{TemplateBinding Foreground}" Canvas.Left="0" />
+                            <Ellipse Width="3" Height="3" Fill="{TemplateBinding Foreground}" Canvas.Left="7" />
+                            <Ellipse Width="3" Height="3" Fill="{TemplateBinding Foreground}" Canvas.Left="14" />
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ResizeDirection" Value="Columns">
+                            <Setter Property="LayoutTransform" TargetName="Circles">
+                                <Setter.Value>
+                                    <RotateTransform Angle="90" CenterX="8.5" CenterY="1.5" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="ResizeDirection" Value="Columns">
+                <Setter Property="Width" Value="20" />
+                <Setter Property="Cursor" Value="SizeWE" />
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Trigger>
+            <Trigger Property="ResizeDirection" Value="Rows">
+                <Setter Property="Height" Value="20" />
+                <Setter Property="Cursor" Value="SizeNS" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Light3}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style TargetType="{x:Type GroupItem}" x:Key="GroupStyle">
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Template">

@@ -15,13 +15,16 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Controls.PackageSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.AppInstaller;
@@ -81,14 +84,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 this.ShowPrompt,
                 this.Hours);
 
-            this.TabProperties = new ChangeableContainer(
-                this.Version, 
-                this.MainPackageUri, 
-                this.AppInstallerUri);
-            
             this.AddChildren(
                 this.TabPackage,
-                this.TabProperties,
+                this.TabProperties = new ChangeableContainer(this.Version, this.MainPackageUri, this.AppInstallerUri),
+                this.TabOptionalPackages = new AppInstallerPackagesViewModel(this.interactionService),
+                this.TabRelatedPackages = new AppInstallerPackagesViewModel(this.interactionService),
                 this.TabOptions);
 
             this.TabPackage.InputPath.ValueChanged += this.InputPathOnValueChanged;
@@ -99,6 +99,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         }
 
         public ChangeableContainer TabProperties { get; }
+        
+        public AppInstallerPackagesViewModel TabOptionalPackages { get; }
+        
+        public AppInstallerPackagesViewModel TabRelatedPackages { get; }
 
         public ChangeableContainer TabOptions { get; }
         public bool ShowLaunchOptions =>
@@ -206,16 +210,38 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             };
 
             var appInstaller = builder.Build();
+
+            if (this.TabOptionalPackages.Items.Any() && appInstaller.Optional == null)
+            {
+                appInstaller.Optional = new List<AppInstallerBaseEntry>();
+            }
+
+            if (this.TabRelatedPackages.Items.Any() && appInstaller.Related == null)
+            {
+                appInstaller.Related = new List<AppInstallerBaseEntry>();
+            }
+            
+            foreach (var optional in this.TabOptionalPackages.Items)
+            {
+                var model = optional.ToModel();
+                appInstaller.Optional.Add(model);
+            }
+            
+            foreach (var related in this.TabRelatedPackages.Items)
+            {
+                var model = related.ToModel();
+                appInstaller.Related.Add(model);
+            }
+            
             return appInstaller;
         }
 
         private void ResetExecuted()
         {
-            this.TabPackage.Reset();
             this.State.IsSaved = false;
         }
 
-        private void OpenExecuted(string selected)
+        private async void OpenExecuted(string selected)
         {
             if (selected != null)
             {
@@ -249,50 +275,42 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             
             this.previousPath = selected;
 
-            AppInstallerConfig.FromFile(selected).ContinueWith(t =>
+            AppInstallerConfig file;
+            
+            try
             {
-                if (t.IsFaulted)
-                {
-                    // ReSharper disable once PossibleNullReferenceException
-                    this.interactionService.ShowError("The selected file is not a valid .appinstaller.", t.Exception.GetBaseException(), InteractionResult.OK);
-                    return;
-                }
+                file = await AppInstallerConfig.FromFile(selected).ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                this.interactionService.ShowError("The selected file is not a valid .appinstaller.", e, InteractionResult.OK);
+                return;
+            }
+            
+            var builder = new AppInstallerBuilder(file);
 
-                if (t.IsCanceled)
-                {
-                    return;
-                }
+            this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
+            this.AppInstallerUpdateCheckingMethod.CurrentValue = builder.CheckForUpdates;
+            this.AppInstallerUri.CurrentValue = builder.RedirectUri.ToString();
+            this.BlockLaunching.CurrentValue = builder.UpdateBlocksActivation;
+            this.Hours.CurrentValue = builder.HoursBetweenUpdateChecks.ToString();
+            this.MainPackageUri.CurrentValue = builder.MainPackageUri.ToString();
+            this.Version.CurrentValue = builder.Version;
+            this.ShowPrompt.CurrentValue = builder.ShowPrompt;
 
-                if (!t.IsCompleted)
-                {
-                    return;
-                }
+            this.TabPackage.Name.CurrentValue = builder.MainPackageName;
+            this.TabPackage.Version.CurrentValue = builder.MainPackageVersion;
+            this.TabPackage.Publisher.CurrentValue = builder.MainPackagePublisher;
+            this.TabPackage.PackageType.CurrentValue = builder.MainPackageType;
+            this.TabPackage.Architecture.CurrentValue = builder.MainPackageArchitecture;
+            this.TabOptionalPackages.SetPackages(file.Optional);
+            this.TabRelatedPackages.SetPackages(file.Related);
 
-                var builder = new AppInstallerBuilder(t.Result);
+            this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
 
-                this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
-                this.AppInstallerUpdateCheckingMethod.CurrentValue = builder.CheckForUpdates;
-                this.AppInstallerUri.CurrentValue = builder.RedirectUri.ToString();
-                this.BlockLaunching.CurrentValue = builder.UpdateBlocksActivation;
-                this.Hours.CurrentValue = builder.HoursBetweenUpdateChecks.ToString();
-                this.MainPackageUri.CurrentValue = builder.MainPackageUri.ToString();
-                this.Version.CurrentValue = builder.Version;
-                this.ShowPrompt.CurrentValue = builder.ShowPrompt;
-
-                this.TabPackage.Name.CurrentValue = builder.MainPackageName;
-                this.TabPackage.Version.CurrentValue = builder.MainPackageVersion;
-                this.TabPackage.Publisher.CurrentValue = builder.MainPackagePublisher;
-                this.TabPackage.PackageType.CurrentValue = builder.MainPackageType;
-                this.TabPackage.Architecture.CurrentValue = builder.MainPackageArchitecture;
-
-                this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
-
-                this.OnPropertyChanged(nameof(ShowLaunchOptions));
-                this.OnPropertyChanged(nameof(CompatibleWindows));
-            }, 
-            CancellationToken.None, 
-            TaskContinuationOptions.AttachedToParent | TaskContinuationOptions.ExecuteSynchronously, 
-            TaskScheduler.FromCurrentSynchronizationContext());
+            this.OnPropertyChanged(nameof(ShowLaunchOptions));
+            this.OnPropertyChanged(nameof(CompatibleWindows));
         }
 
         private void OpenSuccessLinkExecuted()

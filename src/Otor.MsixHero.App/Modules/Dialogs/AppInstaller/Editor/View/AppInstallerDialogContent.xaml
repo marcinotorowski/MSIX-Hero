@@ -9,6 +9,10 @@
              xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.PackageSelector.View"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel"
+             xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View"
+             xmlns:tabs="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
     <TabControl>
@@ -58,6 +62,22 @@
                     </StackPanel>
                 </AdornerDecorator>
             </ScrollViewer>
+        </TabItem>
+        <TabItem Header="Optional packages">
+            <b:Interaction.Behaviors>
+                <validation:ValidationBehavior ValidatedChangeable="{Binding TabOptionalPackages}" />
+            </b:Interaction.Behaviors>
+            <AdornerDecorator>
+                <view1:OtherPackages DataContext="{Binding TabOptionalPackages}" />
+            </AdornerDecorator>
+        </TabItem>
+        <TabItem Header="Related packages">
+            <b:Interaction.Behaviors>
+                <validation:ValidationBehavior ValidatedChangeable="{Binding TabRelatedPackages}" />
+            </b:Interaction.Behaviors>
+            <AdornerDecorator>
+                <view1:OtherPackages DataContext="{Binding TabRelatedPackages}" />
+            </AdornerDecorator>
         </TabItem>
         <TabItem Header="Options">
             <b:Interaction.Behaviors>

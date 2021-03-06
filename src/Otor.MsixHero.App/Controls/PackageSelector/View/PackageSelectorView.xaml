@@ -98,21 +98,29 @@
 
                 <TextBox IsReadOnly="{Binding AllowChangingSourcePackage, Converter={StaticResource NegativeConverter}}" Grid.Row="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" Grid.Column="0" />
 
-                <TextBlock
+                <Border
                     Grid.Column="2" Grid.Row="0"
-                    Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Style="{StaticResource LabelTextBlock}"
-                    Text="Architecture" Margin="0 16 0 6" />
-                <ComboBox
-                    IsEnabled="{Binding AllowChangingSourcePackage}" 
-                    Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Grid.Row="1" Grid.Column="2" SelectedValue="{Binding Architecture.CurrentValue}" SelectedValuePath="Tag">
-                    <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm64}">ARM 64-bit</ComboBoxItem>
-                    <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm}">ARM</ComboBoxItem>
-                    <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Neutral}">Neutral</ComboBoxItem>
-                    <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.x64}">64-bit</ComboBoxItem>
-                    <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.x86}">32-bit</ComboBoxItem>
-                </ComboBox>
+                    Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                    <TextBlock
+                        Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource LabelTextBlock}"
+                        Text="Architecture" Margin="0 16 0 6" />
+                </Border>
+
+                <Border
+                    Grid.Row="1" Grid.Column="2" 
+                    Visibility="{Binding IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
+                    <ComboBox
+                        IsEnabled="{Binding AllowChangingSourcePackage}" 
+                        Visibility="{Binding RequireArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        SelectedValue="{Binding Architecture.CurrentValue}" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm64}">ARM 64-bit</ComboBoxItem>
+                        <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Arm}">ARM</ComboBoxItem>
+                        <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.Neutral}">Neutral</ComboBoxItem>
+                        <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.x64}">64-bit</ComboBoxItem>
+                        <ComboBoxItem Tag="{x:Static full1:AppxPackageArchitecture.x86}">32-bit</ComboBoxItem>
+                    </ComboBox>
+                </Border>
             </Grid>
         </StackPanel>
     </AdornerDecorator>

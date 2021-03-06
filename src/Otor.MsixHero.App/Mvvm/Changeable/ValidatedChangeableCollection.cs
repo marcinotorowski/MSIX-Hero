@@ -27,6 +27,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         private bool isValidated = true;
         private IReadOnlyCollection<Func<IEnumerable<T>, string>> validators;
         private bool displayValidationErrors = true;
+        private bool suppressValidation;
 
         public ValidatedChangeableCollection(Func<IEnumerable<T>, string> validator = null)
         {
@@ -41,6 +42,26 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             if (validator != null)
             {
                 this.validators = new List<Func<IEnumerable<T>, string>> { validator };
+            }
+        }
+
+        public void AddRange(IEnumerable<T> items)
+        {
+            var suppress = this.suppressValidation;
+            
+            try
+            {
+                this.suppressValidation = true;
+                
+                foreach (var item in items)
+                {
+                    this.Add(item);
+                }
+            }
+            finally
+            {
+                this.suppressValidation = suppress;
+                this.Validate();
             }
         }
 
@@ -182,6 +203,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         
         private void Validate(string errorMessage = null)
         {
+            if (this.suppressValidation)
+            {
+                return;
+            }
+            
             var oldValidationMessage = this.ValidationMessage;
 
             if (!string.IsNullOrEmpty(errorMessage))
@@ -207,6 +233,18 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     }
 
                     this.ValidationMessage = msg;
+                }
+                
+                if (string.IsNullOrEmpty(this.ValidationMessage))
+                {
+                    foreach (var item in this.Items.OfType<IValidatedChangeable>())
+                    {
+                        this.ValidationMessage = item.ValidationMessage;
+                        if (!string.IsNullOrEmpty(this.ValidationMessage))
+                        {
+                            break;
+                        }
+                    }
                 }
             }
 

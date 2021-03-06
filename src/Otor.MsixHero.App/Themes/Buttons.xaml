@@ -202,22 +202,22 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Hovered.Background.Brush}" />
-                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
-                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Hovered.Border.Brush}" />
-                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
-            </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.5" />
             </Trigger>
-            <Trigger Property="IsFocused" Value="True">
+            <Trigger Property="IsKeyboardFocused" Value="True">
                 <Setter Property="BorderThickness" Value="2" />
                 <Setter Property="Padding" Value="8 0" />
                 <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Focused.Background.Brush}" />
                 <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Focused.Foreground.Brush}" />
                 <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Focused.Border.Brush}" />
                 <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Focused.Foreground.Brush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource MsixHero.ActionButton.Hovered.Background.Brush}" />
+                <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.ActionButton.Hovered.Border.Brush}" />
+                <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.ActionButton.Hovered.Foreground.Brush}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource MsixHero.ActionButton.Pressed.Foreground.Brush}" />
