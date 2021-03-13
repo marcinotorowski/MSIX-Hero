@@ -14,6 +14,7 @@
     <Color x:Key="MsixHero.Colors.Light5">#DDDDDD</Color>
     <Color x:Key="MsixHero.Colors.Light6">#EEEEEE</Color>
     <Color x:Key="MsixHero.Colors.Light7">#F0F0F0</Color>
+    <Color x:Key="MsixHero.Colors.Light8">#F5F5F5</Color>
     <Color x:Key="MsixHero.Colors.Validation">#FFEEC6</Color>
 
     <SolidColorBrush x:Key="MsixHero.Brushes.Accent" Color="{StaticResource MsixHero.Colors.Accent}" />
@@ -47,14 +48,19 @@
     <system:Double x:Key="MsixHero.Button.Height">30</system:Double>
 
     <!-- Dialogs -->
-    <SolidColorBrush x:Key="MsixHero.Dialog.Bar.Background" Color="{StaticResource MsixHero.Colors.Light7}" />
+    <LinearGradientBrush x:Key="MsixHero.Dialog.Bar.Background" StartPoint="0 0" EndPoint="0 1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="{StaticResource MsixHero.Colors.Background}" Offset="0.0" />
+            <GradientStop Color="{StaticResource MsixHero.Colors.Light8}" Offset="1.0" />
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
     <SolidColorBrush x:Key="MsixHero.Dialog.Bar.Foreground" Color="{StaticResource MsixHero.Colors.Foreground}" />
     <SolidColorBrush x:Key="MsixHero.Dialog.Console.Background" Color="#333" />
     <SolidColorBrush x:Key="MsixHero.Dialog.Console.Foreground" Color="#FFF" />
     
     <!-- Text box -->
     <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
-    <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light4}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
     <SolidColorBrush x:Key="MsixHero.TextBox.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
 
     <SolidColorBrush x:Key="MsixHero.TextBox.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Background}" />
@@ -71,7 +77,7 @@
 
     <!-- Read only text box -->
     <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Background.Brush" Color="{StaticResource MsixHero.Colors.Light6}" />
-    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light4}" />
+    <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Border.Brush" Color="{StaticResource MsixHero.Colors.Light5}" />
     <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Normal.Foreground.Brush" Color="{StaticResource MsixHero.Colors.Light1}" />
 
     <SolidColorBrush x:Key="MsixHero.TextBox.Readonly.Hovered.Background.Brush" Color="{StaticResource MsixHero.Colors.Light6}" />

@@ -23,6 +23,7 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
 {
     [TemplatePart(Name = "PART_CopyCommandLine")]
+    [TemplatePart(Name = "PART_CopyCommandLineFinishScreen")]
     public class ChangeableDialog : Control
     {
         static ChangeableDialog()
@@ -65,11 +66,18 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            // ReSharper disable once UsePatternMatching
-            var button = this.GetTemplateChild("PART_CopyCommandLine") as ButtonBase;
-            if (button != null)
+
+            if (this.GetTemplateChild("PART_CopyCommandLine") is ButtonBase button1)
             {
-                button.Click += (o, e) =>
+                button1.Click += (_, _) =>
+                {
+                    Clipboard.SetText(this.SilentCommandLine);
+                };
+            }
+
+            if (this.GetTemplateChild("PART_CopyCommandLineFinishScreen") is ButtonBase button2)
+            {
+                button2.Click += (_, _) =>
                 {
                     Clipboard.SetText(this.SilentCommandLine);
                 };

@@ -50,6 +50,29 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Button" x:Key="CopyCommandLineButton">
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource MsixHero.Dialog.Console.Foreground}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <Path Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" Fill="{TemplateBinding Foreground}" Width="16" Height="16" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="0.8" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="dialog:ChangeableDialog">
         <Setter Property="ShowShield" Value="False" />
         <Setter Property="Background" Value="#ffffff" />
@@ -182,6 +205,8 @@
                                     </Border>
 
                                     <Border
+                                        CornerRadius="6"
+                                        Margin="8 0"
                                         Background="{StaticResource MsixHero.Dialog.Console.Background}" 
                                         TextBlock.Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
                                         MaxHeight="60"
@@ -195,6 +220,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBox 
+                                                Margin="6 0 0 0"
                                                 Grid.Column="0"
                                                 x:Name="CmdLine"
                                                 BorderThickness="0" 
@@ -202,7 +228,7 @@
                                                 VerticalScrollBarVisibility="Auto"
                                                 Background="{StaticResource MsixHero.Dialog.Console.Background}" 
                                                 BorderBrush="Transparent" 
-                                                Padding="5" 
+                                                Padding="0 5 5 5" 
                                                 TextWrapping="Wrap"
                                                 Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
                                                 Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
@@ -212,29 +238,7 @@
                                                 Grid.Column="1"
                                                 Margin="4 0 0 0" 
                                                 ToolTip="Copy to clipboard"
-                                                VerticalAlignment="Center"
-                                                Width="32" Height="32">
-                                                <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Cursor" Value="Hand" />
-                                                        <Setter Property="Background" Value="Transparent" />
-                                                        <Setter Property="Foreground" Value="{StaticResource MsixHero.Dialog.Console.Foreground}" />
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="Button">
-                                                                    <Border Background="{TemplateBinding Background}">
-                                                                        <Path Data="M 2.5 1 C 1.675781 1 1 1.675781 1 2.5 L 1 10.5 C 1 11.324219 1.675781 12 2.5 12 L 4 12 L 4 12.5 C 4 13.324219 4.675781 14 5.5 14 L 13.5 14 C 14.324219 14 15 13.324219 15 12.5 L 15 4.5 C 15 3.675781 14.324219 3 13.5 3 L 12 3 L 12 2.5 C 12 1.675781 11.324219 1 10.5 1 Z M 2.5 2 L 10.5 2 C 10.78125 2 11 2.21875 11 2.5 L 11 10.5 C 11 10.78125 10.78125 11 10.5 11 L 2.5 11 C 2.21875 11 2 10.78125 2 10.5 L 2 2.5 C 2 2.21875 2.21875 2 2.5 2 Z M 12 4 L 13.5 4 C 13.78125 4 14 4.21875 14 4.5 L 14 12.5 C 14 12.78125 13.78125 13 13.5 13 L 5.5 13 C 5.21875 13 5 12.78125 5 12.5 L 5 12 L 10.5 12 C 11.324219 12 12 11.324219 12 10.5 Z" Fill="{TemplateBinding Foreground}" Width="16" Height="16" />
-                                                                    </Border>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Opacity" Value="0.8" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
+                                                Style="{StaticResource CopyCommandLineButton}">
                                             </Button>
                                         </Grid>
                                     </Border>
@@ -348,7 +352,7 @@
                                                 <Path Style="{StaticResource AnimatedSuccess}" />
 
                                                 <StackPanel
-                                            Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}">
+                                                    Tag="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved}">
                                                     <StackPanel.LayoutTransform>
                                                         <ScaleTransform ScaleY="0" />
                                                     </StackPanel.LayoutTransform>
@@ -386,26 +390,44 @@
                                                         ContentTemplateSelector="{TemplateBinding SuccessContentTemplateSelector}" />
 
                                                     <TextBlock 
+                                                        x:Name="Automation1"
                                                         Margin="16 16 16 4"
-                                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                        Visibility="Collapsed"
                                                         Text="This operation can be automated by executing the following command line:" 
                                                         TextWrapping="Wrap" />
 
-                                                    <TextBox 
-                                                        MaxHeight="60"
-                                                        Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        BorderThickness="0" 
+                                                    <Border 
+                                                        x:Name="Automation2"
                                                         DockPanel.Dock="Bottom"
-                                                        Background="{StaticResource MsixHero.Dialog.Console.Background}" 
-                                                        BorderBrush="Transparent" 
-                                                        HorizontalScrollBarVisibility="Disabled"
-                                                        VerticalScrollBarVisibility="Auto"
-                                                        Padding="5" 
-                                                        FontFamily="Consolas"
-                                                        TextWrapping="Wrap"
+                                                        Visibility="Collapsed"
                                                         Margin="16 4"
-                                                        Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
-                                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
+                                                        Background="{StaticResource MsixHero.Dialog.Console.Background}" 
+                                                        CornerRadius="6">
+
+                                                        <DockPanel>
+                                                            <Button
+                                                                x:Name="PART_CopyCommandLineFinishScreen"
+                                                                DockPanel.Dock="Right"
+                                                                Margin="4 0 0 0" 
+                                                                ToolTip="Copy to clipboard"
+                                                                Style="{StaticResource CopyCommandLineButton}">
+                                                            </Button>
+
+                                                            <TextBox
+                                                                Margin="5 0"
+                                                                MaxHeight="60"
+                                                                BorderThickness="0" 
+                                                                Background="{StaticResource MsixHero.Dialog.Console.Background}" 
+                                                                BorderBrush="Transparent" 
+                                                                HorizontalScrollBarVisibility="Disabled"
+                                                                VerticalScrollBarVisibility="Auto"
+                                                                Padding="0 5" 
+                                                                FontFamily="Consolas"
+                                                                TextWrapping="Wrap"
+                                                                Foreground="{StaticResource MsixHero.Dialog.Console.Foreground}" 
+                                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SilentCommandLine, Mode=OneWay}" />
+                                                        </DockPanel>
+                                                    </Border>
 
                                                 </StackPanel>
                                             </StackPanel>
@@ -417,6 +439,16 @@
                     </DockPanel>
 
                     <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="SupportsCommandLineBuilding" Value="True" />
+                                <Condition Property="ShowSilentCommandLine" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <MultiTrigger.Setters>
+                                <Setter TargetName="Automation1" Property="Visibility" Value="Visible" />
+                                <Setter TargetName="Automation2" Property="Visibility" Value="Visible" />
+                            </MultiTrigger.Setters>
+                        </MultiTrigger>
                         <Trigger Property="OkButtonVisibility" Value="Collapsed">
                             <Setter Property="Visibility" Value="Collapsed" TargetName="PART_ButtonOK" />
                         </Trigger>
