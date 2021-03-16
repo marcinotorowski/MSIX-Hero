@@ -49,11 +49,12 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.dialogService = dialogService;
             this.moduleManager = moduleManager;
 
-            this.ShowPackDialog = new DelegateCommand(this.OnShowPackDialog);
             this.ShowAppAttachDialog = new DelegateCommand(this.OnShowAppAttachDialog);
-            this.ShowAppInstallerDialog = new DelegateCommand(this.OnShowAppInstallerDialog);
+            this.ShowAppInstallerDialog = new DelegateCommand<object>(this.OnShowAppInstallerDialog);
+            this.ShowWingetDialog = new DelegateCommand<object>(this.OnShowWingetDialog);
+            
+            this.ShowPackDialog = new DelegateCommand(this.OnShowPackDialog);
             this.ShowModificationPackageDialog = new DelegateCommand(this.OnShowModificationPackageDialog);
-            this.ShowWingetDialog = new DelegateCommand(this.OnShowWingetDialog);
             this.ShowUnpackDialog = new DelegateCommand(this.OnShowUnpackDialog);
             this.ShowUpdateImpactDialog = new DelegateCommand(this.OnShowUpdateImpactDialog);
             this.ShowDependencyGraphDialog = new DelegateCommand(this.OnShowDependencyGraphDialog);
@@ -61,6 +62,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.ShowExtractCertificateDialog = new DelegateCommand(this.OnShowExtractCertificateDialog);
             this.ShowSignPackageDialog = new DelegateCommand(this.OnShowSignPackageDialog);
             this.OpenFileDialog = new DelegateCommand(this.OnOpenFileDialog);
+            this.OpenMsixDialog = new DelegateCommand(this.OnOpenMsixDialog);
             this.OpenCertificateManager = new DelegateCommand<object>(param => this.OnOpenCertificateManager(param is bool boolParam && boolParam));
             this.OpenAppsFeatures = new DelegateCommand(this.OnOpenAppsFeatures);
             this.OpenDevSettings = new DelegateCommand(this.OnOpenDevSettings);
@@ -104,6 +106,8 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         public ICommand OpenCertificateManager { get; }
         
         public ICommand OpenFileDialog { get; }
+        
+        public ICommand OpenMsixDialog { get; }
 
         public ICommand OpenAppsFeatures { get; }
 
@@ -154,7 +158,14 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         private void OnOpenFileDialog()
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.yaml");
+            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.yaml", "*.AppInstaller");
+            this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
+        }
+
+        private void OnOpenMsixDialog()
+        {
+            // ReSharper disable once StringLiteralTypo
+            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx");
             this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 
@@ -164,22 +175,66 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingPack, new DialogParameters(), this.OnDialogClosed);
         }
 
-        private void OnShowWingetDialog()
-        {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, this.OnDialogClosed);
-        }
-
-        private void OnShowAppInstallerDialog()
-        {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, this.OnDialogClosed);
-        }
-
         private void OnShowModificationPackageDialog()
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingModificationPackage, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void OnShowWingetDialog(object param)
+        {
+            if (param != null)
+            {
+                var fileFilter = new DialogFilterBuilder("*.yaml");
+                var settings = new FileDialogSettings
+                {
+                    Filter = fileFilter.BuildFilter(true, true),
+                    DialogTitle = "Open winget manifest (*.yaml)"
+                };
+
+                if (!this.interactionService.SelectFile(settings, out var filePath))
+                {
+                    return;
+                }
+
+                this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
+                IDialogParameters parameters = new DialogParameters();
+                parameters.Add("yaml", filePath);
+                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, parameters, this.OnDialogClosed);
+            }
+            else
+            {
+                this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
+                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, this.OnDialogClosed);
+            }
+        }
+
+        private void OnShowAppInstallerDialog(object param)
+        {
+            if (param != null)
+            {
+                var fileFilter = new DialogFilterBuilder("*.AppInstaller");
+                var settings = new FileDialogSettings
+                {
+                    Filter = fileFilter.BuildFilter(true, true),
+                    DialogTitle = "Open app installer (*.appinstaller)"
+                };
+
+                if (!this.interactionService.SelectFile(settings, out var filePath))
+                {
+                    return;
+                }
+
+                this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
+                IDialogParameters parameters = new DialogParameters();
+                parameters.Add("file", filePath);
+                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, parameters, this.OnDialogClosed);
+            }
+            else
+            {
+                this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
+                this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, this.OnDialogClosed);
+            }
         }
 
         private void OnShowAppAttachDialog()

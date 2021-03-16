@@ -30,6 +30,7 @@
     <SolidColorBrush x:Key="MsixHero.Brushes.Light5" Color="{StaticResource MsixHero.Colors.Light5}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Light6" Color="{StaticResource MsixHero.Colors.Light6}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Light7" Color="{StaticResource MsixHero.Colors.Light7}" />
+    <SolidColorBrush x:Key="MsixHero.Brushes.Light8" Color="{StaticResource MsixHero.Colors.Light8}" />
     <SolidColorBrush x:Key="MsixHero.Brushes.Validation" Color="{StaticResource MsixHero.Colors.Validation}" />
 
     <SolidColorBrush x:Key="MsixHero.Brushes.Background.Translucent1" Color="#11ffffff" />

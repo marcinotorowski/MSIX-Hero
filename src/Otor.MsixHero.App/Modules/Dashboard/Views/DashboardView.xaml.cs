@@ -15,11 +15,9 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero.Commands.Dashboard;
 using Otor.MsixHero.App.Hero.Events.Base;
@@ -112,37 +110,6 @@ namespace Otor.MsixHero.App.Modules.Dashboard.Views
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-        }
-    }
-
-    public class ToolButton : DependencyObject
-    {
-        public static readonly DependencyProperty SearchTextProperty = DependencyProperty.RegisterAttached("SearchText", typeof(string), typeof(ToolButton), new PropertyMetadata(null, PropertyChangedCallback));
-
-        public static string GetSearchText(DependencyObject obj)
-        {
-            return (string)obj.GetValue(SearchTextProperty);
-        }
-
-        public static void SetSearchText(DependencyObject obj, string value)
-        {
-            obj.SetValue(SearchTextProperty, value);
-        }
-
-        private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var button = (Button)d;
-
-            var content = ((StackPanel) button.Content).Children.OfType<TextBlock>();
-
-            if (e.NewValue is string newText && !string.IsNullOrEmpty(newText))
-            {
-                //button.Visibility = content.Any(t => t.Text?.IndexOf(newText, StringComparison.OrdinalIgnoreCase) > -1) ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else
-            {
-                //button.Visibility = Visibility.Visible;
-            }
         }
     }
 }

@@ -6,233 +6,407 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Dashboard.ViewModels"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.Dashboard.Views"
-             mc:Ignorable="d" 
+    mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:DashboardViewModel}">
-    <UserControl.Resources>
-        <Style TargetType="Button" BasedOn="{StaticResource ButtonRectangle}">
-            <Setter Property="Width" Value="180" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-        </Style>
-
-        <Style TargetType="StackPanel" x:Key="Group">
-            <Setter Property="Margin" Value="0 0 32 16" />
-        </Style>
-    </UserControl.Resources>
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <DockPanel x:Name="Host" Margin="20">
-            <DockPanel.Resources>
-                <Style TargetType="TextBlock" x:Key="TextHeader">
-                    <Setter Property="FontFamily" Value="{StaticResource SourceSansPro}" />
-                    <Setter Property="FontSize" Value="18" />
-                </Style>
-            </DockPanel.Resources>
-
-            <StackPanel DockPanel.Dock="Right" Margin="16 0 0 0">
-                <TextBlock Style="{StaticResource TextHeader}" Text="Other options" Margin="0 0 0 8" />
-                
-                <DockPanel>
-                    <Path Data="{StaticResource SmallOpen}" Style="{StaticResource SmallIcon}" Margin="4" VerticalAlignment="Center" />
-                    <TextBlock Margin="4" VerticalAlignment="Center">
-                        <Hyperlink
-                            Command="Open">
-                            <Run Text="Open MSIX or .appinstaller" />
-                        </Hyperlink>
-                    </TextBlock>
-                </DockPanel>
-
-            </StackPanel>
-            <WrapPanel HorizontalAlignment="Left" MaxWidth="1200">
-
-                <StackPanel Style="{StaticResource Group}">
-
-                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Package authoring" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
-                    <WrapPanel>
-                        <Button 
-                            views:ToolButton.SearchText="{Binding SearchKey}"
-                            Command="{Binding ShowPackDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorPack}"
-                                    Margin="0 0 0 8" />
-                                <TextBlock 
+    <DockPanel>
+        <Label Margin="20 20 20 -10"  Style="{StaticResource Label}" Content="MSIX Hero" DockPanel.Dock="Top" FontSize="32" />
+        <ScrollViewer
+            FocusVisualStyle="{x:Null}"
+            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="22 0 22 0" HorizontalAlignment="Left" MaxWidth="1000">
+                <Grid.Resources>
+                    <Style TargetType="Label" BasedOn="{StaticResource Label}">
+                        <Setter Property="Height" Value="65" />
+                        <Setter Property="Margin" Value="0 0 0 12" />
+                        <Setter Property="VerticalContentAlignment" Value="Bottom" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Label">
+                                    <TextBlock
+                                    Margin="{TemplateBinding Padding}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Pack MSIX" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Convert a folder to an MSIX format" />
-                            </StackPanel>
-                        </Button>
-                        <Button 
-                            Command="{Binding ShowUnpackDialog}">
-                            <StackPanel>
-                                <Path 
-                                    Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorUnpack}"
-                                    Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Unpack MSIX" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Unpack an MSIX package to a folder" />
-                            </StackPanel>
-                        </Button>
+                                    Text="{TemplateBinding Content}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
 
-                        <Button 
-                            Command="{Binding ShowModificationPackageDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                      Data="{StaticResource VectorTransform}"
-                                      Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Modification package" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Create a basic modification package" />
-                            </StackPanel>
-                        </Button>
-                    </WrapPanel>
+                    <Style TargetType="Button">
+                        <Setter Property="Padding" Value="5" />
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Light8}" />
+                        <Setter Property="Height" Value="65" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light8}" />
+                        <Setter Property="Margin" Value="0 0 0 12" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    Background="{TemplateBinding Background}">
+                                        <ContentPresenter
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Margin="{TemplateBinding Padding}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light2}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                    <Style TargetType="{x:Type Border}" x:Key="ExtensionBackground">
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                        <Setter Property="VerticalAlignment" Value="Bottom" />
+                        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light5}" />
+                    </Style>
+
+                    <Style TargetType="{x:Type TextBlock}" x:Key="ExtensionText">
+                        <Setter Property="controls:Highlighter.Selection" Value="{Binding SearchKey}" />
+                        <Setter Property="Margin" Value="5 2.5" />
+                        <Setter Property="FontWeight" Value="Regular" />
+                        <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}" />
+                    </Style>
+
+                    <Style TargetType="Path" BasedOn="{StaticResource LargeIcon}" x:Key="ButtonIcon">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="Margin" Value="0 0 8 0" />
+                        <Setter Property="Fill" Value="{StaticResource MsixHero.Brushes.Accent}" />
+                    </Style>
+
+                    <Style TargetType="TextBlock" x:Key="ButtonText">
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="HorizontalAlignment" Value="Left" />
+                        <Setter Property="Margin" Value="0 0 12 0" />
+                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                        <Setter Property="MaxHeight" Value="45" />
+                        <Setter Property="TextWrapping" Value="Wrap" />
+                        <Setter Property="TextAlignment" Value="Left" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                        <Setter Property="controls:Highlighter.Selection" Value="{Binding SearchKey}" />
+                    </Style>
+
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="44" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="44" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel  x:Name="Host">
+                    <Label Content="New file" />
+
+                    <Button Command="{Binding ShowPackDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorPack}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="Packed MSIX" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowModificationPackageDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorTransform}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="MSIX modification package" />
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowAppAttachDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorNetworkDrive}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="MSIX app attach" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".vhd" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowAppInstallerDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="App installer" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".appinstaller" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowWingetDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorConsole}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="Winget manifest" />
+
+                            <Border
+                            Grid.Column="2" 
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".yaml" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowNewSelfSignedDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorSelfSign}" />
+
+                            <TextBlock
+                            Grid.Column="1" 
+                            Style="{StaticResource ButtonText}"
+                            Text="Self-signed certificate" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".cer" />
+                            </Border>
+                        </Grid>
+                    </Button>
                 </StackPanel>
 
-                <StackPanel Style="{StaticResource Group}">
-                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Developing" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
-                    <WrapPanel>
-                        <Button
-                            views:ToolButton.SearchText="{Binding SearchKey}"
-                            Command="{Binding ShowAppInstallerDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                    Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z"
-                                    Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="App installer" />
-                                <TextBlock
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Create or open an .appinstaller file" />
-                            </StackPanel>
-                        </Button>
+                <StackPanel Grid.Column="2">
+                    <Label Content="Open" />
 
-                        <Button 
-                            views:ToolButton.SearchText="{Binding SearchKey}"
-                            Command="{Binding ShowWingetDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorConsole}"
-                                    Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Winget manifest (.yaml)" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Create or open a .yaml file used by winget" />
-                            </StackPanel>
-                        </Button>
+                    <Button Command="{Binding OpenMsixDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                        <Button 
-                            views:ToolButton.SearchText="{Binding SearchKey}"
-                            Command="{Binding ShowAppAttachDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                     Data="{StaticResource VectorNetworkDrive}"
-                                     Margin="0 0 0 8" />
-                                <TextBlock 
-                                     controls:Highlighter.Selection="{Binding SearchKey}"
-                                     Style="{StaticResource ButtonLabel}" FontSize="14" Text="MSIX app attach" />
-                                <TextBlock 
-                                     controls:Highlighter.Selection="{Binding SearchKey}"
-                                     Style="{StaticResource ButtonDescription}" Text="Create VHD and .ps1 scripts for app attach" />
-                            </StackPanel>
-                        </Button>
-                    </WrapPanel>
+                            <Path 
+                                Grid.Column="0"
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorPackage}" />
+
+                            <TextBlock 
+                                Grid.Column="1"
+                                Style="{StaticResource ButtonText}"
+                                Text="MSIX package" />
+
+                            <Border
+                                Grid.Column="2"
+                                Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowAppInstallerDialog}" CommandParameter="open">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="M 6 3 L 6 29 L 17.765625 29 C 19.233126 30.826376 21.480367 32 24 32 C 26.396 32 28.534 30.929859 30 29.255859 L 30 32 L 32 32 L 32 26 L 26 26 L 26 28 L 28.445312 28 C 27.347313 29.221 25.768 30 24 30 C 20.691 30 18 27.309 18 24 C 18 20.691 20.691 18 24 18 C 27.309 18 30 20.691 30 24 L 32 24 C 32 20.280606 29.444687 17.153349 26 16.261719 L 26 9.5859375 L 19.414062 3 L 6 3 z M 8 5 L 18 5 L 18 11 L 24 11 L 24 16 C 21.979283 16 20.136244 16.75962 18.726562 18 L 11 18 L 11 20 L 17.082031 20 C 16.722543 20.619242 16.445366 21.290505 16.261719 22 L 11 22 L 11 24 L 16 24 C 16 25.060938 16.211142 26.072669 16.587891 27 L 8 27 L 8 5 z M 20 6.4140625 L 22.585938 9 L 20 9 L 20 6.4140625 z M 11 14 L 11 16 L 21 16 L 21 14 L 11 14 z" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="App installer" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".appinstaller" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Button Command="{Binding ShowWingetDialog}" CommandParameter="open">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Path 
+                            Grid.Column="0"
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorConsole}" />
+
+                            <TextBlock 
+                            Grid.Column="1"
+                            Style="{StaticResource ButtonText}"
+                            Text="Winget manifest" />
+
+                            <Border
+                            Grid.Column="2"
+                            Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".yaml" />
+                            </Border>
+                        </Grid>
+                    </Button>
+
+                    <Label Content="Signing" />
+                    <Button Command="{Binding ShowExtractCertificateDialog}">
+                        <DockPanel>
+                            <Path 
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorExport}" />
+                            <TextBlock 
+                            Style="{StaticResource ButtonText}"
+                            Text="Extract or import a certificate" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowSignPackageDialog}">
+                        <DockPanel>
+                            <Path 
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorSign}" />
+                            <TextBlock 
+                            Style="{StaticResource ButtonText}"
+                            Text="Sign or re-sign MSIX package" />
+                        </DockPanel>
+                    </Button>
                 </StackPanel>
 
-                <StackPanel Style="{StaticResource Group}">
-                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Code signing" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
-                    <WrapPanel>
-                        <Button 
-                            Command="{Binding ShowSignPackageDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                  Data="{StaticResource VectorSign}"
-                                  Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Sign MSIX package" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Sign with local certificate or Device Guard" />
-                            </StackPanel>
-                        </Button>
-                        <Button 
-                            Command="{Binding ShowNewSelfSignedDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorSelfSign}"
-                                    Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Self-signed certificate" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Create a new certificate for test and demo purposes" />
-                            </StackPanel>
-                        </Button>
-                        <Button 
-                            Command="{Binding ShowExtractCertificateDialog}">
-                            <StackPanel>
-                                <Path 
-                                    Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorExport}"
-                                    Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Extract or install certificate" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Install certificates or extract them from signed package" />
-                            </StackPanel>
-                        </Button>
-                    </WrapPanel>
-                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <Label Content="Other" />
 
-                <StackPanel Style="{StaticResource Group}">
-                    <TextBlock controls:Highlighter.Selection="{Binding SearchKey}" Text="Administration and troubleshooting" Margin="0 0 0 8" Style="{StaticResource TextHeader}" />
-                    <WrapPanel>
+                    <Button Command="{Binding ShowUnpackDialog}">
+                        <DockPanel>
+                            <Path 
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorUnpack}" />
+                            <TextBlock 
+                            Style="{StaticResource ButtonText}"
+                            Text="Unpack MSIX package" />
+                        </DockPanel>
+                    </Button>
 
-                        <Button 
-                            Command="{Binding ShowDependencyGraphDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                      Data="{StaticResource VectorDependencies}"
-                                      Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Dependency graph" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Show nested dependencies between packages and OS" />
-                            </StackPanel>
-                        </Button>
-                        <Button 
-                            Command="{Binding ShowUpdateImpactDialog}">
-                            <StackPanel>
-                                <Path Style="{StaticResource LargeIcon}"
-                                  Data="{StaticResource VectorCheckmark}"
-                                  Margin="0 0 0 8" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonLabel}" FontSize="14" Text="Update impact" />
-                                <TextBlock 
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Style="{StaticResource ButtonDescription}" Text="Analyze update impact on file and resources" />
-                            </StackPanel>
-                        </Button>
-                    </WrapPanel>
+                    <Button Command="{Binding ShowDependencyGraphDialog}">
+                        <DockPanel>
+                            <Path 
+                            Style="{StaticResource ButtonIcon}"
+                            Data="{StaticResource VectorDependencies}" />
+                            <TextBlock 
+                            Style="{StaticResource ButtonText}"
+                            Text="Analyze MSIX dependencies" />
+                        </DockPanel>
+                    </Button>
+
+                    <Button Command="{Binding ShowUpdateImpactDialog}">
+                        <DockPanel>
+                            <Path 
+                        Style="{StaticResource ButtonIcon}"
+                        Data="{StaticResource VectorCheckmark}" />
+                            <TextBlock 
+                        Style="{StaticResource ButtonText}"
+                        Text="Analyze MSIX update impact" />
+                        </DockPanel>
+                    </Button>
                 </StackPanel>
-            </WrapPanel>
-        </DockPanel>
-    </ScrollViewer>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>
