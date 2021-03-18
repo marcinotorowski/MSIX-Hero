@@ -44,27 +44,23 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 throw new InvalidOperationException("Tasklist.exe returned non zero exit code.");
             }
 
-            using (var reader = new StringReader(stringBuilder.ToString()))
+            using var reader = new StringReader(stringBuilder.ToString());
+            var csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                var csvConfiguration = new CsvConfiguration(
-                    CultureInfo.InvariantCulture, 
-                    hasHeaderRecord: true, 
-                    trimOptions: TrimOptions.Trim);
-                
-                
-                using (var csv = new CsvReader(reader, csvConfiguration))
-                {
-                    try
-                    {
-                        return await csv.GetRecordsAsync<AppProcess>().ToListAsync(cancellationToken).ConfigureAwait(false);
-                    }
-                    catch (BadDataException e)
-                    {
-                        Logger.Error($"Invalid data format.", e);
-                        Logger.Warn("CSV content:\r\n" + stringBuilder);
-                        throw;
-                    }
-                }
+                HasHeaderRecord = true, 
+                TrimOptions = TrimOptions.Trim
+            };
+
+            using var csv = new CsvReader(reader, csvConfiguration);
+            try
+            {
+                return await csv.GetRecordsAsync<AppProcess>(cancellationToken).ToListAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (BadDataException e)
+            {
+                Logger.Error($"Invalid data format.", e);
+                Logger.Warn("CSV content:\r\n" + stringBuilder);
+                throw;
             }
         }
 
@@ -79,14 +75,15 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 throw new InvalidOperationException("Tasklist.exe returned non zero exit code.");
             }
 
-            using (var reader = new StringReader(stringBuilder.ToString()))
+            using var reader = new StringReader(stringBuilder.ToString());
+            var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture, hasHeaderRecord: true, trimOptions: TrimOptions.Trim);
-                using (var csv = new CsvReader(reader, csvConfig))
-                {
-                    return await csv.GetRecordsAsync<AppProcessVerbose>().ToListAsync(cancellationToken).ConfigureAwait(false);
-                }
-            }
+                HasHeaderRecord = true, 
+                TrimOptions = TrimOptions.Trim
+            };
+
+            using var csv = new CsvReader(reader, csvConfig);
+            return await csv.GetRecordsAsync<AppProcessVerbose>(cancellationToken).ToListAsync(cancellationToken).ConfigureAwait(false);
         }
 
         private static string GetCommandLine(string status, bool verbose)

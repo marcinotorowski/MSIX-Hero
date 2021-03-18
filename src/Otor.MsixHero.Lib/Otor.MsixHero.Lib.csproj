@@ -19,7 +19,7 @@
     <PackageReference Include="DiscUtils.Vhd" Version="0.15.1-ci0007" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.0-preview.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NLog" Version="4.7.7" />
+    <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
     <PackageReference Include="System.Management.Automation" Version="7.2.0-preview.2" />
     <PackageReference Include="YamlDotNet" Version="9.1.5-issue-templates-0002" />
