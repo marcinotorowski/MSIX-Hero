@@ -196,7 +196,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 
                 foreach (var selected in selection)
                 {
-                    if (this.Files.Contains(selected))
+                    if (this.Files.Contains(selected, StringComparer.OrdinalIgnoreCase))
                     {
                         continue;
                     }
@@ -276,11 +276,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 IReadOnlyCollection<string> buttons = new List<string>
                 { 
                     "Only selected folder",
-                    "Selected folder " + (Path.GetDirectoryName(folder) ?? folder) + " and all its subfolders"
+                    "Selected folder " + (Path.GetFileName(folder) ?? folder) + " and all its subfolders"
                 };
 
-                var userChoice = this.interactionService.ShowMessage("The selected folder contains *.msix file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons);
-                if (-1 == userChoice)
+                var userChoice = this.interactionService.ShowMessage("The selected folder contains *.msix file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                if (userChoice < 0 || userChoice >= buttons.Count)
                 {
                     return 0;
                 }
@@ -290,7 +290,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             
             var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*.msix", recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
             var cnt = this.Files.Count;
-            this.Files.AddRange(files.Except(this.Files));
+            this.Files.AddRange(files.Except(this.Files, StringComparer.OrdinalIgnoreCase));
 
             return this.Files.Count - cnt;
         }
