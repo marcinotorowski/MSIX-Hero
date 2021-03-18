@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -67,7 +68,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             this.TabCertificate = new ChangeableContainer(this.CertificateSelector);
 
             this.AddChildren(this.TabPackages, this.TabCertificate, this.TabAdjustments, this.OverrideSubject);
-            this.Files.CollectionChanged += (sender, args) =>
+            this.Files.CollectionChanged += (_, _) =>
             {
                 this.OnPropertyChanged(nameof(IsOnePackage));
             };
@@ -256,6 +257,42 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
         public ICommand ResetCommand
         {
             get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+        }
+
+        public async Task<int> ImportFolder()
+        {
+            if (!this.interactionService.SelectFolder(out var folder))
+            {
+                return 0;
+            }
+
+            var hasMsixFiles = Directory.EnumerateFiles(folder, "*.msix").Any();
+            var hasSubfolders = Directory.EnumerateDirectories(folder).Any();
+
+            var recurse = !hasMsixFiles;
+
+            if (!recurse && hasSubfolders)
+            {
+                IReadOnlyCollection<string> buttons = new List<string>
+                { 
+                    "Only selected folder",
+                    "Selected folder " + (Path.GetDirectoryName(folder) ?? folder) + " and all its subfolders"
+                };
+
+                var userChoice = this.interactionService.ShowMessage("The selected folder contains *.msix file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons);
+                if (-1 == userChoice)
+                {
+                    return 0;
+                }
+
+                recurse = userChoice == 1;
+            }
+            
+            var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*.msix", recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
+            var cnt = this.Files.Count;
+            this.Files.AddRange(files.Except(this.Files));
+
+            return this.Files.Count - cnt;
         }
 
         private string ValidateFiles(IEnumerable<string> files)
