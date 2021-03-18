@@ -76,6 +76,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             {
                 this.Verb.Size = !uint.TryParse(this.FixedSize.CurrentValue, out var parsed) ? 0 : parsed;
             }
+
+            if (string.IsNullOrEmpty(this.OutputPath) || string.IsNullOrEmpty(Path.GetDirectoryName(this.OutputPath)))
+            {
+                this.Verb.Directory = "<output-directory>";
+            }
+            else
+            {
+                this.Verb.Directory = Path.GetDirectoryName(this.OutputPath);
+            }
         }
 
         public ChangeableFileProperty InputPath { get; }
