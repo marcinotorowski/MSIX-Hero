@@ -108,14 +108,22 @@
                         <StackPanel Visibility="{Binding ShowLaunchOptions, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="When launching the app check for a new version and..." 
+                                Text="If a new version is available when launching the app..." 
                                 Margin="0 16 0 6" />
-                            <CheckBox IsChecked="{Binding ShowPrompt.CurrentValue}" Margin="0 0 0 6">
-                                <TextBlock Text="Show a prompt if a new version is available" TextWrapping="Wrap" />
-                            </CheckBox>
-                            <CheckBox IsChecked="{Binding BlockLaunching.CurrentValue}" Margin="0 0 0 6">
-                                <TextBlock Text="Stop the user from launching the application until the available update has been applied." TextWrapping="Wrap" />
-                            </CheckBox>
+
+                            <RadioButton 
+                                GroupName="g1"
+                                IsChecked="{Binding PromptMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:PromptMode.Background}}"
+                                Content="Update the app silently in background" Margin="0 0 0 6" />
+                            <RadioButton 
+                                GroupName="g2"
+                                IsChecked="{Binding PromptMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:PromptMode.Inform}}"
+                                Content="Inform about the new version, do not enforce it" Margin="0 0 0 6" />
+                            <RadioButton 
+                                GroupName="g3"
+                                IsChecked="{Binding PromptMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:PromptMode.Force}}"
+                                Content="Show prompt and force the update before the app can be launched" Margin="0 0 0 6" />
+
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
                                 Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />

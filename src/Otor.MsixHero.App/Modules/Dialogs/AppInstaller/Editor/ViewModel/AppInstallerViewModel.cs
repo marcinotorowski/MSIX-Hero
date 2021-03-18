@@ -36,6 +36,13 @@ using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 {
+    public enum PromptMode
+    {
+        Background,
+        Inform,
+        Force
+    }
+    
     public class AppInstallerViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly AppInstallerBuilder appInstallerBuilder;
@@ -57,12 +64,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
-            this.BlockLaunching = new ChangeableProperty<bool>();
-            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", this.ValidateVersion);
-            this.ShowPrompt = new ChangeableProperty<bool>();
+            this.PromptMode = new ChangeableProperty<PromptMode>(ViewModel.PromptMode.Background);
+            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", ValidatorFactory.ValidateVersion(true));
             this.MainPackageUri = new ValidatedChangeableProperty<string>("Main package URL", true, ValidatorFactory.ValidateUri(true));
             this.AppInstallerUri = new ValidatedChangeableProperty<string>("App installer URL", true, ValidatorFactory.ValidateUri(true));
-            this.Hours = new ValidatedChangeableProperty<string>("Hours between updates", "24", this.ValidateHours);
+            this.Hours = new ValidatedChangeableProperty<string>("Hours between updates", "24", ValidateHours);
 
             this.TabPackage = new PackageSelectorViewModel(
                 interactionService,
@@ -80,8 +86,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.TabOptions = new ChangeableContainer(
                 this.AppInstallerUpdateCheckingMethod,
                 this.AllowDowngrades,
-                this.BlockLaunching,
-                this.ShowPrompt,
+                this.PromptMode,
                 this.Hours);
 
             this.AddChildren(
@@ -93,9 +98,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
             this.TabPackage.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.AppInstallerUpdateCheckingMethod.ValueChanged += this.AppInstallerUpdateCheckingMethodValueChanged;
-            this.AllowDowngrades.ValueChanged += this.OnBooleanChanged;
-            this.BlockLaunching.ValueChanged += this.OnBooleanChanged;
-            this.ShowPrompt.ValueChanged += this.OnBooleanChanged;
+            this.AllowDowngrades.ValueChanged += this.OnCompatRelevantPropertyChanged;
+            this.PromptMode.ValueChanged += this.OnCompatRelevantPropertyChanged;
         }
 
         public ChangeableContainer TabProperties { get; }
@@ -112,10 +116,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         public ChangeableProperty<AppInstallerUpdateCheckingMethod> AppInstallerUpdateCheckingMethod { get; }
 
         public ValidatedChangeableProperty<string> Hours { get; }
-
-        public ChangeableProperty<bool> BlockLaunching { get; }
-
-        public ChangeableProperty<bool> ShowPrompt { get; }
+        
+        public ChangeableProperty<PromptMode> PromptMode { get; }
 
         public ValidatedChangeableProperty<string> Version { get; }
 
@@ -190,8 +192,30 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             return true;
         }
 
+        private static string ValidateHours(string newValue)
+        {
+            if (string.IsNullOrEmpty(newValue))
+            {
+                return "This value cannot be empty.";
+            }
+
+            if (!int.TryParse(newValue, out var value))
+            {
+                return $"The value '{newValue}' is not a valid number.";
+            }
+
+            if (value < 0 || value > 255)
+            {
+                return $"The value '{newValue}' lies outside of valid range 0-255.";
+            }
+
+            return null;
+        }
+
         private AppInstallerConfig GetCurrentAppInstallerConfig()
         {
+            var prompt = this.PromptMode.CurrentValue;
+            
             var builder = new AppInstallerBuilder
             {
                 Version = this.Version.CurrentValue,
@@ -202,8 +226,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 MainPackageVersion = this.TabPackage.Version.CurrentValue,
                 HoursBetweenUpdateChecks = int.Parse(this.Hours.CurrentValue),
                 CheckForUpdates = this.AppInstallerUpdateCheckingMethod.CurrentValue,
-                ShowPrompt = this.ShowPrompt.CurrentValue,
-                UpdateBlocksActivation = this.BlockLaunching.CurrentValue,
+                ShowPrompt = prompt != ViewModel.PromptMode.Background,
+                UpdateBlocksActivation = prompt == ViewModel.PromptMode.Force,
                 AllowDowngrades = this.AllowDowngrades.CurrentValue,
                 RedirectUri = string.IsNullOrEmpty(this.AppInstallerUri.CurrentValue) ? null : new Uri(this.AppInstallerUri.CurrentValue),
                 MainPackageUri = string.IsNullOrEmpty(this.MainPackageUri.CurrentValue) ? null : new Uri(this.MainPackageUri.CurrentValue),
@@ -293,11 +317,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;
             this.AppInstallerUpdateCheckingMethod.CurrentValue = builder.CheckForUpdates;
             this.AppInstallerUri.CurrentValue = builder.RedirectUri.ToString();
-            this.BlockLaunching.CurrentValue = builder.UpdateBlocksActivation;
+            
+            if (builder.ShowPrompt)
+            {
+                this.PromptMode.CurrentValue = builder.UpdateBlocksActivation ? ViewModel.PromptMode.Force : ViewModel.PromptMode.Inform;
+            }
+            else
+            {
+                this.PromptMode.CurrentValue = ViewModel.PromptMode.Background;
+            }
+            
             this.Hours.CurrentValue = builder.HoursBetweenUpdateChecks.ToString();
             this.MainPackageUri.CurrentValue = builder.MainPackageUri.ToString();
             this.Version.CurrentValue = builder.Version;
-            this.ShowPrompt.CurrentValue = builder.ShowPrompt;
 
             this.TabPackage.Name.CurrentValue = builder.MainPackageName;
             this.TabPackage.Version.CurrentValue = builder.MainPackageVersion;
@@ -361,44 +393,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.OnPropertyChanged(nameof(ShowLaunchOptions));
             this.OnPropertyChanged(nameof(CompatibleWindows));
         }
-        
-        private string ValidateHours(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "This value cannot be empty.";
-            }
 
-            if (!int.TryParse(newValue, out var value))
-            {
-                return $"The value '{newValue}' is not a valid number.";
-            }
-
-            if (value < 0 || value > 255)
-            {
-                return $"The value '{newValue}' lies outside of valid range 0-255.";
-            }
-
-            return null;
-        }
-
-        private void OnBooleanChanged(object sender, ValueChangedEventArgs e)
+        private void OnCompatRelevantPropertyChanged(object sender, ValueChangedEventArgs e)
         {
             this.OnPropertyChanged(nameof(CompatibleWindows));
-        }
-        private string ValidateVersion(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "The version may not be empty.";
-            }
-
-            if (!System.Version.TryParse(newValue, out _))
-            {
-                return $"'{newValue}' is not a valid version.";
-            }
-
-            return null;
         }
     }
 }
