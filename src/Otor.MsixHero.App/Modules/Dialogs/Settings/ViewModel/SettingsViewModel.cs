@@ -16,6 +16,8 @@
 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers.Tiers;
@@ -268,7 +270,42 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         {
             return this.AllSettings.IsTouched && (!this.AllSettings.IsValidated || this.AllSettings.IsValid);
         }
+        private static MemberInfo GetMemberInfo(Expression expression)
+        {
+            var lambda = (LambdaExpression)expression;
 
+            MemberExpression memberExpression;
+            if (lambda.Body is UnaryExpression unaryExpression)
+            {
+                memberExpression = (MemberExpression)unaryExpression.Operand;
+            }
+            else
+            {
+                memberExpression = (MemberExpression)lambda.Body;
+            }
+
+            return memberExpression.Member;
+        }
+        
+        private static void UpdateConfiguration<TObject, TValue>(TObject configObject, Expression<Func<TObject, TValue>> property, ChangeableProperty<TValue> value)
+        {
+            if (!value.IsTouched)
+            {
+                return;
+            }
+            
+            var memberExpression = GetMemberInfo(property);
+            var propertyName = memberExpression.Name;
+
+            var propertyInfo = typeof(TObject).GetProperty(propertyName);
+            if (propertyInfo == null)
+            {
+                throw new ArgumentException("Invalid property path.");
+            }
+            
+            propertyInfo.SetValue(configObject, value.CurrentValue);
+        }
+        
         public async Task<bool> Save()
         {
             if (!this.AllSettings.IsValidated)
@@ -282,32 +319,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             }
 
             var newConfiguration = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
-
-            if (this.CertificateOutputPath.IsTouched)
-            {
-                newConfiguration.Signing.DefaultOutFolder = this.CertificateOutputPath.CurrentValue;
-            }
-
-            if (this.PackerSignByDefault.IsTouched)
-            {
-                newConfiguration.Packer.SignByDefault = this.PackerSignByDefault.CurrentValue;
-            }
-
-            if (this.ConfirmDeletion.IsTouched)
-            {
-                newConfiguration.UiConfiguration.ConfirmDeletion = this.ConfirmDeletion.CurrentValue;
-            }
-
-            if (this.DefaultScreen.IsTouched)
-            {
-                newConfiguration.UiConfiguration.DefaultScreen = this.DefaultScreen.CurrentValue;
-            }
-
-            if (this.ShowReleaseNotes.IsTouched)
-            {
-                newConfiguration.Update.HideNewVersionInfo = !this.ShowReleaseNotes.CurrentValue;
-            }
-
+            
+            UpdateConfiguration(newConfiguration.Signing, cfg => cfg.DefaultOutFolder, this.CertificateOutputPath);
+            UpdateConfiguration(newConfiguration.Packer, cfg => cfg.SignByDefault, this.PackerSignByDefault);
+            UpdateConfiguration(newConfiguration.UiConfiguration, e => e.DefaultScreen, this.DefaultScreen);
+            UpdateConfiguration(newConfiguration.UiConfiguration, e => e.ConfirmDeletion, this.ConfirmDeletion);
+            UpdateConfiguration(newConfiguration.Update, e => e.HideNewVersionInfo, this.ShowReleaseNotes);
+            UpdateConfiguration(newConfiguration.Editing, e => e.ManifestEditorType, this.ManifestEditorType);
+            UpdateConfiguration(newConfiguration.Editing, e => e.AppInstallerEditorType, this.AppinstallerEditorType);
+            UpdateConfiguration(newConfiguration.Editing, e => e.MsixEditorType, this.MsixEditorType);
+            UpdateConfiguration(newConfiguration.Editing, e => e.PsfEditorType, this.PsfEditorType);
+            UpdateConfiguration(newConfiguration.Editing, e => e.PowerShellEditorType, this.PowerShellEditorType);
+            UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationAppInstaller, this.DefaultRemoteLocationAppInstaller);
+            UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationPackages, this.DefaultRemoteLocationPackages);
+            
             if (this.UxLevel.IsTouched)
             {
                 newConfiguration.UiConfiguration.UxTier = (UxTierLevel) this.UxLevel.CurrentValue;
@@ -320,7 +345,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                     TierController.SetCurrentTier(this.UxLevel.CurrentValue);
                 }
             }
-
+            
             if (this.CertificateSelector.IsTouched)
             {
                 if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Pfx)
@@ -366,48 +391,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                     newConfiguration.Signing.DeviceGuard = null;
                 }
 
-                if (this.CertificateSelector.Store.IsTouched)
-                {
-                    newConfiguration.Signing.Source = this.CertificateSelector.Store.CurrentValue;
-                }
-
-                if (this.CertificateSelector.TimeStamp.IsTouched)
-                {
-                    newConfiguration.Signing.TimeStampServer = this.CertificateSelector.TimeStamp.CurrentValue;
-                }
-            }
-
-            if (this.ManifestEditorType.IsTouched)
-            {
-                newConfiguration.Editing.ManifestEditorType = this.ManifestEditorType.CurrentValue;
-            }
-
-            if (this.AppinstallerEditorType.IsTouched)
-            {
-                newConfiguration.Editing.AppInstallerEditorType = this.AppinstallerEditorType.CurrentValue;
-            }
-
-            if (this.MsixEditorType.IsTouched)
-            {
-                newConfiguration.Editing.MsixEditorType = this.MsixEditorType.CurrentValue;
-            }
-
-            if (this.PsfEditorType.IsTouched)
-            {
-                newConfiguration.Editing.PsfEditorType = this.PsfEditorType.CurrentValue;
-            }
-
-            if (this.PowerShellEditorType.IsTouched)
-            {
-                newConfiguration.Editing.PowerShellEditorType = this.PowerShellEditorType.CurrentValue;
+                UpdateConfiguration(newConfiguration.Signing, e => e.Source, this.CertificateSelector.Store);
+                UpdateConfiguration(newConfiguration.Signing, e => e.TimeStampServer, this.CertificateSelector.TimeStamp);
             }
 
             if (this.PowerShellEditorType.CurrentValue == EditorType.Custom)
             {
-                if (this.ManifestEditorPath.IsTouched)
-                {
-                    newConfiguration.Editing.ManifestEditor.Resolved = this.ManifestEditorPath.CurrentValue;
-                }
+                UpdateConfiguration(newConfiguration.Editing.ManifestEditor, e => e.Resolved, this.ManifestEditorPath);
             }
             else
             {
@@ -416,10 +406,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (this.AppinstallerEditorType.CurrentValue == EditorType.Custom)
             {
-                if (this.AppinstallerEditorPath.IsTouched)
-                {
-                    newConfiguration.Editing.AppInstallerEditor.Resolved = this.AppinstallerEditorPath.CurrentValue;
-                }
+                UpdateConfiguration(newConfiguration.Editing.AppInstallerEditor, e => e.Resolved, this.AppinstallerEditorPath);
             }
             else
             {
@@ -428,10 +415,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (this.MsixEditorType.CurrentValue == EditorType.Custom)
             {
-                if (this.MsixEditorPath.IsTouched)
-                {
-                    newConfiguration.Editing.MsixEditor.Resolved = this.MsixEditorPath.CurrentValue;
-                }
+                UpdateConfiguration(newConfiguration.Editing.MsixEditor, e => e.Resolved, this.MsixEditorPath);
             }
             else
             {
@@ -440,10 +424,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (this.PsfEditorType.CurrentValue == EditorType.Custom)
             {
-                if (this.PsfEditorPath.IsTouched)
-                {
-                    newConfiguration.Editing.PsfEditor.Resolved = this.PsfEditorPath.CurrentValue;
-                }
+                UpdateConfiguration(newConfiguration.Editing.PsfEditor, e => e.Resolved, this.PsfEditorPath);
             }
             else
             {
@@ -452,10 +433,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (this.PowerShellEditorType.CurrentValue == EditorType.Custom)
             {
-                if (this.PowerShellEditorPath.IsTouched)
-                {
-                    newConfiguration.Editing.PowerShellEditor.Resolved = this.PowerShellEditorPath.CurrentValue;
-                }
+                UpdateConfiguration(newConfiguration.Editing.PowerShellEditor, e => e.Resolved, this.PowerShellEditorPath);
             }
             else
             {
@@ -464,16 +442,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (this.ManifestEditorType.CurrentValue == EditorType.Custom)
             {
-                if (this.ManifestEditorPath.IsTouched)
-                {
-                    newConfiguration.Editing.ManifestEditor.Resolved = this.ManifestEditorPath.CurrentValue;
-                }
+                UpdateConfiguration(newConfiguration.Editing.ManifestEditor, e => e.Resolved, this.ManifestEditorPath);
             }
             else
             {
                 newConfiguration.Editing.ManifestEditor.Resolved = null;
             }
-
+            
             var toolsTouched = this.Tools.IsTouched;
             this.AllSettings.Commit();
 
@@ -489,7 +464,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             {
                 this.eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Tools.Items.Select(t => (ToolListConfiguration)t).ToArray());
             }
-
+            
             return true;
         }
 
