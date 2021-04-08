@@ -92,8 +92,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.AddChildren(
                 this.TabPackage,
                 this.TabProperties = new ChangeableContainer(this.Version, this.MainPackageUri, this.AppInstallerUri),
-                this.TabOptionalPackages = new AppInstallerPackagesViewModel(this.interactionService),
-                this.TabRelatedPackages = new AppInstallerPackagesViewModel(this.interactionService),
+                this.TabOptionalPackages = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
+                this.TabRelatedPackages = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
                 this.TabOptions);
 
             this.TabPackage.InputPath.ValueChanged += this.InputPathOnValueChanged;

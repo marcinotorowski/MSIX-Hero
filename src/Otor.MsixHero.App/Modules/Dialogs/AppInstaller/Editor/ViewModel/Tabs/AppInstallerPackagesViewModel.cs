@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
@@ -16,11 +17,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
     public class AppInstallerPackagesViewModel : ChangeableContainer
     {
         private readonly IInteractionService interactionService;
+        private readonly IConfigurationService configurationService;
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AppInstallerPackagesViewModel));
         
-        public AppInstallerPackagesViewModel(IInteractionService interactionService, IEnumerable<AppInstallerBaseEntry> entries = null)
+        public AppInstallerPackagesViewModel(
+            IInteractionService interactionService, 
+            IConfigurationService configurationService,
+            IEnumerable<AppInstallerBaseEntry> entries = null)
         {
             this.interactionService = interactionService;
+            this.configurationService = configurationService;
             this.Items = new ValidatedChangeableCollection<AppInstallerBasePackageViewModel>();
             
             if (entries != null)
@@ -140,7 +146,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
         private async void OnBrowse()
         {
             // ReSharper disable StringLiteralTypo
-            var f = new DialogFilterBuilder("*.msix", "*.appx", ".appxbundle", "*.msixbundle").BuildFilter();
+            var f = new DialogFilterBuilder("*.msix", "*.appx", "*.appxbundle", "*.msixbundle").BuildFilter();
             // ReSharper restore StringLiteralTypo
             if (!this.interactionService.SelectFiles(new FileDialogSettings(f), out var selectedFiles))
             {
@@ -149,18 +155,27 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
 
             try
             {
+                var configuration = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+                var configValue = configuration.AppInstaller?.DefaultRemoteLocationPackages;
+                if (string.IsNullOrEmpty(configValue))
+                {
+                    configValue = "http://server-name/";
+                }
+                
                 foreach (var selectedFile in selectedFiles)
                 {
+                    var newFilePath = new FileInfo(selectedFile);
                     var read = await AppxManifestSummaryBuilder.FromFile(selectedFile, AppxManifestSummaryBuilderMode.Identity);
                     this.Items.Add(new AppInstallerPackageViewModel(new AppInstallerPackageEntry
                     {
                         Name = read.Name,
                         Publisher = read.Publisher,
                         Version = read.Version,
-                        Architecture = Enum.Parse<AppInstallerPackageArchitecture>(read.ProcessorArchitecture)
+                        Architecture = Enum.Parse<AppInstallerPackageArchitecture>(read.ProcessorArchitecture),
+                        Uri = $"{configValue.TrimEnd('/')}/{newFilePath.Name}"
                     }));
                 }
-                
+
                 this.Selected.CurrentValue = this.Items.Last();
             }
             catch (Exception e)
