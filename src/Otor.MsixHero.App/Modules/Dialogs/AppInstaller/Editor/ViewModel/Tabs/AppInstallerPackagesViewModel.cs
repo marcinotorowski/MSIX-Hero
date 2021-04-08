@@ -142,21 +142,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
             // ReSharper disable StringLiteralTypo
             var f = new DialogFilterBuilder("*.msix", "*.appx", ".appxbundle", "*.msixbundle").BuildFilter();
             // ReSharper restore StringLiteralTypo
-            if (!this.interactionService.SelectFile(new FileDialogSettings(f), out var selectedFile))
+            if (!this.interactionService.SelectFiles(new FileDialogSettings(f), out var selectedFiles))
             {
                 return;
             }
 
             try
             {
-                var read = await AppxManifestSummaryBuilder.FromFile(selectedFile, AppxManifestSummaryBuilderMode.Identity);
-                this.Items.Add(new AppInstallerPackageViewModel(new AppInstallerPackageEntry
+                foreach (var selectedFile in selectedFiles)
                 {
-                    Name = read.Name,
-                    Publisher = read.Publisher,
-                    Version = read.Version,
-                    Architecture = Enum.Parse<AppInstallerPackageArchitecture>(read.ProcessorArchitecture)
-                }));
+                    var read = await AppxManifestSummaryBuilder.FromFile(selectedFile, AppxManifestSummaryBuilderMode.Identity);
+                    this.Items.Add(new AppInstallerPackageViewModel(new AppInstallerPackageEntry
+                    {
+                        Name = read.Name,
+                        Publisher = read.Publisher,
+                        Version = read.Version,
+                        Architecture = Enum.Parse<AppInstallerPackageArchitecture>(read.ProcessorArchitecture)
+                    }));
+                }
                 
                 this.Selected.CurrentValue = this.Items.Last();
             }
