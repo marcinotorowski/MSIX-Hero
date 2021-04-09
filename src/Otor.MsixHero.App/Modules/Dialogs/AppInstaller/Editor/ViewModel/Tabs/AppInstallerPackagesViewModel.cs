@@ -155,25 +155,40 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
 
             try
             {
-                var configuration = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+                var configuration = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
                 var configValue = configuration.AppInstaller?.DefaultRemoteLocationPackages;
                 if (string.IsNullOrEmpty(configValue))
                 {
                     configValue = "http://server-name/";
                 }
-                
+
+                var reader = new AppxIdentityReader();
                 foreach (var selectedFile in selectedFiles)
                 {
                     var newFilePath = new FileInfo(selectedFile);
-                    var read = await AppxManifestSummaryBuilder.FromFile(selectedFile, AppxManifestSummaryBuilderMode.Identity);
-                    this.Items.Add(new AppInstallerPackageViewModel(new AppInstallerPackageEntry
+                    var read = await reader.GetIdentity(selectedFile).ConfigureAwait(true);
+
+                    if (string.Equals(".appxbundle", newFilePath.Extension, StringComparison.OrdinalIgnoreCase) || string.Equals(".msixbundle", newFilePath.Extension, StringComparison.OrdinalIgnoreCase))
                     {
-                        Name = read.Name,
-                        Publisher = read.Publisher,
-                        Version = read.Version,
-                        Architecture = Enum.Parse<AppInstallerPackageArchitecture>(read.ProcessorArchitecture),
-                        Uri = $"{configValue.TrimEnd('/')}/{newFilePath.Name}"
-                    }));
+                        this.Items.Add(new AppInstallerBundleViewModel(new AppInstallerBundleEntry
+                        {
+                            Name = read.Name,
+                            Publisher = read.Publisher,
+                            Version = read.Version,
+                            Uri = $"{configValue.TrimEnd('/')}/{newFilePath.Name}"
+                        }));
+                    }
+                    else
+                    {
+                        this.Items.Add(new AppInstallerPackageViewModel(new AppInstallerPackageEntry
+                        {
+                            Name = read.Name,
+                            Publisher = read.Publisher,
+                            Version = read.Version,
+                            Architecture = Enum.Parse<AppInstallerPackageArchitecture>(read.Architectures?.Any() == true ? read.Architectures.First().ToString("G") : "neutral", true),
+                            Uri = $"{configValue.TrimEnd('/')}/{newFilePath.Name}"
+                        }));
+                    }   
                 }
 
                 this.Selected.CurrentValue = this.Items.Last();

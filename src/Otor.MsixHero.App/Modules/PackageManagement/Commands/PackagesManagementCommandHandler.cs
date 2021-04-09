@@ -466,19 +466,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     var manager = await this.packageManagerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                     await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
 
-                    AppxManifestSummary appxReader;
+                    AppxIdentity appxIdentity = null;
                     if (!string.Equals(".appinstaller", Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
                     {
-                        appxReader = await AppxManifestSummaryBuilder.FromFile(packagePath, AppxManifestSummaryBuilderMode.Properties | AppxManifestSummaryBuilderMode.Identity).ConfigureAwait(false);
+                        appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
 
 #pragma warning disable 4014
-                        this.interactionService.ShowToast("App installed", $"{appxReader.DisplayName ?? appxReader.Name} has been just installed.", InteractionType.None);
+                        this.interactionService.ShowToast("App installed", $"{appxIdentity.Name} has been just installed.", InteractionType.None);
 #pragma warning restore 4014
                     }
                     else
                     {
-                        appxReader = null;
-
 #pragma warning disable 4014
                         this.interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.", InteractionType.None);
 #pragma warning restore 4014
@@ -486,9 +484,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
                     var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
                     
-                    if (appxReader != null)
+                    if (appxIdentity != null)
                     {
-                        var selected = allPackages.FirstOrDefault(p => p.Name == appxReader.Name);
+                        var selected = allPackages.FirstOrDefault(p => p.Name == appxIdentity.Name);
                         if (selected != null)
                         {
                             //this.application.ApplicationState.Packages.SelectedPackages.Clear();

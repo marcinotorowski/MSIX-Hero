@@ -30,22 +30,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
         private const string AppxManifestName = "AppxManifest.xml";
 
         private static readonly ILog Logger = LogManager.GetLogger();
-
-        public static Task<AppxManifestSummary> FromFile(string filePath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
-        {
-            if (string.Equals(AppxManifestName, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
-            {
-                return FromManifest(filePath);
-            }
-
-            return FromMsix(filePath, mode);
-        }
-
+        
         public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
         {
             Logger.Info("Reading application manifest {0}...", fullMsixFilePath);
 
-            if (!System.IO.File.Exists(fullMsixFilePath))
+            if (!File.Exists(fullMsixFilePath))
             {
                 throw new FileNotFoundException("MSIX file does not exist.", fullMsixFilePath);
             }
@@ -62,10 +52,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                     throw new FileNotFoundException("Manifest file not found.");
                 }
 
-                using (var stream = entry.Open())
-                {
-                    return await FromManifest(stream, mode).ConfigureAwait(false);
-                }
+                await using var stream = entry.Open();
+                return await FromManifest(stream, mode).ConfigureAwait(false);
             }
             catch (InvalidDataException e)
             {
@@ -76,12 +64,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
         public static Task<AppxManifestSummary> FromInstallLocation(string installLocation, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
         {
             Logger.Debug("Reading application manifest from install location {0}...", installLocation);
-            if (!System.IO.Directory.Exists(installLocation))
+            if (!Directory.Exists(installLocation))
             {
                 throw new DirectoryNotFoundException("Install location " + installLocation + " not found.");
             }
 
-            return FromManifest(System.IO.Path.Join(installLocation, AppxManifestName), mode);
+            return FromManifest(Path.Join(installLocation, AppxManifestName), mode);
         }
 
         public static async Task<AppxManifestSummary> FromManifest(string fullManifestPath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
@@ -111,10 +99,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Identity'] for a single node...");
                 var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
             
-                result.Name = identity.Attributes["Name"]?.Value;
-                result.Version = identity.Attributes["Version"]?.Value;
-                result.Publisher = identity.Attributes["Publisher"]?.Value;
-                result.ProcessorArchitecture = identity.Attributes["ProcessorArchitecture"]?.Value;
+                result.Name = identity?.Attributes?["Name"]?.Value;
+                result.Version = identity?.Attributes?["Version"]?.Value;
+                result.Publisher = identity?.Attributes?["Publisher"]?.Value;
+                result.ProcessorArchitecture = identity?.Attributes?["ProcessorArchitecture"]?.Value;
             }
 
             if ((mode & AppxManifestSummaryBuilderMode.Properties) == AppxManifestSummaryBuilderMode.Properties)
@@ -122,31 +110,34 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Properties'] for a single node...");
                 var node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Properties']");
 
-                foreach (var subNode in node.ChildNodes.OfType<XmlNode>())
+                if (node != null)
                 {
-                    switch (subNode.LocalName)
+                    foreach (var subNode in node.ChildNodes.OfType<XmlNode>())
                     {
-                        case "DisplayName":
-                            result.DisplayName = subNode.InnerText;
-                            break;
-                        case "PublisherDisplayName":
-                            result.DisplayPublisher = subNode.InnerText;
-                            break;
-                        case "Description":
-                            result.Description = subNode.InnerText;
-                            break;
-                        case "Logo":
-                            result.Logo = subNode.InnerText;
-                            break;
-                        case "Framework":
-                            result.IsFramework = bool.TryParse(subNode?.InnerText ?? "False", out var parsed) && parsed;
-                            break;
+                        switch (subNode.LocalName)
+                        {
+                            case "DisplayName":
+                                result.DisplayName = subNode.InnerText;
+                                break;
+                            case "PublisherDisplayName":
+                                result.DisplayPublisher = subNode.InnerText;
+                                break;
+                            case "Description":
+                                result.Description = subNode.InnerText;
+                                break;
+                            case "Logo":
+                                result.Logo = subNode.InnerText;
+                                break;
+                            case "Framework":
+                                result.IsFramework = bool.TryParse(subNode.InnerText, out var parsed) && parsed;
+                                break;
+                        }
                     }
                 }
 
                 Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements'] for a single node...");
                 node = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']/*[local-name()='VisualElements']");
-                result.AccentColor = node?.Attributes["BackgroundColor"]?.Value ?? "Transparent";
+                result.AccentColor = node?.Attributes?["BackgroundColor"]?.Value ?? "Transparent";
             }
 
             if ((mode & AppxManifestSummaryBuilderMode.Applications) == AppxManifestSummaryBuilderMode.Applications)
@@ -155,14 +146,22 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
                 Logger.Trace("Executing XQuery /*[local-name()='Package']");
                 var package = xmlDocument.SelectSingleNode("/*[local-name()='Package']");
-                Logger.Trace("Executing XQuery /*[local-name()='Applications']/*[local-name()='Application']...");
-                var applications = package.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
-                foreach (var subNode in applications.OfType<XmlNode>())
+
+                if (package != null)
                 {
-                    var entryPoint = subNode.Attributes["EntryPoint"]?.Value;
-                    var executable = subNode.Attributes["Executable"]?.Value;
-                    var startPage = subNode.Attributes["StartPage"]?.Value;
-                    result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage, result.IsFramework);
+                    Logger.Trace("Executing XQuery /*[local-name()='Applications']/*[local-name()='Application']...");
+                    var applications = package.SelectNodes("/*[local-name()='Package']/*[local-name()='Applications']/*[local-name()='Application']");
+
+                    if (applications != null)
+                    {
+                        foreach (var subNode in applications.OfType<XmlNode>())
+                        {
+                            var entryPoint = subNode.Attributes?["EntryPoint"]?.Value;
+                            var executable = subNode.Attributes?["Executable"]?.Value;
+                            var startPage = subNode.Attributes?["StartPage"]?.Value;
+                            result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage, result.IsFramework);
+                        }
+                    }
                 }
             }
 

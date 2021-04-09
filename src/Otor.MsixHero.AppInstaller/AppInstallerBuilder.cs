@@ -16,6 +16,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -197,23 +198,25 @@ namespace Otor.MsixHero.AppInstaller
 
             if (this.MainPackageSource != null)
             {
-                AppxManifestSummary manifest;
-                if (string.Equals("appxmanifest.xml", Path.GetFileName(this.MainPackageSource.FullName), StringComparison.OrdinalIgnoreCase))
-                {
-                    manifest = AppxManifestSummaryBuilder.FromManifest(this.MainPackageSource.FullName, AppxManifestSummaryBuilderMode.Identity).GetAwaiter().GetResult();
-                }
-                else
-                {
-                    manifest = AppxManifestSummaryBuilder.FromMsix(this.MainPackageSource.FullName, AppxManifestSummaryBuilderMode.Identity).GetAwaiter().GetResult();
-                }
+                AppxIdentity identity;
+                var identityReader = new AppxIdentityReader();
 
+                try
+                {
+                    identity = identityReader.GetIdentity(this.MainPackageSource.FullName).Result;
+                }
+                catch (AggregateException e)
+                {
+                    throw e.GetBaseException();
+                }
+                
                 if (packageType == PackageType.Bundle)
                 {
                     appIns.MainBundle = new AppInstallerBundleEntry
                     {
-                        Name = manifest.Name,
-                        Version = manifest.Version,
-                        Publisher = manifest.Publisher,
+                        Name = identity.Name,
+                        Version = identity.Version,
+                        Publisher = identity.Publisher,
                         Uri = this.MainPackageUri?.ToString()
                     };
                 }
@@ -221,19 +224,23 @@ namespace Otor.MsixHero.AppInstaller
                 {
                     appIns.MainPackage = new AppInstallerPackageEntry
                     {
-                        Name = manifest.Name,
-                        Version = manifest.Version,
-                        Publisher = manifest.Publisher,
+                        Name = identity.Name,
+                        Version = identity.Version,
+                        Publisher = identity.Publisher,
                         Uri = this.MainPackageUri?.ToString()
                     };
 
-                    if (manifest.ProcessorArchitecture == null)
+                    if (identity.Architectures?.Any() != true)
                     {
                         appIns.MainPackage.Architecture = AppInstallerPackageArchitecture.neutral;
                     }
-                    else if (Enum.TryParse(manifest.ProcessorArchitecture, true, out AppInstallerPackageArchitecture parsed))
+                    else 
                     {
-                        appIns.MainPackage.Architecture = parsed;
+                        var arch = identity.Architectures.First().ToString("G");
+                        if (Enum.TryParse(arch, true, out AppInstallerPackageArchitecture parsed))
+                        {
+                            appIns.MainPackage.Architecture = parsed;
+                        }
                     }
                 }
             }
