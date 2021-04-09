@@ -37,7 +37,9 @@
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
     <None Remove="Modules\VolumeManagement\Views\acryllicbg.png" />
     <None Remove="Modules\WhatsNew\Views\arrow.png" />
-    <None Remove="Modules\WhatsNew\Views\Tabs\whatsnew2.0.63.png" />
+    <None Remove="Modules\WhatsNew\Views\Tabs\whatsnew-dashboard.png" />
+    <None Remove="Modules\WhatsNew\Views\Tabs\whatsnew-ui-appinstaller.png" />
+    <None Remove="Modules\WhatsNew\Views\Tabs\whatsnew-ui-setings.png" />
     <None Remove="Modules\WhatsNew\Views\whatsnew2.0.png" />
     <None Remove="Resources\icons8-sugar-cube-48.png" />
     <None Remove="Resources\msix-hero-32.png" />
@@ -82,7 +84,9 @@
     <Resource Include="Modules\WhatsNew\Views\arrow.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Modules\WhatsNew\Views\Tabs\whatsnew2.0.63.png" />
+    <Resource Include="Modules\WhatsNew\Views\Tabs\whatsnew-dashboard.png" />
+    <Resource Include="Modules\WhatsNew\Views\Tabs\whatsnew-ui-appinstaller.png" />
+    <Resource Include="Modules\WhatsNew\Views\Tabs\whatsnew-ui-setings.png" />
     <Resource Include="Resources\acryllicbg.png" />
     <Resource Include="Resources\icons8-sugar-cube-48.png" />
     <Resource Include="Resources\msix-hero-32.png">

@@ -4,88 +4,201 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="960">
+             d:DesignHeight="850" d:DesignWidth="660">
 
     <DockPanel>
-        <Label DockPanel.Dock="Top" Style="{StaticResource Label}">New Update Impact Analyzer</Label>
-        <Viewbox StretchDirection="DownOnly" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <ScrollViewer 
+            DockPanel.Dock="Top"
+            HorizontalContentAlignment="Left"
+            VerticalScrollBarVisibility="Auto" 
+            HorizontalScrollBarVisibility="Disabled" 
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
 
-                <Image DockPanel.Dock="Left" Margin="0 0 0 20" Source="whatsnew2.0.63.png" 
-                   HorizontalAlignment="Left" Stretch="None" VerticalAlignment="Top" />
+            <WrapPanel Margin="-10">
+
                 <StackPanel 
-                Visibility="Collapsed"
-                Margin="10 0 0 0"
-                VerticalAlignment="Top">
+                    Margin="10"
+                    Width="300"
+                    HorizontalAlignment="Left">
+                    <Label 
+                        Style="{StaticResource FormLabelThin}" 
+                        Content="New dashboard" />
+                    
+                    <Image
+                        Margin="0 8"
+                        Width="240" 
+                        UseLayoutRounding="True" 
+                        SnapsToDevicePixels="True" 
+                        Source="whatsnew-dashboard.png" 
+                        HorizontalAlignment="Left" />
                     <TextBlock 
-                            FontSize="12"
-                            Margin="0 0 0 0"
-                            TextWrapping="Wrap" 
-                            HorizontalAlignment="Left" 
-                            TextAlignment="Left" 
-                            Text="Update Impact Dialog has been rewritten and has the following new features:" />
+                        TextWrapping="Wrap"
+                        Style="{StaticResource DataValue}"
+                        Text="The dashboard has been restyled to be easier to use and offer more shortcuts to frequently used functions."
+                    />
+                    <TextBlock>
+                        <Hyperlink Click="GoToDashboard">
+                            <Run Text="Go to the Dashboard" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel 
+                    Margin="10"
+                    Width="300">
+                    <Label 
+                        Style="{StaticResource FormLabelThin}" 
+                        Content="Optional and related packages (App installer)" />
 
+                    <Image
+                        Margin="0 8"
+                        Width="240" 
+                        UseLayoutRounding="True" 
+                        SnapsToDevicePixels="True" 
+                        Source="whatsnew-ui-appinstaller.png" 
+                        HorizontalAlignment="Left" />
                     <TextBlock 
-                            FontSize="12"
-                            Margin="0 10 0 0"
-                            TextWrapping="Wrap" 
-                            HorizontalAlignment="Left" 
-                            TextAlignment="Left" 
-                            Text="It shows a list of duplicated files and their impact" />
-
-                    <TextBlock 
-                            FontSize="12"
-                            Margin="0 10 0 0"
-                            TextWrapping="Wrap" 
-                            HorizontalAlignment="Left" 
-                            TextAlignment="Left" 
-                            Text="It shows a list of duplicated files and their impact" />
-
-
+                        TextWrapping="Wrap"
+                        Style="{StaticResource DataValue}"
+                        Text="App installer editor now supports adding and editing of optional/related packages. Bulk import and automatic reading of metadata is also available."
+                    />
+                    <TextBlock>
+                        <Hyperlink Click="CreateAppInstaller">
+                            <Run Text="Create .appinstaller project" />
+                        </Hyperlink>
+                    </TextBlock>
                 </StackPanel>
 
-                <Rectangle 
-                VerticalAlignment="Top"
-                HorizontalAlignment="Left"
-                Grid.Column="0"
-                Margin="125,54,0,0"
-                Width="50"
-                Height="26"
-                StrokeThickness="3" 
-                Stroke="{StaticResource MsixHero.Brushes.Accent}" />
+                <StackPanel
+                    Margin="10"
+                    Width="300">
+                    <Label 
+                        Style="{StaticResource FormLabelThin}" 
+                        Content="Configurable UI settings" />
+                    
+                    <Image
+                        Width="240" 
+                        UseLayoutRounding="True" 
+                        SnapsToDevicePixels="True" 
+                        Source="whatsnew-ui-setings.png" 
+                        Margin="0 8" 
+                        HorizontalAlignment="Left" />
+                    <TextBlock 
+                        TextWrapping="Wrap"
+                        Style="{StaticResource DataValue}"
+                        Text="The level of animations and other UI effects is now configurable. The animations can be completely disabled for low-end or virtual machines."
+                    />
+                    <TextBlock>
+                        <Hyperlink Click="GoToSettings">
+                            <Run Text="Open settings..." />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel
+                    Margin="10"
+                    Width="300">
+                    <Label 
+                        Style="{StaticResource FormLabelThin}" 
+                        Content="Other improvements" />
+
+                    <DockPanel
+                        Margin="0 8 0 0">
+                        <TextBlock 
+                            Margin="0 0 4 0"
+                            Text="&#x2022;" 
+                            VerticalAlignment="Center"
+                            Style="{StaticResource DataValue}" />
+                        <TextBlock 
+                            Margin="0"
+                            VerticalAlignment="Center"
+                            TextWrapping="Wrap"
+                            Style="{StaticResource DataValue}">
+                            <Run Text="It is possible to import multiple files for signing in the" />
+                            <Run Text="Sign packages" FontWeight="SemiBold" />
+                            <Run Text="dialog." />
+                        </TextBlock>
+                    </DockPanel>
+
+                    <DockPanel
+                        Margin="0 8 0 0">
+                        <TextBlock 
+                            Margin="0 0 4 0"
+                            Text="&#x2022;" 
+                            VerticalAlignment="Center"
+                            Style="{StaticResource DataValue}" />
+                        <TextBlock 
+                            Margin="0"
+                            VerticalAlignment="Center"
+                            TextWrapping="Wrap"
+                            Style="{StaticResource DataValue}">
+                            <Run Text="Minor UI improvements" />
+                        </TextBlock>
+                    </DockPanel>
+
+                    <DockPanel
+                        Margin="0 8 0 0">
+                        <TextBlock 
+                            Margin="0 0 4 0"
+                            Text="&#x2022;" 
+                            VerticalAlignment="Center"
+                            Style="{StaticResource DataValue}" />
+                        <TextBlock 
+                            Margin="0"
+                            VerticalAlignment="Center"
+                            TextWrapping="Wrap"
+                            Style="{StaticResource DataValue}">
+                            <Run Text="Resolved various issues" />
+                        </TextBlock>
+                    </DockPanel>
+                </StackPanel>
+            </WrapPanel>
+
+            <!--<Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
+
 
                 <Rectangle 
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                Grid.Column="0"
-                Margin="52 0 0 18"
-                Width="60"
-                Height="26"
-                StrokeThickness="3" 
-                Stroke="{StaticResource MsixHero.Brushes.Accent}" />
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Grid.Column="0"
+                    Margin="2,31,0,0"
+                    Width="26"
+                    Height="26"
+                    StrokeThickness="3" 
+                    Stroke="{StaticResource MsixHero.Brushes.Accent}" />
 
                 <Rectangle 
-                VerticalAlignment="Bottom"
-                HorizontalAlignment="Left"
-                Grid.Column="0"
-                Margin="0 0 0 62"
-                Width="400"
-                Height="66"
-                StrokeThickness="3" 
-                Stroke="{StaticResource MsixHero.Brushes.Accent}" />
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Grid.Column="0"
+                    Margin="52 0 0 18"
+                    Width="60"
+                    Height="26"
+                    StrokeThickness="3" 
+                    Stroke="{StaticResource MsixHero.Brushes.Accent}" />
+
+                <Rectangle 
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Grid.Column="0"
+                    Margin="0 0 0 62"
+                    Width="400"
+                    Height="66"
+                    StrokeThickness="3" 
+                    Stroke="{StaticResource MsixHero.Brushes.Accent}" />
 
                 <Line 
-                SnapsToDevicePixels="True"
-                UseLayoutRounding="True"
-                Margin="175,66,0,0"
-                StrokeThickness="6" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="240" Y1="0" Y2="0" 
-                Height="3"
-                VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Width="235" />
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True"
+                    Margin="28,43,0,0"
+                    StrokeThickness="6" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="240" Y1="0" Y2="0" 
+                    Height="3"
+                    VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Width="235" />
 
                 <Line 
-                Margin="110 0 0 30"
-                StrokeThickness="3" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="300" 
-                VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="0" />
+                    Margin="110 0 0 30"
+                    StrokeThickness="3" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="300" 
+                    VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="0" />
 
                 <Line 
                     Margin="400 0 0 95"
@@ -156,7 +269,7 @@
                 HorizontalAlignment="Left" 
                 TextAlignment="Left"
                 Text="Export the results to XML format"   />
-            </Grid>
-        </Viewbox>
+            </Grid>-->
+        </ScrollViewer>
     </DockPanel>
 </UserControl>
