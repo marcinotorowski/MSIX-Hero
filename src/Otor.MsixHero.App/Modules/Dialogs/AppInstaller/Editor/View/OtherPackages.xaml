@@ -30,27 +30,25 @@
             </DataTemplate.Resources>
             <DockPanel>
                 <Border 
+                    x:Name="Border"
                     Width="24" 
                     Height="24" 
                     Background="{StaticResource MsixHero.Brushes.Accent}"
                     SnapsToDevicePixels="True" 
                     UseLayoutRounding="True" 
                     VerticalAlignment="Center" 
+                    ToolTip="Package"
                     Margin="0 0 6 0">
-                    <Path>
+                    <Path
+                        x:Name="Path"
+                        Fill="{StaticResource MsixHero.Brushes.Contrast}"
+                        Data="{StaticResource SmallCube}">
                         <Path.Style>
                             <Style TargetType="Path">
                                 <Setter Property="Width" Value="16" />
                                 <Setter Property="Height" Value="16" />
-                                <Setter Property="Fill" Value="{StaticResource MsixHero.Brushes.Contrast}" />
                                 <Setter Property="UseLayoutRounding" Value="True" />
                                 <Setter Property="SnapsToDevicePixels" Value="True" />
-                                <Setter Property="Data" Value="{StaticResource SmallCube}" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Type}" Value="{x:Static tabs:AppInstallerBasePackageViewModelType.Bundle}">
-                                        <Setter Property="Data" Value="{StaticResource SmallCubes}" />
-                                    </DataTrigger>
-                                </Style.Triggers>
                             </Style>
                         </Path.Style>
                     </Path>
@@ -94,6 +92,12 @@
                         <Setter TargetName="PART_Error" Property="Visibility" Value="Visible" />
                     </MultiDataTrigger.Setters>
                 </MultiDataTrigger>
+                <DataTrigger Binding="{Binding Type}" Value="{x:Static tabs:AppInstallerBasePackageViewModelType.Bundle}">
+                    <Setter Property="Background" TargetName="Border" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+                    <Setter Property="Data" TargetName="Path" Value="{StaticResource SmallCubes}" />
+                    <Setter Property="Fill" TargetName="Path" Value="{StaticResource MsixHero.Brushes.Accent}" />
+                    <Setter Property="ToolTip" TargetName="Border" Value="Bundle" />
+                </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
     </UserControl.Resources>
