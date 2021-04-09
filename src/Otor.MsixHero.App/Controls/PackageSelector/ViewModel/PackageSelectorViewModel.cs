@@ -219,7 +219,7 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
             {
                 var extension = Path.GetExtension((string)e.NewValue);
                 this.PackageType.CurrentValue = 0;
-                if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msixbundle", StringComparison.OrdinalIgnoreCase))
                 {
                     this.PackageType.CurrentValue = Appx.Packaging.PackageType.Bundle;
                 }
