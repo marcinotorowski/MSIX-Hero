@@ -28,13 +28,6 @@ using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
-    public interface IAppxIdentityReader
-    {
-        Task<AppxIdentity> GetIdentity(string filePath, CancellationToken cancellationToken = default);
-
-        Task<AppxIdentity> GetIdentity(Stream file, CancellationToken cancellationToken = default);
-    }
-    
     public class AppxIdentityReader : IAppxIdentityReader
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AppxIdentityReader));
@@ -56,7 +49,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                     }
                     else
                     {
-                        throw new ArgumentException($"File {Path.GetFileName(filePath)} is not supported.");
+                        throw new ArgumentException($"File name {Path.GetFileName(filePath)} is not supported.");
                     }
                 
                 case FileConstants.MsixExtension:
@@ -66,7 +59,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 case FileConstants.MsixBundleExtension:
                     return await GetIdentityFromBundle(filePath, cancellationToken).ConfigureAwait(false);
                 default:
-                    throw new ArgumentException($"File {Path.GetFileName(filePath)} is not supported.");
+                    throw new ArgumentException($"File extension {Path.GetExtension(filePath)} is not supported.");
             }
         }
 
@@ -148,7 +141,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                     }
 
                     // This is an XML file but neither a package manifest or a bundle manifest, so we can stop here.
-                    throw new ArgumentException("The input stream is not supported.");
+                    throw new ArgumentException("This XML file is neither package nor a bundle manifest (missing <Package /> or <Bundle /> root element).");
                 }    
             }
             catch
@@ -174,7 +167,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 }
                 
                 // This is a ZIP archive but neither a package or bundle, so we can stop here.
-                throw new ArgumentException("The input stream is not supported.");
+                throw new ArgumentException("This compressed file is neither an APPX/MSIX or bundle because it contains no manifest file.");
             }
             catch
             {
@@ -182,7 +175,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 Logger.Debug("The file was not in ZIP format (exception thrown during opening).");
             }
 
-            throw new ArgumentException("The input stream is not supported.");
+            throw new ArgumentException("The input stream is neither a valid manifest or package file.");
         }
 
         private static async Task<AppxIdentity> GetIdentityFromPackage(string packagePath, CancellationToken cancellationToken = default)
