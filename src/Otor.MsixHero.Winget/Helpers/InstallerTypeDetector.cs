@@ -54,26 +54,26 @@ namespace Otor.MsixHero.Winget.Helpers
 
             if (string.Equals(fileInfo.Name, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
-                return YamlInstallerType.msix;
+                return YamlInstallerType.Msix;
             }
             
             switch (fileInfo.Extension.ToLowerInvariant())
             {
                 case FileConstants.MsixExtension:
                 case FileConstants.MsixBundleExtension:
-                    return YamlInstallerType.msix;
+                    return YamlInstallerType.Msix;
                 case FileConstants.AppxExtension:
                 case FileConstants.AppxBundleExtension:
-                    return YamlInstallerType.appx;
+                    return YamlInstallerType.Appx;
                 case ".msi":
-                    return YamlInstallerType.msi;
+                    return YamlInstallerType.Msi;
             }
 
             await using var fs = File.OpenRead(fileName);
             var recognized = await this.DetectSetupType(fs, cancellationToken).ConfigureAwait(false);
-            if (recognized == YamlInstallerType.none && fileInfo.Extension.ToLowerInvariant() == ".exe")
+            if (recognized == YamlInstallerType.None && fileInfo.Extension.ToLowerInvariant() == ".exe")
             {
-                return YamlInstallerType.exe;
+                return YamlInstallerType.Exe;
             }
 
             return recognized;
@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Winget.Helpers
                 var index = await this.Find(fileStream, item, cancellationToken).ConfigureAwait(false);
                 if (index != -1)
                 {
-                    return YamlInstallerType.nullsoft;
+                    return YamlInstallerType.Nullsoft;
                 }
             }
 
@@ -97,11 +97,11 @@ namespace Otor.MsixHero.Winget.Helpers
                 var index = await this.Find(fileStream, item, cancellationToken).ConfigureAwait(false);
                 if (index != -1)
                 {
-                    return YamlInstallerType.inno;
+                    return YamlInstallerType.InnoSetup;
                 }
             }
 
-            return YamlInstallerType.none;
+            return YamlInstallerType.None;
         }
 
         private async Task<long> Find(Stream stream, byte?[] toFind, CancellationToken cancellationToken = default)

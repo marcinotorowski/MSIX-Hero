@@ -14,28 +14,20 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using YamlDotNet.Serialization;
-
 namespace Otor.MsixHero.Winget.Yaml.Entities
 {
-    public enum YamlArchitecture
+    /// <remarks>
+    /// https://github.com/microsoft/winget-cli/blob/c2bf23012848d1bbaa376abc14f5e7c68c64efc1/schemas/JSON/manifests/v1.0.0/manifest.singleton.1.0.0.json#L159
+    /// </remarks>
+    public enum YamlUpgradeBehavior
     {
         [System.Runtime.Serialization.EnumMember(Value = "")]
         None = 0,
         
-        [System.Runtime.Serialization.EnumMember(Value = "x64")]
-        X64,
+        [System.Runtime.Serialization.EnumMember(Value = "install")]
+        Install,
         
-        [System.Runtime.Serialization.EnumMember(Value = "x86")]
-        X86,
-        
-        [System.Runtime.Serialization.EnumMember(Value = "arm")]
-        Arm,
-        
-        [System.Runtime.Serialization.EnumMember(Value = "arm64")]
-        Arm64,
-        
-        [System.Runtime.Serialization.EnumMember(Value = "neutral")]
-        Neutral
+        [System.Runtime.Serialization.EnumMember(Value = "uninstallPrevious")]
+        UninstallPrevious
     }
 }

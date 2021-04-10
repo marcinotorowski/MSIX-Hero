@@ -14,10 +14,22 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using YamlDotNet.Serialization;
+
 namespace Otor.MsixHero.Winget.Yaml.Entities
 {
-    public class YamlLocalization
+    /// <remarks>
+    /// https://github.com/microsoft/winget-cli/blob/c2bf23012848d1bbaa376abc14f5e7c68c64efc1/schemas/JSON/manifests/v1.0.0/manifest.singleton.1.0.0.json#L47
+    /// </remarks>
+    public enum YamlPlatform
     {
-        public string Language { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = "")]
+        None,
+        
+        [System.Runtime.Serialization.EnumMember(Value = "Windows.Desktop")]
+        WindowsDesktop,
+        
+        [System.Runtime.Serialization.EnumMember(Value = "Windows.Universal")]
+        WindowsUniversal
     }
 }

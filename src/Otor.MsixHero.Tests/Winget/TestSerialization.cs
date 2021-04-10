@@ -58,66 +58,75 @@ Installers:
         }
 
         [Test]
-        [Ignore("To be investigated")]
         public void TestEverNote()
         {
-            var evernote = @"Id: evernote.evernote
-Name: Evernote
-AppMoniker: evernote
-Version: 6.24.2.8919
+            var evernote = @"PackageIdentifier: evernote.evernote
+PackageName: Evernote
+Moniker: evernote
+PackageVersion: 6.24.2.8919
 Publisher: Evernote
 Author: Evernote
 License: Copyright (c) 2020 Evernote Corporation. All rights reserved.
 LicenseUrl: https://evernote.com/legal/terms-of-service
-MinOSVersion: 10.0.0.0
-Homepage: https://www.evernote.com
-Description: Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it's all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.
-Tags: ""evernote,notes,cloud,online""
+MinimumOSVersion: 10.0.0.0
+PackageUrl: https://www.evernote.com
+ShortDescription: evernote.evernote
+Description: Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.
+Tags:
+- evernote
+- notes
+- cloud
+- online
 InstallerType: exe
-Installers: 
-  - Arch: x64 
-    Url: https://cdn1.evernote.com/win6/public/Evernote_6.24.2.8919.exe
-    Sha256: 4851DBDB36ECEF1D5F2DE092673B4D70223703F6211FD8A1909B2E3E44AED5F9
-    Language: en-US 
-    Scope: user
-    Switches: 
-      Silent: /qn
-      SilentWithProgress: /qn";
+Installers:
+- Architecture: x64
+  InstallerUrl: https://cdn1.evernote.com/win6/public/Evernote_6.24.2.8919.exe
+  InstallerSha256: 4851DBDB36ECEF1D5F2DE092673B4D70223703F6211FD8A1909B2E3E44AED5F9
+  InstallerLocale: en-US
+  Scope: user
+  InstallerSwitches:
+    Silent: /qn
+    SilentWithProgress: /qn
+PackageLocale: en-US
+ManifestType: singleton
+ManifestVersion: 1.0.0
+";
 
             var reader = new YamlReader();
             using TextReader textReader = new StringReader(evernote);
             var yaml = reader.Read(textReader);
 
-            Assert.AreEqual("evernote.evernote", yaml.Id);
-            Assert.AreEqual("Evernote", yaml.Name);
+            Assert.AreEqual("evernote.evernote", yaml.PackageIdentifier);
+            Assert.AreEqual("Evernote", yaml.PackageName);
             Assert.AreEqual("Evernote", yaml.Publisher);
-            Assert.AreEqual("evernote", yaml.AppMoniker);
+            Assert.AreEqual("evernote", yaml.Moniker);
             Assert.AreEqual("Copyright (c) 2020 Evernote Corporation. All rights reserved.", yaml.License);
             Assert.AreEqual("https://evernote.com/legal/terms-of-service", yaml.LicenseUrl);
-            Assert.AreEqual("6.24.2.8919", yaml.Version);
-            Assert.AreEqual("10.0.0.0", yaml.MinOperatingSystemVersion.ToString());
-            Assert.AreEqual("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it's all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.", yaml.Description);
-            Assert.AreEqual("https://www.evernote.com", yaml.Homepage);
-            Assert.AreEqual("evernote,notes,cloud,online", yaml.Tags);
+            Assert.AreEqual("6.24.2.8919", yaml.PackageVersion);
+            Assert.AreEqual("10.0.0.0", yaml.MinimumOperatingSystemVersion.ToString());
+            Assert.AreEqual("Evernote helps you focus on what matters most and have access to your information when you need it. Input typed notes or scan handwritten notes. Add to-do’s, photos, images, web pages, or audio ... and it’s all instantly searchable. Organize notes any way you want and share with anyone. And Evernote syncs across your devices so your information is always with you, everywhere you go.", yaml.Description);
+            Assert.AreEqual("evernote.evernote", yaml.ShortDescription);
+            Assert.AreEqual("https://www.evernote.com", yaml.PackageUrl);
+            Assert.AreEqual("evernote,notes,cloud,online", string.Join(",", yaml.Tags));
 #pragma warning disable 618
             Assert.AreEqual("Evernote", yaml.Author);
-            Assert.AreEqual(YamlInstallerType.exe, yaml.InstallerType);
+            Assert.AreEqual(YamlInstallerType.Exe, yaml.InstallerType);
 #pragma warning restore 618
             Assert.NotNull(yaml.Installers);
             Assert.AreEqual(1, yaml.Installers.Count);
 
             var ins = yaml.Installers[0];
 
-            Assert.AreEqual(YamlArchitecture.x64, ins.Arch);
-            Assert.AreEqual("https://cdn1.evernote.com/win6/public/Evernote_6.24.2.8919.exe", ins.Url);
+            Assert.AreEqual(YamlArchitecture.X64, ins.Architecture);
+            Assert.AreEqual("https://cdn1.evernote.com/win6/public/Evernote_6.24.2.8919.exe", ins.InstallerUrl);
 #pragma warning disable 618
-            Assert.AreEqual("en-US", ins.Language);
+            Assert.AreEqual("en-US", ins.InstallerLocale);
 #pragma warning restore 618
-            Assert.AreEqual(YamlScope.user, ins.Scope);
-            Assert.NotNull(ins.Switches);
+            Assert.AreEqual(YamlScope.User, ins.Scope);
+            Assert.NotNull(ins.InstallerSwitches);
 
-            Assert.AreEqual("/qn", ins.Switches.Silent);
-            Assert.AreEqual("/qn", ins.Switches.SilentWithProgress);
+            Assert.AreEqual("/qn", ins.InstallerSwitches.Silent);
+            Assert.AreEqual("/qn", ins.InstallerSwitches.SilentWithProgress);
         }
     }
 }

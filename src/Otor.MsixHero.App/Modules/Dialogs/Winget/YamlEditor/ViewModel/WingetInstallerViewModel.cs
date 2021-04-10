@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -41,13 +42,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
             this.interactionService = interactionService;
             this.AddChildren(
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
-                this.SystemAppId = new ValidatedChangeableProperty<string>("System AppId"),
+                this.PlatformUwp = new ChangeableProperty<bool>(this.Model?.Platform?.Contains(YamlPlatform.WindowsUniversal) == true),
+                this.PlatformWin32 = new ChangeableProperty<bool>(this.Model?.Platform?.Contains(YamlPlatform.WindowsDesktop) == true),
+                this.ProductCode = new ValidatedChangeableProperty<string>("Product code", ValidatorFactory.ValidateGuid(false)),
+                this.PackageFamilyName = new ValidatedChangeableProperty<string>("Package family name", WingetValidators.GetPackageFamilyNameError),
                 this.SignatureSha256 = new ValidatedChangeableProperty<string>("Signature hash", ValidatorFactory.ValidateSha256(false)),
                 this.Scope = new ChangeableProperty<YamlScope>(),
-                this.SilentCommand = new ChangeableProperty<string>(),
-                this.CustomCommand = new ChangeableProperty<string>(),
-                this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>("Installer type", ValidateInstallerType),
-                this.SilentCommandWithProgress = new ChangeableProperty<string>()
+                this.SilentCommand = new ValidatedChangeableProperty<string>("Silent command", WingetValidators.GetInstallerSwitchesError),
+                this.InteractiveCommand = new ValidatedChangeableProperty<string>("Interactive command", WingetValidators.GetInstallerSwitchesError),
+                this.LogCommand = new ValidatedChangeableProperty<string>("Log command", WingetValidators.GetInstallerSwitchesError),
+                this.UpgradeCommand = new ValidatedChangeableProperty<string>("Upgrade command", WingetValidators.GetInstallerSwitchesError),
+                this.CustomCommand = new ValidatedChangeableProperty<string>("Custom command", WingetValidators.GetCustomInstallerSwitchesError),
+                this.SilentCommandWithProgress = new ValidatedChangeableProperty<string>("Silent command with progress", WingetValidators.GetInstallerSwitchesError),
+                this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>("Installer type", ValidateInstallerType)
             );
 
             this.InstallerType.ValueChanged += InstallerTypeOnValueChanged;
@@ -57,14 +64,25 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         {
             this.Model = installer;
 
-            if (useNullValues || installer.Arch != default)
+            if (useNullValues || installer.Architecture != default)
             {
-                this.Architecture.CurrentValue = installer?.Arch ?? YamlArchitecture.none;
+                this.Architecture.CurrentValue = installer?.Architecture ?? YamlArchitecture.None;
             }
 
-            if (useNullValues || installer.SystemAppId != null)
+            if (useNullValues || installer.Platform != default)
             {
-                this.SystemAppId.CurrentValue = installer?.SystemAppId;
+                this.PlatformUwp.CurrentValue = installer?.Platform?.Contains(YamlPlatform.WindowsUniversal) == true;
+                this.PlatformWin32.CurrentValue = installer?.Platform?.Contains(YamlPlatform.WindowsDesktop) == true;
+            }
+
+            if (useNullValues || installer.ProductCode != null)
+            {
+                this.ProductCode.CurrentValue = installer?.ProductCode;
+            }
+
+            if (useNullValues || installer.PackageFamilyName != null)
+            {
+                this.PackageFamilyName.CurrentValue = installer?.PackageFamilyName;
             }
 
             if (useNullValues || installer.SignatureSha256 != null)
@@ -74,43 +92,70 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 
             if (useNullValues || installer.Scope != default)
             {
-                this.Scope.CurrentValue = installer?.Scope ?? YamlScope.none;
+                this.Scope.CurrentValue = installer?.Scope ?? YamlScope.None;
             }
 
-            if (useNullValues || installer.Switches?.Silent != null)
+            if (useNullValues || installer.InstallerSwitches?.Silent != null)
             {
-                this.SilentCommand.CurrentValue = installer?.Switches?.Silent;
+                this.SilentCommand.CurrentValue = installer?.InstallerSwitches?.Silent;
+            }
+            
+            if (useNullValues || installer.InstallerSwitches?.Custom != null)
+            {
+                this.CustomCommand.CurrentValue = installer?.InstallerSwitches?.Custom;
             }
 
-            if (useNullValues || installer.Switches?.Custom != null)
+            if (useNullValues || installer.InstallerSwitches?.SilentWithProgress != default)
             {
-                this.CustomCommand.CurrentValue = installer?.Switches?.Custom;
+                this.SilentCommandWithProgress.CurrentValue = installer?.InstallerSwitches?.SilentWithProgress;
+            }
+            
+            if (useNullValues || installer.InstallerSwitches?.Interactive != default)
+            {
+                this.InteractiveCommand.CurrentValue = installer?.InstallerSwitches?.Interactive;
+            }
+
+            if (useNullValues || installer.InstallerSwitches?.Upgrade != default)
+            {
+                this.UpgradeCommand.CurrentValue = installer?.InstallerSwitches?.Upgrade;
+            }
+
+            if (useNullValues || installer.InstallerSwitches?.Log != default)
+            {
+                this.LogCommand.CurrentValue = installer?.InstallerSwitches?.Log;
             }
 
             if (useNullValues || installer.InstallerType != default)
             {
-                this.InstallerType.CurrentValue = installer?.InstallerType ?? YamlInstallerType.none;
-            }
-
-            if (useNullValues || installer.Arch != default)
-            {
-                this.SilentCommandWithProgress.CurrentValue = installer?.Switches?.SilentWithProgress;
+                this.InstallerType.CurrentValue = installer?.InstallerType ?? YamlInstallerType.None;
             }
 
             this.Commit();
         }
 
         public ChangeableProperty<YamlArchitecture> Architecture { get; }
+        
+        public ChangeableProperty<bool> PlatformUwp { get; }
+        
+        public ChangeableProperty<bool> PlatformWin32 { get; }
 
         public ChangeableProperty<YamlInstallerType> InstallerType { get; }
 
         public ChangeableProperty<YamlScope> Scope { get; }
 
-        public ChangeableProperty<string> SystemAppId { get; }
+        public ChangeableProperty<string> ProductCode { get; }
+
+        public ChangeableProperty<string> PackageFamilyName { get; }
 
         public ValidatedChangeableProperty<string> SignatureSha256 { get; }
 
         public ChangeableProperty<string> SilentCommand { get; }
+        
+        public ChangeableProperty<string> InteractiveCommand { get; }
+        
+        public ChangeableProperty<string> LogCommand { get; }
+        
+        public ChangeableProperty<string> UpgradeCommand { get; }
 
         public ChangeableProperty<string> CustomCommand { get; }
 
@@ -120,7 +165,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 
         public string Url { get; set; }
 
-        public bool IsMsix => this.InstallerType.CurrentValue == YamlInstallerType.msix || this.InstallerType.CurrentValue == YamlInstallerType.appx;
+        public bool IsMsix => this.InstallerType.CurrentValue == YamlInstallerType.Msix || this.InstallerType.CurrentValue == YamlInstallerType.Appx;
 
         public bool IsCommand
         {
@@ -128,8 +173,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
             {
                 switch (this.InstallerType.CurrentValue)
                 {
-                    case YamlInstallerType.none:
-                    case YamlInstallerType.exe:
+                    case YamlInstallerType.None:
+                    case YamlInstallerType.Exe:
                         return true;
                     default:
                         return false;
@@ -229,43 +274,57 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         {
             base.Commit();
 
-            this.Model.SystemAppId = this.SystemAppId.CurrentValue;
-
-            if (this.Architecture.CurrentValue == YamlArchitecture.none)
+            this.Model.PackageFamilyName = this.PackageFamilyName.CurrentValue;
+            this.Model.ProductCode = this.ProductCode.CurrentValue;
+            this.Model.Architecture = this.Architecture.CurrentValue;
+            
+            if (!this.PlatformUwp.CurrentValue && !this.PlatformWin32.CurrentValue)
             {
-                this.Model.Arch = 0;
+                this.Model.Platform = null;
             }
             else
             {
-                this.Model.Arch = this.Architecture.CurrentValue;
+                this.Model.Platform = new List<YamlPlatform>();
+                if (this.PlatformWin32.CurrentValue)
+                {
+                    this.Model.Platform.Add(YamlPlatform.WindowsDesktop);
+                }
+                
+                if (this.PlatformUwp.CurrentValue)
+                {
+                    this.Model.Platform.Add(YamlPlatform.WindowsUniversal);
+                }
+            }
+            
+            this.Model.Scope = this.Scope.CurrentValue;
+
+            if (
+                string.IsNullOrWhiteSpace(this.SilentCommandWithProgress.CurrentValue) && 
+                string.IsNullOrWhiteSpace(this.SilentCommand.CurrentValue) && 
+                string.IsNullOrWhiteSpace(this.UpgradeCommand.CurrentValue) && 
+                string.IsNullOrWhiteSpace(this.LogCommand.CurrentValue) && 
+                string.IsNullOrWhiteSpace(this.InteractiveCommand.CurrentValue) && 
+                string.IsNullOrWhiteSpace(this.CustomCommand.CurrentValue))
+            {
+                this.Model.InstallerSwitches = null;
+            }
+            else if (this.Model.InstallerSwitches == null)
+            {
+                this.Model.InstallerSwitches = new YamlInstallerSwitches();
             }
 
-            if (this.Scope.CurrentValue == YamlScope.none)
+            if (this.Model.InstallerSwitches != null)
             {
-                this.Model.Scope = default;
-            }
-            else
-            {
-                this.Model.Scope = this.Scope.CurrentValue;
-            }
-
-            if (string.IsNullOrEmpty(this.SilentCommandWithProgress.CurrentValue) && string.IsNullOrEmpty(this.SilentCommand.CurrentValue))
-            {
-                this.Model.Switches = null;
-            }
-            else if (this.Model.Switches == null)
-            {
-                this.Model.Switches = new YamlSwitches();
+                this.Model.InstallerSwitches.SilentWithProgress = this.SilentCommandWithProgress.CurrentValue;
+                this.Model.InstallerSwitches.Silent = this.SilentCommand.CurrentValue;
+                this.Model.InstallerSwitches.Custom = this.CustomCommand.CurrentValue;
+                this.Model.InstallerSwitches.Interactive = this.InteractiveCommand.CurrentValue;
+                this.Model.InstallerSwitches.Log = this.LogCommand.CurrentValue;
+                this.Model.InstallerSwitches.Upgrade = this.UpgradeCommand.CurrentValue;
             }
 
-            if (this.Model.Switches != null)
-            {
-                this.Model.Switches.SilentWithProgress = this.SilentCommandWithProgress.CurrentValue;
-                this.Model.Switches.Silent = this.SilentCommand.CurrentValue;
-                this.Model.Switches.Custom = this.CustomCommand.CurrentValue;
-            }
-
-            this.Model.SystemAppId = this.SystemAppId.CurrentValue;
+            this.Model.ProductCode = this.ProductCode.CurrentValue;
+            this.Model.PackageFamilyName = this.PackageFamilyName.CurrentValue;
             this.Model.SignatureSha256 = this.SignatureSha256.CurrentValue;
         }
 
@@ -277,7 +336,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         
         private string ValidateInstallerType(YamlInstallerType value)
         {
-            if (value == YamlInstallerType.none)
+            if (value == YamlInstallerType.None)
             {
                 return "The installation type must be selected.";
             }

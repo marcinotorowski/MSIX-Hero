@@ -34,7 +34,7 @@ namespace Otor.MsixHero.Winget.Yaml
             var windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
             var cmdPath = Path.Combine(windowsDirectory, "system32", "cmd.exe");
             const string cmdArgs = "/c where winget";
-            
+
             var winGetLocator = new ProcessStartInfo(cmdPath, cmdArgs)
             {
                 UseShellExecute = false,
@@ -48,7 +48,7 @@ namespace Otor.MsixHero.Winget.Yaml
             };
 
             proc.Start();
-            
+
             var output = await proc.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
             await proc.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
             var exitCode = proc.ExitCode;
@@ -69,7 +69,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             return null;
         }
-        
+
         /// <summary>
         /// Validates with help of winget.exe if the manifest is OK.
         /// </summary>
@@ -83,12 +83,18 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (!string.IsNullOrEmpty(validationDetails))
             {
+                if (validationDetails.Contains("Manifest Warning: Unknown field. Field: ManifestType") || validationDetails.Contains("Unsupported ManifestVersion: 1.0.0"))
+                {
+                    // This indicates that the winget that is installed is in too low version, so we return no errors.
+                    return "Your Winget version is too old to perform the validation against the manifest schema v1.";
+                }
+                
                 return validationDetails.IndexOf("Manifest validation succeeded.", StringComparison.OrdinalIgnoreCase) == -1 ? string.Join(Environment.NewLine, validationDetails.Split(Environment.NewLine).Skip(1)) : null;
             }
 
             return null;
         }
-        
+
         private async Task<string> GetRawValidationAsync(string yamlPath, bool throwIfWinGetMissing, CancellationToken cancellationToken = default)
         {
             var winGetPath = await this.GetWingetPath(cancellationToken).ConfigureAwait(false);
@@ -101,7 +107,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
                 return null;
             }
-
+            
             var processStartInfo = new ProcessStartInfo(winGetPath, $"validate \"{yamlPath}\"")
             {
                 UseShellExecute = false,
@@ -115,7 +121,7 @@ namespace Otor.MsixHero.Winget.Yaml
             };
 
             winGetProcess.Start();
-            
+
             var standardOutput = await winGetProcess.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
             await winGetProcess.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
 

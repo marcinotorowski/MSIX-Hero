@@ -37,7 +37,7 @@ namespace Otor.MsixHero.Tests.Winget
             using (var s = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceStream(nsis))
             {
                 var detect = sd.DetectSetupType(s).Result;
-                Assert.AreEqual(YamlInstallerType.nullsoft, detect);
+                Assert.AreEqual(YamlInstallerType.Nullsoft, detect);
             }
         }
 
@@ -51,7 +51,7 @@ namespace Otor.MsixHero.Tests.Winget
             using (var s = typeof(InstallerTypeDetectorTests).Assembly.GetManifestResourceStream(inno))
             {
                 var detect = sd.DetectSetupType(s).Result;
-                Assert.AreEqual(YamlInstallerType.inno, detect);
+                Assert.AreEqual(YamlInstallerType.InnoSetup, detect);
             }
         }
     }

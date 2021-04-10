@@ -45,7 +45,7 @@
                                     <TextBlock
                                         Style="{StaticResource LabelTextBlock}"
                                         controls1:RequiredAdorner.IsRequired="True" 
-                                        Text="Version" Margin="0 16 0 6" />
+                                        Text="Package version" Margin="0 16 0 6" />
                                     <TextBox Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 </StackPanel>
 
@@ -108,14 +108,20 @@
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Homepage" Margin="0 16 0 6" />
-                                <TextBox Text="{Binding Homepage.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                                    Text="Product homepage" Margin="0 16 0 6" />
+                                <TextBox Text="{Binding PackageUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Description" 
+                                    Text="Short description" 
                                     Margin="0 16 0 6" />
-                                <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding Description.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                                <TextBox VerticalContentAlignment="Top" Height="60" TextWrapping="Wrap" Text="{Binding ShortDescription.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Full description" 
+                                    Margin="0 16 0 6" />
+                                <TextBox VerticalContentAlignment="Top" Height="120" TextWrapping="Wrap" Text="{Binding Description.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}" 
@@ -176,33 +182,60 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding Definition.TabInstaller}">
                     <AdornerDecorator>
                         <StackPanel>
-                            <TextBlock 
-                                Style="{StaticResource LabelTextBlock}"
-                                Text="Installer type" />
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
 
-                            <ComboBox Margin="0 0 0 6" SelectedValuePath="Tag" SelectedValue="{Binding InstallerType.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.msix}">MSIX</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.appx}">APPX</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.exe}">Executable (generic)</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.inno}">Executable (Inno Setup)</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.nullsoft}">Executable (NSIS)</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.wix}">Executable (WIX Bootstrapper)</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.msi}">MSI (Windows Installer)</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.none}">Unknown / not specified</ComboBoxItem>
-                            </ComboBox>
+                                <StackPanel Margin="0 0 4 0">
+
+                                    <TextBlock 
+                                        Style="{StaticResource LabelTextBlock}"
+                                        Text="Installer type" />
+
+                                    <ComboBox Margin="0 0 0 6" SelectedValuePath="Tag" SelectedValue="{Binding InstallerType.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msix}">MSIX</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Appx}">APPX</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msi}">MSI (Windows Installer)</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Exe}">Executable (generic)</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.InnoSetup}">Executable (Inno Setup)</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Nullsoft}">Executable (NSIS)</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Wix}">Executable (WIX Bootstrapper)</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.ProgressiveWebApp}">Progressive Web App</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Zip}">ZIP file</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Burn}">Burn</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.None}">Unknown / not specified</ComboBoxItem>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="4 0 0 0">
+
+                                    <TextBlock 
+                                        Style="{StaticResource LabelTextBlock}"
+                                        Text="Platform" />
+
+                                    <CheckBox Margin="0 0 0 6" IsChecked="{Binding PlatformWin32.CurrentValue}" Content="Win32 Desktop App" />
+                                    <CheckBox Margin="0 0 0 6" IsChecked="{Binding PlatformUwp.CurrentValue}" Content="UWP App" />
+                                </StackPanel>
+                            </Grid>
 
                             <UniformGrid Columns="2" Margin="0 16 0 0">
                                 <StackPanel VerticalAlignment="Top" Margin="0 0 4 0">
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
                                         Text="Installer architecture" />
-                                    <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Architecture.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.none}">Unknown / not specified</ComboBoxItem>
+                                    <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Architecture.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsEditable="False">
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.None}">Unknown / not specified</ComboBoxItem>
                                         <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Neutral}">Neutral</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.arm}">ARM</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.arm64}">ARM64</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.x64}">x64</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.x86}">x86</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Arm}">ARM</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Arm64}">ARM64</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.X64}">x64</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.X86}">x86</ComboBoxItem>
                                     </ComboBox>
                                 </StackPanel>
 
@@ -211,9 +244,9 @@
                                         Style="{StaticResource LabelTextBlock}"
                                         Text="Scope" />
                                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Scope.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}">
-                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.none}">Unknown / not specified</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.machine}">Machine installation</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.user}">User installation</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.None}">Unknown / not specified</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.Machine}">Machine installation</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.User}">User installation</ComboBoxItem>
                                     </ComboBox>
                                 </StackPanel>
 
@@ -259,8 +292,24 @@
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
+                                    Text="Command line for interactive installation" Margin="0 16 0 6" />
+                                <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding InteractiveCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
                                     Text="Command line for custom installation" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding CustomCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Command line for upgrade" Margin="0 16 0 6" />
+                                <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding UpgradeCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                                <TextBlock 
+                                    Style="{StaticResource LabelTextBlock}"
+                                    Text="Command line for logging" Margin="0 16 0 6" />
+                                <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding LogCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
                             </StackPanel>
                         </StackPanel>
                     </AdornerDecorator>
@@ -276,14 +325,26 @@
                             <TextBlock 
                                 controls1:RequiredAdorner.IsRequired="True" 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Copyright or license" />
+                                Text="License" />
                             <TextBox Text="{Binding License.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Link to EULA or Terms of Service (TOS)" 
+                                Text="Link to the license page" 
                                 Margin="0 16 0 6" />
                             <TextBox Text="{Binding LicenseUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                            
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Copyright string" 
+                                Margin="0 16 0 6"/>
+                            <TextBox Text="{Binding Copyright.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                            <TextBlock 
+                                Style="{StaticResource LabelTextBlock}"
+                                Text="Link to the copyright page" 
+                                Margin="0 16 0 6" />
+                            <TextBox Text="{Binding CopyrightUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                         </StackPanel>
                     </AdornerDecorator>
                 </ScrollViewer>

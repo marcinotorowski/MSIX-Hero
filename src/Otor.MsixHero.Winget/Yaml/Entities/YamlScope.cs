@@ -14,17 +14,22 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using YamlDotNet.Serialization;
+
 namespace Otor.MsixHero.Winget.Yaml.Entities
 {
+    /// <remarks>
+    /// https://github.com/microsoft/winget-cli/blob/c2bf23012848d1bbaa376abc14f5e7c68c64efc1/schemas/JSON/manifests/v1.0.0/manifest.singleton.1.0.0.json#L77
+    /// </remarks>
     public enum YamlScope
     {
-        // ReSharper disable once InconsistentNaming
-        none = 0,
-
-        // ReSharper disable once InconsistentNaming
-        user,
-
-        // ReSharper disable once InconsistentNaming
-        machine
+        [System.Runtime.Serialization.EnumMember(Value = "")]
+        None = 0,
+        
+        [System.Runtime.Serialization.EnumMember(Value = "user")]
+        User,
+        
+        [System.Runtime.Serialization.EnumMember(Value = "machine")]
+        Machine
     }
 }

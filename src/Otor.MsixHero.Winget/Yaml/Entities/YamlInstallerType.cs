@@ -16,32 +16,46 @@
 
 namespace Otor.MsixHero.Winget.Yaml.Entities
 {
+    /// <remarks>
+    /// https://github.com/microsoft/winget-cli/blob/c2bf23012848d1bbaa376abc14f5e7c68c64efc1/schemas/JSON/manifests/v1.0.0/manifest.singleton.1.0.0.json#L63
+    /// </remarks>
     public enum YamlInstallerType
     {
-        // ReSharper disable once InconsistentNaming
-        none = 0,
+        [System.Runtime.Serialization.EnumMember(Value = "")]
+        None = 0,
 
-        // ReSharper disable once InconsistentNaming
-        exe,
+        [System.Runtime.Serialization.EnumMember(Value = "exe")]
+        Exe,
 
-        // ReSharper disable once InconsistentNaming
-        msi,
+        [System.Runtime.Serialization.EnumMember(Value = "msi")]
+        Msi,
 
-        // ReSharper disable once InconsistentNaming
-        msix,
+        [System.Runtime.Serialization.EnumMember(Value = "msix")]
+        Msix,
 
-        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once StringLiteralTypo
+        [System.Runtime.Serialization.EnumMember(Value = "inno")]
         // ReSharper disable once IdentifierTypo
-        inno,
-        
-        // ReSharper disable once InconsistentNaming
-        wix,
-        
-        // ReSharper disable once InconsistentNaming
+        InnoSetup,
+
+        [System.Runtime.Serialization.EnumMember(Value = "wix")]
+        Wix,
+        // ReSharper disable once StringLiteralTypo
+
+        [System.Runtime.Serialization.EnumMember(Value = "nullsoft")]
         // ReSharper disable once IdentifierTypo
-        nullsoft,
-        
-        // ReSharper disable once InconsistentNaming
-        appx
+        Nullsoft,
+
+        [System.Runtime.Serialization.EnumMember(Value = "appx")]
+        Appx,
+
+        [System.Runtime.Serialization.EnumMember(Value = "zip")]
+        Zip,
+
+        [System.Runtime.Serialization.EnumMember(Value = "burn")]
+        Burn,
+
+        [System.Runtime.Serialization.EnumMember(Value = "pwa")]
+        ProgressiveWebApp
     }
 }

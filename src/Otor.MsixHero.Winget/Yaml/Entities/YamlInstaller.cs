@@ -14,60 +14,37 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
 using YamlDotNet.Serialization;
 
 namespace Otor.MsixHero.Winget.Yaml.Entities
 {
-    /*
-
-    Sample:
-    
-Id: Publisher.Name
-Publisher: Publisher
-Name: Name
-Version: Version
-License: License
-InstallerType: MSIX|EXE|MSI
-LicenseUrl: LicenseURL
-AppMoniker: Alternate name
-Tags: Keywords
-Description: Description
-Homepage: Homepage
-Installers:
-- Arch: x86 x64|arm|arm64|x86
-  Url: http://msixhero.net/download.msix
-  Sha256: e56d336922eaab3be8c1244dbaa713e134a8eba50ddbd4f50fd2fe18d72595cd
-     */
-    
-    public class YamlInstaller
+    /// <remarks>
+    /// https://github.com/microsoft/winget-cli/blob/c2bf23012848d1bbaa376abc14f5e7c68c64efc1/schemas/JSON/manifests/v1.0.0/manifest.singleton.1.0.0.json#L289
+    /// </remarks>
+    public class YamlInstaller : BaseYamlInstaller
     {
-        [YamlMember(Order = 1, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
-        public YamlArchitecture Arch { get; set; }
-
-        [YamlMember(Order = 2)]
-        public string Url { get; set; }
-
-        [YamlMember(Order = 3)]
-        public string Sha256 { get; set; }
-
-        [YamlMember(Order = 4)]
+        //  {
+        //    "type": "string",
+        //    "pattern": "^([Hh][Tt][Tt][Pp][Ss]?)://.+$",
+        //    "description": "The installer Url"
+        //  },
+        [YamlMember]
+        public string InstallerUrl { get; set; }
+        
+        //  {
+        //    "type": "string",
+        //    "pattern": "^[A-Fa-f0-9]{64}$",
+        //    "description": "Sha256 is required. Sha256 of the installer"
+        //  }
+        [YamlMember]
+        public string InstallerSha256 { get; set; }
+        
+        //  {
+        //    "type": [ "string", "null" ],
+        //    "pattern": "^[A-Fa-f0-9]{64}$",
+        //    "description": "SignatureSha256 is recommended for appx or msix. It is the sha256 of signature file inside appx or msix. Could be used during streaming install if applicable"
+        //  },
+        [YamlMember]
         public string SignatureSha256 { get; set; }
-
-        [YamlMember(Order = 5, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
-        public YamlInstallerType InstallerType { get; set; }
-
-        [YamlMember(Order = 6, DefaultValuesHandling = DefaultValuesHandling.OmitDefaults)]
-        public YamlScope Scope { get; set; }
-
-        [YamlMember(Order = 7)]
-        public YamlSwitches Switches { get; set; }
-
-        [YamlMember(Order = 9)]
-        public string SystemAppId { get; set; }
-
-        [YamlMember(Order = int.MaxValue)]
-        [Obsolete("Probably should not be used.")]
-        public string Language { get; set; }
     }
 }
