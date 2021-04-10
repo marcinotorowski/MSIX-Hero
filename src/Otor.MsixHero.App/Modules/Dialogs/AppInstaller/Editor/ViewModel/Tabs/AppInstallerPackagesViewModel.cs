@@ -7,6 +7,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
@@ -146,7 +147,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
         private async void OnBrowse()
         {
             // ReSharper disable StringLiteralTypo
-            var f = new DialogFilterBuilder("*.msix", "*.appx", "*.appxbundle", "*.msixbundle").BuildFilter();
+            var f = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, "*" + FileConstants.AppxBundleExtension, "*" + FileConstants.MsixBundleExtension).BuildFilter();
             // ReSharper restore StringLiteralTypo
             if (!this.interactionService.SelectFiles(new FileDialogSettings(f), out var selectedFiles))
             {
@@ -168,7 +169,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
                     var newFilePath = new FileInfo(selectedFile);
                     var read = await reader.GetIdentity(selectedFile).ConfigureAwait(true);
 
-                    if (string.Equals(".appxbundle", newFilePath.Extension, StringComparison.OrdinalIgnoreCase) || string.Equals(".msixbundle", newFilePath.Extension, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(FileConstants.AppxBundleExtension, newFilePath.Extension, StringComparison.OrdinalIgnoreCase) || string.Equals(FileConstants.MsixBundleExtension, newFilePath.Extension, StringComparison.OrdinalIgnoreCase))
                     {
                         this.Items.Add(new AppInstallerBundleViewModel(new AppInstallerBundleEntry
                         {

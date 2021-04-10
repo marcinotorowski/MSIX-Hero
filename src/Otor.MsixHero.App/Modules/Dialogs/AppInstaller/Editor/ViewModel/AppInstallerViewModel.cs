@@ -29,6 +29,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -56,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
         public AppInstallerViewModel(
             IInteractionService interactionService,
-            IConfigurationService configurationService) : base("Create .appinstaller", interactionService)
+            IConfigurationService configurationService) : base("Create " + FileConstants.AppInstallerExtension, interactionService)
         {
             this.appInstallerBuilder = new AppInstallerBuilder();
             this.interactionService = interactionService;
@@ -161,7 +162,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
                 switch (ext.ToLowerInvariant())
                 {
-                    case ".appinstaller":
+                    case FileConstants.AppInstallerExtension:
                         this.OpenCommand.Execute(sourceFile);
                         break;
                     default:
@@ -283,15 +284,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             {
                 if (this.previousPath != null)
                 {
-                    // ReSharper disable once StringLiteralTypo
-                    var settings = new FileDialogSettings(new DialogFilterBuilder("*.appinstaller").BuildFilter(), this.previousPath);
+                    var settings = new FileDialogSettings(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter(), this.previousPath);
                     if (!this.interactionService.SelectFile(settings, out selected))
                     {
                         return;
                     }
                 }
-                // ReSharper disable once StringLiteralTypo
-                else if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.appinstaller").BuildFilter()), out selected))
+                else if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter()), out selected))
                 {
                     return;
                 }
@@ -354,7 +353,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         {
             if (!string.IsNullOrEmpty((string)e.NewValue))
             {
-                var isManifest = string.Equals(Path.GetFileName((string)e.NewValue), "appxmanifest.xml", StringComparison.OrdinalIgnoreCase);
+                var isManifest = string.Equals(Path.GetFileName((string)e.NewValue), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase);
                 
                 if (isManifest)
                 {
@@ -383,7 +382,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                     configValue = "http://server-name/";
                 }
 
-                var newName = Path.ChangeExtension(newFilePath.Name, ".appinstaller");
+                var newName = Path.ChangeExtension(newFilePath.Name, FileConstants.AppInstallerExtension);
                 this.AppInstallerUri.CurrentValue = $"{configValue.TrimEnd('/')}/{newName}";
             }
         }

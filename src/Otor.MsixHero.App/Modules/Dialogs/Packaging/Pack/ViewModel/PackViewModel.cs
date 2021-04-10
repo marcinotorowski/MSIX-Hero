@@ -24,6 +24,7 @@ using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Packaging.Packer.Enums;
 using Otor.MsixHero.Appx.Signing;
@@ -59,7 +60,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.OutputPath = new ChangeableFileProperty("Target package path", interactionService, ChangeableFileProperty.ValidatePath)
             {
                 OpenForSaving = true,
-                Filter = new DialogFilterBuilder("*.msix", "*.appx").BuildFilter()
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()
             };
 
             this.Sign = new ChangeableProperty<bool>(signByDefault);
@@ -176,7 +177,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             }
 
             var newValue = (string) e.NewValue;
-            this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + ".msix";
+            this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + FileConstants.MsixExtension;
         }
     }
 }

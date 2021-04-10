@@ -213,7 +213,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 throw new ArgumentNullException(nameof(filePath));
             }
 
-            if (string.Equals(Path.GetFileName(filePath), "AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(Path.GetFileName(filePath), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
                 var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
 
@@ -238,7 +238,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     cancellationToken,
                     progress).ConfigureAwait(false);
             }
-            else if (string.Equals(".appinstaller", Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(filePath), StringComparison.OrdinalIgnoreCase))
             {
                 if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                 {

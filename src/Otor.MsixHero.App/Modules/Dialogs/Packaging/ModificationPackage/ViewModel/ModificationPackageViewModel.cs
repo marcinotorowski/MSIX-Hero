@@ -25,6 +25,7 @@ using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
@@ -157,12 +158,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                         return false;
                     }
 
-                    selectedPath = Path.Join(selectedPath, "AppxManifest.xml");
+                    selectedPath = Path.Join(selectedPath, FileConstants.AppxManifestFile);
                     break;
 
                 case ModificationPackageBuilderAction.Msix:
                 case ModificationPackageBuilderAction.SignedMsix:
-                    if (!this.interactionService.SaveFile(FileDialogSettings.FromFilterString("MSIX Modification Packages|*.msix"), out selectedPath))
+                    if (!this.interactionService.SaveFile(FileDialogSettings.FromFilterString("MSIX Modification Packages|*" + FileConstants.MsixExtension), out selectedPath))
                     {
                         return false;
                     }
@@ -308,7 +309,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.SourcePath = new ChangeableFileProperty("Parent package path", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml").BuildFilter(),
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter(),
                 IsValidated = true
             };
 
@@ -330,38 +331,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         {
             try
             {
-                var ext = Path.GetExtension((string) e.NewValue);
-                if (string.Equals(".msix", ext))
+                using IAppxFileReader reader = FileReaderFactory.CreateFileReader((string) e.NewValue);
+                var mr = new AppxManifestReader();
+                var read = mr.Read(reader).GetAwaiter().GetResult();
+                if (string.IsNullOrWhiteSpace(this.DisplayName.CurrentValue))
                 {
-                    using (IAppxFileReader reader = new ZipArchiveFileReaderAdapter((string) e.NewValue))
-                    {
-                        var mr = new AppxManifestReader();
-                        var read = mr.Read(reader).GetAwaiter().GetResult();
-                        if (string.IsNullOrWhiteSpace(this.DisplayName.CurrentValue))
-                        {
-                            this.DisplayName.CurrentValue = read.DisplayName + " - Modification package";
-                        }
-
-                        this.ParentName.CurrentValue = read.Name;
-                        this.ParentPublisher.CurrentValue = read.Publisher;
-                    }
+                    this.DisplayName.CurrentValue = read.DisplayName + " - Modification package";
                 }
-                else
-                {
-                    using (IAppxFileReader reader = new FileInfoFileReaderAdapter((string)e.NewValue))
-                    {
-                        var mr = new AppxManifestReader();
-                        var read = mr.Read(reader).GetAwaiter().GetResult();
-                        if (string.IsNullOrWhiteSpace(this.DisplayName.CurrentValue))
-                        {
-                            this.DisplayName.CurrentValue = read.DisplayName + " - Modification package";
-                        }
 
-                        this.ParentName.CurrentValue = read.Name;
-                        this.ParentPublisher.CurrentValue = read.Publisher;
-                    }
-                }
-                
+                this.ParentName.CurrentValue = read.Name;
+                this.ParentPublisher.CurrentValue = read.Publisher;
+
                 this.OnPropertyChanged(nameof(IsIncludeVfsFoldersEnabled));
             }
             catch (Exception exception)

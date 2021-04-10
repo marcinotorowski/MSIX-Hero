@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Modularity;
 using Prism.Services.Dialogs;
@@ -49,7 +50,7 @@ namespace Otor.MsixHero.App.Helpers
                 return;
             }
 
-            if (file.Name.Equals("AppxManifest.xml", StringComparison.OrdinalIgnoreCase))
+            if (file.Name.Equals(FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
                 this.OpenMsix(file);
                 return;
@@ -57,14 +58,14 @@ namespace Otor.MsixHero.App.Helpers
             
             switch (file.Extension.ToLowerInvariant())
             {
-                case ".msix":
-                case ".appx":
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxExtension:
                     this.OpenMsix(file);
                     break;
-                case ".appinstaller":
+                case FileConstants.AppInstallerExtension:
                     this.OpenAppInstaller(file);
                     break;
-                case ".yaml":
+                case FileConstants.WingetExtension:
                     this.OpenYaml(file);
                     break;
                 default:

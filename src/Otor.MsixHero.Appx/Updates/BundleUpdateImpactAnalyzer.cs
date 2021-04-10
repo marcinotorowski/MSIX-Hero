@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -60,10 +61,8 @@ namespace Otor.MsixHero.Appx.Updates
         {
             try
             {
-                using (IAppxFileReader fileReader = new ZipArchiveFileReaderAdapter(path))
-                {
-                    return fileReader.FileExists("AppxMetadata\\AppxBundleManifest.xml");
-                }
+                using IAppxFileReader fileReader = new ZipArchiveFileReaderAdapter(path);
+                return fileReader.FileExists(FileConstants.AppxBundleManifestFilePath);
             }
             catch (Exception)
             {

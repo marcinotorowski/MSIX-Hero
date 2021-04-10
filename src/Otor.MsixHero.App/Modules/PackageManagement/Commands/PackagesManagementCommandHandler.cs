@@ -29,6 +29,7 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
@@ -280,7 +281,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         ModuleNames.Dialogs.Packaging,
                         NavigationPaths.DialogPaths.PackagingModificationPackage,
                         "file",
-                        "MSIX packages (*.msix)|*.msix|All files|*.*");
+                        $"MSIX packages (*{FileConstants.MsixExtension})|*{FileConstants.MsixExtension}|All files|*.*");
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -429,7 +430,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             {
                 if (forAllUsers)
                 {
-                    if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder( "*.msix", "*.appx").BuildFilter()), out packagePath))
+                    if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder( "*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()), out packagePath))
                     {
                         return;
                     }
@@ -438,7 +439,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 {
                     if (!this.interactionService.SelectFile(
                         // ReSharper disable StringLiteralTypo
-                        FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.msix", "*.appx", "*.appxbundle", "*.appinstaller", "appxmanifest.xml").BuildFilter()), out packagePath))
+                        FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, "*" + FileConstants.AppxBundleExtension, "*" + FileConstants.AppInstallerExtension, FileConstants.AppxManifestFile).BuildFilter()), out packagePath))
                         // ReSharper restore StringLiteralTypo
                     {
                         return;
@@ -467,7 +468,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
 
                     AppxIdentity appxIdentity = null;
-                    if (!string.Equals(".appinstaller", Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
                     {
                         appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
 

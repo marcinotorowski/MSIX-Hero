@@ -26,6 +26,7 @@ using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Cli.Verbs;
@@ -188,7 +189,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             }
             else
             {
-                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.msix").BuildFilter()), out string[] selection);
+                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out string[] selection);
                 if (!interactionResult || !selection.Any())
                 {
                     return;
@@ -266,7 +267,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 return 0;
             }
 
-            var hasMsixFiles = Directory.EnumerateFiles(folder, "*.msix").Any();
+            var hasMsixFiles = Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension).Any();
             var hasSubfolders = Directory.EnumerateDirectories(folder).Any();
 
             var recurse = !hasMsixFiles;
@@ -279,7 +280,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                     "Selected folder " + (Path.GetFileName(folder) ?? folder) + " and all its subfolders"
                 };
 
-                var userChoice = this.interactionService.ShowMessage("The selected folder contains *.msix file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                var userChoice = this.interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
                 if (userChoice < 0 || userChoice >= buttons.Count)
                 {
                     return 0;
@@ -288,7 +289,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 recurse = userChoice == 1;
             }
             
-            var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*.msix", recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
+            var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
             var cnt = this.Files.Count;
             this.Files.AddRange(files.Except(this.Files, StringComparer.OrdinalIgnoreCase));
 

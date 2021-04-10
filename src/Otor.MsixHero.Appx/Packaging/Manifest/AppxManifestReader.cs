@@ -45,13 +45,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
-            var isMsix = fileReader.FileExists("AppxManifest.xml");
+            var isMsix = fileReader.FileExists(FileConstants.AppxManifestFile);
             if (isMsix)
             {
-                return this.ReadMsix(fileReader, "AppxManifest.xml", cancellationToken);
+                return this.ReadMsix(fileReader, FileConstants.AppxManifestFile, cancellationToken);
             }
 
-            var isAppxBundle = fileReader.FileExists("AppxMetaData\\AppxBundleManifest.xml");
+            var isAppxBundle = fileReader.FileExists(FileConstants.AppxBundleManifestFilePath);
             if (isAppxBundle)
             {
                 throw new NotSupportedException("Bundles are not supported.");
@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
         public async Task<AppxBundle> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             var bundle = new AppxBundle();
-            using (var file = fileReader.GetFile("AppxMetadata\\AppxBundleManifest.xml"))
+            using (var file = fileReader.GetFile(FileConstants.AppxBundleManifestFilePath))
             {
                 var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
                 if (document.Root == null)
@@ -545,7 +545,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 string manifestFilePath;
                 if (pkg?.InstalledLocation != null)
                 {
-                    manifestFilePath = Path.Combine(pkg.InstalledLocation.Path, "AppxManifest.xml");
+                    manifestFilePath = Path.Combine(pkg.InstalledLocation.Path, FileConstants.AppxManifestFile);
                 }
                 else if (fileReader is IAppxDiskFileReader appxDiskReader)
                 {

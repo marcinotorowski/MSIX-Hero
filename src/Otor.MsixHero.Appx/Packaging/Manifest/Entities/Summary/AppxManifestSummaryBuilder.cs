@@ -27,8 +27,6 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
     public class AppxManifestSummaryBuilder
     {
-        private const string AppxManifestName = "AppxManifest.xml";
-
         private static readonly ILog Logger = LogManager.GetLogger();
         
         public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)
@@ -45,8 +43,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 Logger.Debug("Opening file as ZIP...");
                 using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
 
-                Logger.Debug("Getting entry {0}...", AppxManifestName);
-                var entry = zipFile.GetEntry(AppxManifestName);
+                Logger.Debug("Getting entry {0}...", FileConstants.AppxManifestFile);
+                var entry = zipFile.GetEntry(FileConstants.AppxManifestFile);
                 if (entry == null)
                 {
                     throw new FileNotFoundException("Manifest file not found.");
@@ -69,7 +67,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 throw new DirectoryNotFoundException("Install location " + installLocation + " not found.");
             }
 
-            return FromManifest(Path.Join(installLocation, AppxManifestName), mode);
+            return FromManifest(Path.Join(installLocation, FileConstants.AppxManifestFile), mode);
         }
 
         public static async Task<AppxManifestSummary> FromManifest(string fullManifestPath, AppxManifestSummaryBuilderMode mode = AppxManifestSummaryBuilderMode.Minimal)

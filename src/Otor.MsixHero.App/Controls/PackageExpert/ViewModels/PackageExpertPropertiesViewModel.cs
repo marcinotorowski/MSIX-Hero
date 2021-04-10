@@ -107,7 +107,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             
             this.UserDirectory = Path.Combine("%localappdata%", "Packages", this.FamilyName, "LocalCache");
             this.PsfFilePath = Path.Combine(filePath, "config.json");
-            this.ManifestFilePath = Path.Combine(filePath, "appxmanifest.xml");
+            this.ManifestFilePath = Path.Combine(filePath, FileConstants.AppxManifestFile);
 
             if (!File.Exists(this.PsfFilePath))
             {

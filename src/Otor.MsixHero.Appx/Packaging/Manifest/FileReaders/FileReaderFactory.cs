@@ -39,7 +39,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             }
 
             var fileName = Path.GetFileName(path);
-            if (string.Equals("appxmanifest.xml", fileName, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(FileConstants.AppxManifestFile, fileName, StringComparison.OrdinalIgnoreCase))
             {
                 return new FileInfoFileReaderAdapter(path);
             }
@@ -47,8 +47,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             var ext = Path.GetExtension(path);
             switch (ext.ToLowerInvariant())
             {
-                case ".msix":
-                case ".appx":
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxExtension:
                     return new ZipArchiveFileReaderAdapter(path);
                 default:
                     return new FileInfoFileReaderAdapter(path);

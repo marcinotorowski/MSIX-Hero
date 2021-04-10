@@ -219,20 +219,31 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
             {
                 var extension = Path.GetExtension((string)e.NewValue);
                 this.PackageType.CurrentValue = 0;
-                if (string.Equals(extension, ".appxbundle", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msixbundle", StringComparison.OrdinalIgnoreCase))
-                {
-                    this.PackageType.CurrentValue = Appx.Packaging.PackageType.Bundle;
-                }
-                else if (string.Equals(extension, ".appx", StringComparison.OrdinalIgnoreCase) || string.Equals(extension, ".msix", StringComparison.OrdinalIgnoreCase))
-                {
-                    this.PackageType.CurrentValue = Appx.Packaging.PackageType.Package;
-                }
 
+                if (extension != null)
+                {
+                    switch (extension.ToLowerInvariant())
+                    {
+                        case FileConstants.AppxBundleExtension:
+                        case FileConstants.MsixBundleExtension:
+                            this.PackageType.CurrentValue = Appx.Packaging.PackageType.Bundle;
+                            break;
+                        
+                        case FileConstants.AppxExtension:
+                        case FileConstants.MsixExtension:
+                            this.PackageType.CurrentValue = Appx.Packaging.PackageType.Package;
+                            break;
+                    }
+                }
+                
                 try
                 {
-                    var builder = new AppInstallerBuilder();
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    builder.MainPackageSource = new FileInfo((string)e.NewValue);
+                    var builder = new AppInstallerBuilder
+                    {
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        MainPackageSource = new FileInfo((string)e.NewValue)
+                    };
+                    
                     var config = builder.Build();
 
                     this.Name.CurrentValue = config.MainPackage.Name;
@@ -316,7 +327,7 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
             {
                 if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Package)
                 {
-                    filterBuilder.AddFilters("*.msix", "*.appx");
+                    filterBuilder.AddFilters("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension);
                 }
             }
 
@@ -325,14 +336,14 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
                 if (!this.ShowPackageTypeSelector || this.PackageType.CurrentValue == Appx.Packaging.PackageType.Bundle)
                 {
                     // ReSharper disable once StringLiteralTypo
-                    filterBuilder.AddFilters("*.appxbundle");
+                    filterBuilder.AddFilters("*" + FileConstants.AppxBundleExtension);
                 }
             }
 
             if (allowManifests)
             {
                 // ReSharper disable once StringLiteralTypo
-                filterBuilder.AddFilters("appxmanifest.xml");
+                filterBuilder.AddFilters(FileConstants.AppxManifestFile);
             }
 
             return filterBuilder.BuildFilter();

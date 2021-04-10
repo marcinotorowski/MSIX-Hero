@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Shell;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Modularity;
 using Prism.Services.Dialogs;
@@ -59,7 +60,7 @@ namespace Otor.MsixHero.App
         private void OpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.yaml", "*.AppInstaller");
+            var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*" + FileConstants.WingetExtension, "*" + FileConstants.AppInstallerExtension);
             this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 

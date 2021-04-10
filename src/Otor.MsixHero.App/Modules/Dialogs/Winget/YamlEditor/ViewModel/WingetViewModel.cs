@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Winget.Yaml;
@@ -78,11 +79,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
             FileDialogSettings settings;
             if (string.IsNullOrEmpty(this.yamlPath) || !File.Exists(this.yamlPath))
             {
-                settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.yaml").BuildFilter());
+                settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.WingetExtension).BuildFilter());
             }    
             else
             {
-                settings = new FileDialogSettings(new DialogFilterBuilder("*.yaml").BuildFilter(), null, this.yamlPath);
+                settings = new FileDialogSettings(new DialogFilterBuilder("*" + FileConstants.WingetExtension).BuildFilter(), null, this.yamlPath);
             }
             
             var userSelected = this.interactionService.SaveFile(settings, out selected);
@@ -94,7 +95,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
 
             this.yamlPath = selected;
 
-            var tempPath = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + ".yaml");
+            var tempPath = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + FileConstants.WingetExtension);
             try
             {
                 if (!(await this.Definition.Save(tempPath, cancellationToken, progress).ConfigureAwait(false)))
@@ -144,13 +145,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         {
             if (parameters.TryGetValue("yaml", out string yamlSelectedPath))
             {
-                this.yamlPath = Path.ChangeExtension(yamlSelectedPath, ".yaml");
+                this.yamlPath = Path.ChangeExtension(yamlSelectedPath, FileConstants.WingetExtension);
 #pragma warning disable 4014
                 this.GeneralProgress.MonitorProgress(this.Definition.LoadFromYaml(yamlSelectedPath));
             }
             else if (parameters.TryGetValue("msix", out string msixPath))
             {
-                this.yamlPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(msixPath), ".yaml");
+                this.yamlPath = Path.ChangeExtension(Path.GetFileNameWithoutExtension(msixPath), FileConstants.WingetExtension);
                 this.GeneralProgress.MonitorProgress(this.Definition.LoadFromFile(msixPath));
             }
             else
@@ -176,7 +177,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
                 this.State.IsSaved = false;
             }
 
-            if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.yaml").BuildFilter()), out var selectedFile))
+            if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.WingetExtension).BuildFilter()), out var selectedFile))
             {
                 return;
             }

@@ -20,6 +20,7 @@ using System.Windows;
 using System.Windows.Documents;
 using Notifications.Wpf.Core;
 using Otor.MsixHero.App.Services;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.Views
@@ -53,7 +54,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.Views
             ExceptionGuard.Guard(() =>
             {
                 var dir = (string)((Hyperlink) sender).Tag;
-                Process.Start("explorer.exe", "/select," + Path.Combine(dir, "AppxManifest.xml"));
+                Process.Start("explorer.exe", "/select," + Path.Combine(dir, FileConstants.AppxManifestFile));
             }, 
             new InteractionService(new NotificationManager()));
         }

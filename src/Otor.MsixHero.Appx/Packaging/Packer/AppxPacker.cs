@@ -32,7 +32,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
     {
         public async Task PackFiles(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var manifestFile = Path.Combine(directory, "AppxManifest.xml");
+            var manifestFile = Path.Combine(directory, FileConstants.AppxManifestFile);
             if (!File.Exists(manifestFile))
             {
                 throw new FileNotFoundException("Manifest file has not been found.", manifestFile);
@@ -111,7 +111,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                     }
 
                     // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-                    if (string.Equals("AppxManifest.xml", relativePath, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(FileConstants.AppxManifestFile, relativePath, StringComparison.OrdinalIgnoreCase))
                     {
                         stringBuilder.AppendLine($"\"{tempManifest}\"\t\"{relativePath}\"");
                         item.CopyTo(tempManifest, true);

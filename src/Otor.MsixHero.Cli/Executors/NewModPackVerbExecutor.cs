@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
@@ -55,18 +56,24 @@ namespace Otor.MsixHero.Cli.Executors
                     IncludeVfsFolders = this.Verb.CopyFolderStructure
                 };
 
-                if (string.Equals(".msix", Path.GetExtension(this.Verb.OutputPath), StringComparison.OrdinalIgnoreCase))
+                switch (Path.GetExtension(this.Verb.OutputPath)?.ToLowerInvariant())
                 {
-                    file = this.Verb.OutputPath;
-                    action = ModificationPackageBuilderAction.Msix;
+                    case FileConstants.MsixExtension:
+                    case FileConstants.AppxExtension:
+                    {
+                        file = this.Verb.OutputPath;
+                        action = ModificationPackageBuilderAction.Msix;
+                        break;
+                    }
+                    default:
+                    {
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        file = Path.Combine(this.Verb.OutputPath, FileConstants.AppxManifestFile);
+                        action = ModificationPackageBuilderAction.Manifest;
+                        break;
+                    }
                 }
-                else
-                {
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    file = Path.Combine(this.Verb.OutputPath, "AppxManifest.xml");
-                    action = ModificationPackageBuilderAction.Manifest;
-                }
-
+                
                 config.ParentPackagePath = this.Verb.ParentPackagePath;
                 config.ParentName = this.Verb.ParentName;
                 config.ParentPublisher = this.Verb.ParentPublisher;

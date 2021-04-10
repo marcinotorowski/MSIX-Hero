@@ -23,6 +23,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -52,7 +53,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
             {
                 IsValidated = true,
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml").BuildFilter()
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
             };
 
             this.AddChildren(this.Path);

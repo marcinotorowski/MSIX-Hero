@@ -21,6 +21,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero.Commands.Dashboard;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -158,14 +159,14 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         private void OnOpenFileDialog()
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.yaml", "*.AppInstaller");
+            var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*" + FileConstants.WingetExtension, "*" + FileConstants.AppInstallerExtension);
             this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 
         private void OnOpenMsixDialog()
         {
             // ReSharper disable once StringLiteralTypo
-            var filterBuilder = new DialogFilterBuilder("*.msix", "*.appx");
+            var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension);
             this.dialogOpener.ShowFileDialog(filterBuilder.BuildFilter());
         }
 
@@ -185,11 +186,11 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         {
             if (param != null)
             {
-                var fileFilter = new DialogFilterBuilder("*.yaml");
+                var fileFilter = new DialogFilterBuilder("*" + FileConstants.WingetExtension);
                 var settings = new FileDialogSettings
                 {
                     Filter = fileFilter.BuildFilter(true, true),
-                    DialogTitle = "Open winget manifest (*.yaml)"
+                    DialogTitle = $"Open winget manifest (*{FileConstants.WingetExtension})"
                 };
 
                 if (!this.interactionService.SelectFile(settings, out var filePath))
@@ -213,11 +214,11 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         {
             if (param != null)
             {
-                var fileFilter = new DialogFilterBuilder("*.AppInstaller");
+                var fileFilter = new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension);
                 var settings = new FileDialogSettings
                 {
                     Filter = fileFilter.BuildFilter(true, true),
-                    DialogTitle = "Open app installer (*.appinstaller)"
+                    DialogTitle = $"Open app installer (*{FileConstants.AppInstallerExtension})"
                 };
 
                 if (!this.interactionService.SelectFile(settings, out var filePath))

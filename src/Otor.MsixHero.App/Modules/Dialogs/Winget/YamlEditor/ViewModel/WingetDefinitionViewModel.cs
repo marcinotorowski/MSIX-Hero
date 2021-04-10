@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
@@ -243,7 +244,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         
         private async void OnLoadFromSetup()
         {
-            var settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml", "*.exe", "*.msi").BuildFilter());
+            var settings = FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile, "*.exe", "*.msi").BuildFilter());
             // ReSharper disable once StringLiteralTypo
             if (!this.interactionService.SelectFile(settings, out var selected))
             {

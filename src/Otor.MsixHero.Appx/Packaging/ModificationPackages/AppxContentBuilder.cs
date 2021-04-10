@@ -161,7 +161,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                     await this.CopyRegistry(config.IncludeRegistry, new DirectoryInfo(tempFolder)).ConfigureAwait(false);
                 }
 
-                var manifestPath = new FileInfo(Path.Join(tempFolder, "AppxManifest.xml"));
+                var manifestPath = new FileInfo(Path.Join(tempFolder, FileConstants.AppxManifestFile));
                 if (manifestPath.Exists)
                 {
                     manifestPath.Delete();
@@ -242,28 +242,24 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
             switch (Path.GetExtension(inputPackage).ToLowerInvariant())
             {
-                case ".msix":
-                case ".appx":
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxExtension:
                 {
-                    using (var sourceStream = File.OpenRead(inputPackage))
+                    using var sourceStream = File.OpenRead(inputPackage);
+                    using var zip = new ZipArchive(sourceStream);
+                    var entries = zip.Entries.Where(e => e.FullName.StartsWith("VFS/"));
+                    foreach (var entry in entries)
                     {
-                        using (var zip = new ZipArchive(sourceStream))
+                        if (entry.FullName.EndsWith("/", StringComparison.OrdinalIgnoreCase))
                         {
-                            var entries = zip.Entries.Where(e => e.FullName.StartsWith("VFS/"));
-                            foreach (var entry in entries)
+                            listOfFoldersToCreate.Add(Uri.UnescapeDataString(entry.FullName.TrimEnd('/')));
+                        }
+                        else
+                        {
+                            var dir = Path.GetDirectoryName(entry.FullName);
+                            if (!string.IsNullOrEmpty(dir))
                             {
-                                if (entry.FullName.EndsWith("/", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    listOfFoldersToCreate.Add(Uri.UnescapeDataString(entry.FullName.TrimEnd('/')));
-                                }
-                                else
-                                {
-                                    var dir = Path.GetDirectoryName(entry.FullName);
-                                    if (!string.IsNullOrEmpty(dir))
-                                    {
-                                        listOfFoldersToCreate.Add(Uri.UnescapeDataString(dir));
-                                    }
-                                }
+                                listOfFoldersToCreate.Add(Uri.UnescapeDataString(dir));
                             }
                         }
                     }
@@ -355,7 +351,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 IAppxFileReader reader = null;
                 try
                 {
-                    if (string.Equals("appxmanifest.xml", Path.GetFileName(config.ParentPackagePath), StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(config.ParentPackagePath), StringComparison.OrdinalIgnoreCase))
                     {
                         reader = new FileInfoFileReaderAdapter(config.ParentPackagePath);
                     }

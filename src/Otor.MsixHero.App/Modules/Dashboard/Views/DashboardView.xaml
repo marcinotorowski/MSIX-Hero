@@ -6,7 +6,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Dashboard.ViewModels"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-    mc:Ignorable="d" 
+             xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
+             mc:Ignorable="d" 
              d:DesignHeight="650" d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:DashboardViewModel}">
     <DockPanel>
         <Label Margin="20 20 20 -10"  Style="{StaticResource Label}" Content="MSIX Hero" DockPanel.Dock="Top" FontSize="32" />
@@ -130,7 +131,7 @@
                             <Border
                             Grid.Column="2"
                             Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
                             </Border>
                         </Grid>
                     </Button>
@@ -155,7 +156,7 @@
                             <Border
                             Grid.Column="2"
                             Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
                             </Border>
                         </Grid>
                     </Button>
@@ -207,7 +208,7 @@
                             <Border
                             Grid.Column="2"
                             Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".appinstaller" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.AppInstallerExtension}" />
                             </Border>
                         </Grid>
                     </Button>
@@ -233,7 +234,7 @@
                             <Border
                             Grid.Column="2" 
                             Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".yaml" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.WingetExtension}" />
                             </Border>
                         </Grid>
                     </Button>
@@ -289,7 +290,7 @@
                             <Border
                                 Grid.Column="2"
                                 Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
                             </Border>
                         </Grid>
                     </Button>
@@ -315,7 +316,7 @@
                             <Border
                             Grid.Column="2"
                             Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".appinstaller" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.AppInstallerExtension}" />
                             </Border>
                         </Grid>
                     </Button>
@@ -341,7 +342,7 @@
                             <Border
                             Grid.Column="2"
                             Style="{StaticResource ExtensionBackground}">
-                                <TextBlock Style="{StaticResource ExtensionText}" Text=".yaml" />
+                                <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.WingetExtension}" />
                             </Border>
                         </Grid>
                     </Button>

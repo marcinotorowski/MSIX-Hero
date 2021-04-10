@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Otor.MsixHero.Appx.Packaging;
 
 namespace Otor.MsixHero.App.Helpers
 {
@@ -38,10 +39,10 @@ namespace Otor.MsixHero.App.Helpers
             foreach (var ext in extensions)
             {
                 // ReSharper disable once StringLiteralTypo
-                if (string.Equals(ext, "appxmanifest.xml", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(ext, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                 {
                     // ReSharper disable once StringLiteralTypo
-                    this.filters.Add("appxmanifest.xml");
+                    this.filters.Add(FileConstants.AppxManifestFile);
                     continue;
                 }
                 
@@ -137,21 +138,21 @@ namespace Otor.MsixHero.App.Helpers
                 switch (filter.ToLowerInvariant())
                 {
                     // ReSharper disable once StringLiteralTypo
-                    case "appxmanifest.xml":
-                    case "*.msix":
-                    case "*.appx":
-                    case "*.yaml":
+                    case FileConstants.AppxManifestFile:
+                    case "*" + FileConstants.MsixExtension:
+                    case "*" + FileConstants.AppxExtension:
+                    case "*" + FileConstants.WingetExtension:
                     // ReSharper disable once StringLiteralTypo
-                    case "*.appinstaller":
+                    case "*" + FileConstants.AppInstallerExtension:
                     case "*.reg":
                     case "*.cer":
                     case "*.exe":
                     case "*.msi":
                     case "*.pfx":
                     // ReSharper disable once StringLiteralTypo
-                    case "*.appxbundle":
+                    case "*" + FileConstants.AppxBundleExtension:
                     // ReSharper disable once StringLiteralTypo
-                    case "*.msixbundle":
+                    case "*" + FileConstants.MsixBundleExtension:
                         return null;
                     default:
                         return filter;
@@ -163,8 +164,8 @@ namespace Otor.MsixHero.App.Helpers
 
         private string BuildPackagesFilter()
         {
-            var msix = this.filters.Contains("*.msix");
-            var appx = this.filters.Contains("*.appx");
+            var msix = this.filters.Contains("*" + FileConstants.MsixExtension);
+            var appx = this.filters.Contains("*" + FileConstants.AppxExtension);
             
             var package = msix || appx;
             if (!package)
@@ -176,12 +177,12 @@ namespace Otor.MsixHero.App.Helpers
             stringBuilder.Append("Packages|");
             if (msix)
             {
-                stringBuilder.Append("*.msix;");
+                stringBuilder.Append("*" + FileConstants.MsixExtension + ";");
             }
 
             if (appx)
             {
-                stringBuilder.Append("*.appx;");
+                stringBuilder.Append("*" + FileConstants.MsixExtension + ";");
             }
 
             return stringBuilder.ToString().TrimEnd(';');
@@ -190,13 +191,13 @@ namespace Otor.MsixHero.App.Helpers
         private string BuildManifestFilter()
         {
             // ReSharper disable once StringLiteralTypo
-            return this.filters.Contains("AppxManifest.xml") ? "Manifest files|appxmanifest.xml" : null;
+            return this.filters.Contains(FileConstants.AppxManifestFile) ? "Manifest files|" + FileConstants.AppxManifestFile : null;
         }
 
         private string BuildBundles()
         {
-            var msixBundle = this.filters.Contains("*.MsixBundle");
-            var appxBundle = this.filters.Contains("*.AppxBundle");
+            var msixBundle = this.filters.Contains("*" + FileConstants.MsixBundleExtension);
+            var appxBundle = this.filters.Contains("*" + FileConstants.AppxBundleExtension);
             
             var bundle = msixBundle || appxBundle;
             if (!bundle)
@@ -209,14 +210,12 @@ namespace Otor.MsixHero.App.Helpers
             
             if (msixBundle)
             {
-                // ReSharper disable once StringLiteralTypo
-                stringBuilder.Append("*.msixbundle;");
+                stringBuilder.Append("*" + FileConstants.MsixBundleExtension + ";");
             }
 
             if (appxBundle)
             {
-                // ReSharper disable once StringLiteralTypo
-                stringBuilder.Append("*.appxbundle;");
+                stringBuilder.Append("*" + FileConstants.AppxBundleExtension + ";");
             }
 
             return stringBuilder.ToString().TrimEnd(';');
@@ -225,7 +224,7 @@ namespace Otor.MsixHero.App.Helpers
         private string BuildWinGet()
         {
             // ReSharper disable once StringLiteralTypo
-            return this.filters.Contains("*.yaml") ? "Winget manifests|*.yaml" : null;
+            return this.filters.Contains("*" + FileConstants.WingetExtension) ? "Winget manifests|*" + FileConstants.WingetExtension : null;
         }
 
         private string BuildCertificateFiles()
@@ -261,7 +260,7 @@ namespace Otor.MsixHero.App.Helpers
         private string BuildAppInstaller()
         {
             // ReSharper disable once StringLiteralTypo
-            return this.filters.Contains("*.AppInstaller") ? "App installer|*.appinstaller" : null;
+            return this.filters.Contains("*" + FileConstants.AppInstallerExtension) ? "App installer|*" + FileConstants.AppInstallerExtension : null;
         }
     }
 }

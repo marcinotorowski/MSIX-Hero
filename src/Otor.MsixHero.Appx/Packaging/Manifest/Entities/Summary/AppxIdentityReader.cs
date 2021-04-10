@@ -17,58 +17,198 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
-    public class AppxIdentityReader
+    public interface IAppxIdentityReader
     {
-        public Task<AppxIdentity> GetIdentity(string filePath, CancellationToken cancellationToken = default)
+        Task<AppxIdentity> GetIdentity(string filePath, CancellationToken cancellationToken = default);
+
+        Task<AppxIdentity> GetIdentity(Stream file, CancellationToken cancellationToken = default);
+    }
+    
+    public class AppxIdentityReader : IAppxIdentityReader
+    {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppxIdentityReader));
+        
+        public async Task<AppxIdentity> GetIdentity(string filePath, CancellationToken cancellationToken = default)
         {
             switch (Path.GetExtension(filePath).ToLowerInvariant())
             {
                 case ".xml":
-                    if (string.Equals("appxmanifest", Path.GetFileNameWithoutExtension(filePath), StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
                     {
-                        using var manifestStream = File.OpenRead(filePath);
-                        return GetIdentityFromPackageManifest(manifestStream, cancellationToken);
+                        await using var manifestStream = File.OpenRead(filePath);
+                        return await GetIdentityFromPackageManifest(manifestStream, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (string.Equals("appxbundlemanifest", Path.GetFileNameWithoutExtension(filePath), StringComparison.OrdinalIgnoreCase))
+                    else if (string.Equals(FileConstants.AppxBundleManifestFile, Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
                     {
-                        using var manifestStream = File.OpenRead(filePath);
-                        return GetIdentityFromBundleManifest(manifestStream, cancellationToken);
+                        await using var manifestStream = File.OpenRead(filePath);
+                        return await GetIdentityFromBundleManifest(manifestStream, cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
                         throw new ArgumentException($"File {Path.GetFileName(filePath)} is not supported.");
                     }
                 
-                case ".msix":
-                case ".appx":
-                    return GetIdentityFromPackage(filePath, cancellationToken);
-                case ".appxbundle":
-                case ".msixbundle":
-                    return GetIdentityFromBundle(filePath, cancellationToken);
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxExtension:
+                    return await GetIdentityFromPackage(filePath, cancellationToken).ConfigureAwait(false);
+                case FileConstants.AppxBundleExtension:
+                case FileConstants.MsixBundleExtension:
+                    return await GetIdentityFromBundle(filePath, cancellationToken).ConfigureAwait(false);
                 default:
                     throw new ArgumentException($"File {Path.GetFileName(filePath)} is not supported.");
             }
         }
 
+        public async Task<AppxIdentity> GetIdentity(Stream file, CancellationToken cancellationToken = default)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }    
+            
+            Logger.Info("Reading identity from stream of type " + file.GetType().Name);
+            
+            if (file is FileStream fileStream)
+            {
+                Logger.Debug("The input is a file stream, trying to evaluate its name...");
+                switch (Path.GetExtension(fileStream.Name).ToLowerInvariant())
+                {
+                    case FileConstants.AppxBundleExtension:
+                    case FileConstants.MsixBundleExtension:
+                    {
+                        Logger.Info("The file seems to be a bundle package (compressed).");
+                        try
+                        {
+                            using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(fileStream);
+                            return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            throw new ArgumentException("File  " + fileStream.Name + " is not an APPX/MSIX bundle, because it does not contain a manifest.", nameof(file), e);
+                        }
+                    }
+                        
+                    case FileConstants.AppxExtension:
+                    case FileConstants.MsixExtension:
+                    {
+                        Logger.Info("The file seems to be a package (compressed).");
+                        try
+                        {
+                            using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(fileStream);
+                            return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (FileNotFoundException e)
+                        {
+                            throw new ArgumentException("File " + fileStream.Name + " is not an APPX/MSIX package, because it does not contain a manifest.", nameof(file), e);
+                        }
+                    }
+                }
+                
+                switch (Path.GetFileName(fileStream.Name).ToLowerInvariant())
+                {
+                    case FileConstants.AppxManifestFile:
+                        Logger.Info("The file seems to be a package (manifest).");
+                        return await GetIdentityFromPackageManifest(fileStream, cancellationToken).ConfigureAwait(false);
+                    case FileConstants.AppxBundleManifestFile:
+                        Logger.Info("The file seems to be a bundle (manifest).");
+                        return await GetIdentityFromBundleManifest(fileStream, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            
+            try
+            {
+                Logger.Debug("Trying to interpret the input file as an XML manifest...");
+                var doc = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+                var firstElement = doc.Elements().FirstOrDefault();
+                if (firstElement != null)
+                {
+                    if (firstElement.Name.LocalName == "Package")
+                    {
+                        Logger.Info("The file seems to be a package (manifest).");
+                        file.Seek(0, SeekOrigin.Begin);
+                        return await GetIdentityFromPackageManifest(file, cancellationToken).ConfigureAwait(false);
+                    }
+
+                    if (firstElement.Name.LocalName == "Bundle")
+                    {
+                        file.Seek(0, SeekOrigin.Begin);
+                        Logger.Info("The file seems to be a bundle (manifest).");
+                        return await GetIdentityFromBundleManifest(file, cancellationToken).ConfigureAwait(false);
+                    }
+
+                    // This is an XML file but neither a package manifest or a bundle manifest, so we can stop here.
+                    throw new ArgumentException("The input stream is not supported.");
+                }    
+            }
+            catch
+            {
+                // this is ok, it seems that the file was not XML so we should continue to find out some other possibilities
+                Logger.Debug("The file was not in XML format (exception thrown during parsing).");
+            }
+
+            try
+            {
+                file.Seek(0, SeekOrigin.Begin);
+                using var zip = new ZipArchive(file, ZipArchiveMode.Read, true);
+                using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(zip);
+                
+                if (reader.FileExists(FileConstants.AppxManifestFile))
+                {
+                    return await GetIdentityFromPackageManifest(reader.GetFile(FileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
+                }
+                        
+                if (reader.FileExists(FileConstants.AppxBundleManifestFilePath))
+                {
+                    return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
+                }
+                
+                // This is a ZIP archive but neither a package or bundle, so we can stop here.
+                throw new ArgumentException("The input stream is not supported.");
+            }
+            catch
+            {
+                // this is ok, it seems that the file was not ZIP format so we should continue to find out some other possibilities
+                Logger.Debug("The file was not in ZIP format (exception thrown during opening).");
+            }
+
+            throw new ArgumentException("The input stream is not supported.");
+        }
+
         private static async Task<AppxIdentity> GetIdentityFromPackage(string packagePath, CancellationToken cancellationToken = default)
         {
             using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(packagePath);
-            return await GetIdentityFromPackageManifest(reader.GetFile("AppxManifest.xml"), cancellationToken).ConfigureAwait(false);
+            try
+            {
+                return await GetIdentityFromPackageManifest(reader.GetFile(FileConstants.AppxManifestFile), cancellationToken).ConfigureAwait(false);
+            }
+            catch (FileNotFoundException e)
+            {
+                throw new ArgumentException("File " + packagePath + " is not an APPX/MSIX package, because it does not contain a manifest.", nameof(packagePath), e);
+            }
         }
 
         private static async Task<AppxIdentity> GetIdentityFromBundle(string bundlePath, CancellationToken cancellationToken = default)
         {
-            using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(bundlePath);
-            return await GetIdentityFromBundleManifest(reader.GetFile("AppxMetadata/AppxBundleManifest.xml"), cancellationToken).ConfigureAwait(false);
+            try
+            {
+                using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(bundlePath);
+                return await GetIdentityFromBundleManifest(reader.GetFile(FileConstants.AppxBundleManifestFilePath), cancellationToken).ConfigureAwait(false);
+            }
+            catch (FileNotFoundException e)
+            {
+                throw new ArgumentException("File " + bundlePath + " is not an APPX/MSIX bundle, because it does not contain a manifest.", nameof(bundlePath), e);
+            }
         }
 
         private static async Task<AppxIdentity> GetIdentityFromPackageManifest(Stream packageManifestStream, CancellationToken cancellationToken = default)
@@ -107,9 +247,16 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 Version = version?.Value
             };
 
-            if (architecture != null && Enum.TryParse(architecture.Value, true, out AppxPackageArchitecture architectureValue))
+            if (architecture != null)
             {
-                appxIdentity.Architectures = new [] { architectureValue };
+                if (Enum.TryParse(architecture.Value, true, out AppxPackageArchitecture architectureValue))
+                {
+                    appxIdentity.Architectures = new[] { architectureValue };
+                }
+                else
+                {
+                    Logger.Warn("Could not parse the value " + architecture.Value + " to one of known enums.");
+                }
             }
             
             return appxIdentity;
@@ -156,9 +303,18 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 foreach (var package in packages)
                 {
                     var architecture = package.Attribute("Architecture");
-                    if (architecture != null && Enum.TryParse(architecture.Value, true, out AppxPackageArchitecture architectureValue))
+                    if (architecture == null) 
+                    {
+                        continue;
+                    }
+                    
+                    if (Enum.TryParse(architecture.Value, true, out AppxPackageArchitecture architectureValue))
                     {
                         architectures.Add(architectureValue);
+                    }
+                    else
+                    {
+                        Logger.Warn("Could not parse the value " + architecture.Value + " to one of known enums.");
                     }
                 }
 

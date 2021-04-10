@@ -57,7 +57,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
                     return null;
                 }
 
-                return Path.Combine(this.InstallLocation, "AppxManifest.xml");
+                return Path.Combine(this.InstallLocation, FileConstants.AppxManifestFile);
             }
         }
 

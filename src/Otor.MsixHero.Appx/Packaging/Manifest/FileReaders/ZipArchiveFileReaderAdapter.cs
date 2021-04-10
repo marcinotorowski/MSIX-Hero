@@ -40,6 +40,21 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             this.msixPackagePath = msixPackagePath;
         }
 
+        public ZipArchiveFileReaderAdapter(FileStream msixPackage, bool ownStream = true)
+        {
+            this.msixPackagePath = msixPackage.Name;
+            this.msixPackage = new ZipArchive(msixPackage, ZipArchiveMode.Read, !ownStream);
+
+            if (ownStream)
+            {
+                this.disposableStreams = new IDisposable[] { msixPackage, this.msixPackage };
+            }
+            else
+            {
+                this.disposableStreams = new IDisposable[] { this.msixPackage };
+            }
+        }
+
         public string PackagePath { get; private set; }
 
         public Stream GetFile(string filePath)
@@ -156,8 +171,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             try
             {
-                this.msixPackage = new ZipArchive(fileStream);
-                this.disposableStreams = new IDisposable[] {this.msixPackage, fileStream};
+                this.msixPackage = new ZipArchive(fileStream, ZipArchiveMode.Read, false);
+                this.disposableStreams = new IDisposable[] { this.msixPackage, fileStream };
             }
             catch (InvalidDataException e)
             {

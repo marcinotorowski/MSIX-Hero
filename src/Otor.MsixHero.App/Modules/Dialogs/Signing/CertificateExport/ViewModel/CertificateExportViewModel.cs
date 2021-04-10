@@ -22,6 +22,7 @@ using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -47,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
             this.InputPath = new ChangeableFileProperty("Path to signed MSIX file", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
-                Filter = new DialogFilterBuilder("*.msix", "*.cer").BuildFilter()
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*.cer").BuildFilter()
             };
 
             this.ExtractCertificate = new ChangeableFileProperty("Path to certificate", interactionService, ChangeableFileProperty.ValidatePath)
@@ -201,13 +202,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
             }
             
             var ext = Path.GetExtension(this.InputPath.CurrentValue);
-            if (!string.Equals(".msix", ext, StringComparison.OrdinalIgnoreCase))
+
+            switch (ext?.ToLowerInvariant())
             {
-                this.CanExtract.CurrentValue = false;
-            }
-            else
-            {
-                this.CanExtract.CurrentValue = true;
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxExtension:
+                    this.CanExtract.CurrentValue = true;
+                    break;
+                default:
+                    this.CanExtract.CurrentValue = false;
+                    break;
             }
 
 #pragma warning disable 4014

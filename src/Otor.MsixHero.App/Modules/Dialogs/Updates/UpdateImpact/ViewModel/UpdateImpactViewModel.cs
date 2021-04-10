@@ -23,6 +23,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates;
@@ -48,7 +49,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                 IsValidated = true,
                 Prompt = "Select the previous version of an upgradable package",
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml").BuildFilter()
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
             };
 
             this.Path2 = new ChangeableFileProperty("Path to the new version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
@@ -56,7 +57,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                 IsValidated = true,
                 Prompt = "Select the newer version of an upgradable package",
                 // ReSharper disable once StringLiteralTypo
-                Filter = new DialogFilterBuilder("*.msix", "*.appx", "appxmanifest.xml").BuildFilter()
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
             };
             
             this.AddChildren(this.Path1, this.Path2);

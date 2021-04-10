@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.X509;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Branding;
@@ -94,12 +95,12 @@ namespace Otor.MsixHero.Appx.Signing
             {
                 switch (Path.GetExtension(certificateFileOrSignedFile).ToLowerInvariant())
                 {
-                    case ".msix":
-                    case ".appx":
+                    case FileConstants.MsixExtension:
+                    case FileConstants.AppxExtension:
                     case ".exe":
                     case ".dll":
-                    case ".appxbundle":
-                    case ".msixbundle":
+                    case FileConstants.AppxBundleExtension:
+                    case FileConstants.MsixBundleExtension:
                         Logger.Info("Verifying certificate from a signable file {0}...", certificateFileOrSignedFile);
 
                         try
@@ -285,12 +286,12 @@ namespace Otor.MsixHero.Appx.Signing
         {
             switch (Path.GetExtension(certificateFileOrSignedFile.ToLowerInvariant()))
             {
-                case ".msix":
-                case ".appx":
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxExtension:
                 case ".exe":
                 case ".dll":
-                case ".appxbundle":
-                case ".msixbundle":
+                case FileConstants.AppxBundleExtension:
+                case FileConstants.MsixBundleExtension:
                     await this.ImportCertificateFromMsix(certificateFileOrSignedFile, cancellationToken).ConfigureAwait(false);
                     break;
 
@@ -711,7 +712,7 @@ namespace Otor.MsixHero.Appx.Signing
                     Logger.Debug("Unpacking {0} to {1}.", package, tempDirectory);
                     await sdk.UnpackPackage(package, tempDirectory, cancellationToken).ConfigureAwait(false);
 
-                    var manifestFilePath = Path.Combine(tempDirectory, "AppxManifest.xml");
+                    var manifestFilePath = Path.Combine(tempDirectory, FileConstants.AppxManifestFile);
                     if (!File.Exists(manifestFilePath))
                     {
                         throw new FileNotFoundException($"Package {package} contains no XML manifest.");

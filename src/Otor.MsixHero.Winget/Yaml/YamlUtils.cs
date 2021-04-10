@@ -24,6 +24,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             var webRequest = (HttpWebRequest) WebRequest.Create(url);
             using var response = webRequest.GetResponse();
-            var tempFileName = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + ".msix");
+            var tempFileName = Path.Combine(Path.GetTempPath(), "msixhero-" + Guid.NewGuid().ToString("N").Substring(0, 8) + FileConstants.MsixExtension);
 
             try
             {
@@ -114,37 +115,34 @@ namespace Otor.MsixHero.Winget.Yaml
         public async Task<string> CalculateSignatureHashAsync(FileInfo fileInfo, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var ext = Path.GetExtension(fileInfo.FullName);
-            if (
-                string.Equals(".appx", ext, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(".msix", ext, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(".appxbundle", ext, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(".msixbundle", ext, StringComparison.OrdinalIgnoreCase))
-            {
-                using (IAppxFileReader src = new ZipArchiveFileReaderAdapter(fileInfo.FullName))
-                {
-                    if (src.FileExists("AppxSignature.p7x"))
-                    {
-                        using (var appxSignature = src.GetFile("AppxSignature.p7x"))
-                        {
-                            var buffer = new byte[ushort.MaxValue];
-                            var read = await appxSignature.ReadAsync(buffer, 0, ushort.MaxValue, cancellationToken).ConfigureAwait(false);
-                            
-                            var builder = new StringBuilder();
-                            
-                            using (var sha = SHA256.Create())
-                            {
-                                foreach (var b in sha.ComputeHash(buffer, 0, read))
-                                {
-                                    cancellationToken.ThrowIfCancellationRequested();
-                                    builder.Append(b.ToString("X2"));
-                                }
 
-                                return builder.ToString();
-                            }
-                        }
+            switch (ext.ToLowerInvariant())
+            {
+                case FileConstants.AppxExtension:
+                case FileConstants.MsixExtension:
+                case FileConstants.AppxBundleExtension:
+                case FileConstants.MsixBundleExtension:
+                {
+                    using IAppxFileReader src = new ZipArchiveFileReaderAdapter(fileInfo.FullName);
+                    if (!src.FileExists("AppxSignature.p7x"))
+                    {
+                        throw new ArgumentException($"The file '{fileInfo.Name}' does not contain a signature.", nameof(fileInfo));
+                    }
+                        
+                    await using var appxSignature = src.GetFile("AppxSignature.p7x");
+                    var buffer = new byte[ushort.MaxValue];
+                    var read = await appxSignature.ReadAsync(buffer, 0, ushort.MaxValue, cancellationToken).ConfigureAwait(false);
+                                
+                    var builder = new StringBuilder();
+
+                    using var sha = SHA256.Create();
+                    foreach (var b in sha.ComputeHash(buffer, 0, read))
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        builder.Append(b.ToString("X2"));
                     }
 
-                    throw new ArgumentException($"The file '{fileInfo.Name}' does not contain a signature.", nameof(fileInfo));
+                    return builder.ToString();
                 }
             }
 

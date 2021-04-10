@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -41,7 +42,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             this.interactionService = interactionService;
             this.InputPath = new ChangeableFileProperty("Source MSIX file", interactionService)
             {
-                Filter = new DialogFilterBuilder("*.msix").BuildFilter()
+                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()
             };
 
             this.GenerateScripts = new ChangeableProperty<bool>(true);
