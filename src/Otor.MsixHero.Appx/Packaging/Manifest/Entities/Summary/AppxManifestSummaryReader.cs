@@ -45,7 +45,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
 
                 Logger.Debug("Getting entry {0}...", FileConstants.AppxManifestFile);
-                var entry = zipFile.GetEntry(FileConstants.AppxManifestFile);
+                var entry = zipFile.GetEntry(FileConstants.AppxManifestFile) ?? zipFile.Entries.FirstOrDefault(e => string.Equals(e.FullName, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase));
                 if (entry == null)
                 {
                     throw new FileNotFoundException("Manifest file not found.");
@@ -85,17 +85,15 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
         private static async Task<AppxManifestSummary> FromManifest(Stream manifestStream, ReadMode mode)
         {
             var result = new AppxManifestSummary();
-
-            IAppxIdentityReader identityReader = new AppxIdentityReader();
-            var identity = await identityReader.GetIdentity(manifestStream).ConfigureAwait(false);
+            
+            Logger.Debug("Loading XML file...");
+            var xmlDocument = await XDocument.LoadAsync(manifestStream, LoadOptions.None, CancellationToken.None).ConfigureAwait(false);
+            
+            var identity = AppxIdentityReader.GetIdentityFromPackageManifest(xmlDocument);
             result.Name = identity.Name;
             result.Version = identity.Version;
             result.Publisher = identity.Publisher;
             result.Architectures = identity.Architectures;
-            
-            Logger.Debug("Loading XML file...");
-            manifestStream.Seek(0, SeekOrigin.Begin);
-            var xmlDocument = await XDocument.LoadAsync(manifestStream, LoadOptions.None, CancellationToken.None).ConfigureAwait(false);
             
             XNamespace win10Namespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
             XNamespace appxNamespace = "http://schemas.microsoft.com/appx/2010/manifest";

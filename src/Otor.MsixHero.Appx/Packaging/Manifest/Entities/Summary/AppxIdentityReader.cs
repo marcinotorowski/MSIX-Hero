@@ -129,15 +129,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                     if (firstElement.Name.LocalName == "Package")
                     {
                         Logger.Info("The file seems to be a package (manifest).");
-                        file.Seek(0, SeekOrigin.Begin);
-                        return await GetIdentityFromPackageManifest(file, cancellationToken).ConfigureAwait(false);
+                        return GetIdentityFromPackageManifest(doc);
                     }
 
                     if (firstElement.Name.LocalName == "Bundle")
                     {
-                        file.Seek(0, SeekOrigin.Begin);
                         Logger.Info("The file seems to be a bundle (manifest).");
-                        return await GetIdentityFromBundleManifest(file, cancellationToken).ConfigureAwait(false);
+                        return GetIdentityFromBundleManifest(doc);
                     }
 
                     // This is an XML file but neither a package manifest or a bundle manifest, so we can stop here.
@@ -206,6 +204,12 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
         private static async Task<AppxIdentity> GetIdentityFromPackageManifest(Stream packageManifestStream, CancellationToken cancellationToken = default)
         {
+            var doc = await XDocument.LoadAsync(packageManifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+            return GetIdentityFromPackageManifest(doc);
+        }
+
+        internal static AppxIdentity GetIdentityFromPackageManifest(XDocument document, CancellationToken cancellationToken = default)
+        {
             /*
              * <Package
              *    xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10">
@@ -214,10 +218,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             
             XNamespace windows10Namespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
             XNamespace appxNamespace = "http://schemas.microsoft.com/appx/2010/manifest";
-
-            var doc = await XDocument.LoadAsync(packageManifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-
-            var root = doc.Element(windows10Namespace + "Package") ?? doc.Element(appxNamespace + "Package");
+            
+            var root = document.Element(windows10Namespace + "Package") ?? document.Element(appxNamespace + "Package");
             if (root == null)
             {
                 throw new InvalidDataException("Not a valid package manifest. Missing root element <Package />.");
@@ -258,19 +260,24 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
         private static async Task<AppxIdentity> GetIdentityFromBundleManifest(Stream bundleManifestStream, CancellationToken cancellationToken = default)
         {
+            var doc = await XDocument.LoadAsync(bundleManifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+            return GetIdentityFromBundleManifest(doc);
+        }
+
+        internal static AppxIdentity GetIdentityFromBundleManifest(XDocument document, CancellationToken cancellationToken = default)
+        {
             /*
              *<?xml version="1.0" encoding="UTF-8"?>
              * <Bundle xmlns:b4="http://schemas.microsoft.com/appx/2018/bundle" xmlns="http://schemas.microsoft.com/appx/2013/bundle" 
              */
             XNamespace bundleManifest = "http://schemas.microsoft.com/appx/2013/bundle";
 
-            var doc = await XDocument.LoadAsync(bundleManifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-            var root = doc.Element(bundleManifest + "Bundle");
+            var root = document.Element(bundleManifest + "Bundle");
             if (root == null)
             {
                 throw new InvalidDataException("Not a valid bundle manifest. Missing root element <Bundle />.");
             }
-            
+
             var identity = root.Element(bundleManifest + "Identity");
             if (identity == null)
             {
@@ -283,14 +290,14 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
             var packagesNode = root.Element(bundleManifest + "Packages");
             var packages = packagesNode?.Elements(bundleManifest + "Package");
-            
+
             var appxIdentity = new AppxIdentity
             {
                 Name = name?.Value,
                 Publisher = publisher?.Value,
                 Version = version?.Value
             };
-            
+
             if (packages != null)
             {
                 var architectures = new HashSet<AppxPackageArchitecture>();
@@ -298,11 +305,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 foreach (var package in packages)
                 {
                     var architecture = package.Attribute("Architecture");
-                    if (architecture == null) 
+                    if (architecture == null)
                     {
                         continue;
                     }
-                    
+
                     if (Enum.TryParse(architecture.Value, true, out AppxPackageArchitecture architectureValue))
                     {
                         architectures.Add(architectureValue);

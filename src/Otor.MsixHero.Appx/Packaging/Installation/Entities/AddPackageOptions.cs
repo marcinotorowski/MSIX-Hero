@@ -23,6 +23,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation.Entities
     {
         AllUsers = 1,
         AllowDowngrade = 2,
-        KillRunningApps = 4
+        KillRunningApps = 4,
+        AllBundleResources = 8
     }
 }

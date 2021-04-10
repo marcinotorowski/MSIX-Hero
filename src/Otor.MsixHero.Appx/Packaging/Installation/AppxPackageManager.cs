@@ -215,6 +215,11 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             if (string.Equals(Path.GetFileName(filePath), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
+                if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                {
+                    throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                }
+
                 var reader = await AppxManifestSummaryReader.FromManifest(filePath).ConfigureAwait(false);
 
                 DeploymentOptions deploymentOptions = 0;
@@ -242,15 +247,20 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                 {
-                    throw new NotSupportedException("Cannot install a package from .appinstaller for all users.");
+                    throw new ArgumentException("Cannot install a package from .appinstaller for all users.", nameof(options));
                 }
-
-                AddPackageByAppInstallerOptions deploymentOptions = 0;
+                
+                if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                {
+                    throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                }
 
                 if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                 {
-                    throw new NotSupportedException("Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.");
+                    throw new ArgumentException("Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.", nameof(options));
                 }
+
+                AddPackageByAppInstallerOptions deploymentOptions = 0;
 
                 if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
                 {
@@ -266,67 +276,105 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
             else
             {
-                try
+                string name, version, publisher;
+                
+                DeploymentOptions deploymentOptions = 0;
+
+                switch (Path.GetExtension(filePath))
                 {
-                    var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
-
-                    DeploymentOptions deploymentOptions = 0;
-
-                    if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
+                    case FileConstants.AppxBundleExtension:
+                    case FileConstants.MsixBundleExtension:
                     {
-                        deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
-                    }
-
-                    if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
-                    {
-                        deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
-                        deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
-                    }
-
-                    if (options.HasFlag(AddAppxPackageOptions.AllUsers))
-                    {
-                        var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                            PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
-                            $"Installing {reader.DisplayName} {reader.Version}...",
-                            cancellationToken,
-                            progress).ConfigureAwait(false);
-
-                        if (!deploymentResult.IsRegistered)
+                        IAppxIdentityReader reader = new AppxIdentityReader();
+                        var identity = await reader.GetIdentity(filePath, cancellationToken).ConfigureAwait(false);
+                        name = identity.Name;
+                        publisher = identity.Publisher;
+                        version = identity.Version;
+                        
+                        if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                         {
-                            throw new InvalidOperationException("The package could not be registered.");
+                            deploymentOptions |= DeploymentOptions.InstallAllResources;
                         }
-
-                        var findInstalled = PackageManager.Value.FindPackages(reader.Name, reader.Publisher).FirstOrDefault();
-                        if (findInstalled == null)
-                        {
-                            throw new InvalidOperationException("The package could not be registered.");
-                        }
-
-                        var familyName = findInstalled.Id.FamilyName;
-
-                        await AsyncOperationHelper.ConvertToTask(
-                            PackageManager.Value.ProvisionPackageForAllUsersAsync(familyName),
-                            $"Provisioning {reader.DisplayName} {reader.Version}...",
-                            cancellationToken,
-                            progress).ConfigureAwait(false);
+                        
+                        break;
                     }
-                    else
+                        
+                    default:
                     {
-                        var deploymentResult = await AsyncOperationHelper.ConvertToTask(
-                            PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
-                            "Installing " + reader.DisplayName + "...",
-                            cancellationToken,
-                            progress).ConfigureAwait(false);
-
-                        if (!deploymentResult.IsRegistered)
+                        if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                         {
-                            throw new InvalidOperationException("The package could not be registered.");
+                            throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
                         }
+                        
+                        var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
+                        name = reader.DisplayName;
+                        version = reader.Version;
+                        publisher = reader.Publisher;
+                        break;
                     }
                 }
-                catch (InvalidDataException e)
+
+                if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                 {
-                    throw new InvalidOperationException("File " + filePath + " does not seem to be a valid MSIX package." + e, e);
+                    deploymentOptions |= DeploymentOptions.ForceUpdateFromAnyVersion;
+                }
+
+                if (options.HasFlag(AddAppxPackageOptions.KillRunningApps))
+                {
+                    deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
+                    deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
+                }
+                
+                if (options.HasFlag(AddAppxPackageOptions.AllUsers))
+                {
+                    var deploymentResult = await AsyncOperationHelper.ConvertToTask(
+                        PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                        $"Installing {name} {version}...",
+                        cancellationToken,
+                        progress).ConfigureAwait(false);
+
+                    if (!deploymentResult.IsRegistered)
+                    {
+                        throw new InvalidOperationException("The package could not be registered.");
+                    }
+
+                    var findInstalled = PackageManager.Value.FindPackages(name, publisher).FirstOrDefault();
+                    if (findInstalled == null)
+                    {
+                        throw new InvalidOperationException("The package could not be registered.");
+                    }
+
+                    var familyName = findInstalled.Id.FamilyName;
+
+                    await AsyncOperationHelper.ConvertToTask(
+                        PackageManager.Value.ProvisionPackageForAllUsersAsync(familyName),
+                        $"Provisioning {name} {version}...",
+                        cancellationToken,
+                        progress).ConfigureAwait(false);
+                }
+                else
+                {
+                    var deploymentResult = await AsyncOperationHelper.ConvertToTask(
+                        PackageManager.Value.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
+                        "Installing " + name + "...",
+                        cancellationToken,
+                        progress).ConfigureAwait(false);
+
+                    if (!deploymentResult.IsRegistered)
+                    {
+                        var message = "Could not install " + name + " " + version + ".";
+                        if (!string.IsNullOrEmpty(deploymentResult.ErrorText))
+                        {
+                            message += " " + deploymentResult.ErrorText;
+                        }
+
+                        if (deploymentResult.ExtendedErrorCode != null)
+                        {
+                            throw new InvalidOperationException(message, deploymentResult.ExtendedErrorCode);
+                        }
+
+                        throw new InvalidOperationException(message);
+                    }
                 }
             }
         }
