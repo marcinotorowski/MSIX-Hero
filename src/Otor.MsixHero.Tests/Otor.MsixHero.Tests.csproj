@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Registry\team.reg" />
+    <None Remove="Resources\AppxBundleManifest.xml" />
     <None Remove="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix" />
     <None Remove="Resources\inno.exe" />
     <None Remove="Resources\MSIX.Commander_1.0.7.5-x64.msix" />
@@ -21,6 +22,9 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Registry\team.reg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\AppxBundleManifest.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
