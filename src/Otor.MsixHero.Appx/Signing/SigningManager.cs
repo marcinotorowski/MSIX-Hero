@@ -25,8 +25,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using Org.BouncyCastle.X509;
 using Otor.MsixHero.Appx.Packaging;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Branding;
@@ -717,46 +719,53 @@ namespace Otor.MsixHero.Appx.Signing
                     {
                         throw new FileNotFoundException($"Package {package} contains no XML manifest.");
                     }
-
+                    
                     string newXmlContent;
-
-                    Logger.Debug("Opening manifest file {0}.", manifestFilePath);
-                    using (var stream = File.OpenRead(manifestFilePath))
+                    await using (var stream = File.OpenRead(manifestFilePath))
                     {
-                        var xmlDocument = new XmlDocument();
-                        xmlDocument.Load(stream);
-                        var identity = xmlDocument.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']");
-                        if (identity == null)
+                        var xmlDocument = await XDocument.LoadAsync(stream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+
+                        XNamespace windows10Namespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
+                        XNamespace appxNamespace = "http://schemas.microsoft.com/appx/2010/manifest";
+
+                        var rootNode = xmlDocument.Element(windows10Namespace + "Package") ?? xmlDocument.Element(appxNamespace + "Package");
+                        if (rootNode == null)
                         {
-                            throw new FormatException("Missing <Identity /> tag.");
+                            throw new FormatException("Missing <Package /> root element.");
+                        }
+                        
+                        var identityNode = rootNode.Element(windows10Namespace + "Identity") ?? rootNode.Element(appxNamespace + "Identity");
+                        if (identityNode == null)
+                        {
+                            throw new FormatException("Missing <Identity /> root element.");
                         }
 
                         // ReSharper disable once PossibleNullReferenceException
-                        var publisher = identity.Attributes["Publisher"];
+                        var publisher = identityNode.Attribute("Publisher");
                         if (publisher == null)
                         {
-                            publisher = xmlDocument.CreateAttribute("Publisher");
-                            identity.Attributes.Append(publisher);
+                            Logger.Info("Setting Publisher to '{0}'", subject);
+                            identityNode.Add(new XAttribute("Publisher", subject));
                         }
-
-                        Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.InnerText, subject);
-                        publisher.InnerText = subject;
-
+                        else
+                        {
+                            Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.Value, subject);
+                            publisher.Value = subject;
+                        }
+                        
                         if (increaseVersion != IncreaseVersionMethod.None)
                         {
-                            var version = identity.Attributes["Version"];
+                            var version = identityNode.Attribute("Version");
                             if (version == null)
                             {
-                                throw new FormatException(
-                                    "The attribute Version does not exist in the package identity element. The manifest seems to be corrupted.");
+                                throw new FormatException("The attribute Version does not exist in the package identity element. The manifest seems to be corrupted.");
                             }
                             else
                             {
-                                var content = version.InnerText;
+                                var content = version.Value;
                                 if (!Version.TryParse(content, out var parsedVersion))
                                 {
-                                    throw new FormatException(
-                                        $"Version {content} is not a valid version string. The manifest seems to be corrupted.");
+                                    throw new FormatException($"Version {content} is not a valid version string. The manifest seems to be corrupted.");
                                 }
 
                                 switch (increaseVersion)
@@ -784,7 +793,7 @@ namespace Otor.MsixHero.Appx.Signing
                                 }
 
                                 Logger.Info("Replacing Version '{0}' with '{1}'", content, parsedVersion);
-                                version.InnerText = parsedVersion.ToString();
+                                version.Value = parsedVersion.ToString();
                             }
                         }
 
@@ -792,13 +801,9 @@ namespace Otor.MsixHero.Appx.Signing
                         brandingInjector.Inject(xmlDocument);
 
                         var sb = new StringBuilder();
-                        using (TextWriter tw = new StringWriter(sb))
+                        await using (TextWriter textWriter = new Utf8StringWriter(sb))
                         {
-                            using (var xmlWriter = new XmlTextWriter(tw))
-                            {
-                                xmlWriter.Formatting = Formatting.Indented;
-                                xmlDocument.WriteTo(xmlWriter);
-                            }
+                            await xmlDocument.SaveAsync(textWriter, SaveOptions.None, cancellationToken).ConfigureAwait(false);
                         }
 
                         newXmlContent = sb.ToString();
@@ -807,8 +812,7 @@ namespace Otor.MsixHero.Appx.Signing
                     File.Delete(manifestFilePath);
 
                     cancellationToken.ThrowIfCancellationRequested();
-                    await File.WriteAllTextAsync(manifestFilePath, newXmlContent, cancellationToken)
-                        .ConfigureAwait(false);
+                    await File.WriteAllTextAsync(manifestFilePath, newXmlContent, cancellationToken).ConfigureAwait(false);
 
                     if (File.Exists(localCopy))
                     {
@@ -843,6 +847,14 @@ namespace Otor.MsixHero.Appx.Signing
             }
 
             return localCopy;
+        }
+        private class Utf8StringWriter : StringWriter
+        {
+            public Utf8StringWriter(StringBuilder sb) : base(sb)
+            {
+            }
+
+            public override Encoding Encoding => Encoding.UTF8;
         }
     }
 }

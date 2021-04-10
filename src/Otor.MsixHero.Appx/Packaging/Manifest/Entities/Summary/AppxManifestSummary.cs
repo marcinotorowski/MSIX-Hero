@@ -15,7 +15,6 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Collections.Generic;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
@@ -23,8 +22,6 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
     [Serializable]
     public class AppxManifestSummary : AppxIdentity
     {
-        public string ProcessorArchitecture { get; set; }
-        
         public string Logo { get; set; }
 
         public bool IsFramework { get; set; }
@@ -38,7 +35,5 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
         public string Description { get; set; }
 
         public string AccentColor { get; set; }
-
-        public Dictionary<string, string> BuildMetaData { get; set; }
     }
 }

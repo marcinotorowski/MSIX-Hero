@@ -212,17 +212,18 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                   <Identity Name="MSIXHero" Version="2.0.46.0" Publisher="CN=abc" ProcessorArchitecture="neutral" />
              */
             
-            XNamespace rootNamespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
+            XNamespace windows10Namespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
+            XNamespace appxNamespace = "http://schemas.microsoft.com/appx/2010/manifest";
 
             var doc = await XDocument.LoadAsync(packageManifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
 
-            var root = doc.Element(rootNamespace + "Package");
+            var root = doc.Element(windows10Namespace + "Package") ?? doc.Element(appxNamespace + "Package");
             if (root == null)
             {
                 throw new InvalidDataException("Not a valid package manifest. Missing root element <Package />.");
             }
             
-            var identity = root.Element(rootNamespace + "Identity");
+            var identity = root.Element(windows10Namespace + "Identity") ?? root.Element(appxNamespace + "Identity");
             if (identity == null)
             {
                 throw new InvalidDataException("Not a valid bundle manifest. Missing child element <Identity />.");
@@ -261,16 +262,16 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
              *<?xml version="1.0" encoding="UTF-8"?>
              * <Bundle xmlns:b4="http://schemas.microsoft.com/appx/2018/bundle" xmlns="http://schemas.microsoft.com/appx/2013/bundle" 
              */
-            XNamespace rootNamespace = "http://schemas.microsoft.com/appx/2013/bundle";
+            XNamespace bundleManifest = "http://schemas.microsoft.com/appx/2013/bundle";
 
             var doc = await XDocument.LoadAsync(bundleManifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-            var root = doc.Element(rootNamespace + "Bundle");
+            var root = doc.Element(bundleManifest + "Bundle");
             if (root == null)
             {
                 throw new InvalidDataException("Not a valid bundle manifest. Missing root element <Bundle />.");
             }
             
-            var identity = root.Element(rootNamespace + "Identity");
+            var identity = root.Element(bundleManifest + "Identity");
             if (identity == null)
             {
                 throw new InvalidDataException("Not a valid bundle manifest. Missing child element <Identity />.");
@@ -280,8 +281,9 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             var publisher = identity.Attribute("Publisher");
             var name = identity.Attribute("Name");
 
-            var packages = root.Element(rootNamespace + "Packages")?.Elements(rootNamespace + "Package");
-
+            var packagesNode = root.Element(bundleManifest + "Packages");
+            var packages = packagesNode?.Elements(bundleManifest + "Package");
+            
             var appxIdentity = new AppxIdentity
             {
                 Name = name?.Value,

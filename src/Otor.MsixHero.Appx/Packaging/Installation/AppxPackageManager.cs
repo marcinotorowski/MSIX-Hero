@@ -215,7 +215,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             if (string.Equals(Path.GetFileName(filePath), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
             {
-                var reader = await AppxManifestSummaryBuilder.FromManifest(filePath).ConfigureAwait(false);
+                var reader = await AppxManifestSummaryReader.FromManifest(filePath).ConfigureAwait(false);
 
                 DeploymentOptions deploymentOptions = 0;
 
@@ -268,7 +268,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 try
                 {
-                    var reader = await AppxManifestSummaryBuilder.FromMsix(filePath).ConfigureAwait(false);
+                    var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
 
                     DeploymentOptions deploymentOptions = 0;
 
@@ -932,7 +932,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                var reader = await AppxManifestSummaryBuilder.FromInstallLocation(installLocation).ConfigureAwait(false);
+                var reader = await AppxManifestSummaryReader.FromInstallLocation(installLocation).ConfigureAwait(false);
                 var logo = Path.Combine(installLocation, reader.Logo);
 
                 if (File.Exists(Path.Combine(installLocation, logo)))
