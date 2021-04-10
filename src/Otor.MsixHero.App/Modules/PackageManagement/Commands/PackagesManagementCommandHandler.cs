@@ -36,6 +36,7 @@ using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -49,6 +50,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 {
     public class PackagesManagementCommandHandler
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(PackagesManagementCommandHandler));
+        
         private readonly IMsixHeroApplication application;
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
@@ -504,7 +507,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
             catch (Exception exception)
             {
-                this.interactionService.ShowError("The package could not be added.", exception);
+                Logger.Error(exception);
+                this.interactionService.ShowError(exception.Message, exception);
             }
             finally
             {
