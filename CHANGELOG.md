@@ -1,4 +1,26 @@
-# 2.0.68 (unrelesed)
+# 2.1.0
+See http://msixhero.net/redirect/release-notes/2.1.0 for more details
+
+### New features and highlights ###
+* Support for appinstaller optional and related packages in the App Installer editor (595dfde3)
+* It is now possible to control the level of animations and other UI-effects (f9478c80)
+* Better performance on low-level/virtual machines or remote sessions (f9478c80)
+
+### Improvements ###
+* New dashboard view (273889ed)
+* In case of errors when installing packages, the message shown in the UI is more precise (89414f43)
+* It is now possible to add multiple files at once in the Sign Package dialog (19e65748)
+* Minor UI changes and improvements (e234aa33, c7a543fe)
+* Package selector now supports the `.msixbundle` extension (4b4f1dfb)
+* Improved parsing of packages (84a9db44)
+
+### Resolved issues ###
+* Fixed error when installing a bundle package (a6fe9cf2, #10)
+* Fixed Package URL not being saved after changing its value in the app installer editor (67197ec0)
+* Fixed missing parameter `--directory` in app attach dialog (f4030d67)
+* Fixed a problem with the Add Folder prompt, which did not support cancelling (a2f49a3b)
+
+# 2.0.68
 
 ### Improvements ###
 * Better UI messages for winget CLI validation (#97)
@@ -9,7 +31,7 @@
 * Fix "Parameter set cannot be resolved" when calling cert-related functions interoping with PS (#98)
 
 # 2.0.64
-See https://msixhero.net/2021/02/16/msix-hero-2-0-64-improved-update-impact-with-cli-support/
+See http://msixhero.net/redirect/release-notes/2.0.64 for more details
 
 ### Improvements ###
 * Added context menu item to open the *Change Volume* dialog for the selected package (18ad7af8)
@@ -32,7 +54,7 @@ See https://msixhero.net/2021/02/16/msix-hero-2-0-64-improved-update-impact-with
 * Fixed a problem with *Modification Package* dialog, where the checkbox "Copy to VFS" was not reacting to changes of other controls (#92)
 
 # 2.0.46
-See https://msixhero.net/2021/02/07/msix-hero-2-0-new-features-ui-open-source/
+See http://msixhero.net/redirect/release-notes/2.0.46 for more details
 
 ### Improvements ###
 * Improved dependency viewer with legend and better captions (#86)
@@ -45,7 +67,7 @@ See https://msixhero.net/2021/02/07/msix-hero-2-0-new-features-ui-open-source/
 * (Regression) Fix crash to desktop when grouping packages by install date (#84)
 
 # 2.0.39 (beta) #
-See https://msixhero.net/2021/02/01/msix-hero-2-0-39-beta/
+See http://msixhero.net/redirect/release-notes/2.0.39 for more details
 
 ### Breaking changes ###
 * MSIX Hero migrated from .NET Core 3.1 to .NET 5.0 (#74)
@@ -69,7 +91,7 @@ See https://msixhero.net/2021/02/01/msix-hero-2-0-39-beta/
 * Fix transparent background during loading (280a2d62)
 
 # 2.0.0 (alpha) #
-See https://msixhero.net/2020/12/10/msix-hero-2-0-preview/ for more details
+See http://msixhero.net/redirect/release-notes/2.0.0 for more details
 
 ### New features ###
 * New UI
