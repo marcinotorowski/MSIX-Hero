@@ -69,15 +69,10 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             }
 
             this.Store = new ChangeableProperty<CertificateSource>(newStore);
-            this.Store.ValueChanged += StoreOnValueChanged;
-            this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved)
+            this.Store.ValueChanged += this.StoreOnValueChanged;
+            this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved, this.ValidatePfxPath)
             {
-                IsValidated = false,
-                Filter = new DialogFilterBuilder("*.pfx").BuildFilter(),
-                Validators = new []
-                {
-                    ChangeableFileProperty.ValidatePathAndPresence
-                }
+                Filter = new DialogFilterBuilder("*.pfx").BuildFilter()
             };
 
             SecureString initialSecurePassword = null;
@@ -114,29 +109,32 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>("Selected certificate", false, this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
-
-            switch (this.Store.CurrentValue)
-            {
-                case CertificateSource.Pfx:
-                    this.PfxPath.IsValidated = true;
-                    break;
-                case CertificateSource.DeviceGuard:
-                    this.DeviceGuard.IsValidated = true;
-                    break;
-                case CertificateSource.Personal:
-                    this.SelectedPersonalCertificate.IsValidated = true;
-                    break;
-            }
-
             this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.DeviceGuard, this.Store, this.ShowAllCertificates);
             
-            this.ShowAllCertificates.ValueChanged += async (sender, args) =>
+            this.ShowAllCertificates.ValueChanged += async (_, args) =>
             {
                 await this.PersonalCertificates.Load(this.LoadPersonalCertificates(this.SelectedPersonalCertificate.CurrentValue?.Model.Thumbprint, !(bool)args.NewValue)).ConfigureAwait(false);
                 this.OnPropertyChanged(nameof(this.SelectedPersonalCertificate));
             };
         }
-        
+
+        private void StoreOnValueChanged(object sender, EventArgs e)
+        {
+            this.PfxPath.Validate();
+            this.DeviceGuard.Validate();
+            this.SelectedPersonalCertificate.Validate();
+        }
+
+        public string ValidatePfxPath(string value)
+        {
+            if (this.Store.CurrentValue != CertificateSource.Pfx)
+            {
+                return null;
+            }
+
+            return ChangeableFileProperty.ValidatePathAndPresence(value);
+        }
+
         public AsyncProperty<ObservableCollection<CertificateViewModel>> PersonalCertificates { get; }
 
         public ValidatedChangeableProperty<CertificateViewModel> SelectedPersonalCertificate { get; }
@@ -291,33 +289,6 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             }
 
             return "The URL must have a protocol.";
-        }
-
-        private void StoreOnValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            switch ((CertificateSource) e.NewValue)
-            {
-                case CertificateSource.Unknown:
-                    this.PfxPath.IsValidated = false;
-                    this.SelectedPersonalCertificate.IsValidated = false;
-                    this.DeviceGuard.IsValidated = false;
-                    break;
-                case CertificateSource.Personal:
-                    this.PfxPath.IsValidated = false;
-                    this.SelectedPersonalCertificate.IsValidated = true;
-                    this.DeviceGuard.IsValidated = false;
-                    break;
-                case CertificateSource.Pfx:
-                    this.PfxPath.IsValidated = true;
-                    this.SelectedPersonalCertificate.IsValidated = false;
-                    this.DeviceGuard.IsValidated = false;
-                    break;
-                case CertificateSource.DeviceGuard:
-                    this.PfxPath.IsValidated = false;
-                    this.SelectedPersonalCertificate.IsValidated = false;
-                    this.DeviceGuard.IsValidated = true;
-                    break;
-            }
         }
     }
 }

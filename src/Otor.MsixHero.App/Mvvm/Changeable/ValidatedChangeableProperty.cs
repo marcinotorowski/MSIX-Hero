@@ -166,15 +166,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             }
         }
 
-        public event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
-
-        protected override void PostSetValue()
-        {
-            base.PostSetValue();
-            this.Validate();
-        }
-
-        private void Validate()
+        public void Validate()
         {
             var oldValidationMessage = this.ValidationMessage;
             if (!this.IsValidated || this.Validators == null || !this.Validators.Any())
@@ -206,20 +198,25 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     this.ValidationMessage = msg;
                 }
             }
-            
+
             // ReSharper disable once InvertIf
             if (oldValidationMessage != this.ValidationMessage)
             {
                 var validationChanged = this.ValidationStatusChanged;
-                if (validationChanged != null)
-                {
-                    validationChanged(this, new ValueChangedEventArgs<string>(this.ValidationMessage));
-                }
+                validationChanged?.Invoke(this, new ValueChangedEventArgs<string>(this.ValidationMessage));
             }
 
             this.OnPropertyChanged(nameof(this.CurrentValue));
             this.OnPropertyChanged(nameof(this.Error));
             this.OnPropertyChanged(nameof(this.IsValid));
+        }
+
+        public event EventHandler<ValueChangedEventArgs<string>> ValidationStatusChanged;
+
+        protected override void PostSetValue()
+        {
+            base.PostSetValue();
+            this.Validate();
         }
     }
 }
