@@ -50,48 +50,6 @@ attach vdisk";
             }
         }
         
-        public async Task CreateVhdAndAssignDriveLetter(string vhdPath, long requiredSize, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
-        {
-            var tempFile = Path.Combine(Path.GetTempPath(), "msix-hero-vhd-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".cfg");
-
-            try
-            {
-                var content = @"create vdisk file=""{0}"" maximum={1} type=expandable";
-
-                var requiredSizeMb = (int) (10 * Math.Ceiling(0.1 * requiredSize / 1024 / 1024));
-                await File.WriteAllTextAsync(tempFile, string.Format(content, vhdPath, requiredSizeMb), cancellationToken).ConfigureAwait(false);
-                var arguments = $"/S \"{tempFile}\"";
-                await this.RunDiskPart(arguments, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                {
-                    File.Delete(tempFile);
-                }
-            }
-
-            try
-            {
-                var content = @"select vdisk file = ""{0}""
-attach vdisk
-create partition primary
-format fs=ntfs
-assign";
-
-                await File.WriteAllTextAsync(tempFile, string.Format(content, vhdPath), cancellationToken).ConfigureAwait(false);
-                var arguments = $"/S \"{tempFile}\"";
-                await this.RunDiskPart(arguments, cancellationToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                {
-                    File.Delete(tempFile);
-                }
-            }
-        }
-        
         public async Task DismountVhd(string vhdPath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var tempFile = Path.Combine(Path.GetTempPath(), "msix-hero-vhd-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".cfg");

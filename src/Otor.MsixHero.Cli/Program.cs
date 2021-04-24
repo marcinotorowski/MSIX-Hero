@@ -73,7 +73,7 @@ namespace Otor.MsixHero.Cli
             IAppAttachManager appAttachManager = new AppAttachManager(new SigningManager());
             var executor = new AppAttachVerbExecutor(arg, appAttachManager, console);
             var exitCode = await executor.Execute().ConfigureAwait(false);
-            Environment.ExitCode = exitCode;
+             Environment.ExitCode = exitCode;
             return exitCode;
         }
 

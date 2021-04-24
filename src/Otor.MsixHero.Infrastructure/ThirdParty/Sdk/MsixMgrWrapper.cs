@@ -16,10 +16,10 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
@@ -28,18 +28,56 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixMgrWrapper));
         
-        public Task Unpack(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public enum FileType
         {
-            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{unpackedDirectory}\"";
+            Cim,
+            Vhd,
+            // ReSharper disable once IdentifierTypo
+            Vhdx
+        }
+        
+        public Task Unpack(
+            string packageFilePath, 
+            string containerPath, 
+            FileType? fileType = null,
+            uint size = 0,
+            bool create = true,
+            // ReSharper disable once IdentifierTypo
+            bool applyAcls = true,
+            string rootDirectory = null,
+            CancellationToken cancellationToken = default)
+        {
+            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{containerPath}\"";
+
+            if (fileType.HasValue)
+            {
+                arguments += $" -fileType {fileType.Value.ToString("G").ToUpperInvariant()}";
+            }
+
+            if (size > 0)
+            {
+                arguments += $" -vhdSize \"{size}\"";
+            }
+
+            if (applyAcls)
+            {
+                // ReSharper disable once StringLiteralTypo
+                arguments += " -applyacls";
+            }
+            
+            if (create)
+            {
+                arguments += " -create";
+            }
+
+            if (!string.IsNullOrEmpty(rootDirectory))
+            {
+                arguments += $" -rootDirectory \"{rootDirectory}\"";
+            }
+            
             return this.RunMsixMgr(arguments, cancellationToken);
         }
-
-        public Task ApplyAcls(string unpackedPackageDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
-        {
-            var arguments = $"-ApplyACLs -packagePath \"{unpackedPackageDirectory}\"";
-            return this.RunMsixMgr(arguments, cancellationToken);
-        }
-
+        
         public static string GetMsixMgrPath(string localName, string baseDirectory = null)
         {
             var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "msixmgr");
@@ -63,7 +101,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             try
             {
-                await RunAsync(msixmgr, arguments, cancellationToken, callBack, 0).ConfigureAwait(false);
+                var tempDir = Path.GetTempPath();
+                await RunAsync(msixmgr, arguments, tempDir, cancellationToken, callBack, 0).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {
@@ -72,7 +111,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     throw new InvalidOperationException("Could not expand MSIX Package to the VHD file. The maximum size of the virtual disk is smaller than the file size of expanded MSIX package. Try using a bigger disk size.", e);
                 }
 
-                throw new InvalidOperationException($"Expanding of MSIX package to a VHD image failed with error code {e.ExitCode:X2}", e);
+                if (e.ExitCode == 0x80070522)
+                {
+                    throw new UnauthorizedAccessException("This operation requires admin permissions.", e);
+                }
+
+                throw new InvalidOperationException(e.StandardError.LastOrDefault(e => !string.IsNullOrWhiteSpace(e)), e);
             }
         }
     }

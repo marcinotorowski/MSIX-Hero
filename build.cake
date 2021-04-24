@@ -124,7 +124,8 @@ Task("Test")
         
         Information("Executing unit tests..."); 
         var testSettings = new DotNetCoreTestSettings();
-        
+        testSettings.Filter = "TestCategory!=Integration";
+
         if (BuildSystem.AppVeyor.IsRunningOnAppVeyor)
         {
             testSettings.Logger = "Appveyor;LogFileName=test-result.trx";

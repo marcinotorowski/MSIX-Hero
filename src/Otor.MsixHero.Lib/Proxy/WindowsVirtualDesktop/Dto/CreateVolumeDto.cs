@@ -14,25 +14,41 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+
 namespace Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop.Dto
 {
     public class CreateVolumeDto : ProxyObject
     {
-        public CreateVolumeDto(string packagePath, string vhdPath)
+        public CreateVolumeDto(IEnumerable<string> packagePath, string vhdDirectory)
         {
-            PackagePath = packagePath;
-            VhdPath = vhdPath;
+            this.Packages = packagePath.ToArray();
+            this.VhdDirectory = vhdDirectory;
+        }
+
+        public CreateVolumeDto(string packagePath, string vhdFilePath)
+        {
+            this.Packages = new[] { packagePath };
+            this.VhdDirectory = Path.GetDirectoryName(vhdFilePath);
+            this.VhdName = Path.GetFileName(vhdFilePath);
         }
 
         public CreateVolumeDto()
         {
         }
 
-        public string PackagePath { get; set; }
+        public string[] Packages { get; set; }
 
-        public string VhdPath { get; set; }
-
+        public string VhdDirectory { get; set; }
+        
+        public string VhdName { get; set; }
+        
         public uint SizeInMegaBytes { get; set; }
+        
+        public AppAttachVolumeType Type { get; set; }
 
         public bool GenerateScripts { get; set; }
 

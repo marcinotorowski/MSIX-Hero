@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
@@ -45,7 +47,28 @@ namespace Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop
         public override Task Invoke(IProxyObject command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var proxiedObject = (CreateVolumeDto)command;
-            return this.SelfElevationAwareObject.CreateVolume(proxiedObject.PackagePath, proxiedObject.VhdPath, proxiedObject.SizeInMegaBytes, proxiedObject.ExtractCertificate, proxiedObject.GenerateScripts, cancellationToken, progress);
+
+            if (proxiedObject.VhdName != null && proxiedObject.Packages.Length < 2)
+            {
+                return this.SelfElevationAwareObject.CreateVolume(
+                    proxiedObject.Packages.First(),
+                    Path.Combine(proxiedObject.VhdDirectory, proxiedObject.VhdName), 
+                    proxiedObject.SizeInMegaBytes,
+                    proxiedObject.Type, 
+                    proxiedObject.ExtractCertificate, 
+                    proxiedObject.GenerateScripts, 
+                    cancellationToken, 
+                    progress);
+            }
+
+            return this.SelfElevationAwareObject.CreateVolumes(
+                proxiedObject.Packages,
+                proxiedObject.VhdDirectory,
+                proxiedObject.Type,
+                proxiedObject.ExtractCertificate,
+                proxiedObject.GenerateScripts,
+                cancellationToken,
+                progress);
         }
     }
 }

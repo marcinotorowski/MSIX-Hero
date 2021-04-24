@@ -15,7 +15,11 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using Otor.MsixHero.App.Helpers;
+using Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel;
 using Xceed.Wpf.Toolkit;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
@@ -31,6 +35,65 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
             var psi = new ProcessStartInfo("https://msixhero.net/redirect/msix-app-attach/prepare-ps");
             psi.UseShellExecute = true;
             Process.Start(psi);
+        }
+        
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var sp = ((AppAttachViewModel)this.DataContext).SelectedPackages;
+            sp.Clear();
+            sp.AddRange(((ListBox)sender).SelectedItems.OfType<string>());
+        }
+
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            DropFileObject.SetIsDragging((DependencyObject)sender, false);
+
+            var hasData = e.Data.GetDataPresent("FileDrop");
+            if (!hasData)
+            {
+                return;
+            }
+
+            var data = e.Data.GetData("FileDrop") as string[];
+            if (data == null || !data.Any())
+            {
+                return;
+            }
+
+            var files = ((AppAttachViewModel)this.DataContext).Files;
+            foreach (var item in data)
+            {
+                if (files.Contains(item))
+                {
+                    continue;
+                }
+
+                files.Add(item);
+            }
+        }
+
+        private void OnDragEnter(object sender, DragEventArgs e)
+        {
+            DropFileObject.SetIsDragging((DependencyObject)sender, false);
+
+            var hasData = e.Data.GetDataPresent("FileDrop");
+            if (!hasData)
+            {
+                return;
+            }
+
+            var data = e.Data.GetData("FileDrop") as string[];
+            if (data == null || !data.Any())
+            {
+                return;
+            }
+
+            DropFileObject.SetIsDragging((DependencyObject)sender, true);
+        }
+
+        private void OnDragLeave(object sender, DragEventArgs e)
+        {
+            DropFileObject.SetIsDragging((DependencyObject)sender, false);
         }
 
         private void OnSpin(object sender, SpinEventArgs e)

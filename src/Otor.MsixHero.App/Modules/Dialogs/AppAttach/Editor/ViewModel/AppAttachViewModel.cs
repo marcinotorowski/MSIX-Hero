@@ -15,9 +15,12 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
@@ -28,77 +31,172 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
+using Prism.Commands;
+using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 {
-    public class AppAttachViewModel : ChangeableAutomatedDialogViewModel<AppAttachVerb>
+    public class AppAttachViewModel : ChangeableAutomatedDialogViewModel<AppAttachVerb>, IDialogAware
     {
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory;
-
-        public AppAttachViewModel(ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory, IInteractionService interactionService) : base("Prepare VHD for app attach", interactionService)
+        private ICommand reset;
+        
+        public AppAttachViewModel(ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory, IInteractionService interactionService) : base("Prepare volume for app attach", interactionService)
         {
             this.appAttachManagerFactory = appAttachManagerFactory;
             this.interactionService = interactionService;
-            this.InputPath = new ChangeableFileProperty("Source MSIX file", interactionService)
+            
+            this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
+            this.Files.CollectionChanged += (_, _) =>
             {
-                Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()
+                this.OnPropertyChanged(nameof(IsOnePackage));
             };
 
-            this.GenerateScripts = new ChangeableProperty<bool>(true);
+            this.TabPackages = new ChangeableContainer(this.Files);
+            this.TabOptions = new ChangeableContainer(
+                this.ExtractCertificate = new ChangeableProperty<bool>(),
+                this.GenerateScripts = new ChangeableProperty<bool>(true),
+                this.VolumeType = new ChangeableProperty<AppAttachVolumeType>(AppAttachVolumeType.Vhd),
+                this.SizeMode = new ChangeableProperty<AppAttachSizeMode>(),
+                this.FixedSize = new ValidatedChangeableProperty<string>("Fixed size", "100", this.ValidateFixedSize)
+            );
+            
+            this.AddChildren(this.TabPackages, this.TabOptions);
+            this.RegisterForCommandLineGeneration(this.Files, this.GenerateScripts, this.VolumeType, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+        }
 
-            this.InputPath.Validators = new[] { ChangeableFileProperty.ValidatePathAndPresence };
-            this.InputPath.ValueChanged += this.InputPathOnValueChanged;
+        void IDialogAware.OnDialogOpened(IDialogParameters parameters)
+        {
+            if (parameters.TryGetValue<string>("Path", out var file))
+            {
+                this.Files.Add(file);
+            }
+            else
+            {
+                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out string[] selection);
+                if (!interactionResult || !selection.Any())
+                {
+                    return;
+                }
 
-            this.ExtractCertificate = new ChangeableProperty<bool>();
-            this.SizeMode = new ChangeableProperty<AppAttachSizeMode>();
-            this.FixedSize = new ValidatedChangeableProperty<string>("Fixed size", "100", this.ValidateFixedSize);
-            this.AddChildren(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+                foreach (var selected in selection)
+                {
+                    if (this.Files.Contains(selected, StringComparer.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
 
-            this.RegisterForCommandLineGeneration(this.InputPath, this.GenerateScripts, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+                    this.Files.Add(selected);
+                }
+            }
+
+            this.Files.Commit();
+        }
+
+        public ChangeableContainer TabPackages { get; }
+        
+        public ChangeableContainer TabOptions { get; }
+
+        public ICommand ResetCommand
+        {
+            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+        }
+
+        public bool IsOnePackage => this.Files.Count == 1;
+
+        public List<string> SelectedPackages { get; } = new List<string>();
+
+        public async Task<int> ImportFolder()
+        {
+            if (!this.interactionService.SelectFolder(out var folder))
+            {
+                return 0;
+            }
+
+            var hasMsixFiles = Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension).Any();
+            var hasSubfolders = Directory.EnumerateDirectories(folder).Any();
+
+            var recurse = !hasMsixFiles;
+
+            if (!recurse && hasSubfolders)
+            {
+                IReadOnlyCollection<string> buttons = new List<string>
+                {
+                    "Only selected folder",
+                    "Selected folder " + Path.GetFileName(folder) + " and all its subfolders"
+                };
+
+                var userChoice = this.interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                if (userChoice < 0 || userChoice >= buttons.Count)
+                {
+                    return 0;
+                }
+
+                recurse = userChoice == 1;
+            }
+
+            var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
+            var cnt = this.Files.Count;
+            this.Files.AddRange(files.Except(this.Files, StringComparer.OrdinalIgnoreCase));
+
+            return this.Files.Count - cnt;
         }
 
         protected override void UpdateVerbData()
         {
-            this.Verb.Package = this.InputPath.CurrentValue;
-            this.Verb.CreateScript = this.GenerateScripts.CurrentValue;
-            this.Verb.ExtractCertificate = this.ExtractCertificate.CurrentValue;
-
-            if (string.IsNullOrEmpty(this.Verb.Package))
+            if (!this.Files.Any())
             {
-                this.Verb.Package = "<path-to-msix>";
-            }
-
-            if (this.SizeMode.CurrentValue == AppAttachSizeMode.Auto)
-            {
-                this.Verb.Size = 0;
+                this.Verb.Package = new[] { "<path-to-msix>" };
             }
             else
             {
-                this.Verb.Size = !uint.TryParse(this.FixedSize.CurrentValue, out var parsed) ? 0 : parsed;
+                this.Verb.Package = this.Files;
             }
 
-            if (string.IsNullOrEmpty(this.OutputPath) || string.IsNullOrEmpty(Path.GetDirectoryName(this.OutputPath)))
+            this.Verb.FileType = this.VolumeType.CurrentValue;
+            this.Verb.CreateScript = this.GenerateScripts.CurrentValue;
+            this.Verb.ExtractCertificate = this.ExtractCertificate.CurrentValue;
+            
+            if (this.Files.Count == 1)
+            {
+                if (this.SizeMode.CurrentValue == AppAttachSizeMode.Auto)
+                {
+                    this.Verb.Size = 0;
+                }
+                else
+                {
+                    this.Verb.Size = !uint.TryParse(this.FixedSize.CurrentValue, out var parsed) ? 0 : parsed;
+                }
+            }
+            else
+            {
+                this.Verb.Size = 0;
+            }
+            
+            if (string.IsNullOrEmpty(this.OutputDirectory))
             {
                 this.Verb.Directory = "<output-directory>";
             }
             else
             {
-                this.Verb.Directory = Path.GetDirectoryName(this.OutputPath);
+                this.Verb.Directory = this.OutputDirectory;
             }
         }
 
-        public ChangeableFileProperty InputPath { get; }
+        public ValidatedChangeableCollection<string> Files { get; }
 
         public ChangeableProperty<bool> GenerateScripts { get; }
 
         public ChangeableProperty<bool> ExtractCertificate { get; }
         
+        public ChangeableProperty<AppAttachVolumeType> VolumeType { get; }
+        
         public ValidatedChangeableProperty<string> FixedSize { get; }
 
         public ChangeableProperty<AppAttachSizeMode> SizeMode { get; }
 
-        public string OutputPath { get; private set; }
+        public string OutputDirectory { get; private set; }
         
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
@@ -106,40 +204,99 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             {
                 return false;
             }
-
-            var settings = new FileDialogSettings("Virtual disks|*.vhd", this.OutputPath);
-            if (!this.interactionService.SaveFile(settings, out var output))
+            
+            string fileName = null;
+            
+            if (this.Files.Count == 1)
             {
-                return false;
-            }
+                string filter;
+                switch (this.VolumeType.CurrentValue)
+                {
+                    case AppAttachVolumeType.Vhd:
+                        filter = "Virtual disks|*.vhd";
+                        break;
+                    case AppAttachVolumeType.Cim:
+                        filter = "CIM files|*.cim";
+                        break;
+                    case AppAttachVolumeType.Vhdx:
+                        filter = "Virtual disks|*.vhdx";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
-            this.OutputPath = output;
+                var settings = 
+                    this.OutputDirectory != null
+                        ? new FileDialogSettings(filter, Path.Combine(this.OutputDirectory, Path.GetFileName(this.Files[0]) + "." + this.VolumeType.CurrentValue.ToString("G").ToLowerInvariant()))
+                        : new FileDialogSettings(filter);
+                
+                if (!this.interactionService.SaveFile(settings, out var output))
+                {
+                    return false;
+                }
+
+                this.OutputDirectory = Path.GetDirectoryName(output);
+                fileName = Path.GetFileName(output);
+            }
+            else
+            {
+                if (!this.interactionService.SelectFolder(out var output))
+                {
+                    return false;
+                }
+
+                this.OutputDirectory = output;
+            }
 
             var sizeInMegabytes = this.SizeMode.CurrentValue == AppAttachSizeMode.Auto ? 0 : uint.Parse(this.FixedSize.CurrentValue);
 
             var appAttach = await this.appAttachManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
-            await appAttach.CreateVolume(
-                this.InputPath.CurrentValue,
-                output,
-                sizeInMegabytes,
-                this.ExtractCertificate.CurrentValue,
-                this.GenerateScripts.CurrentValue,
-                cancellationToken,
-                progress).ConfigureAwait(false);
-
+            if (this.Files.Count == 1)
+            {
+                await appAttach.CreateVolume(
+                    this.Files[0],
+                    // ReSharper disable AssignNullToNotNullAttribute
+                    Path.Combine(this.OutputDirectory, fileName),
+                    // ReSharper restore AssignNullToNotNullAttribute
+                    sizeInMegabytes,
+                    this.VolumeType.CurrentValue,
+                    this.ExtractCertificate.CurrentValue,
+                    this.GenerateScripts.CurrentValue,
+                    cancellationToken,
+                    progress).ConfigureAwait(false);
+            }
+            else
+            {
+                await appAttach.CreateVolumes(
+                    this.Files,
+                    this.OutputDirectory,
+                    this.VolumeType.CurrentValue,
+                    this.ExtractCertificate.CurrentValue,
+                    this.GenerateScripts.CurrentValue,
+                    cancellationToken,
+                    progress).ConfigureAwait(false);
+            }
+            
             return true;
         }
 
-        private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
+        private void ResetExecuted()
         {
-            if (string.IsNullOrEmpty(this.InputPath.CurrentValue))
+            // this.Files.Clear();
+            this.Commit();
+            this.State.IsSaved = false;
+        }
+
+        private string ValidateFiles(IEnumerable<string> files)
+        {
+            if (!files.Any())
             {
-                return;
+                return "At least one file is required.";
             }
 
-            this.OutputPath = Path.ChangeExtension(this.InputPath.CurrentValue, "vhd");
+            return null;
         }
 
         private string ValidateFixedSize(string value)

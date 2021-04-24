@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
@@ -33,14 +34,43 @@ namespace Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop
             this.client = client;
         }
 
+        public Task CreateVolume(string packagePath, string volumePath, uint size, AppAttachVolumeType type = AppAttachVolumeType.Vhd,
+            bool extractCertificate = false, bool generateScripts = true, CancellationToken cancellationToken = default,
+            IProgress<ProgressData> progressReporter = null)
+        {
+            var cmd = new CreateVolumeDto(packagePath, volumePath)
+            {
+                ExtractCertificate = extractCertificate,
+                GenerateScripts = generateScripts,
+                SizeInMegaBytes = size,
+                Type = type
+            };
+
+            return client.Invoke(cmd, cancellationToken, progressReporter);
+        }
+
+        public Task CreateVolumes(IReadOnlyCollection<string> packagePaths, string volumeDirectory,
+            AppAttachVolumeType type = AppAttachVolumeType.Vhd, bool extractCertificate = false, bool generateScripts = true,
+            CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
+        {
+            var cmd = new CreateVolumeDto(packagePaths, volumeDirectory)
+            {
+                ExtractCertificate = extractCertificate,
+                GenerateScripts = generateScripts,
+                Type = type
+            };
+
+            return client.Invoke(cmd, cancellationToken, progressReporter);
+        }
+
+        [Obsolete]
         public Task CreateVolume(string packagePath, string volumePath, uint vhdSize, bool extractCertificate, bool generateScripts, CancellationToken cancellationToken = default, IProgress<ProgressData> progressReporter = null)
         {
-            var cmd = new CreateVolumeDto
+            var cmd = new CreateVolumeDto(packagePath, volumePath)
             {
-                VhdPath = volumePath,
                 ExtractCertificate = extractCertificate, 
                 GenerateScripts = generateScripts,
-                PackagePath = packagePath,
+                Type = AppAttachVolumeType.Vhd,
                 SizeInMegaBytes = vhdSize
             };
 

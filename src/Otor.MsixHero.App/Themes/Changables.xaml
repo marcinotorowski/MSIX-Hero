@@ -225,7 +225,7 @@
                                                 x:Name="CmdLine"
                                                 BorderThickness="0" 
                                                 HorizontalScrollBarVisibility="Disabled"
-                                                VerticalScrollBarVisibility="Auto"
+                                                VerticalScrollBarVisibility="Hidden"
                                                 Background="{StaticResource MsixHero.Dialog.Console.Background}" 
                                                 BorderBrush="Transparent" 
                                                 Padding="0 5 5 5" 
@@ -415,12 +415,12 @@
 
                                                             <TextBox
                                                                 Margin="5 0"
-                                                                MaxHeight="60"
+                                                                MaxHeight="80"
                                                                 BorderThickness="0" 
                                                                 Background="{StaticResource MsixHero.Dialog.Console.Background}" 
                                                                 BorderBrush="Transparent" 
                                                                 HorizontalScrollBarVisibility="Disabled"
-                                                                VerticalScrollBarVisibility="Auto"
+                                                                VerticalScrollBarVisibility="Hidden"
                                                                 Padding="0 5" 
                                                                 FontFamily="Consolas"
                                                                 TextWrapping="Wrap"

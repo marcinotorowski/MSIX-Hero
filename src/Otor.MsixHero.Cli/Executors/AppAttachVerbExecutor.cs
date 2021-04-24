@@ -39,55 +39,44 @@ namespace Otor.MsixHero.Cli.Executors
 
         public override async Task<int> Execute()
         {
-            if (!(await UserHelper.IsAdministratorAsync(CancellationToken.None).ConfigureAwait(false)))
+            if (!await UserHelper.IsAdministratorAsync(CancellationToken.None).ConfigureAwait(false))
             {
                 await this.Console.WriteError("This command can be started only by a local administrator.");
                 return 11;
             }
 
-            if (!File.Exists(this.Verb.Package))
+            if (this.Verb.Name != null && this.Verb.Package.Count() > 1)
             {
-                await this.Console.WriteError($"The file {this.Verb.Package} does not exist.").ConfigureAwait(false);
-                return 10;
+                await this.Console.WriteError("Parameter --name/-n cannot be used with more than one instance of the --package/-p switch.");
+                return 2;
             }
 
-            if (!Directory.Exists(this.Verb.Directory))
+            if (this.Verb.Size > 0 && this.Verb.Package.Count() > 1)
             {
-                Directory.CreateDirectory(this.Verb.Directory);
+                await this.Console.WriteError("Parameter --size/-s cannot be used with more than one instance of the --package/-p switch.");
+                return 2;
             }
 
-            var volumeName = string.IsNullOrEmpty(this.Verb.Name) ? Path.GetFileNameWithoutExtension(this.Verb.Package) : this.Verb.Name;
-            var volumePath = Path.Combine(this.Verb.Directory, volumeName + ".vhd");
+            if (this.Verb.Size > 0 && this.Verb.FileType == AppAttachVolumeType.Cim)
+            {
+                await this.Console.WriteError("Parameter --size/-s cannot be used with target type CIM.");
+                return 2;
+            }
 
+            await this.Console.WriteInfo($"Creating volume(s) in {this.Verb.Directory}...");
+            
             try
             {
-                await this.Console.WriteInfo($"Creating VHD volume in {this.Verb.Directory}...");
-                await this.appAttachManager.CreateVolume(this.Verb.Package, volumePath, this.Verb.Size, this.Verb.ExtractCertificate, this.Verb.CreateScript).ConfigureAwait(false);
-
-                await this.Console.WriteSuccess($"The volume has been created in {volumePath}");
-
-                await this.Console.WriteSuccess($" --> Created definition: app-attach.json with the following parameters:");
-
-                var json = await File.ReadAllTextAsync(Path.Combine(this.Verb.Directory, "app-attach.json")).ConfigureAwait(false);
-                var jsonArray = (JObject)(((JArray)JToken.Parse(json))[0]);
-
-                var maxPropNameLength = jsonArray.Properties().Select(p => p.Name.Length).Max() + " --> ".Length;
-                foreach (var prop in jsonArray)
+                if (this.Verb.Package.Count() == 1)
                 {
-                    await this.Console.WriteSuccess("".PadLeft(" --> ".Length, ' ') + prop.Key.PadRight(maxPropNameLength, ' ') + " = " + prop.Value.Value<string>());
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    var volumeName = Path.Combine(this.Verb.Directory, this.Verb.Name ?? Path.GetFileNameWithoutExtension(this.Verb.Package.First())) + "." + this.Verb.FileType.ToString("G").ToLowerInvariant();
+                    await this.appAttachManager.CreateVolume(Verb.Package.First(), volumeName, this.Verb.Size, this.Verb.FileType, this.Verb.ExtractCertificate, this.Verb.CreateScript).ConfigureAwait(false);
                 }
-
-                if (this.Verb.CreateScript)
+                else
                 {
-                    await this.Console.WriteSuccess($" --> Created script: stage.ps1, register.ps1, deregister.ps1, destage.ps1");
+                    await this.appAttachManager.CreateVolumes(Verb.Package.ToList(), this.Verb.Directory, this.Verb.FileType, this.Verb.ExtractCertificate, this.Verb.CreateScript).ConfigureAwait(false);
                 }
-
-                if (this.Verb.ExtractCertificate)
-                {
-                    await this.Console.WriteSuccess($" --> Extracted certificate: {volumeName}.cer");
-                }
-
-                return 0;
             }
             catch (ProcessWrapperException e)
             {
@@ -109,6 +98,47 @@ namespace Otor.MsixHero.Cli.Executors
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return 1;
             }
+            
+            foreach (var package in this.Verb.Package)
+            {
+                var createdContainerName = (!string.IsNullOrEmpty(this.Verb.Name) ? this.Verb.Name : Path.GetFileNameWithoutExtension(package)) + "." + this.Verb.FileType.ToString("G").ToLowerInvariant();
+                await this.Console.WriteSuccess(" --> Created volume " + createdContainerName);
+            }
+
+            if (this.Verb.ExtractCertificate)
+            {
+                foreach (var package in this.Verb.Package)
+                {
+                    var createdCertificate = Path.Combine(this.Verb.Directory, Path.GetFileNameWithoutExtension(package)) + ".cer";
+                    if (File.Exists(createdCertificate))
+                    {
+                        await this.Console.WriteSuccess(" --> Extracted certificate file " + Path.GetFileName(createdCertificate));
+                    }
+                }
+            }
+            
+            if (this.Verb.FileType != AppAttachVolumeType.Cim)
+            {
+                await this.Console.WriteSuccess(" --> Created definition: app-attach.json with the following parameters:");
+
+                var json = await File.ReadAllTextAsync(Path.Combine(this.Verb.Directory, "app-attach.json")).ConfigureAwait(false);
+                var jsonArray = (JArray)JToken.Parse(json);
+                foreach (var jsonObject in jsonArray.OfType<JObject>())
+                {
+                    var maxPropNameLength = jsonObject.Properties().Select(p => p.Name.Length).Max() + " --> ".Length;
+                    foreach (var prop in jsonObject)
+                    {
+                        await this.Console.WriteSuccess("".PadLeft(" --> ".Length, ' ') + prop.Key.PadRight(maxPropNameLength, ' ') + " = " + prop.Value?.Value<string>());
+                    }
+                }
+
+                if (this.Verb.CreateScript)
+                {
+                    await this.Console.WriteSuccess(" --> Created script: stage.ps1, register.ps1, deregister.ps1, destage.ps1");
+                }
+            }
+            
+            return 0;
         }
     }
 }

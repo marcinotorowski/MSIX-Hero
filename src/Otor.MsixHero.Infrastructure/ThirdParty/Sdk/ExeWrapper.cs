@@ -29,7 +29,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ExeWrapper));
 
-        protected static async Task<int> RunAsync(string path, string arguments, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
+        protected static Task<int> RunAsync(string path, string arguments, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
+        {
+            return RunAsync(path, arguments, null, cancellationToken, callBack, properExitCodes);
+        }
+
+        protected static async Task<int> RunAsync(string path, string arguments, string workingDirectory, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
         {
             Logger.Debug("Executing " + path + " " + arguments);
             var processStartInfo = new ProcessStartInfo(path, arguments);
@@ -44,6 +49,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             processStartInfo.CreateNoWindow = true;
 
+            if (workingDirectory != null)
+            {
+                processStartInfo.WorkingDirectory = workingDirectory;
+            }
+            
             var tcs = new TaskCompletionSource<int>();
 
             var process = new Process
@@ -53,7 +63,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             };
 
             var standardOutputResults = new TaskCompletionSource<string[]>();
-            process.OutputDataReceived += (sender, args) =>
+            process.OutputDataReceived += (_, args) =>
             {
                 callBack?.Invoke(args.Data);
                 if (args.Data != null)
@@ -67,7 +77,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             };
 
             var standardErrorResults = new TaskCompletionSource<string[]>();
-            process.ErrorDataReceived += (sender, args) =>
+            process.ErrorDataReceived += (_, args) =>
             {
                 if (args.Data != null)
                 {
@@ -79,7 +89,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 }
             };
 
-            process.Exited += async (sender, args) =>
+            process.Exited += async (_, _) =>
             {
                 await standardOutputResults.Task.ConfigureAwait(false);
                 await standardErrorResults.Task.ConfigureAwait(false);
@@ -89,7 +99,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 tcs.TrySetResult(process.ExitCode);
             };
 
-            using (cancellationToken.Register(
+            await using (cancellationToken.Register(
                 () => {
                     tcs.TrySetCanceled();
                     try
