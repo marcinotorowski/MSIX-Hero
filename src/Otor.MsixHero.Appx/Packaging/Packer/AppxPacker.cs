@@ -151,7 +151,13 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await File.WriteAllTextAsync(tempManifest, xmlDocument.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+                var xmlContent = new StringBuilder();
+                await using (TextWriter textWriter = new Utf8StringWriter(xmlContent))
+                {
+                    await xmlDocument.SaveAsync(textWriter, SaveOptions.None, cancellationToken).ConfigureAwait(false);
+                }
+                
+                await File.WriteAllTextAsync(tempManifest, xmlContent.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -192,6 +198,15 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             }
 
             return new MsixSdkWrapper().UnpackPackage(packagePath, directory, cancellationToken, progress);
+        }
+
+        private class Utf8StringWriter : StringWriter
+        {
+            public Utf8StringWriter(StringBuilder sb) : base(sb)
+            {
+            }
+
+            public override Encoding Encoding => Encoding.UTF8;
         }
     }
 }

@@ -311,18 +311,28 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                     throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", e.ExitCode);
                 }
-
+                
                 findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
                 if (findSimilar != null)
                 {
+                    var manifestError = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: Manifest validation error: "));
+                    manifestError = manifestError?.Substring("MakeAppx : error: Manifest validation error: ".Length);
+
                     findSimilar = findSimilar.Substring("MakeAppx : error: ".Length);
 
                     int exitCode;
                     var error = Regex.Match(findSimilar, "([0-9a-zA-Z]+) \\- ");
                     if (error.Success)
                     {
-                        findSimilar = findSimilar.Substring(error.Length).Trim();
-
+                        if (!string.IsNullOrEmpty(manifestError))
+                        {
+                            findSimilar = manifestError;
+                        }
+                        else
+                        {
+                            findSimilar = findSimilar.Substring(error.Length).Trim();
+                        }
+                        
                         if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
                         {
                             throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", exitCode);
@@ -340,6 +350,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}");
                     }
 
+                    if (!string.IsNullOrEmpty(manifestError))
+                    {
+                        findSimilar = manifestError;
+                    }
+                    
                     if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
                     {
                         throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", exitCode);

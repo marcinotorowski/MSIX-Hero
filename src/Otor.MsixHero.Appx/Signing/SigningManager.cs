@@ -24,11 +24,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 using Org.BouncyCastle.X509;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Infrastructure.Branding;
@@ -848,6 +846,7 @@ namespace Otor.MsixHero.Appx.Signing
 
             return localCopy;
         }
+        
         private class Utf8StringWriter : StringWriter
         {
             public Utf8StringWriter(StringBuilder sb) : base(sb)
