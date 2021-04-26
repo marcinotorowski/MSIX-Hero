@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
+	  <TargetFramework>net5.0-windows10.0.19041.0</TargetFramework>
+	  <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <AssemblyName>msixherocli</AssemblyName>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AssemblyTitle>MSIX Hero Command Line Interface</AssemblyTitle>
@@ -14,6 +15,8 @@
     <PackageId>MSIX Hero Command Line Interface</PackageId>
     <PackageLicenseExpression>https://msixhero.net/license</PackageLicenseExpression>
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
+	  <Platforms>x64</Platforms>
+	  <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
