@@ -137,7 +137,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Parsers
                     var aliasNode = extension.Element(NamespaceUap3 + "AppExecutionAlias") ?? extension.Element(NamespaceUap5 + "AppExecutionAlias");
                     if (aliasNode != null)
                     {
-                        var desktopExecAliases = aliasNode.Elements(NamespaceDesktop10 + "ExecutionAlias").Concat(aliasNode.Elements(NamespaceUap5 + "ExecutionAlias"));
+                        var desktopExecAliases = aliasNode.Elements().Where(e => e.Name.LocalName == "ExecutionAlias");
                         application.ExecutionAlias = desktopExecAliases.Select(a => a.Attribute("Alias")?.Value).Where(a => a != null).ToList();
                     }
                 }
