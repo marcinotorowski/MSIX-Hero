@@ -61,10 +61,24 @@ namespace Otor.MsixHero.Dependencies
             
             var unresolvedDependencies = new List<MissingPackageGraphElement>();
 
+            var hosts = new Dictionary<string, PackageGraphElement>();
+            foreach (var pkg in packages)
+            {
+                foreach (var host in pkg.Package?.Applications?.SelectMany(a => a.Extensions).OfType<AppxHost>() ?? Enumerable.Empty<AppxHost>())
+                {
+                    hosts[host.Id] = pkg;
+                }
+                
+                foreach (var host in pkg.Package?.Extensions?.OfType<AppxHost>() ?? Enumerable.Empty<AppxHost>())
+                {
+                    hosts[host.Id] = pkg;
+                }
+            }
+            
             var id = packages.Count + operatingSystems.Count;
             foreach (var pkg in packages)
             {
-                foreach (var packageDependency in pkg.Package.PackageDependencies)
+                foreach (var packageDependency in pkg.Package.PackageDependencies ?? Enumerable.Empty<AppxPackageDependency>())
                 {
                     var findDependency = packages.FirstOrDefault(depPkg => depPkg.Package.Name == packageDependency.Name && depPkg.Package.Publisher == packageDependency.Publisher);
                     if (findDependency != null)
@@ -86,26 +100,44 @@ namespace Otor.MsixHero.Dependencies
                     }
                 }
 
-                foreach (var systemDependency in pkg.Package.OperatingSystemDependencies)
+                foreach (var systemDependency in pkg.Package.OperatingSystemDependencies ?? Enumerable.Empty<AppxOperatingSystemDependency>())
                 {
                     var findSystem = operatingSystems.First(os => os.OperatingSystem == GetOsFamily(systemDependency));
                     dependencyGraph.Relations.Add(new Relation(findSystem, findSystem.MaxRequiredVersion + "˄", pkg));
                 }
 
-                foreach (var mainPackage in pkg.Package.MainPackages)
+                foreach (var hostDependency in pkg.Package.Applications.Where(a => a.HostId != null))
                 {
-                    var findParent = packages.FirstOrDefault(depPkg => depPkg.Package.Name == mainPackage.Name);
+                    if (hosts.TryGetValue(hostDependency.HostId, out var host))
+                    {
+                        dependencyGraph.Relations.Add(new Relation(pkg, "Is hosted by", host));
+                    }
+                    else
+                    {
+                        id++;
+                        var findUnresolved = new MissingPackageGraphElement(id, hostDependency.HostId);
+                        unresolvedDependencies.Add(findUnresolved);
+                        dependencyGraph.Elements.Add(findUnresolved);
+                        dependencyGraph.Relations.Add(new Relation(pkg, "Is hosted by", findUnresolved));
+                    }
+                    
+                    // todo: Detect which packages are relying on me!
+                }
+                
+                if (pkg.Package.MainPackage != null)
+                {
+                    var findParent = packages.FirstOrDefault(depPkg => depPkg.Package.Name == pkg.Package.MainPackage.Name);
                     if (findParent != null)
                     {
                         dependencyGraph.Relations.Add(new Relation(findParent, "main package", pkg));
                     }
                     else
                     {
-                        var findUnresolved = unresolvedDependencies.FirstOrDefault(unresolved => unresolved.PackageName == mainPackage.Name);
+                        var findUnresolved = unresolvedDependencies.FirstOrDefault(unresolved => unresolved.PackageName == pkg.Package.MainPackage.Name);
                         if (findUnresolved == null)
                         {
                             id++;
-                            findUnresolved = new MissingPackageGraphElement(id, mainPackage.Name);
+                            findUnresolved = new MissingPackageGraphElement(id, pkg.Package.MainPackage.Name);
                             unresolvedDependencies.Add(findUnresolved);
                             dependencyGraph.Elements.Add(findUnresolved);
                         }
@@ -179,7 +211,8 @@ namespace Otor.MsixHero.Dependencies
         
         private async Task<IList<AppxPackage>> GetConsideredPackages(AppxPackage startPackage, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            var progressForGettingPackages = new RangeProgress(progress, 0, 70);
+            var progressForGettingHosts = new RangeProgress(progress, 0, 30);
+            var progressForGettingPackages = new RangeProgress(progress, 30, 70);
             var progressForGettingAddOns = new RangeProgress(progress, 70, 90);
             var progressForCalculation = new RangeProgress(progress, 90, 100);
             
@@ -187,9 +220,34 @@ namespace Otor.MsixHero.Dependencies
             var allPackages = await manager.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
             var consideredPackages = new List<AppxPackage> { startPackage };
             var addOnPackages = new List<AppxPackage>();
+            var hostPackages = new List<AppxPackage>();
 
             var manifestReader = new AppxManifestReader();
+            var hosts = startPackage.Applications.Where(a => a.HostId != null).Select(a => a.HostId).ToArray();
+            if (hosts.Any())
+            {
+                // we will have to read the hosts
+                progressForGettingHosts.Report(new ProgressData(0, "Reading host apps..."));
 
+                var processed = 0;
+                foreach (var potentialHostPackage in allPackages)
+                {
+                    progressForGettingHosts.Report(new ProgressData((int)(100.0 * processed++ / allPackages.Count), "Reading hosts apps..."));
+                    
+                    using var fileReader = FileReaderFactory.CreateFileReader(potentialHostPackage.ManifestLocation);
+                    var p = await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false);
+
+                    if (p.Applications?.SelectMany(a => a.Extensions).OfType<AppxHost>().Any() == true)
+                    {
+                        hostPackages.Add(p);
+                    }
+                    else if (p.Extensions?.OfType<AppxHost>().Any() == true)
+                    {
+                        hostPackages.Add(p);
+                    }
+                }
+            }
+            
             progressForGettingAddOns.Report(new ProgressData(0, "Reading optional packages..."));
             foreach (var addOnPackage in allPackages.Where(installedPackage => installedPackage.IsOptional))
             {
@@ -202,7 +260,7 @@ namespace Otor.MsixHero.Dependencies
             {
                 var currentPkg = consideredPackages[i];
 
-                var matchingAddOns = addOnPackages.Where(addOnPackage => addOnPackage.MainPackages.Any(dep => dep.Name == currentPkg.Name));
+                var matchingAddOns = addOnPackages.Where(addOnPackage => addOnPackage.MainPackage != null && addOnPackage.MainPackage.Name == currentPkg.Name);
                 foreach (var matchingAddOn in matchingAddOns)
                 {
                     if (consideredPackages.Any(existing => existing.Publisher == matchingAddOn.Publisher && existing.Name == matchingAddOn.Name))
@@ -231,15 +289,45 @@ namespace Otor.MsixHero.Dependencies
                     }
                 }
 
-                foreach (var dependency in currentPkg.MainPackages)
+                if (hostPackages.Any())
                 {
-                    if (consideredPackages.Any(existing => existing.Name == dependency.Name))
+                    foreach (var hostId in currentPkg.Applications?.Where(a => a.HostId != null).Select(a => a.HostId) ?? Enumerable.Empty<string>())
+                    {
+                        foreach (var matching in hostPackages)
+                        {
+                            if (matching.Applications?.SelectMany(a => a.Extensions).OfType<AppxHost>().Select(e => e.Id).Contains(hostId) == true)
+                            {
+                                if (consideredPackages.Any(existing => existing.Publisher == matching.Publisher && existing.Name == matching.Name))
+                                {
+                                    // we have already processes this package
+                                    continue;
+                                }
+
+                                consideredPackages.Add(matching);
+                            }
+                            else if (matching.Extensions?.OfType<AppxHost>().Select(e => e.Id).Contains(hostId) == true)
+                            {
+                                if (consideredPackages.Any(existing => existing.Publisher == matching.Publisher && existing.Name == matching.Name))
+                                {
+                                    // we have already processes this package
+                                    continue;
+                                }
+
+                                consideredPackages.Add(matching);
+                            }
+                        }
+                    }
+                }
+                
+                if (currentPkg.MainPackage != null)
+                {
+                    if (consideredPackages.Any(existing => existing.Name == currentPkg.MainPackage.Name))
                     {
                         // we have already processes this package
                         continue;
                     }
 
-                    var candidate = allPackages.FirstOrDefault(installedPackage => installedPackage.Name == dependency.Name);
+                    var candidate = allPackages.FirstOrDefault(installedPackage => installedPackage.Name == currentPkg.MainPackage.Name);
 
                     if (candidate != null)
                     {

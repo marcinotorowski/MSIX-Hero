@@ -217,7 +217,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         // ReSharper disable once MemberCanBeMadeStatic.Local
         private async Task<PsfContentViewModel> LoadPsf(IAppxFileReader source, AppxPackage manifest)
         {
-            var paths = manifest.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, manifest.IsFramework) == MsixPackageType.BridgePsf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
+            var paths = manifest.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(manifest, a) == MsixPackageType.BridgePsf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             paths.Add(string.Empty);
 
             foreach (var items in paths)

@@ -64,7 +64,7 @@
                                 <TextBlock Foreground="White"
                                            FontSize="9"
                                            Margin="4 2" FontWeight="Bold" 
-                                           Text="{Binding Type, Converter={StaticResource MsixPackageTypeConverter}, ConverterParameter={x:Static packaging:PackageTypeDisplay.Short}}" />
+                                           Text="{Binding Type, Converter={StaticResource MsixPackageTypeConverter}, ConverterParameter={x:Static packaging:PackageTypeConverter+PackageTypeDisplay.Short}}" />
                                 <Border.RenderTransform>
                                     <TranslateTransform X="20" Y="-12" />
                                 </Border.RenderTransform>

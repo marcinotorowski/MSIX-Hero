@@ -14,18 +14,23 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-
-namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
+namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 {
-    [Flags]
-    public enum MsixPackageType
+    public class AppxHost : AppxExtension
     {
-        Uwp = 1,
-        BridgeDirect = 2,
-        BridgePsf = 4,
-        Web = 8,
-        Framework = 16,
-        HostedApp = 32
+        public enum RunTimeBehavior
+        {
+            PackagedClassicApp,
+            WindowsApp,
+            Win32App,
+        }
+
+        public string Id { get; set; }
+        
+        public string Executable { get; set; }
+
+        public RunTimeBehavior Behavior { get; set; }
+        
+        public AppxExtensionTrustLevel TrustLevel { get; set; }
     }
 }

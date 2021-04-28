@@ -16,19 +16,21 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 
 namespace Otor.MsixHero.Appx.Packaging
 {
-    public enum PackageTypeDisplay
-    {
-        Long,
-        Normal,
-        Short
-    }
-
     public static class PackageTypeConverter
     {
+        public enum PackageTypeDisplay
+        {
+            Long,
+            Normal,
+            Short
+        }
+
         public static string GetPackageTypeStringFrom(MsixPackageType packageType, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
         {
             var isUwp = (packageType & MsixPackageType.Uwp) == MsixPackageType.Uwp;
@@ -75,22 +77,22 @@ namespace Otor.MsixHero.Appx.Packaging
                 switch (displayType)
                 {
                     case PackageTypeDisplay.Long:
-                        return "Web application";
+                        return "Progressive Web Application";
                     default:
-                        return "Web";
+                        return "PWA";
                 }
             }
 
             var isFramework = (packageType & MsixPackageType.Framework) == MsixPackageType.Framework;
             if (isFramework)
             {
-                switch (displayType)
-                {
-                    case PackageTypeDisplay.Short:
-                        return "FRAMEWORK";
-                    default:
-                        return "Framework";
-                }
+                return "Framework";
+            }
+
+            var isHosted = (packageType & MsixPackageType.HostedApp) == MsixPackageType.HostedApp;
+            if (isHosted)
+            {
+                return "Hosted app";
             }
 
             switch (displayType)
@@ -101,17 +103,17 @@ namespace Otor.MsixHero.Appx.Packaging
                     return "Unknown";
             }
         }
-
-        public static string GetPackageTypeStringFrom(string entryPoint, string executable, string startPage, bool isFramework, PackageTypeDisplay displayType = PackageTypeDisplay.Normal)
-        {
-            return GetPackageTypeStringFrom(GetPackageTypeFrom(entryPoint, executable, startPage, isFramework), displayType);
-        }
-
-        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, bool isFramework)
+        
+        public static MsixPackageType GetPackageTypeFrom(string entryPoint, string executable, string startPage, string hostId, bool isFramework)
         {
             if (isFramework)
             {
                 return MsixPackageType.Framework;
+            }
+
+            if (!string.IsNullOrEmpty(hostId))
+            {
+                return MsixPackageType.HostedApp;
             }
 
             if (!string.IsNullOrEmpty(entryPoint))
@@ -148,6 +150,47 @@ namespace Otor.MsixHero.Appx.Packaging
             }
 
             return string.IsNullOrEmpty(startPage) ? 0 : MsixPackageType.Web;
+        }
+
+        public static MsixPackageType GetPackageTypeFrom(AppxPackage package, AppxApplication application)
+        {
+            return GetPackageTypeFrom(application.EntryPoint, application.Executable, application.StartPage, application.HostId, package.IsFramework);
+        }
+        
+        public static string GetTargetFrom(AppxPackage package, AppxApplication application)
+        {
+            switch (GetPackageTypeFrom(package, application))
+            {
+                case MsixPackageType.BridgeDirect:
+                case MsixPackageType.BridgePsf:
+                    return application.Executable;
+                case MsixPackageType.Web:
+                    return application.StartPage;
+                case MsixPackageType.HostedApp:
+                    string hostedDependency;
+                    if (package.HostPackageDependencies?.Count == 1)
+                    {
+                        hostedDependency = package.HostPackageDependencies.First().Name + " [" + application.HostId + "]";
+                    }
+                    else
+                    {
+                        hostedDependency = application.HostId;
+                    }
+
+                    if (string.IsNullOrEmpty(application.Parameters))
+                    {
+                        return hostedDependency;
+                    }
+
+                    return hostedDependency + Environment.NewLine + application.Parameters;
+                default:
+                    if (string.IsNullOrEmpty(application.EntryPoint))
+                    {
+                        return application.Executable;
+                    }
+
+                    return application.Executable;
+            }
         }
     }
 }

@@ -99,6 +99,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             XNamespace appxNamespace = "http://schemas.microsoft.com/appx/2010/manifest";
             XNamespace uapNamespace = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
             XNamespace uap3Namespace = "http://schemas.microsoft.com/appx/manifest/uap/windows10/3";
+            XNamespace uap10Namespace = "http://schemas.microsoft.com/appx/manifest/uap/windows10/10";
 
             var packageNode = xmlDocument.Element(win10Namespace + "Package") ?? xmlDocument.Element(appxNamespace + "Package");
             if (packageNode == null)
@@ -169,7 +170,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                         var entryPoint = subNode.Attribute("EntryPoint")?.Value;
                         var executable = subNode.Attribute("Executable")?.Value;
                         var startPage = subNode.Attribute("StartPage")?.Value;
-                        result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage, result.IsFramework);
+                        var hostId = subNode.Attribute(uap10Namespace + "HostId")?.Value;
+                        result.PackageType |= PackageTypeConverter.GetPackageTypeFrom(entryPoint, executable, startPage, hostId, result.IsFramework);
                     }
                 }
             }

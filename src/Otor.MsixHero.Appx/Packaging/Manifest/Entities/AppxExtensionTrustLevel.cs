@@ -14,18 +14,14 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-
-namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
+namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 {
-    [Flags]
-    public enum MsixPackageType
+    public enum AppxExtensionTrustLevel
     {
-        Uwp = 1,
-        BridgeDirect = 2,
-        BridgePsf = 4,
-        Web = 8,
-        Framework = 16,
-        HostedApp = 32
+        // ReSharper disable once InconsistentNaming
+        appContainer,
+        
+        // ReSharper disable once InconsistentNaming
+        mediumIL
     }
 }

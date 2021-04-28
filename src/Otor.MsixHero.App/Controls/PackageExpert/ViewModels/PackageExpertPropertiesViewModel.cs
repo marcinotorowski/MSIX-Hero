@@ -106,15 +106,15 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             }
             
             this.UserDirectory = Path.Combine("%localappdata%", "Packages", this.FamilyName, "LocalCache");
-            this.PsfFilePath = Path.Combine(filePath, "config.json");
-            this.ManifestFilePath = Path.Combine(filePath, FileConstants.AppxManifestFile);
+            this.PsfFilePath = filePath == null ? null : Path.Combine(filePath, "config.json");
+            this.ManifestFilePath = filePath == null ? null : Path.Combine(filePath, FileConstants.AppxManifestFile);
 
-            if (!File.Exists(this.PsfFilePath))
+            if (this.PsfFilePath != null && !File.Exists(this.PsfFilePath))
             {
                 this.PsfFilePath = null;
             }
 
-            if (!File.Exists(this.ManifestFilePath))
+            if (this.ManifestFilePath != null && !File.Exists(this.ManifestFilePath))
             {
                 this.ManifestFilePath = null;
             }
@@ -198,7 +198,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                 var result = this.Model.IsFramework ? MsixPackageType.Framework : 0;
                 foreach (var app in this.Model.Applications ?? Enumerable.Empty<AppxApplication>())
                 {
-                    result = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, this.Model.IsFramework);
+                    result = PackageTypeConverter.GetPackageTypeFrom(this.Model, app);
                     break;
                 }
 
@@ -214,6 +214,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                         return "Web";
                     case MsixPackageType.Framework:
                         return "Framework";
+                    case MsixPackageType.HostedApp:
+                        return "Hosted app";
                     default:
                         return null;
                 }
@@ -226,7 +228,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                 var result = this.Model.IsFramework ? MsixPackageType.Framework : 0;
                 foreach (var app in this.Model.Applications ?? Enumerable.Empty<AppxApplication>())
                 {
-                    result = PackageTypeConverter.GetPackageTypeFrom(app.EntryPoint, app.Executable, app.StartPage, this.Model.IsFramework);
+                    result = PackageTypeConverter.GetPackageTypeFrom(this.Model, app);
                     break;
                 }
 
@@ -242,6 +244,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                         return "This is a web app.";
                     case MsixPackageType.Framework:
                         return "This is a framework app";
+                    case MsixPackageType.HostedApp:
+                        return "This is a hosted app";
                     default:
                         return "This is an app of an unknown type.";
                 }

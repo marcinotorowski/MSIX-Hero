@@ -63,12 +63,16 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
         public AppxPackageArchitecture ProcessorArchitecture { get; set; }
         
         public List<AppxPackageDependency> PackageDependencies { get; set; }
+        
+        public List<AppxHostRuntimeDependency> HostPackageDependencies { get; set; }
 
-        public List<AppxMainPackageDependency> MainPackages { get; set; }
+        public AppxMainPackageDependency MainPackage { get; set; }
         
         public List<AppxOperatingSystemDependency> OperatingSystemDependencies { get; set; }
 
         public List<AppxApplication> Applications { get; set; }
+        
+        public List<AppxExtension> Extensions { get; set; }
 
         public BuildInfo BuildInfo { get; set; }
 

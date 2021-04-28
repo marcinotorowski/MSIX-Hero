@@ -60,5 +60,9 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
         public PsfApplicationDescriptor Psf { get; set; }
 
         public List<AppxExtension> Extensions { get; set; }
+        
+        public string HostId { get; set; }
+        
+        public string Parameters { get; set; }
     }
 }

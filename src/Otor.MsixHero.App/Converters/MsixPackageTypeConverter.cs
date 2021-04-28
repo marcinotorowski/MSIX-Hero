@@ -27,9 +27,9 @@ namespace Otor.MsixHero.App.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(parameter is PackageTypeDisplay type))
+            if (!(parameter is PackageTypeConverter.PackageTypeDisplay type))
             {
-                type = PackageTypeDisplay.Normal;
+                type = PackageTypeConverter.PackageTypeDisplay.Normal;
             }
 
             if (!(value is MsixPackageType msixPackageType))
@@ -37,7 +37,7 @@ namespace Otor.MsixHero.App.Converters
                 return Binding.DoNothing;
             }
 
-            return PackageTypeConverter.GetPackageTypeStringFrom(msixPackageType, type).ToUpper();
+            return PackageTypeConverter.GetPackageTypeStringFrom(msixPackageType, type);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

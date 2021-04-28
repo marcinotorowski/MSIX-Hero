@@ -16,16 +16,15 @@
 
 using System;
 
-namespace Otor.MsixHero.Appx.Packaging.Installation.Enums
+namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities
 {
-    [Flags]
-    public enum MsixPackageType
+    [Serializable]
+    public class AppxHostRuntimeDependency
     {
-        Uwp = 1,
-        BridgeDirect = 2,
-        BridgePsf = 4,
-        Web = 8,
-        Framework = 16,
-        HostedApp = 32
+        public string Name { get; set; }    
+        
+        public string Publisher { get; set; }
+        
+        public string MinVersion { get; set; }
     }
 }

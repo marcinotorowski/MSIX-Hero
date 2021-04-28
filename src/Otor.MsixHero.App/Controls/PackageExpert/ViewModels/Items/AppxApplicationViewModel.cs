@@ -36,7 +36,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
             this.Psf = model.Psf == null ? null : new AppxPsfViewModel(package.RootFolder, model.Psf);
             this.Services = model.Extensions == null ? null : new AppxServicesViewModel(model.Extensions);
 
-            this.Type = PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework);
+            this.Type = PackageTypeConverter.GetPackageTypeFrom(package, model);
             this.Alias = this.model.ExecutionAlias?.Any() == true ? string.Join(", ", this.model.ExecutionAlias.Distinct(StringComparer.OrdinalIgnoreCase)) : null;
         }
         
@@ -57,28 +57,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
         public string Id => this.model.Id;
 
         public string TileColor => this.model.BackgroundColor;
-
-        public string Start
-        {
-            get
-            {
-                switch (PackageTypeConverter.GetPackageTypeFrom(this.model.EntryPoint, this.model.Executable, this.model.StartPage, this.package.IsFramework))
-                {
-                    case MsixPackageType.BridgeDirect:
-                    case MsixPackageType.BridgePsf:
-                        return this.model.Executable;
-                    case MsixPackageType.Web:
-                        return this.model.StartPage;
-                    default:
-                        if (string.IsNullOrEmpty(this.model.EntryPoint))
-                        {
-                            return this.model.Executable;
-                        }
-
-                        return this.model.Executable;
-                }
-            }
-        }
+        
+        public string Start => PackageTypeConverter.GetTargetFrom(this.package, this.model);
 
         public string EntryPoint => this.Type == MsixPackageType.Uwp ? this.model.EntryPoint : null;
 
