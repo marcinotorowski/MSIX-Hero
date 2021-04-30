@@ -700,7 +700,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     }
                     else
                     {
-                        p.WaitForExit();
+                        await p.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
                         foreach (var line in await File.ReadAllLinesAsync(tempFile, cancellationToken).ConfigureAwait(false))
                         {
                             provisioned.Add(line.Replace("~", string.Empty));
