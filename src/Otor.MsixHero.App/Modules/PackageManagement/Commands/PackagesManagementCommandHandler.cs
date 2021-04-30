@@ -848,7 +848,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
         private bool CanRemovePackage() => this.IsAnySelected();
 
-        private bool CanOpenStore() => this.IsSingleSelected();
+        private bool CanOpenStore() => this.IsSingleSelected() && this.application.ApplicationState.Packages.SelectedPackages.FirstOrDefault()?.SignatureKind == SignatureKind.Store;
 
         private bool CanOpenPsfConfig()
         {
