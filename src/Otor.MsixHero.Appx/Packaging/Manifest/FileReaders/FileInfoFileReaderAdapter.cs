@@ -18,7 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
@@ -63,6 +65,41 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             // ReSharper disable once PossibleNullReferenceException
             return File.OpenRead(Path.Combine(this.appxManifestFile.Directory.FullName, filePath));
+        }
+
+#pragma warning disable 1998
+        public async IAsyncEnumerable<string> EnumerateDirectories(string rootRelativePath = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+#pragma warning restore 1998
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            var baseDir = this.appxManifestFile.Directory.FullName;
+            var fullDir = rootRelativePath == null ? baseDir : Path.Combine(baseDir, rootRelativePath);
+
+            foreach (var d in Directory.EnumerateDirectories(fullDir, "*", SearchOption.TopDirectoryOnly))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return d;
+            }
+        }
+
+#pragma warning disable 1998
+        public async IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath, string wildcard, SearchOption searchOption = SearchOption.TopDirectoryOnly, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+#pragma warning restore 1998
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            var baseDir = this.appxManifestFile.Directory.FullName;
+            var fullDir = rootRelativePath == null ? baseDir : Path.Combine(baseDir, rootRelativePath);
+
+            foreach (var f in Directory.EnumerateFiles(fullDir, wildcard, searchOption))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return new AppxFileInfo(new FileInfo(f));
+            }
+        }
+
+        public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath = null, CancellationToken cancellationToken = default)
+        {
+            return this.EnumerateFiles(rootRelativePath, "*", SearchOption.TopDirectoryOnly, cancellationToken);
         }
 
         public Stream GetResource(string resourceFilePath)

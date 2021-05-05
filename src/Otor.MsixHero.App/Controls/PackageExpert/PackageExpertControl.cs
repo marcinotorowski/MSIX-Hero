@@ -182,9 +182,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 sender.packageManagerProvider,
                 sender.volumeManagerProvider,
                 sender.signingManagerProvider,
-                sender.interactionService,
-                sender.runningDetector,
-                sender.dialogService);
+                sender.interactionService);
 
             try
             {

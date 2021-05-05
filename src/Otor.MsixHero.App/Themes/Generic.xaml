@@ -12,6 +12,7 @@
         <ResourceDictionary Source="/msixhero;component/Themes/ListBox.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Text.xaml" />
         <ResourceDictionary Source="/msixhero;component/Themes/Tabs.xaml" />
+        <ResourceDictionary Source="/msixhero;component/Themes/TreeView.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/Themes.xaml" />
         <ResourceDictionary Source="/msixhero;component/Controls/PackageExpert/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>

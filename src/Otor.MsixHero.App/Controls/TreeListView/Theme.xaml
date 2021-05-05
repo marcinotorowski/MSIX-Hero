@@ -4,6 +4,53 @@
     <!--Converter for Indentation of items-->
     <local:TreeListViewConverter x:Key="TreeListViewConverter"/>
 
+
+    <PathGeometry x:Key="TreeArrow" Figures="M0,0 L0,6 L6,0 z"/>
+    
+    <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Width" Value="22"/>
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Background="Transparent" Height="16" Padding="5,5,5,5" Width="16">
+                        <Path x:Name="ExpandPath" Data="{StaticResource TreeArrow}" Fill="White" Stroke="{StaticResource MsixHero.Brushes.Light2}">
+                            <Path.RenderTransform>
+                                <RotateTransform Angle="135" CenterY="3" CenterX="3"/>
+                            </Path.RenderTransform>
+                        </Path>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="RenderTransform" TargetName="ExpandPath">
+                                <Setter.Value>
+                                    <RotateTransform Angle="180" CenterY="3" CenterX="3"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Fill" TargetName="ExpandPath" Value="{StaticResource MsixHero.Brushes.Light2}"/>
+                            <Setter Property="Stroke" TargetName="ExpandPath" Value="{StaticResource MsixHero.Brushes.Light2}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Stroke" TargetName="ExpandPath" Value="{StaticResource MsixHero.Brushes.Accent}"/>
+                            <Setter Property="Fill" TargetName="ExpandPath" Value="{StaticResource MsixHero.Brushes.Accent.Light1}"/>
+                        </Trigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+
+                            <Setter Property="Stroke" TargetName="ExpandPath" Value="{StaticResource MsixHero.Brushes.Accent}"/>
+                            <Setter Property="Fill" TargetName="ExpandPath" Value="{StaticResource MsixHero.Brushes.Accent}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style TargetType="ToggleButton" x:Key="TreeToggle">
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -46,123 +93,86 @@
         </Setter>
     </Style>
 
-    <!--Control Template for TreeViewItem's.-->
     <ControlTemplate TargetType="TreeViewItem" x:Key="TreeListViewItem">
-        <!--Grid containing the current information and the subnodes.-->
         <StackPanel VerticalAlignment="Center">
-            <!--Border wrapping the content presenter.-->
-            <Border VerticalAlignment="Center" x:Name="Border">
-                <!--GridViewRowPresenter containing the current information.-->
+            <Border Background="Transparent" VerticalAlignment="Center" x:Name="Border" HorizontalAlignment="Stretch">
+
                 <GridViewRowPresenter 
+                    FocusVisualStyle="{x:Null}"
+                    Focusable="False"
                     VerticalAlignment="Center"
                     Content="{TemplateBinding Header}"
                     Columns="{Binding Columns, 
                     RelativeSource={RelativeSource Mode=FindAncestor, 
                     AncestorType=local:TreeListViewControl}}"/>
             </Border>
-            <!--ItemsPresenter containing the subnodes-->
+
             <ItemsPresenter x:Name="ItemsPresenter" Visibility="Collapsed"/>
         </StackPanel>
         <ControlTemplate.Triggers>
-            <!--Trigger used to show the sub items-->
             <Trigger Property="IsExpanded" Value="True">
                 <Setter TargetName="ItemsPresenter" Property="Visibility" Value="Visible"/>
             </Trigger>
-            <!--Trigger used to change the color based on selection-->
-            <Trigger Property="IsSelected" Value="true">
-                <!--Change the background color-->
-                <Setter TargetName="Border" Property="Background"
-                    Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                <!--Change the foreground color-->
-                <Setter Property="Foreground" 
-                    Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+            <Trigger Property="IsMouseOver" Value="true" SourceName="Border">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light2}" />
             </Trigger>
-            <!--Trigger used to change the color based on selection-->
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsSelected" Value="true"/>
-                    <Condition Property="IsSelectionActive" Value="false"/>
-                </MultiTrigger.Conditions>
-                <!--Change the background color-->
-                <Setter TargetName="Border" Property="Background"
-                    Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                <!--Change the foreground color-->
-                <Setter Property="Foreground" 
-                    Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            </MultiTrigger>
-            <!--Trigger used to change the color based on the status of the item-->
+            <Trigger Property="IsSelected" Value="true">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
+            </Trigger>
             <Trigger Property="IsEnabled" Value="false">
-                <!--Change the foreground color-->
-                <Setter Property="Foreground" 
-                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                <Setter Property="Opacity" Value="0.4" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!--Control Template for TreeListViewExpander's.-->
     <ControlTemplate TargetType="{x:Type local:TreeListViewExpander}" x:Key="TreeListViewExpander">
         <StackPanel Orientation="Horizontal" x:Name="ContainerElement">
-            <!--Use a FrameworkElement to indent the button-->
-            <FrameworkElement Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={StaticResource TreeListViewConverter}}"/>
+            <FrameworkElement 
+                Focusable="False"
+                Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Converter={StaticResource TreeListViewConverter}}"/>
             
             <ToggleButton 
-                Style="{StaticResource TreeToggle}"
+                Style="{StaticResource ExpandCollapseToggleStyle}"
                 IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource Mode=FindAncestor,
                 AncestorType=TreeViewItem}}" 
                 VerticalAlignment="Center" 
                 Margin="1 1 1 1"/>
         </StackPanel>
         <ControlTemplate.Triggers>
-            <!--Trigger used to show/hide the expand button-->
-            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor,
-                AncestorType=TreeViewItem}}" Value="False">
+            <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TreeViewItem}}" Value="False">
                 <Setter TargetName="ContainerElement" Property="Visibility" Value="Hidden"/>
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
     <Style TargetType="{x:Type local:TreeListViewControl}">
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#bbb" />
-        <!--Set the control template.-->
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:TreeListViewControl}">
                     <ControlTemplate.Resources>
-                        <!--Apply this style to all 'TreeViewItem's.-->
                         <Style TargetType="TreeViewItem">
                             <Setter Property="Template" Value="{StaticResource TreeListViewItem}"/>
                         </Style>
-                        <!--Apply this style to all 'TreeListViewExpander's.-->
                         <Style TargetType="local:TreeListViewExpander">
+                            <Setter Property="Focusable" Value="False" />
                             <Setter Property="Template" Value="{StaticResource TreeListViewExpander}"/>
                         </Style>
                     </ControlTemplate.Resources>
-                    <!--Create a standard border around the 'TreeListView'.-->
+
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <!--ScrollViewer providing horizontal scrolling functionality 
-                        for both, content and headers.-->
-                        <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Disabled">
-                            <!--Grid containing the header row and all the content rows.-->
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <!--The header row.-->
                                     <RowDefinition Height="Auto"/>
-                                    <!--The content row.-->
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <!--The header row.-->
-                                <GridViewHeaderRowPresenter Columns="{TemplateBinding Columns}"
+                                <GridViewHeaderRowPresenter 
+                                    Columns="{TemplateBinding Columns}" 
                                     AllowsColumnReorder="{TemplateBinding AllowsColumnReorder}"/>
-                                <!--ScrollViewer providing vertical scrolling
-                                functionality for the content.-->
-                                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                              VerticalScrollBarVisibility="Auto"
-                                              Grid.Row="1">
-                                    <!--ItemsPresenter containing the content.-->
+                                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="1">
                                     <ItemsPresenter/>
                                 </ScrollViewer>
                             </Grid>

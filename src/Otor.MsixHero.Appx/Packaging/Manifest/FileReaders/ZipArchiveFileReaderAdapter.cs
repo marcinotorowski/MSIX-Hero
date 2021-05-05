@@ -15,10 +15,14 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
@@ -57,6 +61,106 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
         public string PackagePath { get; private set; }
 
+#pragma warning disable 1998
+        public async IAsyncEnumerable<string> EnumerateDirectories(string rootRelativePath = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+#pragma warning restore 1998
+        {
+            if (string.IsNullOrEmpty(rootRelativePath))
+            {
+                rootRelativePath = string.Empty;
+            }
+            else
+            {
+                rootRelativePath = rootRelativePath.Replace(Path.DirectorySeparatorChar, '/').TrimEnd('/') + '/';
+            }
+
+            var hashset = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            
+            this.EnsureInitialized();
+            foreach (var entry in msixPackage.Entries)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (!entry.FullName.StartsWith(rootRelativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+                
+                var firstSlash = entry.FullName.IndexOf('/', rootRelativePath.Length);
+                if (firstSlash == -1)
+                {
+                    continue;
+                }
+
+                var candidate = entry.FullName.Substring(0, firstSlash);
+                if (hashset.Add(candidate))
+                {
+                    yield return candidate.Replace('/', Path.DirectorySeparatorChar);
+                }
+            }
+        }
+
+#pragma warning disable 1998
+        public async IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath, string wildcard, SearchOption searchOption = SearchOption.TopDirectoryOnly, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+#pragma warning restore 1998
+        {
+            if (string.IsNullOrEmpty(rootRelativePath))
+            {
+                rootRelativePath = string.Empty;
+            }
+            else
+            {
+                rootRelativePath = rootRelativePath.Replace(Path.DirectorySeparatorChar, '/').TrimEnd('/') + '/';
+            }
+
+            var regex = string.IsNullOrEmpty(wildcard) ? null : RegexBuilder.FromWildcard(wildcard);
+
+            this.EnsureInitialized();
+            foreach (var entry in msixPackage.Entries)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                if (!entry.FullName.StartsWith(rootRelativePath, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                string fileName;
+                var lastSlash = entry.FullName.Substring(rootRelativePath.Length).LastIndexOf('/');
+                if (lastSlash != -1)
+                {
+                    fileName = entry.FullName.Substring(lastSlash + 1);
+                }
+                else
+                {
+                    fileName = entry.FullName.Substring(rootRelativePath.Length);
+                }
+                
+                if (searchOption == SearchOption.AllDirectories)
+                {
+                    if (regex == null || regex.IsMatch(fileName))
+                    {
+                        yield return new AppxFileInfo(entry.FullName.Replace('/', Path.DirectorySeparatorChar), entry.Length);
+                    }
+                }
+                else
+                {
+                    if (entry.FullName.IndexOf('/', rootRelativePath.Length) == -1)
+                    {
+                        if (regex == null || regex.IsMatch(fileName))
+                        {
+                            yield return new AppxFileInfo(entry.FullName.Replace('/', Path.DirectorySeparatorChar), entry.Length);
+                        }
+                    }
+                }
+            }
+        }
+
+        public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath = null, CancellationToken cancellationToken = default)
+        {
+            return this.EnumerateFiles(rootRelativePath, "*", SearchOption.TopDirectoryOnly, cancellationToken);
+        }
+
         public Stream GetFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
@@ -66,10 +170,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             this.EnsureInitialized();
 
-            var entry = msixPackage.GetEntry(filePath.Replace("\\", "/"));
+            var entry = msixPackage.GetEntry(filePath.Replace(Path.DirectorySeparatorChar, '/'));
             if (entry == null)
             {
-                entry = msixPackage.Entries.FirstOrDefault(e => string.Equals(e.FullName, filePath.Replace("\\", "/"), StringComparison.OrdinalIgnoreCase));
+                entry = msixPackage.Entries.FirstOrDefault(e => string.Equals(e.FullName, filePath.Replace(Path.DirectorySeparatorChar, '/'), StringComparison.OrdinalIgnoreCase));
                 if (entry == null)
                 {
                     throw new FileNotFoundException($"File {filePath} not found in MSIX package.");
@@ -133,7 +237,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 
             this.EnsureInitialized();
 
-            filePath = filePath.Replace("\\", "/");
+            filePath = filePath.Replace(Path.DirectorySeparatorChar, '/');
             var entry = this.msixPackage.GetEntry(filePath);
             if (entry != null)
             {

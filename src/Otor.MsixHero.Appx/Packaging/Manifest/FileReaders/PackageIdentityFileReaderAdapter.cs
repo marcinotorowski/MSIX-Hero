@@ -15,10 +15,11 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Windows.ApplicationModel;
-using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 
@@ -90,6 +91,24 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             }
 
             return this.adapter.GetFile(filePath);
+        }
+
+        public IAsyncEnumerable<string> EnumerateDirectories(string rootRelativePath = null, CancellationToken cancellationToken = default)
+        {
+            this.adapter ??= this.GetAdapter();
+            return this.adapter.EnumerateDirectories(rootRelativePath, cancellationToken);
+        }
+
+        public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath, string wildcard, SearchOption searchOption = SearchOption.TopDirectoryOnly, CancellationToken cancellationToken = default)
+        {
+            this.adapter ??= this.GetAdapter();
+            return this.adapter.EnumerateFiles(rootRelativePath, wildcard, searchOption, cancellationToken);
+        }
+
+        public IAsyncEnumerable<AppxFileInfo> EnumerateFiles(string rootRelativePath = null, CancellationToken cancellationToken = default)
+        {
+            this.adapter ??= this.GetAdapter();
+            return this.adapter.EnumerateFiles(rootRelativePath, cancellationToken);
         }
 
         public Stream GetResource(string resourceFilePath)

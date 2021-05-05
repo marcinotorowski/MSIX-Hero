@@ -19,101 +19,246 @@
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
+             xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
     <TabControl DockPanel.Dock="Top" Margin="12 0 0 0">
         <TabItem Header="Properties">
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <StackPanel>
+            <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
+                <TabItem>
+                    <TabItem.Header>
+                        <Viewbox ToolTip="General" Height="24" Width="24">
+                            <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorInfo}" />
+                        </Viewbox>
+                    </TabItem.Header>
 
-                    <StackPanel Margin="0 0 0 10">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Signed by" Visibility="Collapsed" />
-                        <controls:ProgressOverlay 
-                            DataContext="{Binding Trust}"
-                            IsShown="{Binding IsTrusting}">
-                            <packageExpert:SignatureStatusControl 
-                                Trustee="{Binding TrustStatus.CurrentValue.Trustee}"
-                                TrustMeCommand="{Binding TrustMeCommand}"
-                                ViewPropertiesCommand="{Binding ShowPropertiesCommand}"
-                                IsTrusted="{Binding TrustStatus.CurrentValue.IsTrusted}"
-                                IsChainLoaded="{Binding TrustStatus.IsLoading, Converter={StaticResource NegativeConverter}}"/>
-                        </controls:ProgressOverlay>
-                    </StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel>
 
-                    <StackPanel 
-                        DataContext="{Binding Manifest.CurrentValue}">
-                        <StackPanel Margin="0 0 0 0" VerticalAlignment="Top">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Publisher, Mode=OneWay}" TextWrapping="Wrap" />
-                        </StackPanel>
+                            <StackPanel Margin="0 0 0 10">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Signed by" Visibility="Collapsed" />
+                                <controls:ProgressOverlay 
+                                    DataContext="{Binding Trust}"
+                                    IsShown="{Binding IsTrusting}">
+                                    <packageExpert:SignatureStatusControl 
+                                        Trustee="{Binding TrustStatus.CurrentValue.Trustee}"
+                                        TrustMeCommand="{Binding TrustMeCommand}"
+                                        ViewPropertiesCommand="{Binding ShowPropertiesCommand}"
+                                        IsTrusted="{Binding TrustStatus.CurrentValue.IsTrusted}"
+                                        IsChainLoaded="{Binding TrustStatus.IsLoading, Converter={StaticResource NegativeConverter}}"/>
+                                </controls:ProgressOverlay>
+                            </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Description" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Description, Mode=OneWay, TargetNullValue='None', FallbackValue='None'}" TextWrapping="Wrap" />
-                        </StackPanel>
+                            <StackPanel 
+                                DataContext="{Binding Manifest.CurrentValue}">
+                                <StackPanel Margin="0 0 0 0" VerticalAlignment="Top">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Publisher, Mode=OneWay}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=FamilyName, Mode=OneWay}" TextWrapping="Wrap" />
-                        </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Description" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Description, Mode=OneWay, TargetNullValue='None', FallbackValue='None'}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Full package name" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=PackageFullName, Mode=OneWay}" TextWrapping="Wrap" />
-                        </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=FamilyName, Mode=OneWay}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Architecture" />
-                            <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=Architecture, Mode=OneWay}" TextWrapping="Wrap" />
-                        </StackPanel>
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Full package name" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=PackageFullName, Mode=OneWay}" TextWrapping="Wrap" />
+                                </StackPanel>
 
-                        <StackPanel Margin="0 10 0 0">
-                            <TextBlock Style="{StaticResource DataHeader}">
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Architecture" />
+                                    <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=Architecture, Mode=OneWay}" TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0 10 0 0">
+                                    <TextBlock Style="{StaticResource DataHeader}">
                                         <Run Text="Package Integrity Enforcement" />
-                            </TextBlock>
-                            <TextBlock Visibility="{Binding PackageIntegrity, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                    </TextBlock>
+                                    <TextBlock Visibility="{Binding PackageIntegrity, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" TextWrapping="Wrap">
                                         <Run Text="Enforce run time package integrity checks on the entire contents of the package" />
                                         <Hyperlink Click="HyperlinkOnClick" Tag="https://msixhero.net/redirect/package-integrity-enforcement">[more info]</Hyperlink>
-                            </TextBlock>
-                            <TextBlock Visibility="{Binding PackageIntegrity, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" TextWrapping="Wrap">
+                                    </TextBlock>
+                                    <TextBlock Visibility="{Binding PackageIntegrity, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" TextWrapping="Wrap">
                                         <Run Text="Default settings" />
                                         <Hyperlink Click="HyperlinkOnClick" Tag="https://msixhero.net/redirect/package-integrity-enforcement">[more info]</Hyperlink>
-                            </TextBlock>
-                        </StackPanel>
-                    </StackPanel>
-                    <StackPanel  
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel  
                         DataContext="{Binding Manifest.CurrentValue}"
                         Margin="0 10 0 0" 
                         Visibility="{Binding HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
-                        <TextBlock Style="{StaticResource DataValue}" Margin="0">
+                                <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
+                                <TextBlock Style="{StaticResource DataValue}" Margin="0">
                                     <Run Text="{Binding BuildInfo.ProductName, Mode=OneWay, TargetNullValue='Unknown product'}" />
                                     <Run Text="{Binding BuildInfo.ProductVersion, Mode=OneWay}" />
-                        </TextBlock>
-                        <TextBlock Style="{StaticResource DataValue}" Text="{Binding BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
-                    </StackPanel>
-                </StackPanel>
-            </ScrollViewer>
+                                </TextBlock>
+                                <TextBlock Style="{StaticResource DataValue}" Text="{Binding BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+
+                <TabItem >
+                    <TabItem.Header>
+                        <Grid DataContext="{Binding Manifest.CurrentValue}" Width="24" Height="24" ToolTip="Capabilities">
+                            <Viewbox Height="24" Width="24">
+                                <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorOK}" />
+                            </Viewbox>
+
+                            <Border 
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="-3"
+                                Tag="{Binding Capabilities.Count, Mode=OneWay}"
+                                Style="{StaticResource Badge}">
+                                <TextBlock 
+                                    Style="{StaticResource BadgeText}"
+                                    Text="{Binding Capabilities.Count, Mode=OneWay}" />
+                            </Border>
+                        </Grid>
+                    </TabItem.Header>
+                    <ContentControl Content="{Binding Manifest.CurrentValue}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate DataType="viewModels:PackageExpertPropertiesViewModel">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                                <StackPanel DataContext="{Binding Capabilities}">
+                                                    <StackPanel.Resources>
+                                                        <DataTemplate x:Key="CapabilityTemplate" DataType="{x:Type elements1:CapabilityViewModel}">
+                                                            <Border Margin="4" Width="180" Height="60" Background="{StaticResource MsixHero.Brushes.Light7}">
+                                                                <DockPanel>
+                                                                    <Path VerticalAlignment="Center" Data="{Binding VectorIcon}" Margin="8 0" Style="{StaticResource LargeIcon}" />
+                                                                    <TextBlock Margin="0 0 15 0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding DisplayName, Mode=OneTime}" />
+                                                                </DockPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </StackPanel.Resources>
+                                                    <TextBlock Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Text="General-use capabilities" Margin="0 0 0 8" />
+
+                                                    <ItemsControl Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding General}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+
+                                                    <TextBlock Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Peripherals and internal devices" Margin="0 0 0 8" />
+
+                                                    <ItemsControl Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Device}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+
+                                                    <TextBlock Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Restricted capabilities" Margin="0 0 0 8" />
+
+                                                    <ItemsControl Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Restricted}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+
+                                                    <TextBlock Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Custom capabilities" Margin="0 0 0 8" />
+
+                                                    <ItemsControl Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Custom}" ItemTemplate="{StaticResource CapabilityTemplate}">
+                                                        <ItemsControl.ItemsPanel>
+                                                            <ItemsPanelTemplate>
+                                                                <WrapPanel />
+                                                            </ItemsPanelTemplate>
+                                                        </ItemsControl.ItemsPanel>
+                                                    </ItemsControl>
+
+                                                    <DockPanel Margin="0 6 0 0">
+                                                        <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" Margin="2" VerticalAlignment="Center" />
+                                                        <TextBlock VerticalAlignment="Center">
+                                                            <Hyperlink>
+                                                                <b:Interaction.Behaviors>
+                                                                    <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/capabilities" />
+                                                                </b:Interaction.Behaviors>
+                                                                <Run Text="Learn more about supported MSIX capabilities" />
+                                                            </Hyperlink>
+                                                        </TextBlock>
+                                                    </DockPanel>
+                                                </StackPanel>
+                                            </ScrollViewer>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding  Manifest.CurrentValue.Capabilities.Count}">
+                                        <DataTrigger.Value>
+                                            <system:Int32>0</system:Int32>
+                                        </DataTrigger.Value>
+                                        <Setter Property="ContentTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <StackPanel>
+                                                        <TextBlock>
+                                                            <Run Text="This package does not define any" />
+                                                            <Run FontWeight="SemiBold" Text="capabilities" />
+                                                        </TextBlock>
+                                                        <DockPanel Margin="0 6 0 0">
+                                                            <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" Margin="2" VerticalAlignment="Center" />
+                                                            <TextBlock VerticalAlignment="Center">
+                                                                <Hyperlink>
+                                                                    <b:Interaction.Behaviors>
+                                                                        <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/capabilities" />
+                                                                    </b:Interaction.Behaviors>
+                                                                    <Run Text="Learn more about supported MSIX capabilities" />
+                                                                </Hyperlink>
+                                                            </TextBlock>
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </TabItem>
+            </TabControl>
         </TabItem>
         <TabItem Header="Content">
-            <TabControl Margin="0 -10 0 0">
-                <TabItem
-                    DataContext="{Binding Manifest.CurrentValue}"
-                    Style="{StaticResource Compact}">
+            <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
+                <TabItem>
                     <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="Applications" />
+                        <Grid DataContext="{Binding Manifest.CurrentValue}" Background="Transparent" ToolTip="Applications" Width="24" Height="24">
+                            <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" Width="24">
+                                <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorConsole}" />
+                            </Viewbox>
                             <Border 
-                                        Tag="{Binding Applications.Count, Mode=OneWay}"
-                                        Style="{StaticResource Badge}">
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="-3"
+                                Tag="{Binding Applications.Count, Mode=OneWay}"
+                                Style="{StaticResource Badge}">
                                 <TextBlock 
-                                            Style="{StaticResource BadgeText}" 
-                                            Text="{Binding Applications.Count, Mode=OneWay}" />
+                                    Style="{StaticResource BadgeText}" 
+                                    Text="{Binding Applications.Count, Mode=OneWay}" />
                             </Border>
-                        </StackPanel>
+                        </Grid>
                     </TabItem.Header>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer DataContext="{Binding Manifest.CurrentValue}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <controls:ZeroOrAny ItemsCount="{Binding Applications.Count}">
                             <controls:ZeroOrAny.Template>
                                 <ControlTemplate TargetType="controls:ZeroOrAny">
@@ -321,162 +466,284 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <TabItem
-                    Style="{StaticResource Compact}">
+                <TabItem>
                     <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="Optional content" />
-                            <Border 
-                                Tag="{Binding AddOns.CurrentValue.Count, Mode=OneWay}"
-                                Style="{StaticResource Badge}">
-                                <TextBlock 
-                                    Style="{StaticResource BadgeText}" 
-                                    Text="{Binding AddOns.CurrentValue.Count, Mode=OneWay}" />
-                            </Border>
-                        </StackPanel>
+                        <Border Background="Transparent" ToolTip="Package Support Framework">
+                            <Viewbox Height="24" Width="24">
+                                <TextBlock Text="PSF" FontWeight="Bold" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
+                            </Viewbox>
+                        </Border>
                     </TabItem.Header>
-                    <controls:ProgressOverlay IsShown="{Binding AddOns.IsLoading}">
-
-                        <controls:ZeroOrAny ItemsCount="{Binding AddOns.CurrentValue.Count}">
-                            <controls:ZeroOrAny.Template>
-                                <ControlTemplate TargetType="controls:ZeroOrAny">
-                                    <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
-                                </ControlTemplate>
-                            </controls:ZeroOrAny.Template>
-                            <controls:ZeroOrAny.AnyItemTemplate>
-                                <DataTemplate>
-                                    <ItemsControl
-                                        ItemsSource="{Binding AddOns.CurrentValue}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
-                                                <DockPanel Margin="0 0 8 8">
-                                                    <Border DockPanel.Dock="Left" Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                                            <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
-                                                        </Border>
-                                                    </Border>
-
-                                                    <StackPanel DockPanel.Dock="Right">
-                                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
-                                                    </StackPanel>
-
-                                                    <StackPanel Margin="10 0">
-                                                        <TextBlock TextTrimming="CharacterEllipsis">
-                                                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
-                                                        </TextBlock>
-                                                        <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
-                                                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
-                                                        </TextBlock>
-                                                    </StackPanel>
-
-                                                </DockPanel>
+                    <controls:ProgressOverlay 
+                        IsShown="{Binding PackageSupportFramework.IsLoading}">
+                        <ContentControl>
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="ContentTemplate">
+                                        <Setter.Value>
+                                            <DataTemplate>
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                                    <view:PsfContentView 
+                                                        IsEnabled="False" 
+                                                        DataContext="{Binding  PackageSupportFramework.CurrentValue}" />
+                                                </ScrollViewer>
                                             </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </DataTemplate>
-                            </controls:ZeroOrAny.AnyItemTemplate>
-                            <controls:ZeroOrAny.NoItemsTemplate>
-                                <DataTemplate>
-                                    <TextBlock VerticalAlignment="Center" Text="This package has no installed add-ons or modification packages." />
-                                </DataTemplate>
-                            </controls:ZeroOrAny.NoItemsTemplate>
-                        </controls:ZeroOrAny>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PackageSupportFramework.CurrentValue}" Value="{x:Null}">
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock>
+                                                                <Run Text="This package does not contain" />
+                                                                <Run FontWeight="SemiBold" Text="Package Support Framework" />
+                                                            </TextBlock>
+                                                            <DockPanel Margin="0 6 0 0">
+                                                                <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" Margin="2" VerticalAlignment="Center" />
+                                                                <TextBlock VerticalAlignment="Center">
+                                                                    <Hyperlink>
+                                                                        <b:Interaction.Behaviors>
+                                                                            <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/psf" />
+                                                                        </b:Interaction.Behaviors>
+                                                                        <Run Text="Learn more about Package Support Framework" />
+                                                                    </Hyperlink>
+                                                                </TextBlock>
+                                                            </DockPanel>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+
+                        </ContentControl>
                     </controls:ProgressOverlay>
                 </TabItem>
 
-                <TabItem 
-                    DataContext="{Binding Manifest.CurrentValue}"
-                    Style="{StaticResource Compact}">
+                <TabItem>
                     <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="Capabilities" />
-                            <Border 
-                                Tag="{Binding Capabilities.Count, Mode=OneWay}"
-                                Style="{StaticResource Badge}">
-                                <TextBlock 
-                                    Style="{StaticResource BadgeText}"
-                                    Text="{Binding Capabilities.Count, Mode=OneWay}" />
-                            </Border>
-                        </StackPanel>
+                        <Border Background="Transparent" ToolTip="Files">
+                            <Viewbox Height="24" Width="24">
+                                <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorBrowse}" />
+                            </Viewbox>
+                        </Border>
                     </TabItem.Header>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <StackPanel DataContext="{Binding Capabilities}">
-                            <StackPanel.Resources>
-                                <DataTemplate x:Key="CapabilityTemplate" DataType="{x:Type elements1:CapabilityViewModel}">
-                                    <Border Margin="4" Width="180" Height="60" Background="{StaticResource MsixHero.Brushes.Light7}">
-                                        <DockPanel>
-                                            <Path VerticalAlignment="Center" Data="{Binding VectorIcon}" Margin="8 0" Style="{StaticResource LargeIcon}" />
-                                            <TextBlock Margin="0 0 15 0" TextWrapping="Wrap" VerticalAlignment="Center" Text="{Binding DisplayName, Mode=OneTime}" />
-                                        </DockPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </StackPanel.Resources>
-                            <TextBlock Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Text="General-use capabilities" Margin="0 0 0 8" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="4*" />
+                        </Grid.ColumnDefinitions>
+                        <TreeView 
+                            ItemsSource="{Binding Files.Containers.CurrentValue}">
+                            <b:Interaction.Behaviors>
+                                <behaviors:MvvmSelectedItemBehavior SelectedItem="{Binding Files.SelectedContainer}" />
+                            </b:Interaction.Behaviors>
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Containers}">
+                                    <DockPanel>
+                                        <Image Margin="2 -2"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.FolderSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+                                        <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4 2" Text="{Binding}" />
+                                    </DockPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                        </TreeView>
 
-                            <ItemsControl Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding General}" ItemTemplate="{StaticResource CapabilityTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                        <GridSplitter Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Width="20" VerticalAlignment="Stretch" />
 
-                            <TextBlock Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Peripherals and internal devices" Margin="0 0 0 8" />
+                        <ListView 
+                            SelectionMode="Single"
+                            SelectedItem="{Binding Files.SelectedNode}"
+                            Grid.Column="2" x:Name="Files" 
+                            Tag="{Binding Files.Nodes.Count, FallbackValue=0, TargetNullValue=0}"
+                            ItemsSource="{Binding Files.Nodes}">
+                            <ListView.Style>
+                                <Style BasedOn="{StaticResource {x:Type ListView}}" TargetType="ListView">
+                                    <Style.Triggers>
+                                        <Trigger Property="Tag">
+                                            <Trigger.Value>
+                                                <system:Int32>0</system:Int32>
+                                            </Trigger.Value>
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.Style>
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn 
+                                            Header="Name"
+                                            Width="200">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel>
+                                                        <Image Margin="2 -2"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.DocumentSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+                                                        <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4 2" Text="{Binding Name}" />
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn 
+                                            Header="Size"
+                                            Width="100">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <DockPanel>
+                                                        <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4 2" Text="{Binding Size}" />
+                                                    </DockPanel>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </TabItem>
 
-                            <ItemsControl Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Device}" ItemTemplate="{StaticResource CapabilityTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                <TabItem>
+                    <TabItem.Header>
+                        <Border Background="Transparent" ToolTip="Registry">
+                            <Viewbox Height="24" Width="24">
+                                <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorRegistry}" />
+                            </Viewbox>
+                        </Border>
+                    </TabItem.Header>
+                    <ContentControl Content="{Binding}">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="4*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TreeView 
+                                                    ItemsSource="{Binding Registry.Containers.CurrentValue}">
+                                                    <b:Interaction.Behaviors>
+                                                        <behaviors:MvvmSelectedItemBehavior SelectedItem="{Binding Registry.SelectedContainer}" />
+                                                    </b:Interaction.Behaviors>
+                                                    <TreeView.ItemTemplate>
+                                                        <HierarchicalDataTemplate ItemsSource="{Binding Containers}">
+                                                            <DockPanel>
+                                                                <Image Margin="2 0"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.FolderSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+                                                                <TextBlock VerticalAlignment="Center" Margin="4 4" Text="{Binding}" />
+                                                            </DockPanel>
+                                                        </HierarchicalDataTemplate>
+                                                    </TreeView.ItemTemplate>
+                                                    <TreeView.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        </Style>
+                                                    </TreeView.ItemContainerStyle>
+                                                </TreeView>
 
-                            <TextBlock Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Restricted capabilities" Margin="0 0 0 8" />
+                                                <GridSplitter Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Width="20" VerticalAlignment="Stretch" />
 
-                            <ItemsControl Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Restricted}" ItemTemplate="{StaticResource CapabilityTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-
-                            <TextBlock Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Custom capabilities" Margin="0 0 0 8" />
-
-                            <ItemsControl Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Custom}" ItemTemplate="{StaticResource CapabilityTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </StackPanel>
-                    </ScrollViewer>
+                                                <ListView 
+                                                    Grid.Column="2" 
+                                                    x:Name="Values" 
+                                                    Tag="{Binding Registry.Nodes.Count, FallbackValue=0, TargetNullValue=0}"
+                                                    SelectionMode="Single"
+                                                    SelectedItem="{Binding Registry.SelectedNode}"
+                                                    ItemsSource="{Binding Registry.Nodes}">
+                                                    <ListView.Style>
+                                                        <Style BasedOn="{StaticResource {x:Type ListView}}" TargetType="ListView">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="Tag">
+                                                                    <Trigger.Value>
+                                                                        <system:Int32>0</system:Int32>
+                                                                    </Trigger.Value>
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ListView.Style>
+                                                    <ListView.View>
+                                                        <GridView>
+                                                            <GridView.Columns>
+                                                                <GridViewColumn 
+                                                                    Header="Name"
+                                                                    Width="150">
+                                                                    <GridViewColumn.CellTemplate>
+                                                                        <DataTemplate>
+                                                                            <DockPanel>
+                                                                                <Image Margin="3 -2" VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.SettingsSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+                                                                                <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="3 2" Text="{Binding Name}" />
+                                                                            </DockPanel>
+                                                                        </DataTemplate>
+                                                                    </GridViewColumn.CellTemplate>
+                                                                </GridViewColumn>
+                                                                <GridViewColumn 
+                                                                    Header="Type">
+                                                                    <GridViewColumn.CellTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="3 2" Text="{Binding Type}" />
+                                                                        </DataTemplate>
+                                                                    </GridViewColumn.CellTemplate>
+                                                                </GridViewColumn>
+                                                                <GridViewColumn 
+                                                                    Header="Data"
+                                                                    Width="150">
+                                                                    <GridViewColumn.CellTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="3 2" Text="{Binding Data}" />
+                                                                        </DataTemplate>
+                                                                    </GridViewColumn.CellTemplate>
+                                                                </GridViewColumn>
+                                                            </GridView.Columns>
+                                                        </GridView>
+                                                    </ListView.View>
+                                                </ListView>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Registry.Containers.CurrentValue}" Value="{x:Null}">
+                                        <Setter Property="ContentTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <TextBlock Text="This package does not contain Registry entries." />
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Registry.Containers.IsLoading}">
+                                        <DataTrigger.Value>
+                                            <system:Boolean>True</system:Boolean>
+                                        </DataTrigger.Value>
+                                        <Setter Property="ContentTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <TextBlock Text="Loading registry keys..." />
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
                 </TabItem>
             </TabControl>
         </TabItem>
-        <TabItem Header="PSF" Tag="{Binding PackageSupportFramework.CurrentValue}">
-            <TabItem.Style>
-                <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
-                    <Style.Triggers>
-                        <Trigger Property="Tag" Value="{x:Null}">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TabItem.Style>
-            <controls:ProgressOverlay 
-                IsShown="{Binding PackageSupportFramework.IsLoading}">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <view:PsfContentView 
-                        IsEnabled="False" 
-                        DataContext="{Binding  PackageSupportFramework.CurrentValue}" />
-                </ScrollViewer>
-            </controls:ProgressOverlay>
-        </TabItem>
-        <TabItem
-            DataContext="{Binding Manifest.CurrentValue}"
-            Header="Dependencies">
+        <TabItem DataContext="{Binding Manifest.CurrentValue}" Header="Dependencies">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Margin="0">
                     <Border DockPanel.Dock="Top" Visibility="{Binding HasOperatingSystemDependencies, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Visible}}">
@@ -589,106 +856,102 @@
             </ScrollViewer>
 
         </TabItem>
-        <TabItem
-            Header="Installation">
-            <TabControl Margin="0 -10 0 0">
-                <TabItem
-                    Style="{StaticResource Compact}">
+        <TabItem Header="Installation">
+            <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
+                <TabItem>
                     <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock>
-                                        <Run Text="Overview" />
-                            </TextBlock>
-                        </StackPanel>
+                        <Viewbox Height="24" Width="24" ToolTip="Overview">
+                            <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorInfo}" />
+                        </Viewbox>
                     </TabItem.Header>
 
-                    <TabItem.Resources>
-                        <DataTemplate DataType="{x:Type sources:StorePackageSource}">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <ScrollViewer.Resources>
+                            <DataTemplate DataType="{x:Type sources:StorePackageSource}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
-                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                 <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                     <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                 </Hyperlink>
-                                </TextBlock>
+                                    </TextBlock>
 
-                                <source:StoreSource FamilyName="{Binding FamilyName}" />
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type sources:AppInstallerPackageSource}">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <source:StoreSource FamilyName="{Binding FamilyName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type sources:AppInstallerPackageSource}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
-                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
-                                </TextBlock>
+                                    </TextBlock>
 
-                                <source:AppInstallerSource AppInstallerUri="{Binding AppInstallerUri}" />
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type sources:DeveloperSource}">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <source:AppInstallerSource AppInstallerUri="{Binding AppInstallerUri}" />
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type sources:DeveloperSource}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
-                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
-                                </TextBlock>
+                                    </TextBlock>
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="Manifest file (developer mode)" TextWrapping="Wrap" Margin="0 0 0 10" />
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type sources:StandardSource}">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="Manifest file (developer mode)" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type sources:StandardSource}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
-                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
-                                </TextBlock>
+                                    </TextBlock>
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="Side-loaded package" TextWrapping="Wrap" Margin="0 0 0 10" />
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type sources:SystemSource}">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="Side-loaded package" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type sources:SystemSource}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
-                                <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
-                                </TextBlock>
+                                    </TextBlock>
 
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
-                                <TextBlock Style="{StaticResource DataValue}" Text="System package" TextWrapping="Wrap" Margin="0 0 0 10" />
-                            </StackPanel>
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type sources:NotInstalledSource}">
-                            <StackPanel>
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Not installed" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </TabItem.Resources>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="System package" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type sources:NotInstalledSource}">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Not installed" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ScrollViewer.Resources>
                         <StackPanel>
                             <ContentControl Content="{Binding Manifest.CurrentValue.Model.Source}" />
 
@@ -718,14 +981,84 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem
-                    Style="{StaticResource Compact}">
+
+                <TabItem>
                     <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock>
-                                <Run Text="Users" />
-                            </TextBlock>
+                        <Grid Background="Transparent" ToolTip="Add-ons and modification packages" Height="24" Width="24">
+                            <Viewbox Height="24" Width="24">
+                                <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorPlugin}" />
+                            </Viewbox>
                             <Border 
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="-3"
+                                Tag="{Binding AddOns.CurrentValue.Count, Mode=OneWay}"
+                                Style="{StaticResource Badge}">
+                                <TextBlock 
+                                    Style="{StaticResource BadgeText}" 
+                                    Text="{Binding AddOns.CurrentValue.Count, Mode=OneWay}" />
+                            </Border>
+                        </Grid>
+                    </TabItem.Header>
+                    <controls:ProgressOverlay IsShown="{Binding AddOns.IsLoading}">
+
+                        <controls:ZeroOrAny ItemsCount="{Binding AddOns.CurrentValue.Count}">
+                            <controls:ZeroOrAny.Template>
+                                <ControlTemplate TargetType="controls:ZeroOrAny">
+                                    <ContentControl Content="{Binding}" ContentTemplate="{TemplateBinding ActualTemplate}" />
+                                </ControlTemplate>
+                            </controls:ZeroOrAny.Template>
+                            <controls:ZeroOrAny.AnyItemTemplate>
+                                <DataTemplate>
+                                    <ItemsControl
+                                        ItemsSource="{Binding AddOns.CurrentValue}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                                                <DockPanel Margin="0 0 8 8">
+                                                    <Border DockPanel.Dock="Left" Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                        <Border Background="{Binding TileColor}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                            <Image Source="{Binding Image, Mode=OneTime}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                        </Border>
+                                                    </Border>
+
+                                                    <StackPanel DockPanel.Dock="Right">
+                                                        <TextBlock Text="{Binding Version, Mode=OneTime}" VerticalAlignment="Center" TextAlignment="Right" />
+                                                    </StackPanel>
+
+                                                    <StackPanel Margin="10 0">
+                                                        <TextBlock TextTrimming="CharacterEllipsis">
+                                                                    <Run Text="{Binding DisplayName, Mode=OneTime}" />
+                                                        </TextBlock>
+                                                        <TextBlock TextTrimming="CharacterEllipsis" Opacity="0.65">
+                                                                    <Run Text="{Binding DisplayPublisherName, Mode=OneTime}" />
+                                                        </TextBlock>
+                                                    </StackPanel>
+
+                                                </DockPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </DataTemplate>
+                            </controls:ZeroOrAny.AnyItemTemplate>
+                            <controls:ZeroOrAny.NoItemsTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center" Text="This package has no installed add-ons or modification packages." />
+                                </DataTemplate>
+                            </controls:ZeroOrAny.NoItemsTemplate>
+                        </controls:ZeroOrAny>
+                    </controls:ProgressOverlay>
+                </TabItem>
+
+                <TabItem>
+                    <TabItem.Header>
+                        <Grid Background="Transparent" Width="24" Height="24" ToolTip="Users">
+                            <Viewbox Height="24" Width="24">
+                                <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorUsers}" />
+                            </Viewbox>
+                            <Border 
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Right"
+                                Margin="-3"
                                 Tag="{Binding Users.CurrentValue.InstalledBy.Count, Mode=OneWay}"
                                 Style="{StaticResource Badge}" 
                                 Visibility="{Binding Users.CurrentValue.IsElevated, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -733,7 +1066,7 @@
                                     Style="{StaticResource BadgeText}" 
                                     Text="{Binding Users.CurrentValue.InstalledBy.Count, Mode=OneWay, FallbackValue=''}" />
                             </Border>
-                        </StackPanel>
+                        </Grid>
                     </TabItem.Header>
                     <controls:ProgressOverlay>
                         <Grid>

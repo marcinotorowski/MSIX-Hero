@@ -96,14 +96,14 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             {
                 this.TileColor = "#666666";
             }
-
-            this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
-            this.PackageIntegrity = model.PackageIntegrity;
-
+            
             if (filePath != null)
             {
                 this.RootDirectory = filePath.Replace(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\'), "%programfiles%");
             }
+            
+            this.Capabilities = new CapabilitiesViewModel(model.Capabilities);
+            this.PackageIntegrity = model.PackageIntegrity;
             
             this.UserDirectory = Path.Combine("%localappdata%", "Packages", this.FamilyName, "LocalCache");
             this.PsfFilePath = Path.Combine(filePath, "config.json");
@@ -253,7 +253,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         public bool PackageIntegrity { get; }
 
         public CapabilitiesViewModel Capabilities { get; }
-
+        
         public string PackageFullName { get; }
 
         public string Description { get; }

@@ -6,24 +6,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Registry\team.reg" />
-    <None Remove="Resources\AppxBundleManifest.xml" />
-    <None Remove="Resources\ConEmuPack-O2004-M1220.603-P380-F_19.1.8.0_x64__xwfzvwzp69w2e.msix" />
-    <None Remove="Resources\inno.exe" />
-    <None Remove="Resources\MSIX.Commander_1.0.7.5-x64.msix" />
-    <None Remove="Resources\nsis.exe" />
-    <None Remove="Resources\resources.pri" />
-    <None Remove="Resources\SamplePackages\CreatedByMsixHero.msix" />
-    <None Remove="Resources\wintrust.dll.ini" />
-    <None Remove="UpdateImpact\next.xml" />
-    <None Remove="UpdateImpact\previous.xml" />
-  </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Registry\team.reg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <Content Include="Registry\team.reg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Registry\registry.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Resources\AppxBundleManifest.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -82,6 +72,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Registry\Registry.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\MSIX.Commander_1.0.7.5-x64.msix">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

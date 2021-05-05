@@ -75,6 +75,7 @@ namespace Otor.MsixHero.App.Helpers
                         }
 
                         this.HasValue = true;
+                        this.OnLoaded(new EventArgs());
                         return;
                     }
                 }
@@ -84,6 +85,7 @@ namespace Otor.MsixHero.App.Helpers
 
                 this.HasError = false;
                 this.Error = null;
+                this.OnLoaded(new EventArgs());
             }
             catch (Exception e)
             {
@@ -124,6 +126,13 @@ namespace Otor.MsixHero.App.Helpers
         {
             get => this.isLoading;
             private set => this.SetField(ref this.isLoading, value);
+        }
+
+        public event EventHandler<EventArgs> Loaded;
+
+        protected void OnLoaded(EventArgs args)
+        {
+            this.Loaded?.Invoke(this, args);
         }
     }
 }
