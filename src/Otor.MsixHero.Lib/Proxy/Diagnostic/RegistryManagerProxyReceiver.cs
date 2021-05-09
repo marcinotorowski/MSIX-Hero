@@ -59,7 +59,7 @@ namespace Otor.MsixHero.Lib.Proxy.Diagnostic
 
             if (command is MountRegistryDto mountRegistryDto)
             {
-                return this.SelfElevationAwareObject.DismountRegistry(mountRegistryDto.PackageName, cancellationToken, progress);
+                return this.SelfElevationAwareObject.MountRegistry(mountRegistryDto.PackageName, mountRegistryDto.InstallLocation, mountRegistryDto.StartRegedit, cancellationToken, progress);
             }
 
             throw new NotSupportedException();

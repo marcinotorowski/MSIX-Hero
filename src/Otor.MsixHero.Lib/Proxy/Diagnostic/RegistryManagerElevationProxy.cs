@@ -40,7 +40,7 @@ namespace Otor.MsixHero.Lib.Proxy.Diagnostic
             var proxyObject = new MountRegistryDto
             {
                 PackageName = package.Name,
-                InstallLocation = package.ManifestLocation,
+                InstallLocation = package.InstallLocation,
                 StartRegedit = startRegedit
             };
 

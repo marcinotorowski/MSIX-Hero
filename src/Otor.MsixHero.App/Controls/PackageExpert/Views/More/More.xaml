@@ -82,7 +82,7 @@
 
         <Label Content="Other" />
 
-        <Button 
+        <!--<Button 
             Style="{StaticResource ActionButton}"
             CommandParameter="{x:Static commands1:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
@@ -102,7 +102,7 @@
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>
-        </Button>
+        </Button>-->
 
         <Button 
             Style="{StaticResource ActionButton}"

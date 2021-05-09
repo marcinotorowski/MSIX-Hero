@@ -71,12 +71,10 @@ namespace Otor.MsixHero.Appx.Psf
                             }
                             else
                             {
-                                using (var memoryStream = new MemoryStream())
-                                {
-                                    stream.CopyTo(memoryStream);
-                                    memoryStream.Flush();
-                                    reg = new RegistryHiveOnDemand(memoryStream.ToArray(), "Registry.dat");
-                                }
+                                using var memoryStream = new MemoryStream();
+                                stream.CopyTo(memoryStream);
+                                memoryStream.Flush();
+                                reg = new RegistryHiveOnDemand(memoryStream.ToArray(), "Registry.dat");
                             }
                         }
 
