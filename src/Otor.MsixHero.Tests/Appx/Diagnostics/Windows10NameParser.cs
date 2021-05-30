@@ -41,6 +41,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             var windows101909 = new Tuple<string, string>("Windows.Desktop", "10.0.18363");
             var windows102004 = new Tuple<string, string>("Windows.Desktop", "10.0.19041");
             var windows1020H2 = new Tuple<string, string>("Windows.Desktop", "10.0.19042");
+            var windows1021H1 = new Tuple<string, string>("Windows.Desktop", "10.0.19043");
             var windowsOther = new Tuple<string, string>("Windows.Desktop", "10.0.99999");
 
             
@@ -58,6 +59,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             var parsedWindows101909 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101909.Item1, windows101909.Item2);
             var parsedWindows102004 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows102004.Item1, windows102004.Item2);
             var parsedWindows1020H2 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows1020H2.Item1, windows1020H2.Item2);
+            var parsedWindows1021H1 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows1021H1.Item1, windows1021H1.Item2);
             var parsedWindowsOther = Windows10Parser.GetOperatingSystemFromNameAndVersion(windowsOther.Item1, windowsOther.Item2);
 
             
@@ -76,6 +78,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("10.0.18363", parsedWindows101909.TechnicalVersion);
             Assert.AreEqual("10.0.19041", parsedWindows102004.TechnicalVersion);
             Assert.AreEqual("10.0.19042", parsedWindows1020H2.TechnicalVersion);
+            Assert.AreEqual("10.0.19043", parsedWindows1021H1.TechnicalVersion);
             Assert.AreEqual("10.0.99999", parsedWindowsOther.TechnicalVersion);
 
             // Test if display versions were recognized
@@ -92,7 +95,8 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("Windows 10 1903", parsedWindows101903.Name);
             Assert.AreEqual("Windows 10 1909", parsedWindows101909.Name);
             Assert.AreEqual("Windows 10 2004", parsedWindows102004.Name);
-            Assert.AreEqual("Windows 10 2004", parsedWindows1020H2.Name);
+            Assert.AreEqual("Windows 10 20H2", parsedWindows1020H2.Name);
+            Assert.AreEqual("Windows 10 21H1", parsedWindows1021H1.Name);
             Assert.AreEqual("Windows 10.0.99999", parsedWindowsOther.Name);
 
             // Test if type of support for MSIX was recognized
@@ -111,6 +115,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.True(parsedWindows101909.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
             Assert.True(parsedWindows102004.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
             Assert.True(parsedWindows1020H2.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
+            Assert.True(parsedWindows1021H1.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
 
             // Test if marketing names were recognized
             Assert.AreEqual("November Update", parsedWindows101511.MarketingCodename);
@@ -123,6 +128,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("November 2019 Update", parsedWindows101909.MarketingCodename);
             Assert.AreEqual("May 2020 Update", parsedWindows102004.MarketingCodename);
             Assert.AreEqual("October 2020 Update", parsedWindows1020H2.MarketingCodename);
+            Assert.AreEqual("May 2021 Update", parsedWindows1021H1.MarketingCodename);
 
         }
     }

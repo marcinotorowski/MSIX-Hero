@@ -137,7 +137,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.System
                         break;
                     case "10.0.19042":
                         result.MarketingCodename = "October 2020 Update";
-                        result.Name = "Windows 10 2004";
+                        result.Name = "Windows 10 20H2";
+                        result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        break;
+                    case "10.0.19043":
+                        result.MarketingCodename = "May 2021 Update";
+                        result.Name = "Windows 10 21H1";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
                         break;
                     default:
