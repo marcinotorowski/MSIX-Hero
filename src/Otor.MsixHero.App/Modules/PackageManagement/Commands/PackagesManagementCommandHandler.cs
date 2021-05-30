@@ -942,39 +942,44 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
         private void OnCopy(object parameter)
         {
-            var requiredParameter = (PackageProperty)parameter;
-
-            var toCopy = new StringBuilder();
-
-            foreach (var pkg in this.application.ApplicationState.Packages.SelectedPackages)
+            if (parameter is PackageProperty requiredParameter)
             {
-                switch (requiredParameter)
-                {
-                    case PackageProperty.Name:
-                        toCopy.AppendLine(pkg.Name);
-                        break;
-                    case PackageProperty.DisplayName:
-                        toCopy.AppendLine(pkg.DisplayName);
-                        break;
-                    case PackageProperty.FullName:
-                        toCopy.AppendLine(pkg.PackageId);
-                        break;
-                    case PackageProperty.Version:
-                        toCopy.AppendLine(pkg.Version.ToString());
-                        break;
-                    case PackageProperty.Publisher:
-                        toCopy.AppendLine(pkg.DisplayPublisherName);
-                        break;
-                    case PackageProperty.Subject:
-                        toCopy.AppendLine(pkg.Publisher);
-                        break;
-                    case PackageProperty.InstallPath:
-                        toCopy.AppendLine(pkg.InstallLocation);
-                        break;
-                }
-            }
+                var toCopy = new StringBuilder();
 
-            Clipboard.SetText(toCopy.ToString().TrimEnd(), TextDataFormat.Text);
+                foreach (var pkg in this.application.ApplicationState.Packages.SelectedPackages)
+                {
+                    switch (requiredParameter)
+                    {
+                        case PackageProperty.Name:
+                            toCopy.AppendLine(pkg.Name);
+                            break;
+                        case PackageProperty.DisplayName:
+                            toCopy.AppendLine(pkg.DisplayName);
+                            break;
+                        case PackageProperty.FullName:
+                            toCopy.AppendLine(pkg.PackageId);
+                            break;
+                        case PackageProperty.Version:
+                            toCopy.AppendLine(pkg.Version.ToString());
+                            break;
+                        case PackageProperty.Publisher:
+                            toCopy.AppendLine(pkg.DisplayPublisherName);
+                            break;
+                        case PackageProperty.Subject:
+                            toCopy.AppendLine(pkg.Publisher);
+                            break;
+                        case PackageProperty.InstallPath:
+                            toCopy.AppendLine(pkg.InstallLocation);
+                            break;
+                    }
+                }
+
+                Clipboard.SetText(toCopy.ToString().TrimEnd(), TextDataFormat.Text);
+            }
+            else if (parameter is string stringParameter)
+            {
+                Clipboard.SetText(stringParameter, TextDataFormat.Text);
+            }
         }
 
         private bool CanCopy(object parameter)
