@@ -1,3 +1,25 @@
+# 2.2.0
+See http://msixhero.net/redirect/release-notes/2.2.0 for more details
+
+### New features and highlights ###
+
+* Winget editor has now more options and supports manifest format v1 (#110) 
+* Ability to view/edit package files and registry items (#111)
+* App attach now supports bulk conversion and additional formats: VHDX and CIM (#113)
+
+### Other changed and improvements ###
+* New navigation structure of the Package Properties panel (#111)
+* The option to mount a registry has been removed – the new Registry control makes it obsolete (9eb4961c).
+* Improved parsing of errors reported by makeappx.exe (a02b4ac9).
+* Windows 10 21H1 is now correctly recognized by its marketing name (May 2021 Update) in various places (52b44688).
+* Improved UTF-8 handling in saved files (a02b4ac9).
+* Minor UI improvements.
+
+### Resolved issues ###
+* Fixed incorrect first-time validation of package signing settings, where the information about missing PFX files was shown (ca38766f).
+* Fix the button to open Store page that was available for non-store apps (bb7ef0f3).
+* Fixed ``NullReferenceException`` when copying install or user-profile path from the OPEN flyout (2f7bdf98).
+
 # 2.1.0
 See http://msixhero.net/redirect/release-notes/2.1.0 for more details
 
