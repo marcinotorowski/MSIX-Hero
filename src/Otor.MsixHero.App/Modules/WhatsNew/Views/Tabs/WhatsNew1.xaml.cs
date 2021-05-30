@@ -16,6 +16,9 @@
 
 using System;
 using System.Windows;
+using Otor.MsixHero.App.Hero.Commands;
+using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.App.Hero.State;
 using Prism.Modularity;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -24,34 +27,39 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.Views.Tabs
 {
     public partial class WhatsNew1
     {
+        private readonly IMsixHeroCommandExecutor commandExecutor;
         private readonly IDialogService dialogService;
         private readonly IRegionNavigationService navigationService;
         private readonly IModuleManager moduleManager;
 
-        public WhatsNew1(IDialogService dialogService, IRegionNavigationService navigationService, IModuleManager moduleManager)
+        public WhatsNew1(
+            IMsixHeroCommandExecutor commandExecutor,
+            IDialogService dialogService, 
+            IRegionNavigationService navigationService, 
+            IModuleManager moduleManager)
         {
+            this.commandExecutor = commandExecutor;
             this.dialogService = dialogService;
             this.navigationService = navigationService;
             this.moduleManager = moduleManager;
             InitializeComponent();
         }
 
-        private void GoToDashboard(object sender, RoutedEventArgs e)
+        private void GoToPackages(object sender, RoutedEventArgs e)
         {
-            this.moduleManager.LoadModule(ModuleNames.Dashboard);
-            this.navigationService.RequestNavigate(new Uri(NavigationPaths.Dashboard, UriKind.RelativeOrAbsolute));
+            this.commandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.Packages));
         }
 
-        private void CreateAppInstaller(object sender, RoutedEventArgs e)
+        private void CreateWingetManifest(object sender, RoutedEventArgs e)
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.AppInstaller);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppInstallerEditor, new DialogParameters(), result => { });
+            this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.WingetYamlEditor, new DialogParameters(), result => { });
         }
 
-        private void GoToSettings(object sender, RoutedEventArgs e)
+        private void ConvertToAppAttach(object sender, RoutedEventArgs e)
         {
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Settings);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.Settings, new DialogParameters(), result => { });
+            this.moduleManager.LoadModule(ModuleNames.Dialogs.AppAttach);
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.AppAttachEditor, new DialogParameters(), result => { });
         }
     }
 }

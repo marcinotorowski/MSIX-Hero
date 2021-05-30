@@ -23,23 +23,23 @@
                     HorizontalAlignment="Left">
                     <Label 
                         Style="{StaticResource FormLabelThin}" 
-                        Content="New dashboard" />
+                        Content="Preview files and Registry" />
                     
                     <Image
                         Margin="0 8"
-                        Width="240" 
+                        Width="300" 
                         UseLayoutRounding="True" 
                         SnapsToDevicePixels="True" 
-                        Source="whatsnew-dashboard.png" 
+                        Source="whatsnew-files.png" 
                         HorizontalAlignment="Left" />
                     <TextBlock 
                         TextWrapping="Wrap"
                         Style="{StaticResource DataValue}"
-                        Text="The dashboard has been restyled to be easier to use and offer more shortcuts to frequently used functions."
+                        Text="Extended package properties can now show/view file and Registry resources. This works for both installed apps and opened MSIX packages."
                     />
                     <TextBlock>
-                        <Hyperlink Click="GoToDashboard">
-                            <Run Text="Go to the Dashboard" />
+                        <Hyperlink Click="GoToPackages">
+                            <Run Text="Go to the package list" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
@@ -48,23 +48,23 @@
                     Width="300">
                     <Label 
                         Style="{StaticResource FormLabelThin}" 
-                        Content="Optional and related packages (App installer)" />
+                        Content="Winget v1 is now supported" />
 
                     <Image
                         Margin="0 8"
-                        Width="240" 
+                        Width="300" 
                         UseLayoutRounding="True" 
                         SnapsToDevicePixels="True" 
-                        Source="whatsnew-ui-appinstaller.png" 
+                        Source="whatsnew-winget.png" 
                         HorizontalAlignment="Left" />
                     <TextBlock 
                         TextWrapping="Wrap"
                         Style="{StaticResource DataValue}"
-                        Text="App installer editor now supports adding and editing of optional/related packages. Bulk import and automatic reading of metadata is also available."
+                        Text="Winget editor has been adjusted to support the current v1 schema definition. Several new properties have been added."
                     />
                     <TextBlock>
-                        <Hyperlink Click="CreateAppInstaller">
-                            <Run Text="Create .appinstaller project" />
+                        <Hyperlink Click="CreateWingetManifest">
+                            <Run Text="Create winget manfiest" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
@@ -74,23 +74,23 @@
                     Width="300">
                     <Label 
                         Style="{StaticResource FormLabelThin}" 
-                        Content="Configurable UI settings" />
+                        Content="App Attach Enhancements" />
                     
                     <Image
-                        Width="240" 
+                        Width="300" 
                         UseLayoutRounding="True" 
                         SnapsToDevicePixels="True" 
-                        Source="whatsnew-ui-setings.png" 
+                        Source="whatsnew-appattach.png" 
                         Margin="0 8" 
                         HorizontalAlignment="Left" />
                     <TextBlock 
                         TextWrapping="Wrap"
                         Style="{StaticResource DataValue}"
-                        Text="The level of animations and other UI effects is now configurable. The animations can be completely disabled for low-end or virtual machines."
+                        Text="MSIX app attach editor now supports specifying multiple sources and can output VHD, VHDX or CIM files (the latter is experimental)."
                     />
                     <TextBlock>
-                        <Hyperlink Click="GoToSettings">
-                            <Run Text="Open settings..." />
+                        <Hyperlink Click="ConvertToAppAttach">
+                            <Run Text="Convert MSIX to app attach" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
@@ -100,7 +100,7 @@
                     Width="300">
                     <Label 
                         Style="{StaticResource FormLabelThin}" 
-                        Content="Other improvements" />
+                        Content="Plus..." />
 
                     <DockPanel
                         Margin="0 8 0 0">
@@ -114,9 +114,7 @@
                             VerticalAlignment="Center"
                             TextWrapping="Wrap"
                             Style="{StaticResource DataValue}">
-                            <Run Text="It is possible to import multiple files for signing in the" />
-                            <Run Text="Sign packages" FontWeight="SemiBold" />
-                            <Run Text="dialog." />
+                            <Run Text="Package properties have a new structure and visuals." />
                         </TextBlock>
                     </DockPanel>
 
@@ -132,7 +130,7 @@
                             VerticalAlignment="Center"
                             TextWrapping="Wrap"
                             Style="{StaticResource DataValue}">
-                            <Run Text="Minor UI improvements" />
+                            <Run Text="Windows 10 21H1 recognition" />
                         </TextBlock>
                     </DockPanel>
 
@@ -148,7 +146,7 @@
                             VerticalAlignment="Center"
                             TextWrapping="Wrap"
                             Style="{StaticResource DataValue}">
-                            <Run Text="Resolved various issues" />
+                            <Run Text="Resolved issues and other improvements" />
                         </TextBlock>
                     </DockPanel>
                 </StackPanel>
