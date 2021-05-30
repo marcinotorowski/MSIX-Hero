@@ -45,7 +45,7 @@ namespace Otor.MsixHero.Tests
                 files.Add(file);
             }
 
-            Assert.AreEqual(@"VFS\AppVPackageDrive\ConEmuPack\PsfLauncher1.exe", files.Single());
+            Assert.AreEqual(@"VFS\AppVPackageDrive\ConEmuPack\PsfLauncher1.exe", files.Single().FullPath);
         }
 
         [Test]
