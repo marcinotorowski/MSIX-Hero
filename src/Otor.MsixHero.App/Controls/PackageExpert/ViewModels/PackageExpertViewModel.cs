@@ -54,6 +54,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         private readonly IInterProcessCommunicationManager interProcessCommunicationManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider;
+        private readonly FileInvoker fileInvoker;
+        private readonly IAppxFileViewer fileViewer;
         private readonly string packagePath;
         private ICommand findUsers;
 
@@ -63,11 +65,15 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signManager,
-            IInteractionService interactionService)
+            IInteractionService interactionService,
+            IAppxFileViewer fileViewer,
+            FileInvoker fileInvoker)
         {
             this.interProcessCommunicationManager = interProcessCommunicationManager;
             this.appxPackageManagerProvider = appxPackageManagerProvider;
             this.appxVolumeManagerProvider = appxVolumeManagerProvider;
+            this.fileViewer = fileViewer;
+            this.fileInvoker = fileInvoker;
             this.packagePath = packagePath;
 
             this.Trust = new TrustViewModel(packagePath, interactionService, signManager);
@@ -117,7 +123,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             this.Registry = new AppxRegistryViewModel(this.packagePath);
             this.OnPropertyChanged(nameof(this.Registry));
             
-            this.Files = new AppxFilesViewModel(this.packagePath);
+            this.Files = new AppxFilesViewModel(this.packagePath, this.fileViewer, this.fileInvoker);
             this.OnPropertyChanged(nameof(this.Files));
             
             // Wait for them all

@@ -2,7 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Otor.MsixHero.App.Controls"
                     xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
-                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
+                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
+                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+                    xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
@@ -14,6 +16,32 @@
         <ResourceDictionary Source="/msixhero;component/Controls/TransitionContentControl/Theme.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="local:LearnMore">
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light8}"></Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:LearnMore">
+                    <Border Background="{TemplateBinding Background}">
+                        <DockPanel Margin="{TemplateBinding Padding}">
+                            <Path 
+                                Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" 
+                                Margin="2"  
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <TextBlock VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <Hyperlink x:Name="PART_Hyperlink">
+                                    <Run Text="Learn more about" />
+                                    <Run FontWeight="SemiBold" Text="{TemplateBinding Topic}"></Run>
+                                </Hyperlink>
+                            </TextBlock>
+                        </DockPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style TargetType="transitionContentControl:TransitioningContentControl">
 
         <Setter Property="Template">

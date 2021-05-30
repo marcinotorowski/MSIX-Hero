@@ -79,7 +79,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.packageManagerProvider = packageManagerProvider;
             this.registryManagerProvider = registryManagerProvider;
             this.busyManager = busyManager;
-            this.fileInvoker = new FileInvoker(this.interactionService);
+            this.fileInvoker = new FileInvoker(this.interactionService, this.configurationService);
 
             this.Refresh = new DelegateCommand(this.OnRefresh, this.CanRefresh);
             this.AddPackage = new DelegateCommand<object>(this.OnAddPackage, this.CanAddPackage);

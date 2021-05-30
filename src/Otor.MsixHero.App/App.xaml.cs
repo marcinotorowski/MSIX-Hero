@@ -54,6 +54,7 @@ using Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
@@ -100,6 +101,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
+            containerRegistry.RegisterSingleton<IAppxFileViewer, AppxFileViewer>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
             containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
             containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();

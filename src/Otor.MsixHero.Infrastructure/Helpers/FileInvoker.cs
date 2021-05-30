@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder;
 using Otor.MsixHero.Infrastructure.Logging;
@@ -28,12 +29,63 @@ namespace Otor.MsixHero.Infrastructure.Helpers
         private static readonly ILog Logger = LogManager.GetLogger<FileInvoker>();
 
         private readonly IInteractionService interactionService;
+        private readonly IConfigurationService configurationService;
 
-        public FileInvoker(IInteractionService interactionService)
+        public FileInvoker(IInteractionService interactionService, IConfigurationService configurationService)
         {
             this.interactionService = interactionService;
+            this.configurationService = configurationService;
         }
 
+        public void Execute(ResolvablePath filePath, bool throwExceptions = false)
+        {
+            ResolvablePath toolPath = null;
+            EditorType? editorType = null;
+            
+            var config = this.configurationService.GetCurrentConfiguration().Editing;
+
+            if (string.Equals("appxmanifest.xml", Path.GetFileName(filePath.Resolved), StringComparison.OrdinalIgnoreCase))
+            {
+                toolPath = config?.ManifestEditor;
+                editorType = config?.ManifestEditorType;
+            }
+            else if (string.Equals("config.json", Path.GetFileName(filePath.Resolved), StringComparison.OrdinalIgnoreCase))
+            {
+                toolPath = config?.PsfEditor;
+                editorType = config?.PsfEditorType;
+            }
+            else
+            {
+                var ext = Path.GetExtension(filePath).ToLowerInvariant();
+
+                switch (ext)
+                {
+                    case ".msix":
+                    case ".appx":
+                        toolPath = config?.MsixEditor;
+                        editorType = config?.MsixEditorType;
+                        break;
+                    case ".appinstaller":
+                        toolPath = config?.AppInstallerEditor;
+                        editorType = config?.AppInstallerEditorType;
+                        break;
+                    case ".ps1":
+                        toolPath = config?.PowerShellEditor;
+                        editorType = config?.PowerShellEditorType;
+                        break;
+                }
+            }
+
+            if (editorType.HasValue)
+            {
+                this.Execute(editorType.Value, toolPath, filePath, throwExceptions);
+            }
+            else
+            {
+                this.Execute(EditorType.Default, null, filePath, throwExceptions);
+            }
+        }
+        
         public void Execute(EditorType editorType, ResolvablePath toolPath, ResolvablePath filePath, bool throwExceptions = false)
         {
             try

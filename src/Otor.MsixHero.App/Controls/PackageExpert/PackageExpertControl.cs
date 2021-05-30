@@ -23,11 +23,12 @@ using System.Windows.Controls;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
 using Otor.MsixHero.App.Controls.PackageExpert.Views;
 using Otor.MsixHero.App.Hero.Events;
-using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -35,7 +36,6 @@ using Otor.MsixHero.Infrastructure.Services;
 using Prism.Common;
 using Prism.Events;
 using Prism.Regions;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert
 {
@@ -64,11 +64,11 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         private readonly IInterProcessCommunicationManager ipcManager;
         private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
-        private readonly IRunningAppsDetector runningDetector;
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
-        private readonly IDialogService dialogService;
         private readonly IConfigurationService configurationService;
+        private readonly IAppxFileViewer fileViewer;
+        private readonly FileInvoker fileInvoker;
         private readonly ObservableObject<object> context;
         private ActionBar actionBar;
 
@@ -77,10 +77,10 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
-            IRunningAppsDetector runningDetector,
             IInteractionService interactionService,
-            IDialogService dialogService,
-            IConfigurationService configurationService
+            IConfigurationService configurationService,
+            IAppxFileViewer fileViewer,
+            FileInvoker fileInvoker
         )
         {
             this.context = RegionContext.GetObservableContext(this);
@@ -88,11 +88,11 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.ipcManager = ipcManager;
             this.packageManagerProvider = packageManagerProvider;
             this.volumeManagerProvider = volumeManagerProvider;
-            this.runningDetector = runningDetector;
             this.interactionService = interactionService;
             this.signingManagerProvider = signingManagerProvider;
-            this.dialogService = dialogService;
             this.configurationService = configurationService;
+            this.fileViewer = fileViewer;
+            this.fileInvoker = fileInvoker;
 
             eventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.CreateTools, ThreadOption.UIThread);
         }
@@ -182,7 +182,9 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 sender.packageManagerProvider,
                 sender.volumeManagerProvider,
                 sender.signingManagerProvider,
-                sender.interactionService);
+                sender.interactionService,
+                sender.fileViewer,
+                sender.fileInvoker);
 
             try
             {

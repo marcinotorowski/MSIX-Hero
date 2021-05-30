@@ -22,6 +22,7 @@
              xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
@@ -185,17 +186,10 @@
                                                         </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
 
-                                                    <DockPanel Margin="0 6 0 0">
-                                                        <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" Margin="2" VerticalAlignment="Center" />
-                                                        <TextBlock VerticalAlignment="Center">
-                                                            <Hyperlink>
-                                                                <b:Interaction.Behaviors>
-                                                                    <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/capabilities" />
-                                                                </b:Interaction.Behaviors>
-                                                                <Run Text="Learn more about supported MSIX capabilities" />
-                                                            </Hyperlink>
-                                                        </TextBlock>
-                                                    </DockPanel>
+                                                    <controls:LearnMore 
+                                                        Link="capabilities"
+                                                        Topic="MSIX capabilities"
+                                                        Margin="0 6 0 0" />
                                                 </StackPanel>
                                             </ScrollViewer>
                                         </DataTemplate>
@@ -215,17 +209,11 @@
                                                             <Run Text="This package does not define any" />
                                                             <Run FontWeight="SemiBold" Text="capabilities" />
                                                         </TextBlock>
-                                                        <DockPanel Margin="0 6 0 0">
-                                                            <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" Margin="2" VerticalAlignment="Center" />
-                                                            <TextBlock VerticalAlignment="Center">
-                                                                <Hyperlink>
-                                                                    <b:Interaction.Behaviors>
-                                                                        <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/capabilities" />
-                                                                    </b:Interaction.Behaviors>
-                                                                    <Run Text="Learn more about supported MSIX capabilities" />
-                                                                </Hyperlink>
-                                                            </TextBlock>
-                                                        </DockPanel>
+
+                                                        <controls:LearnMore 
+                                                            Link="capabilities"
+                                                            Topic="supported MSIX capabilities"
+                                                            Margin="0 6 0 0" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </Setter.Value>
@@ -258,7 +246,9 @@
                             </Border>
                         </Grid>
                     </TabItem.Header>
-                    <ScrollViewer DataContext="{Binding Manifest.CurrentValue}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer 
+                        DataContext="{Binding Manifest.CurrentValue}" 
+                        VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <controls:ZeroOrAny ItemsCount="{Binding Applications.Count}">
                             <controls:ZeroOrAny.Template>
                                 <ControlTemplate TargetType="controls:ZeroOrAny">
@@ -459,7 +449,7 @@
                             </controls:ZeroOrAny.AnyItemTemplate>
                             <controls:ZeroOrAny.NoItemsTemplate>
                                 <DataTemplate>
-                                    <TextBlock VerticalAlignment="Center" Text="This package does not define applications." />
+                                    <TextBlock VerticalAlignment="Top" Text="This package has no applications." />
                                 </DataTemplate>
                             </controls:ZeroOrAny.NoItemsTemplate>
                         </controls:ZeroOrAny>
@@ -476,7 +466,7 @@
                     </TabItem.Header>
                     <controls:ProgressOverlay 
                         IsShown="{Binding PackageSupportFramework.IsLoading}">
-                        <ContentControl>
+                        <ContentControl Content="{Binding}">
                             <ContentControl.Style>
                                 <Style TargetType="ContentControl">
                                     <Setter Property="ContentTemplate">
@@ -496,21 +486,12 @@
                                                 <Setter.Value>
                                                     <DataTemplate>
                                                         <StackPanel>
-                                                            <TextBlock>
-                                                                <Run Text="This package does not contain" />
-                                                                <Run FontWeight="SemiBold" Text="Package Support Framework" />
-                                                            </TextBlock>
-                                                            <DockPanel Margin="0 6 0 0">
-                                                                <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" Margin="2" VerticalAlignment="Center" />
-                                                                <TextBlock VerticalAlignment="Center">
-                                                                    <Hyperlink>
-                                                                        <b:Interaction.Behaviors>
-                                                                            <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/redirect/psf" />
-                                                                        </b:Interaction.Behaviors>
-                                                                        <Run Text="Learn more about Package Support Framework" />
-                                                                    </Hyperlink>
-                                                                </TextBlock>
-                                                            </DockPanel>
+                                                            <TextBlock Text="This package does not contain any fix-ups" />
+
+                                                            <controls:LearnMore 
+                                                                Link="psf"
+                                                                Topic="Package Support Framework"
+                                                                Margin="0 6 0 0" />
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </Setter.Value>
@@ -519,7 +500,6 @@
                                     </Style.Triggers>
                                 </Style>
                             </ContentControl.Style>
-
                         </ContentControl>
                     </controls:ProgressOverlay>
                 </TabItem>
@@ -567,6 +547,11 @@
                             Grid.Column="2" x:Name="Files" 
                             Tag="{Binding Files.Nodes.Count, FallbackValue=0, TargetNullValue=0}"
                             ItemsSource="{Binding Files.Nodes}">
+                            <commands:RoutedCommandHandlers.Commands>
+                                <commands:RoutedCommandHandler 
+                                    RoutedCommand="{x:Static hero:MsixHeroCommands.OpenFile}" 
+                                    Command="{Binding Files.View}" />
+                            </commands:RoutedCommandHandlers.Commands>
                             <ListView.Style>
                                 <Style BasedOn="{StaticResource {x:Type ListView}}" TargetType="ListView">
                                     <Style.Triggers>
@@ -579,6 +564,11 @@
                                     </Style.Triggers>
                                 </Style>
                             </ListView.Style>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="View/edit" Command="{x:Static hero:MsixHeroCommands.OpenFile}" />
+                                </ContextMenu>
+                            </ListView.ContextMenu>
                             <ListView.View>
                                 <GridView>
                                     <GridView.Columns>
@@ -1042,7 +1032,14 @@
                             </controls:ZeroOrAny.AnyItemTemplate>
                             <controls:ZeroOrAny.NoItemsTemplate>
                                 <DataTemplate>
-                                    <TextBlock VerticalAlignment="Center" Text="This package has no installed add-ons or modification packages." />
+                                    <StackPanel>
+                                        <TextBlock VerticalAlignment="Center" Text="This package has no installed add-ons or modification packages." />
+
+                                        <controls:LearnMore 
+                                            Link="modification-packages"
+                                            Topic="MSIX modification packages"
+                                            Margin="0 6 0 0" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </controls:ZeroOrAny.NoItemsTemplate>
                         </controls:ZeroOrAny>

@@ -60,6 +60,7 @@ namespace Otor.MsixHero.App.Hero
             PackageExpert = new RoutedUICommand { Text = "Open Package Expert"};
             ServiceManager = new RoutedUICommand { Text = "Open Service Manager"};
             Winget = new RoutedUICommand { Text = "Create winget manifest"};
+            OpenFile = new RoutedUICommand { Text = "Open the selected file"};
         }
 
         public static RoutedUICommand SetVolumeAsDefault { get; }
@@ -83,6 +84,8 @@ namespace Otor.MsixHero.App.Hero
         public static RoutedUICommand InstallCertificate { get; }
         
         public static RoutedUICommand OpenManifest { get; }
+        
+        public static RoutedUICommand OpenFile { get; }
 
         public static RoutedUICommand OpenConfigJson { get; }
 

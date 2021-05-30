@@ -1,10 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
+using ABI.System;
 using Microsoft.Xaml.Behaviors;
 using Notifications.Wpf.Core;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Uri = System.Uri;
 
 namespace Otor.MsixHero.App.Helpers.Behaviors
 {
@@ -32,9 +35,21 @@ namespace Otor.MsixHero.App.Helpers.Behaviors
 
         private void AssociatedObjectOnClick(object sender, RoutedEventArgs e)
         {
+            var url = this.Url;
+
+            if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var parsed))
+            {
+                return;
+            }
+
+            if (!parsed.IsAbsoluteUri)
+            {
+                url = "https://msixhero.net/redirect/" + url;
+            }
+            
             ExceptionGuard.Guard(() =>
                 {
-                    var psi = new ProcessStartInfo(this.Url)
+                    var psi = new ProcessStartInfo(url)
                     {
                         UseShellExecute = true
                     };
