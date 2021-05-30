@@ -45,7 +45,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content.File
             }
 
             using var reader = FileReaderFactory.CreateFileReader(this.PackageFile);
-            var path = await this.fileViewer.GetPath(reader, selectedFile.Path).ConfigureAwait(false);
+            var path = await this.fileViewer.GetDiskPath(reader, selectedFile.Path).ConfigureAwait(false);
 
             ExceptionGuard.Guard(() => { this.fileInvoker.Execute(path, true); });
         }

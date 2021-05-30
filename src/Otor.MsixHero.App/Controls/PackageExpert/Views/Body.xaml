@@ -566,7 +566,11 @@
                             </ListView.Style>
                             <ListView.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="View/edit" Command="{x:Static hero:MsixHeroCommands.OpenFile}" />
+                                    <MenuItem Header="View/edit" Command="{x:Static hero:MsixHeroCommands.OpenFile}">
+                                        <MenuItem.Icon>
+                                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorOpen}" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
                                 </ContextMenu>
                             </ListView.ContextMenu>
                             <ListView.View>

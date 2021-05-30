@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
-    public interface IAppxFileViewer
+    public interface IAppxFileViewer : IDisposable
     {
-        Task<string> GetPath(IAppxFileReader fileReader, string filePath);
+        Task<string> GetDiskPath(IAppxFileReader fileReader, string filePath);
     }
 }

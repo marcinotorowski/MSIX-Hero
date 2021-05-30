@@ -14,14 +14,18 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.IO;
 using System.Threading.Tasks;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
 {
-    public class AppxFileViewer : IAppxFileViewer
+    public class AppxFileViewer : IAppxFileViewer, IDisposable
     {
-        public async Task<string> GetPath(IAppxFileReader fileReader, string filePath)
+        private DirectoryInfo tempDirectory;
+        
+        public async Task<string> GetDiskPath(IAppxFileReader fileReader, string filePath)
         {
             if (!fileReader.FileExists(filePath))
             {
@@ -38,9 +42,11 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             var index = 0;
             string fullPath;
 
+            this.tempDirectory ??= new DirectoryInfo(Path.Combine(Path.GetTempPath(), "MSIX-Hero", Guid.NewGuid().ToString("N").Substring(10)));
+            
             while (true)
             {
-                fullPath = Path.Combine(Path.GetTempPath(), "MSIX-Hero", index.ToString("0"), Path.GetFileName(filePath));
+                fullPath = Path.Combine(this.tempDirectory.FullName, index.ToString("0"), Path.GetFileName(filePath));
 
                 if (!File.Exists(fullPath))
                 {
@@ -59,6 +65,27 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.FileReaders
             await using var targetStream = File.OpenWrite(fileInfo.FullName);
             await fileStream.CopyToAsync(targetStream).ConfigureAwait(false);
             return fileInfo.FullName;
+        }
+
+        ~AppxFileViewer()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // ReSharper disable once UnusedParameter.Local
+        private void Dispose(bool disposing)
+        {
+            if (this.tempDirectory?.Exists == true)
+            {
+                ExceptionGuard.Guard(() => this.tempDirectory.Delete(true));
+                this.tempDirectory = null;
+            }
         }
     }
 }

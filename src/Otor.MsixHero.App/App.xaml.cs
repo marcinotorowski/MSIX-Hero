@@ -82,7 +82,7 @@ namespace Otor.MsixHero.App
     /// <summary>
     /// Interaction logic for the application.
     /// </summary>
-    public partial class App : IDisposable
+    public partial class App
     {
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
@@ -120,7 +120,14 @@ namespace Otor.MsixHero.App
                 containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             }
         }
-        
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            this.Container.Resolve<IAppxFileViewer>().Dispose();
+            this.Container.Resolve<IInterProcessCommunicationManager>().Dispose();
+            base.OnExit(e);
+        }
+
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog.AddModule(new ModuleInfo(typeof(MainModule), ModuleNames.Main, InitializationMode.WhenAvailable));
@@ -230,12 +237,6 @@ namespace Otor.MsixHero.App
             {
                 return this.Container.Resolve<MainWindow>();
             }
-        }
-
-        public void Dispose()
-        {
-            var processManager = this.Container.Resolve<IInterProcessCommunicationManager>();
-            processManager.Dispose();
         }
     }
 }
