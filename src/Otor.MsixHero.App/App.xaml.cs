@@ -55,6 +55,7 @@ using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
@@ -94,7 +95,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxPackageManager>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppAttachManager>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
-            containerRegistry.RegisterSingleton<IAppxContentBuilder, AppxContentBuilder>();
+            containerRegistry.RegisterSingleton<IModificationPackageBuilder, ModificationPackageBuilder>();
             containerRegistry.RegisterSingleton<IElevatedClient, Client>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
             containerRegistry.RegisterSingleton<INotificationManager>(() => new NotificationManager(NotificationPosition.TopRight));
@@ -107,6 +108,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();
             containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();
             containerRegistry.RegisterSingleton<IRunningAppsDetector, RunningAppsDetector>();
+            containerRegistry.RegisterSingleton<IAppxManifestCreator, AppxManifestCreator>();
             containerRegistry.RegisterSingleton<IInterProcessCommunicationManager, InterProcessCommunicationManager>();
             containerRegistry.Register<IDependencyMapper, DependencyMapper>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();

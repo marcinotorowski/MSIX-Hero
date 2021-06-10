@@ -46,7 +46,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
     public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ModificationPackageViewModel));
-        private readonly IAppxContentBuilder contentBuilder;
+        private readonly IModificationPackageBuilder contentBuilder;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private readonly IConfigurationService configurationService;
         private readonly IInteractionService interactionService;
@@ -54,7 +54,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         private ICommand reset;
         
         public ModificationPackageViewModel(
-            IAppxContentBuilder contentBuilder,
+            IModificationPackageBuilder contentBuilder,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             IConfigurationService configurationService,
             IInteractionService interactionService) : base("Create modification package", interactionService)

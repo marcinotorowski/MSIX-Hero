@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Packer.Enums;
@@ -24,10 +25,25 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
 {
     public interface IAppxPacker
     {
-        Task Pack(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progess = default);
+        Task Pack(
+            string directory, 
+            string packagePath, 
+            IDictionary<string, string> extraFiles,
+            AppxPackerOptions options = 0, 
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = default);
         
-        Task PackFiles(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progess = default);
+        Task PackFiles(
+            string directory, 
+            string packagePath,
+            AppxPackerOptions options = 0, 
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = default);
        
-        Task Unpack(string packagePath, string directory, CancellationToken cancellationToken = default, IProgress<ProgressData> progess = default);
+        Task Unpack(
+            string packagePath, 
+            string directory,
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = default);
     }
 }

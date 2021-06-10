@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel;
+using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
@@ -40,6 +41,7 @@ namespace Otor.MsixHero.Tests.ViewModels
         {
             var mockPacker = new Mock<IAppxPacker>();
             var mockInteraction = new Mock<IInteractionService>();
+            var mockCreator = new Mock<IAppxManifestCreator>();
             var mockConfiguration = new Mock<IConfigurationService>();
             var mockSigning = new Mock<ISigningManager>();
             var mockManager = new Mock<ISelfElevationProxyProvider<ISigningManager>>();
@@ -53,7 +55,7 @@ namespace Otor.MsixHero.Tests.ViewModels
                     It.IsAny<CancellationToken>(), It.IsAny<IProgress<ProgressData>>()))
                 .ReturnsAsync(new List<PersonalCertificate>());
 
-            var viewModel = new PackViewModel(mockPacker.Object, mockManager.Object, mockConfiguration.Object, mockInteraction.Object);
+            var viewModel = new PackViewModel(mockManager.Object, mockCreator.Object, mockConfiguration.Object, mockInteraction.Object);
 
             Assert.IsFalse(viewModel.HasError);
             Assert.IsFalse(viewModel.IsValid);

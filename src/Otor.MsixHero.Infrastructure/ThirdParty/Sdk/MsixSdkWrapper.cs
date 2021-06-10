@@ -228,16 +228,16 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
         }
         
-        public Task UnpackPackage(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task UnpackPackage(string sourceMsixPath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var wrapper = new PackUnPackProgressWrapper(progress);
-            var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\" /v /o";
+            var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{sourceMsixPath}\" /v /o";
             return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
         }
 
-        public Task PackPackageDirectory(string unpackedDirectory, string packageFilePath, bool compress, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task PackPackageDirectory(string unpackedDirectory, string targetMsixPath, bool compress, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{packageFilePath}\" /v /o";
+            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{targetMsixPath}\" /v /o";
             if (!compress)
             {
                 arguments += " /nc";
@@ -252,9 +252,9 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
         }
 
-        public Task PackPackageFiles(string mappingFile, string packageFilePath, bool compress, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task PackPackageFiles(string mappingFile, string targetMsixPath, bool compress, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = $"pack /f \"{mappingFile}\" /p \"{packageFilePath}\" /v /o";
+            var arguments = $"pack /f \"{mappingFile}\" /p \"{targetMsixPath}\" /v /o";
             if (!compress)
             {
                 arguments += " /nc";

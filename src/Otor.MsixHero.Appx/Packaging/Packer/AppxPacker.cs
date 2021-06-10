@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,12 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
 {
     public class AppxPacker : IAppxPacker
     {
-        public async Task PackFiles(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
+        public async Task PackFiles(
+            string directory, 
+            string packagePath,
+            AppxPackerOptions options = 0, 
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = default)
         {
             var manifestFile = Path.Combine(directory, FileConstants.AppxManifestFile);
             if (!File.Exists(manifestFile))
@@ -39,12 +45,10 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             }
 
             XDocument xmlDocument;
-            using (var stream = File.OpenRead(manifestFile))
+            await using (var stream = File.OpenRead(manifestFile))
             {
-                using (var streamReader = new StreamReader(stream))
-                {
-                    xmlDocument = await XDocument.LoadAsync(streamReader, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-                }
+                using var streamReader = new StreamReader(stream);
+                xmlDocument = await XDocument.LoadAsync(streamReader, LoadOptions.None, cancellationToken).ConfigureAwait(false);
             }
 
             var injector = new MsixHeroBrandingInjector();
@@ -71,7 +75,13 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             await new MsixSdkWrapper().PackPackageDirectory(directory, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
         }
 
-        public async Task Pack(string directory, string packagePath, AppxPackerOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public async Task Pack(
+            string directory, 
+            string packagePath,
+            IDictionary<string, string> extraFiles,
+            AppxPackerOptions options = 0, 
+            CancellationToken cancellationToken = default, 
+            IProgress<ProgressData> progress = null)
         {
             if (!Directory.Exists(directory))
             {
@@ -96,8 +106,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             {
                 var inputDirectory = new DirectoryInfo(directory);
 
-                var stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("[Files]");
+                var listBuilder = new PackageFileListBuilder();
 
                 foreach (var item in inputDirectory.EnumerateFiles("*", SearchOption.AllDirectories))
                 {
@@ -109,23 +118,34 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                     {
                         continue;
                     }
-
+                    
                     // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                     if (string.Equals(FileConstants.AppxManifestFile, relativePath, StringComparison.OrdinalIgnoreCase))
                     {
-                        stringBuilder.AppendLine($"\"{tempManifest}\"\t\"{relativePath}\"");
+                        listBuilder.AddManifest(tempManifest);
                         item.CopyTo(tempManifest, true);
                         continue;
                     }
-
-                    if (
-                        string.Equals("AppxBlockMap.xml", relativePath, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals("AppxSignature.p7x", relativePath, StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
                     
-                    stringBuilder.AppendLine($"\"{item.FullName}\"\t\"{relativePath}\"");
+                    listBuilder.AddFile(item.FullName, relativePath);
+                }
+
+                if (extraFiles != null)
+                {
+                    foreach (var item in extraFiles)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        
+                        if (string.Equals(Path.GetFileName(item.Key), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+                        {
+                            tempManifest = item.Value;
+                            listBuilder.AddFile(item.Value, item.Key);
+                        }
+                        else
+                        {
+                            listBuilder.AddFile(item.Value, item.Key);
+                        }
+                    }
                 }
 
                 var allDirs = inputDirectory.EnumerateDirectories("*", SearchOption.AllDirectories);
@@ -140,10 +160,10 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                     }
 
                     var relativePath = Path.GetRelativePath(inputDirectory.FullName, emptyDir.FullName);
-                    stringBuilder.AppendLine($"\"{tempAutoGenerated}\"\t\"{relativePath}\\GeneratedFile.txt\"");
+                    listBuilder.AddFile(tempAutoGenerated, $"{relativePath}\\GeneratedFile.txt\"");
                 }
 
-                await File.WriteAllTextAsync(tempFile, stringBuilder.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+                await File.WriteAllTextAsync(tempFile, listBuilder.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
 
                 var xmlDocument = XDocument.Load(tempManifest);
                 var injector = new MsixHeroBrandingInjector();
@@ -184,7 +204,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 }
             }
         }
-
+        
         public Task Unpack(string packagePath, string directory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!File.Exists(packagePath))

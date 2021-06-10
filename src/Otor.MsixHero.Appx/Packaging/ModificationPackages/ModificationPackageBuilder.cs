@@ -35,13 +35,13 @@ using Otor.MsixHero.Registry.Parser;
 
 namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 {
-    public class AppxContentBuilder : IAppxContentBuilder
+    public class ModificationPackageBuilder : IModificationPackageBuilder
     {
         private static readonly ILog Logger = LogManager.GetLogger();
 
         private readonly IAppxPacker packer;
 
-        public AppxContentBuilder(IAppxPacker packer)
+        public ModificationPackageBuilder(IAppxPacker packer)
         {
             this.packer = packer;
         }
@@ -59,7 +59,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             var logoPath = GetBundledResourcePath("Logo.png");
 
             string manifestContent;
-            using (var fs = File.OpenRead(modPackageTemplate))
+            await using (var fs = File.OpenRead(modPackageTemplate))
             {
                 var xmlDoc = await XDocument.LoadAsync(fs, LoadOptions.None, cancellationToken: cancellation).ConfigureAwait(false);
                 await this.PrepareModificationPackage(xmlDoc, config).ConfigureAwait(false);
@@ -76,8 +76,8 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                     {
                         Directory.CreateDirectory(assetsDirectory);
                     }
-                    
-                    using (var targetStream = File.OpenWrite(Path.Combine(assetsDirectory, "Logo.png")))
+
+                    await using (var targetStream = File.OpenWrite(Path.Combine(assetsDirectory, "Logo.png")))
                     {
                         await sourceStream.CopyToAsync(targetStream, cancellation).ConfigureAwait(false);
                     }
@@ -119,8 +119,8 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
             var tempFolder = Environment.ExpandEnvironmentVariables(@"%temp%\msix-hero-" + Guid.NewGuid().ToString("N").Substring(10));
             try
-            {   
-                using (var sourceStream = File.OpenRead(logoPath))
+            {
+                await using (var sourceStream = File.OpenRead(logoPath))
                 {
                     var assetsFolder = Path.Combine(tempFolder, "Assets");
                     if (!Directory.Exists(assetsFolder))
@@ -128,7 +128,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                         Directory.CreateDirectory(assetsFolder);
                     }
 
-                    using (var targetStream = File.OpenWrite(Path.Combine(assetsFolder, "Logo.png")))
+                    await using (var targetStream = File.OpenWrite(Path.Combine(assetsFolder, "Logo.png")))
                     {
                         await sourceStream.CopyToAsync(targetStream, cancellation).ConfigureAwait(false);
                     }
@@ -196,10 +196,10 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
             var pathAll = Path.Combine(targetDir.FullName, "Registry.dat");
             var pathUser = Path.Combine(targetDir.FullName, "User.dat");
-            var pathHkcr = Path.Combine(targetDir.FullName, "UserClasses.dat");
+            var pathClassesRoot = Path.Combine(targetDir.FullName, "UserClasses.dat");
             await writer.ConvertFromRegToDat(regFile.FullName, pathAll).ConfigureAwait(false);
             await writer.ConvertFromRegToDat(regFile.FullName, pathUser, RegistryRoot.HKEY_CURRENT_USER).ConfigureAwait(false);
-            await writer.ConvertFromRegToDat(regFile.FullName, pathHkcr, RegistryRoot.HKEY_CLASSES_ROOT).ConfigureAwait(false);
+            await writer.ConvertFromRegToDat(regFile.FullName, pathClassesRoot, RegistryRoot.HKEY_CLASSES_ROOT).ConfigureAwait(false);
         }
 
         private async Task CopyFolder(DirectoryInfo from, DirectoryInfo to, CancellationToken cancellationToken)
@@ -225,13 +225,9 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 {
                     var targetFile = new FileInfo(Path.Combine(targetEntry.FullName, file.Name));
 
-                    using (var fileSrc = File.OpenRead(file.FullName))
-                    {
-                        using (var fileTarget = File.OpenWrite(targetFile.FullName))
-                        {
-                            await fileSrc.CopyToAsync(fileTarget, cancellationToken).ConfigureAwait(false);
-                        }
-                    }
+                    await using var fileSrc = File.OpenRead(file.FullName);
+                    await using var fileTarget = File.OpenWrite(targetFile.FullName);
+                    await fileSrc.CopyToAsync(fileTarget, cancellationToken).ConfigureAwait(false);
                 }
             }
         }
@@ -240,43 +236,45 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
         {
             var listOfFoldersToCreate = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            switch (Path.GetExtension(inputPackage).ToLowerInvariant())
+            if (string.Equals(FileConstants.AppxManifestFile, Path.GetFileName(inputPackage)))
             {
-                case FileConstants.MsixExtension:
-                case FileConstants.AppxExtension:
+                var baseDir = Path.GetDirectoryName(inputPackage);
+                // ReSharper disable once AssignNullToNotNullAttribute
+                var folders = Directory.EnumerateDirectories(baseDir, "*", SearchOption.AllDirectories);
+                foreach (var folder in folders)
                 {
-                    using var sourceStream = File.OpenRead(inputPackage);
-                    using var zip = new ZipArchive(sourceStream);
-                    var entries = zip.Entries.Where(e => e.FullName.StartsWith("VFS/"));
-                    foreach (var entry in entries)
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    listOfFoldersToCreate.Add(Path.GetRelativePath(baseDir, folder));
+                }
+            }
+            else
+            {
+                switch (Path.GetExtension(inputPackage).ToLowerInvariant())
+                {
+                    case FileConstants.MsixExtension:
+                    case FileConstants.AppxExtension:
                     {
-                        if (entry.FullName.EndsWith("/", StringComparison.OrdinalIgnoreCase))
+                        using var sourceStream = File.OpenRead(inputPackage);
+                        using var zip = new ZipArchive(sourceStream);
+                        var entries = zip.Entries.Where(e => e.FullName.StartsWith("VFS/"));
+                        foreach (var entry in entries)
                         {
-                            listOfFoldersToCreate.Add(Uri.UnescapeDataString(entry.FullName.TrimEnd('/')));
-                        }
-                        else
-                        {
-                            var dir = Path.GetDirectoryName(entry.FullName);
-                            if (!string.IsNullOrEmpty(dir))
+                            if (entry.FullName.EndsWith("/", StringComparison.OrdinalIgnoreCase))
                             {
-                                listOfFoldersToCreate.Add(Uri.UnescapeDataString(dir));
+                                listOfFoldersToCreate.Add(Uri.UnescapeDataString(entry.FullName.TrimEnd('/')));
+                            }
+                            else
+                            {
+                                var dir = Path.GetDirectoryName(entry.FullName);
+                                if (!string.IsNullOrEmpty(dir))
+                                {
+                                    listOfFoldersToCreate.Add(Uri.UnescapeDataString(dir));
+                                }
                             }
                         }
-                    }
 
-                    break;
-                }
-                case ".appxmanifest":
-                {
-                    var baseDir = Path.GetDirectoryName(inputPackage);
-                    var folders = Directory.EnumerateDirectories(baseDir, "*", SearchOption.AllDirectories);
-                    foreach (var folder in folders)
-                    {
-                        // ReSharper disable once AssignNullToNotNullAttribute
-                        listOfFoldersToCreate.Add(Path.GetRelativePath(baseDir, folder));
+                        break;
                     }
-
-                    break;
                 }
             }
 

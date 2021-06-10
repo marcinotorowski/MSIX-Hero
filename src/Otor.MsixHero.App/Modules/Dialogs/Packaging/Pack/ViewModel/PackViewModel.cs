@@ -15,43 +15,48 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Xml.Linq;
 using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Packer;
-using Otor.MsixHero.Appx.Packaging.Packer.Enums;
+using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Infrastructure.Branding;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
+using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
 {
     public class PackViewModel : ChangeableDialogViewModel
     {
-        private readonly IAppxPacker appxPacker;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
+        private readonly IAppxManifestCreator manifestCreator;
         private ICommand openSuccessLink;
         private ICommand resetCommand;
 
         public PackViewModel(
-            IAppxPacker appxPacker,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
+            IAppxManifestCreator manifestCreator,
             IConfigurationService configurationService,
             IInteractionService interactionService) : base("Pack MSIX package", interactionService)
         {
-            this.appxPacker = appxPacker;
             this.signingManagerFactory = signingManagerFactory;
+            this.manifestCreator = manifestCreator;
             var signConfig = configurationService.GetCurrentConfiguration().Signing ?? new SigningConfiguration();
             var signByDefault = configurationService.GetCurrentConfiguration().Packer?.SignByDefault == true;
 
@@ -72,7 +77,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             {
                 IsValidated = false
             };
-            
+
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.Sign.ValueChanged += this.SignOnValueChanged;
 
@@ -80,7 +85,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.TabSigning = new ChangeableContainer(this.SelectedCertificate, this.OverrideSubject);
             this.AddChildren(this.TabSource, this.TabSigning);
         }
-        
+
         public ChangeableContainer TabSource { get; }
 
         public ChangeableContainer TabSigning { get; }
@@ -90,7 +95,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
         public ChangeableProperty<bool> OverrideSubject { get; }
 
         public ChangeableFolderProperty InputPath { get; }
-        
+
         public ICommand OpenSuccessLink
         {
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
@@ -111,24 +116,73 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            AppxPackerOptions opts = 0;
-            if (!this.Validate.CurrentValue)
+            var temporaryFiles = new List<string>();
+            try
             {
-                opts |= AppxPackerOptions.NoValidation;
-            }
+                var fileListBuilder = new PackageFileListBuilder();
+                fileListBuilder.AddDirectory(this.InputPath.CurrentValue, true, null);
 
-            if (!this.Compress.CurrentValue)
-            {
-                opts |= AppxPackerOptions.NoCompress;
-            }
+                if (this.PrePackOptions != null && !string.IsNullOrEmpty(this.InputPath.CurrentValue))
+                {
+                    progress.Report(new ProgressData(0, "Creating manifest file..."));
+                    if (!this.PrePackOptions.ManifestPresent && !this.PrePackOptions.CanConvert)
+                    {
+                        throw new InvalidOperationException("The selected folder does not contain a manifest file and any executable files. It cannot be packed to MSIX format.");
+                    }
 
-            using (var progressWrapper = new WrappedProgress(progress))
-            {
+                    var options = new AppxManifestCreatorOptions
+                    {
+                        CreateLogo = this.PrePackOptions.CreateLogo,
+                        EntryPoints = this.PrePackOptions.EntryPoints.Where(e => e.IsChecked).Select(e => e.Value).ToArray(),
+                        PackageDisplayName = Path.GetFileName(this.InputPath.CurrentValue),
+                        RegistryFile = this.PrePackOptions.SelectedRegistry.FilePath == null ? null : new FileInfo(this.PrePackOptions.SelectedRegistry.FilePath)
+                    };
+
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    foreach (var result in await this.manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
+                    {
+                        temporaryFiles.Add(result.SourcePath);
+
+                        if (result.PackageRelativePath == null)
+                        {
+                            continue;
+                        }
+
+                        fileListBuilder.AddFile(result.SourcePath, result.PackageRelativePath);
+                    }
+                }
+                
+                using var progressWrapper = new WrappedProgress(progress);
                 var progress1 = progressWrapper.GetChildProgress(50);
                 var progress2 = this.Sign.CurrentValue ? progressWrapper.GetChildProgress(30) : null;
 
-                await this.appxPacker.Pack(this.InputPath.CurrentValue, this.OutputPath.CurrentValue, opts, cancellationToken, progress1).ConfigureAwait(false);
+                var tempFileList = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".list");
+                temporaryFiles.Add(tempFileList);
 
+                var tempManifestPath = Path.Combine(Path.GetTempPath(), "AppxManifest-" + Guid.NewGuid().ToString("N") + ".xml");
+                temporaryFiles.Add(tempManifestPath);
+
+                var srcManifest = fileListBuilder.GetManifestSourcePath();
+                if (srcManifest == null || !File.Exists(srcManifest))
+                {
+                    throw new InvalidOperationException("The selected folder cannot be packed because it has no manifest, and MSIX Hero was unable to create one. A manifest can be only created if the selected folder contains any executable file.");
+                }
+
+                // Copy manifest to a temporary file
+                var injector = new MsixHeroBrandingInjector();
+                await using (var manifestStream = File.OpenRead(fileListBuilder.GetManifestSourcePath()))
+                {
+                    var xml = await XDocument.LoadAsync(manifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+                    injector.Inject(xml);
+                    await File.WriteAllTextAsync(tempManifestPath, xml.ToString(SaveOptions.None), cancellationToken);
+                    fileListBuilder.AddManifest(tempManifestPath);
+                }
+                
+                await File.WriteAllTextAsync(tempFileList, fileListBuilder.ToString(), cancellationToken).ConfigureAwait(false);
+
+                var sdk = new MsixSdkWrapper();
+                await sdk.PackPackageFiles(tempFileList, this.OutputPath.CurrentValue, this.Compress.CurrentValue, this.Validate.CurrentValue, cancellationToken, progress1).ConfigureAwait(false);
+                
                 if (this.Sign.CurrentValue)
                 {
                     var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
@@ -146,10 +200,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                             break;
                     }
                 }
+                
+                return true;
             }
-
-
-            return true;
+            finally
+            {
+                foreach (var tempFile in temporaryFiles)
+                {
+                    ExceptionGuard.Guard(() => File.Delete(tempFile));
+                }
+            }
         }
 
         private void ResetExecuted()
@@ -169,16 +229,46 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.SelectedCertificate.IsValidated = this.Sign.CurrentValue;
         }
 
-        private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
+        private async void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(this.OutputPath.CurrentValue))
+            if (string.IsNullOrEmpty(this.OutputPath.CurrentValue))
             {
-                return;
+                var newValue = (string)e.NewValue;
+                this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + FileConstants.MsixExtension;
             }
 
-            var newValue = (string) e.NewValue;
-            this.OutputPath.CurrentValue = Path.Join(Path.GetDirectoryName(newValue), Path.GetFileName(newValue.TrimEnd('\\'))) + FileConstants.MsixExtension;
+            this.PrePackOptions = null;
+
+            if (!string.IsNullOrEmpty(this.InputPath.CurrentValue))
+            {
+                this.IsLoadingPrePackOptions = true;
+                this.OnPropertyChanged(nameof(IsLoadingPrePackOptions));
+                AppxManifestCreatorAdviser adviser;
+                try
+                {
+                    adviser = await this.manifestCreator.AnalyzeDirectory(new DirectoryInfo(this.InputPath.CurrentValue)).ConfigureAwait(false);
+                }
+                catch (Exception)
+                {
+                    this.PrePackOptions = null;
+                    this.OnPropertyChanged(nameof(PrePackOptions));
+                    return;
+                }
+                finally
+                {
+                    this.IsLoadingPrePackOptions = false;
+                    this.OnPropertyChanged(nameof(IsLoadingPrePackOptions));
+                }
+
+                this.PrePackOptions = new PrePackOptionsViewModel(adviser);
+            }
+
+            this.OnPropertyChanged(nameof(PrePackOptions));
         }
+
+        public PrePackOptionsViewModel PrePackOptions { get; private set; }
+
+        public bool IsLoadingPrePackOptions { get; private set; }
     }
 }
 

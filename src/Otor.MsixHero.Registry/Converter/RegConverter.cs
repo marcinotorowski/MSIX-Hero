@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Otor.MsixHero.Registry.Parser;
 using Otor.MsixHero.Registry.Reader;
@@ -30,7 +29,7 @@ namespace Otor.MsixHero.Registry.Converter
     {
         private readonly RegistryTokenizer tokenizer = new RegistryTokenizer();
 
-        public async Task ConvertFromRegToDat(string regFile, string file, RegistryRoot? root = null)
+        public async Task<bool> ConvertFromRegToDat(string regFile, string file, RegistryRoot? root = null)
         {
             var regParser = new RegFileParser();
             var parsedKeys = regParser.Parse(regFile);
@@ -47,61 +46,61 @@ namespace Otor.MsixHero.Registry.Converter
 
             var reader = new RawReader();
 
-            using (var hive = await reader.Create())
+            using var hive = await reader.Create();
+            var mustSave = false;
+            foreach (var item in parsedFilteredKeys)
             {
-                var mustSave = false;
-                foreach (var item in parsedFilteredKeys)
+                var key = PrepareRegistryKey(item);
+
+                mustSave = true;
+
+                var k = this.EnsureRegistryKey(hive.Root, key);
+
+                if (!string.IsNullOrEmpty(item.Name))
                 {
-                    var key = PrepareRegistryKey(item);
-
-                    mustSave = true;
-
-                    var k = this.EnsureRegistryKey(hive.Root, key);
-
-                    if (!string.IsNullOrEmpty(item.Name))
+                    switch (item.Type)
                     {
-                        switch (item.Type)
-                        {
-                            case ValueType.Default:
-                                break;
-                            case ValueType.String:
-                                k.SetValue(item.Name, this.Tokenize((string) item.Value));
-                                break;
-                            case ValueType.DWord:
-                                var val = (long) Convert.ChangeType(item.Value, typeof(long));
-                                if (val > int.MaxValue)
-                                {
-                                    k.SetValue(item.Name, val);
-                                }
-                                else
-                                {
-                                    k.SetValue(item.Name, (int)val);
-                                }
-                                break;
-                            case ValueType.QWord:
-                                k.SetValue(item.Name, (long)Convert.ChangeType(item.Value, typeof(long)));
-                                break;
-                            case ValueType.Multi:
-                                k.SetValue(item.Name, this.Tokenize((string[])item.Value));
-                                break;
-                            case ValueType.Expandable:
-                                k.SetValue(item.Name, this.Tokenize((string)item.Value));
-                                break;
-                            case ValueType.Binary:
-                                k.SetValue(item.Name, (byte[]) item.Value);
-                                break;
-                            case ValueType.DWordBigEndian:
-                                k.SetValue(item.Name, (int)Convert.ChangeType(item.Value, typeof(int)));
-                                break;
-                        }
+                        case ValueType.Default:
+                            break;
+                        case ValueType.String:
+                            k.SetValue(item.Name, this.Tokenize((string) item.Value));
+                            break;
+                        case ValueType.DWord:
+                            var val = (long) Convert.ChangeType(item.Value, typeof(long));
+                            if (val > int.MaxValue)
+                            {
+                                k.SetValue(item.Name, val);
+                            }
+                            else
+                            {
+                                k.SetValue(item.Name, (int)val);
+                            }
+                            break;
+                        case ValueType.QWord:
+                            k.SetValue(item.Name, (long)Convert.ChangeType(item.Value, typeof(long)));
+                            break;
+                        case ValueType.Multi:
+                            k.SetValue(item.Name, this.Tokenize((string[])item.Value));
+                            break;
+                        case ValueType.Expandable:
+                            k.SetValue(item.Name, this.Tokenize((string)item.Value));
+                            break;
+                        case ValueType.Binary:
+                            k.SetValue(item.Name, (byte[]) item.Value);
+                            break;
+                        case ValueType.DWordBigEndian:
+                            k.SetValue(item.Name, (int)Convert.ChangeType(item.Value, typeof(int)));
+                            break;
                     }
                 }
-
-                if (mustSave)
-                {
-                    await hive.Save(file);
-                }
             }
+
+            if (mustSave)
+            {
+                await hive.Save(file);
+            }
+
+            return mustSave;
         }
 
         private string Tokenize(string value)

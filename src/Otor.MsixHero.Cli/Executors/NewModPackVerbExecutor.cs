@@ -18,11 +18,8 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Appx.Packaging.Manifest;
-using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
-using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Logging;
 
@@ -32,11 +29,11 @@ namespace Otor.MsixHero.Cli.Executors
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(NewModPackVerbExecutor));
 
-        private readonly IAppxContentBuilder appxContentBuilder;
+        private readonly IModificationPackageBuilder modificationPackageBuilder;
 
-        public NewModPackVerbExecutor(NewModPackVerb verb, IAppxContentBuilder appxContentBuilder, IConsole console) : base(verb, console)
+        public NewModPackVerbExecutor(NewModPackVerb verb, IModificationPackageBuilder modificationPackageBuilder, IConsole console) : base(verb, console)
         {
-            this.appxContentBuilder = appxContentBuilder;
+            this.modificationPackageBuilder = modificationPackageBuilder;
         }
 
         public override async Task<int> Execute()
@@ -88,7 +85,7 @@ namespace Otor.MsixHero.Cli.Executors
                     config.IncludeFolder = new DirectoryInfo(this.Verb.IncludeFolder);
                 }
 
-                await this.appxContentBuilder.Create(config, file, action).ConfigureAwait(false); 
+                await this.modificationPackageBuilder.Create(config, file, action).ConfigureAwait(false); 
                 await this.Console.WriteSuccess($"Modification package created in {file}.").ConfigureAwait(false);
                 return 0;
             }

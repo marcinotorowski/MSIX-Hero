@@ -120,7 +120,7 @@ namespace Otor.MsixHero.Cli
         {
             var console = new ConsoleImpl(Console.Out, Console.Error);
 
-            var executor = new NewModPackVerbExecutor(arg, new AppxContentBuilder(new AppxPacker()), console);
+            var executor = new NewModPackVerbExecutor(arg, new ModificationPackageBuilder(new AppxPacker()), console);
             var exitCode = await executor.Execute().ConfigureAwait(false);
             Environment.ExitCode = exitCode;
             return exitCode;

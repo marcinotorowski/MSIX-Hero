@@ -14,16 +14,20 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
-using Otor.MsixHero.Infrastructure.Progress;
+using System.IO;
 
-namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
+namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 {
-    public interface IAppxContentBuilder
+    public class AppxManifestCreatorAdviser
     {
-        Task Create(ModificationPackageConfig config, string file, ModificationPackageBuilderAction action, CancellationToken cancellation = default, IProgress<ProgressData> progress = default);
+        public DirectoryInfo Directory { get; set; }
+
+        public FileInfo Manifest { get; set; }
+
+        public string[] EntryPoints { get; set; } 
+
+        public FileInfo[] RegistryFiles { get; set; }
+
+        public FileInfo Logo { get; set; }
     }
 }

@@ -20,6 +20,7 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
+using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Psf.Entities;
 
 namespace Otor.MsixHero.Tests
@@ -133,6 +134,17 @@ namespace Otor.MsixHero.Tests
             //Assert.AreEqual(0, read.OtherFixups.Count);
 
 
+        }
+
+        [Test]
+        public void MakeAppx()
+        {
+            var srcPath = new DirectoryInfo(@"C:\Users\marci\Downloads\haha\Notepad++");
+            var creator = new AppxManifestCreator();
+            var opts = AppxManifestCreatorOptions.Default;
+            opts.PackageDisplayName = "Notepad++";
+            opts.PublisherDisplayName = "Don Ho";
+            creator.CreateManifestForDirectory(srcPath, opts).Wait();
         }
 
         [Test]
