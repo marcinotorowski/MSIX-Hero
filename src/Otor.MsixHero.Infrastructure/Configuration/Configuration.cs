@@ -58,5 +58,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         [DataMember(Name = "update")]
         public UpdateConfiguration Update { get; set; }
+
+        [DataMember(Name = "verboseLog")]
+        public bool VerboseLogging { get; set; }
     }
 }

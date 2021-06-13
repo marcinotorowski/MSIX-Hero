@@ -566,6 +566,19 @@
 
                         <TextBlock Text="Default base URI for hosted app installer files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <TextBox Text="{Binding DefaultRemoteLocationAppInstaller.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
+
+                        <TextBlock Text="MSIX Hero logging" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <CheckBox 
+                            Content="Enable verbose logging"
+                            IsChecked="{Binding VerboseLogging.CurrentValue}" 
+                            Margin="0 0 0 6" />
+
+                        <TextBlock>
+                            <Hyperlink Click="OpenLogsClicked">
+                                <Run Text="Click here to open current logs folder" />
+                            </Hyperlink>
+                        </TextBlock>
+
                     </StackPanel>
                 </TabItem>
             </TabControl>

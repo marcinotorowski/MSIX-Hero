@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +27,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
@@ -141,6 +145,25 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.View
                 FocusManager.SetFocusedElement(this, this.ToolDisplayName);
                 Keyboard.Focus(this.ToolDisplayName);
                 this.ToolDisplayName.SelectAll();
+            }
+        }
+
+        private void OpenLogsClicked(object sender, RoutedEventArgs e)
+        {
+            var logFile = LogManager.LogFile;
+            if (logFile != null)
+            {
+                ExceptionGuard.Guard(() =>
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        UseShellExecute = true,
+                        FileName = "explorer.exe",
+                        Arguments = "/e," + Path.GetDirectoryName(logFile)
+                    };
+
+                    Process.Start(psi);
+                });
             }
         }
     }

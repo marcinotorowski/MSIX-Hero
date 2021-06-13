@@ -26,6 +26,8 @@ namespace Otor.MsixHero.Infrastructure.Logging
 {
     public class LogManager
     {
+        public static string LogFile { get; private set; }
+
         public static ILog GetLogger<T>()
         {
             return GetLogger(typeof(T));
@@ -44,6 +46,7 @@ namespace Otor.MsixHero.Infrastructure.Logging
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static ILog GetLogger()
         {
+            // ReSharper disable once PossibleNullReferenceException
             var mth = new StackTrace().GetFrame(1).GetMethod();
             if (mth == null || mth.DeclaringType == null)
             {
@@ -58,7 +61,7 @@ namespace Otor.MsixHero.Infrastructure.Logging
         public static void Initialize(MsixHeroLogLevel minLogLevel = MsixHeroLogLevel.Info, MsixHeroLogLevel maxLogLevel = MsixHeroLogLevel.Fatal)
         {
             var assembly = Path.GetFileNameWithoutExtension((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location);
-            var fileName = $"{DateTime.Now:yyyyMMdd-hhmmss}_{assembly}.log";
+            var fileName = $"{DateTime.Now:yyyyMMdd-hhmmss}_{assembly}_{minLogLevel}.log";
             var targetFileNameInfo = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MSIX-Hero", "Logs", fileName));
 
             Initialize(targetFileNameInfo.FullName, minLogLevel, maxLogLevel);
@@ -71,21 +74,33 @@ namespace Otor.MsixHero.Infrastructure.Logging
                 throw new ArgumentNullException(nameof(logFile));
             }
 
+            LogFile = logFile;
+
+            var logFileInfo = new FileInfo(logFile);
+            if (logFileInfo.Directory?.Exists != true)
+            {
+                logFileInfo.Directory?.Create();
+            }
+            else if (!logFileInfo.Exists)
+            {
+                File.WriteAllText(logFileInfo.FullName, string.Empty);
+            }
+
             var config = new NLog.Config.LoggingConfiguration();
 
-            var logfile = new NLog.Targets.FileTarget
+            var fileTarget = new FileTarget
             {
                 FileName = logFile,
                 Header = GetHeader(),
                 Layout = "${longdate}\t${level:uppercase=true}\t${logger}\t${message}\t${exception:format=tostring}"
             };
 
-            config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), logfile);
+            config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), fileTarget);
             config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), new ConsoleTarget());
 
             NLog.LogManager.Configuration = config;
         }
-
+        
         private static string GetHeader()
         {
             return "Command line:   '" +Environment.CommandLine + @"'

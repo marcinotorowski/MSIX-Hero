@@ -15,8 +15,6 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
@@ -24,11 +22,10 @@ using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.Ipc;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
-using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Proxy.Diagnostic;
 using Otor.MsixHero.Lib.Proxy.Packaging;
@@ -46,12 +43,18 @@ namespace Otor.MsixHero.AdminHelper
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+            
+            var logLevel = MsixHeroLogLevel.Info;
 
-#if DEBUG
-            LogManager.Initialize(MsixHeroLogLevel.Trace);
-#else
-            LogManager.Initialize(MsixHeroLogLevel.Info);
-#endif
+            ExceptionGuard.Guard(() =>
+            {
+                var service = new LocalConfigurationService();
+                var config = service.GetCurrentConfiguration();
+
+                logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
+            });
+
+            LogManager.Initialize(logLevel);
         }
 
         private static void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

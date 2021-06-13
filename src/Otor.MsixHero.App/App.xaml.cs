@@ -65,6 +65,7 @@ using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes;
 using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -85,6 +86,21 @@ namespace Otor.MsixHero.App
     /// </summary>
     public partial class App
     {
+        static App()
+        {
+            var logLevel = MsixHeroLogLevel.Info;
+
+            ExceptionGuard.Guard(() =>
+            {
+                var service = new LocalConfigurationService();
+                var config = service.GetCurrentConfiguration();
+
+                logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
+            });
+
+            LogManager.Initialize(logLevel);
+        }
+
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();

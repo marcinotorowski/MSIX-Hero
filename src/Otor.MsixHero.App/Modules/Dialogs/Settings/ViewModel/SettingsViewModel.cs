@@ -28,6 +28,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
@@ -91,6 +92,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration == null ? Infrastructure.Configuration.DefaultScreen.Packages : config.UiConfiguration.DefaultScreen),
                 this.ShowReleaseNotes = new ChangeableProperty<bool>(config.Update?.HideNewVersionInfo != true),
                 this.UxLevel = new ChangeableProperty<int>(uiLevel),
+                this.VerboseLogging = new ChangeableProperty<bool>(config.VerboseLogging),
                 this.TabEditors,
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config),
                 this.TabOther
@@ -213,6 +215,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
         public ChangeableFileProperty ManifestEditorPath { get; }
 
+        public ChangeableProperty<bool> VerboseLogging { get; }
+
         public ChangeableProperty<EditorType> MsixEditorType { get; }
 
         public ChangeableFileProperty MsixEditorPath { get; }
@@ -332,7 +336,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             UpdateConfiguration(newConfiguration.Editing, e => e.PowerShellEditorType, this.PowerShellEditorType);
             UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationAppInstaller, this.DefaultRemoteLocationAppInstaller);
             UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationPackages, this.DefaultRemoteLocationPackages);
-            
+
+            if (this.VerboseLogging.IsTouched)
+            {
+                newConfiguration.VerboseLogging = this.VerboseLogging.CurrentValue;
+                
+                LogManager.Initialize(newConfiguration.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info);
+            }
+
             if (this.UxLevel.IsTouched)
             {
                 newConfiguration.UiConfiguration.UxTier = (UxTierLevel) this.UxLevel.CurrentValue;
