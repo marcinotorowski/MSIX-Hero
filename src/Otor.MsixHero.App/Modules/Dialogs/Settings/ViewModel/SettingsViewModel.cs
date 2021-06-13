@@ -329,11 +329,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.DefaultScreen, this.DefaultScreen);
             UpdateConfiguration(newConfiguration.UiConfiguration, e => e.ConfirmDeletion, this.ConfirmDeletion);
             UpdateConfiguration(newConfiguration.Update, e => e.HideNewVersionInfo, this.ShowReleaseNotes);
+
             UpdateConfiguration(newConfiguration.Editing, e => e.ManifestEditorType, this.ManifestEditorType);
             UpdateConfiguration(newConfiguration.Editing, e => e.AppInstallerEditorType, this.AppinstallerEditorType);
             UpdateConfiguration(newConfiguration.Editing, e => e.MsixEditorType, this.MsixEditorType);
             UpdateConfiguration(newConfiguration.Editing, e => e.PsfEditorType, this.PsfEditorType);
             UpdateConfiguration(newConfiguration.Editing, e => e.PowerShellEditorType, this.PowerShellEditorType);
+            
             UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationAppInstaller, this.DefaultRemoteLocationAppInstaller);
             UpdateConfiguration(newConfiguration.AppInstaller, e => e.DefaultRemoteLocationPackages, this.DefaultRemoteLocationPackages);
 
@@ -406,7 +408,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 UpdateConfiguration(newConfiguration.Signing, e => e.TimeStampServer, this.CertificateSelector.TimeStamp);
             }
 
-            if (this.PowerShellEditorType.CurrentValue == EditorType.Custom)
+            if (this.ManifestEditorType.CurrentValue == EditorType.Custom)
             {
                 UpdateConfiguration(newConfiguration.Editing.ManifestEditor, e => e.Resolved, this.ManifestEditorPath);
             }
@@ -449,15 +451,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             else
             {
                 newConfiguration.Editing.PowerShellEditor.Resolved = null;
-            }
-
-            if (this.ManifestEditorType.CurrentValue == EditorType.Custom)
-            {
-                UpdateConfiguration(newConfiguration.Editing.ManifestEditor, e => e.Resolved, this.ManifestEditorPath);
-            }
-            else
-            {
-                newConfiguration.Editing.ManifestEditor.Resolved = null;
             }
             
             var toolsTouched = this.Tools.IsTouched;
