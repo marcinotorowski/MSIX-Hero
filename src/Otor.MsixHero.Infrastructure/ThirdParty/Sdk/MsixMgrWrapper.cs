@@ -116,7 +116,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     throw new UnauthorizedAccessException("This operation requires admin permissions.", e);
                 }
 
-                throw new InvalidOperationException(e.StandardError.LastOrDefault(e => !string.IsNullOrWhiteSpace(e)), e);
+                throw new InvalidOperationException(e.StandardError.LastOrDefault(e => !string.IsNullOrWhiteSpace(e) && !e.Contains("Successfully started the Shell Hardware Detection Service", StringComparison.OrdinalIgnoreCase)), e);
             }
         }
     }

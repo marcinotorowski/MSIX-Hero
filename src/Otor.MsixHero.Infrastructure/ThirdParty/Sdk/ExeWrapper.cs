@@ -127,6 +127,24 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 var result = await tcs.Task.ConfigureAwait(false);
 
+                if (standardOutput.Any())
+                {
+                    Logger.Debug("Process has finished and returned the following standard output:\r\n" + string.Join(System.Environment.NewLine, standardOutput));
+                }
+                else
+                {
+                    Logger.Debug("Process has finished and did not return anything to standard output.");
+                }
+
+                if (standardError.Any())
+                {
+                    Logger.Debug("Process has finished and returned the following standard error:\r\n" + string.Join(System.Environment.NewLine, standardError));
+                }
+                else
+                {
+                    Logger.Debug("Process has finished and did not return anything to standard error.");
+                }
+
                 if (properExitCodes != null && properExitCodes.Any() && !properExitCodes.Contains(result))
                 {
                     throw new ProcessWrapperException(
@@ -138,6 +156,5 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 return result;
             }
         }
-
     }
 }
