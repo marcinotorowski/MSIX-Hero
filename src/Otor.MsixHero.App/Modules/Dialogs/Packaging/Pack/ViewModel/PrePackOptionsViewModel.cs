@@ -6,27 +6,6 @@ using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
 {
-    public class RegistryCandidateViewModel : NotifyPropertyChanged
-    {
-        public RegistryCandidateViewModel(string filePath, string displayContent)
-        {
-            DisplayContent = displayContent;
-            FilePath = filePath;
-        }
-
-        public RegistryCandidateViewModel(string filePath) : this(filePath, Path.GetFileName(filePath))
-        {
-        }
-
-        public RegistryCandidateViewModel() : this(null, "No conversion")
-        {
-        }
-
-        public string DisplayContent { get; private set; }
-
-        public string FilePath { get; private set; }
-    }
-
     public class PrePackOptionsViewModel : NotifyPropertyChanged
     {
         private readonly AppxManifestCreatorAdviser source;
@@ -38,7 +17,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
         public PrePackOptionsViewModel(AppxManifestCreatorAdviser source)
         {
             this.source = source;
-
+            
             this.RegistryCandidates = source.RegistryFiles == null ? new ObservableCollection<RegistryCandidateViewModel>() : new ObservableCollection<RegistryCandidateViewModel>(source.RegistryFiles.Select(r => new RegistryCandidateViewModel(r.FullName)));
             this.RegistryCandidates.Insert(0, new RegistryCandidateViewModel()); // no registry conversion
             this.selectedRegistry = this.RegistryCandidates.Skip(1).FirstOrDefault();

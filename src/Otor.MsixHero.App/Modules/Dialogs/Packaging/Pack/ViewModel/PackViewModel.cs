@@ -260,7 +260,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                     this.OnPropertyChanged(nameof(IsLoadingPrePackOptions));
                 }
 
-                this.PrePackOptions = new PrePackOptionsViewModel(adviser);
+                if (adviser != null)
+                {
+                    this.PrePackOptions = new PrePackOptionsViewModel(adviser);
+                }
             }
 
             this.OnPropertyChanged(nameof(PrePackOptions));
