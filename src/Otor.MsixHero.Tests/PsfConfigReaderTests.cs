@@ -135,18 +135,7 @@ namespace Otor.MsixHero.Tests
 
 
         }
-
-        [Test]
-        public void MakeAppx()
-        {
-            var srcPath = new DirectoryInfo(@"C:\Users\marci\Downloads\haha\Notepad++");
-            var creator = new AppxManifestCreator();
-            var opts = AppxManifestCreatorOptions.Default;
-            opts.PackageDisplayName = "Notepad++";
-            opts.PublisherDisplayName = "Don Ho";
-            creator.CreateManifestForDirectory(srcPath, opts).Wait();
-        }
-
+        
         [Test]
         public void ReadFromFile()
         {
