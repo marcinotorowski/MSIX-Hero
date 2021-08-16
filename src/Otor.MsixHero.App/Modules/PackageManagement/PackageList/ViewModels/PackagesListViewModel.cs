@@ -297,9 +297,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(this.application.ApplicationState.Packages.SearchKey) && item.DisplayName.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   && item.DisplayPublisherName.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   && item.Version.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+            if (!string.IsNullOrWhiteSpace(this.application.ApplicationState.Packages.SearchKey) && item.DisplayName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                   && item.DisplayPublisherName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
+                   && item.Version?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
                    //&& item.Architecture.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
                    )
             {

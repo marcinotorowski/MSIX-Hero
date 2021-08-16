@@ -186,7 +186,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 throw new ApplicationException("Checking for updates failed from an unspecified reason.");
             }
 
-            return (AppInstallerUpdateAvailabilityResult) (int) u.Availability;
+            return (AppInstallerUpdateAvailabilityResult)(int)u.Availability;
         }
 
         public static Lazy<PackageManager> PackageManager = new Lazy<PackageManager>(() => new PackageManager(), true);
@@ -249,7 +249,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 {
                     throw new ArgumentException("Cannot install a package from .appinstaller for all users.", nameof(options));
                 }
-                
+
                 if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                 {
                     throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
@@ -277,41 +277,41 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             else
             {
                 string name, version, publisher;
-                
+
                 DeploymentOptions deploymentOptions = 0;
 
                 switch (Path.GetExtension(filePath))
                 {
                     case FileConstants.AppxBundleExtension:
                     case FileConstants.MsixBundleExtension:
-                    {
-                        IAppxIdentityReader reader = new AppxIdentityReader();
-                        var identity = await reader.GetIdentity(filePath, cancellationToken).ConfigureAwait(false);
-                        name = identity.Name;
-                        publisher = identity.Publisher;
-                        version = identity.Version;
-                        
-                        if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                         {
-                            deploymentOptions |= DeploymentOptions.InstallAllResources;
+                            IAppxIdentityReader reader = new AppxIdentityReader();
+                            var identity = await reader.GetIdentity(filePath, cancellationToken).ConfigureAwait(false);
+                            name = identity.Name;
+                            publisher = identity.Publisher;
+                            version = identity.Version;
+
+                            if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                            {
+                                deploymentOptions |= DeploymentOptions.InstallAllResources;
+                            }
+
+                            break;
                         }
-                        
-                        break;
-                    }
-                        
+
                     default:
-                    {
-                        if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                         {
-                            throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                            if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
+                            {
+                                throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                            }
+
+                            var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
+                            name = reader.DisplayName;
+                            version = reader.Version;
+                            publisher = reader.Publisher;
+                            break;
                         }
-                        
-                        var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
-                        name = reader.DisplayName;
-                        version = reader.Version;
-                        publisher = reader.Publisher;
-                        break;
-                    }
                 }
 
                 if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
@@ -324,7 +324,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     deploymentOptions |= DeploymentOptions.ForceApplicationShutdown;
                     deploymentOptions |= DeploymentOptions.ForceTargetApplicationShutdown;
                 }
-                
+
                 if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                 {
                     var deploymentResult = await AsyncOperationHelper.ConvertToTask(
@@ -553,7 +553,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             if (mode == PackageFindMode.Auto)
             {
-                mode = (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false)) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
+                mode = await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false) ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
             }
 
             var find = await Task.Run(() => mode == PackageFindMode.CurrentUser ? PackageManager.Value.FindPackageForUser(string.Empty, packageFullName) : PackageManager.Value.FindPackage(packageFullName), cancellationToken).ConfigureAwait(false);
@@ -641,19 +641,19 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
 
             string pkgFullName;
-            
+
             using (var src = FileReaderFactory.CreateFileReader(manifestPath))
             {
                 var manifestReader = new AppxManifestReader();
                 var parsed = await manifestReader.Read(src, false, cancellationToken).ConfigureAwait(false);
                 pkgFullName = parsed.FullName;
             }
-            
+
             switch (actualMode)
             {
                 case PackageFindMode.CurrentUser:
                     var pkg = await Task.Run(
-                        () => PackageManager.Value.FindPackageForUser(string.Empty, pkgFullName), 
+                        () => PackageManager.Value.FindPackageForUser(string.Empty, pkgFullName),
                         cancellationToken).ConfigureAwait(false);
                     return pkg != null;
                 case PackageFindMode.AllUsers:
@@ -741,19 +741,31 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
-                        allPackages = new List<Package>
+                    {
+                        var pkg = await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false);
+
+                        allPackages = new List<Package>();
+                        if (pkg != null)
                         {
-                            await Task.Run(() => PackageManager.Value.FindPackageForUser(string.Empty, packageName), cancellationToken).ConfigureAwait(false)
-                        };
+                            allPackages.Add(pkg);
+                        }
 
                         break;
+                    }
+
                     case PackageFindMode.AllUsers:
-                        allPackages = new List<Package>
+                    {
+                        var pkg = await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false);
+
+                        allPackages = new List<Package>();
+                        if (pkg != null)
                         {
-                            await Task.Run(() => PackageManager.Value.FindPackage(packageName), cancellationToken).ConfigureAwait(false)
-                        };
+                            allPackages.Add(pkg);
+                        }
 
                         break;
+                    }
+
                     default:
                         throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
                 }
@@ -912,7 +924,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 pkg.Architecture = "x" + pkg.Architecture.Substring(1);
             }
-            
+
             if (installLocation != null && (pkg.DisplayName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.DisplayPublisherName?.StartsWith("ms-resource:", StringComparison.Ordinal) ??
                 pkg.Description?.StartsWith("ms-resource:", StringComparison.Ordinal) == true))
@@ -927,7 +939,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 {
                     pkg.DisplayName = pkg.Name;
                 }
-                
+
                 if (string.IsNullOrEmpty(pkg.DisplayPublisherName))
                 {
                     pkg.DisplayPublisherName = pkg.Publisher;

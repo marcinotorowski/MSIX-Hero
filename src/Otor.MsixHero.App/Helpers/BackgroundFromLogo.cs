@@ -17,13 +17,12 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Brushes = System.Windows.Media.Brushes;
-using Color = System.Drawing.Color;
 
 namespace Otor.MsixHero.App.Helpers
 {
@@ -80,9 +79,9 @@ namespace Otor.MsixHero.App.Helpers
                 return;
             }
 
-            Color c;
+            System.Drawing.Color c;
 
-            using (s)
+            await using (s)
             {
                 c = await GetColor(s).ConfigureAwait(true);
             }
@@ -92,22 +91,28 @@ namespace Otor.MsixHero.App.Helpers
 
         private static void OnLogoColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue == null || e.NewValue == DependencyProperty.UnsetValue)
+            if (d is not Border border)
             {
-                if (((Border) d).Background is LinearGradientBrush linearBrush && linearBrush.GradientStops.Count > 0)
-                {
-                    // reset animation
-                    linearBrush.GradientStops[0].BeginAnimation(GradientStop.ColorProperty, null);
-                }
-                   
                 return;
             }
-            
-            var c = ((SolidColorBrush)e.NewValue).Color;
-            Animate(d, Color.FromArgb(c.A, c.R, c.G, c.B));
+
+            if (border.Background is LinearGradientBrush linearBrush)
+            {
+                // reset animation
+                var gradientBrush = linearBrush.GradientStops?.FirstOrDefault();
+                gradientBrush?.BeginAnimation(GradientStop.ColorProperty, null);
+            }
+
+            if (e.NewValue is not SolidColorBrush solidColorBrush)
+            {
+                return;
+            }
+
+            var newColor = solidColorBrush.Color;
+            Animate(d, System.Drawing.Color.FromArgb(newColor.A, newColor.R, newColor.G, newColor.B));
         }
 
-        private static void Animate(DependencyObject target, Color c)
+        private static void Animate(DependencyObject target, System.Drawing.Color c)
         {
             System.Windows.Media.Color targetColor;
 
@@ -132,11 +137,14 @@ namespace Otor.MsixHero.App.Helpers
                 };
             }
 
-            if (!(((Border) target).Background is LinearGradientBrush linearBrush))
+            if (!(((Border)target).Background is LinearGradientBrush linearBrush))
             {
-                linearBrush = new LinearGradientBrush();
-                linearBrush.StartPoint = new System.Windows.Point(0, 0);
-                linearBrush.EndPoint = new System.Windows.Point(0, 1.0);
+                linearBrush = new LinearGradientBrush
+                {
+                    StartPoint = new System.Windows.Point(0, 0),
+                    EndPoint = new System.Windows.Point(0, 1.0)
+                };
+
                 var gs1 = new GradientStop(Colors.Transparent, 0.0);
                 var gs2 = new GradientStop(System.Windows.Media.Color.FromRgb(239, 239, 239), 1.0);
 
@@ -162,14 +170,12 @@ namespace Otor.MsixHero.App.Helpers
             storyboard.Begin();
         }
 
-        private static Task<Color> GetColor(Stream s)
+        private static Task<System.Drawing.Color> GetColor(Stream s)
         {
             return Task.Run(() =>
             {
-                using (var b = new Bitmap(s))
-                {
-                    return b.GetPixel(b.Width / 2, b.Height / 2);
-                }
+                using var b = new Bitmap(s);
+                return b.GetPixel(b.Width / 2, b.Height / 2);
             });
         }
     }

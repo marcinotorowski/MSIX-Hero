@@ -15,10 +15,6 @@
     <PackageProjectUrl>https://msixhero.net</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\marci\Documents\DEV\MSIX-Hero\Source\src\bin\</OutputPath>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Modules\PackageManagement\ViewModels\PackageExpert\**" />
     <EmbeddedResource Remove="Modules\PackageManagement\ViewModels\PackageExpert\**" />
