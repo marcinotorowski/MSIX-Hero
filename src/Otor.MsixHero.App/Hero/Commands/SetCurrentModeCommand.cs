@@ -26,6 +26,6 @@ namespace Otor.MsixHero.App.Hero.Commands
             this.NewMode = newMode;
         }
 
-        public ApplicationMode NewMode { get; private set; }
+        public ApplicationMode NewMode { get; }
     }
 }

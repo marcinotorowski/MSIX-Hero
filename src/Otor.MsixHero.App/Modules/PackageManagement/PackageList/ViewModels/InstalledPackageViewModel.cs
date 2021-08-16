@@ -67,10 +67,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         public string PackageFamilyName => this.Model.PackageFamilyName;
 
-        public SignatureKind SignatureKind
-        {
-            get => this.Model.SignatureKind;
-        }
+        public SignatureKind SignatureKind => this.Model.SignatureKind;
 
         public string Type
         {
@@ -83,11 +80,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                     case SignatureKind.Store:
                         return "Store app";
                     case SignatureKind.Enterprise:
-                        return "Sideloaded (Enterprise)";
+                        return "Side-loaded (Enterprise)";
                     case SignatureKind.Developer:
-                        return "Sideloaded (Developer)";
+                        return "Side-loaded (Developer)";
                     case SignatureKind.Unsigned:
-                        return "Sideloaded (unsigned)";
+                        return "Side-loaded (unsigned)";
                     default:
                         return "Unknown";
                 }
@@ -109,10 +106,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             }
         }
 
-        public string UserDataPath
-        {
-            get => this.Model.UserDataPath;
-        }
+        public string UserDataPath => this.Model.UserDataPath;
 
 
         public static explicit operator InstalledPackage(InstalledPackageViewModel installedPackageViewModel)

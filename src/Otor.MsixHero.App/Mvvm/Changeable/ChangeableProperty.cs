@@ -108,7 +108,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     valueChanged(this, args);
                 }
 
-                this.Changed?.Invoke(this, new EventArgs());
+                this.Changed?.Invoke(this, EventArgs.Empty);
             }
         }
 

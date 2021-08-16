@@ -471,7 +471,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
             }
 
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnSubItemChanged(object sender, EventArgs e)
@@ -483,7 +483,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 this.ValidationMessage = validationArgs.IsValid ? null : validationArgs.ValidationMessage;
             }
 
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnSubItemDirtyChanged(object sender, ValueChangedEventArgs<bool> e)

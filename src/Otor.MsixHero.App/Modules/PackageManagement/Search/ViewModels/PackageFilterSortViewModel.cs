@@ -62,10 +62,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
         public PackageSort Sort
         {
             get => this.application.ApplicationState.Packages.SortMode;
-            set
-            {
-                this.application.CommandExecutor.Invoke(this, new SetPackageSortingCommand(value, this.IsDescending));
-            }
+            set => this.application.CommandExecutor.Invoke(this, new SetPackageSortingCommand(value, this.IsDescending));
         }
 
         public PackageGroup Group

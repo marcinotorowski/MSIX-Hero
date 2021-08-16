@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -250,6 +251,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
                     case "updater":
                         return false;
                     default:
+                        // ReSharper disable once StringLiteralTypo
                         return !fn.StartsWith("unins", StringComparison.OrdinalIgnoreCase);
                 }
             }).ToList();
@@ -317,6 +319,8 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             }, cancellationToken);
         }
         
+        [SuppressMessage("ReSharper", "IdentifierTypo")]
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
         private void AdjustManifest(XDocument template, AppxManifestCreatorOptions config, DirectoryInfo baseDirectory, string[] entryPoints)
         {
             XNamespace nsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";

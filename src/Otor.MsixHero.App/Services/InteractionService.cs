@@ -136,15 +136,16 @@ namespace Otor.MsixHero.App.Services
             taskDialog.WindowTitle = title ?? "MSIX Hero";
 
             int clickedIndex = -1;
+            // ReSharper disable once ConvertToLocalFunction
             EventHandler<TaskDialogItemClickedEventArgs> handler = (_, args) =>
             {
-                var b = args.Item as TaskDialogButton;
-                if (b == null)
+                var taskDialogButton = args.Item as TaskDialogButton;
+                if (taskDialogButton == null)
                 {
                     return;
                 }
 
-                clickedIndex = taskDialog.Buttons.IndexOf(b);
+                clickedIndex = taskDialog.Buttons.IndexOf(taskDialogButton);
             };
 
             try
@@ -362,7 +363,7 @@ namespace Otor.MsixHero.App.Services
             if (settings.InitialSelection != null)
             {
                 var fileInfo = new FileInfo(settings.InitialSelection);
-                if (fileInfo.Directory != null && fileInfo.Directory.Exists)
+                if (fileInfo.Directory?.Exists == true)
                 {
                     dlg.InitialDirectory = fileInfo.Directory.FullName;
                 }
@@ -410,30 +411,32 @@ namespace Otor.MsixHero.App.Services
 
         private static bool SelectFile(FileDialogSettings fileDialogSettings, bool withMultiSelection, out string[] selectedFiles)
         {
-            var dlg = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = PrepareFilterString(fileDialogSettings.Filter)
+            };
 
-            dlg.Filter = PrepareFilterString(fileDialogSettings.Filter);
             if (fileDialogSettings.InitialSelection != null)
             {
                 var fileInfo = new FileInfo(fileDialogSettings.InitialSelection);
-                if (fileInfo.Directory != null && fileInfo.Directory.Exists)
+                if (fileInfo.Directory?.Exists == true)
                 {
-                    dlg.InitialDirectory = fileInfo.Directory.FullName;
+                    openFileDialog.InitialDirectory = fileInfo.Directory.FullName;
                 }
 
-                dlg.FileName = fileInfo.FullName;
+                openFileDialog.FileName = fileInfo.FullName;
             }
 
             if (!string.IsNullOrEmpty(fileDialogSettings.DialogTitle))
             {
-                dlg.Title = fileDialogSettings.DialogTitle;
+                openFileDialog.Title = fileDialogSettings.DialogTitle;
             }    
             
-            dlg.CheckFileExists = true;
-            dlg.Multiselect = withMultiSelection;
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.Multiselect = withMultiSelection;
 
-            var result = dlg.ShowDialog(GetActiveWindow()) == true;
-            selectedFiles = dlg.FileNames;
+            var result = openFileDialog.ShowDialog(GetActiveWindow()) == true;
+            selectedFiles = openFileDialog.FileNames;
             return result;
         }
 

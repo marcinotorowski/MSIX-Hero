@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -66,16 +67,18 @@ namespace Otor.MsixHero.App.Helpers
                         }
                         else
                         {
-                            ((IList) this.CurrentValue).Clear();
+                            ((IList)this.CurrentValue).Clear();
                         }
 
-                        foreach (var item in (IList) newValue)
+                        Debug.Assert(this.CurrentValue is IList);
+
+                        foreach (var item in (IList)newValue)
                         {
                             ((IList)this.CurrentValue).Add(item);
                         }
 
                         this.HasValue = true;
-                        this.OnLoaded(new EventArgs());
+                        this.OnLoaded(EventArgs.Empty);
                         return;
                     }
                 }
@@ -85,7 +88,7 @@ namespace Otor.MsixHero.App.Helpers
 
                 this.HasError = false;
                 this.Error = null;
-                this.OnLoaded(new EventArgs());
+                this.OnLoaded(EventArgs.Empty);
             }
             catch (Exception e)
             {

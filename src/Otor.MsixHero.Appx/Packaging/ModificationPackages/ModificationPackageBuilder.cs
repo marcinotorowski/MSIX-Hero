@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
         {
             var fileInfo = new FileInfo(filePath);
 
-            if (fileInfo.Directory != null && !fileInfo.Directory.Exists)
+            if (fileInfo.Directory?.Exists == false)
             {
                 fileInfo.Directory.Create();
             }
@@ -68,7 +69,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
             if (action == ModificationPackageBuilderAction.Manifest)
             {
-                using (var sourceStream = File.OpenRead(logoPath))
+                await using (var sourceStream = File.OpenRead(logoPath))
                 {
                     // ReSharper disable once AssignNullToNotNullAttribute
                     var assetsDirectory = Path.Combine(Path.GetDirectoryName(filePath), "Assets");
@@ -77,10 +78,8 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                         Directory.CreateDirectory(assetsDirectory);
                     }
 
-                    await using (var targetStream = File.OpenWrite(Path.Combine(assetsDirectory, "Logo.png")))
-                    {
-                        await sourceStream.CopyToAsync(targetStream, cancellation).ConfigureAwait(false);
-                    }
+                    await using var targetStream = File.OpenWrite(Path.Combine(assetsDirectory, "Logo.png"));
+                    await sourceStream.CopyToAsync(targetStream, cancellation).ConfigureAwait(false);
                 }
 
                 if (config.IncludeVfsFolders && config.ParentPackagePath != null)
@@ -290,6 +289,8 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             }
         }
 
+        [SuppressMessage("ReSharper", "IdentifierTypo")]
+        [SuppressMessage("ReSharper", "StringLiteralTypo")]
         private async Task PrepareModificationPackage(XDocument template, ModificationPackageConfig config)
         {
             XNamespace nsUap4 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/4";

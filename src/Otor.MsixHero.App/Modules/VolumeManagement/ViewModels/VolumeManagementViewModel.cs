@@ -28,8 +28,6 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
     {
         private readonly IMsixHeroApplication application;
         private readonly PrismServices prismServices;
-        private bool isActive;
-        private bool firstRun = true;
 
         public VolumeManagementViewModel(
             IMsixHeroApplication application,
@@ -59,40 +57,6 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
                     this.prismServices.RegionManager.Regions[VolumeManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.VolumeManagementPaths.MultipleSelection, UriKind.Relative), parameters);
                     break;
             }
-        }
-
-        public bool IsActive
-        {
-            get => this.isActive;
-            set
-            {
-                if (!this.SetField(ref this.isActive, value))
-                {
-                    return;
-                }
-
-                if (value && firstRun)
-                {
-                    firstRun = false;
-                }
-
-                this.IsActiveChanged?.Invoke(this, new EventArgs());
-            }
-        }
-
-        public event EventHandler IsActiveChanged;
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
         }
     }
 }

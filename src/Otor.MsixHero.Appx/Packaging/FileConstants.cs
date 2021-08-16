@@ -4,6 +4,8 @@
     {
         public const string MsixExtension = ".msix";
         public const string AppxExtension = ".appx";
+
+        // ReSharper disable once IdentifierTypo
         public const string WingetExtension = ".yaml";
         public const string MsixBundleExtension = ".msixbundle";
         public const string AppxBundleExtension = ".appxbundle";

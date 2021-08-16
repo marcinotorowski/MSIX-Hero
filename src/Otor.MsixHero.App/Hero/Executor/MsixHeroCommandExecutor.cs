@@ -79,29 +79,29 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             detector.Subscribe(this);
 
-            this.Handlers[typeof(SetToolFilterCommand)] = (command, token, progress) => this.SetToolFilter((SetToolFilterCommand)command);
+            this.Handlers[typeof(SetToolFilterCommand)] = (command, _, _) => this.SetToolFilter((SetToolFilterCommand)command);
             
-            this.Handlers[typeof(SetEventViewerFilterCommand)] = (command, token, progress) => this.SetEventViewerFilter((SetEventViewerFilterCommand)command);
-            this.Handlers[typeof(SetEventViewerSortingCommand)] = (command, token, progress) => this.SetEventViewerSorting((SetEventViewerSortingCommand)command);
+            this.Handlers[typeof(SetEventViewerFilterCommand)] = (command, _, _) => this.SetEventViewerFilter((SetEventViewerFilterCommand)command);
+            this.Handlers[typeof(SetEventViewerSortingCommand)] = (command, _, _) => this.SetEventViewerSorting((SetEventViewerSortingCommand)command);
 
             this.Handlers[typeof(GetVolumesCommand)] = (command, token, progress) => this.GetVolumes((GetVolumesCommand)command, token, progress);
-            this.Handlers[typeof(SelectVolumesCommand)] = (command, token, progress) => this.SelectVolumes((SelectVolumesCommand)command);
-            this.Handlers[typeof(SetVolumeFilterCommand)] = (command, token, progress) => this.SetVolumeFilter((SetVolumeFilterCommand)command);
+            this.Handlers[typeof(SelectVolumesCommand)] = (command, _, _) => this.SelectVolumes((SelectVolumesCommand)command);
+            this.Handlers[typeof(SetVolumeFilterCommand)] = (command, _, _) => this.SetVolumeFilter((SetVolumeFilterCommand)command);
             
             this.Handlers[typeof(GetPackagesCommand)] = (command, token, progress) => this.GetPackages((GetPackagesCommand)command, token, progress);
-            this.Handlers[typeof(StopPackageCommand)] = (command, token, progress) => this.StopPackage((StopPackageCommand)command, token);
-            this.Handlers[typeof(CheckForUpdatesCommand)] = (command, token, progress) => this.CheckForUpdates((CheckForUpdatesCommand)command, token);
-            this.Handlers[typeof(SelectPackagesCommand)] = (command, token, progress) => this.SelectPackages((SelectPackagesCommand)command);
+            this.Handlers[typeof(StopPackageCommand)] = (command, token, _) => this.StopPackage((StopPackageCommand)command, token);
+            this.Handlers[typeof(CheckForUpdatesCommand)] = (command, token, _) => this.CheckForUpdates((CheckForUpdatesCommand)command, token);
+            this.Handlers[typeof(SelectPackagesCommand)] = (command, _, _) => this.SelectPackages((SelectPackagesCommand)command);
 
             this.Handlers[typeof(GetLogsCommand)] = (command, token, progress) => this.GetLogs((GetLogsCommand)command, token, progress);
-            this.Handlers[typeof(SelectLogCommand)] = (command, token, progress) => this.SelectLog((SelectLogCommand)command);
+            this.Handlers[typeof(SelectLogCommand)] = (command, _, _) => this.SelectLog((SelectLogCommand)command);
             this.Handlers[typeof(OpenEventViewerCommand)] = (command, token, progress) => this.OpenEventViewer((OpenEventViewerCommand)command, token, progress);
 
-            this.Handlers[typeof(SetPackageFilterCommand)] = (command, token, progress) => this.SetPackageFilter((SetPackageFilterCommand)command);
-            this.Handlers[typeof(SetCurrentModeCommand)] = (command, token, progress) => this.SetCurrentMode((SetCurrentModeCommand)command);
-            this.Handlers[typeof(SetPackageSortingCommand)] = (command, token, progress) => this.SetPackageSorting((SetPackageSortingCommand)command);
-            this.Handlers[typeof(SetPackageGroupingCommand)] = (command, token, progress) => this.SetPackageGrouping((SetPackageGroupingCommand)command);
-            this.Handlers[typeof(SetPackageSidebarVisibilityCommand)] = (command, token, progress) => this.SetPackageSidebarVisibility((SetPackageSidebarVisibilityCommand)command);
+            this.Handlers[typeof(SetPackageFilterCommand)] = (command, _, _) => this.SetPackageFilter((SetPackageFilterCommand)command);
+            this.Handlers[typeof(SetCurrentModeCommand)] = (command, _, _) => this.SetCurrentMode((SetCurrentModeCommand)command);
+            this.Handlers[typeof(SetPackageSortingCommand)] = (command, _, _) => this.SetPackageSorting((SetPackageSortingCommand)command);
+            this.Handlers[typeof(SetPackageGroupingCommand)] = (command, _, _) => this.SetPackageGrouping((SetPackageGroupingCommand)command);
+            this.Handlers[typeof(SetPackageSidebarVisibilityCommand)] = (command, _, _) => this.SetPackageSidebarVisibility((SetPackageSidebarVisibilityCommand)command);
         }
 
         // ReSharper disable once UnusedParameter.Local
@@ -269,14 +269,12 @@ namespace Otor.MsixHero.App.Hero.Executor
             }
             else if (command.SelectedVolumePaths.Count == 1)
             {
+                selected = new List<AppxVolume>();
                 var singleSelection = this.ApplicationState.Volumes.AllVolumes.FirstOrDefault(a => string.Equals(a.PackageStorePath, command.SelectedVolumePaths[0], StringComparison.OrdinalIgnoreCase));
+
                 if (singleSelection != null)
                 {
-                    selected = new List<AppxVolume> { singleSelection };
-                }
-                else
-                {
-                    selected = new List<AppxVolume>();
+                    selected.Add(singleSelection);
                 }
             }
             else

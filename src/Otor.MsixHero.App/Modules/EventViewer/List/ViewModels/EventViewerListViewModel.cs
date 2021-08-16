@@ -256,7 +256,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
 
                 this.isActive = value;
 
-                this.IsActiveChanged?.Invoke(this, new EventArgs());
+                this.IsActiveChanged?.Invoke(this, EventArgs.Empty);
 
                 if (value && this.firstRun)
                 {
@@ -271,17 +271,14 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
 
         private async Task SetInitialData()
         {
-            using (var cts = new CancellationTokenSource())
-            {
-                using (var task = this.application.CommandExecutor
-                    .WithBusyManager(this.busyManager, OperationType.EventsLoading)
-                    .WithErrorHandling(this.interactionService, true)
-                    .Invoke(this, new GetLogsCommand(), cts.Token))
-                {
-                    this.Progress.MonitorProgress(task, cts);
-                    await task.ConfigureAwait(false);
-                }
-            }
+            using var cts = new CancellationTokenSource();
+            using var task = this.application.CommandExecutor
+                .WithBusyManager(this.busyManager, OperationType.EventsLoading)
+                .WithErrorHandling(this.interactionService, true)
+                .Invoke(this, new GetLogsCommand(), cts.Token);
+
+            this.Progress.MonitorProgress(task, cts);
+            await task.ConfigureAwait(false);
         }
     }
 }

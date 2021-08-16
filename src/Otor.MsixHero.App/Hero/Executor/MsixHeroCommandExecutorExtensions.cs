@@ -54,13 +54,13 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             private OperationType operationType;
 
-            public MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated, IBusyManager manager, OperationType operation) : this(decorated)
+            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated, IBusyManager manager, OperationType operation) : this(decorated)
             {
                 this.busyManager = manager;
                 this.operationType = operation;
             }
 
-            public MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated, IInteractionService interaction, bool allowUserRetry) : this(decorated)
+            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated, IInteractionService interaction, bool allowUserRetry) : this(decorated)
             {
                 this.allowRetry = allowUserRetry;
                 this.interactionService = interaction;

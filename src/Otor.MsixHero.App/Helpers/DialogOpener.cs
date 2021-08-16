@@ -8,17 +8,6 @@ using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Helpers
 {
-    [Flags]
-    public enum DialogOpenerType
-    {
-        Package = 2 << 0,
-        Manifest = 2 << 1,
-        WinGet = 2 << 2,
-        AppInstaller = 2 << 3,
-        AllSupported = Package | WinGet | AppInstaller | Manifest
-    }
-
-
     public class DialogOpener
     {
         private readonly IModuleManager moduleManager;
@@ -88,6 +77,7 @@ namespace Otor.MsixHero.App.Helpers
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackageExpert, parameters, _ => { });
         }
 
+        // ReSharper disable once IdentifierTypo
         public void OpenYaml(FileInfo wingetFile)
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Winget);

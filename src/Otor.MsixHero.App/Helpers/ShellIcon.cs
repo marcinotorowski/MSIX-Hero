@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -26,6 +27,8 @@ using Otor.MsixHero.Infrastructure.Extensions;
 
 namespace Otor.MsixHero.App.Helpers
 {
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ShellIcon
     {
         private readonly static Dictionary<string, ImageSource> IconSourceCache = new Dictionary<string, ImageSource>(StringComparer.OrdinalIgnoreCase);
@@ -70,6 +73,7 @@ namespace Otor.MsixHero.App.Helpers
             /// <summary>Maximal Length of unmanaged Typename</summary>
             private const int MAX_TYPE = 80;
 
+            // ReSharper disable once UnusedParameter.Local
             public SHFILEINFO(bool b)
             {
                 hIcon = IntPtr.Zero;
@@ -96,6 +100,7 @@ namespace Otor.MsixHero.App.Helpers
             SHGFI uFlags);
 
         [Flags]
+        // ReSharper disable once EnumUnderlyingTypeIsInt
         public enum SHGFI : int
         {
             /// <summary>get icon</summary>

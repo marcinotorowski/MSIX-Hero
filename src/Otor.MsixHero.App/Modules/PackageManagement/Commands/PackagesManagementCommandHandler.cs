@@ -108,6 +108,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
         public ICommand ShowModificationPackageDialog { get; }
 
+        // ReSharper disable once IdentifierTypo
         public ICommand ShowWingetDialog { get; }
 
         public ICommand Refresh { get; }
@@ -235,6 +236,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageId) == true;
         }
 
+        // ReSharper disable once IdentifierTypo
         private void OnShowWingetDialog(object commandParameter)
         {
             if (!(commandParameter is DialogTarget dialogTarget))
@@ -250,11 +252,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         NavigationPaths.DialogPaths.WingetYamlEditor);
                     break;
                 case DialogTarget.Ask:
+
+                    var filterBuilder = new DialogFilterBuilder("*" + FileConstants.WingetExtension);
                     this.OpenBrowseDialog(
                         ModuleNames.Dialogs.Winget,
                         NavigationPaths.DialogPaths.WingetYamlEditor,
                         "yaml",
-                        "Winget manifests (*.yaml)|*.yaml|All files|*.*");
+                        filterBuilder.BuildFilter());
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -280,11 +284,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         NavigationPaths.DialogPaths.PackagingModificationPackage);
                     break;
                 case DialogTarget.Ask:
+                    var filterBuilder = new DialogFilterBuilder("*" + FileConstants.MsixExtension);
                     this.OpenBrowseDialog(
                         ModuleNames.Dialogs.Packaging,
                         NavigationPaths.DialogPaths.PackagingModificationPackage,
                         "file",
-                        $"MSIX packages (*{FileConstants.MsixExtension})|*{FileConstants.MsixExtension}|All files|*.*");
+                        filterBuilder.BuildFilter());
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -309,11 +314,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         NavigationPaths.DialogPaths.AppInstallerEditor);
                     break;
                 case DialogTarget.Ask:
+
+                    var filterBuilder = new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension);
                     this.OpenBrowseDialog(
                         ModuleNames.Dialogs.AppInstaller,
                         NavigationPaths.DialogPaths.AppInstallerEditor,
                         "file",
-                        "App installer files|*.appinstaller|All files|*.*");
+                        filterBuilder.BuildFilter());
                     break;
                 case DialogTarget.Selection:
                     this.OpenSelectionDialog(
@@ -462,47 +469,45 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             var context = this.busyManager.Begin();
             try
             {
-                using (var wrappedProgress = new WrappedProgress(context))
+                using var wrappedProgress = new WrappedProgress(context);
+                var p1 = wrappedProgress.GetChildProgress(90);
+                var p2 = wrappedProgress.GetChildProgress(10);
+
+                var manager = await this.packageManagerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
+
+                AppxIdentity appxIdentity = null;
+                if (!string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
                 {
-                    var p1 = wrappedProgress.GetChildProgress(90);
-                    var p2 = wrappedProgress.GetChildProgress(10);
-
-                    var manager = await this.packageManagerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
-                    await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
-
-                    AppxIdentity appxIdentity = null;
-                    if (!string.Equals(FileConstants.AppInstallerExtension, Path.GetExtension(packagePath), StringComparison.OrdinalIgnoreCase))
-                    {
-                        appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
+                    appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
 
 #pragma warning disable 4014
-                        this.interactionService.ShowToast("App installed", $"{appxIdentity.Name} has been just installed.", InteractionType.None);
+                    this.interactionService.ShowToast("App installed", $"{appxIdentity.Name} has been just installed.", InteractionType.None);
 #pragma warning restore 4014
-                    }
-                    else
-                    {
+                }
+                else
+                {
 #pragma warning disable 4014
-                        this.interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.", InteractionType.None);
+                    this.interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.", InteractionType.None);
 #pragma warning restore 4014
-                    }
+                }
 
-                    var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
+                var allPackages = await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(forAllUsers ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser), progress: p2).ConfigureAwait(false);
                     
-                    if (appxIdentity != null)
+                if (appxIdentity != null)
+                {
+                    var selected = allPackages.FirstOrDefault(p => p.Name == appxIdentity.Name);
+                    if (selected != null)
                     {
-                        var selected = allPackages.FirstOrDefault(p => p.Name == appxIdentity.Name);
-                        if (selected != null)
-                        {
-                            //this.application.ApplicationState.Packages.SelectedPackages.Clear();
-                            //this.application.ApplicationState.Packages.SelectedPackages.Add(selected);
+                        //this.application.ApplicationState.Packages.SelectedPackages.Clear();
+                        //this.application.ApplicationState.Packages.SelectedPackages.Add(selected);
 
-                            await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.ManifestLocation)).ConfigureAwait(false);
-                        }
+                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(selected.ManifestLocation)).ConfigureAwait(false);
                     }
-                    else
-                    {
-                        await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
-                    }
+                }
+                else
+                {
+                    await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
                 }
             }
             catch (Exception exception)
@@ -620,7 +625,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 switch (updateResult)
                 {
                     case AppInstallerUpdateAvailabilityResult.Unknown:
-                        msg = "This package was not installed via .appinstaller file.";
+                        msg = "This package was not installed via " + FileConstants.AppInstallerExtension + " file.";
                         break;
                     case AppInstallerUpdateAvailabilityResult.NoUpdates:
                         msg = "No updates are available.";
@@ -677,7 +682,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     switch (key)
                     {
                         case AppInstallerUpdateAvailabilityResult.Unknown:
-                            stringBuilder.AppendLine("These package were not installed via .appinstaller file:");
+                            stringBuilder.AppendLine("These package were not installed via " + FileConstants.AppInstallerExtension + " file:");
                             break;
                         case AppInstallerUpdateAvailabilityResult.NoUpdates:
                             stringBuilder.AppendLine("No updates are available for these packages:");
@@ -753,8 +758,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
 
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Dependencies);
-            var parameters = new DialogParameters();
-            parameters.Add("file", selection.ManifestLocation);
+            var parameters = new DialogParameters
+            {
+                { "file", selection.ManifestLocation }
+            };
+
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.DependenciesGraph, parameters, this.OnDialogOpened);
         }
 
@@ -807,34 +815,32 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             var context = this.busyManager.Begin();
             try
             {
-                using (var wrappedProgress = new WrappedProgress(context))
+                using var wrappedProgress = new WrappedProgress(context);
+                var p1 = wrappedProgress.GetChildProgress(70);
+                var p2 = wrappedProgress.GetChildProgress(30);
+
+                var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                var removedPackageNames = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
+                var removedPackages = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
+                await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);
+
+                await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
+
+                switch (removedPackages.Length)
                 {
-                    var p1 = wrappedProgress.GetChildProgress(70);
-                    var p2 = wrappedProgress.GetChildProgress(30);
-
-                    var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
-                    var removedPackageNames = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
-                    var removedPackages = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
-                    await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);
-
-                    await this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
-
-                    switch (removedPackages.Length)
-                    {
-                        case 1:
+                    case 1:
 #pragma warning disable 4014
-                            this.interactionService.ShowToast("App removed", $"{removedPackageNames.FirstOrDefault()} has been just removed.", InteractionType.None);
+                        this.interactionService.ShowToast("App removed", $"{removedPackageNames.FirstOrDefault()} has been just removed.", InteractionType.None);
 #pragma warning restore 4014
-                            break;
-                        default:
+                        break;
+                    default:
 #pragma warning disable 4014
-                            this.interactionService.ShowToast("Apps removed", $"{removedPackages.Length} apps has been just removed.", InteractionType.None);
+                        this.interactionService.ShowToast("Apps removed", $"{removedPackages.Length} apps has been just removed.", InteractionType.None);
 #pragma warning restore 4014
-                            break;
-                    }
-
-                    await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
+                        break;
                 }
+
+                await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
             }
             catch (Exception exception)
             {

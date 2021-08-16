@@ -30,7 +30,6 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism;
 using Prism.Events;
-using Prism.Regions;
 
 namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
 {
@@ -75,7 +74,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
                     return;
                 }
 
-                this.IsActiveChanged?.Invoke(this, new EventArgs());
+                this.IsActiveChanged?.Invoke(this, EventArgs.Empty);
 
                 if (this.firstRun)
                 {
@@ -91,20 +90,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
         }
 
         public event EventHandler IsActiveChanged;
-
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-        }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
-        public void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-        }
-
+        
         public ICollectionView ItemsCollection { get; }
 
         public ObservableCollection<VolumeViewModel> Items { get; }

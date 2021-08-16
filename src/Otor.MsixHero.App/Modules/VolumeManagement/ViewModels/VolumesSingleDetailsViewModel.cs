@@ -34,13 +34,13 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
 
         void INavigationAware.OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.First().Value is IEnumerable pkgs)
+            if (navigationContext.Parameters.First().Value is IEnumerable packages)
             {
-                this.Volume = pkgs.OfType<AppxVolume>().FirstOrDefault();
+                this.Volume = packages.OfType<AppxVolume>().FirstOrDefault();
             }
-            else if (navigationContext.Parameters.First().Value is AppxVolume ip)
+            else if (navigationContext.Parameters.First().Value is AppxVolume singleVolume)
             {
-                this.Volume = ip;
+                this.Volume = singleVolume;
             }
             else
             {

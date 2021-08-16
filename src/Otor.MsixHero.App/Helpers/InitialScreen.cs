@@ -45,6 +45,7 @@ namespace Otor.MsixHero.App.Helpers
             return this.application.CommandExecutor.Invoke(this, this.GetGoToAction(cfg.DefaultScreen));
         }
 
+        // ReSharper disable once UnusedMember.Global
         public void GoToDefaultScreen()
         {
             var cfg = this.configurationService.GetCurrentConfiguration().UiConfiguration;

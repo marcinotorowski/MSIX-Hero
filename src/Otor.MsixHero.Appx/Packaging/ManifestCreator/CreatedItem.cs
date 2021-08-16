@@ -16,7 +16,7 @@
 
 namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 {
-    public struct CreatedItem
+    public readonly struct CreatedItem
     {
         public CreatedItem(string sourcePath, string packageRelativePath, ItemType type)
         {
@@ -25,11 +25,11 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             this.Type = type;
         }
 
-        public string SourcePath { get; private set; }
+        public string SourcePath { get; }
 
-        public string PackageRelativePath { get; private set; }
+        public string PackageRelativePath { get; }
 
-        public ItemType Type { get; private set; }
+        public ItemType Type { get; }
 
         public static CreatedItem CreateManifest(string sourcePath)
         {

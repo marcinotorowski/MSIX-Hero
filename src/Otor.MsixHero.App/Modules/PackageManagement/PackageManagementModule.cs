@@ -15,8 +15,6 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using Otor.MsixHero.App.Controls.PackageExpert;
-using Otor.MsixHero.App.Modules.EventViewer.List.ViewModels;
-using Otor.MsixHero.App.Modules.EventViewer.List.Views;
 using Otor.MsixHero.App.Modules.PackageManagement.Details.Views;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views;

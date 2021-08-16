@@ -72,10 +72,7 @@ namespace Otor.MsixHero.App.Helpers
             set => this.SetField(ref this.supportsCancelling, value);
         }
 
-        public ICommand Cancel
-        {
-            get => this.cancel ??= new DelegateCommand(this.ExecuteCancel, this.CanExecuteCancel);
-        }
+        public ICommand Cancel => this.cancel ??= new DelegateCommand(this.ExecuteCancel, this.CanExecuteCancel);
 
         public void MonitorProgress(Task task, CancellationTokenSource cancellationTokenSource = default, IProgress<ProgressData> progressReporter = default, string initialMessage = default)
         {
@@ -96,7 +93,8 @@ namespace Otor.MsixHero.App.Helpers
                 this.Message = "Please wait...";
             }
 
-            EventHandler<ProgressData> progressChanged = (sender, args) =>
+            // ReSharper disable once ConvertToLocalFunction
+            EventHandler<ProgressData> progressChanged = (_, args) =>
             {
                 if (this.isCancelling)
                 {

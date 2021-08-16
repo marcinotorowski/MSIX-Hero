@@ -66,13 +66,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             base.ClearItems();
             this.IsTouched = true;
             this.IsDirty = !this.originalItems.SequenceEqual(this);
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void InsertItem(int index, T item)
         {
             base.InsertItem(index, item);
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
 
             if (item is IChangeableValue newChangeableValue)
             {
@@ -115,7 +115,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         protected override void MoveItem(int oldIndex, int newIndex)
         {
             base.MoveItem(oldIndex, newIndex);
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
 
             if (!this.monitorChildren)
             {
@@ -130,7 +130,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             var item = this[index];
             base.RemoveItem(index);
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
 
             if (item is IChangeableValue oldChangeableValue)
             {
@@ -163,7 +163,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             var oldItem = this[index];
             base.SetItem(index, item);
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
 
             if (oldItem is IChangeableValue oldChangeableValue)
             {
@@ -228,7 +228,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 }
             }
 
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public bool IsDirty
@@ -320,7 +320,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         public void Touch()
         {
             this.IsTouched = true;
-            this.Changed?.Invoke(this, new EventArgs());
+            this.Changed?.Invoke(this, EventArgs.Empty);
         }
 
         public event EventHandler<ValueChangedEventArgs<bool>> IsDirtyChanged;

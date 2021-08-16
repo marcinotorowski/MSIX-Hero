@@ -98,7 +98,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                     return;
                 }
 
-                this.IsActiveChanged?.Invoke(this, new EventArgs());
+                this.IsActiveChanged?.Invoke(this, EventArgs.Empty);
 
                 if (firstRun)
                 {
@@ -185,29 +185,29 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         private bool IsPackageVisible(InstalledPackageViewModel item)
         {
-            var signatureFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.AllSources;
-            if (signatureFlags != 0 && signatureFlags != PackageFilter.AllSources)
+            var packageFilterSignatureFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.AllSources;
+            if (packageFilterSignatureFlags != 0 && packageFilterSignatureFlags != PackageFilter.AllSources)
             {
                 switch (item.SignatureKind)
                 {
                     case SignatureKind.Developer:
                     case SignatureKind.Unsigned:
                     case SignatureKind.Enterprise:
-                        if ((signatureFlags & PackageFilter.Developer) == 0)
+                        if ((packageFilterSignatureFlags & PackageFilter.Developer) == 0)
                         {
                             return false;
                         }
 
                         break;
                     case SignatureKind.Store:
-                        if ((signatureFlags & PackageFilter.Store) == 0)
+                        if ((packageFilterSignatureFlags & PackageFilter.Store) == 0)
                         {
                             return false;
                         }
 
                         break;
                     case SignatureKind.System:
-                        if ((signatureFlags & PackageFilter.System) == 0)
+                        if ((packageFilterSignatureFlags & PackageFilter.System) == 0)
                         {
                             return false;
                         }
@@ -216,33 +216,33 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var addonFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.MainAppsAndAddOns;
-            if (addonFlags != 0 && addonFlags != PackageFilter.MainAppsAndAddOns)
+            var packageFilterAddOnFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.MainAppsAndAddOns;
+            if (packageFilterAddOnFlags != 0 && packageFilterAddOnFlags != PackageFilter.MainAppsAndAddOns)
             {
                 if (item.IsAddon)
                 {
-                    if ((addonFlags & PackageFilter.Addons) == 0)
+                    if ((packageFilterAddOnFlags & PackageFilter.Addons) == 0)
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    if ((addonFlags & PackageFilter.MainApps) == 0)
+                    if ((packageFilterAddOnFlags & PackageFilter.MainApps) == 0)
                     {
                         return false;
                     }
                 }
             }
 
-            var archFilter = this.application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
-            if (archFilter != PackageFilter.AllArchitectures && archFilter != 0)
+            var packageFilterPlatformFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
+            if (packageFilterPlatformFlags != PackageFilter.AllArchitectures && packageFilterPlatformFlags != 0)
             {
                 switch (item.Model.Architecture?.ToLowerInvariant())
                 {
                     case "x86":
                         {
-                            if ((archFilter & PackageFilter.x86) == 0)
+                            if ((packageFilterPlatformFlags & PackageFilter.x86) == 0)
                             {
                                 return false;
                             }
@@ -251,7 +251,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         }
                     case "x64":
                         {
-                            if ((archFilter & PackageFilter.x64) == 0)
+                            if ((packageFilterPlatformFlags & PackageFilter.x64) == 0)
                             {
                                 return false;
                             }
@@ -260,7 +260,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         }
                     case "arm":
                         {
-                            if ((archFilter & PackageFilter.Arm) == 0)
+                            if ((packageFilterPlatformFlags & PackageFilter.Arm) == 0)
                             {
                                 return false;
                             }
@@ -269,7 +269,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         }
                     case "arm64":
                         {
-                            if ((archFilter & PackageFilter.Arm64) == 0)
+                            if ((packageFilterPlatformFlags & PackageFilter.Arm64) == 0)
                             {
                                 return false;
                             }
@@ -278,7 +278,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         }
                     case "neutral":
                         {
-                            if ((archFilter & PackageFilter.Neutral) == 0)
+                            if ((packageFilterPlatformFlags & PackageFilter.Neutral) == 0)
                             {
                                 return false;
                             }
@@ -288,8 +288,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var isRunningFilter = this.application.ApplicationState.Packages.Filter & PackageFilter.InstalledAndRunning;
-            if (isRunningFilter == PackageFilter.Running)
+            var packageFilterIsRunningFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.InstalledAndRunning;
+            if (packageFilterIsRunningFlags == PackageFilter.Running)
             {
                 if (!item.IsRunning)
                 {
@@ -297,11 +297,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(this.application.ApplicationState.Packages.SearchKey) && item.DisplayName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   && item.DisplayPublisherName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   && item.Version?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   //&& item.Architecture.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) == -1
-                   )
+            // If the user searched nothing, return all packages
+            if (string.IsNullOrWhiteSpace(this.application.ApplicationState.Packages.SearchKey))
+            {
+                return true;
+            }
+
+            if (
+                (item.DisplayName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
+                (item.DisplayPublisherName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
+                (item.Version?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
+            )
             {
                 return false;
             }

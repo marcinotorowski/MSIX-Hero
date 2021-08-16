@@ -14,16 +14,17 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.View
+using System;
+
+namespace Otor.MsixHero.App.Helpers
 {
-    /// <summary>
-    /// Interaction logic for content of the Pack dialog.
-    /// </summary>
-    public partial class PackDialogView
+    [Flags]
+    public enum DialogOpenerType
     {
-        public PackDialogView()
-        {
-            InitializeComponent();
-        }
+        Package = 2 << 0,
+        Manifest = 2 << 1,
+        WinGet = 2 << 2,
+        AppInstaller = 2 << 3,
+        AllSupported = Package | WinGet | AppInstaller | Manifest
     }
 }

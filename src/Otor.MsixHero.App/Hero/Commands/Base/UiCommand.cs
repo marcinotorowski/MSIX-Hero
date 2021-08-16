@@ -20,6 +20,7 @@ namespace Otor.MsixHero.App.Hero.Commands.Base
     {
     }
 
+    // ReSharper disable once UnusedTypeParameter
     public abstract class UiCommand<TResult> : UiCommand
     {
     }

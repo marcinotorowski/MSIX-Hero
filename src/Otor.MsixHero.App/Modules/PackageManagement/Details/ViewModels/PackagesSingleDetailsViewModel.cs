@@ -30,8 +30,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
         {
             if (navigationContext.Parameters.First().Value is IEnumerable pkgs)
             {
-                this.FilePath = pkgs.OfType<InstalledPackage>().FirstOrDefault()?.InstallLocation ??
-                                pkgs.OfType<string>().FirstOrDefault();
+                this.FilePath =
+
+                    // ReSharper disable once PossibleMultipleEnumeration
+                    pkgs.OfType<InstalledPackage>().FirstOrDefault()?.InstallLocation ??
+
+                    // ReSharper disable once PossibleMultipleEnumeration
+                    pkgs.OfType<string>().FirstOrDefault();
             }
             else if (navigationContext.Parameters.First().Value is InstalledPackage ip)
             {
@@ -59,13 +64,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Details.ViewModels
         public string FilePath
         {
             get => this.filePath;
-            set
-            {
-                if (!this.SetField(ref this.filePath, value))
-                {
-                    return;
-                }
-            }
+            set => this.SetField(ref this.filePath, value);
         }
     }
 }
