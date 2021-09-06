@@ -15,13 +15,11 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -31,13 +29,13 @@ namespace Otor.MsixHero.App.Hero.Executor
 {
     public abstract class BaseMsixHeroCommandExecutor : IMsixHeroCommandExecutor
     {
-        protected readonly Dictionary<Type, Func<UiCommand, CancellationToken, IProgress<ProgressData>, Task>> Handlers = new Dictionary<Type, Func<UiCommand, CancellationToken, IProgress<ProgressData>, Task>>();
-
         private readonly IEventAggregator eventAggregator;
+        private readonly IMediator mediator;
 
-        protected BaseMsixHeroCommandExecutor(IEventAggregator eventAggregator)
+        protected BaseMsixHeroCommandExecutor(IEventAggregator eventAggregator, IMediator mediator)
         {
             this.eventAggregator = eventAggregator;
+            this.mediator = mediator;
         }
 
         public MsixHeroState ApplicationState { get; set; }
@@ -46,13 +44,13 @@ namespace Otor.MsixHero.App.Hero.Executor
         {
             if (commandType.IsGenericType && commandType.GetGenericArguments().Length == 1)
             {
-                if (commandType.GetGenericTypeDefinition() == typeof(UiCommand<>))
+                if (commandType.GetGenericTypeDefinition() == typeof(IRequest<>))
                 {
                     resultType = commandType.GetGenericArguments()[0];
                     return true;
                 }
 
-                if (typeof(UiCommand<>).IsAssignableFrom(commandType.GetGenericTypeDefinition()))
+                if (typeof(IRequest<>).IsAssignableFrom(commandType.GetGenericTypeDefinition()))
                 {
                     resultType = commandType.GetGenericArguments()[0];
                     return true;
@@ -68,11 +66,12 @@ namespace Otor.MsixHero.App.Hero.Executor
             return this.IsCommandWithOutput(commandType.BaseType, out resultType);
         }
 
-        public async Task Invoke<TCommand>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand
+        public async Task Invoke<TCommand>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : IRequest
         {
             if (this.IsCommandWithOutput(command.GetType(), out var resultType))
             {
-                var findMethod = typeof(BaseMsixHeroCommandExecutor).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic).First(m => m.Name == nameof(InvokeAndReturn));
+                // this will call the overload that returns the results
+                var findMethod = typeof(BaseMsixHeroCommandExecutor).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic).First(m => m.Name == nameof(Invoke) && m.ReturnType.IsGenericType);
 
                 findMethod = findMethod.MakeGenericMethod(typeof(TCommand), resultType);
                 var task = (Task)findMethod.Invoke(this, new[] { sender,  command,  cancellationToken,  progress });
@@ -84,8 +83,8 @@ namespace Otor.MsixHero.App.Hero.Executor
 
                 await task.ConfigureAwait(false);
                 return;
-            }  
-
+            }
+            
             var payload = new UiExecutingPayload<TCommand>(sender, command);
             this.eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
             if (payload.Cancel)
@@ -95,7 +94,8 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             try
             {
-                await this.Invoke(command, cancellationToken, progress).ConfigureAwait(false);
+                this.eventAggregator.GetEvent<UiStartedEvent<TCommand>>().Publish(new UiStartedPayload<TCommand>(sender, command));
+                var unit = await this.mediator.Send(command, cancellationToken).ConfigureAwait(false);
                 this.eventAggregator.GetEvent<UiExecutedEvent<TCommand>>().Publish(new UiExecutedPayload<TCommand>(sender, command));
             }
             catch (OperationCanceledException)
@@ -110,14 +110,7 @@ namespace Otor.MsixHero.App.Hero.Executor
             }
         }
 
-        public Task<TResult> Invoke<TCommand, TResult>(object sender, TCommand command,
-            CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
-            where TCommand : UiCommand<TResult>
-        {
-            return this.InvokeAndReturn<TCommand, TResult>(sender, command, cancellationToken, progress);
-        }
-
-        private async Task<TResult> InvokeAndReturn<TCommand, TResult>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand<TResult>
+        public async Task<TResult> Invoke<TCommand, TResult>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : IRequest<TResult>
         {
             var payload = new UiExecutingPayload<TCommand>(sender, command);
             this.eventAggregator.GetEvent<UiExecutingEvent<TCommand>>().Publish(payload);
@@ -130,7 +123,8 @@ namespace Otor.MsixHero.App.Hero.Executor
             {
                 this.eventAggregator.GetEvent<UiStartedEvent<TCommand>>().Publish(new UiStartedPayload<TCommand>(sender, command));
 
-                var result = await this.Invoke<TCommand, TResult>(command, cancellationToken, progress).ConfigureAwait(false);
+                var result = await this.mediator.Send(command, cancellationToken).ConfigureAwait(false);
+
                 this.eventAggregator.GetEvent<UiExecutedEvent<TCommand, TResult>>().Publish(new UiExecutedPayload<TCommand, TResult>(sender, command, result));
                 this.eventAggregator.GetEvent<UiExecutedEvent<TCommand>>().Publish(new UiExecutedPayload<TCommand>(sender, command));
                 return result;
@@ -145,45 +139,6 @@ namespace Otor.MsixHero.App.Hero.Executor
                 this.eventAggregator.GetEvent<UiFailedEvent<TCommand>>().Publish(new UiFailedPayload<TCommand>(sender, command, exception));
                 throw;
             }
-        }
-
-        protected async Task<TResult> Invoke<TCommand, TResult>(TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand<TResult>
-        {
-            if (!this.Handlers.TryGetValue(command.GetType(), out var taskGetter))
-            {
-                throw new NotSupportedException();
-            }
-
-            var task = taskGetter(command, cancellationToken, progress);
-            if (!task.GetType().IsGenericType)
-            {
-                throw new InvalidOperationException();
-            }
-
-            await task.ConfigureAwait(false);
-            var getter = typeof(Task<TResult>).GetProperty(nameof(Task<TResult>.Result));
-            if (getter == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            var property = getter.GetGetMethod();
-            if (property == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            return (TResult)property.Invoke(task, BindingFlags.Instance | BindingFlags.Public, null, null, CultureInfo.InvariantCulture);
-        }
-
-        protected async Task Invoke<TCommand>(TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand
-        {
-            if (!this.Handlers.TryGetValue(command.GetType(), out var taskGetter))
-            {
-                throw new NotSupportedException();
-            }
-
-            await taskGetter(command, cancellationToken, progress).ConfigureAwait(false);
         }
     }
 }

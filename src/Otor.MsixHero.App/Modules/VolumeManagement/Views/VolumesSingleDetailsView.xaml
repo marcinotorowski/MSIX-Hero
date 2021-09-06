@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
-             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.VolumeManagement.ViewModels"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters"
              xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
@@ -17,7 +17,7 @@
             <WrapPanel VerticalAlignment="Center" HorizontalAlignment="Left">
 
                 <Button 
-                     Command="{x:Static hero:MsixHeroCommands.SetVolumeAsDefault}"
+                     Command="{x:Static commands:MsixHeroRoutedUICommands.SetVolumeAsDefault}"
                      Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
@@ -26,7 +26,7 @@
                 </Button>
 
                 <Button 
-                     Command="{x:Static hero:MsixHeroCommands.DismountVolume}"
+                     Command="{x:Static commands:MsixHeroRoutedUICommands.DismountVolume}"
                      Style="{StaticResource ActionButtonHideWhenDisabled}">
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
@@ -35,7 +35,7 @@
                 </Button>
 
                 <Button 
-                     Command="{x:Static hero:MsixHeroCommands.MountVolume}"
+                     Command="{x:Static commands:MsixHeroRoutedUICommands.MountVolume}"
                      Style="{StaticResource ActionButtonHideWhenDisabled}">
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"

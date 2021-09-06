@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Hero.Events.Base;
@@ -133,7 +134,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             lastMenu.Items.Add(new Separator());
             lastMenu.Items.Add(new MenuItem
             {
-                Command = MsixHeroCommands.Settings,
+                Command = MsixHeroRoutedUICommands.Settings,
                 CommandParameter = "tools",
                 Header = "More commands..."
             });
@@ -153,7 +154,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             {
                 this.tools.Add(new MenuItem
                 {
-                    Command = MsixHeroCommands.RunTool,
+                    Command = MsixHeroRoutedUICommands.RunTool,
                     Icon = new Image { Source = ShellIcon.GetIconFor(string.IsNullOrEmpty(item.Icon) ? item.Path : item.Icon) },
                     Header = item.Name,
                     CommandParameter = item

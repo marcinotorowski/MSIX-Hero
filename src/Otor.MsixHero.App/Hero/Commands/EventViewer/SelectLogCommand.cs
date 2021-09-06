@@ -14,12 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 
 namespace Otor.MsixHero.App.Hero.Commands.EventViewer
 {
-    public class SelectLogCommand : UiCommand<Log>
+    public class SelectLogCommand : IRequest
     {
         public SelectLogCommand()
         {

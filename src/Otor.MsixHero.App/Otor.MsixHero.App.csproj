@@ -41,10 +41,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cquential.Microsoft.Practices.Unity" Version="2.0.414" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.97" />
     <PackageReference Include="FluentWPF" Version="0.10.0" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.4.1" />
     <PackageReference Include="GraphX" Version="3.0.0" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Notifications.Wpf.Core" Version="1.3.2" />
     <PackageReference Include="OffregLib.Forked" Version="0.7.3" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="4.0.0" />

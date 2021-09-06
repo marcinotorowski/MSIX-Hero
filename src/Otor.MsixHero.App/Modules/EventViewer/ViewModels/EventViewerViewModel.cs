@@ -41,7 +41,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
         {
             var parameters = new NavigationParameters();
 
-            if (command.Command.SelectedLog == null)
+            if (command.Request.SelectedLog == null)
             {
                 prismServices.RegionManager.Regions[EventViewerRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.EventViewerPaths.NoDetails, UriKind.Relative), parameters);
             }

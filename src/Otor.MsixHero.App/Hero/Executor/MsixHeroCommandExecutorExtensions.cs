@@ -18,7 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -44,7 +44,7 @@ namespace Otor.MsixHero.App.Hero.Executor
         {
             private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixHeroDecoratedCommandExecutor));
 
-            private readonly IMsixHeroCommandExecutor decorated;
+            private readonly IMsixHeroCommandExecutor commandExecutor;
 
             private IInteractionService interactionService;
 
@@ -54,21 +54,21 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             private OperationType operationType;
 
-            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated, IBusyManager manager, OperationType operation) : this(decorated)
+            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor commandExecutor, IBusyManager manager, OperationType operation) : this(commandExecutor)
             {
                 this.busyManager = manager;
                 this.operationType = operation;
             }
 
-            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated, IInteractionService interaction, bool allowUserRetry) : this(decorated)
+            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor commandExecutor, IInteractionService interaction, bool allowUserRetry) : this(commandExecutor)
             {
                 this.allowRetry = allowUserRetry;
                 this.interactionService = interaction;
             }
 
-            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor decorated)
+            private MsixHeroDecoratedCommandExecutor(IMsixHeroCommandExecutor commandExecutor)
             {
-                this.decorated = decorated;
+                this.commandExecutor = commandExecutor;
             }
 
             public static MsixHeroDecoratedCommandExecutor From(IMsixHeroCommandExecutor executor, IBusyManager busyManager, OperationType operationType)
@@ -107,11 +107,11 @@ namespace Otor.MsixHero.App.Hero.Executor
 
             public MsixHeroState ApplicationState
             {
-                get => this.decorated.ApplicationState;
-                set => this.decorated.ApplicationState = value;
+                get => this.commandExecutor.ApplicationState;
+                set => this.commandExecutor.ApplicationState = value;
             }
 
-            public async Task Invoke<TCommand>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand
+            public async Task Invoke<TCommand>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : IRequest
             {
                 IBusyContext busyContext = null;
 
@@ -124,7 +124,7 @@ namespace Otor.MsixHero.App.Hero.Executor
 
                 try
                 {
-                    await this.decorated.Invoke(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
+                    await this.commandExecutor.Invoke(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException e)
                 {
@@ -151,7 +151,7 @@ namespace Otor.MsixHero.App.Hero.Executor
                 }
             }
 
-            public async Task<TResult> Invoke<TCommand, TResult>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : UiCommand<TResult>
+            public async Task<TResult> Invoke<TCommand, TResult>(object sender, TCommand command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null) where TCommand : IRequest<TResult>
             {
                 IBusyContext busyContext = null;
 
@@ -164,7 +164,7 @@ namespace Otor.MsixHero.App.Hero.Executor
 
                 try
                 {
-                    return await this.decorated.Invoke<TCommand, TResult>(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
+                    return await this.commandExecutor.Invoke<TCommand, TResult>(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException e)
                 {

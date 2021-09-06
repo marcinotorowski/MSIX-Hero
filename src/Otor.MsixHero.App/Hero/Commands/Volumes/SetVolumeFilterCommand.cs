@@ -14,11 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 
 namespace Otor.MsixHero.App.Hero.Commands.Volumes
 {
-    public class SetVolumeFilterCommand : UiCommand
+    public class SetVolumeFilterCommand : IRequest
     {
         public SetVolumeFilterCommand(string searchKey)
         {

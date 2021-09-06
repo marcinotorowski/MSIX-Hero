@@ -15,7 +15,15 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using MediatR;
+using MediatR.Pipeline;
 using Notifications.Wpf.Core;
 using Notifications.Wpf.Core.Controls;
 using Otor.MsixHero.App.Controls;
@@ -73,11 +81,15 @@ using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.Updates;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Otor.MsixHero.Lib.Proxy;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using Prism.Unity;
+using Unity;
+using Unity.Lifetime;
 
 namespace Otor.MsixHero.App
 {
@@ -100,7 +112,7 @@ namespace Otor.MsixHero.App
 
             LogManager.Initialize(logLevel);
         }
-
+        
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
@@ -125,18 +137,22 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();
             containerRegistry.RegisterSingleton<IRunningAppsDetector, RunningAppsDetector>();
             containerRegistry.RegisterSingleton<IAppxManifestCreator, AppxManifestCreator>();
+            containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
             containerRegistry.RegisterSingleton<IInterProcessCommunicationManager, InterProcessCommunicationManager>();
             containerRegistry.Register<IDependencyMapper, DependencyMapper>();
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
-            
+            containerRegistry.RegisterSingleton<IMediator>(containerProvider => new Mediator(containerProvider.Resolve));
+
             containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.DialogPaths.PackageExpert);
 
             if (Environment.GetCommandLineArgs().Length < 2)
             {
                 containerRegistry.RegisterDialogWindow<AcrylicDialogWindow>();
             }
+
+            this.Container.GetContainer().RegisterMediatorHandlers(typeof(App).Assembly);
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -155,7 +171,6 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(VolumeManagementModule), ModuleNames.VolumeManagement, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(DashboardModule), ModuleNames.Dashboard, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(WhatsNewModule), ModuleNames.WhatsNew, InitializationMode.OnDemand));
-            
             moduleCatalog.AddModule(new ModuleInfo(typeof(SigningModule), ModuleNames.Dialogs.Signing, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppInstallerModule), ModuleNames.Dialogs.AppInstaller, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(PackagingModule), ModuleNames.Dialogs.Packaging, InitializationMode.OnDemand));
@@ -166,7 +181,7 @@ namespace Otor.MsixHero.App
             moduleCatalog.AddModule(new ModuleInfo(typeof(AppAttachModule), ModuleNames.Dialogs.AppAttach, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(SettingsModule), ModuleNames.Dialogs.Settings, InitializationMode.OnDemand));
             moduleCatalog.AddModule(new ModuleInfo(typeof(HelpModule), ModuleNames.Dialogs.Help, InitializationMode.OnDemand));
-            
+
             base.ConfigureModuleCatalog(moduleCatalog);
         }
 
@@ -177,7 +192,7 @@ namespace Otor.MsixHero.App
 
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
             regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));
-            
+
             var app = this.Container.Resolve<IMsixHeroApplication>();
             var config = this.Container.Resolve<IConfigurationService>();
             var releaseNotesHelper = new ReleaseNotesHelper(config);
@@ -192,7 +207,7 @@ namespace Otor.MsixHero.App
                 helper.GoToDefaultScreenAsync();
             }
         }
-        
+
         private void InitializePackageExpert()
         {
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
@@ -201,20 +216,20 @@ namespace Otor.MsixHero.App
             var par = new DialogParameters
             {
                 {
-                    "package", 
+                    "package",
                     Environment.GetCommandLineArgs()[1]
                 }
             };
 
             var dialogService = this.Container.Resolve<IDialogService>();
-            dialogService.Show(NavigationPaths.DialogPaths.PackageExpert, par, _ => {});
+            dialogService.Show(NavigationPaths.DialogPaths.PackageExpert, par, _ => { });
             // regionManager.Regions[RegionNames.Root].RequestNavigate(new Uri(NavigationPaths.PackageManagement, UriKind.Relative), par);
         }
-        
+
         protected override void Initialize()
         {
             base.Initialize();
-            
+
             var config = this.GetConfigurationSafe();
             var tier = config?.UiConfiguration?.UxTier ?? UxTierLevel.Auto;
             switch (tier)
@@ -228,7 +243,7 @@ namespace Otor.MsixHero.App
                     TierController.SetSystemTier();
                     break;
             }
-            
+
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 this.InitializePackageExpert();
@@ -238,7 +253,7 @@ namespace Otor.MsixHero.App
                 this.InitializeMainWindow();
             }
         }
-        
+
         private Configuration GetConfigurationSafe()
         {
             return ExceptionGuard.Guard(() => this.Container.Resolve<IConfigurationService>().GetCurrentConfiguration());
@@ -255,6 +270,98 @@ namespace Otor.MsixHero.App
             {
                 return this.Container.Resolve<MainWindow>();
             }
+        }
+    }
+
+    // ReSharper disable once InconsistentNaming
+    public static class IUnityContainerExtensions
+    {
+        public static IUnityContainer RegisterMediator(this IUnityContainer container, ITypeLifetimeManager lifetimeManager)
+        {
+            return container.RegisterType<IMediator, Mediator>(lifetimeManager)
+                .RegisterInstance<ServiceFactory>(type =>
+                {
+                    var enumerableType = type
+                        .GetInterfaces()
+                        .Concat(new[] { type })
+                        .FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+
+                    return enumerableType != null
+                        ? container.ResolveAll(enumerableType.GetGenericArguments()[0])
+                        : container.IsRegistered(type)
+                            ? container.Resolve(type)
+                            : null;
+                });
+        }
+
+        public static IUnityContainer RegisterMediatorHandlers(this IUnityContainer container, Assembly assembly)
+        {
+            return container.RegisterTypesImplementingType(assembly, typeof(IRequestHandler<,>))
+                            .RegisterNamedTypesImplementingType(assembly, typeof(INotificationHandler<>));
+        }
+
+        internal static bool IsGenericTypeOf(this Type type, Type genericType)
+        {
+            return type.IsGenericType &&
+                   type.GetGenericTypeDefinition() == genericType;
+        }
+
+        internal static void AddGenericTypes(this List<object> list, IUnityContainer container, Type genericType)
+        {
+            var genericHandlerRegistrations =
+                container.Registrations.Where(reg => reg.RegisteredType == genericType);
+
+            foreach (var handlerRegistration in genericHandlerRegistrations)
+            {
+                if (list.All(item => item.GetType() != handlerRegistration.MappedToType))
+                {
+                    list.Add(container.Resolve(handlerRegistration.MappedToType));
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Register all implementations of a given type for provided assembly.
+        /// </summary>
+        public static IUnityContainer RegisterTypesImplementingType(this IUnityContainer container, Assembly assembly, Type type)
+        {
+            foreach (var implementation in assembly.GetTypes().Where(t => t.GetInterfaces().Any(implementation => IsSubclassOfRawGeneric(type, implementation))))
+            {
+                var interfaces = implementation.GetInterfaces();
+                foreach (var @interface in interfaces)
+                    container.RegisterType(@interface, implementation);
+            }
+
+            return container;
+        }
+
+        /// <summary>
+        ///     Register all implementations of a given type for provided assembly.
+        /// </summary>
+        public static IUnityContainer RegisterNamedTypesImplementingType(this IUnityContainer container, Assembly assembly, Type type)
+        {
+            foreach (var implementation in assembly.GetTypes().Where(t => t.GetInterfaces().Any(implementation => IsSubclassOfRawGeneric(type, implementation))))
+            {
+                var interfaces = implementation.GetInterfaces();
+                foreach (var @interface in interfaces)
+                    container.RegisterType(@interface, implementation, implementation.FullName);
+            }
+
+            return container;
+        }
+
+        private static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
+        {
+            while (toCheck != null && toCheck != typeof(object))
+            {
+                var currentType = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+                if (generic == currentType)
+                    return true;
+
+                toCheck = toCheck.BaseType;
+            }
+
+            return false;
         }
     }
 }

@@ -14,30 +14,24 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 
 namespace Otor.MsixHero.App.Hero.Events.Base
 {
-    public class UiExecutedPayload<TCommand, TResult> : UiPayload where TCommand : UiCommand<TResult>
+    public class UiExecutedPayload<TCommand, TResult> : UiPayload<TCommand> where TCommand : IRequest<TResult>
     {
-        public UiExecutedPayload(object sender, TCommand command, TResult result) : base(sender)
+        public UiExecutedPayload(object sender, TCommand command, TResult result) : base(sender, command)
         {
-            Result = result;
-            this.Command = command;
+            this.Result = result;
         }
-
-        public TCommand Command { get; }
-
+        
         public TResult Result { get; }
     }
 
-    public class UiExecutedPayload<TCommand> : UiPayload where TCommand : UiCommand
+    public class UiExecutedPayload<TCommand> : UiPayload<TCommand> where TCommand : IBaseRequest
     {
-        public UiExecutedPayload(object sender, TCommand command) : base(sender)
+        public UiExecutedPayload(object sender, TCommand command) : base(sender, command)
         {
-            this.Command = command;
         }
-
-        public TCommand Command { get; }
     }
 }

@@ -275,7 +275,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.List.ViewModels
             using var task = this.application.CommandExecutor
                 .WithBusyManager(this.busyManager, OperationType.EventsLoading)
                 .WithErrorHandling(this.interactionService, true)
-                .Invoke(this, new GetLogsCommand(), cts.Token);
+                .Invoke<GetLogsCommand, IList<Log>>(this, new GetLogsCommand(), cts.Token);
 
             this.Progress.MonitorProgress(task, cts);
             await task.ConfigureAwait(false);

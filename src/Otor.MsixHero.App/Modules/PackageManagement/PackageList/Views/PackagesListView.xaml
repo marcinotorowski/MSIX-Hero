@@ -10,8 +10,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
-    xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.ViewModels"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:packageManagement="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
     xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
@@ -69,41 +68,41 @@
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                 </MenuItem.Icon>
-                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorer}" Header="Install folder">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorer}" Header="Install folder">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenManifest}" Header="Manifest file">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenManifest}" Header="Manifest file">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallManifest}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}" Header="Config.json">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenConfigJson}" Header="Config.json">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallGear}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}" Header="User folder">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorerUser}" Header="User folder">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallUserFolder}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Check for updates" Command="{x:Static commands:MsixHeroCommands.CheckUpdates}">
+            <MenuItem Header="Check for updates" Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallAppInstaller}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Analyze dependencies" Command="{x:Static commands:MsixHeroCommands.DependencyViewer}">
+            <MenuItem Header="Analyze dependencies" Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
                 <!-- CommandParameter="{x:Static viewModel:VariableContextCommandParameter.Selection}">-->
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDependencies}" />
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Change volume..." Command="{x:Static commands:MsixHeroCommands.ChangeVolume}" >
+            <MenuItem Header="Change volume..." Command="{x:Static commands:MsixHeroRoutedUICommands.ChangeVolume}" >
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallForward}" />
                 </MenuItem.Icon>
@@ -112,7 +111,7 @@
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemove}" />
                 </MenuItem.Icon>
-                <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroCommands.RemovePackage}" InputGestureText="Del">
+                <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}" InputGestureText="Del">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemoveMinus}" />
                     </MenuItem.Icon>
@@ -120,7 +119,7 @@
                         <system:Boolean>False</system:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
-                <MenuItem Header="All users"  Command="{x:Static commands:MsixHeroCommands.RemovePackage}">
+                <MenuItem Header="All users"  Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}">
                     <MenuItem.Icon>
                         <Image Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="0 0 0 0" />
                     </MenuItem.Icon>
@@ -130,12 +129,12 @@
                 </MenuItem>
             </MenuItem>
             <Separator />
-            <MenuItem Command="{x:Static commands:MsixHeroCommands.StartPackage}" Header="Start app">
+            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.StartPackage}" Header="Start app">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStart}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{x:Static commands:MsixHeroCommands.StopPackage}" Header="Stop app">
+            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.StopPackage}" Header="Stop app">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStop}" />
                 </MenuItem.Icon>
@@ -247,7 +246,7 @@
                                 </Border.Effect>
                                 <StackPanel>
                                     <Button 
-                                        Command="{x:Static commands:MsixHeroCommands.AddPackage}"
+                                        Command="{x:Static commands:MsixHeroRoutedUICommands.AddPackage}"
                                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
                                         Style="{StaticResource ActionButton}">
                                         <controls:LabelWithIcon
@@ -259,7 +258,7 @@
                                         </Button.CommandParameter>
                                     </Button>
                                     <Button 
-                                        Command="{x:Static commands:MsixHeroCommands.AddPackage}"
+                                        Command="{x:Static commands:MsixHeroRoutedUICommands.AddPackage}"
                                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
                                         Style="{StaticResource ActionButton}">
                                         <Button.CommandParameter>

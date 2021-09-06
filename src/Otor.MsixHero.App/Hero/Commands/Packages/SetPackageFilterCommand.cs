@@ -14,12 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
-    public class SetPackageFilterCommand : UiCommand
+    public class SetPackageFilterCommand : IRequest
     {
         public SetPackageFilterCommand()
         {

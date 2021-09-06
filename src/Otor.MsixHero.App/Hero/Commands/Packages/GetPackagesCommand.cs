@@ -15,13 +15,13 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
-    public class GetPackagesCommand : UiCommand<IList<InstalledPackage>>
+    public class GetPackagesCommand : IRequest<IList<InstalledPackage>>
     {
         public PackageFindMode? FindMode { get; }
 

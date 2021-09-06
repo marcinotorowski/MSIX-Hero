@@ -16,12 +16,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Otor.MsixHero.App.Hero.Commands.Base;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using MediatR;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
-    public class SelectPackagesCommand : UiCommand<IList<InstalledPackage>>
+    public class SelectPackagesCommand : IRequest
     {
         public SelectPackagesCommand()
         {

@@ -9,7 +9,7 @@
     xmlns:open="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Open"
     xmlns:start="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Start"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
-    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     xmlns:more="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.More"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
@@ -106,7 +106,7 @@
                 </Popup>
 
                 <Button
-                Command="{x:Static commands:MsixHeroCommands.RemovePackage}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}"
                 Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
                             Style="{StaticResource ActionLabelWithIcon}"
@@ -115,7 +115,7 @@
                 </Button>
 
                 <Button 
-                Command="{x:Static commands:MsixHeroCommands.CheckUpdates}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}"
                 Style="{StaticResource ActionButton}">
                     <controls:LabelWithIcon 
                             Style="{StaticResource ActionLabelWithIcon}"

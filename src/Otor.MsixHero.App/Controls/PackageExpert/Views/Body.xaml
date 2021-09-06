@@ -16,7 +16,7 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.View"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
-             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
              xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
@@ -549,7 +549,7 @@
                             ItemsSource="{Binding Files.Nodes}">
                             <commands:RoutedCommandHandlers.Commands>
                                 <commands:RoutedCommandHandler 
-                                    RoutedCommand="{x:Static hero:MsixHeroCommands.OpenFile}" 
+                                    RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.OpenFile}" 
                                     Command="{Binding Files.View}" />
                             </commands:RoutedCommandHandlers.Commands>
                             <ListView.Style>
@@ -566,7 +566,7 @@
                             </ListView.Style>
                             <ListView.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="View/edit" Command="{x:Static hero:MsixHeroCommands.OpenFile}">
+                                    <MenuItem Header="View/edit" Command="{x:Static hero:MsixHeroRoutedUICommands.OpenFile}">
                                         <MenuItem.Icon>
                                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorOpen}" />
                                         </MenuItem.Icon>
@@ -842,7 +842,7 @@
 
                     <TextBlock 
                         DockPanel.Dock="Top" Margin="0 10">
-                        <Hyperlink Command="{x:Static hero:MsixHeroCommands.DependencyViewer}">
+                        <Hyperlink Command="{x:Static hero:MsixHeroRoutedUICommands.DependencyViewer}">
                             <Run Text="Open dependencies graph..." />
                         </Hyperlink>
                     </TextBlock>
@@ -966,7 +966,7 @@
                                         TotalSize="{Binding Disk.Capacity}" />
 
                                     <TextBlock HorizontalAlignment="Left" Margin="0 10 0 0">
-                                        <Hyperlink Command="{x:Static hero:MsixHeroCommands.ChangeVolume}">
+                                        <Hyperlink Command="{x:Static hero:MsixHeroRoutedUICommands.ChangeVolume}">
                                             <Run Text="Change install directory..." />
                                         </Hyperlink>
                                     </TextBlock>

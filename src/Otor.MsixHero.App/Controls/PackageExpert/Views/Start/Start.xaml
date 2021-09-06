@@ -11,7 +11,7 @@
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
     xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
-    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d" 
     MinWidth="250"
@@ -33,7 +33,7 @@
                 <DataTemplate DataType="{x:Type items:AppxApplicationViewModel}">
                     <Button
                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                        Command="{x:Static commands:MsixHeroCommands.StartPackage}"
+                        Command="{x:Static commands:MsixHeroRoutedUICommands.StartPackage}"
                         CommandParameter="{Binding Id}"
                         Style="{StaticResource ButtonSquare}">
                         <b:Interaction.Behaviors>
@@ -108,7 +108,7 @@
                     <Button 
                         HorizontalContentAlignment="Stretch"
                         CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                        Command="{x:Static commands:MsixHeroCommands.RunTool}"
+                        Command="{x:Static commands:MsixHeroRoutedUICommands.RunTool}"
                         CommandParameter="{Binding Model}"
                         Style="{StaticResource ButtonRectangle}">
                         <b:Interaction.Behaviors>

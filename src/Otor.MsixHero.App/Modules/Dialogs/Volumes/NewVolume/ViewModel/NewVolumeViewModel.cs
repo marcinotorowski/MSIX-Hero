@@ -26,6 +26,7 @@ using Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel.Items;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -111,7 +112,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
 
             progress.Report(new ProgressData(90, "Reading volumes..."));
             
-            await this.application.CommandExecutor.Invoke(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
+            await this.application.CommandExecutor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
             return true;
         }
 

@@ -179,7 +179,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
             progress.Report(new ProgressData(100, "Reading packages..."));
 
-            await this.application.CommandExecutor.Invoke(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
+            await this.application.CommandExecutor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
 
             return true;
         }

@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.Views
                     var anyVisible = false;
                     bool allVisible;
 
-                    if (string.IsNullOrEmpty(obj.Command.SearchKey) || text.Text.IndexOf(obj.Command.SearchKey, StringComparison.OrdinalIgnoreCase) > -1)
+                    if (string.IsNullOrEmpty(obj.Request.SearchKey) || text.Text.IndexOf(obj.Request.SearchKey, StringComparison.OrdinalIgnoreCase) > -1)
                     {
                         text.Visibility = Visibility.Visible;
                         allVisible = true;
@@ -71,7 +71,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.Views
 
                     foreach (var button in nextElement.Children.OfType<Button>())
                     {
-                        if (allVisible || string.IsNullOrEmpty(obj.Command.SearchKey))
+                        if (allVisible || string.IsNullOrEmpty(obj.Request.SearchKey))
                         {
                             anyVisible = true;
                             button.Visibility = Visibility.Visible;
@@ -80,13 +80,13 @@ namespace Otor.MsixHero.App.Modules.Dashboard.Views
                         {
                             var buttonTexts = ((StackPanel)button.Content).Children.OfType<TextBlock>();
 
-                            var hasText = buttonTexts.Any(b => b.Text?.IndexOf(obj.Command.SearchKey, StringComparison.OrdinalIgnoreCase) > -1);
+                            var hasText = buttonTexts.Any(b => b.Text?.IndexOf(obj.Request.SearchKey, StringComparison.OrdinalIgnoreCase) > -1);
                             anyVisible |= hasText;
                             button.Visibility = hasText ? Visibility.Visible : Visibility.Collapsed;
                         }
                     }
 
-                    if (allVisible || string.IsNullOrEmpty(obj.Command.SearchKey) || anyVisible)
+                    if (allVisible || string.IsNullOrEmpty(obj.Request.SearchKey) || anyVisible)
                     {
                         text.Visibility = Visibility.Visible;
                     }

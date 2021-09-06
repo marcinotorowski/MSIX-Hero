@@ -21,9 +21,11 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
+using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
@@ -64,9 +66,9 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
             parent.CommandBindings.Add(new CommandBinding(NavigationCommands.Refresh, this.OnRefresh));
             parent.CommandBindings.Add(new CommandBinding(ApplicationCommands.New, this.OnNew));
             parent.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, this.OnDelete, this.CanDelete));
-            parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.SetVolumeAsDefault, this.OnSetVolumeAsDefault, this.CanSetVolumeAsDefault));
-            parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.MountVolume, this.OnMountVolume, this.CanMountVolume));
-            parent.CommandBindings.Add(new CommandBinding(MsixHeroCommands.DismountVolume, this.OnDismountVolume, this.CanDismountVolume));
+            parent.CommandBindings.Add(new CommandBinding(MsixHeroRoutedUICommands.SetVolumeAsDefault, this.OnSetVolumeAsDefault, this.CanSetVolumeAsDefault));
+            parent.CommandBindings.Add(new CommandBinding(MsixHeroRoutedUICommands.MountVolume, this.OnMountVolume, this.CanMountVolume));
+            parent.CommandBindings.Add(new CommandBinding(MsixHeroRoutedUICommands.DismountVolume, this.OnDismountVolume, this.CanDismountVolume));
         }
 
 
@@ -117,7 +119,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
 
                 await this.application.CommandExecutor
                     .WithBusyManager(this.busyManager, OperationType.VolumeLoading)
-                    .Invoke(this, new GetVolumesCommand()).ConfigureAwait(false);
+                    .Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand()).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -315,7 +317,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement
                 .WithErrorHandling(this.interactionService, true)
                 .WithBusyManager(this.busyManager, OperationType.VolumeLoading);
 
-            await executor.Invoke(this, new GetVolumesCommand(), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
         private void OnNew(object sender, ExecutedRoutedEventArgs args)

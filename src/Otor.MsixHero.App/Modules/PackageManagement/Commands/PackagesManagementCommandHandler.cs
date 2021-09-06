@@ -431,7 +431,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 .WithErrorHandling(this.interactionService, true)
                 .WithBusyManager(this.busyManager, OperationType.PackageLoading);
 
-            await executor.Invoke(this, new GetPackagesCommand(), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void OnAddPackage(string packagePath, bool forAllUsers)
@@ -840,7 +840,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         break;
                 }
 
-                await this.application.CommandExecutor.Invoke(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
+                await this.application.CommandExecutor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(), progress: p2).ConfigureAwait(false);
             }
             catch (Exception exception)
             {

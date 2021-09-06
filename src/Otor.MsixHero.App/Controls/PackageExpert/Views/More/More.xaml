@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:commands1="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Commands"
+             xmlns:pkgMgmtCommands="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Commands"
              mc:Ignorable="d" >
 
     <StackPanel>
@@ -21,7 +21,7 @@
             Visibility="Collapsed"
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.PackageExpert}">
+            Command="{x:Static commands:MsixHeroRoutedUICommands.PackageExpert}">
             <controls:LabelWithIcon Icon16x16="{StaticResource SmallInNewWindow}" Content="Open in a new window" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
@@ -32,7 +32,7 @@
         <Button 
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.DependencyViewer}">
+            Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallDependencies}"
                 Content="Dependency analyzer..." />
@@ -44,7 +44,7 @@
         <Button 
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.ModificationPackage}">
+            Command="{x:Static commands:MsixHeroRoutedUICommands.ModificationPackage}">
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallMicrosoftWindows}"
                 Content="Modification package editor..." />
@@ -56,7 +56,7 @@
         <Button
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.AppInstaller}">
+            Command="{x:Static commands:MsixHeroRoutedUICommands.AppInstaller}">
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallAppInstaller}"
                 Content="App installer editor..." />
@@ -67,9 +67,9 @@
 
         <Button
             Style="{StaticResource ActionButton}"
-            CommandParameter="{x:Static commands1:DialogTarget.Selection}"
+            CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.Winget}">
+            Command="{x:Static commands:MsixHeroRoutedUICommands.Winget}">
 
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallTerminal}"
@@ -106,9 +106,9 @@
 
         <Button 
             Style="{StaticResource ActionButton}"
-            CommandParameter="{x:Static commands1:DialogTarget.Selection}"
+            CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.ChangeVolume}">
+            Command="{x:Static commands:MsixHeroRoutedUICommands.ChangeVolume}">
             <controls:LabelWithIcon Content="Change volume..." Icon16x16="{StaticResource SmallForward}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />

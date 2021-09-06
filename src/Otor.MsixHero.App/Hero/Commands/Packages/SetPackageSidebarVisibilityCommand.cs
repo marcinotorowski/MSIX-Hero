@@ -15,12 +15,12 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
     [Serializable]
-    public class SetPackageSidebarVisibilityCommand : UiCommand
+    public class SetPackageSidebarVisibilityCommand : IRequest
     {
         public SetPackageSidebarVisibilityCommand() : this(true)
         {

@@ -8,7 +8,7 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.VolumeManagement.ViewModels"
-             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              x:Name="Root"
@@ -75,18 +75,18 @@
                                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Command="{x:Static hero:MsixHeroCommands.DismountVolume}" Header="Dismount" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.DismountVolume}" Header="Dismount" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <MenuItem.Icon>
                                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDisconnect}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Command="{x:Static hero:MsixHeroCommands.MountVolume}" Header="Mount" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.MountVolume}" Header="Mount" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <MenuItem.Icon>
                                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorConnect}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Command="{x:Static hero:MsixHeroCommands.SetVolumeAsDefault}" Header="Set as default" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource NegativeConverter}}">
+                            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.SetVolumeAsDefault}" Header="Set as default" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource NegativeConverter}}">
                                 <MenuItem.Icon>
                                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorWrench}" />
                                 </MenuItem.Icon>

@@ -15,13 +15,13 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Infrastructure.Configuration;
 
 namespace Otor.MsixHero.App.Hero.Commands.EventViewer
 {
     [Serializable]
-    public class SetEventViewerSortingCommand : UiCommand
+    public class SetEventViewerSortingCommand : IRequest
     {
         public SetEventViewerSortingCommand()
         {

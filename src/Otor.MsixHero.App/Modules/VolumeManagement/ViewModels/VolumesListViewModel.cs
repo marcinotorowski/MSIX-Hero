@@ -82,7 +82,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.ViewModels
                         .CommandExecutor
                         .WithBusyManager(this.busyManager, OperationType.VolumeLoading)
                         .WithErrorHandling(this.interactionService, true)
-                        .Invoke(this, new GetVolumesCommand());
+                        .Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand());
                 }
 
                 this.firstRun = false;

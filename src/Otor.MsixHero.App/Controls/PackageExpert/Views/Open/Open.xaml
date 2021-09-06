@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
-             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              mc:Ignorable="d" 
@@ -30,7 +30,7 @@
             <Button 
                 ToolTip="Copy the path to clipboard"
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenExplorer}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorer}"
                 Style="{StaticResource ButtonRectangle}">
                 <b:Interaction.Behaviors>
                     <helpers:ButtonClosePopup />
@@ -62,7 +62,7 @@
             </Button>
             <Button 
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenExplorerUser}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorerUser}"
                 Style="{StaticResource ButtonRectangle}">
                 <DockPanel>
                     <Path Style="{StaticResource SmallIcon}" Fill="Black" Data="{StaticResource SmallUserFolder}" DockPanel.Dock="Left" Margin="1 0 4 0" />
@@ -81,7 +81,7 @@
         <WrapPanel>
             <Button 
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenManifest}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.OpenManifest}"
                 Style="{StaticResource ButtonSquare}">
                 <b:Interaction.Behaviors>
                     <helpers:ButtonClosePopup />
@@ -98,7 +98,7 @@
             </Button>
             <Button
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenConfigJson}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.OpenConfigJson}"
                 Style="{StaticResource ButtonSquare}">
                 <b:Interaction.Behaviors>
                     <helpers:ButtonClosePopup />
@@ -115,7 +115,7 @@
             </Button>
             <Button
                 CommandTarget="{Binding Path=PlacementTarget, RelativeSource={RelativeSource AncestorType=Popup}}"
-                Command="{x:Static commands:MsixHeroCommands.OpenStore}"
+                Command="{x:Static commands:MsixHeroRoutedUICommands.OpenStore}"
                 Style="{StaticResource ButtonSquare}">
                 <b:Interaction.Behaviors>
                     <helpers:ButtonClosePopup />

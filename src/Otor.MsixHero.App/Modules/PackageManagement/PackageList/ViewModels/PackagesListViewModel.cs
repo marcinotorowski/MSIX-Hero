@@ -106,7 +106,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         .CommandExecutor
                         .WithBusyManager(this.busyManager, OperationType.PackageLoading)
                         .WithErrorHandling(this.interactionService, true)
-                        .Invoke(this, new GetPackagesCommand(PackageFindMode.Auto));
+                        .Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(PackageFindMode.Auto));
                 }
 
                 this.firstRun = false;

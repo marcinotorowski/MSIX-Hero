@@ -14,12 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.App.Hero.State;
 
 namespace Otor.MsixHero.App.Hero.Commands
 {
-    public class SetCurrentModeCommand : UiCommand
+    public class SetCurrentModeCommand : IRequest
     {
         public SetCurrentModeCommand(ApplicationMode newMode)
         {

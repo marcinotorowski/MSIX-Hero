@@ -14,12 +14,12 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
-    public class CheckForUpdatesCommand : UiCommand<AppInstallerUpdateAvailabilityResult>
+    public class CheckForUpdatesCommand : IRequest<AppInstallerUpdateAvailabilityResult>
     {
         public CheckForUpdatesCommand()
         {

@@ -15,12 +15,12 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Appx.Volumes.Entities;
 
 namespace Otor.MsixHero.App.Hero.Commands.Volumes
 {
-    public class GetVolumesCommand : UiCommand<IList<AppxVolume>>
+    public class GetVolumesCommand : IRequest<IList<AppxVolume>>
     {
     }
 }

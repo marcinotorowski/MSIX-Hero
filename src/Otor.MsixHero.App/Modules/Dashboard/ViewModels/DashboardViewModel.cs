@@ -79,7 +79,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
 
         private void OnSetToolFilterCommand(UiExecutedPayload<SetToolFilterCommand> obj)
         {
-            this.SearchKey = obj.Command.SearchKey;
+            this.SearchKey = obj.Request.SearchKey;
         }
 
         public ICommand ShowAppInstallerDialog { get; }
@@ -189,7 +189,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
                 var fileFilter = new DialogFilterBuilder("*" + FileConstants.WingetExtension);
                 var settings = new FileDialogSettings
                 {
-                    Filter = fileFilter.BuildFilter(true, true),
+                    Filter = fileFilter.BuildFilter(),
                     DialogTitle = $"Open winget manifest (*{FileConstants.WingetExtension})"
                 };
 

@@ -15,12 +15,12 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Collections.Generic;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 
 namespace Otor.MsixHero.App.Hero.Commands.Logs
 {
-    public class GetLogsCommand : UiCommand<IList<Log>>
+    public class GetLogsCommand : IRequest<IList<Log>>
     {
         public GetLogsCommand() : this(0)
         {

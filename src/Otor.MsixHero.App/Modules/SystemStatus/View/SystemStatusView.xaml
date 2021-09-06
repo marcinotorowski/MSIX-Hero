@@ -14,7 +14,7 @@
              xmlns:repackaging="clr-namespace:Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging"
              xmlns:tooling="clr-namespace:Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Tooling"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
-             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero"
+             xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              mc:Ignorable="d" 
@@ -30,9 +30,9 @@
         <CommandBinding Command="Refresh" Executed="RefreshExecuted" />
     </UserControl.CommandBindings>
     <commands:RoutedCommandHandlers.Commands>
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
-        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroCommands.ServiceManager}" Command="{Binding CommandHandler.OpenServices}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.OpenAppsFeatures}" Command="{Binding CommandHandler.OpenAppsFeatures}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.OpenDevSettings}" Command="{Binding CommandHandler.OpenDevSettings}" />
+        <commands:RoutedCommandHandler RoutedCommand="{x:Static hero:MsixHeroRoutedUICommands.ServiceManager}" Command="{Binding CommandHandler.OpenServices}" />
     </commands:RoutedCommandHandlers.Commands>
     <DockPanel>
         <WrapPanel DockPanel.Dock="Top">

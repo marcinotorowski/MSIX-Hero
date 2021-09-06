@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Collections.Generic;
 using System.Threading;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Packages;
@@ -21,6 +22,7 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Packaging.Installation;
+using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
@@ -103,7 +105,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels
                 .WithBusyManager(this.busyManager, OperationType.PackageLoading)
                 .WithErrorHandling(this.interactionService, true);
 
-            await executor.Invoke(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(mode), CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

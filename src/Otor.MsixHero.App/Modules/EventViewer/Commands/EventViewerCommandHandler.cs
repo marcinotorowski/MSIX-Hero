@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -53,7 +54,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
                 .WithErrorHandling(this.interactionService, true)
                 .WithBusyManager(this.busyManager, OperationType.EventsLoading);
 
-            await executor.Invoke(this, new GetLogsCommand(), CancellationToken.None).ConfigureAwait(false);
+            await executor.Invoke<GetLogsCommand, IList<Log>>(this, new GetLogsCommand(), CancellationToken.None).ConfigureAwait(false);
         }
 
         private void CanRefresh(object sender, CanExecuteRoutedEventArgs e)

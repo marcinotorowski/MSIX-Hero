@@ -15,20 +15,17 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 
 namespace Otor.MsixHero.App.Hero.Events.Base
 {
-    public class UiFailedPayload<TCommand> : UiPayload where TCommand : UiCommand
+    public class UiFailedPayload<TCommand> : UiPayload<TCommand> where TCommand : IBaseRequest
     {
-        public UiFailedPayload(object sender, TCommand command, Exception innerException = null) : base(sender)
+        public UiFailedPayload(object sender, TCommand request, Exception innerException = null) : base(sender, request)
         {
             this.InnerException = innerException;
-            this.Command = command;
         }
-
-        public TCommand Command { get; }
-
+        
         public Exception InnerException { get; }
     }
 }

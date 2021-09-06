@@ -16,11 +16,11 @@
 
 using System.Windows.Input;
 
-namespace Otor.MsixHero.App.Hero
+namespace Otor.MsixHero.App.Hero.Commands
 {
-    public static class MsixHeroCommands
+    public static class MsixHeroRoutedUICommands
     {
-        static MsixHeroCommands()
+        static MsixHeroRoutedUICommands()
         {
             SetVolumeAsDefault = new RoutedUICommand() { Text = "Set volume as default..." };
             Deprovision = new RoutedUICommand { Text = "Deprovision for all users" };

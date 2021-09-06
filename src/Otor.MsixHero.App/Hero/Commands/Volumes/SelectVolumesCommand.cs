@@ -16,12 +16,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Otor.MsixHero.App.Hero.Commands.Base;
+using MediatR;
 using Otor.MsixHero.Appx.Volumes.Entities;
 
 namespace Otor.MsixHero.App.Hero.Commands.Volumes
 {
-    public class SelectVolumesCommand : UiCommand<IList<AppxVolume>>
+    public class SelectVolumesCommand : IRequest
     {
         public SelectVolumesCommand()
         {
