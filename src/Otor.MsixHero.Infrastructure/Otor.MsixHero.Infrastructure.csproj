@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="26.0.1" />
+    <PackageReference Include="DesktopBridge.Helpers" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="NUnit" Version="3.13.1" />
