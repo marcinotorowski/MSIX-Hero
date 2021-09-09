@@ -25,8 +25,8 @@
   <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
     <PackageReference Include="chausner.PriFormat.Forked" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Acs.Dgss.Client" Version="1.0.8" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.28.0" />
+    <PackageReference Include="Microsoft.Acs.Dgss.Client" Version="1.0.11" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.36.1" />
     <PackageReference Include="Registry" Version="1.2.1" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />
   </ItemGroup>
