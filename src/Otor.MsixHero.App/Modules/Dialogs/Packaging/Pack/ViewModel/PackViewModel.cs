@@ -122,7 +122,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 var fileListBuilder = new PackageFileListBuilder();
                 fileListBuilder.AddDirectory(this.InputPath.CurrentValue, true, null);
 
-                if (this.PrePackOptions != null && !string.IsNullOrEmpty(this.InputPath.CurrentValue))
+                if (this.PrePackOptions?.ManifestPresent == true && !string.IsNullOrEmpty(this.InputPath.CurrentValue))
                 {
                     progress.Report(new ProgressData(0, "Creating manifest file..."));
                     if (!this.PrePackOptions.ManifestPresent && !this.PrePackOptions.CanConvert)
@@ -135,7 +135,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                         CreateLogo = this.PrePackOptions.CreateLogo,
                         EntryPoints = this.PrePackOptions.EntryPoints.Where(e => e.IsChecked).Select(e => e.Value).ToArray(),
                         PackageDisplayName = Path.GetFileName(this.InputPath.CurrentValue),
-                        RegistryFile = this.PrePackOptions.SelectedRegistry.FilePath == null ? null : new FileInfo(this.PrePackOptions.SelectedRegistry.FilePath)
+                        RegistryFile = this.PrePackOptions.SelectedRegistry?.FilePath == null ? null : new FileInfo(this.PrePackOptions.SelectedRegistry.FilePath)
                     };
 
                     // ReSharper disable once AssignNullToNotNullAttribute
