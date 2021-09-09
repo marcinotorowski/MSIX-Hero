@@ -83,6 +83,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         
         public static string GetMsixMgrPath(string localName, string baseDirectory = null)
         {
+            // ReSharper disable once StringLiteralTypo
             var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "msixmgr");
             
             var path = Path.Combine(baseDir, IntPtr.Size == 4 ? "x86" : "x64", localName);
@@ -109,6 +110,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (isRunningFromMsix)
             {
+                Logger.Info("Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location...");
                 msixMgrDirectory = Path.Combine(Path.GetTempPath(), "msixmgr-" + Guid.NewGuid().ToString("N").Substring(0, 10));
                 
                 var originalMsixMgrPath = GetMsixMgrPath("msixmgr.exe", BundleHelper.MsixMgrPath);
@@ -129,6 +131,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         targetFile.Directory.Create();
                     }
 
+                    Logger.Debug("Copying {0} to {1}...", sourceFile.FullName, targetFile.FullName);
                     sourceFile.CopyTo(targetFile.FullName);
                 }
 
@@ -151,12 +154,15 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (ProcessWrapperException e)
             {
+                Logger.Warn("Process returned exit code " + e.ExitCode);
                 if (e.ExitCode == -1951596541)
                 {
                     throw new InvalidOperationException("Could not expand MSIX Package to the VHD file. The maximum size of the virtual disk is smaller than the file size of expanded MSIX package. Try using a bigger disk size.", e);
                 }
 
+#pragma warning disable 652
                 if (e.ExitCode == 0x80070522)
+#pragma warning restore 652
                 {
                     throw new UnauthorizedAccessException("This operation requires admin permissions.", e);
                 }
@@ -171,6 +177,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             {
                 if (cleanupMsixMgrDirectory)
                 {
+                    Logger.Debug("Removing temporary files from {0}...", msixMgrDirectory);
                     ExceptionGuard.Guard(() => Directory.Delete(msixMgrDirectory, true));
                 }
             }
