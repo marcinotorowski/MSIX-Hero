@@ -15,15 +15,18 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
     public class MsixMgrWrapper : ExeWrapper
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixMgrWrapper));
@@ -81,6 +84,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         public static string GetMsixMgrPath(string localName, string baseDirectory = null)
         {
             var baseDir = baseDirectory ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "redistr", "msixmgr");
+            
             var path = Path.Combine(baseDir, IntPtr.Size == 4 ? "x86" : "x64", localName);
             if (!File.Exists(path))
             {
@@ -96,13 +100,54 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         private async Task RunMsixMgr(string arguments, CancellationToken cancellationToken, Action<string> callBack = null)
         {
-            var msixmgr = GetMsixMgrPath("msixmgr.exe", BundleHelper.MsixMgrPath);
-            Logger.Info("Executing {0} {1}", msixmgr, arguments);
+            var uwpHelpers = new DesktopBridge.Helpers();
+            var isRunningFromMsix = uwpHelpers.IsRunningAsUwp();
+
+            string msixMgrPath;
+            string msixMgrDirectory;
+            bool cleanupMsixMgrDirectory;
+
+            if (isRunningFromMsix)
+            {
+                msixMgrDirectory = Path.Combine(Path.GetTempPath(), "msixmgr-" + Guid.NewGuid().ToString("N").Substring(0, 10));
+                
+                var originalMsixMgrPath = GetMsixMgrPath("msixmgr.exe", BundleHelper.MsixMgrPath);
+                var originalMsixMgrDirectory = Path.GetDirectoryName(originalMsixMgrPath);
+                if (originalMsixMgrDirectory == null)
+                {
+                    throw new InvalidOperationException("Original directory not available.");
+                }
+
+                foreach (var item in Directory.EnumerateFiles(originalMsixMgrDirectory, "*.*", SearchOption.AllDirectories))
+                {
+                    var relativePath = Path.GetRelativePath(originalMsixMgrDirectory, item);
+                    var sourceFile = new FileInfo(Path.Combine(originalMsixMgrDirectory, relativePath));
+                    var targetFile = new FileInfo(Path.Combine(msixMgrDirectory, relativePath));
+
+                    if (targetFile.Directory?.Exists == false)
+                    {
+                        targetFile.Directory.Create();
+                    }
+
+                    sourceFile.CopyTo(targetFile.FullName);
+                }
+
+                msixMgrPath = Path.Combine(msixMgrDirectory, "msixmgr.exe");
+                cleanupMsixMgrDirectory = true;
+            }
+            else
+            {
+                msixMgrPath = GetMsixMgrPath("msixmgr.exe", BundleHelper.MsixMgrPath);
+                msixMgrDirectory = Path.GetDirectoryName(msixMgrPath);
+                cleanupMsixMgrDirectory = false;
+            }
+            
+            Logger.Info("Executing {0} {1}", msixMgrPath, arguments);
 
             try
             {
                 var tempDir = Path.GetTempPath();
-                await RunAsync(msixmgr, arguments, tempDir, cancellationToken, callBack, 0).ConfigureAwait(false);
+                await RunAsync(msixMgrPath, arguments, tempDir, cancellationToken, callBack, 0).ConfigureAwait(false);
             }
             catch (ProcessWrapperException e)
             {
@@ -116,7 +161,18 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     throw new UnauthorizedAccessException("This operation requires admin permissions.", e);
                 }
 
-                throw new InvalidOperationException(e.StandardError.LastOrDefault(e => !string.IsNullOrWhiteSpace(e) && !e.Contains("Successfully started the Shell Hardware Detection Service", StringComparison.OrdinalIgnoreCase)), e);
+                throw new InvalidOperationException(
+                    e.StandardError.LastOrDefault(stdError =>
+                        !string.IsNullOrWhiteSpace(stdError) &&
+                        !stdError.Contains("Successfully started the Shell Hardware Detection Service",
+                            StringComparison.OrdinalIgnoreCase)), e);
+            }
+            finally
+            {
+                if (cleanupMsixMgrDirectory)
+                {
+                    ExceptionGuard.Guard(() => Directory.Delete(msixMgrDirectory, true));
+                }
             }
         }
     }
