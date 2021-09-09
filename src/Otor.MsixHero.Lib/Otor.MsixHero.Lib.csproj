@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
-    <PackageReference Include="ControlzEx" Version="5.0.0" />
+    <PackageReference Include="ControlzEx" Version="5.0.1" />
     <PackageReference Include="DiscUtils.Ntfs" Version="0.16.4" />
     <PackageReference Include="DiscUtils.Vhd" Version="0.16.4" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.0-preview.2" />
