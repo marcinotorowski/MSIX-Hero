@@ -122,33 +122,36 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 var fileListBuilder = new PackageFileListBuilder();
                 fileListBuilder.AddDirectory(this.InputPath.CurrentValue, true, null);
 
-                if (this.PrePackOptions?.ManifestPresent == true && !string.IsNullOrEmpty(this.InputPath.CurrentValue))
+                if (this.PrePackOptions != null && !this.PrePackOptions.ManifestPresent)
                 {
-                    progress.Report(new ProgressData(0, "Creating manifest file..."));
-                    if (!this.PrePackOptions.ManifestPresent && !this.PrePackOptions.CanConvert)
+                    if (!this.PrePackOptions.CanConvert)
                     {
                         throw new InvalidOperationException("The selected folder does not contain a manifest file and any executable files. It cannot be packed to MSIX format.");
                     }
 
-                    var options = new AppxManifestCreatorOptions
+                    if (!string.IsNullOrEmpty(this.InputPath.CurrentValue))
                     {
-                        CreateLogo = this.PrePackOptions.CreateLogo,
-                        EntryPoints = this.PrePackOptions.EntryPoints.Where(e => e.IsChecked).Select(e => e.Value).ToArray(),
-                        PackageDisplayName = Path.GetFileName(this.InputPath.CurrentValue),
-                        RegistryFile = this.PrePackOptions.SelectedRegistry?.FilePath == null ? null : new FileInfo(this.PrePackOptions.SelectedRegistry.FilePath)
-                    };
-
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    foreach (var result in await this.manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
-                    {
-                        temporaryFiles.Add(result.SourcePath);
-
-                        if (result.PackageRelativePath == null)
+                        progress.Report(new ProgressData(0, "Creating manifest file..."));
+                        var options = new AppxManifestCreatorOptions
                         {
-                            continue;
-                        }
+                            CreateLogo = this.PrePackOptions.CreateLogo,
+                            EntryPoints = this.PrePackOptions.EntryPoints.Where(e => e.IsChecked).Select(e => e.Value).ToArray(),
+                            PackageDisplayName = Path.GetFileName(this.InputPath.CurrentValue),
+                            RegistryFile = this.PrePackOptions.SelectedRegistry?.FilePath == null ? null : new FileInfo(this.PrePackOptions.SelectedRegistry.FilePath)
+                        };
 
-                        fileListBuilder.AddFile(result.SourcePath, result.PackageRelativePath);
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        foreach (var result in await this.manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
+                        {
+                            temporaryFiles.Add(result.SourcePath);
+
+                            if (result.PackageRelativePath == null)
+                            {
+                                continue;
+                            }
+
+                            fileListBuilder.AddFile(result.SourcePath, result.PackageRelativePath);
+                        }
                     }
                 }
                 
