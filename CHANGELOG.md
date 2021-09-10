@@ -1,3 +1,13 @@
+# 2.2.29
+See http://msixhero.net/redirect/release-notes/2.2.29 for more details
+
+* It is now possible to pack a folder without a manifest
+* Windows 11 is now correctly recognized in the package properties dialog (0cd4f1bf)
+* Ability to activate verbose logging + jump to logs folder (Settings screen)
+* Fixed App Attach generation with message 'Successfully started the Shell Hardware Detection Service' (#118)
+* Fixed ``NullReferenceException`` when searching the list and when certain packages are present on the system (#119)
+* General stability improvements
+
 # 2.2.0
 See http://msixhero.net/redirect/release-notes/2.2.0 for more details
 
