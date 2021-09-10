@@ -22,7 +22,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 namespace Otor.MsixHero.Tests.Appx.Diagnostics
 {
     [TestFixture]
-    public class Windows10NameParser
+    public class WindowsNameTests
     {
         [Test]
         public void TestMsixCore()
@@ -42,26 +42,26 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             var windows102004 = new Tuple<string, string>("Windows.Desktop", "10.0.19041");
             var windows1020H2 = new Tuple<string, string>("Windows.Desktop", "10.0.19042");
             var windows1021H1 = new Tuple<string, string>("Windows.Desktop", "10.0.19043");
+            var windows1121H2 = new Tuple<string, string>("Windows.Desktop", "10.0.22000");
             var windowsOther = new Tuple<string, string>("Windows.Desktop", "10.0.99999");
 
-            
-            var parsedWindows7 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows7.Item1, windows7.Item2);
-            var parsedWindowsServer2012 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windowsServer2012.Item1, windowsServer2012.Item2);
-            var parsedWindows81 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows81.Item1, windows81.Item2);
-            var parsedWindows101507 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101507.Item1, windows101507.Item2);
-            var parsedWindows101511 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101511.Item1, windows101511.Item2);
-            var parsedWindows101607 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101607.Item1, windows101607.Item2);
-            var parsedWindows101703 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101703.Item1, windows101703.Item2);
-            var parsedWindows101709 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101709.Item1, windows101709.Item2);
-            var parsedWindows101803 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101803.Item1, windows101803.Item2);
-            var parsedWindows101809 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101809.Item1, windows101809.Item2);
-            var parsedWindows101903 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101903.Item1, windows101903.Item2);
-            var parsedWindows101909 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows101909.Item1, windows101909.Item2);
-            var parsedWindows102004 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows102004.Item1, windows102004.Item2);
-            var parsedWindows1020H2 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows1020H2.Item1, windows1020H2.Item2);
-            var parsedWindows1021H1 = Windows10Parser.GetOperatingSystemFromNameAndVersion(windows1021H1.Item1, windows1021H1.Item2);
-            var parsedWindowsOther = Windows10Parser.GetOperatingSystemFromNameAndVersion(windowsOther.Item1, windowsOther.Item2);
-
+            var parsedWindows7 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows7.Item1, windows7.Item2);
+            var parsedWindowsServer2012 = WindowsNames.GetOperatingSystemFromNameAndVersion(windowsServer2012.Item1, windowsServer2012.Item2);
+            var parsedWindows81 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows81.Item1, windows81.Item2);
+            var parsedWindows101507 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101507.Item1, windows101507.Item2);
+            var parsedWindows101511 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101511.Item1, windows101511.Item2);
+            var parsedWindows101607 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101607.Item1, windows101607.Item2);
+            var parsedWindows101703 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101703.Item1, windows101703.Item2);
+            var parsedWindows101709 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101709.Item1, windows101709.Item2);
+            var parsedWindows101803 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101803.Item1, windows101803.Item2);
+            var parsedWindows101809 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101809.Item1, windows101809.Item2);
+            var parsedWindows101903 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101903.Item1, windows101903.Item2);
+            var parsedWindows101909 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows101909.Item1, windows101909.Item2);
+            var parsedWindows102004 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows102004.Item1, windows102004.Item2);
+            var parsedWindows1020H2 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1020H2.Item1, windows1020H2.Item2);
+            var parsedWindows1021H1 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1021H1.Item1, windows1021H1.Item2);
+            var parsedWindows1121H2 = WindowsNames.GetOperatingSystemFromNameAndVersion(windows1121H2.Item1, windows1121H2.Item2);
+            var parsedWindowsOther = WindowsNames.GetOperatingSystemFromNameAndVersion(windowsOther.Item1, windowsOther.Item2);
             
             // Test if technical versions were recognized
             Assert.AreEqual("6.1.7601", parsedWindows7.TechnicalVersion);
@@ -79,6 +79,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("10.0.19041", parsedWindows102004.TechnicalVersion);
             Assert.AreEqual("10.0.19042", parsedWindows1020H2.TechnicalVersion);
             Assert.AreEqual("10.0.19043", parsedWindows1021H1.TechnicalVersion);
+            Assert.AreEqual("10.0.22000", parsedWindows1121H2.TechnicalVersion);
             Assert.AreEqual("10.0.99999", parsedWindowsOther.TechnicalVersion);
 
             // Test if display versions were recognized
@@ -97,6 +98,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("Windows 10 2004", parsedWindows102004.Name);
             Assert.AreEqual("Windows 10 20H2", parsedWindows1020H2.Name);
             Assert.AreEqual("Windows 10 21H1", parsedWindows1021H1.Name);
+            Assert.AreEqual("Windows 11 21H2", parsedWindows1121H2.Name);
             Assert.AreEqual("Windows 10.0.99999", parsedWindowsOther.Name);
 
             // Test if type of support for MSIX was recognized
@@ -116,6 +118,7 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.True(parsedWindows102004.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
             Assert.True(parsedWindows1020H2.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
             Assert.True(parsedWindows1021H1.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
+            Assert.True(parsedWindows1121H2.IsNativeMsixPlatform == AppxTargetOperatingSystemType.MsixNativeSupported);
 
             // Test if marketing names were recognized
             Assert.AreEqual("November Update", parsedWindows101511.MarketingCodename);
@@ -129,7 +132,6 @@ namespace Otor.MsixHero.Tests.Appx.Diagnostics
             Assert.AreEqual("May 2020 Update", parsedWindows102004.MarketingCodename);
             Assert.AreEqual("October 2020 Update", parsedWindows1020H2.MarketingCodename);
             Assert.AreEqual("May 2021 Update", parsedWindows1021H1.MarketingCodename);
-
         }
     }
 }

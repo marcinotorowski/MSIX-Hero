@@ -20,7 +20,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.Appx.Diagnostic.System
 {
-    public class Windows10Parser
+    public class WindowsNames
     {
         public static AppxTargetOperatingSystem GetOperatingSystemFromNameAndVersion(string name, string version)
         {
@@ -65,8 +65,10 @@ namespace Otor.MsixHero.Appx.Diagnostic.System
 
         private static AppxTargetOperatingSystem GetWindowsDesktop(string version)
         {
-            var result = new AppxTargetOperatingSystem();
-            result.TechnicalVersion = version;
+            var result = new AppxTargetOperatingSystem
+            {
+                TechnicalVersion = version
+            };
 
             if (version != null && Version.TryParse(version, out var parsedVersion))
             {
@@ -143,6 +145,10 @@ namespace Otor.MsixHero.Appx.Diagnostic.System
                     case "10.0.19043":
                         result.MarketingCodename = "May 2021 Update";
                         result.Name = "Windows 10 21H1";
+                        result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
+                        break;
+                    case "10.0.22000":
+                        result.Name = "Windows 11 21H2";
                         result.IsNativeMsixPlatform = AppxTargetOperatingSystemType.MsixNativeSupported;
                         break;
                     default:

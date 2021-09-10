@@ -453,8 +453,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                                     appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
                                     {
-                                        Minimum = Windows10Parser.GetOperatingSystemFromNameAndVersion(name, minVersion),
-                                        Tested = Windows10Parser.GetOperatingSystemFromNameAndVersion(name, maxVersion),
+                                        Minimum = WindowsNames.GetOperatingSystemFromNameAndVersion(name, minVersion),
+                                        Tested = WindowsNames.GetOperatingSystemFromNameAndVersion(name, maxVersion),
                                     });
 
                                     break;
@@ -492,8 +492,8 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     
                     appxPackage.OperatingSystemDependencies.Add(new AppxOperatingSystemDependency
                     {
-                        Minimum = min == null ? null : Windows10Parser.GetOperatingSystemFromNameAndVersion("Windows.Desktop", min),
-                        Tested = max == null ? null : Windows10Parser.GetOperatingSystemFromNameAndVersion("Windows.Desktop", max),
+                        Minimum = min == null ? null : WindowsNames.GetOperatingSystemFromNameAndVersion("Windows.Desktop", min),
+                        Tested = max == null ? null : WindowsNames.GetOperatingSystemFromNameAndVersion("Windows.Desktop", max),
                     });
                 }
 

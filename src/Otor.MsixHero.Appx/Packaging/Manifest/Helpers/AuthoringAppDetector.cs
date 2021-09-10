@@ -66,7 +66,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
             if (buildValues.TryGetValue("OperatingSystem", out var win10))
             {
                 var firstUnit = win10.Split(' ')[0];
-                buildInfo.OperatingSystem = Windows10Parser.GetOperatingSystemFromNameAndVersion(firstUnit).ToString();
+                buildInfo.OperatingSystem = WindowsNames.GetOperatingSystemFromNameAndVersion(firstUnit).ToString();
                 buildInfo.Components = new Dictionary<string, string>(buildValues);
             }
 
@@ -97,7 +97,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
 
             if (buildValues.TryGetValue("OperatingSystem", out var os))
             {
-                var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
+                var win10Version = WindowsNames.GetOperatingSystemFromNameAndVersion(os);
                 buildInfo.OperatingSystem = win10Version.ToString();
             }
 
@@ -126,7 +126,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
 
             if (buildValues.TryGetValue("OperatingSystem", out var os))
             {
-                var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
+                var win10Version = WindowsNames.GetOperatingSystemFromNameAndVersion(os);
                 buildInfo.OperatingSystem = win10Version.ToString();
             }
 
@@ -214,7 +214,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Helpers
 
                 if (buildValues.TryGetValue("OperatingSystem", out var os))
                 {
-                    var win10Version = Windows10Parser.GetOperatingSystemFromNameAndVersion(os);
+                    var win10Version = WindowsNames.GetOperatingSystemFromNameAndVersion(os);
                     buildInfo.OperatingSystem = win10Version.ToString();
                 }
                 
