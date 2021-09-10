@@ -72,6 +72,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             stringBuilder.Append("[Files]");
             stringBuilder.AppendLine();
 
+            var targetRelativeFilePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
             var filesEnumeratedFromSourceDirectories = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (var directory in this.sourceDirectories)
             {
@@ -92,7 +94,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     {
                         continue;
                     }
-
+                    
                     filesEnumeratedFromSourceDirectories.Add(targetRelativePath, foundFile);
                 }
             }
@@ -111,6 +113,13 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     case "appxsignature.p7x":
                         break;
                     default:
+
+                        if (!targetRelativeFilePaths.Add(target))
+                        {
+                            // File already added
+                            continue;
+                        }
+
                         stringBuilder.AppendLine($"\"{source}\"\t\"{target}\"");
                         break;
                 }

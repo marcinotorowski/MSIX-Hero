@@ -20,8 +20,8 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
     {
         public CreatedItem(string sourcePath, string packageRelativePath, ItemType type)
         {
-            this.SourcePath = sourcePath;
-            this.PackageRelativePath = packageRelativePath;
+            this.SourcePath = sourcePath?.Replace("/", "\\");
+            this.PackageRelativePath = packageRelativePath?.Replace("/", "\\");
             this.Type = type;
         }
 

@@ -23,29 +23,28 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 {
     public class AppxManifestCreator : IAppxManifestCreator
     {
-        public async Task<IList<CreatedItem>> CreateManifestForDirectory(
+        public async IAsyncEnumerable<CreatedItem> CreateManifestForDirectory(
             DirectoryInfo sourceDirectory,
             AppxManifestCreatorOptions options = default,
-            CancellationToken cancellationToken = default,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default,
             IProgress<Progress> progress = null)
         {
             options ??= AppxManifestCreatorOptions.Default;
-
-            var files = new List<CreatedItem>();
-
+            
             // Add logo to assets if there is nothing
             if (options.CreateLogo)
             {
                 CreatedItem logo = default;
                 foreach (var entryPoint in options.EntryPoints ?? Enumerable.Empty<string>())
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     try
                     {
                         var entryPointPath = new FileInfo(Path.Combine(sourceDirectory.FullName, entryPoint));
                         if (entryPointPath.Exists)
                         {
                             logo = await this.CreateLogo(entryPointPath).ConfigureAwait(false);
-
                         }
                     }
                     // ReSharper disable once EmptyGeneralCatchClause
@@ -64,7 +63,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
                     logo = await this.CreateDefaultLogo(cancellationToken).ConfigureAwait(false);
                 }
 
-                files.Add(logo);
+                yield return logo;
             }
             
             if (options.RegistryFile?.Exists == true)
@@ -75,7 +74,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 
                     if (!registryItem.Equals(default(CreatedItem)))
                     {
-                        files.Add(registryItem);
+                        yield return registryItem;
                     }
                 }
             }
@@ -96,6 +95,8 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             {
                 foreach (var entryPoint in options.EntryPoints)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     ExceptionGuard.Guard(() =>
                     {
                         var fvi = FileVersionInfo.GetVersionInfo(Path.Combine(sourceDirectory.FullName, entryPoint));
@@ -168,14 +169,12 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             var manifestFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(FileConstants.AppxManifestFile) + "-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".xml");
             await File.WriteAllTextAsync(manifestFilePath, manifestContent, Encoding.UTF8, cancellationToken);
 
-            files.Add(CreatedItem.CreateManifest(manifestFilePath));
-
-            return files;
+            yield return CreatedItem.CreateManifest(manifestFilePath);
         }
 
         private static string Sanitize(string input, string defaultIfNull = null)
         {
-            var result = Regex.Replace(input, @"[^a-zA-Z_\-0-9\.]+", string.Empty).Trim();
+            var result = Regex.Replace(input, @"[^a-zA-Z0-9\.]+", string.Empty).Trim();
             if (string.IsNullOrEmpty(result))
             {
                 return defaultIfNull;
@@ -311,11 +310,11 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
                     var fullName = file.FullName;
                     if (fullName.StartsWith(directoryInfo.FullName, StringComparison.OrdinalIgnoreCase))
                     {
-                        allFiles.Add(fullName.Substring(directoryInfo.FullName.Length + 1));
+                        allFiles.Add(Path.GetRelativePath(directoryInfo.FullName, fullName));
                     }
                 }
 
-                return allFiles;
+                return (IList<string>)allFiles.OrderBy(fl => fl.Split('\\').Length).ThenBy(n => n, StringComparer.OrdinalIgnoreCase).ToList();
             }, cancellationToken);
         }
         

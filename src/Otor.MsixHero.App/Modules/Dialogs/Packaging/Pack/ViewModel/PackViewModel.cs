@@ -141,7 +141,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                         };
 
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        foreach (var result in await this.manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
+                        await foreach(var result in this.manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
                         {
                             temporaryFiles.Add(result.SourcePath);
 
@@ -149,7 +149,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                             {
                                 continue;
                             }
-
+                            
                             fileListBuilder.AddFile(result.SourcePath, result.PackageRelativePath);
                         }
                     }

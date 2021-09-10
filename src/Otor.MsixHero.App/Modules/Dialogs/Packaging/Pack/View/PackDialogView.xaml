@@ -59,15 +59,20 @@
                                 <TextBlock TextWrapping="Wrap" Text="Your file does not contain manifest file. MSIX Hero will create one for you if you proceed." />
 
                                 <TextBlock Text="Select for which executables entry points (applications) should be created." Margin="0 16 0 0" />
-                                <ItemsControl
-                                    Margin="0 6 0 16"
-                                    ItemsSource="{Binding PrePackOptions.EntryPoints}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type viewModel:ISelectableItem}">
-                                            <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding DisplayContent}" Margin="0 3" />
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <ScrollViewer
+                                    MaxHeight="100"
+                                    VerticalScrollBarVisibility="Auto"
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    Margin="0 6 0 16">
+                                    <ItemsControl 
+                                        ItemsSource="{Binding PrePackOptions.EntryPoints}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type viewModel:ISelectableItem}">
+                                                <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding DisplayContent}" Margin="0 3" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
 
                                 <DockPanel 
                                     Visibility="{Binding PrePackOptions.CanConvertRegistry, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -76,6 +81,7 @@
                                 </DockPanel>
 
                                 <ComboBox 
+                                    Visibility="{Binding PrePackOptions.CanConvertRegistry, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     DisplayMemberPath="DisplayContent"
                                     Margin="0 6 0 16"
                                     SelectedItem="{Binding PrePackOptions.SelectedRegistry}"
@@ -83,8 +89,8 @@
 
                                 <DockPanel 
                                     Visibility="{Binding PrePackOptions.CanConvertRegistry, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
-                                    <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" VerticalAlignment="Center" Margin="0 0 0 6" />
-                                    <TextBlock Text="Selected folder does not contain any .reg file, so no registry conversion will take place." TextWrapping="Wrap" VerticalAlignment="Center" Margin="0" />
+                                    <Path Data="{StaticResource SmallHelp}" Style="{StaticResource SmallIcon}" VerticalAlignment="Center" Margin="0 0 6 0" />
+                                    <TextBlock Text="The selected folder does not contain any .reg file, so no registry conversion will take place." TextWrapping="Wrap" VerticalAlignment="Center" Margin="0" />
                                 </DockPanel>
                             </StackPanel>
                         </Border>

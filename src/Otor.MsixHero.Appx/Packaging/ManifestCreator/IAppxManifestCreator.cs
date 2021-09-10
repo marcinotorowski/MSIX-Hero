@@ -9,7 +9,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 {
     public interface IAppxManifestCreator
     {
-        Task<IList<CreatedItem>> CreateManifestForDirectory(
+        IAsyncEnumerable<CreatedItem> CreateManifestForDirectory(
             DirectoryInfo sourceDirectory, 
             AppxManifestCreatorOptions options = default, 
             CancellationToken cancellationToken = default, 
