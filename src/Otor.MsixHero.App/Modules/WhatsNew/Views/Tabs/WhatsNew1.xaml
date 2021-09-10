@@ -2,272 +2,58 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="850" d:DesignWidth="660">
 
     <DockPanel>
-        <ScrollViewer 
-            DockPanel.Dock="Top"
-            HorizontalContentAlignment="Left"
-            VerticalScrollBarVisibility="Auto" 
-            HorizontalScrollBarVisibility="Disabled" 
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Top">
-
-            <WrapPanel Margin="-10">
-
-                <StackPanel 
-                    Margin="10"
-                    Width="300"
-                    HorizontalAlignment="Left">
-                    <Label 
-                        Style="{StaticResource FormLabelThin}" 
-                        Content="Preview files and Registry" />
-                    
-                    <Image
-                        Margin="0 8"
-                        Width="300" 
-                        UseLayoutRounding="True" 
-                        SnapsToDevicePixels="True" 
-                        Source="whatsnew-files.png" 
-                        HorizontalAlignment="Left" />
-                    <TextBlock 
-                        TextWrapping="Wrap"
-                        Style="{StaticResource DataValue}"
-                        Text="Extended package properties can now show/view file and Registry resources. This works for both installed apps and opened MSIX packages."
-                    />
-                    <TextBlock>
-                        <Hyperlink Click="GoToPackages">
-                            <Run Text="Go to the package list" />
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-                <StackPanel 
-                    Margin="10"
-                    Width="300">
-                    <Label 
-                        Style="{StaticResource FormLabelThin}" 
-                        Content="Winget v1 is now supported" />
-
-                    <Image
-                        Margin="0 8"
-                        Width="300" 
-                        UseLayoutRounding="True" 
-                        SnapsToDevicePixels="True" 
-                        Source="whatsnew-winget.png" 
-                        HorizontalAlignment="Left" />
-                    <TextBlock 
-                        TextWrapping="Wrap"
-                        Style="{StaticResource DataValue}"
-                        Text="Winget editor has been adjusted to support the current v1 schema definition. Several new properties have been added."
-                    />
-                    <TextBlock>
-                        <Hyperlink Click="CreateWingetManifest">
-                            <Run Text="Create winget manfiest" />
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-
-                <StackPanel
-                    Margin="10"
-                    Width="300">
-                    <Label 
-                        Style="{StaticResource FormLabelThin}" 
-                        Content="App Attach Enhancements" />
-                    
-                    <Image
-                        Width="300" 
-                        UseLayoutRounding="True" 
-                        SnapsToDevicePixels="True" 
-                        Source="whatsnew-appattach.png" 
-                        Margin="0 8" 
-                        HorizontalAlignment="Left" />
-                    <TextBlock 
-                        TextWrapping="Wrap"
-                        Style="{StaticResource DataValue}"
-                        Text="MSIX app attach editor now supports specifying multiple sources and can output VHD, VHDX or CIM files (the latter is experimental)."
-                    />
-                    <TextBlock>
-                        <Hyperlink Click="ConvertToAppAttach">
-                            <Run Text="Convert MSIX to app attach" />
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-
-                <StackPanel
-                    Margin="10"
-                    Width="300">
-                    <Label 
-                        Style="{StaticResource FormLabelThin}" 
-                        Content="Plus..." />
-
-                    <DockPanel
-                        Margin="0 8 0 0">
-                        <TextBlock 
-                            Margin="0 0 4 0"
-                            Text="&#x2022;" 
-                            VerticalAlignment="Center"
-                            Style="{StaticResource DataValue}" />
-                        <TextBlock 
-                            Margin="0"
-                            VerticalAlignment="Center"
-                            TextWrapping="Wrap"
-                            Style="{StaticResource DataValue}">
-                            <Run Text="Package properties have a new structure and visuals." />
-                        </TextBlock>
-                    </DockPanel>
-
-                    <DockPanel
-                        Margin="0 8 0 0">
-                        <TextBlock 
-                            Margin="0 0 4 0"
-                            Text="&#x2022;" 
-                            VerticalAlignment="Center"
-                            Style="{StaticResource DataValue}" />
-                        <TextBlock 
-                            Margin="0"
-                            VerticalAlignment="Center"
-                            TextWrapping="Wrap"
-                            Style="{StaticResource DataValue}">
-                            <Run Text="Windows 10 21H1 recognition" />
-                        </TextBlock>
-                    </DockPanel>
-
-                    <DockPanel
-                        Margin="0 8 0 0">
-                        <TextBlock 
-                            Margin="0 0 4 0"
-                            Text="&#x2022;" 
-                            VerticalAlignment="Center"
-                            Style="{StaticResource DataValue}" />
-                        <TextBlock 
-                            Margin="0"
-                            VerticalAlignment="Center"
-                            TextWrapping="Wrap"
-                            Style="{StaticResource DataValue}">
-                            <Run Text="Resolved issues and other improvements" />
-                        </TextBlock>
-                    </DockPanel>
-                </StackPanel>
-            </WrapPanel>
-
-            <!--<Grid VerticalAlignment="Top" HorizontalAlignment="Stretch">
-
-
-                <Rectangle 
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Left"
-                    Grid.Column="0"
-                    Margin="2,31,0,0"
-                    Width="26"
-                    Height="26"
-                    StrokeThickness="3" 
-                    Stroke="{StaticResource MsixHero.Brushes.Accent}" />
-
-                <Rectangle 
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Left"
-                    Grid.Column="0"
-                    Margin="52 0 0 18"
-                    Width="60"
-                    Height="26"
-                    StrokeThickness="3" 
-                    Stroke="{StaticResource MsixHero.Brushes.Accent}" />
-
-                <Rectangle 
-                    VerticalAlignment="Bottom"
-                    HorizontalAlignment="Left"
-                    Grid.Column="0"
-                    Margin="0 0 0 62"
-                    Width="400"
-                    Height="66"
-                    StrokeThickness="3" 
-                    Stroke="{StaticResource MsixHero.Brushes.Accent}" />
-
-                <Line 
-                    SnapsToDevicePixels="True"
-                    UseLayoutRounding="True"
-                    Margin="28,43,0,0"
-                    StrokeThickness="6" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="240" Y1="0" Y2="0" 
-                    Height="3"
-                    VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Column="0" Width="235" />
-
-                <Line 
-                    Margin="110 0 0 30"
-                    StrokeThickness="3" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="300" 
-                    VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="0" />
-
-                <Line 
-                    Margin="400 0 0 95"
-                    StrokeThickness="3" Stroke="{StaticResource MsixHero.Brushes.Accent}" X1="0" X2="10" 
-                    VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Column="0" />
-
-                <Path Width="32" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left"
-                      Fill="{StaticResource MsixHero.Brushes.Accent}"
-                      Data="M 5 5 L 5 11 L 11 11 L 11 5 Z M 13 5 L 13 11 L 19 11 L 19 5 Z M 21 5 L 21 11 L 27 11 L 27 5 Z M 7 7 L 9 7 L 9 9 L 7 9 Z M 15 7 L 17 7 L 17 9 L 15 9 Z M 23 7 L 25 7 L 25 9 L 23 9 Z M 5 13 L 5 19 L 11 19 L 11 13 Z M 13 13 L 13 19 L 19 19 L 19 13 Z M 21 13 L 21 19 L 27 19 L 27 13 Z M 7 15 L 9 15 L 9 17 L 7 17 Z M 15 15 L 17 15 L 17 17 L 15 17 Z M 23 15 L 25 15 L 25 17 L 23 17 Z M 5 21 L 5 27 L 11 27 L 11 21 Z M 13 21 L 13 27 L 19 27 L 19 21 Z M 21 21 L 21 27 L 27 27 L 27 21 Z M 7 23 L 9 23 L 9 25 L 7 25 Z M 15 23 L 17 23 L 17 25 L 15 25 Z M 23 23 L 25 23 L 25 25 L 23 25 Z"
-                      Margin="630 0 0 0"></Path>
-
-                <TextBlock 
-                    FontSize="12"
-                    VerticalAlignment="Top"
-                    FontWeight="SemiBold"
-                    Width="220"
-                    Margin="420 0 0 0"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left" 
-                    Text="Access the new Update Impact dialog from the Dashboard menu."/>
-
-                <TextBlock 
-                    FontSize="12"
-                    Width="220"
-                    VerticalAlignment="Top"
-                    Margin="420 59 0 0"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left" 
-                    Text="List of duplicated files and their impact + potential savings on update"/>
-
-                <TextBlock 
-                    FontSize="12"
-                    VerticalAlignment="Top"
-                    Width="220"
-                    Margin="420 120 0 0"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left" 
-                    Text="Ability to compare packages / update impact with UI or with CLI"/>
-
-                <TextBlock 
-                    FontSize="12"
-                    VerticalAlignment="Top"
-                    Margin="420 170 0 0"
-                    Width="220"
-                    TextWrapping="Wrap" 
-                    HorizontalAlignment="Left" 
-                    TextAlignment="Left" 
-                    Text="Performance and user interface improvements"/>
-
-                <TextBlock 
-                FontSize="12"
-                VerticalAlignment="Bottom"
-                Width="220"
-                Margin="420 10 0 85"
-                TextWrapping="Wrap" 
-                HorizontalAlignment="Left" 
-                TextAlignment="Left" 
-                Text="Block overview (removed or added content and its impact on the update)"/>
-
-                <TextBlock 
-                FontSize="12"
-                VerticalAlignment="Bottom"
-                Margin="420 10 0 25"
-                TextWrapping="Wrap" 
-                HorizontalAlignment="Left" 
-                TextAlignment="Left"
-                Text="Export the results to XML format"   />
-            </Grid>-->
-        </ScrollViewer>
+        <FlowDocumentScrollViewer
+            Padding="0"
+            Margin="0"
+            DockPanel.Dock="Top">
+            <FlowDocument 
+                PagePadding="0"
+                FontFamily="Segoe UI"
+                FontSize="12">
+                <List>
+                    <ListItem Padding="3">
+                        <Paragraph>
+                            It is now possible to pack a folder without a manifest
+                        </Paragraph>
+                        <Paragraph Padding="0 6 0 0">
+                            <Image Stretch="UniformToFill" StretchDirection="DownOnly" Source="whatsnew-pack.png" />
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem Padding="3">
+                        <Paragraph>
+                            Windows 11 is now correctly recognized in the package properties dialog
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem Padding="3">
+                        <Paragraph>
+                            Ability to activate verbose logging + jump to logs folder (Settings screen)
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem Padding="3">
+                        <Paragraph>
+                            Fixed App Attach generation with message
+                            <Hyperlink>
+                                Successfully started the Shell Hardware Detection Service
+                                <b:Interaction.Behaviors>
+                                    <behaviors:HyperlinkClickBehavior Url="https://github.com/marcinotorowski/MSIX-Hero/issues/118" />
+                                </b:Interaction.Behaviors>
+                            </Hyperlink>.
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem Padding="3">
+                        <Paragraph>
+                            General stability improvements
+                        </Paragraph>
+                    </ListItem>
+                </List>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
     </DockPanel>
 </UserControl>
