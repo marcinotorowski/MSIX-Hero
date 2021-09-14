@@ -2,16 +2,28 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
-    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
-
+    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
+    xmlns:fluentWpf="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Themes/Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
     <Style TargetType="background:AcrylicBackgroundControl">
         <Style.Resources>
 
             <ControlTemplate TargetType="background:AcrylicBackgroundControl" x:Key="TemplateTier2">
-                <Grid ClipToBounds="True">
-                    <Border Background="{TemplateBinding Background}" />
-                    <Border Opacity="{TemplateBinding TintOpacity}" Background="{TemplateBinding TintBrush}" />
-                    <Rectangle Opacity="{TemplateBinding NoiseOpacity}">
+                <Grid>
+                    <Grid Background="White" x:Name="grid" ClipToBounds="True">
+                        <!--<Border Opacity="0.3" Background="{TemplateBinding Background}" />-->
+                        <Border Opacity="0.8">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                    <GradientStop Color="{StaticResource MsixHero.Colors.Accent}" Offset="-3.0" />
+                                    <GradientStop Color="#EEEEEE" Offset="0.8" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                        <Border Opacity="0.25" Background="{TemplateBinding TintBrush}" />
+                        <!--<Rectangle Opacity="{TemplateBinding NoiseOpacity}">
                         <Rectangle.Fill>
                             <ImageBrush 
                                 ImageSource="/FluentWPF;component/Assets/Images/noise.png"
@@ -20,43 +32,39 @@
                                 ViewportUnits="Absolute" 
                                 Viewport="0,0,128,128"/>
                         </Rectangle.Fill>
-                    </Rectangle>
+                    </Rectangle>-->
 
-                    <Viewbox
-                        Margin="-80"
-                        x:Name="PART_TintObject"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch"
-                        Opacity="0.15" 
-                        RenderTransformOrigin="0.5 0.5" 
-                        Stretch="Uniform"
-                        RenderOptions.BitmapScalingMode="NearestNeighbor">
-                        <ContentPresenter 
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Content="{TemplateBinding TintContent}">
-                        </ContentPresenter>
-                        <Viewbox.Effect>
-                            <BlurEffect Radius="42"/>
-                        </Viewbox.Effect>
-                        <Viewbox.RenderTransform>
-                            <RotateTransform Angle="-12" CenterX="0.5" CenterY="0.5" />
-                        </Viewbox.RenderTransform>
-                    </Viewbox>
+                        <Viewbox
+                            Margin="-110"
+                            x:Name="PART_TintObject"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            RenderTransformOrigin="0.5 0.5" 
+                            Stretch="Uniform"
+                            Opacity="0.5"
+                            RenderOptions.BitmapScalingMode="NearestNeighbor">
+                            <ContentPresenter 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="{TemplateBinding TintContent}">
+                            </ContentPresenter>
+                            <Viewbox.RenderTransform>
+                                <RotateTransform Angle="-12" CenterX="0.5" CenterY="0.5" />
+                            </Viewbox.RenderTransform>
+                        </Viewbox>
 
-                    <TextBlock 
-                        TextAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        HorizontalAlignment="Right"
-                        FontSize="75"
-                        TextWrapping="NoWrap"
-                        Foreground="{TemplateBinding Foreground}" 
-                        Opacity="{TemplateBinding TintTextOpacity}" 
-                        Text="{TemplateBinding TintText}">
-                        <TextBlock.Effect>
-                            <BlurEffect Radius="20"/>
-                        </TextBlock.Effect>
-                    </TextBlock>
+                        <TextBlock 
+                            TextAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right"
+                            FontSize="75"
+                            TextWrapping="NoWrap"
+                            Foreground="{TemplateBinding Foreground}" 
+                            Text="{TemplateBinding TintText}">
+                        </TextBlock>
+                    </Grid>
+                    <Rectangle
+                        Fill="{fluentWpf:AcrylicBrush grid}" />
                 </Grid>
                 <ControlTemplate.Triggers>
                     <Trigger Property="TintContent" Value="{x:Null}">
@@ -67,18 +75,9 @@
 
             <ControlTemplate TargetType="background:AcrylicBackgroundControl" x:Key="TemplateTier1">
                 <Grid ClipToBounds="True">
-                    <Border Background="{TemplateBinding Background}" />
-                    <Border Opacity="{TemplateBinding TintOpacity}" Background="{TemplateBinding TintBrush}" />
-                    <Rectangle Opacity="{TemplateBinding NoiseOpacity}">
-                        <Rectangle.Fill>
-                            <ImageBrush 
-                                ImageSource="/FluentWPF;component/Assets/Images/noise.png"
-                                TileMode="Tile" 
-                                Stretch="None"
-                                ViewportUnits="Absolute" 
-                                Viewport="0,0,128,128"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
+                    <Border x:Name="grid" Background="{TemplateBinding Background}" />
+                    <Rectangle Fill="{fluentWpf:AcrylicBrush grid}" />
+                    <Border Opacity="0.2" Background="{TemplateBinding TintBrush}" />
                 </Grid>
             </ControlTemplate>
 

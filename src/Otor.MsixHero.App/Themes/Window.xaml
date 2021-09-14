@@ -109,17 +109,15 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="Acrylic" TargetType="{x:Type fw:AcrylicWindow}">
-        <Setter Property="TintColor" Value="{StaticResource MsixHero.Colors.Accent}" />
-        <Setter Property="TintOpacity" Value="0.2"/>
-        <Setter Property="OverridesDefaultStyle" Value="True" />
-        <Setter Property="TextBlock.Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}"/>
+    <Style x:Key="Acrylic" TargetType="{x:Type Window}" BasedOn="{StaticResource AcrylicWindowStyle}">
+
+        <Setter Property="fw:AcrylicWindow.TintColor" Value="{StaticResource MsixHero.Brushes.Accent}" />
+        <Setter Property="fw:AcrylicWindow.TintOpacity" Value="0.75"/>
+        <Setter Property="fw:AcrylicWindow.FallbackColor" Value="{StaticResource MsixHero.Colors.Accent.Light1}" />
         <Setter Property="Foreground" Value="{StaticResource MsixHero.Brushes.Foreground}"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="#44CDE6F7"/>
         <Setter Property="BorderBrush" Value="{StaticResource MsixHero.Brushes.Accent}" />
-        <Setter Property="Template" Value="{StaticResource AcrylicWindowTemplate}"/>
-        <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}"/>
-        <Setter Property="FallbackColor" Value="{StaticResource MsixHero.Colors.Accent.Light1}" />
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="WindowChrome.WindowChrome">
             <Setter.Value>
                 <WindowChrome 
@@ -129,86 +127,16 @@
                     UseAeroCaptionButtons="False" />
             </Setter.Value>
         </Setter>
-        <Setter Property="ContentTemplate">
-            <Setter.Value>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="{Binding ActualHeight, ElementName=captionGrid, FallbackValue=0}"/>
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Rectangle Grid.RowSpan="2" x:Name="fallbackLayer" Fill="{Binding RelativeSource={RelativeSource AncestorType=fw:AcrylicWindow}, Path=Background}"/>
-                        <AdornerDecorator x:Name="content" Grid.Row="1">
-                            <ContentControl Content="{Binding}" ClipToBounds="True"/>
-                        </AdornerDecorator>
-                    </Grid>
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=(fw:AcrylicWindow.ExtendViewIntoTitleBar)}" Value="True">
-                            <Setter TargetName="content" Property="Grid.Row" Value="0" />
-                            <Setter TargetName="content" Property="Grid.RowSpan" Value="2" />
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
-            </Setter.Value>
-        </Setter>
 
         <Style.Triggers>
-            <DataTrigger Value="2" Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <Grid >
-                                <!-- Color tint overlay -->
-                                <Rectangle x:Name="tintColorLayer"
-                                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=(fw:AcrylicWindow.TintColor), Converter={StaticResource ColorToSolidColorBrushConverter}}"
-                                   Opacity="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=(fw:AcrylicWindow.TintOpacity)}" />
-                                <!-- Tiled noise texture -->
-                                <Rectangle x:Name="noiseLayer"
-                                       Opacity="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=(fw:AcrylicWindow.NoiseOpacity)}">
-                                    <Rectangle.Fill>
-                                        <ImageBrush 
-                                        ImageSource="/FluentWPF;component/Assets/Images/noise.png"
-                                        TileMode="Tile" Stretch="None"
-                                        ViewportUnits="Absolute" Viewport="0,0,128,128"/>
-                                    </Rectangle.Fill>
-                                </Rectangle>
 
-                                <!-- Fallback color layer -->
-                                <Rectangle x:Name="fallbackLayer" Visibility="Collapsed"
-                                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=(fw:AcrylicWindow.FallbackColor), Converter={StaticResource ColorToSolidColorBrushConverter}}"/>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="{Binding ActualHeight, ElementName=captionGrid, FallbackValue=0}"/>
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <AdornerDecorator x:Name="content"
-                                              Grid.Row="1">
-                                        <ContentControl Content="{Binding}" ClipToBounds="True"/>
-                                    </AdornerDecorator>
-                                </Grid>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
-                                    <Setter TargetName="tintColorLayer" Property="Visibility" Value="Collapsed" />
-                                    <Setter TargetName="noiseLayer" Property="Visibility" Value="Collapsed" />
-                                    <Setter TargetName="fallbackLayer" Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=(fw:AcrylicWindow.ExtendViewIntoTitleBar)}" Value="True">
-                                    <Setter TargetName="content" Property="Grid.Row" Value="0" />
-                                    <Setter TargetName="content" Property="Grid.RowSpan" Value="2" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
+            <DataTrigger Value="0" Binding="{Binding Source={x:Static tiers:TierController.Instance}, Path=CurrentTier}">
+                <Setter Property="fw:AcrylicWindow.AcrylicAccentState" Value="Disabled" />
+                <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Accent.Light1}"/>
             </DataTrigger>
             <Trigger Property="IsActive" Value="False">
-                <Setter Property="FallbackColor" Value="{StaticResource MsixHero.Colors.Light6}" />
+                <Setter Property="fw:AcrylicWindow.FallbackColor" Value="{StaticResource MsixHero.Colors.Light6}" />
                 <Setter Property="Background" Value="{StaticResource MsixHero.Brushes.Light6}" />
-            </Trigger>
-            <Trigger Property="WindowState" Value="Maximized">
-                <Setter Property="BorderThickness" Value="8" />
             </Trigger>
         </Style.Triggers>
     </Style>
