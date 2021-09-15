@@ -2,7 +2,7 @@
 
 MSIX Hero is an open source MSIX manager and toolkit. The list of features is available here: https://msixhero.net/features/
 
-![Screenshot](https://msixhero.net/wp-content/uploads/2020/12/image-1024x659.png)
+![Screenshot](https://msixhero.net/msixhero.png)
 
 Bug reports, feature improvements and pull requests are welcome.
 
