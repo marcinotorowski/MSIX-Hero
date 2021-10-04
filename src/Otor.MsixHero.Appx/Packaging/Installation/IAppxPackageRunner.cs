@@ -17,19 +17,20 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
-    public interface IAppxPackageManager : ISelfElevationAware
+    public interface IAppxPackageRunner : ISelfElevationAware
     {
-        public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
+        Task RunToolInContext(InstalledPackage package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task Stop(string packageFullName, CancellationToken cancellationToken = default);
+        Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 
-        Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(string itemPackageId, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+        Task Run(string packageManifestLocation, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
+
+        Task Run(InstalledPackage package, string appId = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
     }
 }

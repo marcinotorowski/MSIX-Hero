@@ -38,7 +38,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
         public PackageManagementViewModel(
             IMsixHeroApplication application,
             IInteractionService interactionService,
-            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<IAppxPackageRunner> packageRunnerProvider,
+            ISelfElevationProxyProvider<IAppxPackageInstaller> packageInstallerProvider,
             ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider,
             PrismServices prismServices,
             IBusyManager busyManager, 
@@ -51,7 +52,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
                 interactionService, 
                 configurationService,
                 prismServices,
-                packageManagerProvider, 
+                packageRunnerProvider, 
+                packageInstallerProvider, 
                 registryManagerProvider,
                 busyManager);
 

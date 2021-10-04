@@ -42,7 +42,10 @@ namespace Otor.MsixHero.Lib.Proxy
         ISelfElevationProxyProvider<IAppxPackageManager>,
         ISelfElevationProxyProvider<IAppAttachManager>,
         ISelfElevationProxyProvider<IRegistryManager>,
-        ISelfElevationProxyProvider<IAppxLogManager>
+        ISelfElevationProxyProvider<IAppxLogManager>,
+        ISelfElevationProxyProvider<IAppxPackageQuery>,
+        ISelfElevationProxyProvider<IAppxPackageInstaller>,
+        ISelfElevationProxyProvider<IAppxPackageRunner>
     {
         private readonly IElevatedClient client;
         private readonly IConfigurationService configurationService;
@@ -98,7 +101,7 @@ namespace Otor.MsixHero.Lib.Proxy
                     throw new InvalidOperationException("Elevation API returned wrong results.");
             }
         }
-
+        
         async Task<IAppxVolumeManager> ISelfElevationProxyProvider<IAppxVolumeManager>.GetProxyFor(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken)
         {
             if (selfElevationLevel == SelfElevationLevel.HighestAvailable)
@@ -178,14 +181,83 @@ namespace Otor.MsixHero.Lib.Proxy
             switch (selfElevationLevel)
             {
                 case SelfElevationLevel.AsInvoker:
-                    return new AppxPackageManager(new RegistryManager(), this.configurationService);
+                    return new AppxPackageManager();
                 case SelfElevationLevel.AsAdministrator:
                     if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        return new AppxPackageManager(new RegistryManager(), this.configurationService);
+                        return new AppxPackageManager();
                     }
 
                     return new AppxPackageManagerElevationProxy(this.client);
+                default:
+                    throw new InvalidOperationException("Elevation API returned wrong results.");
+            }
+        }
+
+        async Task<IAppxPackageRunner> ISelfElevationProxyProvider<IAppxPackageRunner>.GetProxyFor(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken)
+        {
+            if (selfElevationLevel == SelfElevationLevel.HighestAvailable)
+            {
+                selfElevationLevel = await this.GetMaxAvailableElevation(cancellationToken).ConfigureAwait(false);
+            }
+
+            switch (selfElevationLevel)
+            {
+                case SelfElevationLevel.AsInvoker:
+                    return new AppxPackageRunner();
+                case SelfElevationLevel.AsAdministrator:
+                    if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                    {
+                        return new AppxPackageRunner();
+                    }
+
+                    return new AppxPackageRunnerElevationProxy(this.client);
+                default:
+                    throw new InvalidOperationException("Elevation API returned wrong results.");
+            }
+        }
+
+        async Task<IAppxPackageInstaller> ISelfElevationProxyProvider<IAppxPackageInstaller>.GetProxyFor(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken)
+        {
+            if (selfElevationLevel == SelfElevationLevel.HighestAvailable)
+            {
+                selfElevationLevel = await this.GetMaxAvailableElevation(cancellationToken).ConfigureAwait(false);
+            }
+
+            switch (selfElevationLevel)
+            {
+                case SelfElevationLevel.AsInvoker:
+                    return new AppxPackageInstaller();
+                case SelfElevationLevel.AsAdministrator:
+                    if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                    {
+                        return new AppxPackageInstaller();
+                    }
+
+                    return new AppxPackageInstallerElevationProxy(this.client);
+                default:
+                    throw new InvalidOperationException("Elevation API returned wrong results.");
+            }
+        }
+
+        async Task<IAppxPackageQuery> ISelfElevationProxyProvider<IAppxPackageQuery>.GetProxyFor(SelfElevationLevel selfElevationLevel, CancellationToken cancellationToken)
+        {
+            if (selfElevationLevel == SelfElevationLevel.HighestAvailable)
+            {
+                selfElevationLevel = await this.GetMaxAvailableElevation(cancellationToken).ConfigureAwait(false);
+            }
+
+            switch (selfElevationLevel)
+            {
+                case SelfElevationLevel.AsInvoker:
+                    return new AppxPackageQuery(new RegistryManager(), this.configurationService);
+                case SelfElevationLevel.AsAdministrator:
+                    if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
+                    {
+                        return new AppxPackageQuery(new RegistryManager(), this.configurationService);
+                    }
+
+                    return new AppxPackageQueryElevationProxy(this.client);
                 default:
                     throw new InvalidOperationException("Elevation API returned wrong results.");
             }

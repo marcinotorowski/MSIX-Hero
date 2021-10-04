@@ -97,13 +97,19 @@ namespace Otor.MsixHero.AdminHelper
                     IAppxVolumeManager appxVolumeManager = new AppxVolumeManager();
                     IRegistryManager registryManager = new RegistryManager();
                     IConfigurationService configurationService = new LocalConfigurationService();
-                    IAppxPackageManager appxPackageManager = new AppxPackageManager(registryManager, configurationService);
+                    IAppxPackageManager appxPackageManager = new AppxPackageManager();
+                    IAppxPackageQuery appxPackageQuery = new AppxPackageQuery(registryManager, configurationService);
+                    IAppxPackageInstaller appxPackageInstaller = new AppxPackageInstaller();
+                    IAppxPackageRunner appxPackageRunner = new AppxPackageRunner();
                     IAppxLogManager appxLogManager = new AppxLogManager();
 
                     var receivers = new ISelfElevationProxyReceiver[]
                     {
                         new AppAttachManagerProxyReceiver(appAttachManager),
                         new AppxPackageManagerProxyReceiver(appxPackageManager),
+                        new AppxPackageQueryProxyReceiver(appxPackageQuery),
+                        new AppxPackageInstallerProxyReceiver(appxPackageInstaller),
+                        new AppxPackageRunnerProxyReceiver(appxPackageRunner),
                         new AppxLogManagerProxyReceiver(appxLogManager), 
                         new AppxVolumeManagerProxyReceiver(appxVolumeManager),
                         new RegistryManagerProxyReceiver(registryManager),

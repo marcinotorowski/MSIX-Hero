@@ -62,7 +62,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         }
 
         private readonly IInterProcessCommunicationManager ipcManager;
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> packageQueryProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
@@ -74,7 +74,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 
         public PackageExpertControl(IEventAggregator eventAggregator,
             IInterProcessCommunicationManager ipcManager,
-            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<IAppxPackageQuery> packageQueryProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
             IInteractionService interactionService,
@@ -86,7 +86,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             this.context = RegionContext.GetObservableContext(this);
             this.context.PropertyChanged += this.OnPropertyChanged;
             this.ipcManager = ipcManager;
-            this.packageManagerProvider = packageManagerProvider;
+            this.packageQueryProvider = packageQueryProvider;
             this.volumeManagerProvider = volumeManagerProvider;
             this.interactionService = interactionService;
             this.signingManagerProvider = signingManagerProvider;
@@ -179,7 +179,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             var newDataContext = new PackageExpertViewModel(
                 newFilePath,
                 sender.ipcManager,
-                sender.packageManagerProvider,
+                sender.packageQueryProvider,
                 sender.volumeManagerProvider,
                 sender.signingManagerProvider,
                 sender.interactionService,

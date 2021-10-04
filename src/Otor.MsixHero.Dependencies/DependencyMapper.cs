@@ -33,11 +33,11 @@ namespace Otor.MsixHero.Dependencies
 {
     public class DependencyMapper : IDependencyMapper
     {
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManager;
+        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> packageQuery;
 
-        public DependencyMapper(ISelfElevationProxyProvider<IAppxPackageManager> packageManager)
+        public DependencyMapper(ISelfElevationProxyProvider<IAppxPackageQuery> packageQuery)
         {
-            this.packageManager = packageManager;
+            this.packageQuery = packageQuery;
         }
 
         public async Task<DependencyGraph> GetGraph(string initialPackage, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -183,7 +183,7 @@ namespace Otor.MsixHero.Dependencies
             var progressForGettingAddOns = new RangeProgress(progress, 70, 90);
             var progressForCalculation = new RangeProgress(progress, 90, 100);
             
-            var manager = await this.packageManager.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            var manager = await this.packageQuery.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
             var allPackages = await manager.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
             var consideredPackages = new List<AppxPackage> { startPackage };
             var addOnPackages = new List<AppxPackage>();

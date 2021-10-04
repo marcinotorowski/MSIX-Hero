@@ -121,6 +121,9 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<ISigningManager>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxLogManager>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxPackageManager>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxPackageQuery>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxPackageInstaller>, SelfElevationManagerFactory>();
+            containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppxPackageRunner>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<ISelfElevationProxyProvider<IAppAttachManager>, SelfElevationManagerFactory>();
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
             containerRegistry.RegisterSingleton<IModificationPackageBuilder, ModificationPackageBuilder>();
@@ -132,6 +135,9 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
             containerRegistry.RegisterSingleton<IAppxFileViewer, AppxFileViewer>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
+            containerRegistry.RegisterSingleton<IAppxPackageRunner, AppxPackageRunner>();
+            containerRegistry.RegisterSingleton<IAppxPackageQuery, AppxPackageQuery>();
+            containerRegistry.RegisterSingleton<IAppxPackageInstaller, AppxPackageInstaller>();
             containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
             containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();
             containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();

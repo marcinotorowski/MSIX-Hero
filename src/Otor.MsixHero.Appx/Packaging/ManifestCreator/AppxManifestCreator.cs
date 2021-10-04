@@ -438,7 +438,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             capabilities.Add(new XElement(nsRescap + "Capability", new XAttribute("Name", "runFullTrust")));
             
             var branding = new MsixHeroBrandingInjector();
-            branding.Inject(template);
+            branding.Inject(template, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
         }
 
         private XElement CreateApplicationNodeFromExe(DirectoryInfo directoryInfo, string relativePath)

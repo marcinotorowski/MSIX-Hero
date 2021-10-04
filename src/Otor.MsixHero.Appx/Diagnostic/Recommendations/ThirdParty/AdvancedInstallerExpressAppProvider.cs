@@ -26,7 +26,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
         public IEnumerable<IThirdPartyApp> ProvideApps()
         {
             // Detect MSIX version
-            var pkg = AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Caphyon.AdvancedInstallerExpress_3f31d3yrednja").FirstOrDefault();
+            var pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "Caphyon.AdvancedInstallerExpress_3f31d3yrednja").FirstOrDefault();
 
             if (pkg == null)
             {

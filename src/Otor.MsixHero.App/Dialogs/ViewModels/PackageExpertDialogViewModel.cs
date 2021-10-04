@@ -28,11 +28,11 @@ namespace Otor.MsixHero.App.Dialogs.ViewModels
 {
     public class PackageExpertDialogViewModel : NotifyPropertyChanged, IDialogAware
     {
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxPackageInstaller> packageQueryInstaller;
 
-        public PackageExpertDialogViewModel(ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider)
+        public PackageExpertDialogViewModel(ISelfElevationProxyProvider<IAppxPackageInstaller> packageQueryInstaller)
         {
-            this.packageManagerProvider = packageManagerProvider;
+            this.packageQueryInstaller = packageQueryInstaller;
         }
 
         public bool CanCloseDialog()
@@ -73,7 +73,7 @@ namespace Otor.MsixHero.App.Dialogs.ViewModels
         {
             try
             {
-                var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                var manager = await this.packageQueryInstaller.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                 this.IsInstalled.CurrentValue = await manager.IsInstalled(this.FilePath).ConfigureAwait(false);
             }
             catch

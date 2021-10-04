@@ -57,7 +57,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
         private readonly IConfigurationService configurationService;
         private readonly IDialogService dialogService;
         private readonly IModuleManager moduleManager;
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxPackageRunner> packageRunnerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxPackageInstaller> packageInstallerProvider;
         private readonly ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider;
         private readonly IBusyManager busyManager;
         private readonly FileInvoker fileInvoker;
@@ -67,7 +68,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             IInteractionService interactionService,
             IConfigurationService configurationService,
             PrismServices prismServices,
-            ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider,
+            ISelfElevationProxyProvider<IAppxPackageRunner> packageRunnerProvider,
+            ISelfElevationProxyProvider<IAppxPackageInstaller> packageInstallerProvider,
             ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider,
             IBusyManager busyManager)
         {
@@ -76,7 +78,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.configurationService = configurationService;
             this.dialogService = prismServices.DialogService;
             this.moduleManager = prismServices.ModuleManager;
-            this.packageManagerProvider = packageManagerProvider;
+            this.packageRunnerProvider = packageRunnerProvider;
+            this.packageInstallerProvider = packageInstallerProvider;
             this.registryManagerProvider = registryManagerProvider;
             this.busyManager = busyManager;
             this.fileInvoker = new FileInvoker(this.interactionService, this.configurationService);
@@ -473,7 +476,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 var p1 = wrappedProgress.GetChildProgress(90);
                 var p2 = wrappedProgress.GetChildProgress(10);
 
-                var manager = await this.packageManagerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                var manager = await this.packageInstallerProvider.GetProxyFor(forAllUsers ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                 await manager.Add(packagePath, options, progress: p1).ConfigureAwait(false);
 
                 AppxIdentity appxIdentity = null;
@@ -541,7 +544,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
             try
             {
-                var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                var manager = await this.packageRunnerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                 await manager.Run(selection.ManifestLocation, (string)parameter).ConfigureAwait(false);
             }
             catch (InvalidOperationException exception)
@@ -584,7 +587,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             try
             {
                 var details = await selection.ToAppxPackage().ConfigureAwait(false);
-                var manager = await this.packageManagerProvider.GetProxyFor(tool.AsAdmin ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                var manager = await this.packageRunnerProvider.GetProxyFor(tool.AsAdmin ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                 await manager.RunToolInContext(selection.PackageFamilyName, details.Applications[0].Id, tool.Path, tool.Arguments, CancellationToken.None, context).ConfigureAwait(false);
             }
             catch (Exception exception)
@@ -819,7 +822,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 var p1 = wrappedProgress.GetChildProgress(70);
                 var p2 = wrappedProgress.GetChildProgress(30);
 
-                var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+                var manager = await this.packageInstallerProvider.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
                 var removedPackageNames = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
                 var removedPackages = this.application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
                 await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);

@@ -52,7 +52,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
     public class PackageExpertViewModel : NotifyPropertyChanged
     {
         private readonly IInterProcessCommunicationManager interProcessCommunicationManager;
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider;
+        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> appxPackageQueryProvider;
         private readonly ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider;
         private readonly FileInvoker fileInvoker;
         private readonly IAppxFileViewer fileViewer;
@@ -62,7 +62,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         public PackageExpertViewModel(
             string packagePath,
             IInterProcessCommunicationManager interProcessCommunicationManager,
-            ISelfElevationProxyProvider<IAppxPackageManager> appxPackageManagerProvider,
+            ISelfElevationProxyProvider<IAppxPackageQuery> appxPackageQueryProvider,
             ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider,
             ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService,
@@ -70,7 +70,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             FileInvoker fileInvoker)
         {
             this.interProcessCommunicationManager = interProcessCommunicationManager;
-            this.appxPackageManagerProvider = appxPackageManagerProvider;
+            this.appxPackageQueryProvider = appxPackageQueryProvider;
             this.appxVolumeManagerProvider = appxVolumeManagerProvider;
             this.fileViewer = fileViewer;
             this.fileInvoker = fileInvoker;
@@ -162,13 +162,10 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                 return this.findUsers ??= new DelegateCommand(
                     async () =>
                     {
-                       
 #pragma warning disable 4014
-                        using (var reader = FileReaderFactory.CreateFileReader(this.packagePath))
-                        {
-                            var manifest = await this.LoadManifest(reader).ConfigureAwait(false);
-                            await this.Users.Load(this.GetUsers(manifest, true)).ConfigureAwait(false);
-                        }
+                        using var reader = FileReaderFactory.CreateFileReader(this.packagePath);
+                        var manifest = await this.LoadManifest(reader).ConfigureAwait(false);
+                        await this.Users.Load(this.GetUsers(manifest, true)).ConfigureAwait(false);
 #pragma warning restore 4014
                     });
             }
@@ -189,7 +186,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
             try
             {
-                var manager = await this.appxPackageManagerProvider.GetProxyFor(forceElevation ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.HighestAvailable, cancellationToken);
+                var manager = await this.appxPackageQueryProvider.GetProxyFor(forceElevation ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.HighestAvailable, cancellationToken);
 
                 var stateDetails = await manager.GetUsersForPackage(package.FullName, cancellationToken, progress).ConfigureAwait(false);
 
@@ -208,7 +205,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
         private async Task<List<InstalledPackageViewModel>> GetAddOns(AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var manager = await this.appxPackageManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken);
+            var manager = await this.appxPackageQueryProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken);
             var results = await manager.GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken, progress).ConfigureAwait(false);
 
             var list = new List<InstalledPackageViewModel>();

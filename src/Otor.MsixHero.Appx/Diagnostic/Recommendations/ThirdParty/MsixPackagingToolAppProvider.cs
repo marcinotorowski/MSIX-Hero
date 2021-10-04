@@ -26,7 +26,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
         public IEnumerable<IThirdPartyApp> ProvideApps()
         {
             // Detect MSIX version
-            var pkg  = AppxPackageManager.PackageManager.Value.FindPackagesForUser(string.Empty, "Microsoft.MsixPackagingTool_8wekyb3d8bbwe").FirstOrDefault();
+            var pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "Microsoft.MsixPackagingTool_8wekyb3d8bbwe").FirstOrDefault();
 
             if (pkg == null)
             {

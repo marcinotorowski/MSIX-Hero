@@ -26,16 +26,17 @@ using Otor.MsixHero.Lib.Proxy.Packaging.Dto;
 
 namespace Otor.MsixHero.Lib.Proxy.Packaging
 {
-    public class AppxPackageManagerProxyReceiver : SelfElevationProxyReceiver<IAppxPackageManager>
+    public class AppxPackageRunnerProxyReceiver : SelfElevationProxyReceiver<IAppxPackageRunner>
     {
-        public AppxPackageManagerProxyReceiver(IAppxPackageManager selfElevationAware) : base(selfElevationAware)
+        public AppxPackageRunnerProxyReceiver(IAppxPackageRunner selfElevationAware) : base(selfElevationAware)
         {
         }
 
+
         public override IEnumerable<Type> GetSupportedProxiedObjectTypes()
         {
-            yield return typeof(StopDto);
-            yield return typeof(CheckUpdateAvailabilityDto);
+            yield return typeof(RunDto);
+            yield return typeof(RunToolInContextDto);
         }
 
         public override Task<TCommandResult> Get<TCommandResult>(IProxyObjectWithOutput<TCommandResult> command, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -47,14 +48,14 @@ namespace Otor.MsixHero.Lib.Proxy.Packaging
         {
             switch (command)
             {
-                case CheckUpdateAvailabilityDto checkUpdatesDto:
+                case RunDto runPackageDto:
                 {
-                    return this.SelfElevationAwareObject.CheckForUpdates(checkUpdatesDto.PackageFullName, cancellationToken, progress);
+                    return this.SelfElevationAwareObject.Run(runPackageDto.ManifestPath, runPackageDto.ApplicationId, cancellationToken, progress);
                 }
 
-                case StopDto stopDto:
+                case RunToolInContextDto runToolInContextDto:
                 {
-                    return this.SelfElevationAwareObject.Stop(stopDto.PackageFullName, cancellationToken);
+                    return this.SelfElevationAwareObject.RunToolInContext(runToolInContextDto.PackageFamilyName, runToolInContextDto.AppId, runToolInContextDto.ToolPath, runToolInContextDto.Arguments, cancellationToken, progress);
                 }
 
                 default:
