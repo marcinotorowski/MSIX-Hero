@@ -27,11 +27,17 @@ namespace Otor.MsixHero.Infrastructure.Branding
 {
     public class MsixHeroBrandingInjector
     {
-        public void Inject(XDocument modifiedDocument)
+        public enum BrandingInjectorOverrideOption
+        {
+            Default, // will prefer existing with exception of MsixHero, makeappx.exe and signtool.exe which must be taken over from the current toolset
+            PreferExisting, // will prefer existing values and never overwrite anything with exception of MsixHero
+            PreferIncoming // will replace existing values with new ones
+        }
+
+        public void Inject(XDocument modifiedDocument, BrandingInjectorOverrideOption overwrite = BrandingInjectorOverrideOption.Default)
         {
             XNamespace windows10Namespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
             XNamespace appxNamespace = "http://schemas.microsoft.com/appx/2010/manifest";
-            XNamespace uap4Namespace = XNamespace.Get("http://schemas.microsoft.com/appx/manifest/uap/windows10/4");
             XNamespace buildNamespace = XNamespace.Get("http://schemas.microsoft.com/developer/appx/2015/build");
 
             if (modifiedDocument.Root == null)
@@ -58,64 +64,89 @@ namespace Otor.MsixHero.Infrastructure.Branding
                 namespaceAdded = true;
             }
             
-            var originalUap4Namespace = modifiedDocument.Root.Attribute(XNamespace.Xmlns + "uap4");
-            if (originalUap4Namespace != null)
-            {
-                uap4Namespace = originalUap4Namespace.Value;
-            }
-            else
-            {
-                modifiedDocument.Root.SetAttributeValue(XNamespace.Xmlns + "uap4", uap4Namespace);
-                namespaceAdded = true;
-            }
-
             if (namespaceAdded)
             {
                 var ignorable = modifiedDocument.Root.Attribute("IgnorableNamespaces");
                 if (ignorable == null)
                 {
-                    modifiedDocument.Root.Add(new XAttribute("IgnorableNamespaces", "build uap4"));
+                    modifiedDocument.Root.Add(new XAttribute("IgnorableNamespaces", "build"));
                 }
                 else
                 {
-                    modifiedDocument.Root.SetAttributeValue("IgnorableNamespaces", string.Join(" ", ignorable.Value.Split(' ').Union(new[] { "build", "uap4" })));
+                    modifiedDocument.Root.SetAttributeValue("IgnorableNamespaces", string.Join(" ", ignorable.Value.Split(' ').Union(new[] { "build" })));
                 }
             }
 
             var metaData = package.Element(buildNamespace + "Metadata");
-            metaData?.Remove();
-
-            metaData = new XElement(buildNamespace + "Metadata");
-            package.Add(metaData);
-            var version = NdDll.RtlGetVersion();
-
-            var operatingSystem = new XElement(buildNamespace + "Item"); //(  "bu", "Item");
-            metaData.Add(operatingSystem);
-            operatingSystem.Add(new XAttribute("Name", "OperatingSystem"));
-            operatingSystem.Add(new XAttribute("Version", version.ToString(4)));
-
-            var msixHero = new XElement(buildNamespace + "Item");
-            metaData.Add(msixHero);
-            msixHero.Add(new XAttribute("Name", "MsixHero"));
-            // ReSharper disable once PossibleNullReferenceException
-            msixHero.Add(new XAttribute("Version", (Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly()).GetName().Version.ToString()));
             
-            var signTool = new XElement(buildNamespace + "Item");
-            metaData.Add(signTool);
-            signTool.Add(new XAttribute("Name", "SignTool.exe"));
-            signTool.Add(new XAttribute("Version", GetVersion("SignTool.exe")));
+            if (metaData == null)
+            {
+                metaData = new XElement(buildNamespace + "Metadata");
+                package.Add(metaData);
+            }
 
-            // ReSharper disable once IdentifierTypo
-            var makepri = new XElement(buildNamespace + "Item");
-            metaData.Add(makepri);
-            makepri.Add(new XAttribute("Name", "MakePri.exe"));
-            makepri.Add(new XAttribute("Version", GetVersion("MakePri.exe")));
+            var operatingSystemVersion = NdDll.RtlGetVersion();
+            var msixHeroVersion = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).GetName().Version;
+            
+            // MSIX-Hero specific lines:
+            InjectComponentAndVersion(metaData, buildNamespace, "MsixHero", msixHeroVersion);
 
-            // ReSharper disable once IdentifierTypo
-            var makeappx = new XElement(buildNamespace + "Item");
-            metaData.Add(makeappx);
-            makeappx.Add(new XAttribute("Name", "MakeAppx.exe"));
-            makeappx.Add(new XAttribute("Version", GetVersion("MakeAppx.exe")));
+            // Generic lines:
+            InjectComponentAndVersion(metaData, buildNamespace, "OperatingSystem", operatingSystemVersion, overwrite == BrandingInjectorOverrideOption.PreferIncoming);
+
+            // SDK lines:
+            InjectComponentAndVersion(metaData, buildNamespace, "SignTool.exe", overwrite != BrandingInjectorOverrideOption.PreferExisting);
+            InjectComponentAndVersion(metaData, buildNamespace, "MakePri.exe", overwrite == BrandingInjectorOverrideOption.PreferIncoming);
+            InjectComponentAndVersion(metaData, buildNamespace, "MakeAppx.exe", overwrite != BrandingInjectorOverrideOption.PreferExisting);
+        }
+
+        private static void InjectComponentAndVersion(XElement metadata, XNamespace buildNamespace, string name, Version version, bool overwriteExisting = true)
+        {
+            InjectComponentAndVersion(metadata, buildNamespace, name, version?.ToString(4), overwriteExisting);
+        }
+
+        private static void InjectComponentAndVersion(XElement metadata, XNamespace buildNamespace, string sdkFileName, bool overwriteExisting = true)
+        {
+            InjectComponentAndVersion(metadata, buildNamespace, sdkFileName, GetVersion(sdkFileName), overwriteExisting);
+        }
+
+        private static void InjectComponentAndVersion(XElement metadata, XNamespace buildNamespace, string name, string version, bool overwriteExisting = true)
+        {
+            var node = metadata.Elements(buildNamespace + "Item").FirstOrDefault(item => string.Equals(item.Attribute("Name")?.Value, name, StringComparison.OrdinalIgnoreCase));
+
+            if (node == null && name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+            {
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(name);
+                node = metadata.Elements(buildNamespace + "Item").FirstOrDefault(item => string.Equals(item.Attribute("Name")?.Value, fileNameWithoutExtension, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (node == null)
+            {
+                node = new XElement(buildNamespace + "Item");
+                node.Add(new XAttribute("Name", name));
+                if (version != null)
+                {
+                    node.Add(new XAttribute("Version", version));
+                }
+
+                metadata.Add(node);
+            }
+            else
+            {
+                var versionAttr = node.Attribute("Version");
+                if (versionAttr == null)
+                {
+                    if (version != null)
+                    {
+                        versionAttr = new XAttribute("Version", version);
+                        node.Add(versionAttr);
+                    }
+                }
+                else if (overwriteExisting)
+                {
+                    versionAttr.Value = version;
+                }
+            }
         }
 
         private static string GetVersion(string sdkFile)
