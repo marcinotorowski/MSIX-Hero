@@ -159,7 +159,8 @@ Task("Publish .NET Core")
     settings.MSBuildSettings = new DotNetCoreMSBuildSettings()
     .WithProperty("AssemblyVersion", version)
     .WithProperty("Version", version)
-    .WithProperty("Copyright",  "(C) 2021 by Marcin Otorowski");
+    .WithProperty("Copyright",  "(C) 2021 by Marcin Otorowski")
+    .WithProperty("ErrorOnDuplicatePublishOutputFiles", "false");
     DotNetCorePublish("./Otor.MsixHero.sln", settings);
 });
 
