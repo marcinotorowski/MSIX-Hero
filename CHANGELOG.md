@@ -1,3 +1,10 @@
+# 2.2.34
+See http://msixhero.net/redirect/release-notes/2.2.34 for more details
+
+* When signing or changing an existing MSIX package, the original build metadata will be now preserved (previous version were removing any custom attributes and/or pre-existing values) (#120)
+* Fixed visual glitches related to acrylic backgrounds on maximized screen (4fdc7a77)
+* Several internal changes and code improvements (2dfc024 and 2790978)
+
 # 2.2.29
 See http://msixhero.net/redirect/release-notes/2.2.29 for more details
 
