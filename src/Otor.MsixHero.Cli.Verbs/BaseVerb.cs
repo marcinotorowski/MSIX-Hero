@@ -20,7 +20,7 @@ namespace Otor.MsixHero.Cli.Verbs
 {
     public abstract class BaseVerb
     {
-        public string ToCommandLineString(bool withExeName = true)
+        public virtual string ToCommandLineString(bool withExeName = true)
         {
             if (withExeName)
             {

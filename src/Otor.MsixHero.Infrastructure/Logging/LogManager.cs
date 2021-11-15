@@ -96,7 +96,12 @@ namespace Otor.MsixHero.Infrastructure.Logging
             };
 
             config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), fileTarget);
-            config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), new ConsoleTarget());
+
+            config.AddRule(LogLevel.Warn, LogLevel.Fatal, new ColoredConsoleTarget
+            {
+                Layout = "${message}",
+                DetectConsoleAvailable = true
+            });
 
             NLog.LogManager.Configuration = config;
         }

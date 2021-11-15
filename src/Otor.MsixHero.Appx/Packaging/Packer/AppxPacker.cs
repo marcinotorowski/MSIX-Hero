@@ -22,8 +22,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Editor.Facades;
+using Otor.MsixHero.Appx.Editor.Helpers;
 using Otor.MsixHero.Appx.Packaging.Packer.Enums;
-using Otor.MsixHero.Infrastructure.Branding;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
@@ -52,7 +53,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             }
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(xmlDocument);
+            await injector.Inject(xmlDocument).ConfigureAwait(false);
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -165,27 +166,18 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
 
                 await File.WriteAllTextAsync(tempFile, listBuilder.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
 
-                var xmlManifestContent = new StringBuilder();
-
-                // ReSharper disable once UseAwaitUsing
-                using (var tempManifestStream = File.OpenRead(tempManifestFilePath))
+                XDocument xmlManifestDocument;
+                await using (var tempManifestStream = File.OpenRead(tempManifestFilePath))
                 {
-                    using (var tempManifestReader = new StreamReader(tempManifestStream))
-                    {
-                        var xmlManifestDocument = await XDocument.LoadAsync(tempManifestReader, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-                        var injector = new MsixHeroBrandingInjector();
-                        injector.Inject(xmlManifestDocument);
-
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        await using (TextWriter textWriter = new Utf8StringWriter(xmlManifestContent))
-                        {
-                            await xmlManifestDocument.SaveAsync(textWriter, SaveOptions.None, cancellationToken).ConfigureAwait(false);
-                        }
-                    }
+                    using var tempManifestReader = new StreamReader(tempManifestStream);
+                    xmlManifestDocument = await XDocument.LoadAsync(tempManifestReader, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+                    var injector = new MsixHeroBrandingInjector();
+                    await injector.Inject(xmlManifestDocument).ConfigureAwait(false);
                 }
-                
-                await File.WriteAllTextAsync(tempManifestFilePath, xmlManifestContent.ToString(), Encoding.UTF8, cancellationToken).ConfigureAwait(false);
+
+                cancellationToken.ThrowIfCancellationRequested();
+                var appxWriter = new AppxDocumentWriter(xmlManifestDocument);
+                await appxWriter.WriteAsync(tempManifestFilePath).ConfigureAwait(false);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -220,7 +212,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 throw new FileNotFoundException($"File {packagePath} does not exist.");
             }
 
-            if (!Directory.Exists(directory))
+            if (!Directory.Exists(directory) && directory != null)
             {
                 Directory.CreateDirectory(directory);
             }

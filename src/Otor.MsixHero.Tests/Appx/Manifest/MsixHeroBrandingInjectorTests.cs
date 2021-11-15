@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using NUnit.Framework;
-using Otor.MsixHero.Infrastructure.Branding;
+using Otor.MsixHero.Appx.Editor.Facades;
 
 namespace Otor.MsixHero.Tests.Appx.Manifest
 {
     public class MsixHeroBrandingInjectorTests
     {
         [Test]
-        public void TestSimpleInjection()
+        public async Task TestSimpleInjection()
         {
             var manifest = this.PrepareMockManifest();
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(manifest);
+            await injector.Inject(manifest).ConfigureAwait(false);
 
             Assert.NotNull(GetBuildVersion(manifest, "MsixHero"));
             Assert.NotNull(GetBuildVersion(manifest, "OperatingSystem"));
@@ -26,7 +27,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
         }
 
         [Test]
-        public void TestOverridingDifferentCasing()
+        public async Task TestOverridingDifferentCasing()
         {
             var existingValues = new Dictionary<string, string>
             {
@@ -40,7 +41,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var manifest = this.PrepareMockManifest(existingValues);
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
+            await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
 
             Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "By default this value must be overridden.");
             Assert.AreNotEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "By default this value must be overridden.");
@@ -50,7 +51,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
         }
 
         [Test]
-        public void TestOverridingMissingExtensions()
+        public async Task TestOverridingMissingExtensions()
         {
             var existingValues = new Dictionary<string, string>
             {
@@ -64,7 +65,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var manifest = this.PrepareMockManifest(existingValues);
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
+            await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
 
             Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "By default this value must be overridden.");
             Assert.AreNotEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "By default this value must be overridden.");
@@ -74,7 +75,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
         }
 
         [Test]
-        public void TestOverridingDefault()
+        public async Task TestOverridingDefault()
         {
             var existingValues = new Dictionary<string, string>
             {
@@ -88,7 +89,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var manifest = this.PrepareMockManifest(existingValues);
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(manifest);
+            await injector.Inject(manifest);
 
             Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "By default this value must be overridden.");
             Assert.AreEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "By default this value must not be overridden.");
@@ -98,7 +99,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
         }
 
         [Test]
-        public void TestOverridingPreferExisting()
+        public async Task TestOverridingPreferExisting()
         {
             var existingValues = new Dictionary<string, string>
             {
@@ -112,7 +113,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var manifest = this.PrepareMockManifest(existingValues);
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferExisting);
+            await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferExisting);
 
             Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "This value must be always overridden.");
             Assert.AreEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "This value must not be overridden.");
@@ -128,7 +129,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
 
             manifest = this.PrepareMockManifest(existingIncompleteValues);
 
-            injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferExisting);
+            await  injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferExisting);
 
             Assert.NotNull(GetBuildVersion(manifest, "MsixHero"));
             Assert.NotNull(GetBuildVersion(manifest, "OperatingSystem"));
@@ -138,7 +139,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
         }
 
         [Test]
-        public void TestOverridingPreferIncoming()
+        public async Task TestOverridingPreferIncoming()
         {
             var existingValues = new Dictionary<string, string>
             {
@@ -152,7 +153,7 @@ namespace Otor.MsixHero.Tests.Appx.Manifest
             var manifest = this.PrepareMockManifest(existingValues);
 
             var injector = new MsixHeroBrandingInjector();
-            injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
+            await injector.Inject(manifest, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
 
             Assert.AreNotEqual("91.0", GetBuildVersion(manifest, "MsixHero"), "This value must be overridden.");
             Assert.AreNotEqual("92.0", GetBuildVersion(manifest, "OperatingSystem"), "This value must be overridden.");

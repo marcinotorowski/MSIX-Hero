@@ -27,10 +27,10 @@ using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Signing;
-using Otor.MsixHero.Infrastructure.Branding;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -180,7 +180,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 await using (var manifestStream = File.OpenRead(fileListBuilder.GetManifestSourcePath()))
                 {
                     var xml = await XDocument.LoadAsync(manifestStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-                    injector.Inject(xml);
+                    await injector.Inject(xml).ConfigureAwait(false);
                     await File.WriteAllTextAsync(tempManifestPath, xml.ToString(SaveOptions.None), cancellationToken);
                     fileListBuilder.AddManifest(tempManifestPath);
                 }

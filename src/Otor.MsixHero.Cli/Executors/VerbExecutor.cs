@@ -18,17 +18,25 @@ using System.Threading.Tasks;
 
 namespace Otor.MsixHero.Cli.Executors
 {
-    public abstract class VerbExecutor<T>
+    public abstract class VerbExecutor
     {
-        protected readonly T Verb;
         protected readonly IConsole Console;
 
-        protected VerbExecutor(T verb, IConsole console)
+        protected VerbExecutor(IConsole console)
         {
-            this.Verb = verb;
             this.Console = console;
         }
 
         public abstract Task<int> Execute();
+    }
+
+    public abstract class VerbExecutor<T> : VerbExecutor
+    {
+        protected readonly T Verb;
+
+        protected VerbExecutor(T verb, IConsole console) : base(console)
+        {
+            this.Verb = verb;
+        }
     }
 }

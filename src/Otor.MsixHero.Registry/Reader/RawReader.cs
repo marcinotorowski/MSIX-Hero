@@ -45,5 +45,16 @@ namespace Otor.MsixHero.Registry.Reader
             IRegHive hive = new OffregRegistryHive(OffregLib.OffregHive.Create());
             return Task.FromResult(hive);
         }
+
+        public Task<IRegHive> Open(string file)
+        {
+            if (!File.Exists(file))
+            {
+                throw new FileNotFoundException("Registry file does not exist.", nameof(file));
+            }
+
+            IRegHive hive = new OffregRegistryHive(OffregLib.OffregHive.Open(file));
+            return Task.FromResult(hive);
+        }
     }
 }

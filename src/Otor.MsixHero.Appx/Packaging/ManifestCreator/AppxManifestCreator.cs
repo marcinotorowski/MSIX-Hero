@@ -12,12 +12,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
+using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
+using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
+using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
-using Otor.MsixHero.Infrastructure.Branding;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
-using Otor.MsixHero.Registry.Converter;
-using Otor.MsixHero.Registry.Parser;
 
 namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 {
@@ -68,7 +69,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             
             if (options.RegistryFile?.Exists == true)
             {
-                await foreach (var registryItem in this.CreateRegistryEntries(options.RegistryFile, cancellationToken).ConfigureAwait(false))
+                await foreach (var registryItem in this.CreateRegistryEntries(options.RegistryFile).ConfigureAwait(false))
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -163,7 +164,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
                 options.Version = new Version(1, 0, 0);
             }
 
-            this.AdjustManifest(xml, options, sourceDirectory, entryPoints);
+            await this.AdjustManifest(xml, options, sourceDirectory, entryPoints).ConfigureAwait(false);
             var manifestContent = xml.ToString(SaveOptions.OmitDuplicateNamespaces);
             
             var manifestFilePath = Path.Combine(Path.GetTempPath(), Path.GetFileName(FileConstants.AppxManifestFile) + "-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".xml");
@@ -212,27 +213,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 
             return result;
         }
-
-        public bool CheckIfRegistryConversionPossible(DirectoryInfo sourceDirectory)
-        {
-            if (!sourceDirectory.Exists)
-            {
-                return false;
-            }
-
-            var registryFiles = sourceDirectory.EnumerateFiles("*.reg", SearchOption.TopDirectoryOnly);
-            if (!registryFiles.Any())
-            {
-                return false;
-            }
-
-            var pathAll = Path.Combine(sourceDirectory.FullName, "Registry.dat");
-            var pathUser = Path.Combine(sourceDirectory.FullName, "User.dat");
-            var pathClassesRoot = Path.Combine(sourceDirectory.FullName, "UserClasses.dat");
-
-            return !File.Exists(pathAll) && !File.Exists(pathUser) && !File.Exists(pathClassesRoot);
-        }
-
+        
         public async Task<IList<string>> GetEntryPointCandidates(DirectoryInfo directoryInfo, CancellationToken cancellationToken = default)
         {
             var candidates = await this.GetEntryPoints(directoryInfo, cancellationToken).ConfigureAwait(false);
@@ -320,14 +301,11 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
         
         [SuppressMessage("ReSharper", "IdentifierTypo")]
         [SuppressMessage("ReSharper", "StringLiteralTypo")]
-        private void AdjustManifest(XDocument template, AppxManifestCreatorOptions config, DirectoryInfo baseDirectory, string[] entryPoints)
+        private async Task AdjustManifest(XDocument template, AppxManifestCreatorOptions config, DirectoryInfo baseDirectory, string[] entryPoints)
         {
             XNamespace nsUap = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
             XNamespace nsUap4 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/4";
             XNamespace nsUap6 = "http://schemas.microsoft.com/appx/manifest/uap/windows10/6";
-            XNamespace nsRescap = "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities";
-            XNamespace nsRescap6 = "http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/6";
-            XNamespace nsBuild = "http://schemas.microsoft.com/developer/appx/2015/build";
             XNamespace defaultNamespace = "http://schemas.microsoft.com/appx/manifest/foundation/windows10";
 
             var root = template.Root;
@@ -341,43 +319,19 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
                 defaultNamespace = root.GetDefaultNamespace();
             }
 
-            if (root.GetPrefixOfNamespace(nsUap) == null)
+            // Add capability
+            var addCapability = new AddCapability("runFullTrust");
+            var capabilityExecutor = new AddCapabilityExecutor(template);
+            await capabilityExecutor.Execute(addCapability).ConfigureAwait(false);
+
+            // Set identity
+            var setIdentity = new SetPackageIdentity
             {
-                root.Add(new XAttribute(XNamespace.Xmlns + "uap", nsUap.NamespaceName));
-            }
+                Name = config.PackageName,
+                Publisher = config.PublisherName,
+                ProcessorArchitecture = config.PackageArchitecture.ToString("G").ToLowerInvariant()
+            };
 
-            if (root.GetPrefixOfNamespace(nsUap4) == null)
-            {
-                root.Add(new XAttribute(XNamespace.Xmlns + "uap4", nsUap6.NamespaceName));
-            }
-
-            if (root.GetPrefixOfNamespace(nsUap6) == null)
-            {
-                root.Add(new XAttribute(XNamespace.Xmlns + "uap6", nsUap6.NamespaceName));
-            }
-
-            if (root.GetPrefixOfNamespace(nsRescap) == null)
-            {
-                root.Add(new XAttribute(XNamespace.Xmlns + "rescap", nsRescap.NamespaceName));
-            }
-
-            if (root.GetPrefixOfNamespace(nsRescap6) == null)
-            {
-                root.Add(new XAttribute(XNamespace.Xmlns + "rescap6", nsRescap6.NamespaceName));
-            }
-
-            if (root.GetPrefixOfNamespace(nsBuild) == null)
-            {
-                root.Add(new XAttribute(XNamespace.Xmlns + "build", nsBuild.NamespaceName));
-            }
-
-            var package = GetOrCreateNode(template, "Package", defaultNamespace);
-            var identity = GetOrCreateNode(package, "Identity", defaultNamespace);
-
-            identity.SetAttributeValue("Name", config.PackageName);
-            identity.SetAttributeValue("Publisher", config.PublisherName);
-            identity.SetAttributeValue("ProcessorArchitecture", config.PackageArchitecture.ToString("G").ToLowerInvariant());
-            
             var major = config.Version.Major;
             var minor = config.Version.Minor;
             var build = config.Version.Build;
@@ -402,9 +356,29 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             {
                 build = 0;
             }
-            
-            identity.SetAttributeValue("Version", new Version(major, minor, build, revision).ToString(4));
 
+            setIdentity.Version = new Version(major, minor, build, revision).ToString();
+            var executor = new SetPackageIdentityExecutor(template);
+            await executor.Execute(setIdentity).ConfigureAwait(false);
+
+            // Add namespaces (legacy)
+            if (root.GetPrefixOfNamespace(nsUap) == null)
+            {
+                root.Add(new XAttribute(XNamespace.Xmlns + "uap", nsUap.NamespaceName));
+            }
+
+            if (root.GetPrefixOfNamespace(nsUap4) == null)
+            {
+                root.Add(new XAttribute(XNamespace.Xmlns + "uap4", nsUap6.NamespaceName));
+            }
+
+            if (root.GetPrefixOfNamespace(nsUap6) == null)
+            {
+                root.Add(new XAttribute(XNamespace.Xmlns + "uap6", nsUap6.NamespaceName));
+            }
+            
+            var package = GetOrCreateNode(template, "Package", defaultNamespace);
+            
             var properties = GetOrCreateNode(package, "Properties", defaultNamespace);
             GetOrCreateNode(properties, "DisplayName", defaultNamespace).Value = config.PackageDisplayName ?? config.PackageName ?? "DisplayName";
             GetOrCreateNode(properties, "Description", defaultNamespace).Value = config.PackageDisplayName ?? config.PackageName ?? "Description";
@@ -434,11 +408,8 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
                 applicationNode.SetAttributeValue("Id", idCandidate);
             }
 
-            var capabilities = GetOrCreateNode(package, "Capabilities", defaultNamespace);
-            capabilities.Add(new XElement(nsRescap + "Capability", new XAttribute("Name", "runFullTrust")));
-            
             var branding = new MsixHeroBrandingInjector();
-            branding.Inject(template, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming);
+            await branding.Inject(template, MsixHeroBrandingInjector.BrandingInjectorOverrideOption.PreferIncoming).ConfigureAwait(false);
         }
 
         private XElement CreateApplicationNodeFromExe(DirectoryInfo directoryInfo, string relativePath)
@@ -499,32 +470,33 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             return path;
         }
 
-        private async IAsyncEnumerable<CreatedItem> CreateRegistryEntries(FileInfo regFile, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        private async IAsyncEnumerable<CreatedItem> CreateRegistryEntries(FileInfo regFile)
         {
             var tempDirectory = Path.GetTempPath();
-            var writer = new RegConverter();
 
-            var pathAll = Path.Combine(tempDirectory, "Registry" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".dat");
-            var pathUser = Path.Combine(tempDirectory, "User" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".dat");
-            var pathClassesRoot = Path.Combine(tempDirectory, "UserClasses" + Guid.NewGuid().ToString("N").Substring(0,10) + ".dat");
+            var p1 = Path.Combine(tempDirectory, "Registry" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".dat");
+            var p2 = Path.Combine(tempDirectory, "User" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".dat");
+            var p3 = Path.Combine(tempDirectory, "User.Classes" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".dat");
 
-            if (await writer.ConvertFromRegToDat(regFile.FullName, pathAll).ConfigureAwait(false))
+            var writer = new MsixRegistryFileWriter(p1, p2, p3);
+
+            writer.ImportRegFile(regFile.FullName);
+            if (await writer.Flush().ConfigureAwait(false))
             {
-                yield return CreatedItem.CreateRegistry(pathAll, "Registry.dat");
-            }
+                if (File.Exists(p1))
+                {
+                    yield return new CreatedItem(p1, "Registry.dat", CreatedItem.ItemType.Registry);
+                }
 
-            cancellationToken.ThrowIfCancellationRequested();
+                if (File.Exists(p2))
+                {
+                    yield return new CreatedItem(p2, "User.dat", CreatedItem.ItemType.Registry);
+                }
 
-            if (await writer.ConvertFromRegToDat(regFile.FullName, pathUser, RegistryRoot.HKEY_CURRENT_USER).ConfigureAwait(false))
-            {
-                yield return CreatedItem.CreateRegistry(pathAll, "User.dat");
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (await writer.ConvertFromRegToDat(regFile.FullName, pathClassesRoot, RegistryRoot.HKEY_CLASSES_ROOT).ConfigureAwait(false))
-            {
-                yield return CreatedItem.CreateRegistry(pathAll, "UserClasses.dat");
+                if (File.Exists(p3))
+                {
+                    yield return new CreatedItem(p3, "User.Classes.dat", CreatedItem.ItemType.Registry);
+                }
             }
         }
     }

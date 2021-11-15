@@ -26,10 +26,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Org.BouncyCastle.X509;
+using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
-using Otor.MsixHero.Infrastructure.Branding;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -189,6 +189,7 @@ namespace Otor.MsixHero.Appx.Signing
                 cancellationToken.ThrowIfCancellationRequested();
                 // ReSharper disable once AccessToDisposedClosure
 
+                // ReSharper disable once RedundantEnumerableCastCall
                 var validated = await Task.Run(() => certObject.OfType<X509Certificate2>().FirstOrDefault(c => c.Verify()), cancellationToken).ConfigureAwait(false);
                 if (validated != null)
                 {
@@ -798,7 +799,7 @@ namespace Otor.MsixHero.Appx.Signing
                         }
 
                         var brandingInjector = new MsixHeroBrandingInjector();
-                        brandingInjector.Inject(xmlDocument);
+                        await brandingInjector.Inject(xmlDocument).ConfigureAwait(false);
 
                         var sb = new StringBuilder();
                         await using (TextWriter textWriter = new Utf8StringWriter(sb))

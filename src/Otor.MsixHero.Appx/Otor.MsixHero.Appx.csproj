@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Otor.MsixHero.Appx.Editor\Otor.MsixHero.Appx.Editor.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Registry\Otor.MsixHero.Registry.csproj" />
   </ItemGroup>

@@ -11,6 +11,7 @@ using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.Tests.AppAttach
 {
+    [Ignore("Integration")]
     [TestFixture(Description = "Various tests for app attach. They call msixmgr.exe and are potentially impacting the system. Admin rights are required to execute them.")]
     [Category("Integration")]
     public class AppAttachIntegrationTests
@@ -140,7 +141,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var sourceFiles = new[] { "pkg1.msix", "pkg2.msix", "pkg3.msix" }.Select(f => Path.Combine(baseSourceFolder, f)).ToArray();
             foreach (var src in sourceFiles)
             {
-                msixHeroPackage.CopyTo(src);
+                msixHeroPackage.CopyTo(src, true);
             }
             
             var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());

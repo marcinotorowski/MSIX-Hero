@@ -17,8 +17,8 @@
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Registry.Converter;
 using Otor.MsixHero.Registry.Parser;
 
 namespace Otor.MsixHero.Tests.Registry
@@ -38,7 +38,7 @@ namespace Otor.MsixHero.Tests.Registry
                 var mfn = typeof(TestConversion).Assembly.GetManifestResourceNames().First(a => a.EndsWith("team.reg"));
                 using (var mf = typeof(TestConversion).Assembly.GetManifestResourceStream(mfn))
                 {
-                    using (var fs = System.IO.File.OpenWrite(tempReg))
+                    using (var fs = File.OpenWrite(tempReg))
                     {
                         // ReSharper disable once PossibleNullReferenceException
                         mf.CopyTo(fs);
@@ -46,20 +46,18 @@ namespace Otor.MsixHero.Tests.Registry
                     }
                 }
 
-                var regConv = new RegConverter();
+                var regConv = new MsixRegistryFileWriter(tempDir);
                 var regPars = new RegFileParser();
 
                 regPars.Parse(Path.Combine(tempReg));
-                regConv.ConvertFromRegToDat(tempReg, Path.Combine(tempDir, "Registry.dat"), RegistryRoot.HKEY_LOCAL_MACHINE).GetAwaiter().GetResult();
-                regConv.ConvertFromRegToDat(tempReg, Path.Combine(tempDir, "UserClasses.dat"), RegistryRoot.HKEY_CLASSES_ROOT).GetAwaiter().GetResult();
-                regConv.ConvertFromRegToDat(tempReg, Path.Combine(tempDir, "User.dat"), RegistryRoot.HKEY_CURRENT_USER).GetAwaiter().GetResult();
+                regConv.ImportRegFile(tempReg);
             }
             finally
             {
                 ExceptionGuard.Guard(() =>
                 {
-                    System.IO.Directory.Delete(tempDir, true);
-                    System.IO.File.Delete(tempReg);
+                    Directory.Delete(tempDir, true);
+                    File.Delete(tempReg);
                 });
             }
         }

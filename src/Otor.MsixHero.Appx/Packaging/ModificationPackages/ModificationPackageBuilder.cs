@@ -24,15 +24,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
+using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
+using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
+using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Packaging.Packer;
-using Otor.MsixHero.Infrastructure.Branding;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
-using Otor.MsixHero.Registry.Converter;
-using Otor.MsixHero.Registry.Parser;
 
 namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 {
@@ -191,14 +192,9 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
         private async Task CopyRegistry(FileInfo regFile, DirectoryInfo targetDir)
         {
-            var writer = new RegConverter();
-
-            var pathAll = Path.Combine(targetDir.FullName, "Registry.dat");
-            var pathUser = Path.Combine(targetDir.FullName, "User.dat");
-            var pathClassesRoot = Path.Combine(targetDir.FullName, "UserClasses.dat");
-            await writer.ConvertFromRegToDat(regFile.FullName, pathAll).ConfigureAwait(false);
-            await writer.ConvertFromRegToDat(regFile.FullName, pathUser, RegistryRoot.HKEY_CURRENT_USER).ConfigureAwait(false);
-            await writer.ConvertFromRegToDat(regFile.FullName, pathClassesRoot, RegistryRoot.HKEY_CLASSES_ROOT).ConfigureAwait(false);
+            var regWriter = new MsixRegistryFileWriter(targetDir.FullName);
+            regWriter.ImportRegFile(regFile.FullName);
+            await regWriter.Flush().ConfigureAwait(false);
         }
 
         private async Task CopyFolder(DirectoryInfo from, DirectoryInfo to, CancellationToken cancellationToken)
@@ -380,11 +376,6 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 
             dependency.SetAttributeValue("Name", parentName);
             dependency.SetAttributeValue("Publisher", parentPublisher);
-            
-            var identity = GetOrCreateNode(package, "Identity", defaultNamespace);
-
-            identity.SetAttributeValue("Name", config.Name);
-            identity.SetAttributeValue("Publisher", config.Publisher);
 
             var fixVersion = Version.Parse(config.Version);
 
@@ -413,17 +404,29 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 build = 0;
             }
 
-            identity.SetAttributeValue("Version", new Version(major, minor, build, revision).ToString(4));
+            // Set identity
+            var setIdentity = new SetPackageIdentity
+            {
+                Name = config.Name,
+                Publisher = config.Publisher,
+                Version = new Version(major, minor, build, revision).ToString()
+            };
+            await new SetPackageIdentityExecutor(template).Execute(setIdentity).ConfigureAwait(false);
 
-            var properties = GetOrCreateNode(package, "Properties", defaultNamespace);
-            GetOrCreateNode(properties, "DisplayName", defaultNamespace).Value = config.DisplayName ?? "Modification Package Name";
-            GetOrCreateNode(properties, "PublisherDisplayName", defaultNamespace).Value = config.DisplayPublisher ?? "Modification Package Publisher Name";
-            GetOrCreateNode(properties, "Description", defaultNamespace).Value = "Modification Package for " + parentName;
-            GetOrCreateNode(properties, "Logo", defaultNamespace).Value = "Assets\\Logo.png";
-            GetOrCreateNode(properties, "ModificationPackage", nsRescap6).Value = "true";
+            // Set properties
+            var setProperties = new SetPackageProperties
+            {
+                DisplayName = config.DisplayName ?? "Modification Package Name",
+                PublisherDisplayName = config.DisplayPublisher ?? "Modification Package Publisher Name",
+                Description = "Modification Package for " + parentName,
+                Logo = "Assets\\Logo.png",
+                ModificationPackage = true
+            };
+            await new SetPackagePropertiesExecutor(template).Execute(setProperties).ConfigureAwait(false);
 
+            // Set build metadata
             var branding = new MsixHeroBrandingInjector();
-            branding.Inject(template);
+            await branding.Inject(template).ConfigureAwait(false);
         }
 
         private static XElement GetOrCreateNode(XContainer xmlNode, string name, XNamespace nameSpace = null)

@@ -51,6 +51,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.App", "src\Ot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Cli.Verbs", "src\Otor.MsixHero.Cli.Verbs\Otor.MsixHero.Cli.Verbs.csproj", "{1E978D58-7B04-486D-B9EA-19C4D88EF66B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otor.MsixHero.Appx.Editor", "src\Otor.MsixHero.Appx.Editor\Otor.MsixHero.Appx.Editor.csproj", "{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,12 @@ Global
 		{1E978D58-7B04-486D-B9EA-19C4D88EF66B}.PublishCore|Any CPU.Build.0 = Debug|Any CPU
 		{1E978D58-7B04-486D-B9EA-19C4D88EF66B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E978D58-7B04-486D-B9EA-19C4D88EF66B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}.PublishCore|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}.PublishCore|Any CPU.Build.0 = Debug|Any CPU
+		{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
