@@ -94,7 +94,7 @@ Task("Publish .NET Framework")
         Configuration = "Release"
         });
 
-    var src = System.IO.Path.Combine("src", "bin", "net5.0-windows", "DGSS");
+    var src = System.IO.Path.Combine("src", "bin", "net6.0-windows", "DGSS");
     var tgt = System.IO.Path.Combine(binFolder, "DGSS");
     Information("Copying '" + src + "' to '" + tgt + "'...");
     CopyDirectory(src, tgt);
