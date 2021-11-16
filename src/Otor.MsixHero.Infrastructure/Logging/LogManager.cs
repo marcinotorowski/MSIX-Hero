@@ -60,8 +60,8 @@ namespace Otor.MsixHero.Infrastructure.Logging
         
         public static void Initialize(MsixHeroLogLevel minLogLevel = MsixHeroLogLevel.Info, MsixHeroLogLevel maxLogLevel = MsixHeroLogLevel.Fatal)
         {
-            var assembly = Path.GetFileNameWithoutExtension((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location);
-            var fileName = $"{DateTime.Now:yyyyMMdd-hhmmss}_{assembly}_{minLogLevel}.log";
+            var assembly = Path.GetFileName((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location);
+            var fileName = $"{assembly}\\{DateTime.Now:yyyyMMdd-hhmmss}_{minLogLevel}.log";
             var targetFileNameInfo = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MSIX-Hero", "Logs", fileName));
 
             Initialize(targetFileNameInfo.FullName, minLogLevel, maxLogLevel);

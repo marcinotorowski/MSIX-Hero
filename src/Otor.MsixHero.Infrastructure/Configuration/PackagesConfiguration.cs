@@ -30,7 +30,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
             this.Group = new PackagesGroupConfiguration();
             this.Sorting = new PackagesSortConfiguration();
         }
-
+        
         [DataMember(Name = "filter")]
         public PackagesFilterConfiguration Filter { get; set; }
 

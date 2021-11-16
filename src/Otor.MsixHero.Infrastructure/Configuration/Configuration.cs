@@ -28,9 +28,14 @@ namespace Otor.MsixHero.Infrastructure.Configuration
             this.Signing = new SigningConfiguration();
             this.Packer = new PackerConfiguration();
             this.AppInstaller = new AppInstallerConfiguration();
+            this.AppAttach = new AppAttachConfiguration();
             this.Editing = new EditingConfiguration();
             this.UiConfiguration = new UiConfiguration();
         }
+        
+        // ReSharper disable once StringLiteralTypo
+        [DataMember(Name = "appattach")]
+        public AppAttachConfiguration AppAttach { get; set; }
 
         [DataMember(Name = "editing")]
         public EditingConfiguration Editing { get; set; }

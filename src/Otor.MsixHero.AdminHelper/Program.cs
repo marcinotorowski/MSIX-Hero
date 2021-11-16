@@ -92,11 +92,11 @@ namespace Otor.MsixHero.AdminHelper
                 {
                     Logger.Debug("Preparing to start the pipe server...");
 
+                    IConfigurationService configurationService = new LocalConfigurationService();
                     ISigningManager signingManager = new SigningManager();
-                    IAppAttachManager appAttachManager = new AppAttachManager(signingManager);
+                    IAppAttachManager appAttachManager = new AppAttachManager(signingManager, configurationService);
                     IAppxVolumeManager appxVolumeManager = new AppxVolumeManager();
                     IRegistryManager registryManager = new RegistryManager();
-                    IConfigurationService configurationService = new LocalConfigurationService();
                     IAppxPackageManager appxPackageManager = new AppxPackageManager();
                     IAppxPackageQuery appxPackageQuery = new AppxPackageQuery(registryManager, configurationService);
                     IAppxPackageInstaller appxPackageInstaller = new AppxPackageInstaller();

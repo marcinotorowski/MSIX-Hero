@@ -2,9 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.Tests.AppAttach
 {
@@ -19,7 +22,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var targetDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "app-attach", "single"));
 
-            var appAttachManager = new AppAttachManager(new SigningManager());
+            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
             var vhdxPath = Path.Combine(targetDirectory.FullName, "output.vhdx");
             var cimPath = Path.Combine(targetDirectory.FullName, "output.cim");
 
@@ -43,7 +46,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var targetDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "app-attach", "scripts-json"));
 
-            var appAttachManager = new AppAttachManager(new SigningManager());
+            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
             var vhdPathNothing = Path.Combine(targetDirectory.FullName, "nothing", "output.vhd");
             var vhdPathScripts = Path.Combine(targetDirectory.FullName, "scripts", "output.vhd");
             var vhdPathCertificate = Path.Combine(targetDirectory.FullName, "certificate", "output.vhd");
@@ -98,7 +101,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var targetDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "app-attach", "custom-size"));
 
-            var appAttachManager = new AppAttachManager(new SigningManager());
+            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
             var vhdPath1 = Path.Combine(targetDirectory.FullName, "output1.vhd");
             var vhdPath2 = Path.Combine(targetDirectory.FullName, "output2.vhd");
 
@@ -140,7 +143,7 @@ namespace Otor.MsixHero.Tests.AppAttach
                 msixHeroPackage.CopyTo(src);
             }
             
-            var appAttachManager = new AppAttachManager(new SigningManager());
+            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
 
             try
             {
@@ -164,6 +167,32 @@ namespace Otor.MsixHero.Tests.AppAttach
             Assert.True(Directory.Exists(Path.Combine(targetCim, "pkg1")));
             Assert.True(Directory.Exists(Path.Combine(targetCim, "pkg2")));
             Assert.True(Directory.Exists(Path.Combine(targetCim, "pkg3")));
+        }
+    }
+
+    public class DummyConfigurationService : IConfigurationService
+    {
+        private Configuration configuration = new Configuration();
+
+        public Task<Configuration> GetCurrentConfigurationAsync(bool preferCached = true, CancellationToken token = default)
+        {
+            return Task.FromResult(this.configuration);
+        }
+
+        public Configuration GetCurrentConfiguration(bool preferCached = true)
+        {
+            return this.configuration;
+        }
+
+        public Task SetCurrentConfigurationAsync(Configuration cfg, CancellationToken cancellationToken = default)
+        {
+            this.configuration = cfg;
+            return Task.CompletedTask;
+        }
+
+        public void SetCurrentConfiguration(Configuration cfg)
+        {
+            this.configuration = cfg;
         }
     }
 }

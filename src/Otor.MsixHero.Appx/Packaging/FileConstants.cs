@@ -1,11 +1,13 @@
-﻿namespace Otor.MsixHero.Appx.Packaging
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Otor.MsixHero.Appx.Packaging
 {
+    [SuppressMessage("ReSharper", "IdentifierTypo")]
     public static class FileConstants
     {
         public const string MsixExtension = ".msix";
         public const string AppxExtension = ".appx";
-
-        // ReSharper disable once IdentifierTypo
+        
         public const string WingetExtension = ".yaml";
         public const string MsixBundleExtension = ".msixbundle";
         public const string AppxBundleExtension = ".appxbundle";
@@ -13,6 +15,8 @@
         public const string AppxBundleManifestFile = "appxbundlemanifest.xml";
         public const string AppxBundleManifestFilePath = "appxmetadata/" + AppxBundleManifestFile;
         public const string AppInstallerExtension = ".appinstaller";
-        public const string AppAttachDiskExtension = ".vhd";
+        public const string AppAttachVhdExtension = ".vhd";
+        public const string AppAttachVhdxExtension = ".vhdx";
+        public const string AppAttachCimExtension = ".cim";
     }
 }

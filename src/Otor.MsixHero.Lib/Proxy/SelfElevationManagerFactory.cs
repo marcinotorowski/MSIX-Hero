@@ -89,11 +89,11 @@ namespace Otor.MsixHero.Lib.Proxy
             switch (selfElevationLevel)
             {
                 case SelfElevationLevel.AsInvoker:
-                    return new AppAttachManager(this); // return user
+                    return new AppAttachManager(this, this.configurationService); // return user
                 case SelfElevationLevel.AsAdministrator:
                     if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        return new AppAttachManager(this);
+                        return new AppAttachManager(this, this.configurationService);
                     }
 
                     return new AppAttachManagerElevationProxy(this.client); // return admin;

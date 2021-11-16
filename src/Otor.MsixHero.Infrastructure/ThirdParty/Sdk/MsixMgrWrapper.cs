@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
+using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
@@ -30,7 +31,21 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     public class MsixMgrWrapper : ExeWrapper
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixMgrWrapper));
-        
+
+        private readonly bool forceRunFromSource;
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="MsixMgrWrapper"/> class.
+        /// </summary>
+        /// <param name="forceRunFromSource">If <c>true</c>, then the original msixmgr.exe is always started. If this is false, then
+        /// MSIXMGR may be extracted and started from a temporary location if running from MSIX. This is to overcome a serious bug
+        /// in its implementation, where the temporary files are created not in temp folders, but rather in its working directory,
+        /// which if running from MSIX is read-only.</param>
+        public MsixMgrWrapper(bool forceRunFromSource = false)
+        {
+            this.forceRunFromSource = forceRunFromSource;
+        }
+
         public enum FileType
         {
             Cim,
@@ -38,8 +53,20 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             // ReSharper disable once IdentifierTypo
             Vhdx
         }
-        
-        public Task Unpack(
+
+        public Task Unpack(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{unpackedDirectory}\"";
+            return this.RunMsixMgr(arguments, cancellationToken);
+        }
+
+        public Task ApplyAcls(string unpackedPackageDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            var arguments = $"-ApplyACLs -packagePath \"{unpackedPackageDirectory}\"";
+            return this.RunMsixMgr(arguments, cancellationToken);
+        }
+
+        public Task UnpackEx(
             string packageFilePath, 
             string containerPath, 
             FileType? fileType = null,
@@ -99,16 +126,13 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             return path;
         }
 
-        private async Task RunMsixMgr(string arguments, CancellationToken cancellationToken, Action<string> callBack = null)
+        private async Task RunMsixMgr(string arguments, CancellationToken cancellationToken = default, Action<string> callBack = null)
         {
-            var uwpHelpers = new DesktopBridge.Helpers();
-            var isRunningFromMsix = uwpHelpers.IsRunningAsUwp();
-
             string msixMgrPath;
             string msixMgrDirectory;
             bool cleanupMsixMgrDirectory;
 
-            if (isRunningFromMsix)
+            if (!this.forceRunFromSource && new DesktopBridge.Helpers().IsRunningAsUwp())
             {
                 Logger.Info("Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location...");
                 msixMgrDirectory = Path.Combine(Path.GetTempPath(), "msixmgr-" + Guid.NewGuid().ToString("N").Substring(0, 10));

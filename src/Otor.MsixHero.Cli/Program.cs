@@ -25,6 +25,8 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Executors;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.Cli
@@ -33,6 +35,18 @@ namespace Otor.MsixHero.Cli
     {
         static async Task Main(string[] args)
         {
+            var logLevel = MsixHeroLogLevel.Trace;
+
+            ExceptionGuard.Guard(() =>
+            {
+                var service = new LocalConfigurationService();
+                var config = service.GetCurrentConfiguration();
+
+                logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
+            });
+
+            LogManager.Initialize(logLevel);
+
             var p = Parser.Default.ParseArguments<SignVerb, PackVerb, UnpackVerb, NewCertVerb, TrustVerb, AppAttachVerb, NewModPackVerb, ExtractCertVerb, DependenciesVerb, UpdateImpactVerb>(args);
             await p.WithParsedAsync<SignVerb>(Run);
             await p.WithParsedAsync<PackVerb>(Run);
@@ -70,7 +84,7 @@ namespace Otor.MsixHero.Cli
         private static async Task<int> Run(AppAttachVerb arg)
         {
             var console = new ConsoleImpl(Console.Out, Console.Error);
-            IAppAttachManager appAttachManager = new AppAttachManager(new SigningManager());
+            IAppAttachManager appAttachManager = new AppAttachManager(new SigningManager(), new LocalConfigurationService());
             var executor = new AppAttachVerbExecutor(arg, appAttachManager, console);
             var exitCode = await executor.Execute().ConfigureAwait(false);
              Environment.ExitCode = exitCode;

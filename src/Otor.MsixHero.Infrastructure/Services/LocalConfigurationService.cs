@@ -183,6 +183,11 @@ namespace Otor.MsixHero.Infrastructure.Services
                 result = new Configuration.Configuration();
             }
 
+            if (result.AppAttach == null)
+            {
+                result.AppAttach = defaults.AppAttach;
+            }
+
             if (result.Signing == null)
             {
                 result.Signing = defaults.Signing;
@@ -247,7 +252,6 @@ namespace Otor.MsixHero.Infrastructure.Services
             {
                 result.Packages.Group = defaults.Packages.Group;
             }
-
             if (result.AppInstaller == null)
             {
                 result.AppInstaller = defaults.AppInstaller;
