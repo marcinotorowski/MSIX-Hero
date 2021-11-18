@@ -18,25 +18,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Windows.System;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
-using Timer = System.Timers.Timer;
 
 namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 {
     public class RunningAppsDetector : IRunningAppsDetector, IDisposable
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(RunningAppsDetector));
-        private readonly IList<Subscriber> observers = new List<Subscriber>();
-        private readonly AutoResetEvent syncObject = new AutoResetEvent(true);
-        private readonly ManualResetEvent resultsAvailability = new ManualResetEvent(true);
-        private readonly ReaderWriterLockSlim readerWriter = new ReaderWriterLockSlim();
 
-        private readonly Timer timer = new Timer(2000);
-        private HashSet<string> previouslyRunningAppIds;
+        private readonly IList<Subscriber> observers = new List<Subscriber>();
+
+        private readonly ReaderWriterLockSlim syncWriterLockSlim = new ReaderWriterLockSlim();
+        private readonly HashSet<string> activeApps = new HashSet<string>(StringComparer.Ordinal);
+        private AppDiagnosticInfoWatcher watcher;
 
         public IDisposable Subscribe(IObserver<ActivePackageFullNames> observer)
         {
@@ -44,165 +39,134 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
             observers.Add(returned);
             return returned;
         }
-
-        public IEnumerable<InstalledPackage> GetCurrentlyRunning(IEnumerable<InstalledPackage> allPackages)
+        
+        public IList<string> GetCurrentlyRunningPackageNames()
         {
-            this.resultsAvailability.WaitOne();
-
-            this.readerWriter.EnterReadLock();
+            Logger.Info("Getting the list of running apps...");
             try
             {
-                return allPackages.Where(p => this.previouslyRunningAppIds.Contains(p.PackageId)).ToArray();
+                Logger.Trace("Entering upgradeable read lock...");
+                this.syncWriterLockSlim.EnterUpgradeableReadLock();
+
+                Logger.Trace("Upgrading to write lock...");
+                this.syncWriterLockSlim.EnterWriteLock();
+                
+                try
+                {
+                    this.activeApps.Clear();
+                    foreach (var item in AppDiagnosticInfo.RequestInfoAsync().GetAwaiter().GetResult())
+                    {
+                        var family = GetFamilyNameFromAppUserModelId(item.AppInfo.AppUserModelId);
+                        this.activeApps.Add(family);
+                    }
+
+                    Logger.Info($"Returning {this.activeApps.Count} apps running in the background...");
+                }
+                finally
+                {
+                    this.syncWriterLockSlim.ExitWriteLock();
+                }
+
+                this.Publish(new ActivePackageFullNames(this.activeApps));
+                return this.activeApps.ToList();
             }
             finally
             {
-                this.readerWriter.ExitReadLock();
+                Logger.Trace("Exiting upgradeable read lock...");
+                this.syncWriterLockSlim.ExitUpgradeableReadLock();
             }
         }
 
-        public IEnumerable<string> GetCurrentlyRunningPackageNames()
+        private static string GetFamilyNameFromAppUserModelId(string appInfoAppUserModelId)
         {
-            this.resultsAvailability.WaitOne();
+            var exclamation = appInfoAppUserModelId.LastIndexOf('!');
+            if (exclamation == -1)
+            {
+                return appInfoAppUserModelId;
+            }
 
-            this.readerWriter.EnterReadLock();
-            try
-            {
-                return this.previouslyRunningAppIds.ToArray();
-            }
-            finally
-            {
-                this.readerWriter.ExitReadLock();
-            }
+            // we need to cut-out the entry point
+            return appInfoAppUserModelId.Substring(0, exclamation);
         }
 
         public void StartListening()
         {
-            var waited = this.syncObject.WaitOne();
-
-            try
+            if (this.watcher != null)
             {
-                this.resultsAvailability.Reset();
-
-                if (this.timer.Enabled)
-                {
-                    this.timer.Elapsed -= this.TimerOnElapsed;
-                    this.timer.Stop();
-                }
-
-                this.timer.Elapsed += this.TimerOnElapsed;
-                this.timer.Start();
+                this.StopListening();
             }
-            finally
-            {
-                if (waited)
-                {
-                    this.syncObject.Set();
-                }
-            }
+
+            Logger.Info("Starting listening on background apps activity...");
+
+            this.watcher = AppDiagnosticInfo.CreateWatcher();
+            this.watcher.EnumerationCompleted += this.WatcherOnEnumerationCompleted;
+            this.watcher.Start();
         }
 
-        private static HashSet<string> GetNowRunning()
+        private void WatcherOnEnumerationCompleted(AppDiagnosticInfoWatcher sender, object args)
         {
-            IList<TaskListWrapper.AppProcess> table;
-            try
-            {
-                var wrapper = new TaskListWrapper();
-                table = wrapper.GetBasicAppProcesses("running").ConfigureAwait(false).GetAwaiter().GetResult();
-            }
-            catch (Exception e)
-            {
-                Logger.Warn(e, "Could not get the list of running processes.");
-                return null;
-            }
-
-            var nowRunning = new HashSet<string>();
-            foreach (var item in table)
-            {
-                Logger.Debug($"PID = {item.ProcessId}, Name = {item.PackageName}, Memory = {item.MemoryUsage}, Image = {item.ImageName}");
-                nowRunning.Add(item.PackageName);
-            }
-
-            return nowRunning;
-        }
-
-        private async void TimerOnElapsed(object sender, ElapsedEventArgs e)
-        {
-#pragma warning disable 4014
-            this.timer.Stop();
-            try
-            {
-                await Task.Run(this.DoCheck).ConfigureAwait(false);
-            }
-            finally
-            {
-                this.timer.Start();
-            }
-#pragma warning restore 4014
-        }
-
-        private void DoCheck()
-        {
-            var wait = this.syncObject.WaitOne();
-
-            Logger.Debug("Checking for running apps.");
-            try
-            {
-                this.readerWriter.EnterWriteLock();
-                this.resultsAvailability.Reset();
-
-                var nowRunning = GetNowRunning();
-                if (nowRunning == null)
-                {
-                    return;
-                }
-
-                if (this.previouslyRunningAppIds != null && nowRunning.SequenceEqual(this.previouslyRunningAppIds))
-                {
-                    Logger.Trace("The list of running apps has not changed.");
-                    return;
-                }
-
-                Logger.Info("Notifying about updated app state.");
-                this.previouslyRunningAppIds = nowRunning;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-                throw;
-            }
-            finally
-            {
-                this.resultsAvailability.Set();
-                this.readerWriter.ExitWriteLock();
-
-                if (wait)
-                {
-                    this.syncObject.Set();
-                }
-            }
-
-            this.Publish(new ActivePackageFullNames(this.previouslyRunningAppIds));
+            Logger.Debug("Watcher has finished with app enumeration.");
+            sender.EnumerationCompleted -= this.WatcherOnEnumerationCompleted;
+            sender.Added += this.WatcherOnAdded;
+            sender.Removed += this.WatcherOnRemoved;
         }
 
         public void StopListening()
         {
-            var wait = this.syncObject.WaitOne();
+            Logger.Info("Stopping listening on background apps activity...");
+            this.watcher.Stop();
+            this.watcher.Added -= this.WatcherOnAdded;
+            this.watcher.Removed -= this.WatcherOnRemoved;
+            this.watcher.EnumerationCompleted -= this.WatcherOnEnumerationCompleted;
+            this.watcher = null;
+        }
+
+        private void WatcherOnAdded(AppDiagnosticInfoWatcher sender, AppDiagnosticInfoWatcherEventArgs args)
+        {
+            Logger.Trace($"The following app has been started: {args.AppDiagnosticInfo.AppInfo.AppUserModelId}");
+            this.syncWriterLockSlim.EnterWriteLock();
 
             try
             {
-                this.timer.Elapsed -= this.TimerOnElapsed;
-                this.timer.Stop();
-                this.resultsAvailability.Set();
+                var family = GetFamilyNameFromAppUserModelId(args.AppDiagnosticInfo.AppInfo.AppUserModelId);
+
+                if (!this.activeApps.Add(family))
+                {
+                    return;
+                }
+
+                Logger.Debug($"The following app family name has been started: {args.AppDiagnosticInfo.AppInfo.AppUserModelId}");
+                this.Publish(new ActivePackageFullNames(this.activeApps));
             }
             finally
             {
-                if (wait)
-                {
-                    this.syncObject.Set();
-                }
+                this.syncWriterLockSlim.ExitWriteLock();
             }
         }
 
+        private void WatcherOnRemoved(AppDiagnosticInfoWatcher sender, AppDiagnosticInfoWatcherEventArgs args)
+        {
+            Logger.Trace($"The following app has been closed: {args.AppDiagnosticInfo.AppInfo.AppUserModelId}");
+            this.syncWriterLockSlim.EnterWriteLock();
+
+            try
+            {
+                var family = GetFamilyNameFromAppUserModelId(args.AppDiagnosticInfo.AppInfo.AppUserModelId);
+
+                if (!this.activeApps.Remove(family))
+                {
+                    return;
+                }
+
+                Logger.Debug($"The following app family name has been closed: {args.AppDiagnosticInfo.AppInfo.AppUserModelId}");
+                this.Publish(new ActivePackageFullNames(this.activeApps));
+            }
+            finally
+            {
+                this.syncWriterLockSlim.ExitWriteLock();
+            }
+        }
+        
         private void Publish(ActivePackageFullNames eventPayload)
         {
             foreach (var item in this.observers)
@@ -213,6 +177,8 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 
         void IDisposable.Dispose()
         {
+            this.syncWriterLockSlim.Dispose();
+
             foreach (var disposable in this.observers)
             {
                 disposable.Dispose();

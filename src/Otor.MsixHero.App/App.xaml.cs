@@ -16,14 +16,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using MediatR;
-using MediatR.Pipeline;
 using Notifications.Wpf.Core;
 using Notifications.Wpf.Core.Controls;
 using Otor.MsixHero.App.Controls;
@@ -194,7 +190,10 @@ namespace Otor.MsixHero.App
         private void InitializeMainWindow()
         {
             var regionManager = this.Container.Resolve<IRegionManager>();
+            var detector = this.Container.Resolve<IRunningAppsDetector>();
+
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
+            detector.StartListening();
 
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
             regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));

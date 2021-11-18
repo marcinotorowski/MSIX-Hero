@@ -24,7 +24,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
     {
         public ActivePackageFullNames(IEnumerable<InstalledPackage> running)
         {
-            this.Running = running.Select(r => r.PackageId).ToList();
+            this.Running = running.Select(r => r.PackageFamilyName).ToList();
         }
 
         public ActivePackageFullNames(IEnumerable<string> running)

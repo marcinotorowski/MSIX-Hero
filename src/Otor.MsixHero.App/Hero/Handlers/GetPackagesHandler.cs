@@ -46,8 +46,6 @@ namespace Otor.MsixHero.App.Hero.Handlers
             var context = this.busyManager.Begin(OperationType.PackageLoading);
             try
             {
-                this.detector.StartListening();
-
                 var level = SelfElevationLevel.HighestAvailable;
 
                 if (request.FindMode == PackageFindMode.AllUsers)
@@ -89,9 +87,11 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 this.commandExecutor.ApplicationState.Packages.AllPackages.Clear();
                 this.commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);
 
-                foreach (var item in this.detector.GetCurrentlyRunning(this.commandExecutor.ApplicationState.Packages.AllPackages))
+                var currentlyRunning = new HashSet<string>(this.detector.GetCurrentlyRunningPackageNames(), StringComparer.Ordinal);
+
+                foreach (var item in this.commandExecutor.ApplicationState.Packages.AllPackages)
                 {
-                    item.IsRunning = true;
+                    item.IsRunning = currentlyRunning.Contains(item.PackageFamilyName);
                 }
 
                 switch (mode)

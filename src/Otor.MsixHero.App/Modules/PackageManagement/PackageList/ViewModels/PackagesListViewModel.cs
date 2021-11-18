@@ -322,7 +322,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             {
                 foreach (var item in this.Items)
                 {
-                    item.IsRunning = obj.Running.Contains(item.ProductId);
+                    item.IsRunning = obj.Running.Contains(item.PackageFamilyName);
                 }
             }
             finally

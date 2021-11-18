@@ -236,7 +236,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 return false;
             }
 
-            return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageId) == true;
+            return this.application.ApplicationState.Packages.ActivePackageNames?.Contains(selected.PackageFamilyName) == true;
         }
 
         // ReSharper disable once IdentifierTypo
