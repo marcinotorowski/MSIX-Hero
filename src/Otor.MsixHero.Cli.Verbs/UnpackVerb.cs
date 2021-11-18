@@ -26,5 +26,11 @@ namespace Otor.MsixHero.Cli.Verbs
 
         [Option('d', "directory", Required = true)]
         public string Directory { get; set; }
+
+        [Option("nv", Default = false, HelpText = "Skip semantic validation. If you don't specify this option, MSIX Hero performs a full validation of the package.")]
+        public bool NoValidation { get; set; }
+
+        [Option('x', "remove", Default = false, HelpText = "If set, the input package will be removed after packing.")]
+        public bool RemovePackageAfterExtraction { get; set; }
     }
 }

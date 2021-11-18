@@ -227,11 +227,21 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 throw;
             }
         }
-        
+
         public Task UnpackPackage(string sourceMsixPath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        {
+            return this.UnpackPackage(sourceMsixPath, unpackedDirectory, false, cancellationToken);
+        }
+
+        public Task UnpackPackage(string sourceMsixPath, string unpackedDirectory, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             var wrapper = new PackUnPackProgressWrapper(progress);
             var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{sourceMsixPath}\" /v /o";
+            if (!validate)
+            {
+                arguments += " /nv";
+            }
+
             return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
         }
 

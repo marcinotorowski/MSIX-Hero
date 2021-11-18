@@ -15,8 +15,10 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -39,8 +41,16 @@ namespace Otor.MsixHero.Cli.Executors
 
             try
             {
-                await this.Console.WriteInfo($"Unpacking [{this.Verb.Directory}] to [{this.Verb.Package}]...").ConfigureAwait(false);
-                await msixSdkWrapper.UnpackPackage(this.Verb.Package, this.Verb.Directory).ConfigureAwait(false);
+                await this.Console.WriteInfo($"Unpacking [{this.Verb.Package}] to [{this.Verb.Directory}]...").ConfigureAwait(false);
+                await msixSdkWrapper.UnpackPackage(this.Verb.Package, this.Verb.Directory, !this.Verb.NoValidation).ConfigureAwait(false);
+
+                await this.Console.WriteSuccess($"The package has been unpacked to [{this.Verb.Directory}].");
+
+                if (this.Verb.RemovePackageAfterExtraction)
+                {
+                    await this.Console.WriteInfo($"Removing source package {this.Verb.Package}...");
+                    ExceptionGuard.Guard(() => File.Delete(this.Verb.Package));
+                }
 
                 await this.Console.WriteSuccess($"Package has been unpacked to [{this.Verb.Directory}].");
                 return 0;

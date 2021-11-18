@@ -15,8 +15,10 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -43,6 +45,13 @@ namespace Otor.MsixHero.Cli.Executors
                 await msixSdkWrapper.PackPackageDirectory(this.Verb.Directory, this.Verb.Package, !this.Verb.NoCompression, !this.Verb.NoValidation).ConfigureAwait(false);
 
                 await this.Console.WriteSuccess($"Package [{this.Verb.Package}] has been created.");
+
+                if (this.Verb.RemoveDirectoryAfterPacking)
+                {
+                    await this.Console.WriteInfo($"Removing source directory {this.Verb.Directory}...");
+                    ExceptionGuard.Guard(() => Directory.Delete(this.Verb.Directory, true));
+                }
+
                 return 0;
             }
             catch (SdkException e)
