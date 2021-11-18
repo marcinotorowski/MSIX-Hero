@@ -151,7 +151,7 @@ namespace Otor.MsixHero.Infrastructure.Branding
 
         private static string GetVersion(string sdkFile)
         {
-            var path = MsixSdkWrapper.GetSdkPath(sdkFile);
+            var path = SdkPathHelper.GetSdkPath(sdkFile);
             return File.Exists(path) ? FileVersionInfo.GetVersionInfo(path).ProductVersion : null;
         }
     }

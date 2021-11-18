@@ -35,7 +35,7 @@ namespace Otor.MsixHero.Cli.Executors
 
         public override async Task<int> Execute()
         {
-            var msixSdkWrapper = new MsixSdkWrapper();
+            var msixSdkWrapper = new MakeAppxWrapper();
 
             Logger.Info($"Packing [{this.Verb.Directory}] to [{this.Verb.Package}]...");
 

@@ -72,7 +72,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 await File.WriteAllBytesAsync(Path.Combine(emptyDir.FullName, "GeneratedFile.txt"), Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
             }
 
-            await new MsixSdkWrapper().PackPackageDirectory(directory, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
+            await new MakeAppxWrapper().PackPackageDirectory(directory, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
         }
 
         public async Task Pack(
@@ -192,7 +192,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 var compress = !options.HasFlag(AppxPackerOptions.NoCompress);
                 var validate = !options.HasFlag(AppxPackerOptions.NoValidation);
 
-                await new MsixSdkWrapper().PackPackageFiles(tempFile, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
+                await new MakeAppxWrapper().PackPackageFiles(tempFile, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
             }
             finally
             {
@@ -225,7 +225,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 Directory.CreateDirectory(directory);
             }
 
-            return new MsixSdkWrapper().UnpackPackage(packagePath, directory, cancellationToken, progress);
+            return new MakeAppxWrapper().UnpackPackage(packagePath, directory, cancellationToken, progress);
         }
 
         private class Utf8StringWriter : StringWriter

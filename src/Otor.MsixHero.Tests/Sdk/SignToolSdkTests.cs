@@ -49,7 +49,7 @@ namespace Otor.MsixHero.Tests.Sdk
                          "After Private Key filter, 0 certs were left.	\r\n")
                 .Split("\r\n").ToList();
 
-            MsixSdkWrapper.TryGetErrorMessageFromSignToolOutput(output, out var error);
+            SignToolWrapper.TryGetErrorMessageFromSignToolOutput(output, out var error);
             Assert.IsTrue(error.Contains("EKU", StringComparison.CurrentCultureIgnoreCase));
         }
     }

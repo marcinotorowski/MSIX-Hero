@@ -213,6 +213,7 @@ namespace Otor.MsixHero.Appx.Signing
             }
             finally
             {
+                // ReSharper disable once RedundantEnumerableCastCall
                 foreach (var item in certObject?.OfType<X509Certificate2>() ?? Enumerable.Empty<X509Certificate2>())
                 {
                     item.Dispose();
@@ -393,7 +394,8 @@ namespace Otor.MsixHero.Appx.Signing
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 string type;
-                if (x509[0].SignatureAlgorithm.FriendlyName.EndsWith("rsa", StringComparison.OrdinalIgnoreCase))
+                
+                if (x509[0].SignatureAlgorithm.FriendlyName?.EndsWith("rsa", StringComparison.OrdinalIgnoreCase) == true)
                 {
                     type = x509[0].SignatureAlgorithm.FriendlyName.Substring(0, x509[0].SignatureAlgorithm.FriendlyName.Length - 3).ToUpperInvariant();
                 }
@@ -404,7 +406,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                 Logger.Debug("Signing package {0} with algorithm {1}.", localCopy, x509[0].SignatureAlgorithm.FriendlyName);
 
-                var sdk = new MsixSdkWrapper();
+                var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
 
                 await sdk.SignPackageWithPersonal(new[] { localCopy }, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
@@ -458,7 +460,7 @@ namespace Otor.MsixHero.Appx.Signing
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     
-                    var sdk = new MsixSdkWrapper();
+                    var sdk = new SignToolWrapper();
                     progress?.Report(new ProgressData(25, "Signing with Device Guard..."));
                     await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, timestampUrl, cancellationToken).ConfigureAwait(false);
                     progress?.Report(new ProgressData(75, "Signing with Device Guard..."));
@@ -518,7 +520,7 @@ namespace Otor.MsixHero.Appx.Signing
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 string type;
-                if (x509.SignatureAlgorithm.FriendlyName.EndsWith("rsa", StringComparison.OrdinalIgnoreCase))
+                if (x509.SignatureAlgorithm.FriendlyName?.EndsWith("rsa", StringComparison.OrdinalIgnoreCase) == true)
                 {
                     type = x509.SignatureAlgorithm.FriendlyName.Substring(0, x509.SignatureAlgorithm.FriendlyName.Length - 3).ToUpperInvariant();
                 }
@@ -531,7 +533,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                 Logger.Debug("Signing package {0} with algorithm {1}.", localCopy, x509.SignatureAlgorithm.FriendlyName);
 
-                var sdk = new MsixSdkWrapper();
+                var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
                 await sdk.SignPackageWithPfx(new[] { localCopy }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
                 progress?.Report(new ProgressData(75, "Signing..."));
@@ -699,7 +701,7 @@ namespace Otor.MsixHero.Appx.Signing
 
             var localCopy = Path.GetTempFileName() + Path.GetExtension(package);
 
-            var sdk = new MsixSdkWrapper();
+            var sdk = new MakeAppxWrapper();
             if (updatePublisher)
             {
                 cancellationToken.ThrowIfCancellationRequested();

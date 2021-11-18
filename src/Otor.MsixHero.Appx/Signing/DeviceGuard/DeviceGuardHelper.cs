@@ -79,7 +79,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                     }
                 }
 
-                var sdk = new MsixSdkWrapper();
+                var sdk = new SignToolWrapper();
                 Logger.Debug($"Signing temporary file path {tempFilePath}");
                 await sdk.SignPackageWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
 
