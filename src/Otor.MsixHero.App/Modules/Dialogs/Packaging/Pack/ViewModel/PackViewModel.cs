@@ -71,6 +71,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.Sign = new ChangeableProperty<bool>(signByDefault);
             this.Compress = new ChangeableProperty<bool>(true);
             this.Validate = new ChangeableProperty<bool>(true);
+            this.RemoveDirectory = new ChangeableProperty<bool>();
             this.OverrideSubject = new ChangeableProperty<bool>(true);
 
             this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig)
@@ -81,8 +82,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
             this.Sign.ValueChanged += this.SignOnValueChanged;
 
-            this.TabSource = new ChangeableContainer(this.InputPath, this.OutputPath, this.Sign, this.Compress, this.Validate);
+            this.TabSource = new ChangeableContainer(this.InputPath, this.OutputPath, this.Sign, this.Compress, this.Validate, this.RemoveDirectory);
             this.TabSigning = new ChangeableContainer(this.SelectedCertificate, this.OverrideSubject);
+            
             this.AddChildren(this.TabSource, this.TabSigning);
         }
 
@@ -113,6 +115,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
         public ChangeableProperty<bool> Compress { get; }
 
         public ChangeableProperty<bool> Validate { get; }
+
+        public ChangeableProperty<bool> RemoveDirectory { get; }
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
@@ -203,7 +207,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                             break;
                     }
                 }
-                
+
+                if (this.RemoveDirectory.CurrentValue)
+                {
+                    ExceptionGuard.Guard(() => Directory.Delete(this.InputPath.CurrentValue, true));
+                }
+
                 return true;
             }
             finally

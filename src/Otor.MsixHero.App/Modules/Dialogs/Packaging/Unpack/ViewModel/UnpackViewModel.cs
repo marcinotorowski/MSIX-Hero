@@ -26,6 +26,7 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -48,11 +49,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
             };
             
             this.CreateFolder = new ChangeableProperty<bool>(true);
+            this.RemoveFile = new ChangeableProperty<bool>();
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
 
-            this.AddChildren(this.InputPath, this.OutputPath, this.CreateFolder);
-            this.RegisterForCommandLineGeneration(this.InputPath, this.OutputPath, this.CreateFolder);
+            this.AddChildren(this.InputPath, this.OutputPath, this.CreateFolder, this.RemoveFile);
+
+            this.RegisterForCommandLineGeneration(this.InputPath, this.OutputPath, this.CreateFolder, this.RemoveFile);
         }
 
         protected override void UpdateVerbData()
@@ -69,6 +72,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
             {
                 this.Verb.Package = "<source-package>";
             }
+
+            this.Verb.RemovePackageAfterExtraction = this.RemoveFile.CurrentValue;
         }
         
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -91,6 +96,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
         public ChangeableFolderProperty OutputPath { get; }
 
         public ChangeableFileProperty InputPath { get; }
+
         public ICommand OpenSuccessLinkCommand
         {
             get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
@@ -103,9 +109,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 
         public ChangeableProperty<bool> CreateFolder { get; }
 
+        public ChangeableProperty<bool> RemoveFile { get; }
+
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
             await this.appxPacker.Unpack(this.InputPath.CurrentValue, this.GetOutputPath(), default, progress).ConfigureAwait(false);
+
+            if (this.RemoveFile.CurrentValue)
+            {
+                ExceptionGuard.Guard(() => File.Delete(this.InputPath.CurrentValue));
+            }
+
             return true;
         }
 

@@ -106,6 +106,7 @@
                         <CheckBox Margin="0 10 0 0" Content="Compress files according to their type" IsChecked="{Binding Compress.CurrentValue}" />
                         <CheckBox Margin="0 6 0 0" Content="Perform basic integrity checks" IsChecked="{Binding Validate.CurrentValue}" />
                         <CheckBox Margin="0 6 0 0" Content="Sign this package" IsChecked="{Binding Sign.CurrentValue}" />
+                        <CheckBox Margin="0 6 0 0" Content="Remove input folder after packing" IsChecked="{Binding RemoveDirectory.CurrentValue}" />
 
                     </StackPanel>
                 </AdornerDecorator>

@@ -63,6 +63,7 @@
                                 </DockPanel>
 
                                 <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
+                                <CheckBox IsChecked="{Binding RemoveFile.CurrentValue}" Content="Remove original package after unpacking." Margin="0 6 0 0" />
 
                             </StackPanel>
                         </AdornerDecorator>
