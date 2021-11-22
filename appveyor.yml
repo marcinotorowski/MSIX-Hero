@@ -4,6 +4,7 @@ branches:
   - master
 install:
 - pwsh: dotnet tool restore
+image: Visual Studio 2022
 build_script:
 - pwsh: dotnet cake
 artifacts:
