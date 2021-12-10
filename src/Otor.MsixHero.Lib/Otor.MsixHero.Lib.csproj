@@ -13,13 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.10" />
     <PackageReference Include="ControlzEx" Version="5.0.1" />
     <PackageReference Include="DiscUtils.Ntfs" Version="0.16.13" />
     <PackageReference Include="DiscUtils.Vhd" Version="0.16.13" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog" Version="4.7.12" />
+    <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="System.Management.Automation" Version="7.2.0" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />

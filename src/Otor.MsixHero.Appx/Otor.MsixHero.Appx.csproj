@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.10" />
     <PackageReference Include="chausner.PriFormat.Forked" Version="1.0.0" />
     <PackageReference Include="Microsoft.Acs.Dgss.Client" Version="1.0.11" />
-    <PackageReference Include="Microsoft.Identity.Client" Version="4.38.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.39.0" />
     <PackageReference Include="Registry" Version="1.2.2" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
   </ItemGroup>

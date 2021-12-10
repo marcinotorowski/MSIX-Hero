@@ -41,10 +41,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cquential.Microsoft.Practices.Unity" Version="2.0.414" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="4.6.97" />
     <PackageReference Include="FluentWPF" Version="0.10.0" />
-    <PackageReference Include="gong-wpf-dragdrop" Version="2.4.3" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.0.0" />
     <PackageReference Include="GraphX" Version="3.0.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
