@@ -72,7 +72,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
             }
             else if (e.Command == ApplicationCommands.New)
             {
-                ((IDialogAware)this.DataContext).OnDialogOpened(new DialogParameters());
+                ((AppAttachViewModel)this.DataContext).AddPackage();
             }
             else if (e.Command == ApplicationCommands.Open)
             {

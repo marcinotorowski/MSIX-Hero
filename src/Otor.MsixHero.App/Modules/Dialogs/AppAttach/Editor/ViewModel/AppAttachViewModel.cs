@@ -57,13 +57,40 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             this.TabOptions = new ChangeableContainer(
                 this.ExtractCertificate = new ChangeableProperty<bool>(),
                 this.GenerateScripts = new ChangeableProperty<bool>(true),
-                this.VolumeType = new ChangeableProperty<AppAttachVolumeType>(AppAttachVolumeType.Vhd),
+                this.VolumeType = new ChangeableProperty<AppAttachVolumeType>(),
                 this.SizeMode = new ChangeableProperty<AppAttachSizeMode>(),
                 this.FixedSize = new ValidatedChangeableProperty<string>("Fixed size", "100", this.ValidateFixedSize)
             );
             
             this.AddChildren(this.TabPackages, this.TabOptions);
             this.RegisterForCommandLineGeneration(this.Files, this.GenerateScripts, this.VolumeType, this.ExtractCertificate, this.FixedSize, this.SizeMode);
+        }
+
+        public void AddPackage(string packagePath = null)
+        {
+            string[] selection;
+            if (string.IsNullOrEmpty(packagePath))
+            {
+                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out selection);
+                if (!interactionResult || !selection.Any())
+                {
+                    return;
+                }
+            }
+            else
+            {
+                selection = new[] { packagePath };
+            }
+
+            foreach (var selected in selection)
+            {
+                if (this.Files.Contains(selected, StringComparer.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                this.Files.Add(selected);
+            }
         }
 
         void IDialogAware.OnDialogOpened(IDialogParameters parameters)
@@ -74,21 +101,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             }
             else
             {
-                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out string[] selection);
-                if (!interactionResult || !selection.Any())
-                {
-                    return;
-                }
-
-                foreach (var selected in selection)
-                {
-                    if (this.Files.Contains(selected, StringComparer.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    this.Files.Add(selected);
-                }
+                return;
             }
 
             this.Files.Commit();
@@ -137,6 +150,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             }
 
             var files = await Task.Run(() => Directory.EnumerateFiles(folder, "*" + FileConstants.MsixExtension, recurse ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).ToList()).ConfigureAwait(true);
+
+            if (!files.Any())
+            {
+                this.interactionService.ShowError("The selected folder contains no MSIX packages.");
+                return 0;
+            }
+
             var cnt = this.Files.Count;
             this.Files.AddRange(files.Except(this.Files, StringComparer.OrdinalIgnoreCase));
 

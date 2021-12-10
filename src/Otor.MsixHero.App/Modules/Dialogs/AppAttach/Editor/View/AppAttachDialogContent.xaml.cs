@@ -32,11 +32,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
         }
         private void HyperlinkMsdn_OnClick(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo("https://msixhero.net/redirect/msix-app-attach/prepare-ps");
-            psi.UseShellExecute = true;
+            var psi = new ProcessStartInfo("https://msixhero.net/redirect/msix-app-attach/prepare-ps")
+            {
+                UseShellExecute = true
+            };
+
             Process.Start(psi);
         }
-        
+
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var sp = ((AppAttachViewModel)this.DataContext).SelectedPackages;

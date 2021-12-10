@@ -217,7 +217,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
                 var fileFilter = new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension);
                 var settings = new FileDialogSettings
                 {
-                    Filter = fileFilter.BuildFilter(true, true),
+                    Filter = fileFilter.BuildFilter(),
                     DialogTitle = $"Open app installer (*{FileConstants.AppInstallerExtension})"
                 };
 
