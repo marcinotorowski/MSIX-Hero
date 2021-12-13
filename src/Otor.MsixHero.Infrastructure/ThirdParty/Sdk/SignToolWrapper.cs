@@ -211,10 +211,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 {
                     if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
-                        throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
+                        throw new SdkException($"The package could not be signed (exit code {e.ExitCode}). {specialError}", e.ExitCode);
                     }
 
-                    throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                    throw new SdkException($"The package could not be signed (exit code {e.ExitCode}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)
@@ -238,6 +238,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             if (lines.Any(l => l.Contains("-2147024885/0x8007000b")))
             {
                 error = "Package publisher and certificate subject are not the same. MSIX app cannot be signed with the selected certificate.";
+                return true;
+            }
+
+            if (lines.Any(l => l.Contains("-2146869243/")))
+            {
+                error = "Selected timestamp server could not be used to sign the package (error 0x80096005).";
                 return true;
             }
 
