@@ -26,6 +26,7 @@ using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Logging;
@@ -46,7 +47,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory)
+            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
+            ITimeStampFeed timeStampFeed)
         {
             this.eventAggregator = eventAggregator;
             this.configurationService = configurationService;
@@ -77,7 +79,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             this.TabSigning.AddChildren
             (
-                this.CertificateSelector = new CertificateSelectorViewModel(interactionService, signingManagerFactory, config.Signing, true)
+                this.CertificateSelector = new CertificateSelectorViewModel(
+                    interactionService, 
+                    signingManagerFactory, 
+                    config.Signing,
+                    timeStampFeed,
+                    true)
             );
 
             var uiLevel = (int) (config.UiConfiguration?.UxTier ?? UxTierLevel.Auto);
@@ -405,7 +412,25 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 }
 
                 UpdateConfiguration(newConfiguration.Signing, e => e.Source, this.CertificateSelector.Store);
-                UpdateConfiguration(newConfiguration.Signing, e => e.TimeStampServer, this.CertificateSelector.TimeStamp);
+
+
+                string timeStampUrl;
+                switch (this.CertificateSelector.TimeStampSelectionMode.CurrentValue)
+                {
+                    case TimeStampSelectionMode.None:
+                        timeStampUrl = null;
+                        break;
+                    case TimeStampSelectionMode.Auto:
+                        timeStampUrl = "auto";
+                        break;
+                    case TimeStampSelectionMode.Url:
+                        timeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                newConfiguration.Signing.TimeStampServer = timeStampUrl;
             }
 
             if (this.ManifestEditorType.CurrentValue == EditorType.Custom)

@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security;
@@ -26,6 +27,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Logging;
@@ -43,6 +45,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
         private readonly IInteractionService interactionService;
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
+        private readonly ITimeStampFeed timeStampFeed;
         private ICommand signOutDeviceGuard, signInDeviceGuard;
         private bool allowNoSelection;
 
@@ -50,17 +53,38 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             IInteractionService interactionService,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             SigningConfiguration configuration,
+            ITimeStampFeed timeStampFeed,
             bool allowNoSelection = false)
         {
             this.allowNoSelection = allowNoSelection;
             this.interactionService = interactionService;
             this.signingManagerFactory = signingManagerFactory;
+            this.timeStampFeed = timeStampFeed;
             var signConfig = configuration ?? new SigningConfiguration();
+
+
+            if (string.IsNullOrEmpty(signConfig.TimeStampServer))
+            {
+                this.TimeStampSelectionMode = new ChangeableProperty<TimeStampSelectionMode>();
+            }
+            else if (string.Equals("auto", signConfig.TimeStampServer, StringComparison.OrdinalIgnoreCase))
+            {
+                this.TimeStampSelectionMode = new ChangeableProperty<TimeStampSelectionMode>(ViewModel.TimeStampSelectionMode.Auto);
+            }
+            else
+            {
+                this.TimeStampSelectionMode = new ChangeableProperty<TimeStampSelectionMode>(ViewModel.TimeStampSelectionMode.Url);
+            }
 
             this.TimeStamp = new ValidatedChangeableProperty<string>(
                 "Time stamp URL",
-                signConfig.TimeStampServer ?? "http://timestamp.globalsign.com/scripts/timstamp.dll",
+                signConfig.TimeStampServer == "auto" ? null : signConfig.TimeStampServer,
                 this.ValidateTimestamp);
+
+            this.TimeStampSelectionMode.Changed += (_, _) =>
+            {
+                this.TimeStamp.Validate();
+            };
 
             var newStore = signConfig.Source;
             if (newStore == CertificateSource.Unknown && !allowNoSelection)
@@ -109,7 +133,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>("Selected certificate", false, this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
-            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.Password, this.DeviceGuard, this.Store, this.ShowAllCertificates);
+            this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.TimeStampSelectionMode, this.Password, this.DeviceGuard, this.Store, this.ShowAllCertificates);
             
             this.ShowAllCertificates.ValueChanged += async (_, args) =>
             {
@@ -247,7 +271,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
         public ChangeableFileProperty PfxPath { get; }
 
-        public ChangeableProperty<string> TimeStamp { get; }
+        public ValidatedChangeableProperty<string> TimeStamp { get; }
         
         public ChangeableProperty<bool> ShowAllCertificates { get; }
 
@@ -271,8 +295,15 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             return arg == null ? "The configuration for the device guard is required." : null;
         }
 
+        public ChangeableProperty<TimeStampSelectionMode> TimeStampSelectionMode { get; }
+
         private string ValidateTimestamp(string value)
         {
+            if (this.TimeStampSelectionMode.CurrentValue != ViewModel.TimeStampSelectionMode.Url)
+            {
+                return null;
+            }
+
             if (string.IsNullOrEmpty(value))
             {
                 return "Timestamp server URL is required.";
@@ -290,6 +321,46 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
             return "The URL must have a protocol.";
         }
+
+        public AsyncProperty<IList<string>> TimeStampServers { get; } = new AsyncProperty<IList<string>>(null, false);
+
+        public async Task<IList<string>> GenerateTimeStampServers()
+        {
+            try
+            {
+                var newList = new List<string>();
+                var entries = await this.timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
+                foreach (var item in entries?.Servers ?? Enumerable.Empty<TimeStampServerEntry>())
+                {
+                    newList.Add(item.Url);
+                }
+
+                var currentTimeStamp = this.TimeStamp.CurrentValue;
+                if (!newList.Contains(currentTimeStamp))
+                {
+                    newList.Add(currentTimeStamp);
+                }
+
+                return newList;
+            }
+            catch (OperationCanceledException)
+            {
+                // cancelled by the user
+                return null;
+            }
+            catch (Exception e)
+            {
+                this.interactionService.ShowError("Could not fetch the list of time stamp servers.", e);
+                return null;
+            }
+        }
+    }
+
+    public enum TimeStampSelectionMode
+    {
+        None,
+        Auto,
+        Url
     }
 }
 

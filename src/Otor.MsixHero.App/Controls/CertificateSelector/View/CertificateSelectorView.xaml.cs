@@ -80,5 +80,16 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.View
                 MessageBox.Show("Could not open the link:\r\nhttps://msixhero.net/redirect/device-guard-signing");
             }
         }
+
+        private async void ComboBoxOnDropDownOpened(object sender, EventArgs e)
+        {
+            if (!((ComboBox)sender).HasItems)
+            {
+                ((ComboBox)sender).IsDropDownOpen = false;
+                var dc = (CertificateSelectorViewModel)this.DataContext;
+                await dc.TimeStampServers.Load(dc.GenerateTimeStampServers()).ConfigureAwait(true);
+                ((ComboBox)sender).IsDropDownOpen = true;
+            }
+        }
     }
 }

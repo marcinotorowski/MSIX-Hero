@@ -7,6 +7,7 @@ using CommandLine.Text;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Executors.Edit.Bulk;
 using Otor.MsixHero.Cli.Executors.Edit.Files;
@@ -51,7 +52,7 @@ namespace Otor.MsixHero.Cli.Executors
 
             p.WithParsed<SignVerb>(verb =>
             {
-                verbExecutor = new SignVerbExecutor(verb, new SigningManager(), new LocalConfigurationService(), this.console);
+                verbExecutor = new SignVerbExecutor(verb, new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new LocalConfigurationService(), this.console);
             });
 
             p.WithParsed<PackVerb>(verb =>
@@ -66,7 +67,7 @@ namespace Otor.MsixHero.Cli.Executors
 
             p.WithParsed<NewCertVerb>(verb =>
             {
-                verbExecutor = new NewCertVerbExecutor(verb, new SigningManager(), this.console);
+                verbExecutor = new NewCertVerbExecutor(verb, new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), this.console);
             });
 
             p.WithParsed<NewModPackVerb>(verb =>
@@ -76,17 +77,17 @@ namespace Otor.MsixHero.Cli.Executors
 
             p.WithParsed<TrustVerb>(verb =>
             {
-                verbExecutor = new TrustVerbExecutor(verb, new SigningManager(), this.console);
+                verbExecutor = new TrustVerbExecutor(verb, new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), this.console);
             });
 
             p.WithParsed<ExtractCertVerb>(verb =>
             {
-                verbExecutor = new ExtractCertVerbExecutor(verb, new SigningManager(), this.console);
+                verbExecutor = new ExtractCertVerbExecutor(verb, new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), this.console);
             });
 
             p.WithParsed<AppAttachVerb>(verb =>
             {
-                verbExecutor = new AppAttachVerbExecutor(verb, new AppAttachManager(new SigningManager(), new LocalConfigurationService()), this.console);
+                verbExecutor = new AppAttachVerbExecutor(verb, new AppAttachManager(new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new LocalConfigurationService()), this.console);
             });
 
             p.WithParsed<UpdateImpactVerb>(verb =>

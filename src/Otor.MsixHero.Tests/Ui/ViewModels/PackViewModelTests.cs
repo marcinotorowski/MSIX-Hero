@@ -25,6 +25,7 @@ using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
@@ -45,6 +46,7 @@ namespace Otor.MsixHero.Tests.ViewModels
             var mockConfiguration = new Mock<IConfigurationService>();
             var mockSigning = new Mock<ISigningManager>();
             var mockManager = new Mock<ISelfElevationProxyProvider<ISigningManager>>();
+            var mockTimeStampFeed = new Mock<ITimeStampFeed>();
             mockManager.Setup(dep => dep.GetProxyFor(It.IsAny<SelfElevationLevel>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(mockSigning.Object));
 
             var config = new Configuration();
@@ -55,7 +57,7 @@ namespace Otor.MsixHero.Tests.ViewModels
                     It.IsAny<CancellationToken>(), It.IsAny<IProgress<ProgressData>>()))
                 .ReturnsAsync(new List<PersonalCertificate>());
 
-            var viewModel = new PackViewModel(mockManager.Object, mockCreator.Object, mockConfiguration.Object, mockInteraction.Object);
+            var viewModel = new PackViewModel(mockManager.Object, mockCreator.Object, mockConfiguration.Object, mockInteraction.Object, mockTimeStampFeed.Object);
 
             Assert.IsFalse(viewModel.HasError);
             Assert.IsFalse(viewModel.IsValid);

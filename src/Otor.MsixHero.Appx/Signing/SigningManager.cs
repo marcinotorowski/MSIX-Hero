@@ -30,6 +30,7 @@ using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
@@ -42,7 +43,13 @@ namespace Otor.MsixHero.Appx.Signing
 {
     public class SigningManager : ISigningManager
     {
+        private readonly ITimeStampFeed timeStampFeed;
         private static readonly ILog Logger = LogManager.GetLogger();
+
+        public SigningManager(ITimeStampFeed timeStampFeed)
+        {
+            this.timeStampFeed = timeStampFeed;
+        }
 
         public Task ExtractCertificateFromMsix(
             string msixFile,
@@ -410,6 +417,7 @@ namespace Otor.MsixHero.Appx.Signing
                 var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
 
+                timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
                 await sdk.SignPackageWithPersonal(new[] { localCopy }, type, certificate.Thumbprint, certificate.StoreType == CertificateStoreType.Machine, timestampUrl, cancellationToken).ConfigureAwait(false);
 
                 progress?.Report(new ProgressData(75, "Signing..."));
@@ -463,6 +471,8 @@ namespace Otor.MsixHero.Appx.Signing
                     
                     var sdk = new SignToolWrapper();
                     progress?.Report(new ProgressData(25, "Signing with Device Guard..."));
+
+                    timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
                     await sdk.SignPackageWithDeviceGuard(new[] { localCopy }, "SHA256", dgssTokenPath, timestampUrl, cancellationToken).ConfigureAwait(false);
                     progress?.Report(new ProgressData(75, "Signing with Device Guard..."));
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
@@ -493,6 +503,26 @@ namespace Otor.MsixHero.Appx.Signing
                     ExceptionGuard.Guard(() => File.Delete(dgssTokenPath));
                 }
             }
+        }
+
+        private async Task<string> GetTimeStampUrl(string inputTimeStampUrl)
+        {
+            if (string.IsNullOrEmpty(inputTimeStampUrl) || !string.Equals("auto", inputTimeStampUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                return inputTimeStampUrl;
+            }
+            
+            var servers = await this.timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
+            if (servers?.Servers.Any() != true)
+            {
+                throw new ApplicationException("Could not get a random timestamp server.");
+            }
+
+            var rnd = new Random();
+            var autoServer = servers.Servers[rnd.Next(0, servers.Servers.Count)].Url;
+
+            Logger.Info($"Generated a random pick timestamp URL ({autoServer}).");
+            return autoServer;
         }
 
         public async Task SignPackageWithPfx(
@@ -536,6 +566,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                 var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
+                timestampUrl = await this.GetTimeStampUrl(timestampUrl).ConfigureAwait(false);
                 await sdk.SignPackageWithPfx(new[] { localCopy }, type, pfxPath, openTextPassword, timestampUrl, cancellationToken).ConfigureAwait(false);
                 progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);

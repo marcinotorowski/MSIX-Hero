@@ -31,6 +31,7 @@ using Otor.MsixHero.Appx.Editor.Facades;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -53,7 +54,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             IAppxManifestCreator manifestCreator,
             IConfigurationService configurationService,
-            IInteractionService interactionService) : base("Pack MSIX package", interactionService)
+            IInteractionService interactionService,
+            ITimeStampFeed timeStampFeed) : base("Pack MSIX package", interactionService)
         {
             this.signingManagerFactory = signingManagerFactory;
             this.manifestCreator = manifestCreator;
@@ -74,7 +76,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.RemoveDirectory = new ChangeableProperty<bool>();
             this.OverrideSubject = new ChangeableProperty<bool>(true);
 
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig)
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig, timeStampFeed)
             {
                 IsValidated = false
             };
@@ -194,16 +196,32 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 {
                     var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
 
+                    string timeStampUrl;
+                    switch (this.SelectedCertificate.TimeStampSelectionMode.CurrentValue)
+                    {
+                        case TimeStampSelectionMode.None:
+                            timeStampUrl = null;
+                            break;
+                        case TimeStampSelectionMode.Auto:
+                            timeStampUrl = "auto";
+                            break;
+                        case TimeStampSelectionMode.Url:
+                            timeStampUrl = this.SelectedCertificate.TimeStamp.CurrentValue;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     switch (this.SelectedCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Personal:
-                            await manager.SignPackageWithInstalled(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithInstalled(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.SelectedPersonalCertificate.CurrentValue?.Model, timeStampUrl, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.Pfx:
-                            await manager.SignPackageWithPfx(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithPfx(this.OutputPath.CurrentValue, this.OverrideSubject.CurrentValue, this.SelectedCertificate.PfxPath.CurrentValue, this.SelectedCertificate.Password.CurrentValue, timeStampUrl, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuardFromUi(this.OutputPath.CurrentValue, this.SelectedCertificate.DeviceGuard.CurrentValue, this.SelectedCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuardFromUi(this.OutputPath.CurrentValue, this.SelectedCertificate.DeviceGuard.CurrentValue, timeStampUrl, IncreaseVersionMethod.None, cancellationToken, progress2).ConfigureAwait(false);
                             break;
                     }
                 }

@@ -29,6 +29,7 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -50,7 +51,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
         public PackageSigningViewModel(
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, 
             IInteractionService interactionService, 
-            IConfigurationService configurationService) : base("Package Signing", interactionService)
+            IConfigurationService configurationService,
+            ITimeStampFeed timeStampFeed) : base("Package signing", interactionService)
         {
             this.signingManagerFactory = signingManagerFactory;
             this.interactionService = interactionService;
@@ -61,7 +63,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             this.CertificateSelector = new CertificateSelectorViewModel(
                 interactionService, 
                 signingManagerFactory, 
-                configurationService?.GetCurrentConfiguration()?.Signing);
+                configurationService?.GetCurrentConfiguration()?.Signing,
+                timeStampFeed);
             this.OverrideSubject = new ChangeableProperty<bool>(true);
 
             this.TabPackages = new ChangeableContainer(this.Files);
@@ -164,7 +167,21 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             }
 
             this.Verb.NoPublisherUpdate = !this.OverrideSubject.CurrentValue;
-            this.Verb.TimeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
+
+            switch (this.CertificateSelector.TimeStampSelectionMode.CurrentValue)
+            {
+                case TimeStampSelectionMode.None:
+                    this.Verb.TimeStampUrl = null;
+                    break;
+                case TimeStampSelectionMode.Auto:
+                    this.Verb.TimeStampUrl = "auto";
+                    break;
+                case TimeStampSelectionMode.Url:
+                    this.Verb.TimeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public ChangeableContainer TabPackages { get; }
@@ -217,7 +234,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             using (var progressAll = new WrappedProgress(progress))
             {
                 // ReSharper disable once AccessToDisposedClosure
-                var progressForFiles = this.Files.ToDictionary(p => p, p => progressAll.GetChildProgress(1.0));
+                var progressForFiles = this.Files.ToDictionary(p => p, _ => progressAll.GetChildProgress());
                 
                 foreach (var file in this.Files)
                 {
@@ -225,16 +242,32 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                     
                     cancellationToken.ThrowIfCancellationRequested();
 
+                    string timeStampUrl;
+                    switch (this.CertificateSelector.TimeStampSelectionMode.CurrentValue)
+                    {
+                        case TimeStampSelectionMode.None:
+                            timeStampUrl = null;
+                            break;
+                        case TimeStampSelectionMode.Auto:
+                            timeStampUrl = "auto";
+                            break;
+                        case TimeStampSelectionMode.Url:
+                            timeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     switch (this.CertificateSelector.Store.CurrentValue)
                     {
                         case CertificateSource.Pfx:
-                            await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                            await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
                             break;
                         case CertificateSource.Personal:
-                            await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                            await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuardFromUi(file, this.CertificateSelector.DeviceGuard.CurrentValue, this.CertificateSelector.TimeStamp.CurrentValue, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuardFromUi(file, this.CertificateSelector.DeviceGuard.CurrentValue, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
                             break;
                     }
                 }
@@ -277,7 +310,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                 IReadOnlyCollection<string> buttons = new List<string>
                 { 
                     "Only selected folder",
-                    "Selected folder " + (Path.GetFileName(folder) ?? folder) + " and all its subfolders"
+                    "Selected folder " + Path.GetFileName(folder) + " and all its subfolders"
                 };
 
                 var userChoice = this.interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);

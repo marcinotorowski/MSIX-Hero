@@ -21,6 +21,7 @@ using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -66,11 +67,11 @@ namespace Otor.MsixHero.Lib.Proxy
             switch (selfElevationLevel)
             {
                 case SelfElevationLevel.AsInvoker:
-                    return new SigningManager();
+                    return new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
                 case SelfElevationLevel.AsAdministrator:
                     if (await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
                     {
-                        return new SigningManager();
+                        return new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
                     }
 
                     return new SigningManagerElevationProxy(this.client, this);

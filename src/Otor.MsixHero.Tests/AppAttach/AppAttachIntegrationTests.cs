@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
@@ -23,7 +24,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var targetDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "app-attach", "single"));
 
-            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
+            var appAttachManager = new AppAttachManager(new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new DummyConfigurationService());
             var vhdxPath = Path.Combine(targetDirectory.FullName, "output.vhdx");
             var cimPath = Path.Combine(targetDirectory.FullName, "output.cim");
 
@@ -47,7 +48,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var targetDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "app-attach", "scripts-json"));
 
-            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
+            var appAttachManager = new AppAttachManager(new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new DummyConfigurationService());
             var vhdPathNothing = Path.Combine(targetDirectory.FullName, "nothing", "output.vhd");
             var vhdPathScripts = Path.Combine(targetDirectory.FullName, "scripts", "output.vhd");
             var vhdPathCertificate = Path.Combine(targetDirectory.FullName, "certificate", "output.vhd");
@@ -102,7 +103,7 @@ namespace Otor.MsixHero.Tests.AppAttach
             var msixHeroPackage = new FileInfo(Path.Combine("Resources", "SamplePackages", "CreatedByMsixHero.msix"));
             var targetDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "app-attach", "custom-size"));
 
-            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
+            var appAttachManager = new AppAttachManager(new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new DummyConfigurationService());
             var vhdPath1 = Path.Combine(targetDirectory.FullName, "output1.vhd");
             var vhdPath2 = Path.Combine(targetDirectory.FullName, "output2.vhd");
 
@@ -144,7 +145,7 @@ namespace Otor.MsixHero.Tests.AppAttach
                 msixHeroPackage.CopyTo(src, true);
             }
             
-            var appAttachManager = new AppAttachManager(new SigningManager(), new DummyConfigurationService());
+            var appAttachManager = new AppAttachManager(new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new DummyConfigurationService());
 
             try
             {

@@ -31,6 +31,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -50,6 +51,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
         private readonly IConfigurationService configurationService;
         private readonly IInteractionService interactionService;
+        private readonly ITimeStampFeed timeStampFeed;
         private ICommand openSuccessLink;
         private ICommand reset;
         
@@ -57,13 +59,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             IModificationPackageBuilder contentBuilder,
             ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
             IConfigurationService configurationService,
-            IInteractionService interactionService) : base("Create modification package", interactionService)
+            IInteractionService interactionService,
+            ITimeStampFeed timeStampFeed) : base("Create modification package", interactionService)
         {
             this.contentBuilder = contentBuilder;
             this.signingManagerFactory = signingManagerFactory;
             this.configurationService = configurationService;
             this.interactionService = interactionService;
-            
+            this.timeStampFeed = timeStampFeed;
+
             this.InitializeTabProperties();
             this.InitializeTabParentPackage();
             this.InitializeTabContent();
@@ -203,16 +207,32 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                     var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
                     cancellationToken.ThrowIfCancellationRequested();
 
+                    string timeStampUrl;
+                    switch (this.TabCertificate.TimeStampSelectionMode.CurrentValue)
+                    {
+                        case TimeStampSelectionMode.None:
+                            timeStampUrl = null;
+                            break;
+                        case TimeStampSelectionMode.Auto:
+                            timeStampUrl = "auto";
+                            break;
+                        case TimeStampSelectionMode.Url:
+                            timeStampUrl = this.TabCertificate.TimeStamp.CurrentValue;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     switch (this.TabCertificate.Store.CurrentValue)
                     {
                         case CertificateSource.Pfx:
-                            await manager.SignPackageWithPfx(selectedPath, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None, cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithPfx(selectedPath, true, this.TabCertificate.PfxPath.CurrentValue, this.TabCertificate.Password.CurrentValue, timeStampUrl, IncreaseVersionMethod.None, cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.Personal:
-                            await manager.SignPackageWithInstalled(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithInstalled(selectedPath, true, this.TabCertificate.SelectedPersonalCertificate?.CurrentValue?.Model, timeStampUrl, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                         case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuardFromUi(selectedPath, this.TabCertificate.DeviceGuard.CurrentValue, this.TabCertificate.TimeStamp.CurrentValue, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
+                            await manager.SignPackageWithDeviceGuardFromUi(selectedPath, this.TabCertificate.DeviceGuard.CurrentValue, timeStampUrl, IncreaseVersionMethod.None,cancellationToken, progress).ConfigureAwait(false);
                             break;
                     }
 
@@ -390,7 +410,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
         private void InitializeTabCertificate()
         {
-            this.TabCertificate = new CertificateSelectorViewModel(this.interactionService, this.signingManagerFactory, this.configurationService.GetCurrentConfiguration()?.Signing);
+            this.TabCertificate = new CertificateSelectorViewModel(
+                this.interactionService, 
+                this.signingManagerFactory, 
+                this.configurationService.GetCurrentConfiguration()?.Signing,
+                this.timeStampFeed);
         }
     }
 }

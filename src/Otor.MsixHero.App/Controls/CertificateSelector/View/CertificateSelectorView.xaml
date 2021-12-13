@@ -8,6 +8,9 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Controls.CertificateSelector.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:timeStamping="clr-namespace:Otor.MsixHero.Appx.Signing.TimeStamping;assembly=Otor.MsixHero.Appx"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="500"
@@ -255,14 +258,59 @@
                     Margin="0 16 0 6" />
                 <PasswordBox x:Name="PasswordBox" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
 
-                <TextBlock 
+                <StackPanel 
                     DockPanel.Dock="Top" 
-                    Style="{StaticResource LabelTextBlock}" 
-                    Text="Timestamp server" 
-                    Margin="0 16 0 6" />
-                <TextBox DockPanel.Dock="Top" Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                    Margin="0 16 0 6"
+                    Orientation="Horizontal">
+                    <TextBlock 
+                        Style="{StaticResource LabelTextBlock}" 
+                        Margin="0" 
+                        Text="Timestamp server" />
 
-                <Border />
+                    <Control 
+                        ToolTip="Time stamping allows signatures to be verifiable even after the certificates used for signature have expired. You should make sure you always timestamp your packages, otherwise they will expire as soon as your certificate (which usually lives only for 1-3 years)."
+                        Style="{StaticResource HelpIcon}" 
+                        VerticalAlignment="Center" 
+                        Margin="2 -2">
+                    </Control>
+                </StackPanel>
+
+                <StackPanel>
+                    <RadioButton GroupName="TimeStampNone" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.None}}" Margin="0"  Content="No timestamp" />
+
+                    <RadioButton GroupName="TimeStampAuto" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Auto}}" Margin="0 4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>
+                                <Run>Random selection from</Run>
+                                <Hyperlink>a list of known servers
+                                    <b:Interaction.Behaviors>
+                                        <behaviors:HyperlinkClickBehavior Url="{x:Static timeStamping:MsixHeroGistTimeStampFeed.Url}" />
+                                    </b:Interaction.Behaviors>
+                                </Hyperlink>
+                            </TextBlock>
+
+                            <Control 
+                                ToolTip="This will select a random timestamp server from a list of known servers. The list of servers is maintained by MSIX Hero author, but not guaranteed to be complete or fit for purpose. The option should be used with caution and never in production."
+                                Style="{StaticResource HelpIcon}" 
+                                VerticalAlignment="Center" 
+                                Margin="2 -2" />
+                        </StackPanel>
+                    </RadioButton>
+
+                    <RadioButton GroupName="TimeStampUrl" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Url}}" x:Name="SpecificTimeStamp" Margin="0 0 0 4"  Content="Specific timestamp server" />
+
+                    <controls:ProgressOverlay 
+                        Visibility="{Binding ElementName=SpecificTimeStamp, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Margin="22 0 0 0" 
+                        IsShown="{Binding TimeStampServers.IsLoading}">
+                        <ComboBox 
+                            Margin="0"
+                            IsEditable="True"
+                            ItemsSource="{Binding TimeStampServers.CurrentValue}"
+                            DropDownOpened="ComboBoxOnDropDownOpened" 
+                            Text="{Binding TimeStamp.CurrentValue, Mode=TwoWay}"/>
+                    </controls:ProgressOverlay>
+                </StackPanel>
             </DockPanel>
         </controls:ProgressOverlay>
     </AdornerDecorator>

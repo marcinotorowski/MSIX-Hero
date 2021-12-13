@@ -63,6 +63,7 @@ using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Updates;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
@@ -145,6 +146,7 @@ namespace Otor.MsixHero.App
             containerRegistry.Register<IThirdPartyAppProvider, ThirdPartyAppProvider>();
             containerRegistry.Register<IServiceRecommendationAdvisor, ServiceRecommendationAdvisor>();
             containerRegistry.RegisterSingleton<PrismServices>();
+            containerRegistry.RegisterSingleton<ITimeStampFeed>(_ => MsixHeroGistTimeStampFeed.CreateCached());
             containerRegistry.RegisterSingleton<IMediator>(containerProvider => new Mediator(containerProvider.Resolve));
 
             containerRegistry.RegisterDialog<PackageExpertDialogView, PackageExpertDialogViewModel>(NavigationPaths.DialogPaths.PackageExpert);

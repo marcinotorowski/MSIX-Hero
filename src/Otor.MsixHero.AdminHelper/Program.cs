@@ -20,6 +20,7 @@ using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -93,7 +94,7 @@ namespace Otor.MsixHero.AdminHelper
                     Logger.Debug("Preparing to start the pipe server...");
 
                     IConfigurationService configurationService = new LocalConfigurationService();
-                    ISigningManager signingManager = new SigningManager();
+                    ISigningManager signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
                     IAppAttachManager appAttachManager = new AppAttachManager(signingManager, configurationService);
                     IAppxVolumeManager appxVolumeManager = new AppxVolumeManager();
                     IRegistryManager registryManager = new RegistryManager();
