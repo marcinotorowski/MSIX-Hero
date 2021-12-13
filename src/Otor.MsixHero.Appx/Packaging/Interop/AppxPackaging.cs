@@ -15,8 +15,11 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
+using Windows.Security.Cryptography.Core;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 // ReSharper disable InconsistentNaming
@@ -29,31 +32,9 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
     {
         public static string GetPackageFamilyName(string name, string publisherId)
         {
-            string packageFamilyName = null;
-            var packageId = new PACKAGE_ID
-            {
-                name = name,
-                publisher = publisherId
-            };
-            
-            uint packageFamilyNameLength = 0;
-
-            // determine the length (null buffer, should always return 122)
-            // ReSharper disable once InvertIf
-            if (PackageFamilyNameFromId(packageId, ref packageFamilyNameLength, null) == 122)
-            {
-                // insufficient buffer
-                
-                var packageFamilyNameBuilder = new StringBuilder((int)packageFamilyNameLength);
-                if (PackageFamilyNameFromId(packageId, ref packageFamilyNameLength, packageFamilyNameBuilder) == 0)
-                {
-                    packageFamilyName = packageFamilyNameBuilder.ToString();
-                }
-            }
-            
-            return packageFamilyName;
+            return name + "_" + GetPublisherHash(publisherId);
         }
-        
+
         public static string GetPackageFullName(string name, string publisherId, AppxPackageArchitecture architecture, string version, string resourceId = null)
         {
             var parsedVersion = Version.Parse(version);
@@ -85,6 +66,17 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             return packageFullName;
         }
 
+        private static string GetPublisherHash(string publisherId)
+        {
+            using var sha = HashAlgorithm.Create(HashAlgorithmNames.Sha256);
+            // ReSharper disable once PossibleNullReferenceException
+            var encoded = sha.ComputeHash(Encoding.Unicode.GetBytes(publisherId));
+            var binaryString = string.Concat(encoded.Take(8).Select(c => Convert.ToString(c, 2).PadLeft(8, '0'))) + '0'; // representing 65-bits = 13 * 5
+            var encodedPublisherId = string.Concat(Enumerable.Range(0, binaryString.Length / 5).Select(i => "0123456789abcdefghjkmnpqrstvwxyz".Substring(Convert.ToInt32(binaryString.Substring(i * 5, 5), 2), 1)));
+            return encodedPublisherId;
+        }
+
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 4)]
         private class PACKAGE_ID
         {
@@ -100,10 +92,7 @@ namespace Otor.MsixHero.Appx.Packaging.Interop
             public string publisherId;
 #pragma warning restore 649
         }
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-        private static extern uint PackageFamilyNameFromId(PACKAGE_ID packageId, ref uint packageFamilyNameLength, StringBuilder packageFamilyName);
-
+        
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
         private static extern uint PackageFullNameFromId(PACKAGE_ID packageId, ref uint packageFamilyNameLength, StringBuilder packageFamilyName);
 
