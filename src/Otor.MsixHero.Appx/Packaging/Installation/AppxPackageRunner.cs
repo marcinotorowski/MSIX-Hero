@@ -22,7 +22,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
-using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
 using Otor.MsixHero.Appx.Exceptions;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
@@ -37,7 +36,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     public class AppxPackageRunner : IAppxPackageRunner
     {
         private static readonly ILog Logger = LogManager.GetLogger();
-        protected readonly ISideloadingChecker SideloadingChecker = new RegistrySideloadingChecker();
+        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
         
         public async Task RunToolInContext(InstalledPackage package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
@@ -67,10 +66,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task RunToolInContext(string packageFamilyName, string appId, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            if (SideloadingChecker.GetStatus() != SideloadingStatus.DeveloperMode)
-            {
-                throw new DeveloperModeException("Developer mode must be enabled to use this feature.");
-            }
+            this.SideloadingConfigurator.AssertDeveloperModeEnabled();
 
             Logger.Info("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')...", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)

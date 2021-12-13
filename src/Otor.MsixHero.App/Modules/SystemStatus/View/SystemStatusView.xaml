@@ -339,10 +339,24 @@
                                             <TextBlock VerticalAlignment="Center" Text="Changing this setting requires admin rights." TextWrapping="Wrap" Margin="0 0 0 0" Foreground="#555" />
                                         </DockPanel>
 
-                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.NotAllowed}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 12 0 4" Content="Only install apps from Microsoft Store"></RadioButton>
-                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.Sideloading}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 4" Content="Install all trusted apps (Microsoft Store and sideloading)"></RadioButton>
-                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.DeveloperMode}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 4" Content="Install all (developer mode)"></RadioButton>
-
+                                        <RadioButton Visibility="{Binding IsLegacyFlavor.Value, Converter={StaticResource BooleanToVisibilityConverter}}" IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.NotAllowed}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 12 0 4" Content="Only install apps from Microsoft Store"></RadioButton>
+                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.Sideloading}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 4" Content="Install apps from any trusted source (Microsoft Store and side-loaded packages)"></RadioButton>
+                                        <RadioButton IsChecked="{Binding SideloadingStatus, ConverterParameter={x:Static developerMode1:SideloadingStatus.DeveloperMode}, Converter={StaticResource EnumToBooleanConverter}}" Margin="0 4">
+                                            <RadioButton.Style>
+                                                <Style TargetType="RadioButton">
+                                                    <Style.Resources>
+                                                        <system:Boolean x:Key="BoolTrue">True</system:Boolean>
+                                                    </Style.Resources>
+                                                    <Setter Property="Content" Value="Install apps from any source, including loose files (developer mode)" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsLegacyFlavor.Value}" Value="{StaticResource BoolTrue}">
+                                                            <Setter Property="Content" Value="Install any signed and trusted app and enable development features" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </RadioButton.Style>
+                                        </RadioButton>
+                                        
                                         <Separator />
 
                                         <DockPanel Margin="-64 0 0 0">

@@ -18,14 +18,16 @@ using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Developer
 {
-    public interface ISideloadingChecker
+    public interface ISideloadingConfigurator
     {
-        SideloadingStatus GetStatus();
+        SideloadingStatus Get();
 
-        bool SetStatus(SideloadingStatus status);
+        bool Set(SideloadingStatus status);
 
-        WindowsStoreAutoDownload GetStoreAutoDownloadStatus();
+        SideloadingFlavor Flavor { get; }
 
-        bool SetStoreAutoDownloadStatus(WindowsStoreAutoDownload status);
+        void AssertSideloadingEnabled();
+
+        void AssertDeveloperModeEnabled();
     }
 }

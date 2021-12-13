@@ -26,6 +26,7 @@ using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty;
+using Otor.MsixHero.Appx.Diagnostic.Store;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 using Prism.Regions;
@@ -34,7 +35,8 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
 {
     public class SystemStatusViewModel : NotifyPropertyChanged, INavigationAware
     {
-        protected readonly ISideloadingChecker SideLoadCheck = new RegistrySideloadingChecker();
+        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
+        protected readonly IWindowsStoreAutoDownloadConfigurator WindowsStoreAutoDownloadConfigurator = new WindowsStoreAutoDownloadConfigurator();
         private readonly IEventAggregator eventAggregator;
         private bool isLoading;
 
@@ -47,8 +49,8 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
             this.eventAggregator = eventAggregator;
             this.Items = new ObservableCollection<BaseRecommendationViewModel>();
 
-            var sideloading = new DeveloperAndSideloadingRecommendationViewModel(this.SideLoadCheck);
-            var storeAutoDownload = new AutoDownloadRecommendationViewModel(this.SideLoadCheck);
+            var sideloading = new DeveloperAndSideloadingRecommendationViewModel(this.SideloadingConfigurator);
+            var storeAutoDownload = new AutoDownloadRecommendationViewModel(this.WindowsStoreAutoDownloadConfigurator);
             var repackaging = new RepackagingRecommendationViewModel(serviceAdvisor, interactionService, storeAutoDownload);
             var tooling = new ToolingRecommendationViewModel(thirdPartyDetector);
 

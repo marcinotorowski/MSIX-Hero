@@ -20,17 +20,18 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
+using Otor.MsixHero.Appx.Diagnostic.Store;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates
 {
     public class AutoDownloadRecommendationViewModel : BaseRecommendationViewModel
     {
-        protected readonly ISideloadingChecker SideloadingChecker;
+        protected readonly IWindowsStoreAutoDownloadConfigurator WindowsStoreAutoDownloadConfigurator;
         private WindowsStoreAutoDownload autoDownloadStatus;
 
-        public AutoDownloadRecommendationViewModel(ISideloadingChecker sideloadingChecker)
+        public AutoDownloadRecommendationViewModel(IWindowsStoreAutoDownloadConfigurator windowsStoreAutoDownloadConfigurator)
         {
-            this.SideloadingChecker = sideloadingChecker;
+            this.WindowsStoreAutoDownloadConfigurator = windowsStoreAutoDownloadConfigurator;
             this.SetStatusAndSummary();
         }
 
@@ -41,7 +42,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates
 
         private void SetStatusAndSummary()
         {
-            this.autoDownloadStatus = this.SideloadingChecker.GetStoreAutoDownloadStatus();
+            this.autoDownloadStatus = this.WindowsStoreAutoDownloadConfigurator.Get();
 
             switch (this.AutoDownloadStatus)
             {
@@ -72,7 +73,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates
                     return;
                 }
 
-                if (!this.SideloadingChecker.SetStoreAutoDownloadStatus(value))
+                if (!this.WindowsStoreAutoDownloadConfigurator.Set(value))
                 {
                     return;
                 }

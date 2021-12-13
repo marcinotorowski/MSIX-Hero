@@ -25,13 +25,46 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
 {
     public class DeveloperAndSideloadingRecommendationViewModel : BaseRecommendationViewModel
     {
-        protected readonly ISideloadingChecker SideloadingChecker;
+        protected readonly ISideloadingConfigurator SideloadingConfigurator;
         private SideloadingStatus sideloadingStatus;
 
-        public DeveloperAndSideloadingRecommendationViewModel(ISideloadingChecker sideloadingChecker)
+        public DeveloperAndSideloadingRecommendationViewModel(ISideloadingConfigurator sideloadingConfigurator)
         {
-            this.SideloadingChecker = sideloadingChecker;
+            this.IsLegacyFlavor = new Lazy<bool>(() => sideloadingConfigurator.Flavor == SideloadingFlavor.Windows10Below2004);
+            this.SideloadingConfigurator = sideloadingConfigurator;
             this.SetStatusAndSummary();
+        }
+
+        public Lazy<bool> IsLegacyFlavor { get; }
+
+        public override string Title => "Sideloading and development features";
+
+        public SideloadingStatus SideloadingStatus
+        {
+            get => this.sideloadingStatus;
+            set
+            {
+                if (this.sideloadingStatus == value)
+                {
+                    return;
+                }
+
+                if (!this.SideloadingConfigurator.Set(value))
+                {
+                    return;
+                }
+
+                this.sideloadingStatus = value;
+                this.OnPropertyChanged();
+                this.SetStatusAndSummary();
+            }
+        }
+        
+        public override Task Refresh(CancellationToken cancellationToken = default)
+        {
+            this.SetStatusAndSummary();
+            this.OnPropertyChanged(nameof(this.SideloadingStatus));
+            return Task.FromResult(true);
         }
 
         protected override Geometry GetIcon()
@@ -41,7 +74,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
 
         private void SetStatusAndSummary()
         {
-            this.sideloadingStatus = this.SideloadingChecker.GetStatus();
+            this.sideloadingStatus = this.SideloadingConfigurator.Get();
 
             switch (this.SideloadingStatus)
             {
@@ -55,41 +88,11 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
                     break;
                 case SideloadingStatus.DeveloperMode:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "Developer mode is enabled.";
+                    this.Summary = "Sideloading and development features are enabled.";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        public SideloadingStatus SideloadingStatus
-        {
-            get => this.sideloadingStatus;
-            set
-            {
-                if (this.sideloadingStatus == value)
-                {
-                    return;
-                }
-
-                if (!this.SideloadingChecker.SetStatus(value))
-                {
-                    return;
-                }
-
-                this.sideloadingStatus = value;
-                this.OnPropertyChanged();
-                this.SetStatusAndSummary();
-            }
-        }
-        
-        public override string Title { get; } = "Developer and sideloading";
-
-        public override Task Refresh(CancellationToken cancellationToken = default)
-        {
-            this.SetStatusAndSummary();
-            this.OnPropertyChanged(nameof(this.SideloadingStatus));
-            return Task.FromResult(true);
         }
     }
 }

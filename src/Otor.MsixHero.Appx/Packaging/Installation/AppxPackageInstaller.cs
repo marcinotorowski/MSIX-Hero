@@ -40,7 +40,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     public class AppxPackageInstaller : IAppxPackageInstaller
     {
         private static readonly ILog Logger = LogManager.GetLogger();
-        protected readonly ISideloadingChecker SideloadingChecker = new RegistrySideloadingChecker();
+        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
         
         public async Task Remove(IReadOnlyCollection<string> packages, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
@@ -121,10 +121,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task Add(string filePath, AddAppxPackageOptions options = 0, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            if (SideloadingChecker.GetStatus() < SideloadingStatus.Sideloading)
-            {
-                throw new DeveloperModeException("Developer mode or sideloading must be enabled to install packages outside of Microsoft Store.");
-            }
+            this.SideloadingConfigurator.AssertSideloadingEnabled();
 
             Logger.Info("Installing package {0}", filePath);
             if (filePath == null)
