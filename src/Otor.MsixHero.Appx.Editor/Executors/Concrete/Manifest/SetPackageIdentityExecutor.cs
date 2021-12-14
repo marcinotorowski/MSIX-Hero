@@ -63,7 +63,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 else
                 {
                     Logger.Info($"Changing attribute 'Name' from '{attr.Value}' to '{command.Name}'...");
-                    this.ValueChanged?.Invoke(this, new CommandValueChanged("Publisher", attr.Value, command.Publisher));
+                    this.ValueChanged?.Invoke(this, new CommandValueChanged("Name", attr.Value, command.Name));
                     attr.Value = command.Name;
                 }
             }
