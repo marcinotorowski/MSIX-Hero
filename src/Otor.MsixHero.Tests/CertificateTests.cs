@@ -19,6 +19,7 @@ using System.Threading;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
+using Otor.MsixHero.Appx.Signing.TimeStamping;
 
 namespace Otor.MsixHero.Tests
 {
@@ -28,7 +29,7 @@ namespace Otor.MsixHero.Tests
         [Test]
         public void TestReader()
         {
-            ISigningManager signManager = new SigningManager();
+            ISigningManager signManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
             var certs = signManager.GetCertificatesFromStore(CertificateStoreType.MachineUser).GetAwaiter().GetResult();
         }
 
@@ -40,7 +41,7 @@ namespace Otor.MsixHero.Tests
             var fileSignedAndTrusted = new FileInfo(Path.Combine("Resources", "inno.exe"));
             var fileNotSignable = new FileInfo(Path.Combine("Resources", "wintrust.dll.ini"));
 
-            var manager = new SigningManager();
+            var manager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
 
             var check1 = manager.IsTrusted(fileSignedButUntrusted.FullName, CancellationToken.None).GetAwaiter().GetResult();
             var check2 = manager.IsTrusted(fileSignedAndTrusted.FullName, CancellationToken.None).GetAwaiter().GetResult();
