@@ -1,3 +1,16 @@
+# 2.3 (not released yet)
+* Added an option to select a timestamp from predefined list (#129)    
+* Improved catching of exceptions with ```signtool.exe``` and better reporting of timestamp server issues (4e18658)
+* Improved sideloading and developer setting for Windows 10 2004 and Windows 11 (#125)   
+* Small refresh of the dashboard and fixed inconsistencies between handling of dialogs (6da94339)
+* New command line verb ```edit``` for MSIX editing (#78)
+* Reworked app attach creation to workaround ```msixmgr``` issues with ```ShellHWDetection``` (#126)
+* Enabled filtering package list by publisher hash or raw name/publisher (950b5148)
+* Improved running indicator now shows more previously hidden apps and received performance and UI tweaks (af59eb7d)
+* Added possibility to skip validation during unpacking and remove the package after unpacking / directory after packing (df57c79f, 2b9a6657)
+* Updated ```msixmgr``` (MSIX Core) to version 1.1.92 (b00746c1)
+* Migrated MSIX Hero to .NET 6.0 (e546a32e)
+
 # 2.2.34
 See http://msixhero.net/redirect/release-notes/2.2.34 for more details
 
