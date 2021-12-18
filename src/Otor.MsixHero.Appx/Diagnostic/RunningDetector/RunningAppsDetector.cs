@@ -23,14 +23,14 @@ using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 {
-    public class RunningAppsDetector : IRunningAppsDetector, IDisposable
+    public class RunningAppsDetector : IRunningAppsDetector
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(RunningAppsDetector));
 
         private readonly IList<Subscriber> observers = new List<Subscriber>();
 
         private readonly ReaderWriterLockSlim syncWriterLockSlim = new ReaderWriterLockSlim();
-        private readonly HashSet<string> activeApps = new HashSet<string>(StringComparer.Ordinal);
+        private HashSet<string> activeApps;
         private AppDiagnosticInfoWatcher watcher;
 
         public IDisposable Subscribe(IObserver<ActivePackageFullNames> observer)
@@ -43,17 +43,36 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
         public IList<string> GetCurrentlyRunningPackageNames()
         {
             Logger.Info("Getting the list of running apps...");
+
             try
             {
                 Logger.Trace("Entering upgradeable read lock...");
                 this.syncWriterLockSlim.EnterUpgradeableReadLock();
+
+                if (this.watcher == null)
+                {
+                    Logger.Info("Starting listening on background apps activity...");
+                    this.watcher = AppDiagnosticInfo.CreateWatcher();
+                    this.watcher.Start();
+                }
+                else
+                {
+                    this.watcher.Removed -= this.WatcherOnRemoved;
+                    this.watcher.Added -= this.WatcherOnAdded;
+                }
+
+                if (this.activeApps != null)
+                {
+                    return this.activeApps.ToList();
+                }
 
                 Logger.Trace("Upgrading to write lock...");
                 this.syncWriterLockSlim.EnterWriteLock();
                 
                 try
                 {
-                    this.activeApps.Clear();
+                    this.activeApps = new HashSet<string>(StringComparer.Ordinal);
+                    
                     foreach (var item in AppDiagnosticInfo.RequestInfoAsync().GetAwaiter().GetResult())
                     {
                         var family = GetFamilyNameFromAppUserModelId(item.AppInfo.AppUserModelId);
@@ -72,6 +91,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
             }
             finally
             {
+                if (this.watcher != null)
+                {
+                    this.watcher.Removed += this.WatcherOnRemoved;
+                    this.watcher.Added += this.WatcherOnAdded;
+                }
+
                 Logger.Trace("Exiting upgradeable read lock...");
                 this.syncWriterLockSlim.ExitUpgradeableReadLock();
             }
@@ -88,36 +113,13 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
             // we need to cut-out the entry point
             return appInfoAppUserModelId.Substring(0, exclamation);
         }
-
-        public void StartListening()
-        {
-            if (this.watcher != null)
-            {
-                this.StopListening();
-            }
-
-            Logger.Info("Starting listening on background apps activity...");
-
-            this.watcher = AppDiagnosticInfo.CreateWatcher();
-            this.watcher.EnumerationCompleted += this.WatcherOnEnumerationCompleted;
-            this.watcher.Start();
-        }
-
-        private void WatcherOnEnumerationCompleted(AppDiagnosticInfoWatcher sender, object args)
-        {
-            Logger.Debug("Watcher has finished with app enumeration.");
-            sender.EnumerationCompleted -= this.WatcherOnEnumerationCompleted;
-            sender.Added += this.WatcherOnAdded;
-            sender.Removed += this.WatcherOnRemoved;
-        }
-
-        public void StopListening()
+        
+        private void StopListening()
         {
             Logger.Info("Stopping listening on background apps activity...");
             this.watcher.Stop();
             this.watcher.Added -= this.WatcherOnAdded;
             this.watcher.Removed -= this.WatcherOnRemoved;
-            this.watcher.EnumerationCompleted -= this.WatcherOnEnumerationCompleted;
             this.watcher = null;
         }
 
@@ -177,6 +179,8 @@ namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 
         void IDisposable.Dispose()
         {
+            this.StopListening();
+
             this.syncWriterLockSlim.Dispose();
 
             foreach (var disposable in this.observers)

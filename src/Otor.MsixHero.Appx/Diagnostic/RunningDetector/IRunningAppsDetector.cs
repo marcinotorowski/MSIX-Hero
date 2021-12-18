@@ -19,12 +19,8 @@ using System.Collections.Generic;
 
 namespace Otor.MsixHero.Appx.Diagnostic.RunningDetector
 {
-    public interface IRunningAppsDetector : IObservable<ActivePackageFullNames>
+    public interface IRunningAppsDetector : IObservable<ActivePackageFullNames>, IDisposable
     {
-        void StartListening();
-        
         IList<string> GetCurrentlyRunningPackageNames();
-
-        void StopListening();
     }
 }

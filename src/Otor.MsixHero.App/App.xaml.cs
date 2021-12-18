@@ -192,11 +192,8 @@ namespace Otor.MsixHero.App
         private void InitializeMainWindow()
         {
             var regionManager = this.Container.Resolve<IRegionManager>();
-            var detector = this.Container.Resolve<IRunningAppsDetector>();
 
             regionManager.RegisterViewWithRegion(RegionNames.Root, typeof(ShellView));
-            detector.StartListening();
-
             ViewModelLocationProvider.Register<PackageExpertDialogView, PackageExpertDialogViewModel>();
             regionManager.RegisterViewWithRegion(RegionNames.PackageExpert, typeof(PackageExpertControl));
 
