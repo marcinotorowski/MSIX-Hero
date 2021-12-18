@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.WhatsNew.Views.MsixHeroLinks"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel>
+        <DockPanel Margin="-1" DockPanel.Dock="Top">
+            <Path VerticalAlignment="Center" Style="{StaticResource SmallIcon}" Margin="2" Data="M 7.5 1 C 4.800781 1 2.484375 2.652344 1.5 5 L 2.609375 5 C 3.179688 3.882813 4.121094 2.988281 5.269531 2.476563 C 4.832031 3.144531 4.480469 4 4.261719 5 L 5.296875 5 C 5.75 3.164063 6.65625 2 7.5 2 C 8.34375 2 9.25 3.164063 9.703125 5 L 10.738281 5 C 10.519531 4 10.167969 3.144531 9.730469 2.476563 C 10.878906 2.988281 11.820313 3.882813 12.390625 5 L 13.5 5 C 12.515625 2.652344 10.199219 1 7.5 1 Z M 0 6 L 0.976563 10 L 1.921875 10 L 2.5 7.449219 L 3.078125 10 L 4.023438 10 L 5 6 L 4 6 L 3.523438 8.40625 L 3 6 L 2 6 L 1.476563 8.40625 L 1 6 Z M 5 6 L 5.976563 10 L 6.921875 10 L 7.5 7.449219 L 8.078125 10 L 9.023438 10 L 10 6 L 9 6 L 8.523438 8.40625 L 8 6 L 7 6 L 6.476563 8.40625 L 6 6 Z M 10 6 L 10.980469 10 L 11.921875 10 L 12.5 7.449219 L 13.078125 10 L 14.019531 10 L 15 6 L 14 6 L 13.527344 8.40625 L 13 6 L 12 6 L 11.472656 8.40625 L 11 6 Z M 2.03125 11 C 3.1875 12.800781 5.203125 14 7.5 14 C 9.796875 14 11.8125 12.800781 12.96875 11 L 11.738281 11 C 11.199219 11.648438 10.511719 12.167969 9.734375 12.515625 C 10.015625 12.085938 10.265625 11.578125 10.460938 11 L 9.382813 11 C 8.890625 12.242188 8.179688 13 7.5 13 C 6.820313 13 6.109375 12.242188 5.617188 11 L 4.539063 11 C 4.734375 11.578125 4.984375 12.085938 5.265625 12.515625 C 4.488281 12.167969 3.800781 11.648438 3.261719 11 Z" />
+
+            <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left">
+                <Hyperlink>
+                    <b:Interaction.Behaviors>
+                        <behaviors:HyperlinkClickBehavior Url="https://msixhero.net" />
+                    </b:Interaction.Behaviors>
+
+                    <Run Text="Official website" />
+                </Hyperlink>
+            </TextBlock>
+        </DockPanel>
+
+        <DockPanel Margin="-1" DockPanel.Dock="Top">
+            <Path VerticalAlignment="Center" DockPanel.Dock="Left" Style="{StaticResource SmallIcon}" Data="M 7.5 1 C 3.910156 1 1 3.90625 1 7.488281 C 1 10.355469 2.863281 12.789063 5.445313 13.648438 C 5.769531 13.707031 6 13.375 6 13.125 C 6 12.972656 6.003906 12.789063 6 12.25 C 4.191406 12.640625 3.625 11.375 3.625 11.375 C 3.328125 10.625 2.96875 10.410156 2.96875 10.410156 C 2.378906 10.007813 3.011719 10.019531 3.011719 10.019531 C 3.664063 10.0625 4 10.625 4 10.625 C 4.5 11.5 5.628906 11.414063 6 11.25 C 6 10.851563 6.042969 10.5625 6.152344 10.378906 C 4.109375 10.019531 2.996094 8.839844 3 7.207031 C 3.003906 6.242188 3.335938 5.492188 3.875 4.9375 C 3.640625 4.640625 3.480469 3.625 3.960938 3 C 5.167969 3 5.886719 3.871094 5.886719 3.871094 C 5.886719 3.871094 6.453125 3.625 7.496094 3.625 C 8.542969 3.625 9.105469 3.859375 9.105469 3.859375 C 9.105469 3.859375 9.828125 3 11.035156 3 C 11.515625 3.625 11.355469 4.640625 11.167969 4.917969 C 11.683594 5.460938 12 6.210938 12 7.207031 C 12 8.839844 10.890625 10.019531 8.851563 10.375 C 8.980469 10.570313 9 10.84375 9 11.25 C 9 12.117188 9 12.910156 9 13.125 C 9 13.375 9.226563 13.710938 9.558594 13.648438 C 12.140625 12.785156 14 10.355469 14 7.488281 C 14 3.90625 11.089844 1 7.5 1 Z" Margin="2" />
+
+            <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Margin="2">
+                <Hyperlink>
+                    <b:Interaction.Behaviors>
+                        <behaviors:HyperlinkClickBehavior Url="https://github.com/marcinotorowski/MSIX-Hero" />
+                    </b:Interaction.Behaviors>
+
+                    <Run Text="Source code on github.com" />
+                </Hyperlink>
+            </TextBlock>
+        </DockPanel>
+
+        <DockPanel Margin="-1" DockPanel.Dock="Top">
+            <Path VerticalAlignment="Center" DockPanel.Dock="Left" Style="{StaticResource SmallIcon}" Data="M 2.5 2 C 1.675781 2 1 2.675781 1 3.5 L 1 11.5 C 1 12.324219 1.675781 13 2.5 13 L 4 13 L 4 15.433594 L 7.652344 13 L 12.5 13 C 13.324219 13 14 12.324219 14 11.5 L 14 3.5 C 14 2.675781 13.324219 2 12.5 2 Z M 2.5 3 L 12.5 3 C 12.78125 3 13 3.21875 13 3.5 L 13 11.5 C 13 11.78125 12.78125 12 12.5 12 L 7.347656 12 L 5 13.566406 L 5 12 L 2.5 12 C 2.21875 12 2 11.78125 2 11.5 L 2 3.5 C 2 3.21875 2.21875 3 2.5 3 Z M 7 4 L 7 5 L 8 5 L 8 4 Z M 7 6 L 7 11 L 8 11 L 8 6 Z" Margin="2" />
+
+            <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Margin="2">
+                <Hyperlink>
+                    <b:Interaction.Behaviors>
+                        <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/documentation/" />
+                    </b:Interaction.Behaviors>
+
+                    <Run Text="Documentation and how-to" />
+                </Hyperlink>
+            </TextBlock>
+        </DockPanel>
+
+        <DockPanel Margin="-1" DockPanel.Dock="Top">
+            <Path VerticalAlignment="Center" DockPanel.Dock="Left" Style="{StaticResource SmallIcon}" Data="M 1.5 3 C 0.6774686 3 0 3.6774686 0 4.5 L 0 10.5 C 0 11.322531 0.6774686 12 1.5 12 L 2 12 L 2 11 L 1.5 11 C 1.2185314 11 1 10.781469 1 10.5 L 1 4.5 C 1 4.2185314 1.2185314 4 1.5 4 L 2 4 L 2 3 L 1.5 3 z M 13 3 L 13 4 L 13.5 4 C 13.781469 4 14 4.2185314 14 4.5 L 14 10.5 C 14 10.781469 13.781469 11 13.5 11 L 13 11 L 13 12 L 13.5 12 C 14.322531 12 15 11.322531 15 10.5 L 15 4.5 C 15 3.6774686 14.322531 3 13.5 3 L 13 3 z M 3 5 L 3 6 L 12 6 L 12 5 L 3 5 z M 3 7 L 3 8 L 10 8 L 10 7 L 3 7 z M 3 9 L 3 10 L 12 10 L 12 9 L 3 9 z" Margin="2" />
+
+            <TextBlock VerticalAlignment="Center" DockPanel.Dock="Left" Margin="2">
+                <Hyperlink>
+                    <b:Interaction.Behaviors>
+                        <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/license/" />
+                    </b:Interaction.Behaviors>
+
+                    <Run Text="License and conditions" />
+                </Hyperlink>
+
+                <Run Text="GNU General Public License v3.0" Foreground="DarkGray" />
+            </TextBlock>
+        </DockPanel>
+    </StackPanel>
+</UserControl>

@@ -6,6 +6,7 @@
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.Views"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:HelpViewModel}">
@@ -77,81 +78,81 @@
         </Border>
 
         <Border Background="{StaticResource MsixHero.Brushes.Background}">
-            <ScrollViewer Margin="16" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <DockPanel>
-                        <Image Source="/Resources/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
-                        <StackPanel Margin="10 0 0 0">
-                            <Label Content="About" Style="{StaticResource FormLabel}" />
-                            <TextBlock>
+            <DockPanel Margin="16">
+                <DockPanel DockPanel.Dock="Top">
+                    <Image VerticalAlignment="Top" Source="/Resources/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
+                    <StackPanel Margin="10 0 0 0">
+                        <Label Content="About" Style="{StaticResource FormLabel}" />
+                        <TextBlock>
                         <Run Text="Author:" />
                         <Hyperlink Click="Hyperlink2_OnClick">Marcin Otorowski</Hyperlink>
-                            </TextBlock>
+                        </TextBlock>
 
-                            <TextBlock Margin="0 4 0 0">
-                                <Run Text="Official webpage:" />
-                                <Hyperlink Click="Hyperlink_OnClick">https://msixhero.net</Hyperlink>
-                            </TextBlock>
+                        <views:MsixHeroLinks DockPanel.Dock="Top" Margin="0 8" />
 
-                            <StackPanel Orientation="Horizontal" Margin="0 16 0 0"  HorizontalAlignment="Left">
-                                <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="Check for update now" HorizontalAlignment="Left" />
-                                <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="Check again for updates"  HorizontalAlignment="Left" />
-                                <Button Margin="0 0 6 0" Command="{Binding ShowReleaseNotes}" Content="Show release notes" />
-                            </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0 16 0 0"  HorizontalAlignment="Left">
+                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="Check for update now" HorizontalAlignment="Left" />
+                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="Check again for updates"  HorizontalAlignment="Left" />
+                            <Button Margin="0 0 6 0" Command="{Binding ShowReleaseNotes}" Content="Show release notes" />
                         </StackPanel>
+                    </StackPanel>
 
-                    </DockPanel>
+                </DockPanel>
 
-                    <Border Margin="0 8 0 0" Visibility="{Binding UpdateCheck.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
-                        <StackPanel>
-                            <TextBlock Text="Getting information about the new version..." />
-                            <ProgressBar Height="8" IsIndeterminate="True" Margin="0 8 0 0" />
-                        </StackPanel>
-                    </Border>
+                <Border DockPanel.Dock="Top" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
+                    <StackPanel>
+                        <TextBlock Text="Getting information about the new version..." />
+                        <ProgressBar Height="8" IsIndeterminate="True" Margin="0 8 0 0" />
+                    </StackPanel>
+                </Border>
 
-                    <Border Background="#FFFFDD" Margin="0 8 0 0" 
-                            Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
-                        <StackPanel Margin="8">
-                            <TextBlock Text="New version of MSIX Hero is available." />
-                            <TextBlock>
+                <Border DockPanel.Dock="Top" Background="#FFFFDD" Margin="0 8 0 0" 
+                        Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
+                    <StackPanel Margin="8">
+                        <TextBlock Text="New version of MSIX Hero is available." />
+                        <TextBlock>
                                 <Run Text="Your version is:" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.CurrentVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                            </TextBlock>
-                            <TextBlock>
+                        </TextBlock>
+                        <TextBlock>
                                 <Run Text="The new version is:" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.AvailableVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
                                 <Run Text="released on" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.ReleaseDate, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                            </TextBlock>
+                        </TextBlock>
 
-                            <TextBlock Margin="0 10 0 0" Text="Get the new version from the following URL:" />
+                        <TextBlock Margin="0 10 0 0" Text="Get the new version from the following URL:" />
 
-                            <TextBlock TextAlignment="Left">
+                        <TextBlock TextAlignment="Left">
                             <Hyperlink FontSize="18" Click="Hyperlink_OnClick">MSIXHERO.net/get</Hyperlink>
-                            </TextBlock>
-                        </StackPanel>
-                    </Border>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
 
-                    <Border Background="#DDFFDD" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
-                        <StackPanel Margin="8">
-                            <TextBlock Text="You are currently using the newest version of MSIX Hero" />
-                            <TextBlock>
+                <Border DockPanel.Dock="Top" Background="#DDFFDD" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
+                    <StackPanel Margin="8">
+                        <TextBlock Text="You are currently using the newest version of MSIX Hero" />
+                        <TextBlock>
                                 <Run Text="Your version is:" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.CurrentVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                            </TextBlock>
+                        </TextBlock>
 
-                        </StackPanel>
-                    </Border>
+                    </StackPanel>
+                </Border>
 
-                    <Border Background="#eee" Margin="0 16 0 0" BorderBrush="{StaticResource MsixHero.Brushes.Accent}" BorderThickness="0 4 0 0">
-                        <StackPanel Margin="8">
-                            <Label Content="License" Style="{StaticResource FormLabel}" />
-                            <TextBox Padding="0" Margin="0" BorderBrush="Transparent" BorderThickness="0" Background="#eee" 
-                                     FontFamily="Consolas" FontSize="10" x:Name="TextBox" Text="License Terms Come Here" IsReadOnly="True" />
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-            </ScrollViewer>
+                <Border DockPanel.Dock="Top" Background="#eee" Margin="0 16 0 0" BorderBrush="{StaticResource MsixHero.Brushes.Accent}" BorderThickness="0 4 0 0">
+                    <DockPanel Margin="8">
+                        <Label DockPanel.Dock="Top" Content="License" Style="{StaticResource FormLabel}" />
+                        <TextBox
+                            Padding="0" Margin="0" BorderBrush="Transparent" 
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Visible"
+                            BorderThickness="0" Background="#eee" 
+                            FontFamily="Consolas" FontSize="10" x:Name="TextBox" 
+                            Text="License Terms Come Here" IsReadOnly="True" />
+                    </DockPanel>
+                </Border>
+            </DockPanel>
         </Border>
     </DockPanel>
 </UserControl>

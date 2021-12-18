@@ -21,8 +21,6 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Helpers.Update;
 using Otor.MsixHero.App.Hero;
-using Otor.MsixHero.App.Hero.Commands;
-using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -104,19 +102,19 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             switch (startScreen)
             {
                 case DefaultScreen.Dashboard:
-                    this.Caption = "Close this dialog and jump to the Dashboard";
+                    this.Caption = "Dismiss and go to the Dashboard";
                     break;
                 case DefaultScreen.Packages:
-                    this.Caption = "Close this dialog and jump to the Packages screen";
+                    this.Caption = "Dismiss and go to the list of installed apps";
                     break;
                 case DefaultScreen.Volumes:
-                    this.Caption = "Close this dialog and jump to the Volumes screen";
+                    this.Caption = "Dismiss and go to the list of volumes";
                     break;
                 case DefaultScreen.Events:
-                    this.Caption = "Close this dialog and jump to the Event Viewer";
+                    this.Caption = "Dismiss and go to MSIX logs";
                     break;
                 case DefaultScreen.System:
-                    this.Caption = "Close this dialog and jump to the Packages screen";
+                    this.Caption = "Dismiss and go to the System status";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -133,6 +131,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
+            return;
             if (navigationContext.Uri.OriginalString == NavigationPaths.WhatsNew)
             {
                 return;
