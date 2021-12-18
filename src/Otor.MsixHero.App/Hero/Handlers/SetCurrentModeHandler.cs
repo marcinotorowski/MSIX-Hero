@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Otor.MsixHero.App.Hero.Commands;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Modules;
 using Prism.Modularity;
 using Prism.Regions;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class SetCurrentModeHandler : RequestHandler<SetCurrentModeCommand>
     {

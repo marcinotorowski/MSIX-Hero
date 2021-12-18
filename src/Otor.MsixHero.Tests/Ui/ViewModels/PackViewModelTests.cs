@@ -32,7 +32,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
-namespace Otor.MsixHero.Tests.ViewModels
+namespace Otor.MsixHero.Tests.Ui.ViewModels
 {
     [TestFixture]
     public class PackViewModelTests

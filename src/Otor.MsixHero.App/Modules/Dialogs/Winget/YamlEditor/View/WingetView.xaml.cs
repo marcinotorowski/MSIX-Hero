@@ -14,7 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.View
+namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View
 {
     /// <summary>
     /// Interaction logic for WingetView.

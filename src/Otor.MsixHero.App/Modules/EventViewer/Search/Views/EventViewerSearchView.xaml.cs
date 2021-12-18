@@ -17,7 +17,7 @@
 using System.Windows;
 using System.Windows.Input;
 
-namespace Otor.MsixHero.App.Modules.EventViewer.Views
+namespace Otor.MsixHero.App.Modules.EventViewer.Search.Views
 {
     public partial class EventViewerSearchView
     {

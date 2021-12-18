@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Dashboard;
+using Otor.MsixHero.App.Hero.Executor;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class SetToolFilterHandler : RequestHandler<SetToolFilterCommand>
     {

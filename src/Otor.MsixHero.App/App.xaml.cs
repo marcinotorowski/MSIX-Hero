@@ -43,7 +43,7 @@ using Otor.MsixHero.App.Modules.Dialogs.Packaging;
 using Otor.MsixHero.App.Modules.Dialogs.Settings;
 using Otor.MsixHero.App.Modules.Dialogs.Signing;
 using Otor.MsixHero.App.Modules.Dialogs.Updates;
-using Otor.MsixHero.App.Modules.Dialogs.WinGet;
+using Otor.MsixHero.App.Modules.Dialogs.Winget;
 using Otor.MsixHero.App.Modules.EventViewer;
 using Otor.MsixHero.App.Modules.Main;
 using Otor.MsixHero.App.Modules.Main.Shell.Views;

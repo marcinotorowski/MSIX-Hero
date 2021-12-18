@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.Appx.Volumes.Entities;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class SelectVolumesHandler : RequestHandler<SelectVolumesCommand>
     {

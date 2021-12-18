@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.View.WingetView"
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View.WingetView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,11 +8,11 @@
              d:DesignWidth="600"
              d:DesignHeight="400"
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
-             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel"
-             xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.View"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel"
+             xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewModel:WinGetViewModel}">
+             d:DataContext="{d:DesignInstance viewModel:WingetViewModel}">
     <mvvm:Dialog.WindowStyle>
         <Style TargetType="controls:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
@@ -36,8 +36,8 @@
         OkButtonLabel="Create winget manifest"
         Icon="{StaticResource VectorConsole}">
         <dialog:ChangeableDialog.DialogContentTemplate>
-            <DataTemplate DataType="{x:Type viewModel:WinGetViewModel}">
-                <view:WingetDialogContent />
+            <DataTemplate DataType="{x:Type viewModel:WingetViewModel}">
+                <view1:WingetDialogContent />
             </DataTemplate>
         </dialog:ChangeableDialog.DialogContentTemplate>
         <dialog:ChangeableDialog.SuccessContentTemplate>

@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.EventViewer;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class SetEventViewerFilterHandler : AsyncRequestHandler<SetEventViewerFilterCommand>
     {

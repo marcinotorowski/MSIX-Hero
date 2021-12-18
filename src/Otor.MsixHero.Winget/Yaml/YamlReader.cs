@@ -24,14 +24,14 @@ using YamlDotNet.Serialization;
 namespace Otor.MsixHero.Winget.Yaml
 {
     /// <summary>
-    /// A class used to read WinGet definition from a YAML file.
+    /// A class used to read Winget definition from a YAML file.
     /// </summary>
     public class YamlReader
     {
         private readonly Lazy<IDeserializer> deserializer = new Lazy<IDeserializer>(GetDeserializer);
         
         /// <summary>
-        /// Reads WinGet definition from a stream and returns a task representing the asynchronous operation.
+        /// Reads Winget definition from a stream and returns a task representing the asynchronous operation.
         /// </summary>
         /// <param name="stream">The input stream.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -43,7 +43,7 @@ namespace Otor.MsixHero.Winget.Yaml
         }
 
         /// <summary>
-        /// Reads WinGet definition from a string and returns a text reader representing the asynchronous operation.
+        /// Reads Winget definition from a string and returns a text reader representing the asynchronous operation.
         /// </summary>
         /// <param name="textReader">The text reader.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -54,10 +54,10 @@ namespace Otor.MsixHero.Winget.Yaml
         }
 
         /// <summary>
-        /// Reads WinGet definition from a stream.
+        /// Reads Winget definition from a stream.
         /// </summary>
         /// <param name="stream">The input stream.</param>
-        /// <returns>The WinGet definition.</returns>
+        /// <returns>The Winget definition.</returns>
         public YamlManifest Read(Stream stream)
         {
             using var textReader = new StreamReader(stream, leaveOpen: true);
@@ -66,10 +66,10 @@ namespace Otor.MsixHero.Winget.Yaml
 
 
         /// <summary>
-        /// Reads WinGet definition from a text reader.
+        /// Reads Winget definition from a text reader.
         /// </summary>
         /// <param name="textReader">The input textReader.</param>
-        /// <returns>The WinGet definition.</returns>
+        /// <returns>The Winget definition.</returns>
         public YamlManifest Read(TextReader textReader)
         {
             return deserializer.Value.Deserialize<YamlManifest>(textReader);

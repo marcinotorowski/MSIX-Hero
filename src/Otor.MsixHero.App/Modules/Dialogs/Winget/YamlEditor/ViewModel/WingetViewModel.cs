@@ -29,9 +29,9 @@ using Otor.MsixHero.Winget.Yaml;
 using Prism.Commands;
 using Prism.Services.Dialogs;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
+namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 {
-    public class WinGetViewModel : ChangeableDialogViewModel, IDialogAware
+    public class WingetViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private readonly WingetValidateWrapper yamlValidator = new WingetValidateWrapper();
         private readonly IInteractionService interactionService;
@@ -40,7 +40,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.WinGet.YamlEditor.ViewModel
         private ICommand open;
         private string yamlPath;
 
-        public WinGetViewModel(IInteractionService interactionService) : base("Create winget manifest", interactionService)
+        public WingetViewModel(IInteractionService interactionService) : base("Create winget manifest", interactionService)
         {
             this.interactionService = interactionService;
             this.AddChild(this.Definition = new WingetDefinitionViewModel(interactionService));

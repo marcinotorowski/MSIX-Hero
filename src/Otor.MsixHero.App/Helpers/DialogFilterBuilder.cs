@@ -57,7 +57,7 @@ namespace Otor.MsixHero.App.Helpers
                 this.BuildPackagesFilter(),
                 this.BuildBundles(),
                 this.BuildManifestFilter(),
-                this.BuildWinGet(),
+                this.BuildWinget(),
                 this.BuildAppInstaller(),
                 this.BuildCertificateFiles(),
                 this.BuildRegistry(),
@@ -221,7 +221,7 @@ namespace Otor.MsixHero.App.Helpers
             return stringBuilder.ToString().TrimEnd(';');
         }
 
-        private string BuildWinGet()
+        private string BuildWinget()
         {
             // ReSharper disable once StringLiteralTypo
             return this.filters.Contains("*" + FileConstants.WingetExtension) ? "Winget manifests|*" + FileConstants.WingetExtension : null;

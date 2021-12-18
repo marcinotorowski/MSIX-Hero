@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class SelectPackagesHandler : RequestHandler<SelectPackagesCommand>
     {

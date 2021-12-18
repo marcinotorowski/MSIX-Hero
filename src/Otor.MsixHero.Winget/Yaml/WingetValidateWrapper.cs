@@ -74,12 +74,12 @@ namespace Otor.MsixHero.Winget.Yaml
         /// Validates with help of winget.exe if the manifest is OK.
         /// </summary>
         /// <param name="yamlPath">The path to YAML file.</param>
-        /// <param name="throwIfWinGetMissing">Whether to throw exceptions if winget is missing / not installed. When set to false, lack of winget means the validation is still successful.</param>
+        /// <param name="throwIfWingetMissing">Whether to throw exceptions if winget is missing / not installed. When set to false, lack of winget means the validation is still successful.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Error message if validation failed, null if it succeeded.</returns>
-        public async Task<string> ValidateAsync(string yamlPath, bool throwIfWinGetMissing = false, CancellationToken cancellationToken = default)
+        public async Task<string> ValidateAsync(string yamlPath, bool throwIfWingetMissing = false, CancellationToken cancellationToken = default)
         {
-            var validationDetails = await this.GetRawValidationAsync(yamlPath, throwIfWinGetMissing, cancellationToken).ConfigureAwait(false);
+            var validationDetails = await this.GetRawValidationAsync(yamlPath, throwIfWingetMissing, cancellationToken).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(validationDetails))
             {
@@ -95,12 +95,12 @@ namespace Otor.MsixHero.Winget.Yaml
             return null;
         }
 
-        private async Task<string> GetRawValidationAsync(string yamlPath, bool throwIfWinGetMissing, CancellationToken cancellationToken = default)
+        private async Task<string> GetRawValidationAsync(string yamlPath, bool throwIfWingetMissing, CancellationToken cancellationToken = default)
         {
             var winGetPath = await this.GetWingetPath(cancellationToken).ConfigureAwait(false);
             if (string.IsNullOrEmpty(winGetPath))
             {
-                if (throwIfWinGetMissing)
+                if (throwIfWingetMissing)
                 {
                     throw new InvalidOperationException("Could not start winget.");
                 }

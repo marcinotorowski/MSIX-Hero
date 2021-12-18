@@ -9,7 +9,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class GetLogsHandler : IRequestHandler<GetLogsCommand, IList<Log>>
     {

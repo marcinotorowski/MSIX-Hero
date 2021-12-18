@@ -8,7 +8,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class OpenEventViewerHandler : AsyncRequestHandler<OpenEventViewerCommand>
     {
@@ -21,7 +21,7 @@ namespace Otor.MsixHero.App.Hero.Executor.Handlers
 
         protected override Task Handle(OpenEventViewerCommand request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return this.OpenEventViewer(request, cancellationToken, null);
         }
 
         private async Task OpenEventViewer(OpenEventViewerCommand command, CancellationToken cancellationToken, IProgress<ProgressData> progressData)

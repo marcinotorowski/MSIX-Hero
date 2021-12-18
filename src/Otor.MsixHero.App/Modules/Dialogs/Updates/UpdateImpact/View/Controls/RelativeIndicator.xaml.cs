@@ -18,7 +18,7 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
+namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View.Controls
 {
     /// <summary>
     /// Interaction logic for RelativeIndicator.

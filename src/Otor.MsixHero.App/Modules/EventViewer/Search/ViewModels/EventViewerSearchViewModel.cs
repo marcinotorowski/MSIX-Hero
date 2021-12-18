@@ -20,7 +20,7 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Mvvm;
 using Prism.Events;
 
-namespace Otor.MsixHero.App.Modules.EventViewer.ViewModels
+namespace Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels
 {
     public class EventViewerSearchViewModel : NotifyPropertyChanged
     {

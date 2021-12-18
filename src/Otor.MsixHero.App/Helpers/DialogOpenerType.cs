@@ -23,8 +23,8 @@ namespace Otor.MsixHero.App.Helpers
     {
         Package = 2 << 0,
         Manifest = 2 << 1,
-        WinGet = 2 << 2,
+        Winget = 2 << 2,
         AppInstaller = 2 << 3,
-        AllSupported = Package | WinGet | AppInstaller | Manifest
+        AllSupported = Package | Winget | AppInstaller | Manifest
     }
 }

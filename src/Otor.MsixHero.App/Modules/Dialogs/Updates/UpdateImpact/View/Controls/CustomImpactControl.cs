@@ -20,7 +20,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
+namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View.Controls
 {
     public class CustomImpactControl : FrameworkElement
     {

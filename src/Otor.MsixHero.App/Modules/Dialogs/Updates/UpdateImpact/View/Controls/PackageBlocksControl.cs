@@ -21,11 +21,10 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Appx.Updates.Entities.Appx;
 using Otor.MsixHero.Appx.Updates.Entities.Comparison;
 
-namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View
+namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View.Controls
 {
     public class PackageBlocksControl : FrameworkElement, IDisposable
     {

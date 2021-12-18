@@ -14,8 +14,14 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Help.View
@@ -1783,17 +1789,45 @@ SOFTWARE.
             });
         }
 
-        private void Hyperlink2_OnClick(object sender, RoutedEventArgs e)
+        private void LicenseUrlMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ExceptionGuard.Guard(() =>
+            if (e.RightButton == MouseButtonState.Pressed && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
-                var p = new ProcessStartInfo("https://marcinotorowski.com")
+                var sp = this.Links.Parent as StackPanel;
+                if (sp == null)
                 {
-                    UseShellExecute = true
-                };
+                    return;
+                }
 
-                Process.Start(p);
-            });
+                var bi = new BitmapImage();
+                bi.BeginInit();
+
+                var s = Assembly.GetAssembly(typeof(HelpView)).GetManifestResourceStream(typeof(HelpView).Namespace + ".bundle-icon.png");
+                var memArr = new byte[s.Length];
+                for (var i = s.Length - 1; i >= 0; i--)
+                {
+                    memArr[i] = (byte)s.ReadByte();
+                }
+
+                bi.StreamSource = new MemoryStream(memArr);
+                bi.CacheOption = BitmapCacheOption.OnDemand;
+                bi.EndInit();
+                ((Image)sender).Source = bi;
+
+                this.TextBox.FontSize = 9;
+                this.TextBox.Text = System.Text.Encoding.ASCII.GetString(Convert.FromBase64String("KioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqLygjIygqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKCZAQEBAQEBAQCUvKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiojJkBAQCYlJUBAQEAmLyoqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiolQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiojJkBAQCYlJUBAQEAmLyoqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKCZAQEBAQEBAQCUvKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiglJkBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqLyNAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKiolQEBAQEAmIy8qKCZAQEAoKioqKioqKioqKiovI0BAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKigjJkBAQEBAJi8qKioqKCZAQEAoKioqKioqKioqKiovI0BAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKiovI0BAQEBAQEBAQCYvKioqKioqKCZAQEAoKioqKioqKioqKiovI0BAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKiVAQEBAQEAmIy8qKioqKioqKioqKCZAQEAoKioqKioqKioqKiovI0BAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKiovJUBAQEAlLyoqKioqKioqKioqKioqKCZAQEAoKioqKioqKioqKiovI0BAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKiovQEBAQEAvKioqKioqKioqKioqKioqKCZAQEAoKioqKioqKioqKiovI0BAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKiooQEBAQCYqKioqKioqKioqKioqKioqKCZAQEAmIyoqKioqKioqKi8jQEBAQCYqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqIyZAQEBAJigqKioqKioqKioqKioqKioqKi8lQEBAQCYjKioqKiovJUBAQEBAIy8qKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKiolQEBAQCYoKioqKioqKioqKioqKioqKioqKioqLyVAQEBAJS8qKiomQEBAQCMvKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqLyVAQEBAQC8qKioqKioqKioqKioqKioqKioqKioqKiolQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqL0BAQEBAQEBAJiUjIygvKioqKioqKioqKioqKioqKiolQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqL0BAQEBAQEBAQEBAQEBAQCYvKioqKioqKioqKioqKiolQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKiovKCMlJkBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKiovJUBAQEBAQEBAQEBAQEBAQEBAQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiolQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiolQEBAJS8qKiomQEBAIy8qKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioKVGhlcmUgYXJlIG5vIGVhc3RlciBlZ2dzIGluIE1TSVggSGVyby4gR28gYXdheSE="));
+
+                var w = Window.GetWindow(this);
+                if (w == null)
+                {
+                    return;
+                }
+
+                if (w.Height < 715)
+                {
+                    w.Height = 715;
+                }
+            }
         }
     }
 }

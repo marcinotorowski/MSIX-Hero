@@ -27,7 +27,7 @@ using YamlDotNet.Serialization.ObjectGraphVisitors;
 namespace Otor.MsixHero.Winget.Yaml
 {
     /// <summary>
-    /// A class that writes YAML files for WinGet.
+    /// A class that writes YAML files for Winget.
     /// </summary>
     public class YamlWriter
     {

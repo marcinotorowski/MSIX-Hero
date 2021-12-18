@@ -7,7 +7,7 @@ using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class CheckForUpdatesHandler : IRequestHandler<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>
     {

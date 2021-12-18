@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Volumes;
+using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -12,7 +13,7 @@ using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Lib.Infrastructure.Progress;
 
-namespace Otor.MsixHero.App.Hero.Executor.Handlers
+namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class GetVolumesHandler : IRequestHandler<GetVolumesCommand, IList<AppxVolume>>
     {

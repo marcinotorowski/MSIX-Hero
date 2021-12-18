@@ -7,6 +7,8 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.Views"
+             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:HelpViewModel}">
@@ -80,15 +82,20 @@
         <Border Background="{StaticResource MsixHero.Brushes.Background}">
             <DockPanel Margin="16">
                 <DockPanel DockPanel.Dock="Top">
-                    <Image VerticalAlignment="Top" Source="/Resources/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
+                    <Image MouseDown="LicenseUrlMouseDown" VerticalAlignment="Top" Source="/Resources/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
                     <StackPanel Margin="10 0 0 0">
                         <Label Content="About" Style="{StaticResource FormLabel}" />
                         <TextBlock>
                         <Run Text="Author:" />
-                        <Hyperlink Click="Hyperlink2_OnClick">Marcin Otorowski</Hyperlink>
+                        <Hyperlink>
+                            <b:Interaction.Behaviors>
+                                <behaviors:HyperlinkClickBehavior Url="https://marcinotorowski.com" />
+                            </b:Interaction.Behaviors>
+                            Marcin Otorowski
+                        </Hyperlink>
                         </TextBlock>
 
-                        <views:MsixHeroLinks DockPanel.Dock="Top" Margin="0 8" />
+                        <views:MsixHeroLinks x:Name="Links" DockPanel.Dock="Top" Margin="0 8" />
 
                         <StackPanel Orientation="Horizontal" Margin="0 16 0 0"  HorizontalAlignment="Left">
                             <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="Check for update now" HorizontalAlignment="Left" />

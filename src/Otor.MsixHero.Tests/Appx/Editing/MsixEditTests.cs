@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -8,11 +6,8 @@ using System.Xml.XPath;
 using NUnit.Framework;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
-using Otor.MsixHero.Cli.Executors.Edit.Manifest;
-using Otor.MsixHero.Cli.Verbs.Edit;
-using Otor.MsixHero.Cli.Verbs.Edit.Manifest;
 
-namespace Otor.MsixHero.Tests.Cli
+namespace Otor.MsixHero.Tests.Appx.Editing
 {
     public class MsixEditTests
     {
