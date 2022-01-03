@@ -24,10 +24,4 @@
     <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="msixhero-uac.runtimeconfig.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
