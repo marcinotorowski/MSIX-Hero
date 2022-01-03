@@ -1,5 +1,5 @@
 ﻿// MSIX Hero
-// Copyright (C) 2021 Marcin Otorowski
+// Copyright (C) 2022 Marcin Otorowski
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MSIX Hero")]
-[assembly: AssemblyCopyright("Copyright © 2021 Marcin Otorowski")]
+[assembly: AssemblyCopyright("Copyright © 2022 Marcin Otorowski")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
