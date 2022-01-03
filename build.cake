@@ -48,6 +48,11 @@ Task("Determine version").Does(() =>{
          out var redirectedError
      );
 
+    if (p != 0)
+    {
+        throw new InvalidOperationException("GIT.EXE failed with exit code " + p);
+    }
+
     var v = string.Join("\r\n", redirectedStandardOutput);
     Information("> " + v);
 
@@ -240,12 +245,17 @@ Task("Sign files")
             (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "scripts"), "*.ps1")).ToArray();
 
         Information("Signing " + allFiles.Length + " files with signtool.exe...");
-        StartProcess(
+        var p = StartProcess(
             System.IO.Path.Combine(binFolder, "redistr", "sdk", "x64", "signtool.exe"),
                 new ProcessSettings {
-                    Arguments = "sign /n \"" + certName + "\" /tr http://time.certum.pl/ /td sha256 /fd sha256 /d \"MSIX Hero\" /v " + string.Join(" ", allFiles.Select(s => "\"" + s + "\"")),
+                    Arguments = "sign /n \"" + certName + "\" /t http://time.certum.pl/ /fd sha256 /d \"MSIX Hero\" /v " + string.Join(" ", allFiles.Select(s => "\"" + s + "\"")),
                     RedirectStandardOutput = false
                 });
+
+        if (p != 0)
+        {
+            throw new InvalidOperationException("SIGNTOOL.EXE failed with exit code " + p);
+        }
     });
 
 Task("Build MSIX")
@@ -255,12 +265,17 @@ Task("Build MSIX")
     .IsDependentOn("Trim publish folder")
     .IsDependentOn("Copy artifacts")
     .Does(() => {
-        StartProcess(
+        var p = StartProcess(
             System.IO.Path.Combine(binFolder, "msixherocli.exe"),
                 new ProcessSettings {
                     Arguments = "pack -d \"" + binFolder + "\" -p \"" + System.IO.Path.Combine(msixFolder, "msix-hero-" + version + ".msix") + "\"",
                     RedirectStandardOutput = false
                 });
+
+        if (p != 0)
+        {
+            throw new InvalidOperationException("MSIXHEROCLI.EXE failed with exit code " + p);
+        }
     });
 
 Task("Sign MSIX")
