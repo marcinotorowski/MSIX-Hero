@@ -64,7 +64,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
             try
             {
                 var name = typeof(DeviceGuardHelper).Assembly.GetManifestResourceNames().First(n => n.EndsWith("MSIXHeroTest.cat"));
-                using (var manifestResourceStream = typeof(DeviceGuardHelper).Assembly.GetManifestResourceStream(name))
+                await using (var manifestResourceStream = typeof(DeviceGuardHelper).Assembly.GetManifestResourceStream(name))
                 {
                     if (manifestResourceStream == null)
                     {
@@ -72,22 +72,18 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                     }
 
                     Logger.Debug($"Creating temporary file path {tempFilePath}");
-                    using (var fileStream = File.Create(tempFilePath))
-                    {
-                        manifestResourceStream.Seek(0L, SeekOrigin.Begin);
-                        await manifestResourceStream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
-                    }
+                    await using var fileStream = File.Create(tempFilePath);
+                    manifestResourceStream.Seek(0L, SeekOrigin.Begin);
+                    await manifestResourceStream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
                 }
 
                 var sdk = new SignToolWrapper();
                 Logger.Debug($"Signing temporary file path {tempFilePath}");
                 await sdk.SignPackageWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
 
-                using (var fromSignedFile = X509Certificate.CreateFromSignedFile(tempFilePath))
-                {
-                    Logger.Info($"Certificate subject is {tempFilePath}");
-                    return fromSignedFile.Subject;
-                }
+                using var fromSignedFile = X509Certificate.CreateFromSignedFile(tempFilePath);
+                Logger.Info($"Certificate subject is {tempFilePath}");
+                return fromSignedFile.Subject;
             }
             catch (Exception e)
             {

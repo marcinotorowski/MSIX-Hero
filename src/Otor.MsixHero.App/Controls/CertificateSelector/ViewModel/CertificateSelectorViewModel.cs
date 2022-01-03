@@ -211,38 +211,39 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
         private async void ExecuteSignInDeviceGuard()
         {
-            var dgh = new DgssTokenCreator();
+            var tokenCreator = new DgssTokenCreator();
             
             try
             {
-                using (var cancellation = new CancellationTokenSource())
+                this.Progress.Progress = 0;
+                this.Progress.Message = "Signing-in to Device Guard service...";
+
+                using var cancellation = new CancellationTokenSource();
+                IProgress<ProgressData> progress = new Progress<ProgressData>();
+                var task = tokenCreator.SignIn(true, cancellation.Token, progress);
+                this.Progress.MonitorProgress(task, cancellation, progress);
+                
+                var result = await task.ConfigureAwait(true);
+                
+                var crypto = new Crypto();
+
+                if (this.DeviceGuard.CurrentValue == null)
                 {
-                    IProgress<ProgressData> progress = new Progress<ProgressData>();
-                    var task = dgh.SignIn(cancellation.Token, progress);
-                    this.Progress.MonitorProgress(task, cancellation, progress);
-                    
-                    var result = await task.ConfigureAwait(true);
-
-                    var crypto = new Crypto();
-
-                    if (this.DeviceGuard.CurrentValue == null)
+                    this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
                     {
-                        this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
-                        {
-                            EncodedAccessToken = crypto.Protect(result.AccessToken),
-                            EncodedRefreshToken = crypto.Protect(result.RefreshToken),
-                            Subject = result.Subject
-                        };
-                    }
-                    else
+                        EncodedAccessToken = crypto.Protect(result.AccessToken),
+                        EncodedRefreshToken = crypto.Protect(result.RefreshToken),
+                        Subject = result.Subject
+                    };
+                }
+                else
+                {
+                    this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
                     {
-                        this.DeviceGuard.CurrentValue = new DeviceGuardConfiguration
-                        {
-                            EncodedAccessToken = crypto.Protect(result.AccessToken),
-                            EncodedRefreshToken = crypto.Protect(result.RefreshToken),
-                            Subject = result.Subject
-                        };
-                    }
+                        EncodedAccessToken = crypto.Protect(result.AccessToken),
+                        EncodedRefreshToken = crypto.Protect(result.RefreshToken),
+                        Subject = result.Subject
+                    };
                 }
             }
             catch (Exception e)
@@ -322,7 +323,8 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             return "The URL must have a protocol.";
         }
 
-        public AsyncProperty<IList<string>> TimeStampServers { get; } = new AsyncProperty<IList<string>>(null, false);
+        // ReSharper disable once ArrangeObjectCreationWhenTypeEvident
+        public AsyncProperty<IList<string>> TimeStampServers { get; } = new AsyncProperty<IList<string>>();
 
         public async Task<IList<string>> GenerateTimeStampServers()
         {

@@ -88,23 +88,6 @@ Task("Determine version").Does(() =>{
     }
 });
 
-Task("Publish .NET Framework")
-.Does(() =>
-{
-    Information("Building Otor.MsixHero.DeviceGuardLoginHelper.csproj...");
-    NuGetRestore("./src/Otor.MsixHero.DeviceGuardLoginHelper/Otor.MsixHero.DeviceGuardLoginHelper.csproj", new NuGetRestoreSettings { NoCache = true });
-    MSBuild("./src/Otor.MsixHero.DeviceGuardLoginHelper/Otor.MsixHero.DeviceGuardLoginHelper.csproj", new MSBuildSettings {
-        Verbosity = Verbosity.Minimal,
-        ToolVersion = MSBuildToolVersion.VS2019,
-        Configuration = "Release"
-        });
-
-    var src = System.IO.Path.Combine("src", "bin", "net6.0-windows", "DGSS");
-    var tgt = System.IO.Path.Combine(binFolder, "DGSS");
-    Information("Copying '" + src + "' to '" + tgt + "'...");
-    CopyDirectory(src, tgt);
-});
-
 Task("Test")
     .IsDependentOn("Determine version")
     .Does(() => {           
@@ -170,7 +153,6 @@ Task("Publish .NET Core")
 });
 
 Task("Trim publish folder")
-    .IsDependentOn("Publish .NET Framework")
     .IsDependentOn("Publish .NET Core")
     .Does(() => {
 
@@ -230,7 +212,6 @@ Task("Copy artifacts")
 
 Task("Sign files")
     .WithCriteria(shouldSign)
-    .IsDependentOn("Publish .NET Framework")
     .IsDependentOn("Publish .NET Core")
     .IsDependentOn("Trim publish folder")
     .IsDependentOn("Copy artifacts")
@@ -240,7 +221,6 @@ Task("Sign files")
             (System.IO.Directory.EnumerateFiles(binFolder, "*msix*.dll")).Union
             (System.IO.Directory.EnumerateFiles(binFolder, "*msix*.exe")).Union
             (System.IO.Directory.EnumerateFiles(binFolder, "External.*.dll")).Union
-            (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "dgss"), "msixhero*.exe")).Union
             (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "templates"), "AppAttach*.ps1")).Union
             (System.IO.Directory.EnumerateFiles(System.IO.Path.Combine(binFolder, "scripts"), "*.ps1")).ToArray();
 
@@ -260,7 +240,6 @@ Task("Sign files")
 
 Task("Build MSIX")
     .IsDependentOn("Prepare MSIX")
-    .IsDependentOn("Publish .NET Framework")
     .IsDependentOn("Publish .NET Core")
     .IsDependentOn("Trim publish folder")
     .IsDependentOn("Copy artifacts")

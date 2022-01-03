@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Newtonsoft.Json.Linq;
@@ -127,7 +128,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
             await this.Console.WriteInfo("Using current MSIX Hero signing options...").ConfigureAwait(false);
 
-            switch (config?.Signing?.Source)
+            switch (config.Signing?.Source)
             {
                 case CertificateSource.Pfx:
                     string password = null;
@@ -148,7 +149,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     }
                         
                     return await this.SignPfx(
-                        config.Signing.PfxPath.Resolved, 
+                        config.Signing?.PfxPath?.Resolved, 
                         password, 
                         this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
                         !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
@@ -349,7 +350,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
             try
             {
-                cfg = await this.DeviceGuardTokenCreator.SignIn().ConfigureAwait(false);
+                cfg = await this.DeviceGuardTokenCreator.SignIn(false, CancellationToken.None).ConfigureAwait(false);
                 json = await this.DeviceGuardTokenCreator.CreateDeviceGuardJsonTokenFile(cfg).ConfigureAwait(false);
 
                 if (!this.Verb.NoPublisherUpdate)

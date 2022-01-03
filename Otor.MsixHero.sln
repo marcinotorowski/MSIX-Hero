@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29409.12
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Lib", "src\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj", "{86813830-4887-4BE2-BC0E-429A3769E0A7}"
 EndProject
@@ -43,15 +43,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{C65B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Dependencies", "src\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj", "{1432F690-1E0B-4B27-A6C8-41561ECC31A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otor.MsixHero.DeviceGuardLoginHelper", "src\Otor.MsixHero.DeviceGuardLoginHelper\Otor.MsixHero.DeviceGuardLoginHelper.csproj", "{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DGSS", "DGSS", "{394DEC6F-3DD0-47DC-91F9-CD5741C59295}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.App", "src\Otor.MsixHero.App\Otor.MsixHero.App.csproj", "{D4AEAB0D-C821-4F87-B981-A217A538EB5E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Cli.Verbs", "src\Otor.MsixHero.Cli.Verbs\Otor.MsixHero.Cli.Verbs.csproj", "{1E978D58-7B04-486D-B9EA-19C4D88EF66B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otor.MsixHero.Appx.Editor", "src\Otor.MsixHero.Appx.Editor\Otor.MsixHero.Appx.Editor.csproj", "{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otor.MsixHero.Appx.Editor", "src\Otor.MsixHero.Appx.Editor\Otor.MsixHero.Appx.Editor.csproj", "{B1AB84C9-D63A-4F45-A8A5-D877A2326C77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,11 +114,6 @@ Global
 		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.PublishCore|Any CPU.Build.0 = Release|Any CPU
 		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1432F690-1E0B-4B27-A6C8-41561ECC31A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}.PublishCore|Any CPU.ActiveCfg = Release|Any CPU
-		{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D4AEAB0D-C821-4F87-B981-A217A538EB5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D4AEAB0D-C821-4F87-B981-A217A538EB5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4AEAB0D-C821-4F87-B981-A217A538EB5E}.PublishCore|Any CPU.ActiveCfg = Release|Any CPU
@@ -149,7 +140,6 @@ Global
 		{D0BB8AEB-207A-41BA-A2EC-EBFC8A1F4756} = {1353E27B-1F60-434E-AD0E-56631BE1CF3C}
 		{CD098C75-8536-4E82-9B00-A9754036AF3E} = {EDE612F6-92A3-4592-B254-93C670707DC9}
 		{C65B391A-96D3-45C1-B97D-605250DE1C2C} = {EDE612F6-92A3-4592-B254-93C670707DC9}
-		{ABA31D7C-D3C1-42FD-950F-FCBE6B3FA9BB} = {394DEC6F-3DD0-47DC-91F9-CD5741C59295}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {80D19363-C14E-4F5F-81D4-90F23FBB760E}
