@@ -243,7 +243,7 @@ Task("Sign files")
         StartProcess(
             System.IO.Path.Combine(binFolder, "redistr", "sdk", "x64", "signtool.exe"),
                 new ProcessSettings {
-                    Arguments = "sign /n \"" + certName + "\" /t http://time.certum.pl/ /fd sha256 /d \"MSIX Hero\" /v " + string.Join(" ", allFiles.Select(s => "\"" + s + "\"")),
+                    Arguments = "sign /n \"" + certName + "\" /tr http://time.certum.pl/ /td sha256 /fd sha256 /d \"MSIX Hero\" /v " + string.Join(" ", allFiles.Select(s => "\"" + s + "\"")),
                     RedirectStandardOutput = false
                 });
     });

@@ -41,6 +41,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             if (!string.IsNullOrEmpty(timestampUrl))
             {
                 signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+
+                // required in SDK builds 20236 and later
+                // see https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
+                signToolArguments.Append(" /td SHA256");
             }
 
             var libPath = SdkPathHelper.GetSdkPath("Microsoft.Acs.Dlib.dll");
@@ -128,6 +132,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             if (!string.IsNullOrEmpty(timestampUrl))
             {
                 signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+
+                // required in SDK builds 20236 and later
+                // see https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
+                signToolArguments.Append(" /td SHA256");
             }
 
             foreach (var filePath in filePaths)
@@ -184,6 +192,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             if (!string.IsNullOrEmpty(timestampUrl))
             {
                 signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+
+                // required in SDK builds 20236 and later
+                // see https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
+                signToolArguments.Append(" /td SHA256");
             }
 
             signToolArguments.Append(" /a /s MY ");
