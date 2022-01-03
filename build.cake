@@ -100,7 +100,7 @@ Task("Test")
 
         var projectDir = System.IO.Path.Combine("src", "Otor.MsixHero.Tests");
         var unitTestCsProj = System.IO.Path.Combine(projectDir, "Otor.MsixHero.Tests.csproj");
-        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "net5.0-windows");
+        var publishDir = System.IO.Path.Combine(projectDir, "bin", "PublishCore", "net6.0-windows");
         var unitTestDll = System.IO.Path.Combine(publishDir, "Otor.MsixHero.Tests.dll");
         
         Information("Building unit tests...");        
