@@ -94,6 +94,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 this.TabPackage,
                 this.TabProperties = new ChangeableContainer(this.Version, this.MainPackageUri, this.AppInstallerUri),
                 this.TabOptionalPackages = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
+                this.TabDependencies = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
                 this.TabRelatedPackages = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
                 this.TabOptions);
 
@@ -106,6 +107,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         public ChangeableContainer TabProperties { get; }
         
         public AppInstallerPackagesViewModel TabOptionalPackages { get; }
+        
+        public AppInstallerPackagesViewModel TabDependencies { get; }
         
         public AppInstallerPackagesViewModel TabRelatedPackages { get; }
 
@@ -241,6 +244,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 appInstaller.Optional = new List<AppInstallerBaseEntry>();
             }
 
+            if (this.TabDependencies.Items.Any() && appInstaller.Dependencies == null)
+            {
+                appInstaller.Dependencies = new List<AppInstallerBaseEntry>();
+            }
+
             if (this.TabRelatedPackages.Items.Any() && appInstaller.Related == null)
             {
                 appInstaller.Related = new List<AppInstallerBaseEntry>();
@@ -250,6 +258,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             {
                 var model = optional.ToModel();
                 appInstaller.Optional.Add(model);
+            }
+            
+            foreach (var dependency in this.TabDependencies.Items)
+            {
+                var model = dependency.ToModel();
+                appInstaller.Dependencies.Add(model);
             }
             
             foreach (var related in this.TabRelatedPackages.Items)
@@ -336,6 +350,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.TabPackage.PackageType.CurrentValue = builder.MainPackageType;
             this.TabPackage.Architecture.CurrentValue = builder.MainPackageArchitecture;
             this.TabOptionalPackages.SetPackages(file.Optional);
+            this.TabDependencies.SetPackages(file.Dependencies);
             this.TabRelatedPackages.SetPackages(file.Related);
 
             this.AllowDowngrades.CurrentValue = builder.AllowDowngrades;

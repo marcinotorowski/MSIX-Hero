@@ -71,6 +71,14 @@
                 <view1:OtherPackages DataContext="{Binding TabOptionalPackages}" />
             </AdornerDecorator>
         </TabItem>
+        <TabItem Header="Dependencies">
+            <b:Interaction.Behaviors>
+                <validation:ValidationBehavior ValidatedChangeable="{Binding TabDependencies}" />
+            </b:Interaction.Behaviors>
+            <AdornerDecorator>
+                <view1:Dependencies DataContext="{Binding TabDependencies}" />
+            </AdornerDecorator>
+        </TabItem>
         <TabItem Header="Related packages">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabRelatedPackages}" />
