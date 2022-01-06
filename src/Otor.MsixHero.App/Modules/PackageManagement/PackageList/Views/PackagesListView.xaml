@@ -26,24 +26,30 @@
                 <MenuItem.Icon>
                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
                 </MenuItem.Icon>
-                <MenuItem Header="Publisher" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
+                <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" InputGestureText=" ">
                     <MenuItem.Icon>
-                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallCertificate}" />
+                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPackage}" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Family name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FamilyName}" InputGestureText=" ">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
                 <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Publisher" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
+                    <MenuItem.Icon>
+                        <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallCertificate}" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDigits}" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" InputGestureText=" ">
-                    <MenuItem.Icon>
-                        <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPackage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />

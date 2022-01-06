@@ -21,6 +21,7 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         Name,
         DisplayName,
         FullName,
+        FamilyName,
         Version,
         Publisher,
         Subject,

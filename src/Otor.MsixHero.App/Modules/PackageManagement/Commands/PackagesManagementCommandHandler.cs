@@ -968,6 +968,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                         case PackageProperty.FullName:
                             toCopy.AppendLine(pkg.PackageId);
                             break;
+                        case PackageProperty.FamilyName:
+                            toCopy.AppendLine(pkg.PackageFamilyName);
+                            break;
                         case PackageProperty.Version:
                             toCopy.AppendLine(pkg.Version.ToString());
                             break;
