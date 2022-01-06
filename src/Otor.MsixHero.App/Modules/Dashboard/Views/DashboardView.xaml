@@ -397,6 +397,17 @@
                         Text="Analyze MSIX update impact..." />
                         </DockPanel>
                     </Button>
+
+                    <Button Command="{Binding ShowNamesDialog}">
+                        <DockPanel>
+                            <Path 
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorCopy}" />
+                            <TextBlock 
+                                Style="{StaticResource ButtonText}"
+                                Text="Calculate package names..." />
+                        </DockPanel>
+                    </Button>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

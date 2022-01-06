@@ -55,6 +55,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
             this.ShowWingetDialog = new DelegateCommand<object>(this.OnShowWingetDialog);
             
             this.ShowPackDialog = new DelegateCommand(this.OnShowPackDialog);
+            this.ShowNamesDialog = new DelegateCommand(this.OnShowNamesDialog);
             this.ShowModificationPackageDialog = new DelegateCommand(this.OnShowModificationPackageDialog);
             this.ShowUnpackDialog = new DelegateCommand(this.OnShowUnpackDialog);
             this.ShowUpdateImpactDialog = new DelegateCommand(this.OnShowUpdateImpactDialog);
@@ -99,6 +100,8 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         public ICommand ShowUnpackDialog { get; }
 
         public ICommand ShowUpdateImpactDialog { get; }
+
+        public ICommand ShowNamesDialog { get; }
 
         public ICommand ShowDependencyGraphDialog { get; }
 
@@ -174,6 +177,12 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         {
             this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
             this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingPack, new DialogParameters(), this.OnDialogClosed);
+        }
+
+        private void OnShowNamesDialog()
+        {
+            this.moduleManager.LoadModule(ModuleNames.Dialogs.Packaging);
+            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.PackagingNames, new DialogParameters(), this.OnDialogClosed);
         }
 
         private void OnShowModificationPackageDialog()

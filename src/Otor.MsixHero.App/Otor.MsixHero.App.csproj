@@ -125,6 +125,12 @@
     <Compile Update="Modules\Dialogs\Packaging\ModificationPackage\View\ModificationPackageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Modules\Dialogs\Packaging\Names\View\NamesDialogView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Modules\Dialogs\Packaging\Names\View\NamesView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Modules\Dialogs\Packaging\Pack\View\PackView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -233,6 +239,14 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\Packaging\ModificationPackage\View\ModificationPackageView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Packaging\Names\View\NamesDialogView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Packaging\Names\View\NamesView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

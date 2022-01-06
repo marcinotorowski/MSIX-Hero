@@ -75,6 +75,7 @@ namespace Otor.MsixHero.App.Modules
             public const string PackageExpert = BaseDialogsNavigation + "package-expert";
 
             public const string PackagingPack = BaseDialogsNavigation + "packaging-pack";
+            public const string PackagingNames = BaseDialogsNavigation + "packaging-names";
             public const string PackagingUnpack = BaseDialogsNavigation + "packaging-unpack";
             public const string PackagingModificationPackage = BaseDialogsNavigation + "packaging-modification-package";
 
