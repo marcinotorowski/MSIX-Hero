@@ -1,15 +1,31 @@
-# 2.3 (not released yet)
-* Added an option to select a timestamp from predefined list (#129)    
-* Improved catching of exceptions with ```signtool.exe``` and better reporting of timestamp server issues (4e18658)
-* Improved sideloading and developer setting for Windows 10 2004 and Windows 11 (#125)   
-* Small refresh of the dashboard and fixed inconsistencies between handling of dialogs (6da94339)
-* New command line verb ```edit``` for MSIX editing (#78)
-* Reworked app attach creation to workaround ```msixmgr``` issues with ```ShellHWDetection``` (#126)
-* Enabled filtering package list by publisher hash or raw name/publisher (950b5148)
-* Improved running indicator now shows more previously hidden apps and received performance and UI tweaks (af59eb7d)
-* Added possibility to skip validation during unpacking and remove the package after unpacking / directory after packing (df57c79f, 2b9a6657)
-* Updated ```msixmgr``` (MSIX Core) to version 1.1.92 (b00746c1)
-* Migrated MSIX Hero to .NET 6.0 (e546a32e)
+# 2.3
+Feature highlights:
+* New command line verb ```edit``` for unattended MSIX editing. (#78)
+* Appinstaller editor dialog now supports package dependencies. (#131)
+* In signing-related dialogs, timestamp server can be picked from a predefined list. (#129)    
+* New dialog to calculate package full name, publisher hash and PFN (4a93e4a5)
+
+Improvements
+* It is now possible to filter package list by publisher hash or raw name/publisher. (950b5148)
+* It is now possible to skip the validation during packing (in both UI and command-line). (df57c79f)
+* It is now possible to remove unpacked folder after packing it to MSIX file. (2b9a6657)
+* It is now possible to remove MSIX file after unpacking it to a folder (in both UI and command-line). (2b9a6657)
+* It is now possible to copy package family name from the context menu (0f51c9e5)
+* Tim Mangan's PsfTooling is now recognized and shown in the System Summary screen (9143d703)
+* New visual style of the tool dashboard. (6da9433)
+* Reworked running app indicator, which now works in real time and has some other improvements. (af59eb7d)
+* Better validation of package name, package version and resource ID in many UI dialogs (30ec7bd6)
+
+Resolved issues
+* Fixed sideloading and developer settings UI on Windows 10 (2004 and higher) and Windows 11. (#125)   
+* Fixed handling of timestamp-related exceptions from ```signtool.exe```. (4e18658)
+
+Technical changes
+* Updated ```msixmgr``` (MSIX Core) to version 1.1.92. (b00746c1)
+* Migrated MSIX Hero to .NET 6.0. (e546a32e)
+* Reduced application size thanks to deprecation of older .NET Framework code. (4cd18578)
+* Updated MSIX/Windows SDK to 10.0.22000.0. (2269bf46)
+
 
 # 2.2.34
 See http://msixhero.net/redirect/release-notes/2.2.34 for more details
