@@ -306,7 +306,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             if (
                 (item.DisplayName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
                 (item.DisplayPublisherName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
-                (item.ProductId?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
+                (item.ProductId?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 &&
+                (item.PackageFamilyName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
             )
             {
                 return false;
