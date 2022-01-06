@@ -538,6 +538,9 @@
                                                         <DataTrigger Binding="{Binding IconId}" Value="RAYPACK">
                                                             <Setter TargetName="PART_Logo" Property="Source" Value="Logos/Square44x44Logo.targetsize-48.png" />
                                                         </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IconId}" Value="PSFTOOLING">
+                                                            <Setter TargetName="PART_Logo" Property="Source" Value="Logos/PsfToolingDSquare44x44Logo.targetsize-48.png" />
+                                                        </DataTrigger>
                                                         <DataTrigger Binding="{Binding Status}" Value="{x:Static tooling:DiscoveredAppViewModelStatus.Unknown}">
                                                             <Setter TargetName="PART_StoreButton" Property="Visibility" Value="Collapsed" />
                                                         </DataTrigger>

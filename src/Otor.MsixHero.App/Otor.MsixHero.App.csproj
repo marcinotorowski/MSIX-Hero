@@ -30,6 +30,7 @@
     <None Remove="Modules\PackageManagement\Views\mock2.png" />
     <None Remove="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png" />
     <None Remove="Modules\SystemStatus\View\Logos\AppPackage.png" />
+    <None Remove="Modules\SystemStatus\View\Logos\PsfToolingDSquare44x44Logo.targetsize-48.png" />
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.png" />
     <None Remove="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
     <None Remove="Modules\VolumeManagement\Views\acryllicbg.png" />
@@ -78,11 +79,18 @@
     <Resource Include="Modules\SystemStatus\View\Logos\AdvancedInstaller17Square44x44Logo.targetsize-32.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Modules\SystemStatus\View\Logos\AppPackage.png" />
+    <Resource Include="Modules\SystemStatus\View\Logos\AppPackage.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\SystemStatus\View\Logos\PsfToolingDSquare44x44Logo.targetsize-48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png" />
+    <Resource Include="Modules\SystemStatus\View\Logos\Square44x44Logo.targetsize-48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Modules\WhatsNew\Views\arrow.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

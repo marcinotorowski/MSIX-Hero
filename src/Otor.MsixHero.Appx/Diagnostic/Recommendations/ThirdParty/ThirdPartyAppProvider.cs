@@ -14,7 +14,9 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 
@@ -29,10 +31,40 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
                 new MsixHeroAppProvider(),
                 new AdvancedInstallerExpressAppProvider(),
                 new MsixPackagingToolAppProvider(),
-                new RayPackAppProvider()
+                new RayPackAppProvider(),
+                new PsfToolingAppProvider()
             };
 
-            return detectors.SelectMany(d => d.ProvideApps()).Where(a => a.AppId != "MSIXHERO").OrderBy(a => a.AppId == "MSIXPKGTOOL" ? "#" : a.Name);
+            unchecked
+            {
+                // this is to ensure that we have a pseudo-random order
+                // which is constant for a particular session.
+                // Also, add hashcode of the machine so that we get unique
+                // results even if PIDs are the same.
+                var seed = Process.GetCurrentProcess().Id;
+                seed = (seed * 39) ^ Environment.MachineName.GetHashCode();
+
+                var rnd = new Random(seed);
+                
+                return detectors
+                    .SelectMany(d => d.ProvideApps())
+                    .Where(a => a.AppId != "MSIXHERO")
+                    .OrderBy(a =>
+                    {
+                        switch (a)
+                        {
+                            case ThirdPartyDetectedStoreApp:
+                                return 0;
+                            case IThirdPartyDetectedApp:
+                                return 1;
+                            case IStoreApp:
+                                return 2;
+                            default:
+                                return 3;
+                        }
+                    })
+                    .ThenBy(d => rnd.Next());
+            }
         }
     }
 }
