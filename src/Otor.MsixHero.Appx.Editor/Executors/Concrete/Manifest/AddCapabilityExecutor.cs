@@ -37,7 +37,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
         {
             if (this.Manifest.Root == null)
             {
-                throw new InvalidOperationException("The root element may not be empty.");
+                throw new InvalidOperationException("The root element cannot be empty.");
             }
 
             var capabilities = this.Manifest.Root.XPathSelectElement("//*[local-name()='Capabilities']");

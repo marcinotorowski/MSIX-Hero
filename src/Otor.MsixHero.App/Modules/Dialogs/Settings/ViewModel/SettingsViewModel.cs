@@ -157,7 +157,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
         }
 
         public string ValidateManifestEditorPath(string value)
@@ -167,7 +167,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
         }
 
         public string ValidateAppInstallerEditorPath(string value)
@@ -177,7 +177,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
         }
 
         public string ValidateMsixEditorPath(string value)
@@ -187,7 +187,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
         }
 
         public string ValidatePsfEditorPath(string value)
@@ -197,7 +197,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path may not be empty." : null;
+            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
         }
 
         public ChangeableContainer TabOther { get; } = new ChangeableContainer();

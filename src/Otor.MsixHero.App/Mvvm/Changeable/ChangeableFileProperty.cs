@@ -62,7 +62,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        return "The file path may not be empty.";
+                        return "The file path cannot be empty.";
                     }
 
                     if (!Uri.TryCreate(value, UriKind.Absolute, out _))
@@ -83,7 +83,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        return "The file path may not be empty.";
+                        return "The file path cannot be empty.";
                     }
 
                     if (!Uri.TryCreate(value, UriKind.Absolute, out _))

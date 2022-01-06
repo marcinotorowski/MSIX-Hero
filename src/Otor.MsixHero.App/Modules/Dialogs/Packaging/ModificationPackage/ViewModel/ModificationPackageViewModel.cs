@@ -25,6 +25,7 @@ using Otor.MsixHero.App.Controls.CertificateSelector.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
@@ -286,8 +287,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.DisplayName = new ValidatedChangeableProperty<string>("Displayed name", ValidatorFactory.ValidateNotEmptyField());
             this.PublisherDisplayName = new ValidatedChangeableProperty<string>("Displayed publisher name", ValidatorFactory.ValidateNotEmptyField());
             this.Name = new ValidatedChangeableProperty<string>("Display name", ValidatorFactory.ValidateNotEmptyField());
-            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", ValidatorFactory.ValidateSubject());
-            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", ValidatorFactory.ValidateVersion(true));
+            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", AppxValidatorFactory.ValidateSubject());
+            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", AppxValidatorFactory.ValidateVersion());
 
             this.TabProperties = new ChangeableContainer(
                 this.DisplayName,
@@ -334,8 +335,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             };
 
             this.PackageSourceMode = new ChangeableProperty<PackageSourceMode>();
-            this.ParentName = new ValidatedChangeableProperty<string>("Parent package name", false, ValidatorFactory.ValidateNotEmptyField());
-            this.ParentPublisher = new ValidatedChangeableProperty<string>("Parent publisher", false, ValidatorFactory.ValidateSubject());
+            this.ParentName = new ValidatedChangeableProperty<string>("Parent package name", false, AppxValidatorFactory.ValidatePackageName());
+            this.ParentPublisher = new ValidatedChangeableProperty<string>("Parent publisher", false, AppxValidatorFactory.ValidateSubject());
             
             this.TabParentPackage = new ChangeableContainer(
                 this.PackageSourceMode,

@@ -30,6 +30,9 @@ namespace Otor.MsixHero.Cli.Verbs.Edit.Manifest
         [Option("packageName", HelpText = "The package name.")]
         public string Name { get; set; }
 
+        [Option("resourceId", HelpText = "The resource ID.")]
+        public string ResourceId { get; set; }
+
         [Option("processorArchitecture", HelpText = "The processor architecture, for example x64, arm or Neutral")]
         public string ProcessorArchitecture { get; set; }
     }

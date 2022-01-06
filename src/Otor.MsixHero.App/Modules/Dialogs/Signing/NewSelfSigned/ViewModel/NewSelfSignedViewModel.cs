@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
+using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
@@ -47,7 +48,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
             this.signingManagerFactory = signingManagerFactory;
             
             this.OutputPath = new ChangeableFolderProperty("Output path", interactionService, configurationService.GetCurrentConfiguration().Signing?.DefaultOutFolder);
-            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", "CN=", ValidatorFactory.ValidateSubject());
+            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", "CN=", AppxValidatorFactory.ValidateSubject());
             this.PublisherFriendlyName = new ValidatedChangeableProperty<string>("Publisher display name", ValidatePublisherFriendlyName);
             this.Password = new ValidatedChangeableProperty<string>("Password", ValidatePassword);
             this.ValidUntil = new ValidatedChangeableProperty<DateTime>("Valid until", DateTime.Now.Add(TimeSpan.FromDays(365)), ValidateDateTime);
@@ -114,7 +115,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 
         private static string ValidatePublisherFriendlyName(string newValue)
         {
-            return string.IsNullOrEmpty(newValue) ? "The name of the publisher may not be empty." : null;
+            return string.IsNullOrEmpty(newValue) ? "The name of the publisher cannot be empty." : null;
         }
 
         private static string ValidateDateTime(DateTime date)
@@ -124,7 +125,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 
         private static string ValidatePassword(string currentValue)
         {
-            return string.IsNullOrEmpty(currentValue) ? "The password may not be empty." : null;
+            return string.IsNullOrEmpty(currentValue) ? "The password cannot be empty." : null;
         }
 
         private async void ImportNewCertificateExecute()

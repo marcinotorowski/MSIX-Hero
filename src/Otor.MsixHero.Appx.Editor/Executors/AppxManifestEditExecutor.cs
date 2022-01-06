@@ -54,7 +54,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors
         {
             if (this.Manifest.Root == null)
             {
-                throw new InvalidOperationException("Document root may not be empty.");
+                throw new InvalidOperationException("Document root cannot be empty.");
             }
 
             if (this.Manifest.Root.GetDefaultNamespace().NamespaceName == ns.NamespaceName)
@@ -182,7 +182,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors
         {
             if (this.Manifest.Root == null)
             {
-                throw new InvalidOperationException("Root may not be empty.");
+                throw new InvalidOperationException("Root cannot be empty.");
             }
 
             return (null, this.Manifest.Root.GetDefaultNamespace());

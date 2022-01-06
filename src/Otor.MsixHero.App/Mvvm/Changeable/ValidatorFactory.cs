@@ -27,38 +27,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 return null;
             };
         }
-
-
-        public static Func<string, string> ValidateSubject(bool required = true)
-        {
-            return value =>
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    if (!required)
-                    {
-                        return null;
-                    }
-
-                    return "The publisher may not be empty.";
-                }
-
-                if (!Regex.IsMatch(value.Replace(", ", ","), @"^(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)\s*=\s*(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*"")(?:\+(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)=(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*""))*(?:,(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)=(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*"")(?:\+(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)\s*=\s*(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*""))*)*$"))
-                {
-                    // todo: Some better validation, RFC compliant
-                    return "Publisher name must be a valid DN string (for example CN=Author)";
-                }
-
-                return null;
-            };
-        }
-
+        
         public static Func<string, string> ValidateInteger(bool required = false, string prompt = null)
         {
             return value =>
@@ -70,7 +45,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 if (!int.TryParse(value, out _))
@@ -93,7 +68,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 if (!Uri.TryCreate(value, UriKind.Absolute, out var parsed) || string.IsNullOrEmpty(parsed.Scheme))
@@ -125,7 +100,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
                     
-                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 if (!Guid.TryParse(value, out _))
@@ -148,7 +123,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 if (!Uri.TryCreate(value, UriKind.Absolute, out var parsed))
@@ -172,7 +147,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             };
         }
 
-        public static Func<string, string> ValidateVersion(bool required, string prompt = null)
+        public static Func<string, string> ValidateVersion(bool required = true, string prompt = null)
         {
             return version =>
             {
@@ -183,7 +158,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "The version may not be empty."  : $"{prompt} may not be empty.";
+                    return prompt == null ? "The version cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 if (!Version.TryParse(version, out _))
@@ -206,7 +181,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value may not be empty." : $"{prompt} may not be empty.";
+                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
                 }
 
                 if (!Regex.IsMatch(value, "^[a-fA-F0-9]{64}$"))

@@ -95,7 +95,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
         {
             if (string.IsNullOrEmpty(path))
             {
-                return "The path to a tool may not be empty.";
+                return "The path to a tool cannot be empty.";
             }
 
             return null;
@@ -107,8 +107,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
             {
                 return null;
             }
-
-            return "The name may not be empty.";
+            
+            return "The name cannot be empty.";
         }
 
         private void IconOnValueChanged(object sender, ValueChangedEventArgs e)

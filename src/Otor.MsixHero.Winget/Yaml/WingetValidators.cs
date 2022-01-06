@@ -17,7 +17,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (packageIdentifier.Length > 128)
             {
-                return "The identifier may not be longer than 128 characters.";
+                return "The identifier cannot be longer than 128 characters.";
             }
 
             if (!Regex.IsMatch(packageIdentifier, "^[^\\.\\s\\\\/:\\*\\?\"<>\\|\\x01-\\x1f]{1,32}(\\.[^\\.\\s\\\\/:\\*\\?\"<>\\|\\x01-\\x1f]{1,32}){1,3}$"))
@@ -37,7 +37,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (packageVersion.Length > 128)
             {
-                return "The identifier may not be longer than 128 characters.";
+                return "The identifier cannot be longer than 128 characters.";
             }
 
             if (!Regex.IsMatch(packageVersion, "^[^\\\\/:\\*\\?\"<>\\|\\x01-\\x1f]+$"))
@@ -72,7 +72,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (tag.Length > 40)
             {
-                return "The tag may not be longer than 40 characters.";
+                return "The tag cannot be longer than 40 characters.";
             }
 
             return null;
@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (channel.Length > 16)
             {
-                return "The channel may not be longer than 16 characters.";
+                return "The channel cannot be longer than 16 characters.";
             }
 
             return null;
@@ -122,7 +122,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (switches.Length > 512)
             {
-                return "The length of the command may not exceed 512.";
+                return "The length of the command cannot exceed 512.";
             }
 
             return null;
@@ -137,7 +137,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (switches.Length > 2048)
             {
-                return "The length of the command may not exceed 2048.";
+                return "The length of the command cannot exceed 2048.";
             }
 
             return null;
@@ -259,7 +259,7 @@ namespace Otor.MsixHero.Winget.Yaml
 
             if (familyName.Length > 255)
             {
-                return "Package family name may not be longer than 255 characters.";
+                return "Package family name cannot be longer than 255 characters.";
             }
 
             if (!Regex.IsMatch(familyName, "^[A-Za-z0-9][-\\.A-Za-z0-9]+_[A-Za-z0-9]{13}$"))

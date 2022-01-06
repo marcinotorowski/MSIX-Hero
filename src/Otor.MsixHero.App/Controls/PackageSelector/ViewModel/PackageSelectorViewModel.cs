@@ -22,6 +22,7 @@ using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller;
 using Otor.MsixHero.AppInstaller.Entities;
+using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Infrastructure.Logging;
@@ -42,11 +43,11 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
         public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
             this.displayMode = displayMode;
-            this.Publisher = new ValidatedChangeableProperty<string>("Publisher name", ValidatorFactory.ValidateSubject());
+            this.Publisher = new ValidatedChangeableProperty<string>("Publisher name", AppxValidatorFactory.ValidateSubject());
             this.DisplayPublisher = new ValidatedChangeableProperty<string>("Publisher display name", ValidatorFactory.ValidateNotEmptyField());
-            this.Name = new ValidatedChangeableProperty<string>("Package name", this.ValidateName);
+            this.Name = new ValidatedChangeableProperty<string>("Package name", AppxValidatorFactory.ValidatePackageName());
             this.DisplayName = new ValidatedChangeableProperty<string>("Package display name", ValidatorFactory.ValidateNotEmptyField());
-            this.Version = new ValidatedChangeableProperty<string>("Version", this.ValidateVersion);
+            this.Version = new ValidatedChangeableProperty<string>("Version", AppxValidatorFactory.ValidateVersion());
             this.Architecture = new ChangeableProperty<AppxPackageArchitecture>(AppxPackageArchitecture.Neutral);
             this.PackageType = new ChangeableProperty<PackageType>();
 
@@ -287,36 +288,6 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
                     Logger.Warn($"Could not read value from MSIX manifest {e.NewValue}");
                 }
             }
-        }
-
-        private string ValidateVersion(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "The version may not be empty.";
-            }
-
-            if (!System.Version.TryParse(newValue, out _))
-            {
-                return $"'{newValue}' is not a valid version.";
-            }
-
-            if (newValue.Split('.').Length != 4)
-            {
-                return "The version must have 4 units (for example 1.2.3.4).";
-            }
-
-            return null;
-        }
-
-        private string ValidateName(string newValue)
-        {
-            if (string.IsNullOrEmpty(newValue))
-            {
-                return "Package name may not be empty.";
-            }
-
-            return null;
         }
 
         private string GetFilterString(bool allowPackages, bool allowBundles, bool allowManifests)

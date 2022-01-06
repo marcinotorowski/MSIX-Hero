@@ -114,7 +114,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (string.IsNullOrEmpty(id))
             {
-                return "Application ID may not be empty.";
+                return "Application ID cannot be empty.";
             }
 
             if (id.IndexOf('.') == -1)

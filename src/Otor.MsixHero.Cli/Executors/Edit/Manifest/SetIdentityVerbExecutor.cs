@@ -14,10 +14,10 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
 using Otor.MsixHero.Cli.Verbs.Edit.Manifest;
@@ -37,7 +37,8 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
                 Name = this.Verb.Name,
                 ProcessorArchitecture = this.Verb.ProcessorArchitecture,
                 Publisher = this.Verb.Publisher,
-                Version = this.Verb.Version
+                Version = this.Verb.Version,
+                ResourceId = this.Verb.ResourceId
             };
 
             var actionExecutor = new SetPackageIdentityExecutor(document);
@@ -65,24 +66,48 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
                 return baseResult;
             }
 
-            if (this.Verb.Name == null && this.Verb.ProcessorArchitecture == null && this.Verb.Publisher == null && this.Verb.Version == null)
+            if (this.Verb.Name == null && this.Verb.ProcessorArchitecture == null && this.Verb.Publisher == null && this.Verb.Version == null && this.Verb.ResourceId == null)
             {
-                await this.Console.WriteError("At least one property to change is required by this executor.").ConfigureAwait(false);
+                await this.Console.WriteError("At least one property to change is required.").ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
-            if (this.Verb.Publisher != null && !Regex.IsMatch(this.Verb.Publisher, @"(CN|L|O|OU|E|C|S|STREET|T|G|I|SN|DC|SERIALNUMBER|Description|PostalCode|POBox|Phone|X21Address|dnQualifier|(OID\.(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))+))=(([^,+=""<>#;])+|"".*"")(, ((CN|L|O|OU|E|C|S|STREET|T|G|I|SN|DC|SERIALNUMBER|Description|PostalCode|POBox|Phone|X21Address|dnQualifier|(OID\.(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))+))=(([^,+=""<>#;])+|"".*"")))*"))
+            if (this.Verb.Publisher != null)
             {
-                if (this.Verb.Publisher.Contains('='))
+                var error = AppxValidatorFactory.ValidateSubject()(this.Verb.Publisher);
+                if (error != null)
                 {
-                    await this.Console.WriteError("The format of the publisher is invalid.").ConfigureAwait(false);
-                }
-                else
-                {
-                    await this.Console.WriteError($"The format of the publisher is invalid. Did you mean CN={this.Verb.Publisher}?").ConfigureAwait(false);
-                }
+                    if (this.Verb.Publisher.Contains('='))
+                    {
+                        await this.Console.WriteError("The format of the publisher is invalid. " + error).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await this.Console.WriteError($"The format of the publisher is invalid. {error}\r\nDid you mean CN={this.Verb.Publisher}?").ConfigureAwait(false);
+                    }
 
-                return StandardExitCodes.ErrorFormat;
+                    return StandardExitCodes.ErrorFormat;
+                }
+            }
+
+            if (this.Verb.Name != null)
+            {
+                var error = AppxValidatorFactory.ValidatePackageName()(this.Verb.Name);
+                if (error != null)
+                {
+                    await this.Console.WriteError("The format of the package name is invalid. " + error).ConfigureAwait(false);
+                    return StandardExitCodes.ErrorFormat;
+                }
+            }
+
+            if (this.Verb.ResourceId != null)
+            {
+                var error = AppxValidatorFactory.ValidateResourceId()(this.Verb.ResourceId);
+                if (error != null)
+                {
+                    await this.Console.WriteError("The format of the resource ID is invalid. " + error).ConfigureAwait(false);
+                    return StandardExitCodes.ErrorFormat;
+                }
             }
 
             return StandardExitCodes.ErrorSuccess;
