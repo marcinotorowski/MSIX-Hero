@@ -286,7 +286,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         {
             this.DisplayName = new ValidatedChangeableProperty<string>("Displayed name", ValidatorFactory.ValidateNotEmptyField());
             this.PublisherDisplayName = new ValidatedChangeableProperty<string>("Displayed publisher name", ValidatorFactory.ValidateNotEmptyField());
-            this.Name = new ValidatedChangeableProperty<string>("Display name", ValidatorFactory.ValidateNotEmptyField());
+            this.Name = new ValidatedChangeableProperty<string>("Package name", AppxValidatorFactory.ValidatePackageName());
             this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", AppxValidatorFactory.ValidateSubject());
             this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", AppxValidatorFactory.ValidateVersion());
 
