@@ -6,6 +6,7 @@
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.Converters"
+             xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
     <UserControl.Resources>
@@ -25,6 +26,32 @@
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <GridViewColumn Width="400">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Name" Content="Name" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <Image Margin="2 -2"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.DocumentSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+                                            <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <GridViewColumn DisplayMemberBinding="{Binding SizeDifference, Converter={StaticResource SizeConverter}}" Width="60">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="Size" Content="Size" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
+                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                            <GridViewColumn DisplayMemberBinding="{Binding UpdateImpact, Converter={StaticResource SizeConverter}}" Width="120">
+                                <GridViewColumn.Header>
+                                    <GridViewColumnHeader Tag="UpdateImpact" Content="Update impact" Click="GridHeaderOnClick" />
+                                </GridViewColumn.Header>
+                            </GridViewColumn>
                             <GridViewColumn Width="100">
                                 <GridViewColumn.Header>
                                     <GridViewColumnHeader Tag="Type" Content="Type" Click="GridHeaderOnClick" />
@@ -48,30 +75,12 @@
                                             </DataTrigger>
                                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                                             <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Changed}">
-                                                <Setter Property="Background" TargetName="Border" Value="Orange" />
+                                                <Setter Property="Background" TargetName="Border" Value="SandyBrown" />
                                                 <Setter Property="Foreground" TargetName="Text" Value="White" />
                                             </DataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                            <GridViewColumn DisplayMemberBinding="{Binding Name}" Width="400">
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Name" Content="Name" Click="GridHeaderOnClick" />
-                                </GridViewColumn.Header>
-                            </GridViewColumn>
-                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                            <GridViewColumn DisplayMemberBinding="{Binding SizeDifference, Converter={StaticResource SizeConverter}}" Width="60">
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Size" Content="Size" Click="GridHeaderOnClick" />
-                                </GridViewColumn.Header>
-                            </GridViewColumn>
-                            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                            <GridViewColumn DisplayMemberBinding="{Binding UpdateImpact, Converter={StaticResource SizeConverter}}" Width="120">
-                                <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="UpdateImpact" Content="Update impact" Click="GridHeaderOnClick" />
-                                </GridViewColumn.Header>
                             </GridViewColumn>
                         </GridView.Columns>
                     </GridView>

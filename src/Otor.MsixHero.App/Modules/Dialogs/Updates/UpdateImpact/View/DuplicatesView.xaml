@@ -7,6 +7,7 @@
              xmlns:treeListView="clr-namespace:Otor.MsixHero.App.Controls.TreeListView"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.Converters"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
+             xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
     <UserControl.Resources>
@@ -30,7 +31,10 @@
                             <!--The Expander Button (can be used in any column (typically the first one))-->
                             <treeListView:TreeListViewExpander VerticalAlignment="Center" />
                             <!--Display the name of the DataElement-->
-                            <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                            <DockPanel>
+                                <Image Margin="2 -2"  VerticalAlignment="Center" Source="{x:Static interop:WindowsIcons.DocumentSmall}" Width="16" Height="16" SnapsToDevicePixels="True" UseLayoutRounding="True" />
+                                <TextBlock Text="{Binding Path=Name}" VerticalAlignment="Center" />
+                            </DockPanel>
                         </StackPanel>
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
