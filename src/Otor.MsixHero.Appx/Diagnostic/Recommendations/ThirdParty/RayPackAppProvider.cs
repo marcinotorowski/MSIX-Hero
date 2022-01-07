@@ -30,17 +30,39 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations.ThirdParty
             var pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_whm4wqzjy81pg").FirstOrDefault();
             if (pkg == null)
             {
-                yield return new ThirdPartyStoreApp("RAYPACK", "RayPack", "Raynet GmbH", "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_whm4wqzjy81pg");
+                pkg = PackageManagerWrapper.Instance.FindPackagesForUser(string.Empty, "11560RaynetGmbH.RayPack_n395tecb6fd4t").FirstOrDefault();
+                if (pkg == null)
+                {   
+                    yield return new ThirdPartyStoreApp("RAYPACK", "RayPack", "Raynet GmbH", "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_n395tecb6fd4t");
+                }
+                else
+                {
+                    yield return new RayPackApp2($"{pkg.Id.Version.Major}.{pkg.Id.Version.Minor}.{pkg.Id.Version.Build}.{pkg.Id.Version.Revision}");
+                }
             }
             else
             {
-                yield return new RayPackApp($"{pkg.Id.Version.Major}.{pkg.Id.Version.Minor}.{pkg.Id.Version.Build}.{pkg.Id.Version.Revision}");
+                yield return new RayPackApp1($"{pkg.Id.Version.Major}.{pkg.Id.Version.Minor}.{pkg.Id.Version.Build}.{pkg.Id.Version.Revision}");
             }
         }
 
-        private class RayPackApp : ThirdPartyDetectedStoreApp, IMsixCreator
+        private class RayPackApp1 : ThirdPartyDetectedStoreApp, IMsixCreator
         {
-            public RayPackApp(string version) : base("RAYPACK", "RayPack", "Raynet GmbH", version, "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_whm4wqzjy81pg")
+            public RayPackApp1(string version) : base("RAYPACK", "RayPack", "Raynet GmbH", version, "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_whm4wqzjy81pg")
+            {
+            }
+            
+            public string ProjectExtension { get; } = "rppx";
+
+            public void CreateProject(string path, bool open = true)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class RayPackApp2 : ThirdPartyDetectedStoreApp, IMsixCreator
+        {
+            public RayPackApp2(string version) : base("RAYPACK", "RayPack", "Raynet GmbH", version, "https://msixhero.net/redirect/ms-store/raypack", "11560RaynetGmbH.RayPack_n395tecb6fd4t")
             {
             }
             
