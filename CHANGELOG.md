@@ -1,26 +1,40 @@
-# 2.3
+# 2.3.0
 Feature highlights:
 * New command line verb ```edit``` for unattended MSIX editing. (#78)
+  * Changing of package identity (```msixherocli.exe edit <path> setIdentity ...```)
+  * Setting properties (```msixherocli.exe edit <path> setProperties ...```)
+  * Adding standard, restricted or custom capability (```msixherocli.exe edit <path> addCapability ...```)
+  * Setting build meta-data (```msixherocli.exe edit <path> setBuildMetaData ...```)
+  * Deleting a file (```msixherocli.exe edit <path> deleteFile ...```)
+  * Adding or replacing a file (```msixherocli.exe edit <path> addFile ...```)
+  * Setting registry keys (```msixherocli.exe edit <path> setRegistryKey ...```)
+  * Setting registry values (```msixherocli.exe edit <path> setRegistryValue ...```)
+  * Deleting registry keys (```msixherocli.exe edit <path> deleteRegistryKey ...```)
+  * Deleting registry values (```msixherocli.exe edit <path> deleteRegistryValue ...```)
+  * Importing registry keys from file or local registry (```msixherocli.exe edit <path> importRegistry ...```)
+  * Bulk editing and chaining (```msixherocli.exe edit <path> list ...```)
+  * Call ```msixherocli.exe edit <path> --help``` for extensive help for all options. The ```<path>``` in all above commands can be a manifest, MSIX or an unpacked package directory.
 * Appinstaller editor dialog now supports package dependencies. (#131)
 * In signing-related dialogs, timestamp server can be picked from a predefined list. (#129)    
 * New dialog to calculate package full name, publisher hash and PFN (4a93e4a5)
 
 Improvements
-* It is now possible to filter package list by publisher hash or raw name/publisher. (950b5148)
-* It is now possible to skip the validation during packing (in both UI and command-line). (df57c79f)
-* It is now possible to remove unpacked folder after packing it to MSIX file. (2b9a6657)
-* It is now possible to remove MSIX file after unpacking it to a folder (in both UI and command-line). (2b9a6657)
-* It is now possible to copy package family name from the context menu (0f51c9e5)
-* Tim Mangan's PsfTooling is now recognized and shown in the System Summary screen (9143d703)
+* Ability to filter package list by publisher hash or raw name/publisher. (950b5148)
+* Ability to skip the validation during packing (in both UI and command-line). (df57c79f)
+* Ability to remove unpacked folder after packing it to MSIX file. (2b9a6657)
+* Ability to remove MSIX file after unpacking it to a folder (in both UI and command-line). (2b9a6657)
+* Ability to copy package family name from the context menu (0f51c9e5)
+* Tim Mangan's PsfTooling and RayPack Express are now recognized and shown in the System Summary screen. (9143d703, 5023015b)
 * New visual style of the tool dashboard. (6da9433)
 * Reworked running app indicator, which now works in real time and has some other improvements. (af59eb7d)
 * Better validation of package name, package version and resource ID in many UI dialogs (30ec7bd6)
+* Update impact dialog has now icons and better captions for duplicated files. (3e8bbb67, 32d0c5ce)
 
 Resolved issues
 * Fixed sideloading and developer settings UI on Windows 10 (2004 and higher) and Windows 11. (#125)   
 * Fixed handling of timestamp-related exceptions from ```signtool.exe```. (4e18658)
 
-Technical changes
+Technical changes and SDK updates
 * Updated ```msixmgr``` (MSIX Core) to version 1.1.92. (b00746c1)
 * Migrated MSIX Hero to .NET 6.0. (e546a32e)
 * Reduced application size thanks to deprecation of older .NET Framework code. (4cd18578)
