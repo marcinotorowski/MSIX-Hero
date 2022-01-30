@@ -49,7 +49,6 @@ namespace Otor.MsixHero.Cli.Executors
                 typeof(DependenciesVerb),
                 typeof(UpdateImpactVerb),
                 typeof(EditVerbPlaceholder));
-
             p.WithParsed<SignVerb>(verb =>
             {
                 verbExecutor = new SignVerbExecutor(verb, new SigningManager(MsixHeroGistTimeStampFeed.CreateCached()), new LocalConfigurationService(), this.console);

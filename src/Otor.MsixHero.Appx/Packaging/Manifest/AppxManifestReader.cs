@@ -53,10 +53,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             var isAppxBundle = fileReader.FileExists(FileConstants.AppxBundleManifestFilePath);
             if (isAppxBundle)
             {
-                throw new NotSupportedException("Bundles are not supported.");
+                throw new NotSupportedException(Resources.Localization.Packages_Error_BundleNotSupported);
             }
 
-            throw new NotSupportedException("Required package source is not supported.");
+            throw new NotSupportedException(Resources.Localization.Packages_Error_SrcNotSupported);
         }
         
         public async Task<AppxPackage> Read(IAppxFileReader fileReader, bool resolveDependencies, CancellationToken cancellationToken = default)
@@ -86,28 +86,26 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
         public async Task<AppxBundle> ReadBundle(IAppxFileReader fileReader, CancellationToken cancellationToken)
         {
             var bundle = new AppxBundle();
-            using (var file = fileReader.GetFile(FileConstants.AppxBundleManifestFilePath))
+            using var file = fileReader.GetFile(FileConstants.AppxBundleManifestFilePath);
+            var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+            if (document.Root == null)
             {
-                var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-                if (document.Root == null)
-                {
-                    throw new FormatException("The manifest is malformed. There is no root element.");
-                }
-
-                // var b4 = XNamespace.Get("http://schemas.microsoft.com/appx/2018/bundle");
-                // var b5 = XNamespace.Get("http://schemas.microsoft.com/appx/2019/bundle");
-                var ns = XNamespace.Get("http://schemas.microsoft.com/appx/2013/bundle");
-                
-                var identity = document.Root.Element(ns + "Identity");
-                if (identity == null)
-                {
-                    throw new FormatException("The manifest is malformed, missing <Identity />.");
-                }
-
-                bundle.Version = identity.Attribute("Version")?.Value;
-                bundle.Name = identity.Attribute("Name")?.Value;
-                bundle.Publisher = identity.Attribute("Publisher")?.Value;
+                throw new FormatException(Resources.Localization.Packages_Error_Manifest_Root);
             }
+
+            // var b4 = XNamespace.Get("http://schemas.microsoft.com/appx/2018/bundle");
+            // var b5 = XNamespace.Get("http://schemas.microsoft.com/appx/2019/bundle");
+            var ns = XNamespace.Get("http://schemas.microsoft.com/appx/2013/bundle");
+                
+            var identity = document.Root.Element(ns + "Identity");
+            if (identity == null)
+            {
+                throw new FormatException(Resources.Localization.Packages_Error_Manifest_Identity);
+            }
+
+            bundle.Version = identity.Attribute("Version")?.Value;
+            bundle.Name = identity.Attribute("Name")?.Value;
+            bundle.Publisher = identity.Attribute("Publisher")?.Value;
 
             return bundle;
         }
@@ -119,7 +117,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 var document = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
                 if (document.Root == null)
                 {
-                    throw new FormatException("The manifest is malformed. There is no root element.");
+                    throw new FormatException(Resources.Localization.Packages_Error_Manifest_Root);
                 }
 
                 var ns =        XNamespace.Get("http://schemas.microsoft.com/appx/manifest/foundation/windows10");
@@ -135,17 +133,17 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
 
                 if (document.Root == null)
                 {
-                    throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
+                    throw new FormatException(Resources.Localization.Packages_Error_Manifest_Root_Package);
                 }
 
                 if (document.Root.Name.LocalName != "Package")
                 {
-                    throw new FormatException("The manifest is malformed. The document root must be <Package /> element.");
+                    throw new FormatException(Resources.Localization.Packages_Error_Manifest_Root_Package);
                 }
 
                 if (document.Root.Name.Namespace != ns && document.Root.Name.Namespace != ns2)
                 {
-                    throw new FormatException("The manifest is malformed. The document root must be <Package /> element, belonging to a supported namespace.");
+                    throw new FormatException(Resources.Localization.Packages_Error_Manifest_Root_Package_Namespace);
                 }
 
                 var nodePackage = document.Root;
@@ -211,17 +209,13 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                                 var logo = node.Value;
                                 if (!string.IsNullOrEmpty(logo))
                                 {
-                                    using (var resourceStream = fileReader.GetResource(logo))
+                                    await using var resourceStream = fileReader.GetResource(logo);
+                                    if (resourceStream != null)
                                     {
-                                        if (resourceStream != null)
-                                        {
-                                            using (var memoryStream = new MemoryStream())
-                                            {
-                                                await resourceStream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
-                                                await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-                                                appxPackage.Logo = memoryStream.ToArray();
-                                            }
-                                        }
+                                        await using var memoryStream = new MemoryStream();
+                                        await resourceStream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+                                        await memoryStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+                                        appxPackage.Logo = memoryStream.ToArray();
                                     }
                                 }
 
@@ -382,16 +376,16 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                             }
                             else
                             {
-                                using (var stream =
-                                    fileReader.GetResource(appxApplication.Square44x44Logo) ??
-                                    fileReader.GetResource(appxApplication.Square30x30Logo) ??
-                                    fileReader.GetResource(appxApplication.Square71x71Logo) ??
-                                    fileReader.GetResource(appxApplication.Square150x150Logo))
+                                await using (var stream =
+                                             fileReader.GetResource(appxApplication.Square44x44Logo) ??
+                                             fileReader.GetResource(appxApplication.Square30x30Logo) ??
+                                             fileReader.GetResource(appxApplication.Square71x71Logo) ??
+                                             fileReader.GetResource(appxApplication.Square150x150Logo))
                                 {
                                     if (stream != null)
                                     {
                                         var bytes = new byte[stream.Length];
-                                        await stream.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+                                        var read = await stream.ReadAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
                                         appxApplication.Logo = bytes;
                                     }
                                     else
@@ -609,7 +603,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
             {
                 if (fileReader.FileExists("resources.pri"))
                 {
-                    using (var stream = fileReader.GetFile("resources.pri"))
+                    await using (var stream = fileReader.GetFile("resources.pri"))
                     {
                         if (stream is FileStream fileStream)
                         {
@@ -620,11 +614,9 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                             priFullPath = Path.GetTempFileName();
                             cleanup = true;
 
-                            using (var fs = File.OpenWrite(priFullPath))
-                            {
-                                await stream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
-                                await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
-                            }
+                            await using var fs = File.OpenWrite(priFullPath);
+                            await stream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
+                            await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
                         }
                     }
 

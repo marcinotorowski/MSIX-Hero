@@ -14,14 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using Otor.MsixHero.Cli.Verbs.Resources;
 using CommandLine;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("dependencies", HelpText = "Creates a list of relations between package dependencies, including nested dependencies, add-ons and system dependencies.")]
+    [Verb("dependencies", HelpText = "CLI_Verbs_Dependencies_VerbName", ResourceType = typeof(Localization))]
     public class DependenciesVerb : BaseVerb
     {
-        [Value(1, HelpText = "The path to the package.", Required = true)]
+        [Value(1, HelpText = "The path to the package.", Required = true, ResourceType = typeof(Localization))]
         public string Path { get; set; }
     }
 }

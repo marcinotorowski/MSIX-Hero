@@ -41,10 +41,10 @@ namespace Otor.MsixHero.Registry.Tokenizer
             {
                 if (shouldHaveBackslash)
                 {
-                    return "[{" + matched + "}]\\";
+                    return $"[{{{matched}}}]\\";
                 }
 
-                return "[{" + matched + "}]";
+                return $"[{{{matched}}}]";
             }
 
             string previousTokenMatch = null;

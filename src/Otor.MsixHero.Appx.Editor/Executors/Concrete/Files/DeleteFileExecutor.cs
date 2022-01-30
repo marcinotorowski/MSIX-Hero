@@ -60,7 +60,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                     var dir = new DirectoryInfo(this.Directory.FullName + "\\" + relativeDirectoryPath);
                     if (!dir.Exists)
                     {
-                        Logger.Warn().WriteLine($"Part of the path ('{relativeDirectoryPath}') does not exist.");
+                        Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_FilePath_PartMissing_Format, relativeDirectoryPath);
                         filesToDelete = new List<FileInfo>();
                     }
                     else
@@ -78,7 +78,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
 
             if (filesToDelete.Any(f => string.Equals(f.Name, "AppxManifest.xml", StringComparison.OrdinalIgnoreCase)))
             {
-                throw new InvalidOperationException("Manifest file cannot be removed.");
+                throw new InvalidOperationException(Resources.Localization.AppxEditor_Error_ManifestCannotBeRemoved);
             }
 
             foreach (var file in filesToDelete.Where(f => f != null))
@@ -98,14 +98,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                     }
                     catch (Exception e)
                     {
-                        Logger.Warn().WriteLine($"File {Path.GetRelativePath(this.Directory.FullName, file.FullName)} could not be removed ({e.Message}).");
+                        Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_FileCouldNotRemove_Format, Path.GetRelativePath(this.Directory.FullName, file.FullName), e.Message);
                     }
                 }
             }
 
             if (cnt == 0)
             {
-                Logger.Warn().WriteLine("No files have been removed.");
+                Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_NoFileRemoved);
             }
 
             return Task.CompletedTask;

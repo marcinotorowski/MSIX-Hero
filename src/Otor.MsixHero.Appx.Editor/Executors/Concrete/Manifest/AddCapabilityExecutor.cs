@@ -36,7 +36,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
         {
             if (this.Manifest.Root == null)
             {
-                throw new InvalidOperationException("The root element cannot be empty.");
+                throw new InvalidOperationException(Resources.Localization.AppxEditor_Error_EmptyRoot);
             }
 
             var capabilities = this.Manifest.Root.XPathSelectElement("//*[local-name()='Capabilities']");
@@ -237,7 +237,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 default:
                     if (command.Name.Length < 15)
                     {
-                        throw new InvalidOperationException($"The name of a custom capability must be longer than 15 characters. Capability '{command.Name}' has only {command.Name.Length} characters.");
+                        throw new InvalidOperationException(string.Format(Resources.Localization.AppxEditor_Error_CustomCapabilityLength_Format, command.Name, command.Name.Length, 15));
                     }
 
                     isRestricted = false;
@@ -252,7 +252,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
             var find = capabilities.Elements().FirstOrDefault(e => e.Name.Namespace == ns && e.Name.LocalName == nodeName && e.Attribute("Name")?.Value == command.Name);
             if (find != null)
             {
-                Logger.Warn().WriteLine($"The capability '{command.Name}' already exists and will not be added again.");
+                Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_CapabilityExists_Format, command.Name);
                 return Task.CompletedTask;
             }
 

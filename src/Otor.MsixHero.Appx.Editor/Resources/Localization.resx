@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppxEditor_Error_CommandNotSupported_Format" xml:space="preserve">
+    <value>The command '{0}' is not supported.</value>
+  </data>
+  <data name="AppxEditor_Error_CustomCapabilityLength_Format" xml:space="preserve">
+    <value>The name of a custom capability must be longer than {2} characters. Capability '{0}' has only {1} characters.</value>
+  </data>
+  <data name="AppxEditor_Error_EmptyRoot" xml:space="preserve">
+    <value>Document root cannot be empty.</value>
+  </data>
+  <data name="AppxEditor_Error_FileMissing_Format" xml:space="preserve">
+    <value>File '{0}' does not exist.</value>
+  </data>
+  <data name="AppxEditor_Error_HiveNotSupported_Format" xml:space="preserve">
+    <value>Registry hive {0} is not supported.</value>
+  </data>
+  <data name="AppxEditor_Error_ManifestCannotBeRemoved" xml:space="preserve">
+    <value>Manifest file cannot be removed.</value>
+  </data>
+  <data name="AppxEditor_Error_ManifestNotFound_Format" xml:space="preserve">
+    <value>Manifest file not found in '{0}'.</value>
+  </data>
+  <data name="AppxEditor_Error_NotAVersion_Format" xml:space="preserve">
+    <value>The value '{0}' is not a valid version string.</value>
+  </data>
+  <data name="AppxEditor_Error_PathNoRegFile" xml:space="preserve">
+    <value>The path must be a registry path.</value>
+  </data>
+  <data name="AppxEditor_Files_Copy_Format" xml:space="preserve">
+    <value>Copying file from '{0}' to '{1}'...</value>
+  </data>
+  <data name="AppxEditor_Identity_ChangingArchitecture_Format" xml:space="preserve">
+    <value>Changing attribute 'ProcessorArchitecture' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Identity_ChangingName_Format" xml:space="preserve">
+    <value>Changing attribute 'Name' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Identity_ChangingPublisher_Format" xml:space="preserve">
+    <value>Changing attribute 'Publisher' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Identity_ChangingResourceId_Format" xml:space="preserve">
+    <value>Changing attribute 'ResourceId' from '{0}' to '{1}'...</value>
+  </data>
+  <data name="AppxEditor_Identity_ChangingVersion_Format" xml:space="preserve">
+    <value>Changing attribute 'Version' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Identity_SettingArchitecture_Format" xml:space="preserve">
+    <value>Setting attribute 'ProcessorArchitecture' to '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Identity_SettingName_Format" xml:space="preserve">
+    <value>Setting attribute 'Name' to '{0}'...</value>
+  </data>
+  <data name="AppxEditor_Identity_SettingPublisher_Format" xml:space="preserve">
+    <value>Setting attribute 'Publisher' to '{0}'...</value>
+  </data>
+  <data name="AppxEditor_Identity_SettingResourceId_Format" xml:space="preserve">
+    <value>Setting attribute 'ResourceId' to '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Identity_SettingVersion_Format" xml:space="preserve">
+    <value>Setting attribute 'Version' to '{0}'...</value>
+  </data>
+  <data name="AppxEditor_Properties_ChangingDescription_Format" xml:space="preserve">
+    <value>Changing attribute 'Description' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Properties_ChangingDisplayName_Format" xml:space="preserve">
+    <value>Changing attribute 'DisplayName' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Properties_ChangingLogo_Format" xml:space="preserve">
+    <value>Changing attribute 'Logo' from '{0}' to '{1}'…</value>
+  </data>
+  <data name="AppxEditor_Properties_ChangingModPackTrue_Format" xml:space="preserve">
+    <value>Changing property 'ModificationPackage' from '{0}' to 'true'…</value>
+  </data>
+  <data name="AppxEditor_Properties_ChangingPublisherDisplayName_Format" xml:space="preserve">
+    <value>Changing attribute 'PublisherDisplayName' from '{0}' to '{1}'...</value>
+  </data>
+  <data name="AppxEditor_Properties_RemovingModPack" xml:space="preserve">
+    <value>Removing property 'ModificationPackage'…</value>
+  </data>
+  <data name="AppxEditor_Properties_SettingDescription_Format" xml:space="preserve">
+    <value>Setting property 'Description' to '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Properties_SettingDisplayName_Format" xml:space="preserve">
+    <value>Setting attribute 'DisplayName' to '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Properties_SettingLogo_Format" xml:space="preserve">
+    <value>Setting attribute 'Logo' to '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Properties_SettingModPackTrue" xml:space="preserve">
+    <value>Setting property 'ModificationPackage' to 'true'…</value>
+  </data>
+  <data name="AppxEditor_Properties_SettingPublisherDisplayName_Format" xml:space="preserve">
+    <value>Setting attribute 'PublisherDisplayName' to '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Registry_ImportingRegFile_Format" xml:space="preserve">
+    <value>Importing registry file '{0}'…</value>
+  </data>
+  <data name="AppxEditor_Registry_ImportSuccess" xml:space="preserve">
+    <value>Registry key has been successfully imported.</value>
+  </data>
+  <data name="AppxEditor_Registry_RegKeySet_Format" xml:space="preserve">
+    <value>Registry key '{0}\{1}' has been set.</value>
+  </data>
+  <data name="AppxEditor_Registry_RegValueSet_Format" xml:space="preserve">
+    <value>Registry value '{0}' = '{1}' ({3}) has been set in '{4}\{5}</value>
+  </data>
+  <data name="AppxEditor_Registry_RemovingKey_Format" xml:space="preserve">
+    <value>Removing registry key '{0}\{1}'…</value>
+  </data>
+  <data name="AppxEditor_Registry_RemovingValue_Format" xml:space="preserve">
+    <value>Removing value '{0}' from key '{1}\{2}'...</value>
+  </data>
+  <data name="AppxEditor_Warn_CapabilityExists_Format" xml:space="preserve">
+    <value>The capability '{0}' already exists and will not be added again.</value>
+  </data>
+  <data name="AppxEditor_Warn_FileCouldNotRemove_Format" xml:space="preserve">
+    <value>File '{0}' could not be removed ({1}).</value>
+  </data>
+  <data name="AppxEditor_Warn_FilePath_PartMissing_Format" xml:space="preserve">
+    <value>Part of the path '{0}' does not exist.</value>
+  </data>
+  <data name="AppxEditor_Warn_NoChangesDueToMissingKey_Format" xml:space="preserve">
+    <value>No changes have been applied. Registry key '{0}\{1}' does not exist.</value>
+  </data>
+  <data name="AppxEditor_Warn_NoFileRemoved" xml:space="preserve">
+    <value>No files have been removed.</value>
+  </data>
+  <data name="AppxEditor_Warn_NothingImported" xml:space="preserve">
+    <value>No new entries have been imported.</value>
+  </data>
+  <data name="Validation_Appx_CannotEndWithDot" xml:space="preserve">
+    <value>The value cannot end with dot.</value>
+  </data>
+  <data name="Validation_Appx_PackageName_Empty" xml:space="preserve">
+    <value>The package name cannot be empty.</value>
+  </data>
+  <data name="Validation_Appx_PackageName_WrongChars" xml:space="preserve">
+    <value>The package name must consist of alpha-numeric, period and dash characters.</value>
+  </data>
+  <data name="Validation_Appx_PackageName_WrongLength" xml:space="preserve">
+    <value>The package name must be a string between 3 and 50 characters in length.</value>
+  </data>
+  <data name="Validation_Appx_Publisher_Empty" xml:space="preserve">
+    <value>The publisher cannot be empty.</value>
+  </data>
+  <data name="Validation_Appx_Publisher_InvalidFormat" xml:space="preserve">
+    <value>Publisher name must be a valid DN string (for example CN=Author)</value>
+  </data>
+  <data name="Validation_Appx_ResourceId_Empty" xml:space="preserve">
+    <value>The resource ID cannot be empty.</value>
+  </data>
+  <data name="Validation_Appx_ResourceId_WrongChars" xml:space="preserve">
+    <value>The resource ID must consist of alpha-numeric, period and dash characters.</value>
+  </data>
+  <data name="Validation_Appx_ResourceId_WrongLength" xml:space="preserve">
+    <value>The resource ID must be a string between 1 and 30 characters in length.</value>
+  </data>
+  <data name="Validation_Appx_RestrictedPrefix" xml:space="preserve">
+    <value>The value '{1}' starts with a restricted prefix '{0}'.</value>
+  </data>
+  <data name="Validation_Appx_RestrictedValue" xml:space="preserve">
+    <value>The value '{0}' is a restricted name and cannot be used.</value>
+  </data>
+  <data name="Validation_Appx_RestrictedXnString" xml:space="preserve">
+    <value>The value '{0}' contains a restricted string '.xn--'.</value>
+  </data>
+  <data name="Validation_Appx_Version_Empty" xml:space="preserve">
+    <value>The version cannot be empty.</value>
+  </data>
+  <data name="Validation_Appx_Version_InvalidFormat" xml:space="preserve">
+    <value>The version must be in format #.#.#.#.</value>
+  </data>
+</root>

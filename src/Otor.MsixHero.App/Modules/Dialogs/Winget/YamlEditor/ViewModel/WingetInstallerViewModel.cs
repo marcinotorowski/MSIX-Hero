@@ -44,17 +44,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 this.Architecture = new ChangeableProperty<YamlArchitecture>(),
                 this.PlatformUwp = new ChangeableProperty<bool>(this.Model?.Platform?.Contains(YamlPlatform.WindowsUniversal) == true),
                 this.PlatformWin32 = new ChangeableProperty<bool>(this.Model?.Platform?.Contains(YamlPlatform.WindowsDesktop) == true),
-                this.ProductCode = new ValidatedChangeableProperty<string>("Product code", ValidatorFactory.ValidateGuid(false)),
-                this.PackageFamilyName = new ValidatedChangeableProperty<string>("Package family name", WingetValidators.GetPackageFamilyNameError),
-                this.SignatureSha256 = new ValidatedChangeableProperty<string>("Signature hash", ValidatorFactory.ValidateSha256(false)),
+                this.ProductCode = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_ProductCode, ValidatorFactory.ValidateGuid(false)),
+                this.PackageFamilyName = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_PFN, WingetValidators.GetPackageFamilyNameError),
+                this.SignatureSha256 = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_SignatureHash, ValidatorFactory.ValidateSha256(false)),
                 this.Scope = new ChangeableProperty<YamlScope>(),
-                this.SilentCommand = new ValidatedChangeableProperty<string>("Silent command", WingetValidators.GetInstallerSwitchesError),
-                this.InteractiveCommand = new ValidatedChangeableProperty<string>("Interactive command", WingetValidators.GetInstallerSwitchesError),
-                this.LogCommand = new ValidatedChangeableProperty<string>("Log command", WingetValidators.GetInstallerSwitchesError),
-                this.UpgradeCommand = new ValidatedChangeableProperty<string>("Upgrade command", WingetValidators.GetInstallerSwitchesError),
-                this.CustomCommand = new ValidatedChangeableProperty<string>("Custom command", WingetValidators.GetCustomInstallerSwitchesError),
-                this.SilentCommandWithProgress = new ValidatedChangeableProperty<string>("Silent command with progress", WingetValidators.GetInstallerSwitchesError),
-                this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>("Installer type", ValidateInstallerType)
+                this.SilentCommand = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_Silent, WingetValidators.GetInstallerSwitchesError),
+                this.InteractiveCommand = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_Interactive, WingetValidators.GetInstallerSwitchesError),
+                this.LogCommand = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_Log, WingetValidators.GetInstallerSwitchesError),
+                this.UpgradeCommand = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_Upgrade, WingetValidators.GetInstallerSwitchesError),
+                this.CustomCommand = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_Custom, WingetValidators.GetCustomInstallerSwitchesError),
+                this.SilentCommandWithProgress = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Installer_SilentProgress, WingetValidators.GetInstallerSwitchesError),
+                this.InstallerType = new ValidatedChangeableProperty<YamlInstallerType>(() => Resources.Localization.Dialogs_Winget_Installer_Type, ValidateInstallerType)
             );
 
             this.InstallerType.ValueChanged += InstallerTypeOnValueChanged;
@@ -204,11 +204,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (string.IsNullOrEmpty(this.Url))
             {
-                this.interactionService.ShowError("You must first configure the installer URL before a hash can be calculated.");
+                this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Installer_Error_MissingUrl);
                 return;
             }
 
-            if (this.interactionService.Confirm($"This will download the file '{this.Url}' and calculate its hash. The download may take a while, do you want to continue?", type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
+            if (this.interactionService.Confirm(string.Format(Resources.Localization.Dialogs_Winget_Installer_DownloadHint_Format, this.Url), type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
             {
                 return;
             }
@@ -265,7 +265,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 }
                 catch (Exception e)
                 {
-                    this.interactionService.ShowError($"The file could not be hashed. {e.Message}", e);
+                    this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Installer_Error_Hash + " " + e.Message, e);
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (value == YamlInstallerType.None)
             {
-                return "The installation type must be selected.";
+                return Resources.Localization.Dialogs_Winget_Installer_Error_TypeNotSet;
             }
 
             return null;

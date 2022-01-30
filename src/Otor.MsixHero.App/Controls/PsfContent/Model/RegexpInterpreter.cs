@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Text.RegularExpressions;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Controls.PsfContent.Model
 {
@@ -44,7 +45,7 @@ namespace Otor.MsixHero.App.Controls.PsfContent.Model
 
             if (regex == ".*")
             {
-                this.DisplayText = "(any)";
+                this.DisplayText = "(" + Resources.Localization.Psf_Regex_Any + ")";
                 this.Result = InterpretationResult.Any;
             }
             //else if (regex == @".*\..*")

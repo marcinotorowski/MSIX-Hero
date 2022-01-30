@@ -42,7 +42,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 subject = "CN=" + this.Verb.DisplayName;
             }
 
-            await this.Console.WriteInfo($"Creating a new certificate for [{this.Verb.DisplayName}]...").ConfigureAwait(false);
+            await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_NewCert_Creating_Format, this.Verb.DisplayName)).ConfigureAwait(false);
 
             try
             {
@@ -52,13 +52,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 }
 
                 var pfxFile = await signingManager.CreateSelfSignedCertificate(output, subject, this.Verb.DisplayName, this.Verb.Password, this.Verb.ValidUntil ?? DateTime.Now.AddDays(365)).ConfigureAwait(false);
-                await this.Console.WriteSuccess($"Certificate has been saved to {pfxFile}.").ConfigureAwait(false);
+                await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_NewCert_Success_Format, pfxFile)).ConfigureAwait(false);
 
                 if (this.Verb.Import)
                 {
-                    await this.Console.WriteInfo("Importing certificate file to the list of trusted people...").ConfigureAwait(false);
+                    await this.Console.WriteInfo(Resources.Localization.CLI_Executor_NewCert_ImportingTrustedPeople).ConfigureAwait(false);
                     await this.signingManager.Trust(Path.ChangeExtension(pfxFile, ".cer")).ConfigureAwait(false);
-                    await this.Console.WriteSuccess($"Certificate has been imported to the Trusted People store.").ConfigureAwait(false);
+                    await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_NewCert_ImportingTrustedPeople_Success).ConfigureAwait(false);
                 }
 
                 return StandardExitCodes.ErrorSuccess;

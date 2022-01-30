@@ -92,7 +92,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 {
                     if (!config.IncludeFolder.Exists)
                     {
-                        throw new DirectoryNotFoundException($"The directory folder '{config.IncludeFolder.FullName}' does not exist.");
+                        throw new DirectoryNotFoundException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, config.IncludeFolder.FullName));
                     }
 
                     // ReSharper disable once AssignNullToNotNullAttribute
@@ -103,8 +103,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 {
                     if (!config.IncludeRegistry.Exists)
                     {
-                        throw new FileNotFoundException(
-                            $"The file '{config.IncludeRegistry.FullName}' does not exist.");
+                        throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, config.IncludeRegistry.FullName));
                     }
 
                     // ReSharper disable once AssignNullToNotNullAttribute
@@ -143,7 +142,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 {
                     if (!config.IncludeFolder.Exists)
                     {
-                        throw new DirectoryNotFoundException($"The directory folder '{config.IncludeFolder.FullName}' does not exist.");
+                        throw new DirectoryNotFoundException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, config.IncludeFolder.FullName));
                     }
 
                     // ReSharper disable once AssignNullToNotNullAttribute
@@ -154,7 +153,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 {
                     if (!config.IncludeRegistry.Exists)
                     {
-                        throw new FileNotFoundException($"The file '{config.IncludeRegistry.FullName}' does not exist.");
+                        throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, config.IncludeRegistry.FullName));
                     }
 
                     await this.CopyRegistry(config.IncludeRegistry, new DirectoryInfo(tempFolder)).ConfigureAwait(false);
@@ -386,12 +385,12 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             
             if (major < 0)
             {
-                throw new FormatException("Invalid version format, major version is required.");
+                throw new FormatException(Resources.Localization.Packages_Error_InvalidVersion);
             }
 
             if (minor < 0)
             {
-                throw new FormatException("Invalid version format, major version is required.");
+                throw new FormatException(Resources.Localization.Packages_Error_InvalidVersion);
             }
 
             if (revision < 0)
@@ -416,9 +415,9 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             // Set properties
             var setProperties = new SetPackageProperties
             {
-                DisplayName = config.DisplayName ?? "Modification Package Name",
-                PublisherDisplayName = config.DisplayPublisher ?? "Modification Package Publisher Name",
-                Description = "Modification Package for " + parentName,
+                DisplayName = config.DisplayName ?? Resources.Localization.Packages_ModPackage_DefaultPackageName,
+                PublisherDisplayName = config.DisplayPublisher ?? Resources.Localization.Packages_ModPackage_DefaultPublisherName,
+                Description = string.Format(Resources.Localization.Packages_ModPackage_DefaultDescription_Format, parentName),
                 Logo = "Assets\\Logo.png",
                 ModificationPackage = true
             };
@@ -447,7 +446,7 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "templates", localName);
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException($"Could not locale resource {path}.", path);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_MissingResource_Format, path), path);
             }
 
             return path;

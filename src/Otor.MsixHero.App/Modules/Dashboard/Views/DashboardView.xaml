@@ -1,16 +1,19 @@
 ﻿<UserControl 
     x:Class="Otor.MsixHero.App.Modules.Dashboard.Views.DashboardView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Dashboard.ViewModels"
-             xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-             xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
-             mc:Ignorable="d" 
-             d:DesignHeight="650" d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:DashboardViewModel}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Dashboard.ViewModels"
+    xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:localization1="clr-namespace:Otor.MsixHero.Infrastructure.Localization;assembly=Otor.MsixHero.Infrastructure"
+    mc:Ignorable="d" 
+    d:DesignHeight="650" d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:DashboardViewModel}">
     <DockPanel>
         <Label Margin="20 20 20 10"  Style="{StaticResource Label}" Content="MSIX Hero" DockPanel.Dock="Top" FontSize="32" />
+
         <ScrollViewer
             FocusVisualStyle="{x:Null}"
             HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -107,7 +110,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel  x:Name="Host">
-                    <Label Content="Package operations" />
+                    <Label Content="{localization:Loc Dashboard_Header_PackageOperations}" />
 
                     <Button Command="{Binding ShowPackDialog}">
                         <Grid>
@@ -125,7 +128,7 @@
                             <TextBlock 
                                 Grid.Column="1"
                                 Style="{StaticResource ButtonText}"
-                                Text="Pack directory → MSIX" />
+                                Text="{localization:Loc Dashboard_PackToMsix}" />
 
                             <Border
                             Grid.Column="2"
@@ -142,7 +145,7 @@
                                 Data="{StaticResource VectorUnpack}" />
                             <TextBlock 
                                 Style="{StaticResource ButtonText}"
-                                Text="Unpack MSIX → directory" />
+                                Text="{localization:Loc Dashboard_UnpackMsix}" />
                         </DockPanel>
                     </Button>
 
@@ -162,7 +165,7 @@
                             <TextBlock 
                             Grid.Column="1"
                             Style="{StaticResource ButtonText}"
-                            Text="Create modification package" />
+                            Text="{localization:Loc Dashboard_CreateModPackage}" />
                             <Border
                             Grid.Column="2"
                             Style="{StaticResource ExtensionBackground}">
@@ -171,7 +174,7 @@
                         </Grid>
                     </Button>
 
-                    <Label Content="Certificates and signing" />
+                    <Label Content="{localization:Loc Dashboard_Header_CertAndSigning}" />
 
                     <Button Command="{Binding ShowSignPackageDialog}">
                         <DockPanel>
@@ -180,7 +183,7 @@
                                 Data="{StaticResource VectorSign}" />
                             <TextBlock 
                                 Style="{StaticResource ButtonText}"
-                                Text="Sign or re-sign MSIX package" />
+                                Text="{localization:Loc Dashboard_SignResign}" />
                         </DockPanel>
                     </Button>
 
@@ -191,7 +194,7 @@
                             Data="{StaticResource VectorExport}" />
                             <TextBlock 
                             Style="{StaticResource ButtonText}"
-                            Text="Extract or import a certificate" />
+                            Text="{localization:Loc Dashboard_ExtractCer}" />
                         </DockPanel>
                     </Button>
 
@@ -211,7 +214,7 @@
                             <TextBlock
                                 Grid.Column="1" 
                                 Style="{StaticResource ButtonText}"
-                                Text="Create self-signed certificate" />
+                                Text="{localization:Loc Dashboard_CreateSelfSigned}" />
 
                             <Border
                                 Grid.Column="2"
@@ -223,7 +226,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="2">
-                    <Label Content="MSIX app attach" />
+                    <Label Content="{localization:Loc Dashboard_Header_AppAttach}" />
 
                     <Button Command="{Binding ShowAppAttachDialog}">
                         <Grid>
@@ -241,7 +244,7 @@
                             <TextBlock 
                                 Grid.Column="1"
                                 Style="{StaticResource ButtonText}"
-                                Text="Create app attach volume" />
+                                Text="{localization:Loc Dashboard_AppAttach}" />
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal">
                                 <Border
@@ -257,7 +260,7 @@
                     </Button>
 
 
-                    <Label Content="App installer" />
+                    <Label Content="{localization:Loc Dashboard_Header_AppInstaller}" />
                     <Button Command="{Binding ShowAppInstallerDialog}">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -274,7 +277,7 @@
                             <TextBlock 
                             Grid.Column="1"
                             Style="{StaticResource ButtonText}"
-                            Text="Create app installer" />
+                            Text="{localization:Loc Dashboard_CreateAppInstaller}" />
 
                             <Border
                                 Grid.Column="2"
@@ -300,11 +303,11 @@
                             <TextBlock 
                                 Grid.Column="1"
                                 Style="{StaticResource ButtonText}"
-                                Text="Open app installer file..." />
+                                Text="{localization:Loc Dashboard_OpenAppInstaller}" />
                         </Grid>
                     </Button>
 
-                    <Label Content="Windows Package Manager" />
+                    <Label Content="{localization:Loc Dashboard_Header_Winget}" />
 
                     <Button Command="{Binding ShowWingetDialog}">
                         <Grid>
@@ -322,7 +325,7 @@
                             <TextBlock 
                             Grid.Column="1"
                             Style="{StaticResource ButtonText}"
-                            Text="Create winget manifest" />
+                            Text="{localization:Loc Dashboard_CreateWinget}" />
 
                             <Border
                             Grid.Column="2" 
@@ -348,13 +351,13 @@
                             <TextBlock 
                             Grid.Column="1"
                             Style="{StaticResource ButtonText}"
-                            Text="Open winget manifest..." />
+                            Text="{localization:Loc Dashboard_OpenWinget}" />
                         </Grid>
                     </Button>
                 </StackPanel>
 
                 <StackPanel Grid.Column="4">
-                    <Label Content="Analyze MSIX" />
+                    <Label Content="{localization:Loc Dashboard_Header_AnalyzeMsix}" />
 
                     <Button Command="{Binding OpenMsixDialog}">
                         <Grid>
@@ -372,7 +375,7 @@
                             <TextBlock 
                                 Grid.Column="1"
                                 Style="{StaticResource ButtonText}"
-                                Text="Open MSIX package..." />
+                                Text="{localization:Loc Dashboard_OpenMsix}" />
                         </Grid>
                     </Button>
 
@@ -383,7 +386,7 @@
                             Data="{StaticResource VectorDependencies}" />
                             <TextBlock 
                             Style="{StaticResource ButtonText}"
-                            Text="Show MSIX dependencies..." />
+                            Text="{localization:Loc Dashboard_ShowDeps}" />
                         </DockPanel>
                     </Button>
 
@@ -394,7 +397,7 @@
                         Data="{StaticResource VectorCheckmark}" />
                             <TextBlock 
                         Style="{StaticResource ButtonText}"
-                        Text="Analyze MSIX update impact..." />
+                        Text="{localization:Loc Dashboard_AnalyzeImpact}" />
                         </DockPanel>
                     </Button>
 
@@ -405,7 +408,7 @@
                                 Data="{StaticResource VectorCopy}" />
                             <TextBlock 
                                 Style="{StaticResource ButtonText}"
-                                Text="Calculate package names..." />
+                                Text="{localization:Loc Dashboard_CalculateNames}" />
                         </DockPanel>
                     </Button>
                 </StackPanel>

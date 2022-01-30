@@ -8,6 +8,7 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Search.Converters"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              FocusManager.IsFocusScope="True"
@@ -74,7 +75,7 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Resources>
-            <Label MinWidth="160" Margin="8 4" Content="Order by" Style="{StaticResource FormLabelThin}" />
+            <Label MinWidth="160" Margin="8 4" Content="{localization:Loc EventViewer_Filter_OrderBy}" Style="{StaticResource FormLabelThin}" />
             <RadioButton
                 PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                 GroupName="orderBy1"
@@ -87,7 +88,7 @@
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="Date" />
+                    <TextBlock Text="{localization:Loc EventViewer_Filter_OrderBy_Date}" />
                 </DockPanel>
             </RadioButton>
             <RadioButton 
@@ -101,7 +102,7 @@
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="Level" />
+                    <TextBlock Text="{localization:Loc EventViewer_Filter_OrderBy_Level}" />
                 </DockPanel>
             </RadioButton>
             <RadioButton
@@ -116,7 +117,7 @@
                         VerticalAlignment="Center"
                         Style="{StaticResource Sort}"  />
 
-                    <TextBlock Text="Package name" />
+                    <TextBlock Text="{localization:Loc EventViewer_Filter_OrderBy_Package}" />
                 </DockPanel>
             </RadioButton>
         </StackPanel>
@@ -126,7 +127,7 @@
             </StackPanel.Resources>
            
             <DockPanel Margin="8 4 8 4">
-                <Label Margin="0" Content="Log level" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
+                <Label Margin="0" Content="{localization:Loc EventViewer_Filter_Log}" Style="{StaticResource FormLabelThin}" VerticalAlignment="Center" />
                 <Label Foreground="DarkGray" Margin="4 0 0 0" Content="{Binding FilterLevelCaption}" />
                 <TextBlock
                     Visibility="{Binding FilterLevelCaption, Converter={StaticResource FilterHeaderVisibilityConverter}}"
@@ -134,14 +135,14 @@
                     <Hyperlink 
                         Command="{Binding Clear}" 
                         CommandParameter="{x:Static viewModels:ClearFilter.Level}">
-                        <Run Text="Clear" />
+                        <Run Text="{localization:Loc EventViewer_Filter_Clear}" />
                     </Hyperlink>
                 </TextBlock>
             </DockPanel>
-            <CheckBox IsChecked="{Binding FilterError}" Margin="8 4" Content="Error" />
-            <CheckBox IsChecked="{Binding FilterWarning}" Margin="8 4" Content="Warning" />
-            <CheckBox IsChecked="{Binding FilterInfo}" Margin="8 4" Content="Information" />
-            <CheckBox IsChecked="{Binding FilterVerbose}" Margin="8 4" Content="Verbose" />
+            <CheckBox IsChecked="{Binding FilterError}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Error}" />
+            <CheckBox IsChecked="{Binding FilterWarning}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Warn}" />
+            <CheckBox IsChecked="{Binding FilterInfo}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Info}" />
+            <CheckBox IsChecked="{Binding FilterVerbose}" Margin="8 4" Content="{localization:Loc EventViewer_Filter_Log_Verbose}" />
         </StackPanel>
     </UniformGrid>
 </UserControl>

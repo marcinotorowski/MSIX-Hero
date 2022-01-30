@@ -62,13 +62,13 @@ namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items.Redirection
                     case PsfContentFolderRelationTo.KnownFolder:
                         return $@"{{{this.KnownDir}}}\{this.BaseDir}\";
                     case PsfContentFolderRelationTo.PackageRoot when string.IsNullOrEmpty(this.BaseDir):
-                        return "(Package Directory)";
+                        return "(" + Resources.Localization.Psf_Redirection_PackageDir + ")";
                     case PsfContentFolderRelationTo.PackageRoot:
-                        return $@"(Package Directory)\{this.BaseDir}\";
+                        return "(" + Resources.Localization.Psf_Redirection_PackageDir + ")" + $@"\{this.BaseDir}\";
                     case PsfContentFolderRelationTo.Drive when string.IsNullOrEmpty(this.BaseDir):
-                        return "(Root Drive)";
+                        return "(" + Resources.Localization.Psf_Redirection_RootDrive + ")";
                     case PsfContentFolderRelationTo.Drive:
-                        return $@"(Root Drive)\{this.BaseDir}\";
+                        return "(" + Resources.Localization.Psf_Redirection_RootDrive + ")" + $@"\{this.BaseDir}\";
                     default:
                         return this.BaseDir;
                 }

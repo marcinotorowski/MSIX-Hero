@@ -14,8 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Windows.Controls;
-
 namespace Otor.MsixHero.App.Controls.PackageSelector.View
 {
     /// <summary>

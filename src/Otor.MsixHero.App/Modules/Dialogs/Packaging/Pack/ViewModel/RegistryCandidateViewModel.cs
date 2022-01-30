@@ -16,6 +16,7 @@
 
 using System.IO;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
 {
@@ -31,7 +32,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
         {
         }
 
-        public RegistryCandidateViewModel() : this(null, "No conversion")
+        public RegistryCandidateViewModel() : this(null, Resources.Localization.Dialogs_Pack_NoRegConversion)
         {
         }
 

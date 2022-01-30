@@ -9,6 +9,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.View"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:CertificateExportViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -44,9 +45,11 @@
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Your certificate has been successfully extracted." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock Text="{localization:Loc Dialogs_ExportCertificate_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                     <TextBlock Visibility="{Binding OperationType, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static viewModel:CertOperationType.Extract}}" TextAlignment="Center">
-                        <Hyperlink Click="Hyperlink_OnClick">Open the folder containing your .cer file</Hyperlink>
+                        <Hyperlink Click="Hyperlink_OnClick">
+                            <Run Text="{localization:Loc Dialogs_ExportCertificate_Success_OpenFolder}" />
+                        </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

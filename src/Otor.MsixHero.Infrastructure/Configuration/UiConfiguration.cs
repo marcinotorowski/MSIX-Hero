@@ -55,5 +55,11 @@ namespace Otor.MsixHero.Infrastructure.Configuration
         /// </summary>
         [DataMember(Name = "uxTier")]
         public UxTierLevel UxTier { get; set; } = UxTierLevel.Auto;
+
+        /// <summary>
+        /// The language code, or null value if system language is to be used.
+        /// </summary>
+        [DataMember(Name = "language")]
+        public string Language { get; set; }
     }
 }

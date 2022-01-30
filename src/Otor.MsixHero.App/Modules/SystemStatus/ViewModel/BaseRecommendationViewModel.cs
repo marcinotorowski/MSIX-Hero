@@ -19,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
 {
@@ -32,6 +33,17 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel
         protected BaseRecommendationViewModel()
         {
             this.iconProvider = new Lazy<Geometry>(this.GetIcon);
+
+            MsixHeroTranslation.Instance.CultureChanged += (_, _) =>
+            {
+                this.OnCultureChanged();
+            };
+        }
+
+        protected virtual void OnCultureChanged()
+        {
+            this.OnPropertyChanged(nameof(Title));
+            this.OnPropertyChanged(nameof(Summary));
         }
 
         public abstract string Title { get; }

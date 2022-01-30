@@ -19,8 +19,6 @@ using Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels;
 using Otor.MsixHero.App.Modules.Main.Sidebar.Views;
 using Otor.MsixHero.App.Modules.Main.Toolbar.ViewModels;
 using Otor.MsixHero.App.Modules.Main.Toolbar.Views;
-using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
-using Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;

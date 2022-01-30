@@ -49,7 +49,7 @@ namespace Otor.MsixHero.Winget.Helpers
             var fileInfo = new FileInfo(fileName);
             if (!fileInfo.Exists)
             {
-                throw new FileNotFoundException("File not found.", fileName);
+                throw new FileNotFoundException(Resources.Localization.Winget_Error_FileNotFound, fileName);
             }
 
             if (string.Equals(fileInfo.Name, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
@@ -71,7 +71,7 @@ namespace Otor.MsixHero.Winget.Helpers
 
             await using var fs = File.OpenRead(fileName);
             var recognized = await this.DetectSetupType(fs, cancellationToken).ConfigureAwait(false);
-            if (recognized == YamlInstallerType.None && fileInfo.Extension.ToLowerInvariant() == ".exe")
+            if (recognized == YamlInstallerType.None && string.Equals(".exe", fileInfo.Extension, StringComparison.OrdinalIgnoreCase))
             {
                 return YamlInstallerType.Exe;
             }

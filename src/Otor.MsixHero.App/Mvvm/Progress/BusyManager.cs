@@ -128,10 +128,7 @@ namespace Otor.MsixHero.App.Mvvm.Progress
 
             public string Message
             {
-                get
-                {
-                    return this.message;
-                }
+                get => this.message;
 
                 set
                 {
@@ -142,10 +139,7 @@ namespace Otor.MsixHero.App.Mvvm.Progress
 
             public int Progress
             {
-                get
-                {
-                    return this.progress;
-                }
+                get => this.progress;
 
                 set
                 {

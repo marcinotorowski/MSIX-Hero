@@ -24,7 +24,6 @@
 
 using System.Reflection;
 using System.Text;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Otor.MsixHero.Elevation.Ipc.Helpers;
 
@@ -32,6 +31,8 @@ namespace Otor.MsixHero.Elevation.Ipc
 {
     public class IpcStreamHelper
     {
+        private static readonly JsonSerializer Serializer = new JsonSerializer();
+
         private readonly Stream _stream;
 
         private readonly AutoResetEvent _autoResetEvent = new AutoResetEvent(true);
@@ -77,10 +78,10 @@ namespace Otor.MsixHero.Elevation.Ipc
 
                 using var binaryWriter = new AsyncBinaryWriter(this._stream, true);
 
-                var jsonString = JsonConvert.SerializeObject(ResponseType.Completed, typeof(ResponseType), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var jsonString = Serializer.Serialize(ResponseType.Completed);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
 
-                jsonString = JsonConvert.SerializeObject(result, typeof(T), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                jsonString = Serializer.Serialize(result);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
             }
             finally
@@ -101,7 +102,7 @@ namespace Otor.MsixHero.Elevation.Ipc
 
                 using var binaryWriter = new AsyncBinaryWriter(this._stream, true);
 
-                var jsonString = JsonConvert.SerializeObject(ResponseType.Completed, typeof(ResponseType), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var jsonString = Serializer.Serialize(ResponseType.Completed);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
             }
             finally
@@ -122,12 +123,12 @@ namespace Otor.MsixHero.Elevation.Ipc
 
                 using var binaryWriter = new AsyncBinaryWriter(this._stream, true);
 
-                var jsonString = JsonConvert.SerializeObject(ResponseType.Exception, typeof(ResponseType), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var jsonString = Serializer.Serialize(ResponseType.Exception);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken);
 
                 await WriteStringToBinaryWriter(binaryWriter, TypeHelper.ToFullNameWithAssembly(e.GetType()), cancellationToken).ConfigureAwait(false);
 
-                jsonString = JsonConvert.SerializeObject(e, typeof(Exception), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                jsonString = Serializer.Serialize(e);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
             }
             finally
@@ -148,12 +149,12 @@ namespace Otor.MsixHero.Elevation.Ipc
 
                 using var binaryWriter = new AsyncBinaryWriter(this._stream, true);
 
-                var jsonString = JsonConvert.SerializeObject(ResponseType.Progress, typeof(ResponseType), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var jsonString = Serializer.Serialize(ResponseType.Progress);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
 
                 await WriteStringToBinaryWriter(binaryWriter, TypeHelper.ToFullNameWithAssembly(typeof(T)), cancellationToken).ConfigureAwait(false);
 
-                var json = JsonConvert.SerializeObject(progress, Formatting.None);
+                var json = Serializer.Serialize(progress);
                 await WriteStringToBinaryWriter(binaryWriter, json, cancellationToken).ConfigureAwait(false);
             }
             finally
@@ -175,12 +176,12 @@ namespace Otor.MsixHero.Elevation.Ipc
 
                 using var binaryWriter = new AsyncBinaryWriter(this._stream, true);
 
-                var jsonString = JsonConvert.SerializeObject(ResponseType.Progress, typeof(ResponseType), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                var jsonString = Serializer.Serialize(ResponseType.Progress);
                 await WriteStringToBinaryWriter(binaryWriter, jsonString, cancellationToken).ConfigureAwait(false);
 
                 await WriteStringToBinaryWriter(binaryWriter, TypeHelper.ToFullNameWithAssembly(progressType), cancellationToken).ConfigureAwait(false);
 
-                var json = JsonConvert.SerializeObject(progress, Formatting.None);
+                var json = Serializer.Serialize(progress);
                 await WriteStringToBinaryWriter(binaryWriter, json, cancellationToken).ConfigureAwait(false);
             }
             finally
@@ -216,33 +217,8 @@ namespace Otor.MsixHero.Elevation.Ipc
                 {
                     var arg = methodParameters[index];
                     var jsonArg = new JObject();
-
-                    if (arg.ParameterType == typeof(int))
-                    {
-                        jsonArg["type"] = TypeHelper.ToFullNameWithAssembly(arg.ParameterType);
-                        jsonArg["value"] = (int)(passedParameters[index] ?? throw new InvalidOperationException("Unexpected null value"));
-                    }
-                    else if (arg.ParameterType == typeof(string))
-                    {
-                        jsonArg["type"] = TypeHelper.ToFullNameWithAssembly(arg.ParameterType);
-                        jsonArg["value"] = (string?)passedParameters[index];
-                    }
-                    else if (arg.ParameterType == typeof(bool))
-                    {
-                        jsonArg["type"] = TypeHelper.ToFullNameWithAssembly(arg.ParameterType);
-                        jsonArg["value"] = (bool)(passedParameters[index] ?? throw new InvalidOperationException("Unexpected null value"));
-                    }
-                    else if (arg.ParameterType == typeof(Guid))
-                    {
-                        jsonArg["type"] = TypeHelper.ToFullNameWithAssembly(arg.ParameterType);
-                        jsonArg["value"] = (Guid)(passedParameters[index] ?? throw new InvalidOperationException("Unexpected null value"));
-                    }
-                    else if (arg.ParameterType == typeof(DateTime))
-                    {
-                        jsonArg["type"] = TypeHelper.ToFullNameWithAssembly(arg.ParameterType);
-                        jsonArg["value"] = (DateTime)(passedParameters[index] ?? throw new InvalidOperationException("Unexpected null value"));
-                    }
-                    else if (TypeHelper.IsCancellation(arg.ParameterType))
+                    
+                    if (TypeHelper.IsCancellation(arg.ParameterType))
                     {
                         jsonArg["type"] = "!CancellationToken";
                     }
@@ -253,7 +229,7 @@ namespace Otor.MsixHero.Elevation.Ipc
                     else
                     {
                         jsonArg["type"] = TypeHelper.ToFullNameWithAssembly(arg.ParameterType);
-                        jsonArg["value"] = JsonConvert.SerializeObject(passedParameters[index]);
+                        jsonArg["value"] = Serializer.Serialize(passedParameters[index]);
                     }
 
                     argumentsArray.Add(jsonArg);
@@ -359,7 +335,7 @@ namespace Otor.MsixHero.Elevation.Ipc
                                     break;
                                 }
                                 
-                                objects.Add(argumentDefinition["value"]?.ToObject(actualArgumentType));
+                                objects.Add(Serializer.Deserialize(actualArgumentType, argumentDefinition["value"]?.Value<string>()));
                                 break;
                         }
 
@@ -402,7 +378,7 @@ namespace Otor.MsixHero.Elevation.Ipc
                 }
 
                 var jsonString = await binaryReader.ReadStringAsync(msgLength, Encoding.UTF8, cancellationToken).ConfigureAwait(false);
-                return JsonConvert.DeserializeObject<T>(jsonString, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                return Serializer.Deserialize<T>(jsonString);
             }
             finally
             {
@@ -431,7 +407,7 @@ namespace Otor.MsixHero.Elevation.Ipc
             public object?[]? Parameters { get; set; }
         }
 
-        private static Task WriteStringToBinaryWriter(AsyncBinaryWriter binaryWriter, string stringToWrite, CancellationToken cancellationToken = default)
+        private static Task WriteStringToBinaryWriter(AsyncBinaryWriter binaryWriter, string? stringToWrite, CancellationToken cancellationToken = default)
         {
             return WriteStringToBinaryWriter(binaryWriter, stringToWrite, Encoding.UTF8, cancellationToken);
         }
@@ -453,8 +429,14 @@ namespace Otor.MsixHero.Elevation.Ipc
             return encoding.GetString(bytes);
         }
 
-        private static async Task WriteStringToBinaryWriter(AsyncBinaryWriter binaryWriter, string stringToWrite, Encoding encoding, CancellationToken cancellationToken = default)
+        private static async Task WriteStringToBinaryWriter(AsyncBinaryWriter binaryWriter, string? stringToWrite, Encoding encoding, CancellationToken cancellationToken = default)
         {
+            if (stringToWrite == null)
+            {
+                await binaryWriter.WriteAsync(0, cancellationToken).ConfigureAwait(false);
+                return;
+            }
+
             var jsonBytes = encoding.GetBytes(stringToWrite);
             await binaryWriter.WriteAsync(jsonBytes.Length, cancellationToken).ConfigureAwait(false);
             await binaryWriter.WriteAsync(jsonBytes, cancellationToken).ConfigureAwait(false);

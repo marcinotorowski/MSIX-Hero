@@ -34,13 +34,13 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Files
         {
             if (!File.Exists(this.Verb.SourcePath))
             {
-                await this.Console.WriteError($"File ('{this.Verb.SourcePath}') does not exist.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_AddFile_Error_Missing_Format, this.Verb.SourcePath)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
             if (string.Equals(FileConstants.AppxManifestFile, this.Verb.DestinationPath))
             {
-                await this.Console.WriteError("Manifest file cannot be added directly.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_AddFile_Error_DirectManifestImport).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
@@ -60,17 +60,17 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Files
             try
             {
                 await executor.Execute(action).ConfigureAwait(false);
-                await this.Console.WriteSuccess($"File '{this.Verb.SourcePath}' has been imported into '{this.Verb.DestinationPath}'.").ConfigureAwait(false);
+                await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_AddFile_Success_Format, this.Verb.SourcePath, this.Verb.DestinationPath)).ConfigureAwait(false);
             }
             catch (AddFileExecutor.FileAlreadyExistsException alreadyExistsException)
             {
-                await this.Console.WriteError($"File '{this.Verb.SourcePath}' could not be added because the destination file '{alreadyExistsException.FilePath}' already exists.").ConfigureAwait(false);
-                await this.Console.WriteInfo("You can force replacement of the file by using --force switch.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_AddFile_Error_AlreadyExists_Format, this.Verb.SourcePath, alreadyExistsException.FilePath)).ConfigureAwait(false);
+                await this.Console.WriteInfo(Resources.Localization.CLI_Executor_AddFile_Error_AlreadyExists_Hint).ConfigureAwait(false);
                 return StandardExitCodes.ErrorResourceExists;
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"File '{this.Verb.SourcePath}' could not be added to '{this.Verb.DestinationPath}'.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_AddFile_Error_CouldNotAdd_Format, this.Verb.SourcePath, this.Verb.DestinationPath)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }

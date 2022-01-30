@@ -3,7 +3,8 @@
                     xmlns:packageExpert1="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
                     xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-                    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers">
+                    xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+                    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Buttons.xaml" />
@@ -72,17 +73,17 @@
                                            SnapsToDevicePixels="True">
                                     </Image>
 
-                                    <TextBlock Text="Trust this publisher" Margin="4 0 0 0" VerticalAlignment="Center" />
+                                    <TextBlock Text="{localization:Loc PackageExpert_SignedBy_TrustButton}" Margin="4 0 0 0" VerticalAlignment="Center" />
 
                                 </StackPanel>
                             </Button>
 
                             <TextBlock x:Name="SignedBy" VerticalAlignment="Center">
-                                <Run x:Name="PART_IsSigned" Text="Signed by" />
+                                <Run x:Name="PART_IsSigned" Text="{localization:Loc PackageExpert_SignedBy}" />
                                 <Hyperlink Command="{TemplateBinding ViewPropertiesCommand}" Style="{StaticResource Hyperlink}" x:Name="PART_Hyperlink">
                                     <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Trustee, Mode=OneWay}" />
                                 </Hyperlink>
-                                <Run x:Name="PART_IsTrusted" Text="(untrusted publisher)" />
+                                <Run x:Name="PART_IsTrusted" Text="{localization:Loc PackageExpert_SignedBy_Untrusted}" />
                             </TextBlock>
                         </DockPanel>
                     </Border>
@@ -102,8 +103,8 @@
                                 <Condition Property="IsChainLoaded" Value="True" />
                             </MultiTrigger.Conditions>
                             <MultiTrigger.Setters>
-                                <Setter Property="Text" TargetName="PART_IsSigned" Value="Signed by" />
-                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="(trusted publisher)" />
+                                <Setter Property="Text" TargetName="PART_IsSigned" Value="{localization:Loc PackageExpert_SignedBy}" />
+                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="{localization:Loc PackageExpert_SignedBy_Trusted}" />
                                 <Setter Property="Fill" TargetName="PART_Loading" Value="Green" />
                                 <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
                             </MultiTrigger.Setters>
@@ -119,8 +120,8 @@
                                 <Condition Property="IsChainLoaded" Value="True" />
                             </MultiTrigger.Conditions>
                             <MultiTrigger.Setters>
-                                <Setter Property="Text" TargetName="PART_IsSigned" Value="Signed by" />
-                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="(untrusted publisher)" />
+                                <Setter Property="Text" TargetName="PART_IsSigned" Value="{localization:Loc PackageExpert_SignedBy}" />
+                                <Setter Property="Text" TargetName="PART_IsTrusted" Value="{localization:Loc PackageExpert_SignedBy_Untrusted}" />
                                 <Setter Property="Fill" TargetName="PART_Loading" Value="IndianRed" />
                                 <Setter Property="Text" TargetName="PART_Glyph" Value="&#10799;" />
                                 <Setter Property="FontSize" TargetName="PART_Glyph" Value="11" />
@@ -134,7 +135,7 @@
                                 <Condition Property="IsChainLoaded" Value="True" />
                             </MultiTrigger.Conditions>
                             <MultiTrigger.Setters>
-                                <Setter Property="Text" TargetName="PART_IsSigned" Value="Unsigned" />
+                                <Setter Property="Text" TargetName="PART_IsSigned" Value="{localization:Loc PackageExpert_NotSigned}" />
                                 <Setter Property="Text" TargetName="PART_IsTrusted" Value="" />
                                 <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
                                 <Setter Property="Text" TargetName="PART_Glyph" Value="&#10799;" />
@@ -146,7 +147,7 @@
                         <Trigger Property="IsChainLoaded" Value="False">
                             <Setter Property="Background" Value="#efefef" />
                             <Setter Property="Fill" TargetName="PART_Loading" Value="#ccc" />
-                            <Setter Property="Text" TargetName="PART_IsSigned" Value="Getting certificate details..." />
+                            <Setter Property="Text" TargetName="PART_IsSigned" Value="{localization:Loc PackageExpert_LoadingCertificate}" />
                             <Setter Property="Text" TargetName="PART_IsTrusted" Value="" />
                             <Setter TargetName="PART_TrustMe" Property="Visibility" Value="Collapsed" />
                         </Trigger>
@@ -175,7 +176,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="packageExpert1:PackageExpertControl">
                     <controls:ProgressOverlay 
-                        Message="Reading..."
+                        Message="{localization:Loc PackageExpert_Reading}"
                         IsShown="{TemplateBinding IsLoading}">
                         <Grid>
                             <DockPanel

@@ -48,6 +48,21 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             this.interactionService = interactionService;
         }
 
+        public ChangeableFolderProperty(Func<string> displayName, IInteractionService interactionService, string initialFolder) : base(displayName, initialFolder)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFolderProperty(Func<string> displayName, IInteractionService interactionService, string initialFolder, params Func<string, string>[] validators) : base(displayName, initialFolder, validators)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFolderProperty(Func<string> displayName, IInteractionService interactionService, params Func<string, string>[] validators) : base(displayName, validators)
+        {
+            this.interactionService = interactionService;
+        }
+
         public static Func<string, string> ValidatePath
         {
             get
@@ -56,12 +71,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        return "The path may not be empty.";
+                        return Resources.Localization.Dialogs_FolderPicker_Validation_Empty;
                     }
 
                     if (!Uri.TryCreate(value, UriKind.Absolute, out _))
                     {
-                        return "The path is invalid.";
+                        return Resources.Localization.Dialogs_FolderPicker_Validation_Invalid;
                     }
                     
                     return null;
@@ -77,18 +92,18 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        return "The path may not be empty.";
+                        return Resources.Localization.Dialogs_FolderPicker_Validation_Empty;
                     }
 
                     if (!Uri.TryCreate(value, UriKind.Absolute, out _))
                     {
-                        return "The path is invalid.";
+                        return Resources.Localization.Dialogs_FolderPicker_Validation_Invalid;
                     }
 
 
                     if (!Directory.Exists(value))
                     {
-                        return "The folder does not exist.";
+                        return Resources.Localization.Dialogs_FolderPicker_Validation_Missing;
                     }
 
                     return null;

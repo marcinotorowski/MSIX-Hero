@@ -1,11 +1,12 @@
 ﻿using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Bulk
 {
-    [Verb("list", HelpText = "Executes a list of commands, either from a file or from a command prompt.")]
+    [Verb("list", HelpText = "CLI_Verbs_Edit_List_VerbName", ResourceType = typeof(Localization))]
     public class ListEditVerb : BaseEditVerb
     {
-        [Value(0, HelpText = "File path to a file containing the instructions to execute. If not provided, the user can prompt the required content from the console.")]
+        [Value(0, HelpText = "CLI_Verbs_Edit_List_Prop_File", ResourceType = typeof(Localization))]
         public string File { get; set; }
     }
 }

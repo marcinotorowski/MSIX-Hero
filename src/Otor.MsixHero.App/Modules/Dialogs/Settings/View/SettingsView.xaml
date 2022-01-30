@@ -17,6 +17,7 @@
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Controls.CertificateSelector.View"
              xmlns:commands1="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Settings.Commands"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="650" 
              d:DesignWidth="800"
@@ -25,7 +26,7 @@
         <Style TargetType="controls1:AcrylicDialogWindow" BasedOn="{StaticResource Acrylic}">
             <Setter Property="SizeToContent" Value="Manual" />
             <Setter Property="Width" Value="800" />
-            <Setter Property="Title" Value="Settings - MSIX Hero" />
+            <Setter Property="Title" Value="{localization:Loc Dialogs_Settings_Title}" />
             <Setter Property="Height" Value="700" />
             <Setter Property="MinWidth" Value="350" />
             <Setter Property="MinHeight" Value="350" />
@@ -69,7 +70,7 @@
                         Foreground="White"
                         VerticalAlignment="Center" 
                         HorizontalAlignment="Left" 
-                        Text="SETTINGS - MSIX HERO">
+                        Text="{localization:Loc Dialogs_Settings_TitleUpper}">
                         <TextBlock.Effect>
                             <BlurEffect
                                 Radius="8.0"
@@ -81,7 +82,7 @@
                         Foreground="White"
                         VerticalAlignment="Center" 
                         HorizontalAlignment="Left" 
-                        Text="SETTINGS - MSIX HERO">
+                        Text="{localization:Loc Dialogs_Settings_TitleUpper}">
                         <TextBlock.Effect>
                             <BlurEffect
                                 Radius="2.0"
@@ -92,7 +93,7 @@
                         Margin="8 0 0 0" 
                         VerticalAlignment="Center" 
                         HorizontalAlignment="Left" 
-                        Text="SETTINGS - MSIX HERO" />
+                        Text="{localization:Loc Dialogs_Settings_TitleUpper}" />
                 </Grid>
             </DockPanel>
         </Border>
@@ -107,8 +108,8 @@
                         <system:Boolean>True</system:Boolean>
                     </Button.CommandParameter>
                 </Button>
-                <Button Padding="8 4" Margin="4" Command="Save" Content="Apply" />
-                <Button Padding="8 4" Margin="4" Command="Close" Content="Close" />
+                <Button Padding="8 4" Margin="4" Command="Save" Content="{localization:Loc Dialogs_Settings_OkButton}" />
+                <Button Padding="8 4" Margin="4" Command="Close" Content="{localization:Loc Dialogs_Settings_CloseButton}" />
             </StackPanel>
         </Border>
 
@@ -130,12 +131,19 @@
 
         <Border Background="{StaticResource MsixHero.Brushes.Background}">
             <TabControl SelectedIndex="0" Margin="16 0 16 16" x:Name="MainContent" view:SearchHelper.SearchString="test">
-                <TabItem Header="Interface">
+                <TabItem Header="{localization:Loc Dialogs_Settings_Interface}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
-                            <Label Style="{StaticResource FormLabel}">Visuals and performance</Label>
+                            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Language}" />
+                            <ComboBox
+                                ItemsSource="{Binding AllLanguages}"
+                                SelectedValue="{Binding Language.CurrentValue}" 
+                                SelectedValuePath="LanguageCode" 
+                                DisplayMemberPath="DisplayName" />
 
-                            <TextBlock Style="{StaticResource DataHeader}" Text="This setting controls how much Windows 10 acrylic effect, animations and other effects are used." Margin="0  0 0 6" />
+                            <Label Margin="0 20 0 6" Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Visuals}" />
+
+                            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_Settings_Visuals_Hint}" Margin="0  0 0 6" />
 
                             <Grid Margin="0 0 0 -4">
                                 <Grid.ColumnDefinitions>
@@ -166,50 +174,50 @@
                                     Height="150" Minimum="-1" Maximum="2" />
 
                                 <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="0">
-                                    <TextBlock FontWeight="SemiBold" Text="Automatic (recommended)" />
-                                    <TextBlock Text="The UI adjusts automatically to your hardware and session status." Foreground="#888" />
+                                    <TextBlock FontWeight="SemiBold" Text="{localization:Loc Dialogs_Settings_Visuals_Automatic}" />
+                                    <TextBlock Text="{localization:Loc Dialogs_Settings_Visuals_Automatic_Hint}" Foreground="#888" />
                                 </StackPanel>
 
                                 <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="1">
-                                    <TextBlock FontWeight="SemiBold" Text="Best performance" />
-                                    <TextBlock Text="Animations, transparency and acrylic effects are always disabled." Foreground="#888" />
+                                    <TextBlock FontWeight="SemiBold" Text="{localization:Loc Dialogs_Settings_Visuals_Performance}" />
+                                    <TextBlock Text="{localization:Loc Dialogs_Settings_Visuals_Performance_Hint}" Foreground="#888" />
                                 </StackPanel>
 
 
                                 <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="2">
-                                    <TextBlock FontWeight="SemiBold" Text="Medium" />
-                                    <TextBlock Text="A compromise between look-and-feel and performance." Foreground="#888" />
+                                    <TextBlock FontWeight="SemiBold" Text="{localization:Loc Dialogs_Settings_Visuals_Medium}" />
+                                    <TextBlock Text="{localization:Loc Dialogs_Settings_Visuals_Medium_Hint}" Foreground="#888" />
                                 </StackPanel>
 
                                 <StackPanel VerticalAlignment="Center" Grid.Column="1" Grid.Row="3">
-                                    <TextBlock FontWeight="SemiBold" Text="Best looking" />
-                                    <TextBlock Text="Animations, transparency and acrylic effects are always enabled." Foreground="#888" />
+                                    <TextBlock FontWeight="SemiBold" Text="{localization:Loc Dialogs_Settings_Visuals_BestLook}" />
+                                    <TextBlock Text="{localization:Loc Dialogs_Settings_Visuals_BestLook_Hint}" Foreground="#888" />
                                 </StackPanel>
                             </Grid>
 
-                            <Label Margin="0 20 0 6" Style="{StaticResource FormLabel}">Start-up</Label>
+                            <Label Margin="0 20 0 6" Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_StartUp}" />
 
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Initial screen" Margin="0  0 0 6" />
+                            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_Settings_InitialScreen}" Margin="0  0 0 6" />
                             <ComboBox 
                                 SelectedValuePath="Tag"
                                 SelectedValue="{Binding DefaultScreen.CurrentValue}">
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Dashboard}">Tools dashboard</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Packages}">Packages</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Volumes}">Volumes</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Events}">Event viewer</ComboBoxItem>
-                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.System}">System state</ComboBoxItem>
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Dashboard}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Tools}" />
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Packages}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Packages}" />
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Volumes}" Content="{localization:Loc Dialogs_Settings_InitialScreen_Volumes}" />
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.Events}" Content="{localization:Loc Dialogs_Settings_InitialScreen_EventViewer}" />
+                                <ComboBoxItem Tag="{x:Static configuration:DefaultScreen.System}" Content="{localization:Loc Dialogs_Settings_InitialScreen_SystemState}" />
                             </ComboBox>
 
-                            <TextBlock Text="Release notes" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
-                            <CheckBox IsChecked="{Binding ShowReleaseNotes.CurrentValue}" Content="Show Release Notes after each update of MSIX Hero" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_ReleaseNotes}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                            <CheckBox IsChecked="{Binding ShowReleaseNotes.CurrentValue}" Content="{localization:Loc Dialogs_Settings_ReleaseNotes_Show}" />
 
-                            <Label Style="{StaticResource FormLabel}" Margin="0 20 0 6">Prompts</Label>
+                            <Label Style="{StaticResource FormLabel}" Margin="0 20 0 6" Content="{localization:Loc Dialogs_Settings_Prompts}" />
 
-                            <CheckBox IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="Confirm removal of items" />
+                            <CheckBox IsChecked="{Binding ConfirmDeletion.CurrentValue}" Content="{localization:Loc Dialogs_Settings_Prompts_ConfirmRemoving}" />
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Signing">
+                <TabItem Header="{localization:Loc Dialogs_Settings_Signing}">
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding TabSigning}" />
                     </b:Interaction.Behaviors>
@@ -217,19 +225,19 @@
                         <view1:CertificateSelectorView DataContext="{Binding CertificateSelector}" Margin="0 0 0 0" />
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Editors">
+                <TabItem Header="{localization:Loc Dialogs_Settings_Editors}">
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding TabEditors}" />
                     </b:Interaction.Behaviors>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
-                            <Label Style="{StaticResource FormLabel}" Content="Manifest files" />
-                            <TextBlock Text="Default editor for manifest files (AppxManifest.xml)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_ManifestFiles}" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_ManifestFiles_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
 
                             <ComboBox SelectedValue="{Binding ManifestEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default XML editor" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="Always ask me which program to use" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
                             </ComboBox>
 
                             <DockPanel Margin="0 6 0 0" Visibility="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
@@ -237,13 +245,13 @@
                                 <TextBox IsEnabled="{Binding ManifestEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding ManifestEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
-                            <Label Style="{StaticResource FormLabel}" Content="App installer files" Margin="0 16 0 6" />
-                            <TextBlock Text="Default editor for App installer files (*.appinstaller)" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_AppInstallerFiles}" Margin="0 16 0 6" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_AppInstallerFiles_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
 
                             <ComboBox SelectedValue="{Binding AppinstallerEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default text editor" />
-                                <ComboBoxItem x:Name="ComboAppinstallerCustom" Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="Always ask me which program to use" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultTxt}" />
+                                <ComboBoxItem x:Name="ComboAppinstallerCustom" Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
                             </ComboBox>
 
                             <DockPanel Margin="0 6 0 0" Visibility="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
@@ -251,12 +259,12 @@
                                 <TextBox IsEnabled="{Binding AppinstallerEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding AppinstallerEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
-                            <Label Style="{StaticResource FormLabel}" Content="Compressed packages" Margin="0 16 0 6" />
-                            <TextBlock Text="Default editor for APPX/MSIX files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_CompressedPackages}" Margin="0 16 0 6" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_CompressedPackages_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                             <ComboBox SelectedValue="{Binding MsixEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default XML editor" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="Always ask me which program to use" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultXml}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
                             </ComboBox>
 
                             <DockPanel Margin="0 6 0 0" Visibility="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
@@ -264,12 +272,12 @@
                                 <TextBox IsEnabled="{Binding MsixEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding MsixEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
-                            <Label Style="{StaticResource FormLabel}" Content="Package Support Framework" Margin="0 16 0 6" />
-                            <TextBlock Text="Default editor for Package Support Framework configuration files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_Psf}" Margin="0 16 0 6" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_Psf_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                             <ComboBox SelectedValue="{Binding PsfEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default JSON editor" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="Always ask me which program to use" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_DefaultJson}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
                             </ComboBox>
 
                             <DockPanel Margin="0 6 0 0" Visibility="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
@@ -277,12 +285,12 @@
                                 <TextBox IsEnabled="{Binding PsfEditorType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}" Text="{Binding PsfEditorPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                             </DockPanel>
 
-                            <Label Style="{StaticResource FormLabel}" Content="PowerShell" Margin="0 16 0 6" />
-                            <TextBlock Text="Default editor for PS1 scripts" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                            <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Settings_Editors_PowerShell}" Margin="0 16 0 6" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_Editors_PowerShell_Hint}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                             <ComboBox SelectedValue="{Binding PowerShellEditorType.CurrentValue}" SelectedValuePath="Tag">
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="Open with default application" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="Open with custom application" />
-                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="Always ask me which program to use" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Default}" Content="{localization:Loc Dialogs_Settings_Editors_Default}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Custom}" Content="{localization:Loc Dialogs_Settings_Editors_CustomApp}" />
+                                <ComboBoxItem Tag="{x:Static configuration:EditorType.Ask}" Content="{localization:Loc Dialogs_Settings_Editors_Ask}" />
                             </ComboBox>
 
                             <DockPanel Margin="0 6 0 0" Visibility="{Binding PowerShellEditorType.CurrentValue, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static configuration:EditorType.Custom}}">
@@ -292,7 +300,7 @@
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Commands" x:Name="tools">
+                <TabItem Header="{localization:Loc Dialogs_Settings_Commands}">
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding Tools}" />
                     </b:Interaction.Behaviors>
@@ -324,13 +332,13 @@
                                 <Button Command="New" Style="{StaticResource ActionButton}">
                                     <controls1:LabelWithIcon 
                                         Icon16x16="{StaticResource SmallPlus}"
-                                        Content="New"
+                                        Content="{localization:Loc Dialogs_Settings_Commands_New}"
                                         Style="{StaticResource ActionLabelWithIcon}" />
                                 </Button>
                                 <Button Command="Delete" Style="{StaticResource ActionButton}">
                                     <controls1:LabelWithIcon 
                                         Icon16x16="{StaticResource SmallRemove}"
-                                        Content="Remove"
+                                        Content="{localization:Loc Dialogs_Settings_Commands_Remove}"
                                         Style="{StaticResource ActionLabelWithIcon}" />
                                 </Button>
                             </WrapPanel>
@@ -339,7 +347,7 @@
                         <DockPanel Grid.Row="1" Grid.Column="0" Margin="0 6 0 0">
                             <DockPanel DockPanel.Dock="Bottom">
                                 <Path Data="{StaticResource VectorBulb}" Style="{StaticResource MediumIcon}" />
-                                <TextBlock Text="Tip: reorder commands by drag-and-drop." Margin="4" TextWrapping="Wrap" />
+                                <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Reorder_Hint}" Margin="4" TextWrapping="Wrap" />
                             </DockPanel>
                             <ListBox
                                 BorderThickness="0"
@@ -423,13 +431,13 @@
                                 </ListBox.ItemTemplate>
                                 <ListBox.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Remove" Command="Delete">
+                                        <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_Remove}" Command="Delete">
                                             <MenuItem.Icon>
                                                 <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="New command" Command="New">
+                                        <MenuItem Header="{localization:Loc Dialogs_Settings_Commands_New}" Command="New">
                                             <MenuItem.Icon>
                                                 <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorAdd}" />
                                             </MenuItem.Icon>
@@ -465,22 +473,22 @@
                                 </Style>
                             </ScrollViewer.Style>
                             <StackPanel d:DataContext="{d:DesignInstance tools:ToolViewModel}">
-                                <TextBlock controls1:RequiredAdorner.IsRequired="True" Text="Display name" 
+                                <TextBlock controls1:RequiredAdorner.IsRequired="True" Text="{localization:Loc Dialogs_Settings_Commands_DisplayName}" 
                                        Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                                 <TextBox x:Name="ToolDisplayName" Text="{Binding Name.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
 
-                                <TextBlock controls1:RequiredAdorner.IsRequired="True"  Text="Command" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                                <TextBlock controls1:RequiredAdorner.IsRequired="True"  Text="{localization:Loc Dialogs_Settings_Commands_Command}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                                 <DockPanel>
                                     <Button DockPanel.Dock="Right" Content="..." Command="{Binding Path.Browse}" Margin="4 0 0 0" />
                                     <TextBox Text="{Binding Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                                 </DockPanel>
 
-                                <CheckBox Content="Run as administrator" IsChecked="{Binding AsAdmin.CurrentValue}" Margin="0 4 0 0" />
+                                <CheckBox Content="{localization:Loc Dialogs_Settings_Commands_RunAsAdmin}" IsChecked="{Binding AsAdmin.CurrentValue}" Margin="0 4 0 0" />
 
-                                <TextBlock Text="Arguments" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                                <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Arguments}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                                 <TextBox TextWrapping="Wrap" Height="80" Text="{Binding Arguments.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
 
-                                <TextBlock Text="Icon" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                                <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Icon}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                                 <StackPanel Orientation="Horizontal">
                                     <Button 
                                     Height="64"
@@ -529,11 +537,13 @@
                                         </StackPanel>
                                     </Button>
                                     <TextBlock Visibility="{Binding HasIcon, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center" Margin="6 0 0 0">
-                                    <Hyperlink Command="{x:Static commands:SettingsCommands.DeleteIcon}">Use default icon</Hyperlink>
+                                    <Hyperlink Command="{x:Static commands:SettingsCommands.DeleteIcon}">
+                                        <Run Text="{localization:Loc Dialogs_Settings_Commands_DefaultIcon}" />
+                                    </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
 
-                                <TextBlock Visibility="Collapsed" Text="Icon" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
+                                <TextBlock Visibility="Collapsed" Text="{localization:Loc Dialogs_Settings_Commands_Icon}" Style="{StaticResource DataHeader}" Margin="0 16 0 6" />
                                 <DockPanel Visibility="Collapsed" >
                                     <Button DockPanel.Dock="Right" Content="..." Command="{Binding Icon.Browse}" Margin="4 0 0 0" />
                                     <TextBox IsReadOnly="True" Text="{Binding Icon.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
@@ -542,43 +552,42 @@
                         </ScrollViewer>
                     </Grid>
                 </TabItem>
-                <TabItem Header="Other">
+                <TabItem Header="{localization:Loc Dialogs_Settings_Other}">
                     <b:Interaction.Behaviors>
                         <validation:ValidationBehavior ValidatedChangeable="{Binding TabOther}" />
                     </b:Interaction.Behaviors>
                     <StackPanel>
-                        <Label Content="Certificates" Style="{StaticResource FormLabel}" />
+                        <Label Content="{localization:Loc Dialogs_Settings_Other_Certificates}" Style="{StaticResource FormLabel}" />
 
-                        <TextBlock Text="Default folder where certificates are extracted" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Certificates_DefaultFolder}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <DockPanel Margin="0 0 0 16">
                             <Button DockPanel.Dock="Right" Content="..." Command="{Binding CertificateOutputPath.Browse}" Margin="4 0 0 0" />
                             <TextBox Text="{Binding CertificateOutputPath.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True, Mode=TwoWay}" />
                         </DockPanel>
 
-                        <Label Content="Packing" Style="{StaticResource FormLabel}" />
+                        <Label Content="{localization:Loc Dialogs_Settings_Other_Packing}" Style="{StaticResource FormLabel}" />
                         <CheckBox IsChecked="{Binding PackerSignByDefault.CurrentValue}" Margin="0 0 0 16">
-                            <TextBlock Text="Sign packages after packing" TextWrapping="Wrap" />
+                            <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Packing_Sign}" TextWrapping="Wrap" />
                         </CheckBox>
 
-                        <Label Content="App installer (.appinstaller)" Style="{StaticResource FormLabel}" Margin="0 0 0 6" />
-                        <TextBlock Text="Default base URI for hosted MSIX packages" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <Label Content="{localization:Loc Dialogs_Settings_Other_AppInstaller}" Style="{StaticResource FormLabel}" />
+                        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Url}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <TextBox Text="{Binding DefaultRemoteLocationPackages.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
 
-                        <TextBlock Text="Default base URI for hosted app installer files" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Url_AppInstaller}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <TextBox Text="{Binding DefaultRemoteLocationAppInstaller.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 16" />
 
-                        <TextBlock Text="MSIX Hero logging" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
+                        <TextBlock Text="{localization:Loc Dialogs_Settings_Other_Logs}" Style="{StaticResource DataHeader}" Margin="0 0 0 6" />
                         <CheckBox 
-                            Content="Enable verbose logging"
+                            Content="{localization:Loc Dialogs_Settings_Other_Logs_Verbose}"
                             IsChecked="{Binding VerboseLogging.CurrentValue}" 
                             Margin="0 0 0 6" />
 
                         <TextBlock>
                             <Hyperlink Click="OpenLogsClicked">
-                                <Run Text="Click here to open current logs folder" />
+                                <Run Text="{localization:Loc Dialogs_Settings_Other_Logs_Open}" />
                             </Hyperlink>
                         </TextBlock>
-
                     </StackPanel>
                 </TabItem>
             </TabControl>

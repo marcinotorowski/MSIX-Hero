@@ -75,7 +75,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             }
 
             this.TimeStamp = new ValidatedChangeableProperty<string>(
-                "Time stamp URL",
+                Resources.Localization.CertificateSelector_TimeStamp,
                 signConfig.TimeStampServer == "auto" ? null : signConfig.TimeStampServer,
                 this.ValidateTimestamp);
 
@@ -92,7 +92,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
             this.Store = new ChangeableProperty<CertificateSource>(newStore);
             this.Store.ValueChanged += this.StoreOnValueChanged;
-            this.PfxPath = new ChangeableFileProperty("Path to PFX file", interactionService, signConfig.PfxPath?.Resolved, this.ValidatePfxPath)
+            this.PfxPath = new ChangeableFileProperty(Resources.Localization.CertificateSelector_PfxPath, interactionService, signConfig.PfxPath?.Resolved, this.ValidatePfxPath)
             {
                 Filter = new DialogFilterBuilder("*.pfx").BuildFilter()
             };
@@ -112,7 +112,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                     }
                     catch (Exception)
                     {
-                        Logger.Warn().WriteLine("The encrypted password from settings could not be decrypted.");
+                        Logger.Warn().WriteLine(Resources.Localization.CertificateSelector_Errors_PasswordEncryption);
                     }
                 }
             }
@@ -121,14 +121,14 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
             if (configuration?.DeviceGuard?.EncodedAccessToken != null)
             {
-                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>("Device Guard", configuration.DeviceGuard, false, this.ValidateDeviceGuard);
+                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>(Resources.Localization.CertificateSelector_DeviceGuard, configuration.DeviceGuard, false, this.ValidateDeviceGuard);
             }
             else
             {
-                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>("Device Guard", null, false, this.ValidateDeviceGuard);
+                this.DeviceGuard = new ValidatedChangeableProperty<DeviceGuardConfiguration>(Resources.Localization.CertificateSelector_DeviceGuard, null, false, this.ValidateDeviceGuard);
             }
 
-            this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>("Selected certificate", false, this.ValidateSelectedCertificate);
+            this.SelectedPersonalCertificate = new ValidatedChangeableProperty<CertificateViewModel>(Resources.Localization.CertificateSelector_SelectedCertificate, false, this.ValidateSelectedCertificate);
             this.PersonalCertificates = new AsyncProperty<ObservableCollection<CertificateViewModel>>(this.LoadPersonalCertificates(signConfig.Thumbprint, !signConfig.ShowAllCertificates));
             this.ShowAllCertificates = new ChangeableProperty<bool>(signConfig.ShowAllCertificates);
             this.AddChildren(this.SelectedPersonalCertificate, this.PfxPath, this.TimeStamp, this.TimeStampSelectionMode, this.Password, this.DeviceGuard, this.Store, this.ShowAllCertificates);
@@ -214,7 +214,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             try
             {
                 this.Progress.Progress = 0;
-                this.Progress.Message = "Signing-in to Device Guard service...";
+                this.Progress.Message = Resources.Localization.CertificateSelector_DeviceGuard_Signing;
 
                 using var cancellation = new CancellationTokenSource();
                 IProgress<ProgressData> progress = new Progress<ProgressData>();
@@ -281,7 +281,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                 return null;
             }
 
-            return arg == null ? "The certificate is required." : null;
+            return arg == null ? Resources.Localization.CertificateSelector_Validation_CertificateMissing : null;
         }
 
         private string ValidateDeviceGuard(DeviceGuardConfiguration arg)
@@ -291,7 +291,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                 return null;
             }
 
-            return arg == null ? "The configuration for the device guard is required." : null;
+            return arg == null ? Resources.Localization.CertificateSelector_Validation_DeviceGuardNotConfigured : null;
         }
 
         public ChangeableProperty<TimeStampSelectionMode> TimeStampSelectionMode { get; }
@@ -305,12 +305,12 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
             if (string.IsNullOrEmpty(value))
             {
-                return "Timestamp server URL is required.";
+                return Resources.Localization.CertificateSelector_Validation_TimeStampMissing;
             }
 
             if (!Uri.TryCreate(value, UriKind.Absolute, out var uri))
             {
-                return $"The value '{value}' is not a valid URL.";
+                return string.Format(Resources.Localization.CertificateSelector_Validation_InvalidUrl_Format, value);
             }
 
             if (string.Equals(uri.Scheme, "http", StringComparison.OrdinalIgnoreCase) ||  string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
@@ -318,7 +318,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                 return null;
             }
 
-            return "The URL must have a protocol.";
+            return Resources.Localization.CertificateSelector_Validation_UrlProtocolMissing;
         }
 
         // ReSharper disable once ArrangeObjectCreationWhenTypeEvident
@@ -350,7 +350,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             }
             catch (Exception e)
             {
-                this._interactionService.ShowError("Could not fetch the list of time stamp servers.", e);
+                this._interactionService.ShowError(Resources.Localization.CertificateSelector_Validation_RemoteUrlsCouldNotBeFetched, e);
                 return null;
             }
         }

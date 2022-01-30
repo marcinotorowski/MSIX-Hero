@@ -8,6 +8,7 @@
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:pkgMgmtCommands="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.Commands"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" >
 
     <StackPanel>
@@ -22,20 +23,20 @@
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroRoutedUICommands.PackageExpert}">
-            <controls:LabelWithIcon Icon16x16="{StaticResource SmallInNewWindow}" Content="Open in a new window" />
+            <controls:LabelWithIcon Icon16x16="{StaticResource SmallInNewWindow}" Content="{localization:Loc PackageExpert_App_NewWindow}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>
         </Button>
 
-        <Label Content="Send to..." />
+        <Label Content="{localization:Loc PackageExpert_App_SendTo}" />
         <Button 
             Style="{StaticResource ActionButton}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallDependencies}"
-                Content="Dependency analyzer..." />
+                Content="{localization:Loc PackageExpert_App_SendTo_DependencyAnalyzer}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>
@@ -47,7 +48,7 @@
             Command="{x:Static commands:MsixHeroRoutedUICommands.ModificationPackage}">
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallMicrosoftWindows}"
-                Content="Modification package editor..." />
+                Content="{localization:Loc PackageExpert_App_SendTo_ModPackage}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>
@@ -59,7 +60,7 @@
             Command="{x:Static commands:MsixHeroRoutedUICommands.AppInstaller}">
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallAppInstaller}"
-                Content="App installer editor..." />
+                Content="{localization:Loc PackageExpert_App_SendTo_AppInstaller}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>
@@ -73,43 +74,21 @@
 
             <controls:LabelWithIcon 
                 Icon16x16="{StaticResource SmallTerminal}"
-                Content="Winget (YAML) editor..." />
+                Content="{localization:Loc PackageExpert_App_SendTo_Winget}" />
 
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>
         </Button>
 
-        <Label Content="Other" />
-
-        <!--<Button 
-            Style="{StaticResource ActionButton}"
-            CommandParameter="{x:Static commands1:DialogTarget.Selection}"
-            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.MountRegistry}">
-            <controls:LabelWithIcon Content="Mount registry file" Icon16x16="{StaticResource SmallRegistry}" />
-            <b:Interaction.Behaviors>
-                <helpers:ButtonClosePopup />
-            </b:Interaction.Behaviors>
-        </Button>
-
-        <Button 
-            Style="{StaticResource ActionButton}"
-            CommandParameter="{x:Static commands1:DialogTarget.Selection}"
-            CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
-            Command="{x:Static commands:MsixHeroCommands.DismountRegistry}">
-            <controls:LabelWithIcon Content="Dismount registry file" Icon16x16="{StaticResource SmallRegistry}" />
-            <b:Interaction.Behaviors>
-                <helpers:ButtonClosePopup />
-            </b:Interaction.Behaviors>
-        </Button>-->
+        <Label Content="{localization:Loc PackageExpert_App_Other}" />
 
         <Button 
             Style="{StaticResource ActionButton}"
             CommandParameter="{x:Static pkgMgmtCommands:DialogTarget.Selection}"
             CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Popup}}"
             Command="{x:Static commands:MsixHeroRoutedUICommands.ChangeVolume}">
-            <controls:LabelWithIcon Content="Change volume..." Icon16x16="{StaticResource SmallForward}" />
+            <controls:LabelWithIcon Content="{localization:Loc PackageExpert_App_Other_ChangeVolume}" Icon16x16="{StaticResource SmallForward}" />
             <b:Interaction.Behaviors>
                 <helpers:ButtonClosePopup />
             </b:Interaction.Behaviors>

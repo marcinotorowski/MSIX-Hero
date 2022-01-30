@@ -9,6 +9,7 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.VolumeManagement.ViewModels"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters"
              xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              HorizontalAlignment="Stretch"
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:VolumesSingleDetailsViewModel}">
@@ -22,7 +23,7 @@
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallOk}"
-                        Content="Set as default" />
+                        Content="{localization:Loc Volumes_ContextMenu_SetDefault}" />
                 </Button>
 
                 <Button 
@@ -31,7 +32,7 @@
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlugOut}"
-                        Content="Dismount" />
+                        Content="{localization:Loc Volumes_ContextMenu_Dismount}" />
                 </Button>
 
                 <Button 
@@ -40,7 +41,7 @@
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlugin}"
-                        Content="Mount" />
+                        Content="{localization:Loc Volumes_ContextMenu_Mount}" />
                 </Button>
 
                 <Button 
@@ -49,7 +50,7 @@
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallRemoveApp}"
-                        Content="Remove" />
+                        Content="{localization:Loc Volumes_ContextMenu_Remove}" />
                 </Button>
             </WrapPanel>
         </Border>
@@ -81,22 +82,22 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="views:Pill">
                                     <Border
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                         <StackPanel Orientation="Horizontal" Margin="-1 0">
                                             <Path 
-                                        x:Name="PART_Icon"
-                                        Width="16"
-                                        Height="16"
-                                        Margin="1 0"
-                                        Fill="{TemplateBinding Foreground}"
-                                        Data="{TemplateBinding Icon}" />
+                                                x:Name="PART_Icon"
+                                                Width="16"
+                                                Height="16"
+                                                Margin="1 0"
+                                                Fill="{TemplateBinding Foreground}"
+                                                Data="{TemplateBinding Icon}" />
                                             <TextBlock 
-                                        x:Name="PART_Text"
-                                        Margin="1 0" 
-                                        Foreground="{TemplateBinding Foreground}"
-                                        Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
+                                                x:Name="PART_Text"
+                                                Margin="1 0" 
+                                                Foreground="{TemplateBinding Foreground}"
+                                                Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
                                         </StackPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -120,23 +121,23 @@
                             Height="48">
                             <Border>
                                 <Path 
-                                        Fill="White"
-                                        Data="{StaticResource VectorDisk}" 
-                                        Style="{StaticResource LargeIcon}" />
+                                    Fill="White"
+                                    Data="{StaticResource VectorDisk}" 
+                                    Style="{StaticResource LargeIcon}" />
                             </Border>
                         </Border>
 
                         <WrapPanel DockPanel.Dock="Right" Margin="-2 0" VerticalAlignment="Center">
                             <views:Pill
                                     Visibility="{Binding Volume.IsSystem, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="This is a system volume"
+                                    ToolTip="{localization:Loc Volumes_SystemVolume_Tooltip}"
                                     Icon="{StaticResource SmallMicrosoftWindows}"
-                                    Content="System" />
+                                    Content="{localization:Loc Volumes_SystemVolume_Caption}" />
                             <views:Pill
                                     Visibility="{Binding Volume.IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="This is a default volume"
+                                    ToolTip="{localization:Loc Volumes_DefaultVolume_Tooltip}"
                                     Icon="{StaticResource SmallOk}"
-                                    Content="Default" />
+                                    Content="{localization:Loc Volumes_DefaultVolume_Caption}" />
                         </WrapPanel>
 
                         <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
@@ -153,30 +154,34 @@
                                         <converters:VolumeSizeCaptionConverter />
                                     </MultiBinding.Converter>
                                     <MultiBinding.Bindings>
+                                        <localization:Loc StringName="Volumes_SizeConverter_Caption_Format" />
                                         <Binding Path="Volume.OccupiedSpace" Mode="OneWay" />
                                         <Binding Path="Volume.AvailableFreeSpace" Mode="OneWay" />
                                     </MultiBinding.Bindings>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                        <ProgressBar Height="10" Margin="0 6 0 0" 
-                                         Value="{Binding Volume.OccupiedSpace, Mode=OneWay}" 
-                                         Maximum="{Binding Volume.Capacity, Mode=OneWay}" Background="{StaticResource MsixHero.Brushes.Accent.Light1}" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
+                        <ProgressBar 
+                            Height="10" Margin="0 6 0 0" 
+                            Value="{Binding Volume.OccupiedSpace, Mode=OneWay}" 
+                            Maximum="{Binding Volume.Capacity, Mode=OneWay}" 
+                            Background="{StaticResource MsixHero.Brushes.Accent.Light1}" 
+                            Foreground="{StaticResource MsixHero.Brushes.Accent}" />
                     </StackPanel>
 
                     <WrapPanel Margin="-2 8 0 -2">
 
                         <views:Pill
-                                    Visibility="{Binding Volume.IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                    ToolTip="This volume is detached (offline)"
-                                    Icon="{StaticResource SmallPlugOut}"
-                                    Content="Detached" />
+                            Visibility="{Binding Volume.IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            ToolTip="{localization:Loc Volumes_DetachedVolume_Tooltip}"
+                            Icon="{StaticResource SmallPlugOut}"
+                            Content="{localization:Loc Volumes_DetachedVolume_Caption}" />
 
                         <views:Pill
-                                    Visibility="{Binding Volume.IsOffline, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                                    ToolTip="This volume is online"
-                                    Icon="{StaticResource SmallPlugin}"
-                                    Content="Online" />
+                            Visibility="{Binding Volume.IsOffline, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
+                            ToolTip="{localization:Loc Volumes_OnlineVolume_Tooltip}"
+                            Icon="{StaticResource SmallPlugin}"
+                            Content="{localization:Loc Volumes_OnlineVolume_Caption}" />
                     </WrapPanel>
                 </StackPanel>
             </Border>

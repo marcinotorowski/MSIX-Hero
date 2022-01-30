@@ -114,7 +114,7 @@ namespace Otor.MsixHero.Infrastructure.Helpers
             }
             catch (Exception e)
             {
-                Logger.Error().WriteLine($"Could not open the file {filePath.Resolved}");
+                Logger.Error().WriteLine(Resources.Localization.Infrastructure_Error_CouldNotOpenFile_Format, filePath.Resolved);
                 Logger.Error().WriteLine(e);
 
                 if (throwExceptions)
@@ -122,7 +122,7 @@ namespace Otor.MsixHero.Infrastructure.Helpers
                     throw;
                 }
 
-                this._interactionService.ShowError($"Could not open the file {filePath.Resolved}", e, InteractionResult.OK);
+                this._interactionService.ShowError(string.Format(Resources.Localization.Infrastructure_Error_CouldNotOpenFile_Format, filePath.Resolved), e, InteractionResult.OK);
             }
         }
     }

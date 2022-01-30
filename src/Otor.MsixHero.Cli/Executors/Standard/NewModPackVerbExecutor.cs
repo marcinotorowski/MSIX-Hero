@@ -85,7 +85,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 }
 
                 await this.modificationPackageBuilder.Create(config, file, action).ConfigureAwait(false); 
-                await this.Console.WriteSuccess($"Modification package created in {file}.").ConfigureAwait(false);
+                await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_ModPack_Success_Format, file)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorSuccess;
             }
             catch (Exception e)

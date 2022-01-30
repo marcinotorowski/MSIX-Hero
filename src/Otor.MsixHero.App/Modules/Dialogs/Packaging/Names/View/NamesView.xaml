@@ -9,6 +9,7 @@
              xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel"
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.View"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="400"
              d:DesignHeight="333"
@@ -36,7 +37,7 @@
         Icon="{StaticResource VectorPack}">
         <dialog:ChangeableDialog.Footer>
             <StackPanel VerticalAlignment="Center">
-                <Button Padding="8 4" Margin="4" Content="Load from file..." Command="{Binding OpenCommand}" />
+                <Button Padding="8 4" Margin="4" Content="{localization:Loc Dialogs_PackageName_LoadFile}" Command="{Binding OpenCommand}" />
             </StackPanel>
         </dialog:ChangeableDialog.Footer>
         <dialog:ChangeableDialog.DialogContentTemplate>

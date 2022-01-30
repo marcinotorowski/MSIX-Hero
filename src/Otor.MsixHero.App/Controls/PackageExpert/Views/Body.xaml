@@ -23,11 +23,12 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
     <TabControl DockPanel.Dock="Top" Margin="12 0 0 0">
-        <TabItem Header="Properties">
+        <TabItem Header="{localization:Loc PackageExpert_Tab_Properties}">
             <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
                 <TabItem>
                     <TabItem.Header>
@@ -40,7 +41,7 @@
                         <StackPanel>
 
                             <StackPanel Margin="0 0 0 10">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Signed by" Visibility="Collapsed" />
+                                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_SignedBy}" Visibility="Collapsed" />
                                 <controls:ProgressOverlay 
                                     DataContext="{Binding Trust}"
                                     IsShown="{Binding IsTrusting}">
@@ -56,41 +57,45 @@
                             <StackPanel 
                                 DataContext="{Binding Manifest.CurrentValue}">
                                 <StackPanel Margin="0 0 0 0" VerticalAlignment="Top">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Publisher" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Publisher}" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Publisher, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Description" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Description}" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Description, Mode=OneWay, TargetNullValue='None', FallbackValue='None'}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Family name" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_FamilyName}" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=FamilyName, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Full package name" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_FullPackageName}" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=PackageFullName, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Architecture" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Architecture}" />
                                     <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Path=Architecture, Mode=OneWay}" TextWrapping="Wrap" />
                                 </StackPanel>
 
                                 <StackPanel Margin="0 10 0 0">
                                     <TextBlock Style="{StaticResource DataHeader}">
-                                        <Run Text="Package Integrity Enforcement" />
+                                        <Run Text="{localization:Loc PackageExpert_PackageIntegrityEnforcement}" />
                                     </TextBlock>
                                     <TextBlock Visibility="{Binding PackageIntegrity, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" TextWrapping="Wrap">
-                                        <Run Text="Enforce run time package integrity checks on the entire contents of the package" />
-                                        <Hyperlink Click="HyperlinkOnClick" Tag="https://msixhero.net/redirect/package-integrity-enforcement">[more info]</Hyperlink>
+                                        <Run Text="{localization:Loc PackageExpert_Enforce_PIChecks}" />
+                                        <Hyperlink Click="HyperlinkOnClick" Tag="https://msixhero.net/redirect/package-integrity-enforcement">
+                                            <Run Text="{localization:Loc PackageExpert_MoreInfoLink}" />
+                                        </Hyperlink>
                                     </TextBlock>
                                     <TextBlock Visibility="{Binding PackageIntegrity, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Style="{StaticResource DataValue}" TextWrapping="Wrap">
-                                        <Run Text="Default settings" />
-                                        <Hyperlink Click="HyperlinkOnClick" Tag="https://msixhero.net/redirect/package-integrity-enforcement">[more info]</Hyperlink>
+                                        <Run Text="{localization:Loc PackageExpert_Enforce_PIChecks_Disabled}" />
+                                        <Hyperlink Click="HyperlinkOnClick" Tag="https://msixhero.net/redirect/package-integrity-enforcement">
+                                            <Run Text="{localization:Loc PackageExpert_MoreInfoLink}" />
+                                        </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -98,9 +103,9 @@
                         DataContext="{Binding Manifest.CurrentValue}"
                         Margin="0 10 0 0" 
                         Visibility="{Binding HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock Style="{StaticResource DataHeader}" Text="Packaging environment" />
+                                <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Builds_Environment}" />
                                 <TextBlock Style="{StaticResource DataValue}" Margin="0">
-                                    <Run Text="{Binding BuildInfo.ProductName, Mode=OneWay, TargetNullValue='Unknown product'}" />
+                                    <Run Text="{Binding BuildInfo.ProductName, Mode=OneWay, TargetNullValue='?'}" />
                                     <Run Text="{Binding BuildInfo.ProductVersion, Mode=OneWay}" />
                                 </TextBlock>
                                 <TextBlock Style="{StaticResource DataValue}" Text="{Binding BuildInfo.OperatingSystem, TargetNullValue='Unknown Operating System'}" />
@@ -111,7 +116,7 @@
 
                 <TabItem >
                     <TabItem.Header>
-                        <Grid DataContext="{Binding Manifest.CurrentValue}" Width="24" Height="24" ToolTip="Capabilities">
+                        <Grid DataContext="{Binding Manifest.CurrentValue}" Width="24" Height="24" ToolTip="{localization:Loc PackageExpert_Tab_Capabilities}">
                             <Viewbox Height="24" Width="24">
                                 <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorOK}" />
                             </Viewbox>
@@ -146,7 +151,7 @@
                                                             </Border>
                                                         </DataTemplate>
                                                     </StackPanel.Resources>
-                                                    <TextBlock Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Text="General-use capabilities" Margin="0 0 0 8" />
+                                                    <TextBlock Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{localization:Loc PackageExpert_Tab_Capabilities_General}" Margin="0 0 0 8" />
 
                                                     <ItemsControl Visibility="{Binding HasGeneral, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding General}" ItemTemplate="{StaticResource CapabilityTemplate}">
                                                         <ItemsControl.ItemsPanel>
@@ -156,7 +161,7 @@
                                                         </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
 
-                                                    <TextBlock Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Peripherals and internal devices" Margin="0 0 0 8" />
+                                                    <TextBlock Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{localization:Loc PackageExpert_Tab_Capabilities_Devices}" Margin="0 0 0 8" />
 
                                                     <ItemsControl Visibility="{Binding HasDevice, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Device}" ItemTemplate="{StaticResource CapabilityTemplate}">
                                                         <ItemsControl.ItemsPanel>
@@ -166,7 +171,7 @@
                                                         </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
 
-                                                    <TextBlock Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Restricted capabilities" Margin="0 0 0 8" />
+                                                    <TextBlock Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{localization:Loc PackageExpert_Tab_Capabilities_Restricted}" Margin="0 0 0 8" />
 
                                                     <ItemsControl Visibility="{Binding HasRestricted, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Restricted}" ItemTemplate="{StaticResource CapabilityTemplate}">
                                                         <ItemsControl.ItemsPanel>
@@ -176,7 +181,7 @@
                                                         </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
 
-                                                    <TextBlock Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Custom capabilities" Margin="0 0 0 8" />
+                                                    <TextBlock Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{localization:Loc PackageExpert_Tab_Capabilities_Custom}" Margin="0 0 0 8" />
 
                                                     <ItemsControl Visibility="{Binding HasCustom, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="-4 0 -4 8" ItemsSource="{Binding Custom}" ItemTemplate="{StaticResource CapabilityTemplate}">
                                                         <ItemsControl.ItemsPanel>
@@ -188,7 +193,7 @@
 
                                                     <controls:LearnMore 
                                                         Link="capabilities"
-                                                        Topic="MSIX capabilities"
+                                                        Topic="{localization:Loc PackageExpert_Tab_Capabilities_MoreLink}"
                                                         Margin="0 6 0 0" />
                                                 </StackPanel>
                                             </ScrollViewer>
@@ -206,13 +211,13 @@
                                                 <DataTemplate>
                                                     <StackPanel>
                                                         <TextBlock>
-                                                            <Run Text="This package does not define any" />
-                                                            <Run FontWeight="SemiBold" Text="capabilities" />
+                                                            <Run Text="{localization:Loc PackageExpert_Tab_Capabilities_None_NotClickable1}" />
+                                                            <Run FontWeight="SemiBold" Text="{localization:Loc PackageExpert_Tab_Capabilities_None_Clickable2}" />
                                                         </TextBlock>
 
                                                         <controls:LearnMore 
                                                             Link="capabilities"
-                                                            Topic="supported MSIX capabilities"
+                                                            Topic="{localization:Loc PackageExpert_Tab_Capabilities_Supported_MoreLink}"
                                                             Margin="0 6 0 0" />
                                                     </StackPanel>
                                                 </DataTemplate>

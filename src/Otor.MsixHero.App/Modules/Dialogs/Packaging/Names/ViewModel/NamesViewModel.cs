@@ -42,7 +42,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
         private readonly Func<string, string> validateResourceId = AppxValidatorFactory.ValidateResourceId(false);
         private ICommand openCommand, copyCommand;
 
-        public NamesViewModel(IInteractionService interactionService) : base("Package name calculator", interactionService)
+        public NamesViewModel(IInteractionService interactionService) : base(Resources.Localization.Dialogs_PackageName_Title, interactionService)
         {
             this.interactionService = interactionService;
         }
@@ -62,12 +62,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                         return this.validateVersion(this.version);
                     case nameof(Name):
                         return this.validatePackageName(this.name);
-                    /*case nameof(FullName):
-                        return null == (this[nameof(Publisher)] ?? this[nameof(Name)] ?? this[nameof(Version)] ?? this[nameof(Resource)]) ? null : "The value cannot be calculated";
-                    case nameof(FamilyName):
-                        return null == (this[nameof(Publisher)] ?? this[nameof(Name)]) ? null : "The value cannot be calculated";
-                    case nameof(PublisherHash):
-                        return null == this[nameof(Publisher)] ? null : "The value cannot be calculated";*/
                     case nameof(Resource):
                         return this.validateResourceId(this.resource);
                     default:
@@ -136,10 +130,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
         {
             if (parameters.Count == 0)
             {
-                this.name = "PackageName";
+                this.name = Resources.Localization.Dialogs_PackageName_DefaultName;
                 this.version = "1.0.0.0";
                 this.architecture = AppxPackageArchitecture.x64;
-                this.publisher = "CN=Publisher Name";
+                this.publisher = Resources.Localization.Dialogs_PackageName_DefaultPublisher;
                 this.resource = "";
                 this.SetCalculatedProperties();
             }
@@ -160,22 +154,22 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
         {
             if (this[nameof(Publisher)] != null)
             {
-                this.fullName = "Invalid publisher name";
-                this.publisherHash = "Invalid publisher name";
-                this.familyName = "Invalid publisher name";
+                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
+                this.publisherHash = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
+                this.familyName = Resources.Localization.Dialogs_PackageName_InvalidPublisherName;
             }
             else if (this[nameof(Name)] != null)
             {
-                this.fullName = "Invalid package name";
-                this.familyName = "Invalid package name";
+                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
+                this.familyName = Resources.Localization.Dialogs_PackageName_InvalidPackageName;
             }
             else if (this[nameof(Version)] != null)
             {
-                this.fullName = "Invalid package version";
+                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidPackageVersion;
             }
             else if (this[nameof(Resource)] != null)
             {
-                this.fullName = "Invalid resource ID";
+                this.fullName = Resources.Localization.Dialogs_PackageName_InvalidResourceId;
             }
             else
             {
@@ -214,7 +208,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
 
             if (!File.Exists(file))
             {
-                this.interactionService.ShowError("File '" + file + "' does not exist.");
+                this.interactionService.ShowError(string.Format(Resources.Localization.Dialogs_PackageName_MissingFile, file));
                 return;
             }
 
@@ -243,12 +237,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel
                                 break;
                             }
 
-                            this.interactionService.ShowError("Only manifest files are accepted.");
+                            this.interactionService.ShowError(Resources.Localization.Dialogs_PackageName_OnlyManifests);
                             return;
                         }
 
                     default:
-                        this.interactionService.ShowError("File extension " + Path.GetExtension(file) + " is not supported.");
+                        this.interactionService.ShowError(string.Format(Resources.Localization.Dialogs_PackageName_NotSupportedExtension, Path.GetExtension(file)));
                         return;
                 }
             }

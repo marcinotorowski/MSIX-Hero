@@ -23,6 +23,7 @@ using System.ServiceProcess;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
+using Otor.MsixHero.Appx.Resources;
 using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
@@ -35,11 +36,11 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
             switch (recommendation.Type)
             {
                 case ServiceRecommendationType.Service:
-                    return this.ChangeStatus(recommendation.ServiceName, recommendation.ExpectedToRun);
+                    return ChangeStatus(recommendation.ServiceName, recommendation.ExpectedToRun);
                 case ServiceRecommendationType.OneTime:
-                    return this.KillProcesses(recommendation.ServiceName);
+                    return KillProcesses(recommendation.ServiceName);
                 case ServiceRecommendationType.WindowsDefender:
-                    return this.DefenderSettings();
+                    return DefenderSettings();
                 default:
                     throw new NotSupportedException();
             }
@@ -62,7 +63,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
 
         public Task<bool> Revert(IServiceRecommendation recommendation)
         {
-            return this.ChangeStatus(recommendation.ServiceName, !recommendation.ExpectedToRun);
+            return ChangeStatus(recommendation.ServiceName, !recommendation.ExpectedToRun);
         }
 
         private Task<bool> KillProcesses(string name)
@@ -119,12 +120,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
 
                     var system32 = Environment.GetFolderPath(Environment.SpecialFolder.System);
 
-                    if (expectedRunState && this.IsServiceRunning(name))
+                    if (expectedRunState && IsServiceRunning(name))
                     {
                         return true;
                     }
 
-                    if (!expectedRunState && this.IsServiceDisabled(name))
+                    if (!expectedRunState && IsServiceDisabled(name))
                     {
                         return true;
                     }
@@ -141,7 +142,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
 
                     if (expectedRunState)
                     {
-                        if (!this.IsServiceDisabled(name))
+                        if (!IsServiceDisabled(name))
                         {
                             // Expected: ACTIVE
                             // Actual: Not running, not disabled
@@ -179,12 +180,12 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
                         return false;
                     }
 
-                    if (expectedRunState && this.IsServiceRunning(name))
+                    if (expectedRunState && IsServiceRunning(name))
                     {
                         return true;
                     }
 
-                    if (!expectedRunState && this.IsServiceDisabled(name))
+                    if (!expectedRunState && IsServiceDisabled(name))
                     {
                         return true;
                     }
@@ -237,27 +238,23 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
                     switch (serviceController.ServiceName.ToLowerInvariant())
                     {
                         case "cscservice":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service performs maintenance activities on the Offline Files cache. If it is active, unrelated system changes may be captured during the repackaging.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, Localization.System_Service_cscservice, false, !IsServiceDisabled(serviceController.ServiceName) || IsServiceRunning(serviceController.ServiceName));
                             break;
 
                         case "wsearch":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service is responsible for background indexing of files and their content. If it is active, unrelated system changes may be captured during the repackaging.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, Localization.System_Service_wsearch, false, !IsServiceDisabled(serviceController.ServiceName) || IsServiceRunning(serviceController.ServiceName));
                             break;
 
                         case "wuauserv":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "This service may update, install and uninstall software which is not related to the app being repackaged.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, Localization.System_Service_wuauserv, false, !IsServiceDisabled(serviceController.ServiceName) || IsServiceRunning(serviceController.ServiceName));
                             break;
 
                         case "dps":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "Disabling this service may improve performance and reduce the amount of unrelated captured changes in repackaged apps.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, Localization.System_Service_dps, false, !IsServiceDisabled(serviceController.ServiceName) || IsServiceRunning(serviceController.ServiceName));
                             break;
-
-                        //case "windefend":
-                        //    yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "Background anti-virus activities may decrease the performance and reliability. Additionally, anti-virus tasks may cause irrelevant system changes to be captured.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName), ServiceRecommendationType.WindowsDefender);
-                        //    break;
-
+                            
                         case "ccmexec":
-                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, "System Center Configuration Manager Agent is responsible for managed installation, maintenance and removal of software. If it is active, unrelated system changes may be captured during the repackaging.", false, !this.IsServiceDisabled(serviceController.ServiceName) || this.IsServiceRunning(serviceController.ServiceName));
+                            yield return new ServiceRecommendation(serviceController.ServiceName, serviceController.DisplayName, Localization.System_Service_ccmexec, false, !IsServiceDisabled(serviceController.ServiceName) || IsServiceRunning(serviceController.ServiceName));
                             break;
                     }
                 }
@@ -266,25 +263,25 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
             var proc = Process.GetProcessesByName("msiexec");
             if (proc.Any())
             {
-                yield return new ServiceRecommendation(proc[0].ProcessName, "Windows Installer", "Windows Installer is running in the background which may cause unrelated system changes to be captured during the repackaging. Wait for all installations to finish before starting the repackaging.", false, true, ServiceRecommendationType.OneTime);
+                yield return new ServiceRecommendation(proc[0].ProcessName, Localization.System_Process_msiexec, Localization.System_Process_msiexec_Description, false, true, ServiceRecommendationType.OneTime);
             }
 
             proc = Process.GetProcessesByName("gacutil");
             if (proc.Any())
             {
-                yield return new ServiceRecommendation(proc[0].ProcessName, "Global Assembly Cache Tool", "Global Assembly Cache tool performs manipulations on the contents of the Global Assembly Cache and download cache folders. Wait for the tool to finish before starting the repackaging.", false, true, ServiceRecommendationType.OneTime);
+                yield return new ServiceRecommendation(proc[0].ProcessName, Localization.System_Process_gacutil, Localization.System_Process_gacutil_Description, false, true, ServiceRecommendationType.OneTime);
             }
 
             proc = Process.GetProcessesByName("ngen");
             if (proc.Any())
             {
-                yield return new ServiceRecommendation(proc[0].ProcessName, "Native Image Generator", "This tool optimizes .NET Framework assemblies by creating and installing their native images with compiled processor-specific machine code. Wait for the tool to finish before starting the repackaging.", false, true, ServiceRecommendationType.OneTime);
+                yield return new ServiceRecommendation(proc[0].ProcessName, Localization.System_Process_ngen, Localization.System_Process_ngen_Description, false, true, ServiceRecommendationType.OneTime);
             }
 
             proc = Process.GetProcessesByName("crossgen");
             if (proc.Any())
             {
-                yield return new ServiceRecommendation(proc[0].ProcessName, "CrossGen ", "This tool optimizes .NET Core assemblies by creating their native images with compiled processor-specific machine code. Wait for the tool to finish before starting the repackaging.", false, true, ServiceRecommendationType.OneTime);
+                yield return new ServiceRecommendation(proc[0].ProcessName, Localization.System_Process_crossgen, Localization.System_Process_crossgen_Description, false, true, ServiceRecommendationType.OneTime);
             }
         }
     }

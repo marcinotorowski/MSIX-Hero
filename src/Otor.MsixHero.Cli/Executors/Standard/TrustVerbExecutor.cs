@@ -35,12 +35,12 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
         public override async Task<int> Execute()
         {
-            Logger.Info().WriteLine($"Importing certificate from [{this.Verb.File}]...");
+            Logger.Info().WriteLine(Resources.Localization.CLI_Executor_Trust_Importing_Format, this.Verb.File);
 
             try
             {
                 await this.signingManager.Trust(this.Verb.File).ConfigureAwait(false);
-                await this.Console.WriteSuccess("Certificate has been imported.");
+                await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_Trust_Success);
                 await this.Console.ShowCertSummary(signingManager, this.Verb.File);
                 return StandardExitCodes.ErrorSuccess;
             }

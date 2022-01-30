@@ -219,7 +219,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             var candidates = await this.GetEntryPoints(directoryInfo, cancellationToken).ConfigureAwait(false);
             if (!candidates.Any())
             {
-                throw new InvalidOperationException("This folder contains no executable files.");
+                throw new InvalidOperationException(Resources.Localization.Packages_Error_Folder_NoExe);
             }
 
             var filteredList = candidates.Where(c =>
@@ -339,7 +339,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
 
             if (major < 0)
             {
-                throw new FormatException("Invalid version format, major version is required.");
+                throw new FormatException(Resources.Localization.Packages_Error_InvalidVersion);
             }
 
             if (minor < 0)
@@ -464,7 +464,7 @@ namespace Otor.MsixHero.Appx.Packaging.ManifestCreator
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "templates", localName);
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException($"Could not locale resource {path}.", path);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_MissingResource_Format, path), path);
             }
 
             return path;

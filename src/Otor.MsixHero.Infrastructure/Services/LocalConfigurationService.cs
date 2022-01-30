@@ -81,8 +81,7 @@ namespace Otor.MsixHero.Infrastructure.Services
                 catch (Exception e)
                 {
                     this.currentConfiguration = FixConfiguration(new Configuration.Configuration());
-                    Logger.Warn().WriteLine("Could not read the settings. Default settings will be used.");
-                    Logger.Debug().WriteLine(e);
+                    Logger.Warn().WriteLine(e, Resources.Localization.Infrastructure_Settings_Error_UseDefault);
                 }
 
                 return this.currentConfiguration;

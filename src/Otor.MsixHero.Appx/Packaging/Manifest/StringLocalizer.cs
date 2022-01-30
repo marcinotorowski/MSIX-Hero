@@ -90,27 +90,25 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                 return outBuff.ToString();
             }
 
-            using (var s = File.OpenRead(priFile))
+            using var s = File.OpenRead(priFile);
+            var pri= PriFile.Parse(s);
+            var name = pri.Sections.OfType<HierarchicalSchemaSection>().FirstOrDefault(s => s.UniqueName != null);
+            if (name != null)
             {
-                var pri= PriFile.Parse(s);
-                var name = pri.Sections.OfType<HierarchicalSchemaSection>().FirstOrDefault(s => s.UniqueName != null);
-                if (name != null)
+                msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + "Resources/" + resourceId.TrimEnd('/');
+                fullString = "@{" + priFile + "?" + msResource + "}";
+
+                if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
                 {
-                    msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + "Resources/" + resourceId.TrimEnd('/');
-                    fullString = "@{" + priFile + "?" + msResource + "}";
+                    return outBuff.ToString();
+                }
 
-                    if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
-                    {
-                        return outBuff.ToString();
-                    }
+                msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + resourceId.TrimEnd('/');
+                fullString = "@{" + priFile + "?" + msResource + "}";
 
-                    msResource = "ms-resource://" + name.UniqueName.Substring(name.UniqueName.IndexOf("://", StringComparison.OrdinalIgnoreCase) + 3) + resourceId.TrimEnd('/');
-                    fullString = "@{" + priFile + "?" + msResource + "}";
-
-                    if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
-                    {
-                        return outBuff.ToString();
-                    }
+                if (SHLoadIndirectString(fullString, outBuff, outBuff.Capacity, IntPtr.Zero) == 0)
+                {
+                    return outBuff.ToString();
                 }
             }
 

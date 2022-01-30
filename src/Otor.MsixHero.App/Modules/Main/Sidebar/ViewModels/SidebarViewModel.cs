@@ -23,7 +23,6 @@ using Otor.MsixHero.App.Hero.Commands;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Modularity;
@@ -34,7 +33,6 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
     public class SidebarViewModel : NotifyPropertyChanged
     {
         private readonly IMsixHeroApplication application;
-        private readonly IInteractionService interactionService;
         private readonly IModuleManager moduleManager;
         private readonly IDialogService dialogService;
 
@@ -52,13 +50,11 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
 
         public SidebarViewModel(
             IMsixHeroApplication application, 
-            IInteractionService interactionService,
             IEventAggregator eventAggregator,
             IModuleManager moduleManager,
             IDialogService dialogService)
         {
             this.application = application;
-            this.interactionService = interactionService;
             this.moduleManager = moduleManager;
             this.dialogService = dialogService;
             this.SidebarItems = new ObservableCollection<SidebarItemViewModel>
@@ -66,31 +62,26 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
                 new SidebarItemViewModel(
                     ApplicationMode.Dashboard,
                     NavigationPaths.Dashboard,
-                    "Dashboard",
                     TabOverview),
 
                 new SidebarItemViewModel(
                     ApplicationMode.Packages,
                     NavigationPaths.PackageManagement,
-                    "Packages",
                     TabPackages),
 
                 new SidebarItemViewModel(
                     ApplicationMode.VolumeManager,
                     NavigationPaths.VolumeManagement,
-                    "Volumes",
                     TabVolumes),
 
                 new SidebarItemViewModel(
                     ApplicationMode.EventViewer,
                     NavigationPaths.EventViewer,
-                    "Event viewer",
                     TabEventViewer),
 
                 new SidebarItemViewModel(
                     ApplicationMode.SystemStatus, 
                     NavigationPaths.SystemStatus,
-                    "System overview",
                     TabSystemStatus),
 
                 new SidebarItemViewModel(

@@ -98,7 +98,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                     var packageFileInfo = new FileInfo(packagePath);
                     if (!packageFileInfo.Exists)
                     {
-                        throw new FileNotFoundException($"File {packagePath} does not exist.", packagePath);
+                        throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath), packagePath);
                     }
 
                     var volumeFileInfo = new FileInfo(Path.Combine(currentVolumeDirectory, Path.GetFileNameWithoutExtension(packagePath) + "." + diskExtension));
@@ -111,19 +111,17 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                         volumeFileInfo.Directory.Create();
                     }
 
-                    packageProgressReporter.Report(new ProgressData(0, $"Analyzing {Path.GetFileName(packagePath)}..."));
+                    packageProgressReporter.Report(new ProgressData(0, string.Format(Resources.Localization.Packages_Analyzing, Path.GetFileName(packagePath))));
 
                     await volumeCreationStrategy.CreateVolume(packagePath, volumeFileInfo.FullName, null, cancellationToken, packageProgressReporter).ConfigureAwait(false);
 
                     if (extractCertificate)
                     {
-                        packageProgressReporter.Report(new ProgressData(100, $"Extracting certificate from {Path.GetFileName(packagePath)}..."));
-                        var actualSigningManager = this.signingManager;
-
+                        packageProgressReporter.Report(new ProgressData(100, string.Format(Resources.Localization.Packages_ExtractingCertFrom_Format, Path.GetFileName(packagePath))));
                         cancellationToken.ThrowIfCancellationRequested();
 
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        await actualSigningManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
+                        await this.signingManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
                     }
                 }
 
@@ -137,11 +135,11 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
                     if (generateScripts)
                     {
-                        progressReporter?.Report(new ProgressData(90, "Creating scripts..."));
+                        progressReporter?.Report(new ProgressData(90, Resources.Localization.Packages_AppAttach_CreatingScripts));
                         await CreateScripts(volumeDirectory, cancellationToken).ConfigureAwait(false);
                     }
 
-                    progressReporter?.Report(new ProgressData(95, "Creating JSON file..."));
+                    progressReporter?.Report(new ProgressData(95, Resources.Localization.Packages_AppAttach_CreatingJson));
                     foreach (var volumePath in packagePaths.Select(p => Path.Combine(volumeDirectory, Path.GetFileNameWithoutExtension(p) + "." + diskExtension)))
                     {
                         var volumeData = await this.GetExpandedPackageData(volumePath, cancellationToken).ConfigureAwait(false);
@@ -186,7 +184,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             if (!packageFileInfo.Exists)
             {
                 Logger.Error().WriteLine($"File {packagePath} does not exist.");
-                throw new FileNotFoundException($"File {packagePath} does not exist.", packagePath);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath), packagePath);
             }
 
             var volumeFileInfo = new FileInfo(volumePath);
@@ -204,7 +202,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 File.Delete(volumePath);
             }
 
-            progressReporter?.Report(new ProgressData(20, "Unpacking MSIX..."));
+            progressReporter?.Report(new ProgressData(20, Resources.Localization.Packages_AppAttach_UnpackingMsix));
 
             IAppAttachVolumeCreationStrategyInitialization initialization = null;
             try
@@ -215,13 +213,12 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
                 if (extractCertificate)
                 {
-                    progressReporter?.Report(new ProgressData(80, "Extracting certificate..."));
-                    var actualSigningManager = this.signingManager;
-
+                    progressReporter?.Report(new ProgressData(80, Resources.Localization.Packages_ExtractingCert));
+                    
                     cancellationToken.ThrowIfCancellationRequested();
 
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    await actualSigningManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
+                    await this.signingManager.ExtractCertificateFromMsix(packagePath, Path.Combine(volumeFileInfo.DirectoryName, Path.GetFileNameWithoutExtension(volumeFileInfo.FullName)) + ".cer", cancellationToken).ConfigureAwait(false);
                 }
 
                 if (type == AppAttachVolumeType.Cim)
@@ -301,14 +298,14 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
                 if (newDrives.Length != 1 || newVolumes.Length != 1)
                 {
-                    throw new InvalidOperationException("Could not mount the drive.");
+                    throw new InvalidOperationException(Resources.Localization.Packages_Error_Mount);
                 }
 
                 var dir = new DirectoryInfo(newDrives[0]);
                 var msixFolderName = dir.EnumerateDirectories().FirstOrDefault()?.EnumerateDirectories().FirstOrDefault()?.Name;
                 if (msixFolderName == null)
                 {
-                    throw new InvalidOperationException("Could not read the content of the mounted file.");
+                    throw new InvalidOperationException(Resources.Localization.Packages_Error_MountContent);
                 }
 
                 return new Tuple<Guid, string>(newVolumes[0], msixFolderName);
@@ -351,7 +348,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         {
             if (directory == null)
             {
-                throw new InvalidOperationException("The target path must be a directory.");
+                throw new InvalidOperationException(Resources.Localization.Packages_Error_TargetNotDir);
             }
 
             Logger.Debug().WriteLine("Creating scripts in {0}...", directory);
@@ -359,28 +356,28 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
             if (!File.Exists(templateStage))
             {
-                throw new FileNotFoundException($"Required template {templateStage} was not found.", templateStage);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_TemplateNotFound_Format, templateStage), templateStage);
             }
 
             var templateRegister = Path.Combine(BundleHelper.TemplatesPath, "AppAttachRegister.ps1");
 
             if (!File.Exists(templateRegister))
             {
-                throw new FileNotFoundException($"Required template {templateRegister} was not found.", templateRegister);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_TemplateNotFound_Format, templateRegister), templateRegister);
             }
 
             var templateDeregister = Path.Combine(BundleHelper.TemplatesPath, "AppAttachDeregister.ps1");
 
             if (!File.Exists(templateDeregister))
             {
-                throw new FileNotFoundException($"Required template {templateDeregister} was not found.", templateDeregister);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_TemplateNotFound_Format, templateDeregister), templateDeregister);
             }
 
             var templateDestage = Path.Combine(BundleHelper.TemplatesPath, "AppAttachDestage.ps1");
 
             if (!File.Exists(templateDestage))
             {
-                throw new FileNotFoundException($"Required template {templateDestage} was not found.", templateDestage);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_TemplateNotFound_Format, templateDestage), templateDestage);
             }
             
             var files = new List<Tuple<string, string>>

@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Appx.Editor
             var path = Path.Combine(this._directoryInfo.FullName, "appxmanifest.xml");
             if (!File.Exists(path))
             {
-                throw new FileNotFoundException("Manifest file not found in " + path);
+                throw new FileNotFoundException(string.Format(Resources.Localization.AppxEditor_Error_ManifestNotFound_Format, path));
             }
 
             await using var fs = File.Open(path, FileMode.Open);
@@ -135,7 +135,7 @@ namespace Otor.MsixHero.Appx.Editor
                 }
 
                 default:
-                    throw new NotSupportedException($"The command {command.GetType().Name} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.AppxEditor_Error_CommandNotSupported_Format, command.GetType().Name));
             }
         }
     }

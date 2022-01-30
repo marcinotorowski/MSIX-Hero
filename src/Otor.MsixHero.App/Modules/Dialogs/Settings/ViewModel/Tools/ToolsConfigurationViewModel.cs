@@ -116,8 +116,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
             dropInfo.Effects = DragDropEffects.Move;
             dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-            dropInfo.DestinationText = $"Move {sourceItem.Name} here";
-            dropInfo.EffectText = $"Move {sourceItem.Name} here";
+            dropInfo.DestinationText = string.Format(Resources.Localization.Dialogs_Settings_Tools_DragDrop_Hint, sourceItem.Name);
+            dropInfo.EffectText = dropInfo.DestinationText;
         }
 
         void IDropTarget.Drop(IDropInfo dropInfo)
@@ -249,7 +249,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void NewExecute()
         {
-            var newItem = new ToolViewModel(this.interactionService, new ToolListConfiguration { Name = "New tool" });
+            var newItem = new ToolViewModel(this.interactionService, new ToolListConfiguration { Name = Resources.Localization.Dialogs_Settings_Tools_NewTool_Name });
             this.Items.Add(newItem);
             this.Selected = newItem;
         }
@@ -261,7 +261,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
 
         private void ReplaceIconExecute()
         {
-            var result = this.interactionService.SelectFile(FileDialogSettings.FromFilterString("Icon files|*.ico|Executable files|*.exe;*.dll"), out var selectedIcon);
+            var result = this.interactionService.SelectFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_Settings_Tools_Filter_Ico + "|*.ico|" + Resources.Localization.Dialogs_Settings_Tools_Filter_Exe + "|*.exe;*.dll"), out var selectedIcon);
             if (result)
             {
                 this.Selected.Icon.CurrentValue = selectedIcon;

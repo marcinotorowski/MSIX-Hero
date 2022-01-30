@@ -42,7 +42,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             {
                 if (!File.Exists(this.Verb.FilePath))
                 {
-                    await this.Console.WriteError($"Registry file {this.Verb.FilePath} does not exist.");
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_ImportRegistry_Error_MissingFile_Format, this.Verb.FilePath));
                     return 10;
                 }
 
@@ -53,7 +53,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             {
                 if (this.Verb.RegistryKey.IndexOf('\\') == -1)
                 {
-                    await this.Console.WriteError("Registry key must be a path starting with a valid hive name.").ConfigureAwait(false);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_ImportRegistry_Error_InvalidHive).ConfigureAwait(false);
                     return 10;
                 }
 
@@ -72,11 +72,11 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
                         return await base.Validate().ConfigureAwait(false);
                 }
 
-                await this.Console.WriteError("Registry hive " + hiveName + " is not supported.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_ImportRegistry_Error_UnsupportedHive_Format, hiveName)).ConfigureAwait(false);
                 return 10;
             }
 
-            await this.Console.WriteError("Either the file path or the local registry path must be provided.").ConfigureAwait(false);
+            await this.Console.WriteError(Resources.Localization.CLI_Executor_ImportRegistry_Error_InputMissing).ConfigureAwait(false);
             return 11;
         }
         

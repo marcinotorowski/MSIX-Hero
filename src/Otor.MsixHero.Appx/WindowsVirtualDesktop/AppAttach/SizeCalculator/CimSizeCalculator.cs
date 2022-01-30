@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Log;
@@ -17,7 +14,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
             Logger.Debug().WriteLine($"Determining required size for CIM volume {sourcePath} with extra margin {(int)(100 * extraMargin)}%...");
             if (sourcePath == null)
             {
-                throw new ArgumentNullException(nameof(sourcePath), "Package path must not be empty.");
+                throw new ArgumentNullException(nameof(sourcePath), Resources.Localization.Packages_Error_EmptyPath);
             }
 
             long total = 0;

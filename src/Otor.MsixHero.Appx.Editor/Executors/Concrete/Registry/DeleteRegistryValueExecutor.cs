@@ -39,12 +39,12 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
         public override async Task Execute(DeleteRegistryValue command, CancellationToken cancellationToken = default)
         {
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info().WriteLine($"Removing value {command.RegistryValueName} from key {target.Item1}\\{target.Item2}.");
+            Logger.Info().WriteLine(Resources.Localization.AppxEditor_Registry_RemovingValue_Format, command.RegistryValueName, target.Item1, target.Item2);
             var regFileWriter = new MsixRegistryFileWriter(this.Directory.FullName);
             regFileWriter.WriteValue(command.RegistryKey, command.RegistryValueName, ValueType.None, null);
             if (!await regFileWriter.Flush().ConfigureAwait(false))
             {
-                Logger.Warn().WriteLine($"No changes have been applied. Registry key {target.Item1}\\{target.Item2} does not exist.");
+                Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_NoChangesDueToMissingKey_Format, target.Item1, target.Item2);
             }
         }
     }

@@ -10,6 +10,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="700"
              d:DesignHeight="400"
@@ -40,7 +41,7 @@
         x:Name="Dialog"
         Dialog="{Binding}"
         OkButtonVisibility="Collapsed"
-        OkButtonLabel="Analyze update impact"
+        OkButtonLabel="{localization:Loc Dialogs_UpdateImpact_OK}"
         Icon="{StaticResource VectorCompare}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate DataType="{x:Type viewModel:UpdateImpactViewModel}">
@@ -49,8 +50,8 @@
         </dialog:ChangeableDialog.DialogContentTemplate>
         <dialog:ChangeableDialog.Footer>
             <StackPanel Visibility="{Binding Results.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Content="New comparison" Command="New" VerticalAlignment="Center" Margin="0 0 4 0" />
-                <Button Content="Export to XML..." Command="Save" VerticalAlignment="Center" />
+                <Button Content="{localization:Loc Dialogs_UpdateImpact_New}" Command="New" VerticalAlignment="Center" Margin="0 0 4 0" />
+                <Button Content="{localization:Loc Dialogs_UpdateImpact_ExportXML}" Command="Save" VerticalAlignment="Center" />
             </StackPanel>
         </dialog:ChangeableDialog.Footer>
     </dialog:ChangeableDialog>

@@ -55,37 +55,39 @@ namespace Otor.MsixHero.Appx.Volumes
             var letter = packageStorePath != null && packageStorePath.Length > 2 && packageStorePath[1] == ':' ? packageStorePath.Substring(0, 1) + ":\\" : null;
 
             var appxVolume = new AppxVolume { Name = name, PackageStorePath = packageStorePath };
-            
-            if (letter != null)
-            {
-                var drive = DriveInfo.GetDrives().First(d => d.RootDirectory.FullName.StartsWith(letter, StringComparison.OrdinalIgnoreCase));
-                if (drive != null)
-                {
-                    appxVolume.IsDriveReady = drive.IsReady;
-                    appxVolume.DiskLabel = drive.VolumeLabel;
-                    appxVolume.Capacity = drive.TotalSize;
-                    appxVolume.AvailableFreeSpace = drive.AvailableFreeSpace;
-                }
-            }
+
+            if (letter == null) return appxVolume;
+            var drive = DriveInfo.GetDrives().First(d => d.RootDirectory.FullName.StartsWith(letter, StringComparison.OrdinalIgnoreCase));
+            appxVolume.IsDriveReady = drive.IsReady;
+            appxVolume.DiskLabel = drive.VolumeLabel;
+            appxVolume.Capacity = drive.TotalSize;
+            appxVolume.AvailableFreeSpace = drive.AvailableFreeSpace;
 
             return appxVolume;
         }
 
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once InconsistentNaming
         private const int FILE_SHARE_READ = 1;
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once InconsistentNaming
         private const int FILE_SHARE_WRITE = 2;
 
+        // ReSharper disable once InconsistentNaming
         private const int CREATION_DISPOSITION_OPEN_EXISTING = 3;
+        // ReSharper disable once InconsistentNaming
         private const int FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
 
         [DllImport("kernel32.dll", EntryPoint = "GetFinalPathNameByHandleW", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int GetFinalPathNameByHandle(IntPtr handle, [In, Out] StringBuilder path, int bufLen, int flags);
 
         [DllImport("kernel32.dll", EntryPoint = "CreateFileW", CharSet = CharSet.Unicode, SetLastError = true)]
+        // ReSharper disable once InconsistentNaming
         private static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, int dwShareMode, IntPtr SecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
 
-        private static string GetSymbolicLinkTarget(System.IO.DirectoryInfo symlink)
+        private static string GetSymbolicLinkTarget(FileSystemInfo symlink)
         {
-            var directoryHandle = CreateFile(symlink.FullName, 0, 2, System.IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, System.IntPtr.Zero);
+            var directoryHandle = CreateFile(symlink.FullName, 0, 2, IntPtr.Zero, CREATION_DISPOSITION_OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, IntPtr.Zero);
             if (directoryHandle.IsInvalid)
             {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -113,7 +115,7 @@ namespace Otor.MsixHero.Appx.Volumes
             var di = new DirectoryInfo(path);
             if (!di.Exists)
             {
-                throw new DirectoryNotFoundException("Directory was not found.");
+                throw new DirectoryNotFoundException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, di.FullName));
             }
 
             if (di.Attributes.HasFlag(FileAttributes.ReparsePoint))
@@ -216,7 +218,7 @@ namespace Otor.MsixHero.Appx.Volumes
             var obj = results.FirstOrDefault();
             if (obj == null)
             {
-                throw new InvalidOperationException($"Volume {drivePath} could not be created.");
+                throw new InvalidOperationException(string.Format(Resources.Localization.Packages_Error_VolumeCreation_Format, drivePath));
             }
 
             var baseType = obj.BaseObject.GetType();
@@ -350,7 +352,7 @@ namespace Otor.MsixHero.Appx.Volumes
             var volume = allVolumes.FirstOrDefault(v => GetDriveLetterFromPath(v.PackageStorePath) == drivePath);
             if (volume == null)
             {
-                throw new DriveNotFoundException($"Could not find volume '{drivePath}'");
+                throw new DriveNotFoundException(string.Format(Resources.Localization.Packages_Error_VolumeNotFound_Format, drivePath));
             }
 
             await this.SetDefault(volume, cancellationToken, p2).ConfigureAwait(false);

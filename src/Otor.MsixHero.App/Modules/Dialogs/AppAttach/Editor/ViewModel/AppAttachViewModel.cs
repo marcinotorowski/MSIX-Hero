@@ -28,6 +28,7 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Elevation;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                 this.GenerateScripts = new ChangeableProperty<bool>(true),
                 this.VolumeType = new ChangeableProperty<AppAttachVolumeType>(),
                 this.SizeMode = new ChangeableProperty<AppAttachSizeMode>(),
-                this.FixedSize = new ValidatedChangeableProperty<string>("Fixed size", "100", this.ValidateFixedSize)
+                this.FixedSize = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppAttach_FixedSize, "100", this.ValidateFixedSize)
             );
             
             this.AddChildren(this.TabPackages, this.TabOptions);
@@ -135,11 +136,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             {
                 IReadOnlyCollection<string> buttons = new List<string>
                 {
-                    "Only selected folder",
-                    "Selected folder " + Path.GetFileName(folder) + " and all its subfolders"
+                    Resources.Localization.Dialogs_AppAttach_AddOnlySelectedFolder,
+                    string.Format(Resources.Localization.Dialogs_AppAttach_AddFolderAndSubfolders, Path.GetFileName(folder))
                 };
 
-                var userChoice = this._interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                var userChoice = this._interactionService.ShowMessage(Resources.Localization.Dialogs_AppAttach_AddFolderMultiple, buttons, systemButtons: InteractionResult.Cancel);
                 if (userChoice < 0 || userChoice >= buttons.Count)
                 {
                     return 0;
@@ -152,7 +153,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
             if (!files.Any())
             {
-                this._interactionService.ShowError("The selected folder contains no MSIX packages.");
+                this._interactionService.ShowError(Resources.Localization.Dialogs_AppAttach_AddFolderEmpty);
                 return 0;
             }
 
@@ -166,7 +167,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         {
             if (!this.Files.Any())
             {
-                this.Verb.Package = new[] { "<path-to-msix>" };
+                this.Verb.Package = new[] { Resources.Localization.Dialogs_AppAttach_CmdLine_PathPlaceholder };
             }
             else
             {
@@ -195,7 +196,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             
             if (string.IsNullOrEmpty(this.OutputDirectory))
             {
-                this.Verb.Directory = "<output-directory>";
+                this.Verb.Directory = Resources.Localization.Dialogs_AppAttach_CmdLine_DirPlaceholder;
             }
             else
             {
@@ -232,13 +233,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                 switch (this.VolumeType.CurrentValue)
                 {
                     case AppAttachVolumeType.Vhd:
-                        filter = "Virtual disks|*.vhd";
+                        filter = Resources.Localization.Dialogs_AppAttach_Filter_Vhd + "|*.vhd";
                         break;
                     case AppAttachVolumeType.Cim:
-                        filter = "CIM files|*.cim";
+                        filter = Resources.Localization.Dialogs_AppAttach_Filter_Cim + "|*.cim";
                         break;
                     case AppAttachVolumeType.Vhdx:
-                        filter = "Virtual disks|*.vhdx";
+                        filter = Resources.Localization.Dialogs_AppAttach_Filter_Vhdx + "|*.vhdx";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -313,7 +314,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
         {
             if (!files.Any())
             {
-                return "At least one file is required.";
+                return Resources.Localization.Dialogs_AppAttach_Errors_NoFiles;
             }
 
             return null;
@@ -328,15 +329,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
             if (string.IsNullOrEmpty(value))
             {
-                return "Fixed size cannot be empty.";
+                return Resources.Localization.Dialogs_AppAttach_Errors_FixedSize_Empty;
             }
 
             if (!int.TryParse(value, out var parsed))
             {
-                return "Fixed size must ba a number";
+                return Resources.Localization.Dialogs_AppAttach_Errors_FixedSize_NaN;
             }
 
-            return parsed <= 0 ? "Fixed size must be a positive number" : null;
+            return parsed <= 0 ? Resources.Localization.Dialogs_AppAttach_Errors_FixedSize_Negative : null;
         }
     }
 }

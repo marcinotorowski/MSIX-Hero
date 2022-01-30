@@ -21,8 +21,8 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
             
             if (this.Verb.File == null)
             {
-                await this.Console.WriteInfo("No file with MSIX Hero commands was defined.");
-                await this.Console.WriteInfo("Enter the required command line-by-line, and then finish by pressing <Enter> twice.").ConfigureAwait(false);
+                await this.Console.WriteInfo(Resources.Localization.CLI_Executor_List_NoFileDefined);
+                await this.Console.WriteInfo(Resources.Localization.CLI_Executor_List_NoFileDefined_Instructions).ConfigureAwait(false);
 
                 while (true)
                 {
@@ -32,7 +32,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
                     {
                         System.Console.ForegroundColor = ConsoleColor.White;
                         System.Console.ForegroundColor = ConsoleColor.Blue;
-                        System.Console.Write("MSIX Hero CMD");
+                        System.Console.Write(@"MSIX Hero CMD");
                     }
                     finally
                     {
@@ -40,7 +40,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
                         System.Console.ForegroundColor = f;
                     }
 
-                    System.Console.Write(" > ");
+                    System.Console.Write(@" > ");
 
                     var input = System.Console.ReadLine();
                     if (string.IsNullOrEmpty(input))
@@ -80,7 +80,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
             {
                 if (!this.commands.Any())
                 {
-                    await this.Console.WriteError("At least one command must be passed.").ConfigureAwait(false);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_List_Error_NoCommands).ConfigureAwait(false);
                     return StandardExitCodes.ErrorGeneric;
                 }
             }
@@ -88,12 +88,12 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
             {
                 if (!this.commands.Any())
                 {
-                    await this.Console.WriteError("The file contains no commands.").ConfigureAwait(false);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_List_Error_NoCommandsInFile).ConfigureAwait(false);
                 }
             }
             else
             {
-                await this.Console.WriteError($"The file '{this.Verb.File}' does not exist.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_List_Error_MissingFile_Format, this.Verb.File)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }
 
@@ -108,7 +108,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
                 }
                 catch (VerbExecutorFactory.ArgumentsParsingException ape)
                 {
-                    await this.Console.WriteError("The following line could not be parsed: " + line).ConfigureAwait(false);
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_List_Error_Parsing_Format, line)).ConfigureAwait(false);
                     foreach (var err in ape.Errors)
                     {
                         await this.Console.WriteError("  * " + err).ConfigureAwait(false);
@@ -144,7 +144,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
                 }
                 catch (VerbExecutorFactory.ArgumentsParsingException ape)
                 {
-                    await this.Console.WriteError("The following line could not be parsed: " + line).ConfigureAwait(false);
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_List_Error_Parsing_Format, line)).ConfigureAwait(false);
                     foreach (var err in ape.Errors)
                     {
                         await this.Console.WriteError("  * " + err).ConfigureAwait(false);
@@ -154,7 +154,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
                 }
                 catch (Exception)
                 {
-                    await this.Console.WriteError($"Command  '{line}' could not be interpreted.").ConfigureAwait(false);
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_List_Error_Parsing_Format, line)).ConfigureAwait(false);
                     return StandardExitCodes.ErrorGeneric;
                 }
             }

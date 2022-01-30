@@ -44,12 +44,12 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"Registry value {this.Verb.RegistryValueName} could not be removed from '{target.Item1}\\{target.Item2}'.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_DeleteRegistryValue_Error_Format, this.Verb.RegistryValueName, target.Item1, target.Item2)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }
 
-            await this.Console.WriteSuccess($"Registry value {this.Verb.RegistryValueName} has been removed from '{target.Item1}\\{target.Item2}.");
+            await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_DeleteRegistryValue_Success_Format, this.Verb.RegistryValueName, target.Item1, target.Item2));
             return StandardExitCodes.ErrorSuccess;
         }
     }

@@ -15,29 +15,30 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using Otor.MsixHero.Cli.Verbs.Resources;
 using CommandLine;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("newcert", HelpText = "Create new certificate for self-signing.")]
+    [Verb("newcert", HelpText = "CLI_Verbs_NewCert_VerbName", ResourceType = typeof(Localization))]
     public class NewCertVerb : BaseVerb
     {
-        [Option('n', "name", HelpText = "Certificate name", Required = true)]
+        [Option('n', "name", HelpText = "CLI_Verbs_NewCert_Prop_DisplayName", Required = true, ResourceType = typeof(Localization))]
         public string DisplayName { get; set; }
 
-        [Option('s', "subject", HelpText = "Certificate subject, for example CN=John. If not provided, it will be set automatically from the display name.")]
+        [Option('s', "subject", HelpText = "CLI_Verbs_NewCert_Prop_Subject", ResourceType = typeof(Localization))]
         public string Subject { get; set; }
 
-        [Option('d', "directory", HelpText = "Directory, where certificate files will be saved.", Required = true)]
+        [Option('d', "directory", HelpText = "CLI_Verbs_NewCert_Prop_OutputFolder", Required = true, ResourceType = typeof(Localization))]
         public string OutputFolder { get; set; }
 
-        [Option("validUntil", HelpText = "Date time until which the certificate can be used for signing purposes. Defaults to one year from today.", Required = false)]
+        [Option("validUntil", HelpText = "CLI_Verbs_NewCert_Prop_ValidUntil", Required = false, ResourceType = typeof(Localization))]
         public DateTime? ValidUntil { get; set; }
 
-        [Option('i', "import", HelpText = "If set, the certificate will be imported to the local store. This option requires that MSIXHeroCLI.exe is started as administrator.")]
+        [Option('i', "import", HelpText = "CLI_Verbs_NewCert_Prop_Import", ResourceType = typeof(Localization))]
         public bool Import { get; set; }
 
-        [Option('p', "password", HelpText = "Certificate password.", Required = false)]
+        [Option('p', "password", HelpText = "CLI_Verbs_NewCert_Prop_Password", Required = false, ResourceType = typeof(Localization))]
         public string Password { get; set; }
     }
 }

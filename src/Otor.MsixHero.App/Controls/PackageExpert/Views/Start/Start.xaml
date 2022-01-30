@@ -13,6 +13,7 @@
     xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mc:Ignorable="d" 
     MinWidth="250"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}"
@@ -101,7 +102,7 @@
         <Separator Margin="0 0" />
 
 
-        <Label Style="{StaticResource FormLabelThin}" Height="28" Margin="8 8 8 0" Content="Execute in package context" VerticalContentAlignment="Center" />
+        <Label Style="{StaticResource FormLabelThin}" Height="28" Margin="8 8 8 0" Content="{localization:Loc PackageExpert_RunInPkgContext}" VerticalContentAlignment="Center" />
         <ItemsControl ItemsSource="{Binding ElementName=Root, Path=Tools}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="packageExpert:ToolItem">

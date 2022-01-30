@@ -14,17 +14,18 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using Otor.MsixHero.Cli.Verbs.Resources;
 using CommandLine;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("extract-cert", HelpText = "Extracts the certificate file (.CER) from an already signed MSIX package.")]
+    [Verb("extract-cert", HelpText = "CLI_Verbs_ExtractCert_VerbName", ResourceType = typeof(Localization))]
     public class ExtractCertVerb : BaseVerb
     {
-        [Value(1, Required = true)]
+        [Value(1, Required = true, HelpText = "CLI_Verbs_ExtractCert_Prop_File", ResourceType = typeof(Localization))]
         public string File { get; set; }
         
-        [Option('o', "output", Required = true, HelpText = "Full file path under which the extracted .CER file will be saved.")]
+        [Option('o', "output", Required = true, HelpText = "CLI_Verbs_ExtractCert_Prop_Output", ResourceType = typeof(Localization))]
         public string Output { get; set; }
     }
 }

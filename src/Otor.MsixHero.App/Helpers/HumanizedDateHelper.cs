@@ -126,18 +126,7 @@ namespace Otor.MsixHero.App.Helpers
             LastYear,
             Older
         }
-
-        public const string LabelToday = "Today";
-        public const string LabelYesterday = "Yesterday";
-        public const string LabelThisWeek = "This week";
-        public const string LabelLastWeek = "Last week";
-        public const string LabelThisMonth = "This month";
-        public const string LabelLastMonth = "Last month";
-        public const string LabelLast6Months = "Last 6 months";
-        public const string LabelThisYear = "This year";
-        public const string LabelLastYear = "Last year";
-        public const string LabelOlder = "More than one year ago";
-
+        
         public static HumanizedDate GetHumanizedDate(DateTime date)
         {
             EnsureDate();

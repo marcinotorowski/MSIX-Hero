@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
 {
@@ -35,9 +36,15 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
             this.SetStatusAndSummary();
         }
 
+        protected override void OnCultureChanged()
+        {
+            this.SetStatusAndSummary();
+            base.OnCultureChanged();
+        }
+
         public Lazy<bool> IsLegacyFlavor { get; }
 
-        public override string Title => "Sideloading and development features";
+        public override string Title => Resources.Localization.System_Sideloading_Recommendation_Title;
 
         public SideloadingStatus SideloadingStatus
         {
@@ -80,15 +87,15 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode
             {
                 case SideloadingStatus.NotAllowed:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "Only apps from Microsoft Store can be installed.";
+                    this.Summary = Resources.Localization.System_Sideloading_Recommendation_Option1;
                     break;
                 case SideloadingStatus.Sideloading:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "Sideloading of apps is enabled.";
+                    this.Summary = Resources.Localization.System_Sideloading_Recommendation_Option2;
                     break;
                 case SideloadingStatus.DeveloperMode:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "Sideloading and development features are enabled.";
+                    this.Summary = Resources.Localization.System_Sideloading_Recommendation_Option3;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

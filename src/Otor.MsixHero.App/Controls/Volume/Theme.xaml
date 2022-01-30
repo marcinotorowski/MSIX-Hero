@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
-                    xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters">
+                    xmlns:converters="clr-namespace:Otor.MsixHero.App.Controls.Volume.Converters"
+                    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/Themes/Icons.xaml" />
@@ -41,7 +42,7 @@
                             Visibility="{TemplateBinding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" 
                             Margin="8 0 0 0" 
                             VerticalAlignment="Center" 
-                            ToolTip="This is the default volume">
+                            ToolTip="{localization:Loc Volumes_DefaultVolume}">
                             <Path Data="{StaticResource VectorCheckmark}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             <Border.LayoutTransform>
                                 <TransformGroup>
@@ -56,7 +57,7 @@
                             Visibility="{TemplateBinding IsOffline, Converter={StaticResource BooleanToVisibilityConverter}}" 
                             Margin="8 0 0 0" 
                             VerticalAlignment="Center" 
-                            ToolTip="This volume is not mounted">
+                            ToolTip="{localization:Loc Volumes_NotMounted}">
                             <Path 
                                 Data="{StaticResource VectorCancel}" Style="{StaticResource LargeIcon}" Fill="White" Margin="-5" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             <Border.LayoutTransform>
@@ -89,6 +90,7 @@
                                             <converters:VolumeSizeCaptionConverter />
                                         </MultiBinding.Converter>
                                         <MultiBinding.Bindings>
+                                            <localization:Loc StringName="Volumes_SizeConverter_Caption_Format" />
                                             <Binding Mode="OneWay" Path="OccupiedSize">
                                                 <Binding.RelativeSource>
                                                     <RelativeSource Mode="TemplatedParent" />

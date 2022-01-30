@@ -9,6 +9,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewModel"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.View"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:ModificationPackageViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -31,7 +32,7 @@
 
     <dialog:ChangeableDialog
         Dialog="{Binding}"
-        OkButtonLabel="Create modification package..."
+        OkButtonLabel="{localization:Loc Dialogs_ModPack_OkButton}"
         Icon="{StaticResource VectorPack}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate DataType="{x:Type viewModel:ModificationPackageViewModel}">
@@ -42,7 +43,9 @@
             <DataTemplate DataType="{x:Type viewModel:ModificationPackageViewModel}">
                 <StackPanel>
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the new file</Hyperlink>
+                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">
+                            <Run Text="{localization:Loc Dialogs_ModPack_Success_Open}" />
+                        </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

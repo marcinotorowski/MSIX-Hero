@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var exitCode = await RunAsync(GetExecutablePath(), GetCommandLine(status, false), cancellationToken, callback).ConfigureAwait(false);
             if (exitCode != 0)
             {
-                throw new InvalidOperationException("Tasklist.exe returned non zero exit code.");
+                throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_Error_TaskListNonZeroExitCode);
             }
 
             using var reader = new StringReader(stringBuilder.ToString());
@@ -58,8 +58,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (BadDataException e)
             {
-                Logger.Error().WriteLine(e);
-                Logger.Warn().WriteLine("CSV content:\r\n" + stringBuilder);
+                Logger.Error().WriteLine(Resources.Localization.Infrastructure_Sdk_Error_TaskListInvalidDataFormat, e);
+                Logger.Warn().WriteLine(Resources.Localization.Infrastructure_Sdk_Error_TaskListCsv + "\r\n" + stringBuilder);
                 throw;
             }
         }
@@ -72,7 +72,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var exitCode = await RunAsync(GetExecutablePath(), GetCommandLine(status, true), cancellationToken, callback).ConfigureAwait(false);
             if (exitCode != 0)
             {
-                throw new InvalidOperationException("Tasklist.exe returned non zero exit code.");
+                throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_Error_TaskListNonZeroExitCode);
             }
 
             using var reader = new StringReader(stringBuilder.ToString());

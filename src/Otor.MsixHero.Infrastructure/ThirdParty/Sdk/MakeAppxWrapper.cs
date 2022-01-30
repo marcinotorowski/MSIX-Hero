@@ -111,7 +111,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         private async Task RunMakeAppx(string arguments, Action<string> callBack, CancellationToken cancellationToken = default)
         {
             var makeAppx = SdkPathHelper.GetSdkPath("makeappx.exe", BundleHelper.SdkPath);
-            Logger.Info().WriteLine("Executing {0} {1}", makeAppx, arguments);
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_Executing_Format, makeAppx, arguments);
 
             try
             {
@@ -128,10 +128,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     if (error.Success)
                     {
                         findSimilar = findSimilar.Substring(error.Length).Trim();
-                        throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", e.ExitCode);
+                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, e.ExitCode);
                     }
 
-                    throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", e.ExitCode);
+                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, e.ExitCode);
                 }
 
                 findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
@@ -157,7 +157,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                         if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
                         {
-                            throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", exitCode);
+                            throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
                         }
 
                         if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
@@ -165,11 +165,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                             exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
                             if (exitCode != 0)
                             {
-                                throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", exitCode);
+                                throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
                             }
                         }
 
-                        throw new InvalidOperationException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}");
+                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCodeError_Format, e.ExitCode, error.Groups[1].Value) + " " + findSimilar, exitCode);
                     }
 
                     if (!string.IsNullOrEmpty(manifestError))
@@ -179,7 +179,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                     if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
                     {
-                        throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", exitCode);
+                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, exitCode);
                     }
 
                     if (error.Groups[1].Value.StartsWith("0x", StringComparison.Ordinal))
@@ -187,11 +187,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         exitCode = Convert.ToInt32(error.Groups[1].Value, 16);
                         if (exitCode != 0)
                         {
-                            throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", exitCode);
+                            throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, exitCode);
                         }
                     }
 
-                    throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", e.ExitCode);
+                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_EditCode_Format, e.ExitCode) + " " + findSimilar, exitCode);
                 }
 
                 throw;
@@ -275,7 +275,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         }
 
                         fileName = Path.GetFileName(fileName);
-                        this._progressReporter.Report(new ProgressData(currentProgress, $"Extracting {fileName}..."));
+                        this._progressReporter.Report(new ProgressData(currentProgress, string.Format(Resources.Localization.Infrastructure_Sdk_MakeAppx_ExtractingFile_Format, fileName)));
                     }
                 }
             }

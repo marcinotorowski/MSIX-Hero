@@ -15,16 +15,14 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Files
 {
-    [Verb("deleteFile", HelpText = "Deletes a specific file from the package.")]
+    [Verb("deleteFile", HelpText = "CLI_Verbs_Edit_DeleteFile_VerbName", ResourceType = typeof(Localization))]
     public class DeleteFileEditVerb : BaseEditVerb
     {
-        [Option('f', "file", HelpText = "Relative path to removed file (file asterisks are supported).", Required = true)]
+        [Option('f', "file", HelpText = "CLI_Verbs_Edit_DeleteFile_Prop_FilePath", Required = true, ResourceType = typeof(Localization))]
         public string FilePath { get; set; }
-
-        [Option('x', "ignoreIfMissing", HelpText = "If set then no error is thrown if the file does not exist or if the removal is not possible.")]
-        public bool IgnoreErrors { get; set; }
     }
 }

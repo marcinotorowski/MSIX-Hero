@@ -25,7 +25,6 @@
 using System.IO.Pipes;
 using System.Reflection;
 using Dapplo.Log;
-using Newtonsoft.Json;
 using Otor.MsixHero.Elevation.Handling;
 using Otor.MsixHero.Elevation.Ipc;
 
@@ -33,6 +32,7 @@ namespace Otor.MsixHero.Elevation;
 
 public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDisposable, IAsyncDisposable
 {
+    private static readonly JsonSerializer Serializer = new JsonSerializer();
     private static readonly LogSource Log = new LogSource();
 
     private readonly ClientHandler _handler;
@@ -202,7 +202,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                                     throw new InvalidOperationException("Missing exception.");
                                 }
 
-                                var exception = (Exception)(JsonConvert.DeserializeObject(serializedObject, exceptionType) ?? throw new InvalidOperationException("Missing exception."));
+                                var exception = Serializer.Deserialize(typeof(Exception), serializedObject) as Exception ?? throw new InvalidOperationException("Missing exception.");
                                 throw new TargetInvocationException("Remoting returned an exception", exception);
                             }
 
@@ -211,7 +211,7 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                                 var receivedProgressPayloadType = await binaryReader.ReadString(cts.Token).ConfigureAwait(false);
                                 privateToken.ThrowIfCancellationRequested();
                                 var receivedProgressPayloadJson = await binaryReader.ReadString(cts.Token).ConfigureAwait(false);
-                                var receivedProgressPayload = receivedProgressPayloadJson == null ? null : JsonConvert.DeserializeObject(receivedProgressPayloadJson, TypeHelper.FromFullNameWithAssembly(receivedProgressPayloadType));
+                                var receivedProgressPayload = receivedProgressPayloadJson == null ? null : Serializer.Deserialize(TypeHelper.FromFullNameWithAssembly(receivedProgressPayloadType), receivedProgressPayloadJson);
 
                                 if (findProgress.Count == 0 || receivedProgressPayload == null)
                                 {
@@ -250,12 +250,12 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
                                 if (targetMethod.ReturnType.IsAssignableTo(typeof(Task)))
                                 {
                                     var resultType = targetMethod.ReturnType.GetGenericArguments()[0];
-                                    result = returnedValue == null ? null : JsonConvert.DeserializeObject(returnedValue, resultType);
+                                    result = returnedValue == null ? null : Serializer.Deserialize(resultType, returnedValue);
                                 }
                                 else
                                 {
                                     var resultType = targetMethod.ReturnType;
-                                    result = returnedValue == null ? null : JsonConvert.DeserializeObject(returnedValue, resultType);
+                                    result = returnedValue == null ? null : Serializer.Deserialize(resultType, returnedValue);
                                 }
 
                                 break;

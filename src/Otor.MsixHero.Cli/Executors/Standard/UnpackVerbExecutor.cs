@@ -36,18 +36,18 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             var msixSdkWrapper = new MakeAppxWrapper();
 
-            Logger.Info().WriteLine($"Unpacking [{this.Verb.Package}] to [{this.Verb.Directory}]...");
+            Logger.Info().WriteLine(Resources.Localization.CLI_Executor_Unpack_Unpacking_Format, this.Verb.Package, this.Verb.Directory);
 
             try
             {
-                await this.Console.WriteInfo($"Unpacking [{this.Verb.Package}] to [{this.Verb.Directory}]...").ConfigureAwait(false);
+                await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Unpack_Unpacking_Format, this.Verb.Package, this.Verb.Directory)).ConfigureAwait(false);
                 await msixSdkWrapper.Unpack(MakeAppxUnpackOptions.Create(this.Verb.Package, this.Verb.Directory, !this.Verb.NoValidation)).ConfigureAwait(false);
 
-                await this.Console.WriteSuccess($"The package has been unpacked to [{this.Verb.Directory}].");
+                await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Unpack_Success_Format, this.Verb.Directory));
 
                 if (this.Verb.RemovePackageAfterExtraction)
                 {
-                    await this.Console.WriteInfo($"Removing source package {this.Verb.Package}...");
+                    await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Unpack_RemovingSource_Format, this.Verb.Package));
                     ExceptionGuard.Guard(() => File.Delete(this.Verb.Package));
                 }
 

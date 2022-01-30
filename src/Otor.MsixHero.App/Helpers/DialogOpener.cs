@@ -35,7 +35,7 @@ namespace Otor.MsixHero.App.Helpers
         {
             if (!file.Exists)
             {
-                this.interactionService.ShowError($"File {file.FullName} was not found.");
+                this.interactionService.ShowError(string.Format(Resources.Localization.Dialogs_Error_FileNotFound_Format, file.FullName));
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace Otor.MsixHero.App.Helpers
                     this.OpenYaml(file);
                     break;
                 default:
-                    this.interactionService.ShowError($"File extension {file.Extension} is not supported.");
+                    this.interactionService.ShowError(string.Format(Resources.Localization.Dialogs_Error_ExtensionNotSupported_Format, file.Extension));
                     break;
             }
         }

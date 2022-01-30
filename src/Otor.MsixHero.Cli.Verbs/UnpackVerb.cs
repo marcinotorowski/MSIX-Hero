@@ -15,22 +15,23 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("unpack", HelpText = "Unpack a folder")]
+    [Verb("unpack", HelpText = "CLI_Verbs_Unpack_VerbName", ResourceType = typeof(Localization))]
     public class UnpackVerb : BaseVerb
     {
-        [Option('p', "package", Required = true)]
+        [Option('p', "package", Required = true, HelpText = "CLI_Verbs_Unpack_Prop_Package", ResourceType = typeof(Localization))]
         public string Package { get; set; }
 
-        [Option('d', "directory", Required = true)]
+        [Option('d', "directory", Required = true, HelpText = "CLI_Verbs_Unpack_Prop_Directory", ResourceType = typeof(Localization))]
         public string Directory { get; set; }
 
-        [Option("nv", Default = false, HelpText = "Skip semantic validation. If you don't specify this option, MSIX Hero performs a full validation of the package.")]
+        [Option("nv", Default = false, HelpText = "CLI_Verbs_Unpack_Prop_NoValidation", ResourceType = typeof(Localization))]
         public bool NoValidation { get; set; }
 
-        [Option('x', "remove", Default = false, HelpText = "If set, the input package will be removed after packing.")]
+        [Option('x', "remove", Default = false, HelpText = "CLI_Verbs_Unpack_Prop_RemovePackageAfterExtraction", ResourceType = typeof(Localization))]
         public bool RemovePackageAfterExtraction { get; set; }
     }
 }

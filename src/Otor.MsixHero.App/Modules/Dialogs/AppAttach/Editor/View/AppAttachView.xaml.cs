@@ -19,7 +19,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel;
-using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View
 {

@@ -24,6 +24,7 @@ using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
@@ -42,7 +43,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
             this.interactionService = interactionService;
             this.AutoDownloadRecommendation = autoDownloadRecommendation;
             this.Items = new ObservableCollection<ServiceRecommendationViewModel>();
-            this.AutoDownloadRecommendation.PropertyChanged += AutoDownloadRecommendationOnPropertyChanged;
+            this.AutoDownloadRecommendation.PropertyChanged += this.AutoDownloadRecommendationOnPropertyChanged;
         }
 
         private void AutoDownloadRecommendationOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -57,7 +58,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
 
         public AutoDownloadRecommendationViewModel AutoDownloadRecommendation { get; }
 
-        public override string Title { get; } = "Repackaging on this machine";
+        public override string Title { get; } = Resources.Localization.System_Repackaging;
         
         public override async Task Refresh(CancellationToken cancellationToken = default)
         {
@@ -83,23 +84,23 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
             {
                 case 0:
                     this.Status = RecommendationStatus.Success;
-                    this.Summary = "No recommendations available";
+                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option0;
                     break;
                 case 1:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "One recommendations available";
+                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option1;
                     break;
                 case 2:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "Two recommendations available";
+                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option2;
                     break;
                 case 3:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = "Three recommendations available";
+                    this.Summary = Resources.Localization.System_Repackaging_Recommendation_Option3;
                     break;
                 default:
                     this.Status = RecommendationStatus.Warning;
-                    this.Summary = suggestedActions + " recommendations available";
+                    this.Summary = string.Format(Resources.Localization.System_Repackaging_Recommendation_OptionN, suggestedActions);
                     break;
             }
         }

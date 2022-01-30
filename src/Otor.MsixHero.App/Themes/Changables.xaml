@@ -6,7 +6,8 @@
                     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
                     xmlns:helpers1="clr-namespace:Otor.MsixHero.App.Helpers"
                     xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
-                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
+                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
+                    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -77,6 +78,8 @@
         <Setter Property="ShowShield" Value="False" />
         <Setter Property="Background" Value="#ffffff" />
         <Setter Property="Foreground" Value="Black" />
+        <Setter Property="OkButtonLabel" Value="{localization:Loc Dialogs_OK}" />
+        <Setter Property="CloseButtonLabel" Value="{localization:Loc Dialogs_Close}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="dialog:ChangeableDialog">
@@ -199,7 +202,7 @@
                                                         </Style>
                                                     </Button.Style>
                                                 </Button>
-                                                <Button x:Name="PART_Close"  Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="Close" />
+                                                <Button x:Name="PART_Close"  Padding="8 4" Margin="4" Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.CloseCommand}" Content="{TemplateBinding CloseButtonLabel}" />
                                             </StackPanel>
                                         </DockPanel>
                                     </Border>
@@ -237,7 +240,7 @@
                                                 x:Name="PART_CopyCommandLine"
                                                 Grid.Column="1"
                                                 Margin="4 0 0 0" 
-                                                ToolTip="Copy to clipboard"
+                                                ToolTip="{localization:Loc Dialogs_Cmd_CopyToClipboard}"
                                                 Style="{StaticResource CopyCommandLineButton}">
                                             </Button>
                                         </Grid>
@@ -393,7 +396,7 @@
                                                         x:Name="Automation1"
                                                         Margin="16 16 16 4"
                                                         Visibility="Collapsed"
-                                                        Text="This operation can be automated by executing the following command line:" 
+                                                        Text="{localization:Loc Dialogs_Cmd_CommandLineHint}" 
                                                         TextWrapping="Wrap" />
 
                                                     <Border 
@@ -409,7 +412,7 @@
                                                                 x:Name="PART_CopyCommandLineFinishScreen"
                                                                 DockPanel.Dock="Right"
                                                                 Margin="4 0 0 0" 
-                                                                ToolTip="Copy to clipboard"
+                                                                ToolTip="{localization:Loc Dialogs_Cmd_CopyToClipboard}"
                                                                 Style="{StaticResource CopyCommandLineButton}">
                                                             </Button>
 

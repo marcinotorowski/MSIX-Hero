@@ -7,6 +7,7 @@
              xmlns:enums="clr-namespace:Otor.MsixHero.Appx.Packaging.Manifest.Enums;assembly=Otor.MsixHero.Appx"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:configuration="clr-namespace:Otor.MsixHero.Infrastructure.Configuration;assembly=Otor.MsixHero.Infrastructure"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" 
              d:DataContext="{d:DesignInstance viewModel:NamesViewModel}">
@@ -27,42 +28,42 @@
 
         <Border Grid.Row="0" Background="{StaticResource MsixHero.Brushes.Accent.Light2}" Grid.Column="2" Grid.RowSpan="5" Margin="-8" />
 
-        <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource FormLabel}">Package identity</Label>
-        <Label Grid.Row="0" Grid.Column="2" Style="{StaticResource FormLabel}">Calculated values</Label>
+        <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_PackageName_Identity}" />
+        <Label Grid.Row="0" Grid.Column="2" Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_PackageName_Calculated}" />
 
         <StackPanel Grid.Column="0" Grid.Row="1" Margin="0 0 0 16">
             <TextBlock 
-                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="Publisher string" Margin="0 0 0 6" />
+                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_Publisher}" Margin="0 0 0 6" />
             <TextBox Text="{Binding Path=Publisher, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="2" Margin="0 0 0 16">
             <TextBlock 
-                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="Product name" Margin="0 0 0 6" />
+                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_ProductName}" Margin="0 0 0 6" />
             <TextBox Text="{Binding Path=Name, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="3" Margin="0 0 0 16">
             <TextBlock 
-                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="Version" Margin="0 0 0 6" />
+                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_Version}" Margin="0 0 0 6" />
             <TextBox HorizontalAlignment="Left" Width="180" Text="{Binding Path=Version, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="4" Margin="0 0 0 16">
             <TextBlock 
-                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="Architecture" Margin="0 0 0 6" />
+                controls:RequiredAdorner.IsRequired="True" Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_Architecture}" Margin="0 0 0 6" />
             <ComboBox HorizontalAlignment="Left" Width="180" SelectedValue="{Binding Path=Architecture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="Tag">
-                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.Arm}">ARM</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.Arm64}">ARM64</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.Neutral}">neutral</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.x64}">x64</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.x86}">x86</ComboBoxItem>
+                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.Arm}" Content="{localization:Loc Dialogs_PackageName_Architecture_ARM}" />
+                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.Arm64}" Content="{localization:Loc Dialogs_PackageName_Architecture_ARM64}" />
+                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.Neutral}" Content="{localization:Loc Dialogs_PackageName_Architecture_Neutral}" />
+                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.x64}" Content="{localization:Loc Dialogs_PackageName_Architecture_64}" />
+                <ComboBoxItem Tag="{x:Static enums:AppxPackageArchitecture.x86}" Content="{localization:Loc Dialogs_PackageName_Architecture_86}" />
             </ComboBox>
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="5" Margin="0 0 0 16">
-            <TextBlock Style="{StaticResource DataHeader}" Text="Resource ID" Margin="0 0 0 6" />
+            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_ResourceId}" Margin="0 0 0 6" />
             <TextBox MaxLength="30" HorizontalAlignment="Left" Width="180" Text="{Binding Path=Resource, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </StackPanel>
 
         <StackPanel Grid.Column="2" Grid.Row="1" Margin="0 0 0 16">
-            <TextBlock Style="{StaticResource DataHeader}" Text="Publisher hash" Margin="0 0 0 6" />
+            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_PublisherHash}" Margin="0 0 0 6" />
             <DockPanel>
                 <Button 
                     DockPanel.Dock="Right"
@@ -77,13 +78,13 @@
             </DockPanel>
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="2" Margin="0 0 0 16">
-            <TextBlock Style="{StaticResource DataHeader}" Text="Family name" Margin="0 0 0 6" />
+            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc Dialogs_PackageName_FamilyName}" Margin="0 0 0 6" />
             <DockPanel>
                 <Button 
                     DockPanel.Dock="Right"
                     VerticalAlignment="Center"
                     Padding="2"
-                    ToolTip="Copy package family name to clipboard"
+                    ToolTip="{localization:Loc Dialogs_PackageName_FamilyName_Copy}"
                     Command="{Binding CopyCommand}"
                     CommandParameter="{x:Static configuration:PackageProperty.FamilyName}">
                     <Path Data="{StaticResource VectorCopy}" Style="{StaticResource MediumIcon}" Margin="0 -2" />
@@ -93,13 +94,13 @@
             </DockPanel>
         </StackPanel>
         <DockPanel Grid.Column="2" Grid.Row="3" Margin="0 0 0 16" Grid.RowSpan="2">
-            <TextBlock Style="{StaticResource DataHeader}" DockPanel.Dock="Top" Text="Full name" Margin="0 0 0 6" />
+            <TextBlock Style="{StaticResource DataHeader}" DockPanel.Dock="Top" Text="{localization:Loc Dialogs_PackageName_FullName}" Margin="0 0 0 6" />
             <DockPanel>
                 <Button 
                     DockPanel.Dock="Right"
                     VerticalAlignment="Stretch"
                     Padding="2"
-                    ToolTip="Copy full name to clipboard"
+                    ToolTip="{localization:Loc Dialogs_PackageName_FullName_Copy}"
                     Command="{Binding CopyCommand}"
                     CommandParameter="{x:Static configuration:PackageProperty.FullName}">
                     <Path Data="{StaticResource VectorCopy}" Style="{StaticResource MediumIcon}" Margin="0 -2" />

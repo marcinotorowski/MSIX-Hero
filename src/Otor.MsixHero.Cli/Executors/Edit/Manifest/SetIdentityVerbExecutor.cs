@@ -46,11 +46,11 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             {
                 if (string.IsNullOrEmpty(changed.OldValue) || string.Equals(changed.OldValue, changed.NewValue))
                 {
-                    this.Console.WriteSuccess($"Changed identity attribute '{changed.Key}' to '{changed.NewValue}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SetIdentity_Success_Set_Format, changed.Key, changed.NewValue)).GetAwaiter().GetResult();
                 }
                 else
                 {
-                    this.Console.WriteSuccess($"Changed identity attribute '{changed.Key}' from '{changed.OldValue}' to '{changed.NewValue}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SetIdentity_Success_Change_Format, changed.Key, changed.OldValue, changed.NewValue)).GetAwaiter().GetResult();
                 }
             };
 
@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
 
             if (this.Verb.Name == null && this.Verb.ProcessorArchitecture == null && this.Verb.Publisher == null && this.Verb.Version == null && this.Verb.ResourceId == null)
             {
-                await this.Console.WriteError("At least one property to change is required.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_SetIdentity_Error_NoProperty).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
@@ -79,11 +79,11 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
                 {
                     if (this.Verb.Publisher.Contains('='))
                     {
-                        await this.Console.WriteError("The format of the publisher is invalid. " + error).ConfigureAwait(false);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_SetIdentity_Error_PublisherFormat + " " + error).ConfigureAwait(false);
                     }
                     else
                     {
-                        await this.Console.WriteError($"The format of the publisher is invalid. {error}\r\nDid you mean CN={this.Verb.Publisher}?").ConfigureAwait(false);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_SetIdentity_Error_PublisherFormat + ". " + error + "\r\n" + string.Format(Resources.Localization.CLI_Executor_DidYouMean_Format, "CN=" + this.Verb.Publisher)).ConfigureAwait(false);
                     }
 
                     return StandardExitCodes.ErrorFormat;
@@ -95,7 +95,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
                 var error = AppxValidatorFactory.ValidatePackageName()(this.Verb.Name);
                 if (error != null)
                 {
-                    await this.Console.WriteError("The format of the package name is invalid. " + error).ConfigureAwait(false);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_SetIdentity_Error_PackageName + " " + error).ConfigureAwait(false);
                     return StandardExitCodes.ErrorFormat;
                 }
             }
@@ -105,7 +105,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
                 var error = AppxValidatorFactory.ValidateResourceId()(this.Verb.ResourceId);
                 if (error != null)
                 {
-                    await this.Console.WriteError("The format of the resource ID is invalid. " + error).ConfigureAwait(false);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_SetIdentity_Error_ResourceId + " " + error).ConfigureAwait(false);
                     return StandardExitCodes.ErrorFormat;
                 }
             }

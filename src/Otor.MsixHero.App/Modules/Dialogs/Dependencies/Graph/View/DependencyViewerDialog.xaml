@@ -7,6 +7,7 @@
              xmlns:packageHeader="clr-namespace:Otor.MsixHero.App.Controls.PackageHeader"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel"
              xmlns:model="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:DependencyViewerViewModel}">
     <DockPanel>
@@ -20,7 +21,7 @@
             <Border
                 Cursor="Hand"
                 MouseLeftButtonDown="HeaderClicked"
-                ToolTip="Press to select another file..."
+                ToolTip="{localization:Loc Dialogs_Dependencies_SelectAnotherFileButton_Tooltip}"
                 Grid.Column="0" >
                 <Border.Style>
                     <Style TargetType="Border">
@@ -56,7 +57,7 @@
         </Grid>
 
         <TextBlock DockPanel.Dock="Top" 
-                   Text="This tool analyzes the dependencies and relations between packages and other components, using a selected package as a root object." TextWrapping="Wrap" 
+                   Text="{localization:Loc Dialogs_Dependencies_Purpose}" TextWrapping="Wrap" 
                    Visibility="{Binding ShowSelector, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 16" />
 
         <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" 
@@ -72,10 +73,10 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 0 0 16">
-                <Label Style="{StaticResource FormLabel}" Content="Package to analyze" />
-                <TextBlock Text="Select an MSIX package or a manifest file to be analyzed..." />
+                <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Dependencies_SelectedPackage}" />
+                <TextBlock Text="{localization:Loc Dialogs_Dependencies_SelectMsix}" />
                 <DockPanel Margin="0 6 0 0">
-                    <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
+                    <Button TabIndex="5" Content="{localization:Loc Dialogs_Dependencies_Browse}" DockPanel.Dock="Right" Command="{Binding Path.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                     <TextBox 
                         TabIndex="4" 
                         Text="{Binding Path.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }" 
@@ -84,9 +85,9 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="0 0 0 16">
-                <Label Style="{StaticResource FormLabel}" Content="Analyze" />
-                <TextBlock Text="Press the button to start analyzing the selected package..." />
-                <Button DockPanel.Dock="Top" Command="{Binding Analyze}" Content="Analyze dependencies" Margin="0 6 0 0" Padding="25 10" HorizontalAlignment="Left" />
+                <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_Dependencies_Analyze_Header}" />
+                <TextBlock Text="{localization:Loc Dialogs_Dependencies_Analyze_Hint}" />
+                <Button DockPanel.Dock="Top" Command="{Binding Analyze}" Content="{localization:Loc Dialogs_Dependencies_Analyze_Button}" Margin="0 6 0 0" Padding="25 10" HorizontalAlignment="Left" />
             </StackPanel>
         </Grid>
 
@@ -97,15 +98,15 @@
             Background="{StaticResource MsixHero.Brushes.Background}" 
             DockPanel.Dock="Bottom">
             <StackPanel SnapsToDevicePixels="True" UseLayoutRounding="True" Orientation="Horizontal" Margin="4">
-                <TextBlock Text="Legend" VerticalAlignment="Center" Margin="0 0 8 0" />
+                <TextBlock Text="{localization:Loc Dialogs_Dependencies_Legend}" VerticalAlignment="Center" Margin="0 0 8 0" />
                 <Border BorderBrush="#486984" BorderThickness="2" Background="#FFD700" Margin="4" VerticalAlignment="Center">
-                    <TextBlock Text="Analyzed package" Margin="8 4" FontSize="11" />
+                    <TextBlock Text="{localization:Loc Dialogs_Dependencies_SelectedPackage}" Margin="8 4" FontSize="11" />
                 </Border>
                 <Border BorderBrush="#00B0FF" BorderThickness="2" Background="#00B0FF" Margin="4" VerticalAlignment="Center">
-                    <TextBlock Foreground="White" FontWeight="Bold" Text="System dependency" Margin="8 4" FontSize="11" />
+                    <TextBlock Foreground="White" FontWeight="Bold" Text="{localization:Loc Dialogs_Dependencies_SystemDependency}" Margin="8 4" FontSize="11" />
                 </Border>
                 <Border BorderBrush="#666666" BorderThickness="2" Background="#CCCCCC" Margin="4" VerticalAlignment="Center">
-                    <TextBlock Text="Package dependency" Margin="8 4" FontSize="11" />
+                    <TextBlock Text="{localization:Loc Dialogs_Dependencies_PackageDependency}" Margin="8 4" FontSize="11" />
                 </Border>
                 <TextBlock FontWeight="Bold" FontSize="8" Text="A" Margin="8 4 4 4" VerticalAlignment="Center" />
                 <Canvas Width="48" Height="16" Margin="0 4">
@@ -114,7 +115,7 @@
                     <Path Data="M 0 0 8 4 0 8" Fill="Black" Canvas.Right="0" Canvas.Top="7" />
                 </Canvas>
                 <TextBlock FontWeight="Bold" FontSize="8" VerticalAlignment="Center" Text="B" Margin="4 4 8 4" />
-                <TextBlock Text="(B) depends on (A)" VerticalAlignment="Center" Margin="0 4" />
+                <TextBlock Text="{localization:Loc Dialogs_Dependencies_Line_Hint}" VerticalAlignment="Center" Margin="0 4" />
             </StackPanel>
         </Border>
 
@@ -231,7 +232,8 @@
                 x:Name="ZoomControl"
                 ViewFinderVisibility="Collapsed" 
                 IsAnimationEnabled="False">
-                <model:DependencyGraphArea x:Name="GraphArea" />
+                <model:DependencyGraphArea 
+                    x:Name="GraphArea" />
             </graphx:ZoomControl>
         </Border>
     </DockPanel>

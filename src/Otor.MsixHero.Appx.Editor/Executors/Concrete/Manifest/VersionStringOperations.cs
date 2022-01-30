@@ -32,7 +32,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 return ResolveMaskedVersion(newValueWithMask, parsed);
             }
 
-            throw new ArgumentException("The value '" + currentValue + "' is not a valid version string.");
+            throw new ArgumentException(string.Format(Resources.Localization.AppxEditor_Error_NotAVersion_Format, currentValue));
         }
 
         public static string ResolveMaskedVersion(string newValueWithMask, Version currentValue = null)
@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
             var split = newValueWithMask.Split('.');
             if (split.Length > 4)
             {
-                throw new ArgumentException("The value '" + newValueWithMask + "' could not be interpreted as a version.");
+                throw new ArgumentException(string.Format(Resources.Localization.AppxEditor_Error_NotAVersion_Format, newValueWithMask));
             }
 
             if (currentValue == null)
@@ -120,7 +120,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                         default:
                             if (!int.TryParse(split[i], out _))
                             {
-                                throw new ArgumentException($"The value '{newValueWithMask}' could not be interpreted as a version string.");
+                                throw new ArgumentException(string.Format(Resources.Localization.AppxEditor_Error_NotAVersion_Format, newValueWithMask));
                             }
 
                             versionString += split[i];
@@ -135,7 +135,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
 
             if (!Version.TryParse(versionString, out var _))
             {
-                throw new ArgumentException("The value '" + versionString + "' is not a valid version string.");
+                throw new ArgumentException(string.Format(Resources.Localization.AppxEditor_Error_NotAVersion_Format, versionString));
             }
 
             return versionString;

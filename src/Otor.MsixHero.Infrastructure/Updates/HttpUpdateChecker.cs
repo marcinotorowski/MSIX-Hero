@@ -47,7 +47,7 @@ namespace Otor.MsixHero.Infrastructure.Updates
             var assemblyVersion = FileVersionInfo.GetVersionInfo((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location).ProductVersion;
             if (!Version.TryParse(assemblyVersion, out var version))
             {
-                throw new FormatException($"Version {version} could not be parsed as a version string.");
+                throw new FormatException(string.Format(Resources.Localization.Infrastructure_WrongVersion_Format, version));
             }
 
             return this.CheckForNewVersion(version);

@@ -15,25 +15,26 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("pack", HelpText = "Pack a folder")]
+    [Verb("pack", HelpText = "CLI_Verbs_Pack_VerbName", ResourceType = typeof(Localization))]
     public class PackVerb : BaseVerb
     {
-        [Option('d', "directory", Required = true)]
+        [Option('d', "directory", Required = true, HelpText = "CLI_Verbs_Pack_Prop_Directory", ResourceType = typeof(Localization))]
         public string Directory { get; set; }
 
-        [Option('p', "package", Required = true)]
+        [Option('p', "package", Required = true, HelpText = "CLI_Verbs_Pack_Prop_Package", ResourceType = typeof(Localization))]
         public string Package { get; set; }
 
-        [Option("nc", Default = false, HelpText = "Prevents MSIX Hero from compressing files in the package. By default, files in the package are compressed based on detected file type.")]
+        [Option("nc", Default = false, HelpText = "CLI_Verbs_Pack_Prop_NoCompression", ResourceType = typeof(Localization))]
         public bool NoCompression { get; set; }
 
-        [Option("nv", Default = false, HelpText = "Skip semantic validation. If you don't specify this option, MSIX Hero performs a full validation of the package.")]
+        [Option("nv", Default = false, HelpText = "CLI_Verbs_Pack_Prop_NoValidation", ResourceType = typeof(Localization))]
         public bool NoValidation { get; set; }
 
-        [Option('x', "remove", Default = false, HelpText = "If set, the input directory will be removed after packing.")]
+        [Option('x', "remove", Default = false, HelpText = "CLI_Verbs_Pack_Prop_RemoveDirectoryAfterPacking", ResourceType = typeof(Localization))]
         public bool RemoveDirectoryAfterPacking { get; set; }
     }
 }

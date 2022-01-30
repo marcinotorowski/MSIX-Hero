@@ -15,19 +15,20 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Files
 {
-    [Verb("addFile", HelpText = "Adds or replaces a specific file in the package.")]
+    [Verb("addFile", HelpText = "CLI_Verbs_Edit_AddFile_VerbName", ResourceType = typeof(Localization))]
     public class AddFileEditVerb : BaseEditVerb
     {
-        [Option('t', "target", HelpText = "Target relative path to current file.", Required = true)]
+        [Option('t', "target", HelpText = "CLI_Verbs_Edit_AddFile_Prop_Target", Required = true, ResourceType = typeof(Localization))]
         public string DestinationPath { get; set; }
 
-        [Option('s', "source", HelpText = "Source file from disk.", Required = true)]
+        [Option('s', "source", HelpText = "CLI_Verbs_Edit_AddFile_Prop_Source", Required = true, ResourceType = typeof(Localization))]
         public string SourcePath { get; set; }
 
-        [Option('f', "force", HelpText = "If set then in case the target file exists it will be overridden.")]
+        [Option('f', "force", HelpText = "CLI_Verbs_Edit_AddFile_Prop_Force", ResourceType = typeof(Localization))]
         public bool Force { get; set; }
     }
 }

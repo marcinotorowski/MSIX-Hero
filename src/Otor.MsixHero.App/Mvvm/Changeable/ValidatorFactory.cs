@@ -27,7 +27,7 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 return null;
@@ -45,12 +45,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 if (!int.TryParse(value, out _))
                 {
-                    return prompt == null ? "This value must be an integer" : $"{prompt} is not an integer";
+                    return prompt == null ? Resources.Localization.Validation_Integer : string.Format(Resources.Localization.Validation_Integer_Named, prompt);
                 }
 
                 return null;
@@ -68,12 +68,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 if (!Uri.TryCreate(value, UriKind.Absolute, out var parsed) || string.IsNullOrEmpty(parsed.Scheme))
                 {
-                    return prompt == null ? "This value is not a valid URL." : $"{prompt} is not a valid URL.";
+                    return prompt == null ? Resources.Localization.Validation_Url : string.Format(Resources.Localization.Validation_Url_Named, prompt);
                 }
 
                 switch (parsed.Scheme.ToLowerInvariant())
@@ -85,7 +85,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                 }
 
-                return prompt == null ? $"Protocol {parsed.Scheme}:// is not supported." : $"{prompt} has an unsupported protocol {parsed.Scheme}://.";
+                var protocol = parsed.Scheme + "://";
+                return prompt == null ? string.Format(Resources.Localization.Validation_SupportedWebProtocol, protocol) : string.Format(Resources.Localization.Validation_SupportedWebProtocol_Named, prompt, protocol);
             };
         }
 
@@ -99,13 +100,13 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     {
                         return null;
                     }
-                    
-                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
+
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 if (!Guid.TryParse(value, out _))
                 {
-                    return prompt == null ? "This value is not a valid URL." : $"{prompt} is not a valid URL.";
+                    return prompt == null ? Resources.Localization.Validation_Guid : string.Format(Resources.Localization.Validation_Guid_Named, prompt);
                 }
 
                 return null;
@@ -123,12 +124,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 if (!Uri.TryCreate(value, UriKind.Absolute, out var parsed))
                 {
-                    return prompt == null ? "This value is not a valid URI." : $"{prompt} is not a valid URL.";
+                    return prompt == null ? Resources.Localization.Validation_Url : string.Format(Resources.Localization.Validation_Url_Named, prompt);
                 }
 
                 switch (parsed.Scheme.ToLowerInvariant())
@@ -140,10 +141,9 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                     case "file":
                         return null;
                 }
-
-                return prompt == null
-                    ? $"Protocol {parsed.Scheme}:// is not supported."
-                    : $"{prompt} has an unsupported protocol {parsed.Scheme}://.";
+                
+                var protocol = parsed.Scheme + "://";
+                return prompt == null ? string.Format(Resources.Localization.Validation_SupportedWebProtocol, protocol) : string.Format(Resources.Localization.Validation_SupportedWebProtocol_Named, prompt, protocol);
             };
         }
 
@@ -158,12 +158,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "The version cannot be empty." : $"{prompt} cannot be empty.";
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 if (!Version.TryParse(version, out _))
                 {
-                    return prompt == null ? "The version must be in format #.#.#.#." : $"{prompt} must be in format #.#.#.#.";
+                    return prompt == null ? Resources.Localization.Validation_VersionField : string.Format(Resources.Localization.Validation_VersionField_Named, prompt);
                 }
 
                 return null;
@@ -181,12 +181,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                         return null;
                     }
 
-                    return prompt == null ? "This value cannot be empty." : $"{prompt} cannot be empty.";
+                    return prompt == null ? Resources.Localization.Validation_NotEmptyField : string.Format(Resources.Localization.Validation_NotEmptyField_Named, prompt);
                 }
 
                 if (!Regex.IsMatch(value, "^[a-fA-F0-9]{64}$"))
                 {
-                    return prompt == null ? "SHA-256 string is invalid. It must consist of exactly 64 hexadecimal characters." : "{prompt} has an invalid value. It must ba a valid SHA-256 hash consisting of exactly 64 hexadecimal characters.";
+                    return prompt == null ? Resources.Localization.Validation_Sha256Field : string.Format(Resources.Localization.Validation_Sha256Field_Named, prompt);
                 }
 
                 return null;

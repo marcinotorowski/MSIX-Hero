@@ -17,31 +17,32 @@
 using System.Collections.Generic;
 using CommandLine;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("appattach", HelpText = "Creates app attach volume for MSIX packages.")]
+    [Verb("appattach", HelpText = "CLI_Verbs_AppAttach_VerbName", ResourceType = typeof(Localization))]
     public class AppAttachVerb : BaseVerb
     {
-        [Option('p', "package", Min = 1, HelpText = "Full paths to MSIX packages to be converted to app attach format. If the path is a directory, then all MSIX from the folder will be converted.", Required = true)]
+        [Option('p', "package", Min = 1, HelpText = "CLI_Verbs_AppAttach_Prop_Package", Required = true, ResourceType = typeof(Localization))]
         public IEnumerable<string> Package { get; set; }
 
-        [Option('d', "directory", HelpText = "Output directory folder.", Required = true)]
+        [Option('d', "directory", HelpText = "CLI_Verbs_AppAttach_Prop_Directory", Required = true, ResourceType = typeof(Localization))]
         public string Directory { get; set; }
         
-        [Option('t', "fileType", HelpText = "The type of the output file.")]
+        [Option('t', "fileType", HelpText = "CLI_Verbs_AppAttach_Prop_FileType", ResourceType = typeof(Localization))]
         public AppAttachVolumeType FileType { get; set; }
 
-        [Option('n', "name", HelpText = "File name for the output file. If left empty, the MSIX file name without extension will be used. This parameter is not used in case of multiple input packages.", Required = false)]
+        [Option('n', "name", HelpText = "CLI_Verbs_AppAttach_Prop_Name", Required = false, ResourceType = typeof(Localization))]
         public string Name { get; set; }
         
-        [Option('s', "size", HelpText = "Size of the container (in MB). Leave empty for auto-selection.", Required = false)]
+        [Option('s', "size", HelpText = "CLI_Verbs_AppAttach_Prop_Size", Required = false, ResourceType = typeof(Localization))]
         public uint Size { get; set; }
 
-        [Option('c', "createScripts", HelpText = "If specified, sample PS1 scripts for registration and de-registration will be created. This is currently supported only for VHD volumes.", Required = false)]
+        [Option('c', "createScripts", HelpText = "CLI_Verbs_AppAttach_Prop_CreateScript", Required = false, ResourceType = typeof(Localization))]
         public bool CreateScript { get; set; }
 
-        [Option('e', "extractCert", HelpText = "If specified, digital certificate will be extracted from the specified package.", Required = false)]
+        [Option('e', "extractCert", HelpText = "CLI_Verbs_AppAttach_Prop_ExtractCertificate", Required = false, ResourceType = typeof(Localization))]
         public bool ExtractCertificate { get; set; }
     }
 }

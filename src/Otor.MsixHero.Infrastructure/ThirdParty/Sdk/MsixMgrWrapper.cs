@@ -155,14 +155,14 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (!this._forceRunFromSource && new DesktopBridge.Helpers().IsRunningAsUwp())
             {
-                Logger.Info().WriteLine("Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location...");
+                Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_MsixMgr_RunningWithIdentity);
                 msixMgrDirectory = Path.Combine(Path.GetTempPath(), "msixmgr-" + Guid.NewGuid().ToString("N").Substring(0, 10));
                 
                 var originalMsixMgrPath = GetMsixMgrPath("msixmgr.exe", BundleHelper.MsixMgrPath);
                 var originalMsixMgrDirectory = Path.GetDirectoryName(originalMsixMgrPath);
                 if (originalMsixMgrDirectory == null)
                 {
-                    throw new InvalidOperationException("Original directory not available.");
+                    throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_OriginalDirUnavailable);
                 }
 
                 foreach (var item in Directory.EnumerateFiles(originalMsixMgrDirectory, "*.*", SearchOption.AllDirectories))
@@ -176,7 +176,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         targetFile.Directory.Create();
                     }
 
-                    Logger.Debug().WriteLine("Copying {0} to {1}...", sourceFile.FullName, targetFile.FullName);
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_MsixMgr_CopyingFile, sourceFile.FullName, targetFile.FullName);
                     sourceFile.CopyTo(targetFile.FullName);
                 }
 
@@ -190,7 +190,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 cleanupMsixMgrDirectory = false;
             }
             
-            Logger.Info().WriteLine("Executing {0} {1}", msixMgrPath, arguments);
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_Executing_Format, msixMgrPath, arguments);
 
             try
             {
@@ -199,10 +199,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (ProcessWrapperException e)
             {
-                Logger.Warn().WriteLine("Process returned exit code " + e.ExitCode);
+                Logger.Warn().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_MsixMgr_ProcessExitCode, e.ExitCode));
                 if (e.ExitCode == -1951596541)
                 {
-                    throw new InvalidOperationException("Could not expand MSIX Package to the VHD file. The maximum size of the virtual disk is smaller than the file size of expanded MSIX package. Try using a bigger disk size.", e);
+                    throw new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_TooSmallSize, e);
                 }
 
 #pragma warning disable 652
@@ -210,20 +210,16 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 if (e.ExitCode == 0x80070522)
 #pragma warning restore 652
                 {
-                    throw new UnauthorizedAccessException("This operation requires admin permissions.", e);
+                    throw new UnauthorizedAccessException(Resources.Localization.Infrastructure_Sdk_MsixMgr_Error_AdminRights, e);
                 }
 
-                throw new InvalidOperationException(
-                    e.StandardError.LastOrDefault(stdError =>
-                        !string.IsNullOrWhiteSpace(stdError) &&
-                        !stdError.Contains("Successfully started the Shell Hardware Detection Service",
-                            StringComparison.OrdinalIgnoreCase)), e);
+                throw new InvalidOperationException(e.StandardError.LastOrDefault(stdError => !string.IsNullOrWhiteSpace(stdError) && !stdError.Contains("Successfully started the Shell Hardware Detection Service", StringComparison.OrdinalIgnoreCase)), e);
             }
             finally
             {
                 if (cleanupMsixMgrDirectory)
                 {
-                    Logger.Debug().WriteLine("Removing temporary files from {0}...", msixMgrDirectory);
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_MsixMgr_RemovingTempFolder_Format, msixMgrDirectory);
                     ExceptionGuard.Guard(() => Directory.Delete(msixMgrDirectory, true));
                 }
             }

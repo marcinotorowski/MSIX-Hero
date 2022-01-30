@@ -11,6 +11,7 @@
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:timeStamping="clr-namespace:Otor.MsixHero.Appx.Signing.TimeStamping;assembly=Otor.MsixHero.Appx"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="500"
@@ -37,7 +38,7 @@
                     Style="{StaticResource LabelTextBlock}"
                     controls:RequiredAdorner.IsRequired="True" 
                     DockPanel.Dock="Top" 
-                    Text="Certificate to sign the package" />
+                    Text="{localization:Loc CertificateSelector_Certificate}" />
 
                 <ComboBox DockPanel.Dock="Top" SelectedValue="{Binding Store.CurrentValue}" SelectedValuePath="Tag">
                     <ComboBoxItem Visibility="{Binding AllowNoSelection, Converter={StaticResource BooleanToVisibilityConverter}}" Tag="{x:Static configuration1:CertificateSource.Unknown}" x:Name="AskMe">
@@ -47,7 +48,7 @@
                                 Data="{StaticResource SmallNone}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="No certificate" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_None}" />
                         </DockPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Pfx}" x:Name="PfxFile">
@@ -57,7 +58,7 @@
                                 Data="{StaticResource SmallLicense}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="Sign with PFX file" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_Pfx}" />
                         </DockPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.Personal}" x:Name="CertStore">
@@ -67,7 +68,7 @@
                                 Data="{StaticResource SmallDiploma}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="Sign with installed certificate" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_Installed}" />
                         </DockPanel>
                     </ComboBoxItem>
                     <ComboBoxItem Tag="{x:Static configuration1:CertificateSource.DeviceGuard}" x:Name="CertDeviceGuard">
@@ -77,7 +78,7 @@
                                 Data="{StaticResource SmallCloudLink}" 
                                 Margin="0 0 4 0" 
                                 VerticalAlignment="Center" />
-                            <TextBlock VerticalAlignment="Center" Text="Sign with Device Guard" />
+                            <TextBlock VerticalAlignment="Center" Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard}" />
                         </DockPanel>
                     </ComboBoxItem>
                 </ComboBox>
@@ -95,9 +96,9 @@
                             Margin="0 0 0 0">
                             <StackPanel>
                                 <TextBlock TextWrapping="Wrap" Margin="10">
-                                    <Run Text="You have to sign-in with Azure AD credentials to use Device Guard signing. The account must have signing permissions." />
+                                    <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_AzureAdInfo}" />
                                     <Hyperlink Click="DeviceGuardMoreInfoClick">
-                                        <Run Text="See more information" />
+                                        <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_MoreInfoLink}" />
                                     </Hyperlink>
                                 </TextBlock>
 
@@ -178,13 +179,13 @@
                                     VerticalAlignment="Center">
                                     <TextBlock
                                         TextWrapping="Wrap" >
-                                        <Run Text="Device Guard signing is ready to be used for publisher name" />
+                                        <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_Ready}" />
                                         <Run Text="{Binding DeviceGuard.CurrentValue.Subject, Mode=OneWay}" FontWeight="SemiBold" /><Run Text="." />
                                     </TextBlock>
                                     <TextBlock
                                         TextWrapping="Wrap" >
                                         <Hyperlink Command="{Binding SignOutDeviceGuard}">
-                                            <Run Text="Click here to sign out or use another account for signing" />
+                                            <Run Text="{localization:Loc CertificateSelector_Certificate_DeviceGuard_SignOut}" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -199,11 +200,11 @@
                     Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
                     controls:RequiredAdorner.IsRequired="True" 
                     DockPanel.Dock="Top" 
-                    Text="Path to PFX file" Margin="0 16 0 6" />
+                    Text="{localization:Loc CertificateSelector_PfxPath}" Margin="0 16 0 6" />
                 <DockPanel DockPanel.Dock="Top" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Button Padding="10 0" Command="{Binding PfxPath.Browse}" Margin="4 0 0 0" Content="..." DockPanel.Dock="Right" />
                     <TextBox 
-                    Text="{Binding PfxPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+                        Text="{Binding PfxPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                 </DockPanel>
 
                 <TextBlock
@@ -211,16 +212,16 @@
                     Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
                     controls:RequiredAdorner.IsRequired="True" 
                     DockPanel.Dock="Top" 
-                    Text="Installed certificate" Margin="0 16 0 6" />
+                    Text="{localization:Loc CertificateSelector_Certificate_InstalledCertificate}" Margin="0 16 0 6" />
 
                 <CheckBox 
-                Margin="0 0 0 6"
-                IsChecked="{Binding ShowAllCertificates.CurrentValue, Converter={StaticResource NegativeConverter}}"
-                Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
-                Content="Show only valid certificates for signing" DockPanel.Dock="Top" />
+                    Margin="0 0 0 6"
+                    IsChecked="{Binding ShowAllCertificates.CurrentValue, Converter={StaticResource NegativeConverter}}"
+                    Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Content="{localization:Loc CertificateSelector_Certificate_InstalledCertificate_OnlyValid}" DockPanel.Dock="Top" />
                 <ComboBox SelectedValue="{Binding SelectedPersonalCertificate.CurrentValue, NotifyOnValidationError=True, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True}" 
-              ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" 
-              Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  ItemsSource="{Binding PersonalCertificates.CurrentValue}" DockPanel.Dock="Top" 
+                  Visibility="{Binding ElementName=CertStore, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ComboBox.ItemTemplateSelector>
                         <helpers:ComboBoxTemplateSelector>
                             <helpers:ComboBoxTemplateSelector.ListTemplate>
@@ -254,7 +255,7 @@
                     Style="{StaticResource LabelTextBlock}"
                     Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" 
                     DockPanel.Dock="Top"
-                    Text="Password for the selected certificate" 
+                    Text="{localization:Loc CertificateSelector_Certificate_Password}" 
                     Margin="0 16 0 6" />
                 <PasswordBox x:Name="PasswordBox" Visibility="{Binding ElementName=PfxFile, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding Store.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static configuration1:CertificateSource.Pfx}}" Tag="{Binding Password.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" PasswordChanged="PasswordBox_OnPasswordChanged" DockPanel.Dock="Top" />
 
@@ -265,10 +266,10 @@
                     <TextBlock 
                         Style="{StaticResource LabelTextBlock}" 
                         Margin="0" 
-                        Text="Timestamp server" />
+                        Text="{localization:Loc CertificateSelector_TimeStamp}" />
 
                     <Control 
-                        ToolTip="Time stamping allows signatures to be verifiable even after the certificates used for signature have expired. You should make sure you always timestamp your packages, otherwise they will expire as soon as your certificate (which usually lives only for 1-3 years)."
+                        ToolTip="{localization:Loc CertificateSelector_Certificate_Timestamp_Hint}"
                         Style="{StaticResource HelpIcon}" 
                         VerticalAlignment="Center" 
                         Margin="2 -2">
@@ -276,13 +277,14 @@
                 </StackPanel>
 
                 <StackPanel>
-                    <RadioButton GroupName="TimeStampNone" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.None}}" Margin="0"  Content="No timestamp" />
+                    <RadioButton GroupName="TimeStampNone" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.None}}" Margin="0"  Content="{localization:Loc CertificateSelector_Certificate_TimeStamp_None}" />
 
                     <RadioButton GroupName="TimeStampAuto" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Auto}}" Margin="0 4">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock>
-                                <Run>Random selection from</Run>
-                                <Hyperlink>a list of known servers
+                                <Run Text="{localization:Loc CertificateSelector_Certificate_TimeStamp_Random}" />
+                                <Hyperlink>
+                                    <Run Text="{localization:Loc CertificateSelector_Certificate_TimeStamp_Random2}" />
                                     <b:Interaction.Behaviors>
                                         <behaviors:HyperlinkClickBehavior Url="{x:Static timeStamping:MsixHeroGistTimeStampFeed.Url}" />
                                     </b:Interaction.Behaviors>
@@ -290,14 +292,14 @@
                             </TextBlock>
 
                             <Control 
-                                ToolTip="This will select a random timestamp server from a list of known servers. The list of servers is maintained by MSIX Hero author, but not guaranteed to be complete or fit for purpose. The option should be used with caution and never in production."
+                                ToolTip="{localization:Loc CertificateSelector_Certificate_TimeStamp_Random_Hint}"
                                 Style="{StaticResource HelpIcon}" 
                                 VerticalAlignment="Center" 
                                 Margin="2 -2" />
                         </StackPanel>
                     </RadioButton>
 
-                    <RadioButton GroupName="TimeStampUrl" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Url}}" x:Name="SpecificTimeStamp" Margin="0 0 0 4"  Content="Specific timestamp server" />
+                    <RadioButton GroupName="TimeStampUrl" IsChecked="{Binding TimeStampSelectionMode.CurrentValue, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:TimeStampSelectionMode.Url}}" x:Name="SpecificTimeStamp" Margin="0 0 0 4"  Content="{localization:Loc CertificateSelector_Certificate_TimeStamp_Specific}" />
 
                     <controls:ProgressOverlay 
                         Visibility="{Binding ElementName=SpecificTimeStamp, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"

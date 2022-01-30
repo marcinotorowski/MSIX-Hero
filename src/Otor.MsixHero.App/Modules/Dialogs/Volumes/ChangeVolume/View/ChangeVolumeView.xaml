@@ -11,6 +11,8 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel.Items"
+             xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              d:DataContext="{d:DesignInstance viewModel:ChangeVolumeViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -32,31 +34,25 @@
     </mvvm:Dialog.WindowStyle>
     <dialog:ChangeableDialog
         Dialog="{Binding}"
-        OkButtonLabel="Move to selected volume"
+        OkButtonLabel="{localization:Loc Dialogs_ChangeVolume_OkButton}"
         ShowShield="True"
         Icon="{StaticResource VectorRight}">
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Text="Packages were moved to a selected volume." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                    <TextBlock TextAlignment="Center">
-                    <!--<Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing packed files</Hyperlink>-->
-                    </TextBlock>
-                    <TextBlock TextAlignment="Center">
-                    <!--<Hyperlink Command="{Binding Reset}">Pack another package</Hyperlink>-->
-                    </TextBlock>
+                    <TextBlock Text="{localization:Loc Dialogs_ChangeVolume_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                 </StackPanel>
             </DataTemplate>
         </dialog:ChangeableDialog.SuccessContentTemplate>
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
                 <controls:ProgressOverlay 
-                    IsShown="{Binding CurrentVolume.IsLoading}" Message="Getting data...">
+                    IsShown="{Binding CurrentVolume.IsLoading}" Message="{localization:Loc Dialogs_ChangeVolume_GettingData}">
                     <StackPanel>
                         <TextBlock
                             Style="{StaticResource LabelTextBlock}"
                             controls:RequiredAdorner.IsRequired="True" 
-                            Text="Current volume" 
+                            Text="{localization:Loc Dialogs_ChangeVolume_CurrentVolume}" 
                             Margin="0 16 0 6" />
                         <Border MinHeight="57" SnapsToDevicePixels="True" UseLayoutRounding="True" DataContext="{Binding CurrentVolume.CurrentValue}">
                             <volume:VolumeControl HorizontalAlignment="Stretch"
@@ -71,7 +67,7 @@
                         <TextBlock
                             Style="{StaticResource LabelTextBlock}"
                             controls:RequiredAdorner.IsRequired="True" 
-                            Text="Target volume" 
+                            Text="{localization:Loc Dialogs_ChangeVolume_TargetVolume}" 
                             Margin="0 16 0 6" />
                         <ComboBox 
                             MinHeight="57" 
@@ -86,7 +82,9 @@
                                     <DockPanel>
                                         <Border Height="30" Visibility="Collapsed" x:Name="PART_New">
                                             <TextBlock VerticalAlignment="Center" IsHitTestVisible="False" Focusable="False">
-                                                <Hyperlink Click="CreateNew">Create new volume...</Hyperlink>
+                                                <Hyperlink Click="CreateNew">
+                                                    <Run Text="{localization:Loc Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume}" />
+                                                </Hyperlink>
                                             </TextBlock>
                                         </Border>
                                         <volume:VolumeControl

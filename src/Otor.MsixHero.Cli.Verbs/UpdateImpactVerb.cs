@@ -1,21 +1,37 @@
-﻿using CommandLine;
-using Otor.MsixHero.Appx.Packaging;
+﻿// MSIX Hero
+// Copyright (C) 2022 Marcin Otorowski
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// Full notice:
+// https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
+
+using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("updateImpact", HelpText = "Analyzes the difference between two packages and predicts the impact on updates.")]
+    [Verb("updateImpact", HelpText = "CLI_Verbs_UpdateImpact_VerbName", ResourceType = typeof(Localization))]
     public class UpdateImpactVerb
     {
-        [Option('o', "oldPackagePath", Required = true, HelpText = "The older version of the package to compare. Accepted files: *" + FileConstants.MsixExtension + ", *" + FileConstants.AppxExtension + ", " + FileConstants.AppxManifestFile + " and AppxBlockMap.xml.")]
+        [Option('o', "oldPackagePath", Required = true, HelpText = "CLI_Verbs_UpdateImpact_Prop_OldPackagePath", ResourceType = typeof(Localization))]
         public string OldPackagePath { get; set; }
 
-        [Option('n', "newPackagePath", Required = true, HelpText = "The newer version of the package to compare. Accepted files: *" + FileConstants.MsixExtension + ", *" + FileConstants.AppxExtension + ", " + FileConstants.AppxManifestFile + " and AppxBlockMap.xml.")]
+        [Option('n', "newPackagePath", Required = true, HelpText = "CLI_Verbs_UpdateImpact_Prop_NewPackagePath", ResourceType = typeof(Localization))]
         public string NewPackagePath { get; set; }
 
-        [Option('f', "force", HelpText = "Forces the comparison even if the 'newVersion' is not higher than the 'oldVersion'.")]
+        [Option('f', "force", HelpText = "CLI_Verbs_UpdateImpact_Prop_IgnoreVersionMismatch", ResourceType = typeof(Localization))]
         public bool IgnoreVersionMismatch { get; set; }
 
-        [Option('x', "xml", HelpText = "Full file path where the XML file with detailed comparison will be saved.")]
+        [Option('x', "xml", HelpText = "CLI_Verbs_UpdateImpact_Prop_OutputXml", ResourceType = typeof(Localization))]
         public string OutputXml { get; set; }
     }
 }

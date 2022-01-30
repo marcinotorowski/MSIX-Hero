@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Infrastructure_Error_CouldNotOpenFile_Format" xml:space="preserve">
+    <value>Could not open the file {0}.</value>
+  </data>
+  <data name="Infrastructure_Hashing_Format" xml:space="preserve">
+    <value>Calculating hash {0}%...</value>
+  </data>
+  <data name="Infrastructure_Ipc_CreatingNamedPipeFor_Format" xml:space="preserve">
+    <value>Creating named pipe security for {0}…</value>
+  </data>
+  <data name="Infrastructure_Ipc_CreatingNamedPipe_Format" xml:space="preserve">
+    <value>Creating named pipe {0}...</value>
+  </data>
+  <data name="Infrastructure_Ipc_Error_CouldNotStart" xml:space="preserve">
+    <value>Could not start the helper.</value>
+  </data>
+  <data name="Infrastructure_Ipc_Error_CouldNotStartProcess" xml:space="preserve">
+    <value>Could not start the process.</value>
+  </data>
+  <data name="Infrastructure_Ipc_Error_Exception" xml:space="preserve">
+    <value>Reporting exception</value>
+  </data>
+  <data name="Infrastructure_Ipc_Error_ExclusiveAccess" xml:space="preserve">
+    <value>Could not get exclusive access.</value>
+  </data>
+  <data name="Infrastructure_Ipc_Error_NoReceiver_Format" xml:space="preserve">
+    <value>No receiver for type {0} registered.</value>
+  </data>
+  <data name="Infrastructure_Ipc_ReadingCmd" xml:space="preserve">
+    <value>Reading command from stream…</value>
+  </data>
+  <data name="Infrastructure_Ipc_RequestedNonVoid_Format" xml:space="preserve">
+    <value>Requested: {0} with return value of type {1}…</value>
+  </data>
+  <data name="Infrastructure_Ipc_RequestedVoid_Format" xml:space="preserve">
+    <value>Requested: {0} with no returned value…</value>
+  </data>
+  <data name="Infrastructure_Ipc_ReturningResults" xml:space="preserve">
+    <value>Returning results via named pipe…</value>
+  </data>
+  <data name="Infrastructure_Ipc_Sending" xml:space="preserve">
+    <value>Returning actual results via named pipe...</value>
+  </data>
+  <data name="Infrastructure_Ipc_SID" xml:space="preserve">
+    <value>Security SID is {0}.</value>
+  </data>
+  <data name="Infrastructure_Ipc_Waiting" xml:space="preserve">
+    <value>Waiting for a client connection...</value>
+  </data>
+  <data name="Infrastructure_Sdk_CreatingVolume_Format" xml:space="preserve">
+    <value>Creating volume '{0}' with required size {1}...</value>
+  </data>
+  <data name="Infrastructure_Sdk_DeletingFile_Format" xml:space="preserve">
+    <value>Deleting file '{0}'…</value>
+  </data>
+  <data name="Infrastructure_Sdk_DiskPartCommand_Format" xml:space="preserve">
+    <value>DISKPART.EXE command in file '{0}':</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_DeviceGuardAccountNotAuthorized" xml:space="preserve">
+    <value>The provided account is not authorized to sign via the Device Guard Signing Service.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_DeviceGuardInvalidJson" xml:space="preserve">
+    <value>The provided JSON token file is invalid.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_DeviceGuardNotReachable" xml:space="preserve">
+    <value>Unable to reach the Device Guard Signing Service.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_DiskPart_Format" xml:space="preserve">
+    <value>Diskpart.exe failed with error code {0}.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_MissingSdk_Format" xml:space="preserve">
+    <value>Could not locate SDK part {0}.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_NotSupportedExtension_Format" xml:space="preserve">
+    <value>Extension {0} is not supported.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_EkuMismatch" xml:space="preserve">
+    <value>The selected certificate cannot be used for signing purposes (EKU mismatch).</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_Expired" xml:space="preserve">
+    <value>The selected certificate has expired.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_ExtraInfo" xml:space="preserve">
+    <value>Additional info from SignTool.exe:</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_FailedValidation" xml:space="preserve">
+    <value>The selected certificate failed validation of one of the following filters:</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_Filter_Format" xml:space="preserve">
+    <value>The selected certificate does not meet the {0} filter.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_Format" xml:space="preserve">
+    <value>The package could not be signed (code {0}).</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_NoPrivateKey" xml:space="preserve">
+    <value>The selected certificate does not have a private key.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_SubjectPublisherNotEqual" xml:space="preserve">
+    <value>Package publisher and certificate subject are not the same. MSIX app cannot be signed with the selected certificate.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_SigningError_Timestamp_Format" xml:space="preserve">
+    <value>Selected timestamp server could not be used to sign the package (error {0}).</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_StartProcess" xml:space="preserve">
+    <value>Failed to start process.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_TaskListCsv" xml:space="preserve">
+    <value>CSV content:</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_TaskListInvalidDataFormat" xml:space="preserve">
+    <value>Invalid data format.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Error_TaskListNonZeroExitCode" xml:space="preserve">
+    <value>Tasklist.exe returned non zero exit code.</value>
+  </data>
+  <data name="Infrastructure_Sdk_Executing_Format" xml:space="preserve">
+    <value>Executing {0} {1}</value>
+  </data>
+  <data name="Infrastructure_Sdk_FormattingAndAssigning" xml:space="preserve">
+    <value>Formatting drive and assigning drive letter…</value>
+  </data>
+  <data name="Infrastructure_Sdk_KillingPid_Format" xml:space="preserve">
+    <value>Killing the process PID={0}...</value>
+  </data>
+  <data name="Infrastructure_Sdk_MakeAppx_EditCodeError_Format" xml:space="preserve">
+    <value>MakeAppx.exe returned exit code {0} due to error {1}.</value>
+  </data>
+  <data name="Infrastructure_Sdk_MakeAppx_EditCode_Format" xml:space="preserve">
+    <value>MakeAppx.exe returned exit code {0}.</value>
+  </data>
+  <data name="Infrastructure_Sdk_MakeAppx_ExtractingFile_Format" xml:space="preserve">
+    <value>Extracting file {0}…</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_CopyingFile" xml:space="preserve">
+    <value>Copying {0} to {1}…</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_Error_AdminRights" xml:space="preserve">
+    <value>This operation requires admin permissions.</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_Error_OriginalDirUnavailable" xml:space="preserve">
+    <value>Original directory not available.</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_Error_TooSmallSize" xml:space="preserve">
+    <value>Could not expand MSIX Package to the VHD file. The maximum size of the virtual disk is smaller than the file size of expanded MSIX package. Try using a bigger disk size.</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_ProcessExitCode" xml:space="preserve">
+    <value>Process returned exit code {0}.</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_RemovingTempFolder_Format" xml:space="preserve">
+    <value>Removing temporary folder {0}...</value>
+  </data>
+  <data name="Infrastructure_Sdk_MsixMgr_RunningWithIdentity" xml:space="preserve">
+    <value>Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location…</value>
+  </data>
+  <data name="Infrastructure_Sdk_ProcessExited_WrongExitCode_Format" xml:space="preserve">
+    <value>Process existed with an improper exit code {0}.</value>
+  </data>
+  <data name="Infrastructure_Sdk_ProcessFinished_NoStdErr" xml:space="preserve">
+    <value>Process has finished and did not return anything to standard error.</value>
+  </data>
+  <data name="Infrastructure_Sdk_ProcessFinished_NoStdOut" xml:space="preserve">
+    <value>Process has finished and did not return anything to standard output.</value>
+  </data>
+  <data name="Infrastructure_Sdk_ProcessFinished_StdErr" xml:space="preserve">
+    <value>Process has finished and returned the following standard error:</value>
+  </data>
+  <data name="Infrastructure_Sdk_ProcessFinished_StdOut" xml:space="preserve">
+    <value>Process has finished and returned the following standard output:</value>
+  </data>
+  <data name="Infrastructure_Sdk_VhdDismount" xml:space="preserve">
+    <value>Dismounting volume…</value>
+  </data>
+  <data name="Infrastructure_Sdk_VhdMount_Format" xml:space="preserve">
+    <value>Mounting volume '{0}'...</value>
+  </data>
+  <data name="Infrastructure_Settings_Error_UseDefault" xml:space="preserve">
+    <value>Could not read the settings. Default settings will be used.</value>
+  </data>
+  <data name="Infrastructure_WrongVersion_Format" xml:space="preserve">
+    <value>Version '{0}' could not be parsed as a version string.</value>
+  </data>
+</root>

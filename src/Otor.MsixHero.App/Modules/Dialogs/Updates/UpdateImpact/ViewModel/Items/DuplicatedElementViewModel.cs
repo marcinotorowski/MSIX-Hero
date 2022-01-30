@@ -1,22 +1,33 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Updates.Entities.Comparison;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 {
     public class DuplicatedElementViewModel : NotifyPropertyChanged
     {
+        private readonly ComparedDuplicateFile lastDuplicateFile;
+        private readonly ComparedDuplicate lastDuplicate;
+
         public DuplicatedElementViewModel(ComparedDuplicateFile file)
         {
+            this.lastDuplicateFile = file;
+            this.lastDuplicate = null;
             this.PossibleSizeReduction = file.PossibleSizeReduction;
             this.UpdateImpact = file.PossibleImpactReduction;
             this.Name = file.Name;
+
+            MsixHeroTranslation.Instance.CultureChanged += this.OnCultureChanged;
         }
 
         public DuplicatedElementViewModel(ComparedDuplicate file)
         {
+            this.lastDuplicateFile = null;
+            this.lastDuplicate = file;
             this.PossibleSizeReduction = file.PossibleSizeReduction;
             this.UpdateImpact = file.PossibleImpactReduction;
             this.Name = GenerateHeader(file);
@@ -60,21 +71,21 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
 
                 if (commonFileNamePrefix.Length > 5 || commonFileNamePrefix.LastOrDefault() != '*')
                 {
-                    return $"{commonFileNamePrefix}{commonFileExtensionPrefix} ({file.Files.Count} files)";
+                    return $"{commonFileNamePrefix}{commonFileExtensionPrefix} (" + string.Format(Resources.Localization.Dialogs_UpdateImpact_Duplicates_FilesCount, file.Files.Count) + ")";
                 }
 
                 if (file.Files.Count > 2)
                 {
-                    return $"{Path.GetFileName(file.Files[0].Name)} (+{file.Files.Count - 1} other files)";
+                    return string.Format(Resources.Localization.Dialogs_UpdateImpact_Duplicates_NamedFilePlusOther, Path.GetFileName(file.Files[0].Name), file.Files.Count - 1);
                 }
 
-                return $"{Path.GetFileName(file.Files[0].Name)} (+1 another file)";
+                return string.Format(Resources.Localization.Dialogs_UpdateImpact_Duplicates_NamedFilePlusOne, Path.GetFileName(file.Files[0].Name));
             }
 
-            return file.Files.Count + " files";
+            return string.Format(Resources.Localization.Dialogs_UpdateImpact_Duplicates_FilesCount, file.Files.Count);
         }
         
-        public string Name { get; }
+        public string Name { get; private set; }
         
         public int DefaultSorting { get; }
         
@@ -83,5 +94,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel.Items
         public long PossibleSizeReduction { get; }
 
         public ObservableCollection<DuplicatedElementViewModel> Children { get; }
+
+        private void OnCultureChanged(object sender, CultureInfo e)
+        {
+            this.Name = this.lastDuplicateFile != null ? this.lastDuplicateFile.Name : GenerateHeader(this.lastDuplicate);
+            this.OnPropertyChanged(nameof(this.Name));
+        }
     }
 }

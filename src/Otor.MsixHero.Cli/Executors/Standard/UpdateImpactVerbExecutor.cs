@@ -23,7 +23,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 return assertion;
             }
 
-            await this.Console.WriteInfo("Comparing packages...").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Comparing).ConfigureAwait(false);
             await this.Console.WriteInfo($" * {this.Verb.OldPackagePath}").ConfigureAwait(false);
             await this.Console.WriteInfo($" * {this.Verb.NewPackagePath}").ConfigureAwait(false);
 
@@ -40,23 +40,23 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 switch (e.ErrorType)
                 {
                     case UpgradeImpactError.Unknown:
-                        await this.Console.WriteError("The packages could not be compared.").ConfigureAwait(false);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_Unknown).ConfigureAwait(false);
                         await this.Console.WriteError(e.Message).ConfigureAwait(false);
                         return StandardExitCodes.ErrorGeneric;
 
                     case UpgradeImpactError.WrongPackageFormat:
-                        await this.Console.WriteError("Invalid package format.").ConfigureAwait(false);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_Format).ConfigureAwait(false);
                         await this.Console.WriteError(e.Message).ConfigureAwait(false);
                         return StandardExitCodes.ErrorFormat;
 
                     case UpgradeImpactError.WrongFamilyName:
-                        await this.Console.WriteError("Selected packages could not be analyzed, because they are not upgradable. For an upgrade to work, the package family name must be the same.").ConfigureAwait(false);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_NotSameFamily).ConfigureAwait(false);
                         await this.Console.WriteError(e.Message).ConfigureAwait(false);
                         return StandardExitCodes.ErrorFormat;
 
                     case UpgradeImpactError.WrongPackageVersion:
-                        await this.Console.WriteError("Selected packages could not be analyzed, because the version of the 'oldPackage' is newer than the version of the 'newPackage'.").ConfigureAwait(false);
-                        await this.Console.WriteWarning("Consider using command line switch --force to ignore this check.").ConfigureAwait(false);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_Versioning).ConfigureAwait(false);
+                        await this.Console.WriteWarning(Resources.Localization.CLI_Executor_UpdateImpact_Error_Versioning_Hint).ConfigureAwait(false);
                         return StandardExitCodes.ErrorFormat;
                 }
 
@@ -71,40 +71,40 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 return StandardExitCodes.ErrorGeneric;
             }
 
-            await this.Console.WriteSuccess("Selected packages have been successfully compared.").ConfigureAwait(false);
+            await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_UpdateImpact_Success).ConfigureAwait(false);
 
-            await this.Console.WriteInfo("Package size").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Old = {results.OldPackageLayout.FileSize} bytes").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * New = {results.NewPackageLayout.FileSize} bytes").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Summary_PackageSize).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_OldBytes_Format, results.OldPackageLayout.FileSize)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_NewBytes_Format, results.NewPackageLayout.FileSize)).ConfigureAwait(false);
             await this.Console.WriteInfo("---------------------------------");
-            await this.Console.WriteInfo("Deleted files").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Count = {results.DeletedFiles.FileCount}").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Size = {results.DeletedFiles.FileSize} bytes").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Blocks = {results.DeletedFiles.BlockCount}").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Deleted).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Count_Format, results.DeletedFiles.FileCount)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Size_Format, results.DeletedFiles.FileSize)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Blocks_Format, results.DeletedFiles.BlockCount)).ConfigureAwait(false);
             await this.Console.WriteInfo("---------------------------------");
-            await this.Console.WriteInfo("Added files").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Count = {results.AddedFiles.FileCount}").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Size = {results.AddedFiles.FileSize} bytes").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Blocks = {results.AddedFiles.BlockCount}").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Added).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Count_Format, results.AddedFiles.FileCount)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Size_Format, results.AddedFiles.FileSize)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Blocks_Format, results.AddedFiles.BlockCount)).ConfigureAwait(false);
             await this.Console.WriteInfo("---------------------------------");
-            await this.Console.WriteInfo("Changed files").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Count = {results.ChangedFiles.FileCount}").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Size = {results.ChangedFiles.OldPackageFileSize} bytes -> {results.ChangedFiles.NewPackageFileSize} bytes").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Blocks = {results.ChangedFiles.OldPackageBlockCount} -> {results.ChangedFiles.NewPackageBlockCount}").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Changed).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Count_Format, results.ChangedFiles.FileCount)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_SizeChanged_Format, results.ChangedFiles.OldPackageFileSize, results.ChangedFiles.NewPackageFileSize)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_BlocksChanged_Format, results.ChangedFiles.OldPackageBlockCount, results.ChangedFiles.NewPackageBlockCount)).ConfigureAwait(false);
             await this.Console.WriteInfo("---------------------------------");
-            await this.Console.WriteInfo("Unchanged files").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Count = {results.UnchangedFiles.FileCount}").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Size = {results.UnchangedFiles.FileSize} bytes").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Blocks = {results.UnchangedFiles.BlockCount}").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Unchanged).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Count_Format, results.UnchangedFiles.FileCount)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Size_Format, results.UnchangedFiles.FileSize)).ConfigureAwait(false);
+            await this.Console.WriteInfo(" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_Blocks_Format, results.UnchangedFiles.BlockCount)).ConfigureAwait(false);
             await this.Console.WriteInfo("---------------------------------");
-            await this.Console.WriteInfo("Update impact").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Net size difference = {results.SizeDifference} bytes").ConfigureAwait(false);
-            await this.Console.WriteInfo($" * Required download = {results.UpdateImpact} bytes").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Summary_UpdateImpact).ConfigureAwait(false);
+            await this.Console.WriteInfo($" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_NetSizeDiff_Format, results.SizeDifference)).ConfigureAwait(false);
+            await this.Console.WriteInfo($" * " + string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Summary_RequiredDownload_Format, results.UpdateImpact)).ConfigureAwait(false);
             await this.Console.WriteInfo("---------------------------------");
 
             if (string.IsNullOrEmpty(this.Verb.OutputXml))
             {
-                await this.Console.WriteInfo("To get more details, rerun this command with --xml \"<output_file_path>\" switch.").ConfigureAwait(false);
+                await this.Console.WriteInfo(Resources.Localization.CLI_Executor_UpdateImpact_Success_MoreDetails).ConfigureAwait(false);
             }
             else
             {
@@ -116,29 +116,29 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 catch (ArgumentException e)
                 {
                     Logger.Error().WriteLine(e);
-                    await this.Console.WriteError("The path to XML file is invalid.");
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_InvalidXMLPath);
                     return StandardExitCodes.ErrorParameter;
                 }
                 catch (UnauthorizedAccessException e)
                 {
                     Logger.Error().WriteLine(e);
-                    await this.Console.WriteError($"Could not write to {fileInfo.FullName}. Access denied (error code: 0x{e.HResult:X2}).");
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Error_AccessDenied_Format, fileInfo.FullName, "0x" + e.HResult.ToString("X2")));
                     return e.HResult;
                 }
                 catch (IOException e)
                 {
                     Logger.Error().WriteLine(e);
-                    await this.Console.WriteError($"{e.Message} (error code: 0x{e.HResult:X2})");
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Error_MessageCode_Format, e.Message, "0x" + e.HResult.ToString("X2")));
                     return e.HResult;
                 }
                 catch (Exception e)
                 {
                     Logger.Error().WriteLine(e);
-                    await this.Console.WriteError($"Could not write the results to {fileInfo.FullName} (error code: 0x{e.HResult:X2})");
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Error_UnknownCode_Format, fileInfo.FullName, "0x" + e.HResult.ToString("X2")));
                     return e.HResult;
                 }
 
-                await this.Console.WriteSuccess($"XML file with results has been saved to {fileInfo.FullName}");
+                await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_UpdateImpact_Success_File_Format, fileInfo.FullName));
             }
             
             return StandardExitCodes.ErrorSuccess;
@@ -148,25 +148,25 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             if (string.IsNullOrEmpty(this.Verb.OldPackagePath))
             { 
-                await this.Console.WriteError("The old package path is required.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_OldPackageMissing).ConfigureAwait(false);
                 return 10;
             }
 
             if (!File.Exists(this.Verb.OldPackagePath))
             {
-                await this.Console.WriteError($"File path {this.Verb.OldPackagePath} does not exist.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Error_FileNotExists_Format, this.Verb.OldPackagePath)).ConfigureAwait(false);
                 return 10;
             }
             
             if (string.IsNullOrEmpty(this.Verb.NewPackagePath))
             {
-                await this.Console.WriteError("The new package path is required.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_NewPackageMissing).ConfigureAwait(false);
                 return 10;
             }
 
             if (!File.Exists(this.Verb.NewPackagePath))
             {
-                await this.Console.WriteError($"File path {this.Verb.NewPackagePath} does not exist.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Error_FileNotExists_Format, this.Verb.NewPackagePath)).ConfigureAwait(false);
                 return 10;
             }
 
@@ -174,13 +174,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             {
                 if (this.Verb.OutputXml.IndexOfAny(Path.GetInvalidPathChars()) != -1)
                 {
-                    await this.Console.WriteError("The path to XML file is invalid. It must be a valid Windows path.");
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_InvalidWindowsPath);
                     return 10;
                 }
                 
                 if (!Uri.TryCreate(this.Verb.OutputXml, UriKind.RelativeOrAbsolute, out _))
                 {
-                    await this.Console.WriteError("The path to XML file is invalid.");
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_UpdateImpact_Error_InvalidPath);
                     return 10;
                 }
             }

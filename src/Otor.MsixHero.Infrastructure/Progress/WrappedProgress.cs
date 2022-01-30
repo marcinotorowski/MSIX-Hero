@@ -44,12 +44,12 @@ namespace Otor.MsixHero.Infrastructure.Progress
 
             if (weight <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(weight), "The weight must be greater than zero.");
+                throw new ArgumentOutOfRangeException(nameof(weight), @"The weight must be greater than zero.");
             }
 
             if (this.hasReported && this.sealOnceStarted)
             {
-                throw new InvalidOperationException("Cannot add a new progress after at least one of already added has reported anything.");
+                throw new InvalidOperationException(@"Cannot add a new progress after at least one of already added has reported anything.");
             }
             
             var progress = new ChildProgress(weight);
@@ -92,7 +92,7 @@ namespace Otor.MsixHero.Infrastructure.Progress
             {
                 if (weight <= 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(weight), "The weight must be greater than zero.");
+                    throw new ArgumentOutOfRangeException(nameof(weight), @"The weight must be greater than zero.");
                 }    
                 
                 this.Weight = weight;

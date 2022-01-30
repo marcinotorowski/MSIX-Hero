@@ -9,6 +9,7 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="960"
              d:DesignHeight="800"
@@ -33,11 +34,11 @@
 
     <dialog:ChangeableDialog
         Dialog="{Binding}"
-        OkButtonLabel="Create appinstaller..."
+        OkButtonLabel="{localization:Loc Dialog_AppInstaller_OK}"
         Icon="{StaticResource VectorSetup}">
         <dialog:ChangeableDialog.Footer>
             <StackPanel VerticalAlignment="Center" Visibility="{Binding TabPackage.AllowChangingSourcePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Button Padding="8 4" Margin="4" Content="Load from file..." Command="{Binding OpenCommand}" Visibility="{Binding State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
+                <Button Padding="8 4" Margin="4" Content="{localization:Loc Dialog_AppInstaller_LoadButton}" Command="{Binding OpenCommand}" Visibility="{Binding State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
             </StackPanel>
         </dialog:ChangeableDialog.Footer>
         <dialog:ChangeableDialog.DialogContentTemplate>
@@ -48,12 +49,16 @@
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Your .appinstaller file has been successfully created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock Text="{localization:Loc Dialog_AppInstaller_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                     <TextBlock TextAlignment="Center">
-                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the .appinstaller file</Hyperlink>
+                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">
+                        <Run Text="{localization:Loc Dialog_AppInstaller_Success_FolderLink}" />
+                    </Hyperlink>
                     </TextBlock>
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink Command="{Binding ResetCommand}">Continue editing</Hyperlink>
+                        <Hyperlink Command="{Binding ResetCommand}">
+                            <Run Text="{localization:Loc Dialog_AppInstaller_Success_ContinueLink}" />
+                        </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

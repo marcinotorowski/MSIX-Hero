@@ -15,13 +15,14 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Manifest
 {
-    [Verb("addCapability", HelpText = "Adds a specified capability to the package manifest.")]
+    [Verb("addCapability", HelpText = "CLI_Verbs_Edit_AddCapability_VerbName", ResourceType = typeof(Localization))]
     public class AddCapabilityVerb : BaseEditVerb
     {
-        [Value(0, HelpText = "The name of the capability to add.")]
+        [Value(0, HelpText = "CLI_Verbs_Edit_AddCapability_Prop_Name", ResourceType = typeof(Localization))]
         public string Name { get; set; }
     }
 }

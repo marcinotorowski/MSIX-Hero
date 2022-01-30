@@ -24,12 +24,9 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
     {
         private bool isChecked;
 
-        public SidebarItemViewModel(ApplicationMode screen, string name, string title, Geometry icon)
+        public SidebarItemViewModel(ApplicationMode screen, string name, Geometry icon) : this(screen, name)
         {
-            this.Screen = screen;
             this.Icon = icon;
-            this.Name = name;
-            this.Title = title;
             this.IsVisible = true;
         }
 
@@ -45,9 +42,7 @@ namespace Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels
         public ApplicationMode Screen { get; }
 
         public string Name { get; }
-
-        public string Title { get; }
-
+        
         public Geometry Icon { get; }
 
         public bool IsChecked

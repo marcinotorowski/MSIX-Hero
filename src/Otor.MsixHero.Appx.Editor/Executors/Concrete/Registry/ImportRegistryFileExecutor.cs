@@ -36,12 +36,12 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 
         public override async Task Execute(ImportRegistryFile command, CancellationToken cancellationToken = default)
         {
-            Logger.Info().WriteLine($"Importing registry file {command.FilePath}...");
+            Logger.Info().WriteLine(Resources.Localization.AppxEditor_Registry_ImportingRegFile_Format, command.FilePath);
             var regFileWriter = new MsixRegistryFileWriter(this.Directory.FullName);
             regFileWriter.ImportRegFile(command.FilePath);
             if (!await regFileWriter.Flush().ConfigureAwait(false))
             {
-                Logger.Warn().WriteLine("No entries have been imported.");
+                Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_NothingImported);
             }
         }
     }

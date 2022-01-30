@@ -11,6 +11,7 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel"
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.View"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:WingetViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -33,7 +34,7 @@
 
     <dialog:ChangeableDialog 
         Dialog="{Binding}"
-        OkButtonLabel="Create winget manifest"
+        OkButtonLabel="{localization:Loc Dialogs_Winget_OkButton}"
         Icon="{StaticResource VectorConsole}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate DataType="{x:Type viewModel:WingetViewModel}">
@@ -43,17 +44,21 @@
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Text="Your winget package manifest has been successfully created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock Text="{localization:Loc Dialogs_Winget_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
 
                     <Border Padding="8" HorizontalAlignment="Center" Visibility="{Binding WingetVerified, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <TextBlock Foreground="Green" Text="Winget CLI validation has been passed." TextAlignment="Center" />
+                        <TextBlock Foreground="Green" Text="{localization:Loc Dialogs_Winget_Validation_Success}" TextAlignment="Center" />
                     </Border>
 
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the manifest</Hyperlink>
+                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">
+                            <Run Text="{localization:Loc Dialogs_Winget_Success_OpenFolder}" />
+                        </Hyperlink>
                     </TextBlock>
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink Command="{Binding ResetCommand}">Create or edit another manifest</Hyperlink>
+                        <Hyperlink Command="{Binding ResetCommand}">
+                            <Run Text="{localization:Loc Dialogs_Winget_Success_Another}" />
+                        </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>
@@ -63,7 +68,7 @@
                 <Button 
                     Padding="8 4" 
                     Margin="4" 
-                    Content="Open YAML file..." 
+                    Content="{localization:Loc Dialogs_Winget_OpenButton}" 
                     Command="{Binding OpenCommand}" 
                     Visibility="{Binding State.IsSaved, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" />
             </StackPanel>

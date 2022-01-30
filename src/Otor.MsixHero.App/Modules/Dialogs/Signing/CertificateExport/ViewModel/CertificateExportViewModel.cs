@@ -41,16 +41,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
     {
         private readonly IUacElevation _uacElevation;
 
-        public CertificateExportViewModel(IUacElevation uacElevation, IInteractionService interactionService) : base("Extract certificate", interactionService)
+        public CertificateExportViewModel(IUacElevation uacElevation, IInteractionService interactionService) : base(Resources.Localization.Dialogs_ExportCertificate_Title, interactionService)
         {
             this._uacElevation = uacElevation;
 
-            this.InputPath = new ChangeableFileProperty("Path to signed MSIX file", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.InputPath = new ChangeableFileProperty(Resources.Localization.Dialogs_ExportCertificate_PackageOrCerFile, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*.cer").BuildFilter()
             };
 
-            this.ExtractCertificate = new ChangeableFileProperty("Path to certificate", interactionService, ChangeableFileProperty.ValidatePath)
+            this.ExtractCertificate = new ChangeableFileProperty(Resources.Localization.Dialogs_ExportCertificate_Output_Cer_Path, interactionService, ChangeableFileProperty.ValidatePath)
             {
                 Filter = new DialogFilterBuilder("*.cer").BuildFilter(),
                 OpenForSaving = true
@@ -81,12 +81,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
                     if (string.IsNullOrEmpty(verb.Output))
                     {
-                        verb.Output = "<output-path>";
+                        verb.Output = Resources.Localization.Dialogs_ExportCertificate_Cmd_OutputPath_Placeholder;
                     }
 
                     if (string.IsNullOrEmpty(verb.File))
                     {
-                        verb.File = "<input-path>";
+                        verb.File = Resources.Localization.Dialogs_ExportCertificate_Cmd_InputPath_Placeholder;
                     }
 
                     return verb.ToCommandLineString();
@@ -94,14 +94,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
                 
                 case CertOperationType.Import:
                 {
-                    var verb = new TrustVerb()
+                    var verb = new TrustVerb
                     {
                         File = this.InputPath.CurrentValue
                     };
                         
                     if (string.IsNullOrEmpty(verb.File))
                     {
-                        verb.File = "<input-path>";
+                        verb.File = Resources.Localization.Dialogs_ExportCertificate_Cmd_InputPath_Placeholder;
                     }
 
                     return verb.ToCommandLineString();
@@ -138,9 +138,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
                 switch (this.OperationType.CurrentValue)
                 {
                     case CertOperationType.Extract:
-                        return "Extract certificate";
+                        return Resources.Localization.Dialogs_ExportCertificate_OkLabel_Extract;
                     case CertOperationType.Import:
-                        return "Import certificate";
+                        return Resources.Localization.Dialogs_ExportCertificate_OkLabel_Import;
                     default:
                         throw new NotSupportedException();
                 }

@@ -142,7 +142,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers
         {
             if (registryPath.IndexOf('\\') == -1)
             {
-                throw new ArgumentException("The path must be a registry path.", nameof(registryPath));
+                throw new ArgumentException(Resources.Localization.AppxEditor_Error_PathNoRegFile, nameof(registryPath));
             }
 
             var data = RegistryPathConverter.ToCanonicalRegistryPath(registryPath);
@@ -161,7 +161,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers
                     sourceRegistryHive = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
                     break;
                 default:
-                    throw new NotSupportedException($"Registry hive {data.Item1} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.AppxEditor_Error_HiveNotSupported_Format, data.Item1));
             }
 
             using (sourceRegistryHive)

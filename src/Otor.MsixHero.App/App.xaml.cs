@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -72,6 +73,7 @@ using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Elevation.Handling;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.Updates;
@@ -94,12 +96,58 @@ namespace Otor.MsixHero.App
     {
         static App()
         {
+            MsixHeroTranslation.Instance.AddResourceManager(MsixHero.App.Resources.Localization.ResourceManager, true);
+            MsixHeroTranslation.Instance.AddResourceManager(Appx.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Appx.Editor.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(AppInstaller.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Dependencies.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Cli.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Cli.Verbs.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Infrastructure.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Registry.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Winget.Resources.Localization.ResourceManager);
+
+            MsixHero.App.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Appx.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Appx.Editor.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            AppInstaller.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Cli.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Cli.Verbs.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Dependencies.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Infrastructure.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Registry.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Winget.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+
+            MsixHeroTranslation.Instance.CultureChanged += (_, info) =>
+            {
+                MsixHero.App.Resources.Localization.Culture = info;
+                Appx.Resources.Localization.Culture = info;
+                Appx.Editor.Resources.Localization.Culture = info;
+                AppInstaller.Resources.Localization.Culture = info;
+                Dependencies.Resources.Localization.Culture = info;
+                Cli.Verbs.Resources.Localization.Culture = info;
+                Cli.Resources.Localization.Culture = info;
+                Infrastructure.Resources.Localization.Culture = info;
+                Registry.Resources.Localization.Culture = info;
+                Winget.Resources.Localization.Culture = info;
+            };
+
             var logLevel = MsixHeroLogLevel.Info;
 
             ExceptionGuard.Guard(() =>
             {
                 var service = new LocalConfigurationService();
                 var config = service.GetCurrentConfiguration();
+
+                var currentCulture = config.UiConfiguration?.Language;
+                if (!string.IsNullOrEmpty(currentCulture))
+                {
+                    ExceptionGuard.Guard(() => MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.GetCultureInfo(currentCulture)));
+
+                    System.Threading.Thread.CurrentThread.CurrentCulture = MsixHeroTranslation.Instance.CurrentCulture;
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = MsixHeroTranslation.Instance.CurrentCulture;
+                }
+
                 logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
             });
 
@@ -115,6 +163,7 @@ namespace Otor.MsixHero.App
             uacClient.RegisterProxy<IRegistryManager>(this.Container);
             uacClient.RegisterProxy<ISigningManager>(this.Container);
             uacClient.RegisterProxy<IAppxLogManager>(this.Container);
+            uacClient.RegisterProxy<IMsixHeroTranslationManager>(this.Container);
             uacClient.RegisterProxy<IAppxPackageManager>(this.Container);
             uacClient.RegisterProxy<IAppxPackageQuery>(this.Container);
             uacClient.RegisterProxy<IAppxPackageInstaller>(this.Container);
@@ -125,6 +174,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IInteractionService, InteractionService>();
             containerRegistry.RegisterSingleton<IAppxVolumeManager, AppxVolumeManager>();
             containerRegistry.RegisterSingleton<IRegistryManager, RegistryManager>();
+            containerRegistry.RegisterSingleton<IMsixHeroTranslationManager, MsixHeroTranslation>();
             containerRegistry.RegisterSingleton<ISigningManager, SigningManager>();
             containerRegistry.RegisterSingleton<IAppxLogManager, AppxLogManager>();
             containerRegistry.RegisterSingleton<IAppxPackageManager, AppxPackageManager>();
@@ -138,6 +188,7 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxFileViewer, AppxFileViewer>();
+            containerRegistry.RegisterSingleton<ITranslationProvider, FileScanTranslationProvider>();
             containerRegistry.RegisterSingleton<IAppxUpdateImpactAnalyzer, AppxUpdateImpactAnalyzer>();
             containerRegistry.RegisterSingleton<IMsixHeroCommandExecutor, MsixHeroCommandExecutor>();
             containerRegistry.RegisterSingleton<IMsixHeroApplication, MsixHeroApplication>();

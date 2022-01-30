@@ -27,6 +27,7 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Packer;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -38,12 +39,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
         private readonly IAppxPacker appxPacker;
         private ICommand openSuccessLink;
         private ICommand reset;
-        public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService) : base("Unpack MSIX package", interactionService)
+        public UnpackViewModel(IAppxPacker appxPacker, IInteractionService interactionService) : base(Resources.Localization.Dialogs_Unpack_Title, interactionService)
         {
             this.appxPacker = appxPacker;
 
-            this.OutputPath = new ChangeableFolderProperty("Target directory", interactionService, ChangeableFolderProperty.ValidatePath);
-            this.InputPath = new ChangeableFileProperty("Source package path", interactionService, ChangeableFileProperty.ValidatePath)
+            this.OutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Unpack_TargetDir, interactionService, ChangeableFolderProperty.ValidatePath);
+            this.InputPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Unpack_SourceMsix, interactionService, ChangeableFileProperty.ValidatePath)
             {
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()
             };
@@ -65,12 +66,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 
             if (string.IsNullOrEmpty(this.Verb.Directory))
             {
-                this.Verb.Directory = "<output-directory>";
+                this.Verb.Directory = Resources.Localization.Dialogs_Unpack_Cmd_Placeholder_OutputDir;
             }
 
             if (string.IsNullOrEmpty(this.Verb.Package))
             {
-                this.Verb.Package = "<source-package>";
+                this.Verb.Package = Resources.Localization.Dialogs_Unpack_Cmd_Placeholder_SourcePkg;
             }
 
             this.Verb.RemovePackageAfterExtraction = this.RemoveFile.CurrentValue;
@@ -90,7 +91,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel
 
             var fileName = newFilePath.Name;
 
-            this.OutputPath.CurrentValue = Path.Join(directory, fileName + "_extracted");
+            this.OutputPath.CurrentValue = Path.Join(directory, fileName + Resources.Localization.Dialogs_Unpack_TargetDir_Suffix);
         }
 
         public ChangeableFolderProperty OutputPath { get; }

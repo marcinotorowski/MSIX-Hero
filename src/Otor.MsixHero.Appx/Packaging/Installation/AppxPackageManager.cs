@@ -22,7 +22,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Dapplo.Log;
@@ -62,7 +61,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     throw u.ExtendedError;
                 }
 
-                throw new ApplicationException("Checking for updates failed from an unspecified reason.");
+                throw new ApplicationException(Resources.Localization.Packages_Update_CheckError);
             }
 
             return (AppInstallerUpdateAvailabilityResult)(int)u.Availability;
@@ -80,7 +79,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
             catch (Exception e)
             {
-                throw new ApplicationException("Could not get the list of running processes.", e);
+                throw new ApplicationException(Resources.Localization.Packages_Processes_CheckError, e);
             }
 
             var processIds = processes.Where(p => p.PackageName == packageFullName).Select(p => p.ProcessId).ToArray();

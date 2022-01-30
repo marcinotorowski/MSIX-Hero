@@ -136,7 +136,7 @@ namespace Otor.MsixHero.AppInstaller
                         new XmlSerializer(typeof(AppInstallerConfig2018)).Serialize(textWriter, new AppInstallerConfig2018(config), xmlns);
                         break;
                     default:
-                        throw new NotSupportedException("This feature set is not supported.");
+                        throw new NotSupportedException(Resources.Localization.AppInstaller_Error_NotSupportedFeature);
                 }
 
                 if (File.Exists(file))

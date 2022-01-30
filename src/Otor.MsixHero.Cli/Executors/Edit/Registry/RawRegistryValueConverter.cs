@@ -45,7 +45,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             if (longValue > uint.MaxValue)
             {
 
-                throw new ArgumentException($"The value '{inputString}' is not within  the range of DWORD values (0-{uint.MaxValue}).", nameof(inputString));
+                throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_DwordRange_Format, inputString, 0, uint.MaxValue), nameof(inputString));
             }
 
             return (uint)longValue;
@@ -63,7 +63,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             {
                 if (!ulong.TryParse(inputString.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var parsedHex))
                 {
-                    throw new ArgumentException($"The value '{inputString}' is not a valid hexadecimal number.", nameof(inputString));
+                    throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_Hex_Format, inputString), nameof(inputString));
                 }
 
                 return parsedHex;
@@ -71,7 +71,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
 
             if (!ulong.TryParse(inputString, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
             {
-                throw new ArgumentException($"The value '{inputString}' is not a valid number.", nameof(inputString));
+                throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_Number_Format, inputString), nameof(inputString));
             }
 
             return parsed;
@@ -90,7 +90,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             {
                 if (!Regex.IsMatch(inputString, "^0x[a-fA-F0-9]+$", RegexOptions.IgnoreCase))
                 {
-                    throw new ArgumentException($"The hexadecimal string '{inputString}' could not be parsed.", nameof(inputString));
+                    throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_HexParsing_Format, inputString), nameof(inputString));
                 }
 
                 return Convert.FromHexString(inputString.Substring(2));
@@ -100,7 +100,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             {
                 if (inputString.Split(',').Any(n => !int.TryParse(n, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var _)))
                 {
-                    throw new ArgumentException($"The comma-separated value '{inputString}' does not represent a correct byte sequence.", nameof(inputString));
+                    throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_CsvByte_Format, inputString), nameof(inputString));
                 }
 
                 var listOfBytes = new List<byte>();
@@ -115,7 +115,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
                         }
                         else
                         {
-                            throw new ArgumentException($"The value '{n}' does not represent a correct hex-string for a byte.", nameof(inputString));
+                            throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_ByteHex_Format, n), nameof(inputString));
                         }
                     }
                     else
@@ -126,7 +126,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
                         }
                         else
                         {
-                            throw new ArgumentException($"The value '{n}' does not represent a correct decimal value for a byte.", nameof(inputString));
+                            throw new ArgumentException(string.Format(Resources.Localization.CLI_Executor_Registry_Error_ByteDecimal_Format, n), nameof(inputString));
                         }
                     }
                 }
@@ -141,9 +141,8 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             }
             catch (Exception)
             {
-                throw new ArgumentException("The binary value must be a valid base64 string, a comma-separated list of byte values or a hex string representing bytes.", nameof(inputString));
+                throw new ArgumentException(Resources.Localization.CLI_Executor_Registry_Error_Binary, nameof(inputString));
             }
         }
-
     }
 }

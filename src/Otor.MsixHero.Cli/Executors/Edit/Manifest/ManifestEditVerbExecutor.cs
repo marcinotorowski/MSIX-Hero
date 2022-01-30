@@ -39,7 +39,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             var manifestFile = Path.Combine(directoryPath, FileConstants.AppxManifestFile);
             if (!File.Exists(manifestFile))
             {
-                throw new FileNotFoundException($"Manifest file {manifestFile} does not exist.");
+                throw new FileNotFoundException(string.Format(Resources.Localization.CLI_Executor_ManifestEdit_MissingFile_Format, manifestFile));
             }
 
             XDocument document;
@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
                 var rootNode = document.Root;
                 if (rootNode?.Name.LocalName != "Package")
                 {
-                    throw new FormatException("XML file must contain root <Package /> element.");
+                    throw new FormatException(Resources.Localization.CLI_Error_Manifest_Empty);
                 }
 
                 result = await this.ExecuteOnManifest(document).ConfigureAwait(false);

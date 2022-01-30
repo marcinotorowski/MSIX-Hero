@@ -12,7 +12,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Bulk
 
             if (pointerToSplitArgs == IntPtr.Zero)
             {
-                throw new ArgumentException("Unable to split argument.", new Win32Exception());
+                throw new ArgumentException(Resources.Localization.CLI_Executor_List_Error_Split, new Win32Exception());
             }
 
             var arguments = new string[numberOfArguments];

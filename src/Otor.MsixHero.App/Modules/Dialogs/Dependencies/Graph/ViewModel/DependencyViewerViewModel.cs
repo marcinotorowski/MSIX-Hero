@@ -36,20 +36,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
 
     public class DependencyViewerViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly IDependencyMapper dependencyMapper;
-        private readonly IInteractionService interactionService;
-        private bool isLoaded;
-        private bool showSelector = true;
-        private string tileColor;
-        private AppxPackage package;
+        private readonly IDependencyMapper _dependencyMapper;
+        private readonly IInteractionService _interactionService;
+        private bool _isLoaded;
+        private bool _showSelector = true;
+        private string _tileColor;
+        private AppxPackage _package;
 
         public DependencyViewerViewModel(
             IInteractionService interactionService, 
-            IDependencyMapper dependencyMapper) : base("Analyze dependencies", interactionService)
+            IDependencyMapper dependencyMapper) : base(Resources.Localization.Dialogs_Dependencies_Title, interactionService)
         {
-            this.dependencyMapper = dependencyMapper;
-            this.interactionService = interactionService;
-            this.Path = new ChangeableFileProperty("Path to the package", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this._dependencyMapper = dependencyMapper;
+            this._interactionService = interactionService;
+            this.Path = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Dependencies_SelectedPackage, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
                 // ReSharper disable once StringLiteralTypo
@@ -76,26 +76,26 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
         
         public bool IsLoaded
         {
-            get => this.isLoaded;
-            private set => this.SetField(ref this.isLoaded, value);
+            get => this._isLoaded;
+            private set => this.SetField(ref this._isLoaded, value);
         }
 
         public bool ShowSelector
         {
-            get => this.showSelector;
-            private set => this.SetField(ref this.showSelector, value);
+            get => this._showSelector;
+            private set => this.SetField(ref this._showSelector, value);
         }
 
         public string TileColor
         {
-            get => this.tileColor;
-            private set => this.SetField(ref this.tileColor, value);
+            get => this._tileColor;
+            private set => this.SetField(ref this._tileColor, value);
         }
 
         public AppxPackage Package
         {
-            get => this.package;
-            set => this.SetField(ref this.package, value);
+            get => this._package;
+            set => this.SetField(ref this._package, value);
         }
 
         public IExporterHandler ExporterHandler { get; set; }
@@ -126,7 +126,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
 
             if (!this.IsValid)
             {
-                this.interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, "Missing values");
+                this._interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, Resources.Localization.Dialogs_Dependencies_Validation_Missing);
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
             {
                 using (var cts = new CancellationTokenSource())
                 {
-                    var analyzer = new DependenciesLogicCoreGenerator(this.dependencyMapper);
+                    var analyzer = new DependenciesLogicCoreGenerator(this._dependencyMapper);
 
                     var progress = new Progress<ProgressData>();
                     var task = analyzer.GenerateLogic(this.Path.CurrentValue, cts.Token, progress);
@@ -162,7 +162,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError("Could not compare selected packages. " + e.Message, e);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_Dependencies_Error_Failed + " " + e.Message, e);
             }
             finally
             {

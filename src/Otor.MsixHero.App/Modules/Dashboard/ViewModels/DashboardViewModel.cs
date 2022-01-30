@@ -41,7 +41,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
         public DashboardViewModel(
             IEventAggregator eventAggregator,
             IInteractionService interactionService, 
-            IDialogService dialogService, 
+            IDialogService dialogService,
             IModuleManager moduleManager)
         {
             this.dialogOpener = new DialogOpener(moduleManager, dialogService, interactionService);
@@ -71,7 +71,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
 
             eventAggregator.GetEvent<UiExecutedEvent<SetToolFilterCommand>>().Subscribe(this.OnSetToolFilterCommand);
         }
-
+        
         public string SearchKey
         {
             get => this.searchKey;
@@ -199,7 +199,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
                 var settings = new FileDialogSettings
                 {
                     Filter = fileFilter.BuildFilter(),
-                    DialogTitle = $"Open winget manifest (*{FileConstants.WingetExtension})"
+                    DialogTitle = string.Format(Resources.Localization.Dashboard_OpenWinget_TitleFormat, $"*{FileConstants.WingetExtension}")
                 };
 
                 if (!this.interactionService.SelectFile(settings, out var filePath))
@@ -227,7 +227,7 @@ namespace Otor.MsixHero.App.Modules.Dashboard.ViewModels
                 var settings = new FileDialogSettings
                 {
                     Filter = fileFilter.BuildFilter(),
-                    DialogTitle = $"Open app installer (*{FileConstants.AppInstallerExtension})"
+                    DialogTitle = string.Format(Resources.Localization.Dashboard_OpenAppInstaller_TitleFormat, $"*{FileConstants.AppInstallerExtension}")
                 };
 
                 if (!this.interactionService.SelectFile(settings, out var filePath))

@@ -6,17 +6,18 @@
              xmlns:tabs="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs"
              xmlns:full1="clr-namespace:Otor.MsixHero.AppInstaller.Entities;assembly=Otor.MsixHero.AppInstaller"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance tabs:AppInstallerBasePackageViewModel}">
     <StackPanel>
         <TextBlock
             controls:RequiredAdorner.IsRequired="True"
             Visibility="{Binding HasArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
-            Style="{StaticResource LabelTextBlock}" Text="Package name"  />
+            Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_AppInstaller_PackageName}"  />
         <TextBlock
             controls:RequiredAdorner.IsRequired="True"
             Visibility="{Binding HasArchitecture, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-            Style="{StaticResource LabelTextBlock}" Text="Bundle name"  />
+            Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_AppInstaller_BundleName}"  />
         <TextBox Text="{Binding Name.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
         <Grid>
@@ -35,7 +36,7 @@
                 Grid.Row="0"
                 Grid.Column="0"
                 Style="{StaticResource LabelTextBlock}"
-                Text="Version" 
+                Text="{localization:Loc Dialogs_AppInstaller_PackageVersion}" 
                 Margin="0 16 0 6"  />
 
             <TextBox
@@ -50,7 +51,7 @@
                 Margin="0 16 0 6"
                 Visibility="{Binding HasArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Style="{StaticResource LabelTextBlock}"
-                Text="Architecture" />
+                Text="{localization:Loc Dialogs_AppInstaller_Architecture}" />
 
             <ComboBox
                 Grid.Row="1"
@@ -58,23 +59,23 @@
                 Visibility="{Binding HasArchitecture, Converter={StaticResource BooleanToVisibilityConverter}}"
                 SelectedValue="{Binding Architecture.CurrentValue}" 
                 SelectedValuePath="Tag">
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm64}">ARM 64-bit</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm}">ARM</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.neutral}">Neutral</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.x64}">64-bit</ComboBoxItem>
-                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.x86}">32-bit</ComboBoxItem>
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm64}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_ARM64}" />
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.arm}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_ARM}" />
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.neutral}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_Neutral}" />
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.x64}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_64}" />
+                <ComboBoxItem Tag="{x:Static full1:AppInstallerPackageArchitecture.x86}" Content="{localization:Loc Dialogs_AppInstaller_Architecture_32}" />
             </ComboBox>
 
         </Grid>
 
         <TextBlock 
             controls:RequiredAdorner.IsRequired="True"
-            Style="{StaticResource LabelTextBlock}" Text="Publisher" Margin="0 16 0 6" />
+            Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_AppInstaller_PackagePublisher}" Margin="0 16 0 6" />
         <TextBox  Text="{Binding Publisher.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBlock 
             controls:RequiredAdorner.IsRequired="True"
-            Style="{StaticResource LabelTextBlock}" Text="URI" Margin="0 16 0 6" />
+            Style="{StaticResource LabelTextBlock}" Text="{localization:Loc Dialogs_AppInstaller_PackageUri}" Margin="0 16 0 6" />
         <TextBox  Text="{Binding Uri.CurrentValue, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
     </StackPanel>

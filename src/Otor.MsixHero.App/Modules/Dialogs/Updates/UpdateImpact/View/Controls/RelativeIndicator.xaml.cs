@@ -59,7 +59,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View.Controls
             var that = (RelativeIndicator) d;
             if (Math.Abs(that.OldValue) < 0.1)
             {
-                that.PART_Text.Text = "no difference";
+                that.PART_Text.Text = MsixHero.App.Resources.Localization.Dialogs_UpdateImpact_SizeNoDiff;
                 that.PART_Icon.Visibility = Visibility.Collapsed;
                 return;
             }

@@ -14,14 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using Otor.MsixHero.Cli.Verbs.Resources;
 using CommandLine;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("edit", HelpText = "Edit a specified MSIX package.")]
+    [Verb("edit", HelpText = "CLI_Verbs_Edit_VerbName", ResourceType = typeof(Localization))]
     public class EditVerbPlaceholder : BaseVerb
     {
-        [Value(0, HelpText = "Full path to the edited package.", Required = true)]
+        [Value(0, HelpText = "CLI_Verbs_Edit_Prop_PackagePath", Required = true, ResourceType = typeof(Localization))]
         public string PackagePath { get; set; }
     }
 }

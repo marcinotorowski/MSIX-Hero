@@ -8,6 +8,7 @@
              xmlns:dialog="clr-namespace:Otor.MsixHero.App.Mvvm.Changeable.Dialog"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="500"
              d:DesignHeight="300"
@@ -32,7 +33,7 @@
 
     <dialog:ChangeableDialog 
         Dialog="{Binding}"
-        OkButtonLabel="Unpack package"
+        OkButtonLabel="{localization:Loc Dialogs_Unpack_OkButton}"
         SupportsCommandLineBuilding="True"
         SilentCommandLine="{Binding SilentCommandLine}"
         Icon="{StaticResource VectorUnpack}">
@@ -47,7 +48,7 @@
                                 <TextBlock
                                 controls:RequiredAdorner.IsRequired="True" 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Full path to an MSIX package" />
+                                Text="{localization:Loc Dialogs_Unpack_FullMsixPath}" />
                                 <DockPanel>
                                     <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding InputPath.Browse}" Margin="4 0 0 0" />
                                     <TextBox TabIndex="4" Text="{Binding InputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
@@ -56,14 +57,14 @@
                                 <TextBlock
                                 controls:RequiredAdorner.IsRequired="True"
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Full path to an folder where files will be extracted" Margin="0 16 0 6" />
+                                Text="{localization:Loc Dialogs_Unpack_FullFolderPath}" Margin="0 16 0 6" />
                                 <DockPanel>
                                     <Button TabIndex="5" Padding="10 0" Content="..." DockPanel.Dock="Right" Command="{Binding OutputPath.Browse}" Margin="4 0 0 0" />
                                     <TextBox TabIndex="4" Text="{Binding OutputPath.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True" />
                                 </DockPanel>
 
-                                <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="Create a new sub-directory for the unpacked content." Margin="0 6 0 0" />
-                                <CheckBox IsChecked="{Binding RemoveFile.CurrentValue}" Content="Remove original package after unpacking." Margin="0 6 0 0" />
+                                <CheckBox IsChecked="{Binding CreateFolder.CurrentValue}" Content="{localization:Loc Dialogs_Unpack_Options_CreateDir}" Margin="0 6 0 0" />
+                                <CheckBox IsChecked="{Binding RemoveFile.CurrentValue}" Content="{localization:Loc Dialogs_Unpack_Options_Remove}" Margin="0 6 0 0" />
 
                             </StackPanel>
                         </AdornerDecorator>
@@ -74,12 +75,16 @@
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Text="Your package has been successfully unpacked." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock Text="{localization:Loc Dialogs_Unpack_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                     <TextBlock TextAlignment="Center">
-                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing unpacked files</Hyperlink>
+                    <Hyperlink Command="{Binding OpenSuccessLinkCommand}">
+                        <Run Text="{localization:Loc Dialogs_Unpack_Success_Open}" />
+                    </Hyperlink>
                     </TextBlock>
                     <TextBlock TextAlignment="Center">
-                    <Hyperlink Command="{Binding ResetCommand}">Unpack another package</Hyperlink>
+                    <Hyperlink Command="{Binding ResetCommand}">
+                        <Run Text="{localization:Loc Dialogs_Unpack_Success_More}" />
+                    </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

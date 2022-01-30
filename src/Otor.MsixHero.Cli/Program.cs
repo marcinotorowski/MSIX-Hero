@@ -16,10 +16,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using CommandLine.Text;
 using Otor.MsixHero.Cli.Executors;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -30,15 +33,25 @@ namespace Otor.MsixHero.Cli
         static async Task<int> Main(string[] args)
         {
             var logLevel = MsixHeroLogLevel.Trace;
-
+            
             ExceptionGuard.Guard(() =>
             {
                 var service = new LocalConfigurationService();
                 var config = service.GetCurrentConfiguration();
+
+                var language = config.UiConfiguration?.Language;
+                if (!string.IsNullOrEmpty(language))
+                {
+                    ExceptionGuard.Guard(() => MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.GetCultureInfo(language)));
+                }
+
+                System.Threading.Thread.CurrentThread.CurrentCulture = MsixHeroTranslation.Instance.CurrentCulture;
+                System.Threading.Thread.CurrentThread.CurrentUICulture = MsixHeroTranslation.Instance.CurrentCulture;
                 logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
             });
 
             LogManager.Initialize(logLevel);
+            SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
 
             var console = new ConsoleImpl(Console.Out, Console.Error);
             try

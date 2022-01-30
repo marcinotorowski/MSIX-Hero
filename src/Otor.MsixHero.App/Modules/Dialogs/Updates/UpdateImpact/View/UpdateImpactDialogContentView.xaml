@@ -7,6 +7,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              xmlns:packageHeader="clr-namespace:Otor.MsixHero.App.Controls.PackageHeader"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.View"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
 
@@ -28,7 +29,7 @@
                 <Border
                     MouseLeftButtonDown="Header1Clicked"
                     Cursor="Hand"
-                    ToolTip="Press to select another file..."
+                    ToolTip="{localization:Loc Dialogs_UpdateImpact_SelectAnotherFile_Tooltip}"
                     Grid.Column="0" >
                     <Border.Style>
                         <Style TargetType="Border">
@@ -69,7 +70,7 @@
                 <Border
                     Grid.Column="2" 
                     Cursor="Hand"
-                    ToolTip="Press to select another file..."
+                    ToolTip="{localization:Loc Dialogs_UpdateImpact_SelectAnotherFile_Tooltip}"
                     MouseLeftButtonDown="Header2Clicked">
                     <Border.Style>
                         <Style TargetType="Border">
@@ -106,20 +107,20 @@
                 DockPanel.Dock="Top" />
 
             <TabControl DockPanel.Dock="Top" Visibility="{Binding Results.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" x:Name="Tabs">
-                <TabItem Header="Overview">
+                <TabItem Header="{localization:Loc Dialogs_UpdateImpact_Tabs_Overview}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <view:OverviewView />
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Size comparison">
+                <TabItem Header="{localization:Loc Dialogs_UpdateImpact_Tabs_SizeComparison}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <view:SizeComparisonView />
                     </ScrollViewer>
                 </TabItem>
-                <TabItem Header="Files">
+                <TabItem Header="{localization:Loc Dialogs_UpdateImpact_Tabs_Files}">
                     <view:FilesView />
                 </TabItem>
-                <TabItem Header="Duplicates">
+                <TabItem Header="{localization:Loc Dialogs_UpdateImpact_Tabs_Duplicates}">
                     <view:DuplicatesView />
                 </TabItem>
             </TabControl>

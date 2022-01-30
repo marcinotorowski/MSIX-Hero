@@ -49,7 +49,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
             IInteractionService interactionService, 
             IModuleManager moduleManager,
             IDialogService dialogService,
-            IUacElevation uacElevation) : base("Change volume", interactionService)
+            IUacElevation uacElevation) : base(Resources.Localization.Dialogs_ChangeVolume_Title, interactionService)
         {
             this._application = application;
             this._interactionService = interactionService;
@@ -110,11 +110,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                 {
                     var buttons = new List<string>
                     {
-                        "Create a new volume",
-                        "Go back"
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume,
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack
                     };
 
-                    var option = this._interactionService.ShowMessage("The selected package is already available on the required volume. Currently, there is only a single volume available, did you mean to create a new one first?", buttons);
+                    var option = this._interactionService.ShowMessage(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume, buttons);
 
                     if (option == 0)
                     {
@@ -129,12 +129,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                     var suggestion = this.AllVolumes.CurrentValue.FirstOrDefault(v => v?.Name != this.CurrentVolume.CurrentValue?.Name);
                     var buttons = new List<string>
                     {
-                        "Use " + suggestion?.PackageStorePath,
-                        "Create a new volume",
-                        "Cancel"
+                        string.Format(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Use_Format, suggestion?.PackageStorePath),
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume,
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack
                     };
 
-                    var option = this._interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
+                    var option = this._interactionService.ShowMessage(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice, buttons);
 
                     if (option == 1)
                     {
@@ -152,12 +152,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                 {
                     var buttons = new List<string>
                     {
-                        "Select another volume",
-                        "Create a new volume",
-                        "Cancel"
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Select,
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume,
+                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack
                     };
 
-                    var option = this._interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
+                    var option = this._interactionService.ShowMessage(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice, buttons);
 
                     if (option == 1)
                     {
@@ -168,14 +168,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                 }
             }
 
-            progress.Report(new ProgressData(20, "Moving to the selected volume..."));
+            progress.Report(new ProgressData(20, Resources.Localization.Dialogs_ChangeVolume_Moving));
             cancellationToken.ThrowIfCancellationRequested();
 
             var id = Path.GetFileName(this._packageInstallLocation);
 
             await this._uacElevation.AsAdministrator<IAppxVolumeManager>().MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
 
-            progress.Report(new ProgressData(100, "Reading packages..."));
+            progress.Report(new ProgressData(100, Resources.Localization.Dialogs_ChangeVolume_ReadingPackages));
 
             await this._application.CommandExecutor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
 

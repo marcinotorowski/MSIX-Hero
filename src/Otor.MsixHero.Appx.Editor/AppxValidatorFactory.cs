@@ -33,17 +33,17 @@ namespace Otor.MsixHero.Appx.Editor
                         return null;
                     }
 
-                    return "The resource ID cannot be empty.";
+                    return Resources.Localization.Validation_Appx_ResourceId_Empty;
                 }
 
                 if (value.Length < 1 || value.Length > 30)
                 {
-                    return "The resource ID must be a string between 1 and 30 characters in length.";
+                    return Resources.Localization.Validation_Appx_ResourceId_WrongLength;
                 }
 
                 if (!value.All(c => char.IsLetterOrDigit(c) || c == '.' || c == '-'))
                 {
-                    return "The resource ID must consist of alpha-numeric, period and dash characters.";
+                    return Resources.Localization.Validation_Appx_ResourceId_WrongChars;
                 }
 
                 return ValidateNameAndResourceIdSpecialKeywords(value);
@@ -61,17 +61,17 @@ namespace Otor.MsixHero.Appx.Editor
                         return null;
                     }
 
-                    return "The package name cannot be empty.";
+                    return Resources.Localization.Validation_Appx_PackageName_Empty;
                 }
 
                 if (value.Length < 3 || value.Length > 50)
                 {
-                    return "The package name must be a string between 3 and 50 characters in length.";
+                    return Resources.Localization.Validation_Appx_PackageName_WrongLength;
                 }
 
                 if (!value.All(c => char.IsLetterOrDigit(c) || c == '.' || c == '-'))
                 {
-                    return "The package name must consist of alpha-numeric, period and dash characters.";
+                    return Resources.Localization.Validation_Appx_PackageName_WrongChars;
                 }
                 
                 return ValidateNameAndResourceIdSpecialKeywords(value);
@@ -89,13 +89,13 @@ namespace Otor.MsixHero.Appx.Editor
                         return null;
                     }
 
-                    return "The publisher cannot be empty.";
+                    return Resources.Localization.Validation_Appx_Publisher_Empty;
                 }
 
                 if (!Regex.IsMatch(value.Replace(", ", ","), @"^(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)\s*=\s*(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*"")(?:\+(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)=(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*""))*(?:,(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)=(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*"")(?:\+(?:[A-Za-z][\w-]*|\d+(?:\.\d+)*)\s*=\s*(?:#(?:[\dA-Fa-f]{2})+|(?:[^,=\+<>#;\\""]|\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*|""(?:[^\\""] |\\[,=\+<>#;\\""]|\\[\dA-Fa-f]{2})*""))*)*$"))
                 {
                     // todo: Some better validation, RFC compliant (https://docs.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certnametostra)
-                    return "Publisher name must be a valid DN string (for example CN=Author)";
+                    return Resources.Localization.Validation_Appx_Publisher_InvalidFormat;
                 }
 
                 return null;
@@ -113,12 +113,12 @@ namespace Otor.MsixHero.Appx.Editor
                         return null;
                     }
 
-                    return "The version cannot be empty.";
+                    return Resources.Localization.Validation_Appx_Version_Empty;
                 }
 
                 if (!Version.TryParse(version, out var v) || v.Major == -1 || v.Minor == -1 || v.Revision == -1 || v.Build == -1)
                 {
-                    return "The version must be in format #.#.#.#.";
+                    return Resources.Localization.Validation_Appx_Version_InvalidFormat;
                 }
 
                 return null;
@@ -127,7 +127,7 @@ namespace Otor.MsixHero.Appx.Editor
         
         private static string ValidateNameAndResourceIdSpecialKeywords(string value)
         {
-            switch (value)
+            switch (value?.ToLowerInvariant())
             {
                 case ".":
                 case "..":
@@ -153,10 +153,10 @@ namespace Otor.MsixHero.Appx.Editor
                 case "lpt7":
                 case "lpt8":
                 case "lpt9":
-                    return "The value cannot be equal to one of the restricted keywords.";
+                    return string.Format(Resources.Localization.Validation_Appx_RestrictedValue, value);
             }
 
-            if (value.Length > 3)
+            if (value?.Length > 3)
             {
                 switch (value.Substring(0, 4))
                 {
@@ -165,7 +165,7 @@ namespace Otor.MsixHero.Appx.Editor
                     case "aux.":
                     case "nul.":
                     case "xn--":
-                        return "The value cannot start with a restricted prefix '" + value.Substring(0, 4) + "'.";
+                        return string.Format(Resources.Localization.Validation_Appx_RestrictedPrefix, value.Substring(0, 4), value);
                 }
 
                 if (value.Length > 4)
@@ -190,19 +190,19 @@ namespace Otor.MsixHero.Appx.Editor
                         case "lpt7.":
                         case "lpt8.":
                         case "lpt9.":
-                            return "The value cannot start with a restricted prefix '" + value.Substring(0, 5) + "'.";
+                            return string.Format(Resources.Localization.Validation_Appx_RestrictedPrefix, value.Substring(0, 5), value);
                     }
                 }
             }
 
-            if (value.EndsWith(".", StringComparison.OrdinalIgnoreCase))
+            if (value?.EndsWith(".", StringComparison.OrdinalIgnoreCase) == true)
             {
-                return "The value cannot end with dot.";
+                return Resources.Localization.Validation_Appx_CannotEndWithDot;
             }
 
-            if (value.Contains(".xn--", StringComparison.OrdinalIgnoreCase))
+            if (value?.Contains(".xn--", StringComparison.OrdinalIgnoreCase) == true)
             {
-                return "The value cannot contain restricted string '.xn--'.";
+                return string.Format(Resources.Localization.Validation_Appx_RestrictedXnString, value);
             }
 
             return null;

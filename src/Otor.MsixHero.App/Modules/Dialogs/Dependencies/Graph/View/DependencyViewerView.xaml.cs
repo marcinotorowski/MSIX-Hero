@@ -14,9 +14,6 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-
 namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View
 {
     /// <summary>

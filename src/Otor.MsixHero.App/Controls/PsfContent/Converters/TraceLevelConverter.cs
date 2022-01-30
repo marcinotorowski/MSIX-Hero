@@ -38,15 +38,15 @@ namespace Otor.MsixHero.App.Controls.PsfContent.Converters
             switch ((TraceLevel) value)
             {
                 case TraceLevel.UnexpectedFailures:
-                    return "Unexpected failures";
+                    return Resources.Localization.Psf_Trace_UnexpectedFailures;
                 case TraceLevel.Always:
-                    return "Unexpected failures";
+                    return Resources.Localization.Psf_Trace_Always;
                 case TraceLevel.IgnoreSuccess:
-                    return "Ignore success";
+                    return Resources.Localization.Psf_Trace_IgnoreSuccess;
                 case TraceLevel.AllFailures:
-                    return "All failures";
+                    return Resources.Localization.Psf_Trace_AllFailures;
                 case TraceLevel.Ignore:
-                    return "Ignore";
+                    return Resources.Localization.Psf_Trace_Ignore;
                 default:
                     return value.ToString();
             }

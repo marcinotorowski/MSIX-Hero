@@ -50,25 +50,25 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             this.interactionService = interactionService;
 
-            this.Name = new ValidatedChangeableProperty<string>("Package name", true, WingetValidators.GetPackageNameError);
-            this.Publisher = new ValidatedChangeableProperty<string>("Package publisher", true, WingetValidators.GetPublisherError);
-            this.Version = new ValidatedChangeableProperty<string>("Version", true, WingetValidators.GetPackageVersionError);
-            this.Id = new ValidatedChangeableProperty<string>("Package identifier", true, WingetValidators.GetPackageIdentifierError);
-            this.ManifestVersion1 = new ValidatedChangeableProperty<string>("Manifest version", true, ValidatorFactory.ValidateInteger(false, "Major version"));
-            this.ManifestVersion2 = new ValidatedChangeableProperty<string>("Manifest version", true, ValidatorFactory.ValidateInteger(false, "Minor version"));
-            this.ManifestVersion3 = new ValidatedChangeableProperty<string>("Manifest version", true, ValidatorFactory.ValidateInteger(false, "Revision"));
+            this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_PackageName, true, WingetValidators.GetPackageNameError);
+            this.Publisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Publisher, true, WingetValidators.GetPublisherError);
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_PackageVersion, true, WingetValidators.GetPackageVersionError);
+            this.Id = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_PackageIdentifier, true, WingetValidators.GetPackageIdentifierError);
+            this.ManifestVersion1 = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_ManifestVersion, true, ValidatorFactory.ValidateInteger(false, "Major version"));
+            this.ManifestVersion2 = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_ManifestVersion, true, ValidatorFactory.ValidateInteger(false, "Minor version"));
+            this.ManifestVersion3 = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_ManifestVersion, true, ValidatorFactory.ValidateInteger(false, "Revision"));
             this.AppMoniker = new ChangeableProperty<string>();
             this.Tags = new ChangeableProperty<string>();
-            this.PackageUrl = new ValidatedChangeableProperty<string>("Home page", true, ValidatorFactory.ValidateUrl(false));
+            this.PackageUrl = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Homepage, true, ValidatorFactory.ValidateUrl(false));
             this.ShortDescription = new ChangeableProperty<string>();
             this.Description = new ChangeableProperty<string>();
-            this.MinOSVersion = new ValidatedChangeableProperty<string>("Minimum OS version", true, ValidatorFactory.ValidateVersion(false));
-            this.Url = new ValidatedChangeableProperty<string>("Installer URL", ValidatorFactory.ValidateUrl(true));
-            this.Sha256 = new ValidatedChangeableProperty<string>("Installer hash", ValidatorFactory.ValidateSha256(true));
-            this.CopyrightUrl = new ValidatedChangeableProperty<string>("Copyright URL", true, ValidatorFactory.ValidateUrl(false));
-            this.Copyright = new ValidatedChangeableProperty<string>("Copyright", true, WingetValidators.GetCopyrightError);
-            this.LicenseUrl = new ValidatedChangeableProperty<string>("License URL", true, ValidatorFactory.ValidateUrl(false));
-            this.License = new ValidatedChangeableProperty<string>("License", true, WingetValidators.GetLicenseError);
+            this.MinOSVersion = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_MinimumWindowsVersion, true, ValidatorFactory.ValidateVersion(false));
+            this.Url = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Url, ValidatorFactory.ValidateUrl(true));
+            this.Sha256 = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_InstallerHash, ValidatorFactory.ValidateSha256(true));
+            this.CopyrightUrl = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_CopyrightsUrl, true, ValidatorFactory.ValidateUrl(false));
+            this.Copyright = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_Copyrights, true, WingetValidators.GetCopyrightError);
+            this.LicenseUrl = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_LicenseUrl, true, ValidatorFactory.ValidateUrl(false));
+            this.License = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Winget_License, true, WingetValidators.GetLicenseError);
             this.TabIdentity = new ChangeableContainer(this.Name, this.Publisher, this.Version, this.Id, this.ManifestVersion1, this.ManifestVersion2, this.ManifestVersion3);
             this.TabMetadata = new ChangeableContainer(this.AppMoniker, this.Tags, this.PackageUrl, this.Description, this.ShortDescription, this.MinOSVersion);
             this.TabDownloads = new ChangeableContainer(this.Url, this.Sha256);
@@ -108,22 +108,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             get => this.isGenerateHashShown;
             set => this.SetField(ref this.isGenerateHashShown, value);
         }
-
-        public static string ValidateId(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return "Application ID cannot be empty.";
-            }
-
-            if (id.IndexOf('.') == -1)
-            {
-                return "Application ID should contain a dot to separate the publisher from the product name.";
-            }
-
-            return null;
-        }
-
+        
         public ValidatedChangeableProperty<string> Name { get; }
 
         public ChangeableProperty<string> AppMoniker { get; }
@@ -177,12 +162,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             {
                 this.IsLoading = true;
 
-                using (var fs = File.OpenRead(file))
-                {
-                    var yaml = await this.YamlReader.ReadAsync(fs, cancellationToken).ConfigureAwait(true);
-                    this.YamlUtils.FillGaps(yaml);
-                    this.SetData(yaml);
-                }
+                await using var fs = File.OpenRead(file);
+                var yaml = await this.YamlReader.ReadAsync(fs, cancellationToken).ConfigureAwait(true);
+                this.YamlUtils.FillGaps(yaml);
+                this.SetData(yaml);
             }
             finally
             {
@@ -201,7 +184,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                this.interactionService.ShowError("Could not load the details from the selected file.", e);
+                this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_LoadFailed, e);
             }
             finally
             {
@@ -242,7 +225,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         private void IdOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            Logger.Debug().WriteLine($"Package ID is not touched manually and will not auto update...");
+            Logger.Debug().WriteLine("Package ID is not touched manually and will not auto update...");
             this.autoId = false;
         }
         private void UrlOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -282,11 +265,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         {
             if (string.IsNullOrEmpty(this.Url.CurrentValue))
             {
-                this.interactionService.ShowError("You must first configure the installer URL before a hash can be calculated.");
+                this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_InstallerUrlRequired);
                 return;
             }
 
-            if (this.interactionService.Confirm($"This will download the file '{this.Url.CurrentValue}' and calculate its hash. The download may take a while, do you want to continue?", type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
+            if (this.interactionService.Confirm(string.Format(Resources.Localization.Dialogs_Winget_DownloadHash_Info_Format, this.Url.CurrentValue), type: InteractionType.Question, buttons: InteractionButton.YesNo) == InteractionResult.No)
             {
                 return;
             }
@@ -337,7 +320,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 }
                 catch (Exception e)
                 {
-                    this.interactionService.ShowError($"The file could not be hashed. {e.Message}", e);
+                    this.interactionService.ShowError(Resources.Localization.Dialogs_Winget_Errors_HashingFailed + " " + e.Message, e);
                 }
             }
         }
@@ -507,7 +490,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 }
 
                 this.model.ManifestVersion = System.Version.Parse($"{v1}.{v2}.{v3}");
-                Logger.Info().WriteLine("Manifest version changed to {0}.", (object) this.model.ManifestVersion);
+                Logger.Info().WriteLine(Resources.Localization.Dialogs_Winget_ManifestVersionChanged_Format, (object) this.model.ManifestVersion);
             }
             
             this.TabInstaller.Commit();
@@ -520,11 +503,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 fileInfo.Directory.Create();
             }
 
-            using (var fs = File.OpenWrite(fileName))
-            {
-                Logger.Info().WriteLine("Writing YAML manifest to {0}", (object) fileName);
-                await this.YamlWriter.WriteAsync(model, fs, cancellationToken).ConfigureAwait(false);
-            }
+            await using var fs = File.OpenWrite(fileName);
+            Logger.Info().WriteLine(Resources.Localization.Dialogs_Winget_Yaml_Saving_Format, fileName);
+            await this.YamlWriter.WriteAsync(model, fs, cancellationToken).ConfigureAwait(false);
 
             return true;
         }

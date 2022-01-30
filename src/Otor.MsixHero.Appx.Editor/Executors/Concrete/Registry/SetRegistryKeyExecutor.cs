@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
             converter.WriteKey(command.RegistryKey);
             await converter.Flush().ConfigureAwait(false);
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info().WriteLine($"Registry key {target.Item1}\\{target.Item2} has been set.");
+            Logger.Info().WriteLine(Resources.Localization.AppxEditor_Registry_RegKeySet_Format, target.Item1, target.Item2);
         }
     }
 }

@@ -15,25 +15,26 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Manifest
 {
-    [Verb("setProperties", HelpText = "Sets package properties (like display name, logo, etc.)")]
+    [Verb("setProperties", HelpText = "CLI_Verbs_Edit_SetProperties_VerbName", ResourceType = typeof(Localization))]
     public class SetPropertiesEditVerb : BaseEditVerb
     {
-        [Option("displayName", HelpText = "The display name for the package.")]
+        [Option("displayName", HelpText = "CLI_Verbs_Edit_SetProperties_Prop_DisplayName", ResourceType = typeof(Localization))]
         public string DisplayName { get; set; }
 
-        [Option("modificationPackage", HelpText = "A boolean value representing whether this is a modification package.")]
+        [Option("modificationPackage", HelpText = "CLI_Verbs_Edit_SetProperties_Prop_ModificationPackage", ResourceType = typeof(Localization))]
         public bool? ModificationPackage { get; set; }
 
-        [Option("publisherDisplayName", HelpText = "The display name of the publisher.")]
+        [Option("publisherDisplayName", HelpText = "CLI_Verbs_Edit_SetProperties_Prop_PublisherDisplayName", ResourceType = typeof(Localization))]
         public string PublisherDisplayName { get; set; }
 
-        [Option("logo", HelpText = "The path to a internal logo.")]
+        [Option("logo", HelpText = "CLI_Verbs_Edit_SetProperties_Prop_Logo", ResourceType = typeof(Localization))]
         public string Logo { get; set; }
 
-        [Option("description", HelpText = "The package description.")]
+        [Option("description", HelpText = "CLI_Verbs_Edit_SetProperties_Prop_Description", ResourceType = typeof(Localization))]
         public string Description { get; set; }
     }
 }

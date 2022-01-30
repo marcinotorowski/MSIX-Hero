@@ -41,11 +41,11 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
             
             if (await regWriter.Flush().ConfigureAwait(false))
             {
-                Logger.Info().WriteLine("Registry key has been successfully imported.");
+                Logger.Info().WriteLine(Resources.Localization.AppxEditor_Registry_ImportSuccess);
             }
             else
             {
-                Logger.Warn().WriteLine("No new entries have been imported.");
+                Logger.Warn().WriteLine(Resources.Localization.AppxEditor_Warn_NothingImported);
             }
         }
     }

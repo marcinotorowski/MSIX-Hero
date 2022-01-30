@@ -44,7 +44,7 @@ namespace Otor.MsixHero.Appx.Psf
         {
             if (!Directory.Exists(packageRootFolder))
             {
-                throw new ArgumentException("Package folder does not exist.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, packageRootFolder));
             }
 
             return this.Read(applicationId, null, packageRootFolder);
@@ -340,11 +340,11 @@ namespace Otor.MsixHero.Appx.Psf
                     var valueBase = packageRelativeItem.Base;
                     if (string.IsNullOrEmpty(valueBase))
                     {
-                        valueBase = "<PackageDirectory>";
+                        valueBase = Resources.Localization.Packages_PkgDir_Placeholder;
                     }
                     else
                     {
-                        valueBase = Path.Join("<PackageDirectory>", valueBase).TrimEnd('\\');
+                        valueBase = Path.Join(Resources.Localization.Packages_PkgDir_Placeholder, valueBase).TrimEnd('\\');
                     }
 
                     var def = list.FirstOrDefault(item => string.Equals(valueBase, item.Directory, StringComparison.OrdinalIgnoreCase));
@@ -386,11 +386,11 @@ namespace Otor.MsixHero.Appx.Psf
                     var valueBase = packageDriveRelativeItem.Base;
                     if (string.IsNullOrEmpty(valueBase))
                     {
-                        valueBase = "<PackageDrive>";
+                        valueBase = Resources.Localization.Packages_PkgDrv_Placeholder;
                     }
                     else
                     {
-                        valueBase = Path.Join("<PackageDrive>", valueBase).TrimEnd('\\');
+                        valueBase = Path.Join(Resources.Localization.Packages_PkgDrv_Placeholder, valueBase).TrimEnd('\\');
                     }
 
                     var def = list.FirstOrDefault(item => string.Equals(valueBase, item.Directory, StringComparison.OrdinalIgnoreCase));
@@ -509,14 +509,14 @@ namespace Otor.MsixHero.Appx.Psf
 
                 if (f1[0] == f1[1] && f2[0] == f2[1] && f3[0] == f3[1])
                 {
-                    return "Files with extension *." + f1[0] + f2[0] + f3[0];
+                    return string.Format(Resources.Localization.Packages_Psf_FilesWithExt_Format, "*."+ f1[0] + f2[0] + f3[0]);
                 }
             }
 
             match = Regex.Match(regexp, @"^\^?\.*\\.([a-z0-9]+)");
             if (match.Success)
             {
-                return "Files with extension *." + match.Groups[1].Value;
+                return string.Format(Resources.Localization.Packages_Psf_FilesWithExt_Format, "*." + match.Groups[1].Value);
             }
 
             return null;

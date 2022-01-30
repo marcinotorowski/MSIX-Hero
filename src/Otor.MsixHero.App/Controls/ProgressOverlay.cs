@@ -29,7 +29,7 @@ namespace Otor.MsixHero.App.Controls
 
         public static readonly DependencyProperty ProgressProperty =  DependencyProperty.Register("Progress", typeof(double), typeof(ProgressOverlay), new PropertyMetadata(0.0));
 
-        public static readonly DependencyProperty MessageProperty =  DependencyProperty.Register("Message", typeof(string), typeof(ProgressOverlay), new PropertyMetadata("Please wait..."));
+        public static readonly DependencyProperty MessageProperty =  DependencyProperty.Register("Message", typeof(string), typeof(ProgressOverlay), new PropertyMetadata(MsixHero.App.Resources.Localization.Loading_PleaseWait));
 
         public static readonly DependencyProperty IsShownProperty =  DependencyProperty.Register("IsShown", typeof(bool), typeof(ProgressOverlay), new PropertyMetadata(false));
         

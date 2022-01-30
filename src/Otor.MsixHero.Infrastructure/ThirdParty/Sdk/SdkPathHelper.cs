@@ -31,7 +31,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 path = Path.Combine(baseDir, localName);
                 if (!File.Exists(path))
                 {
-                    throw new FileNotFoundException($"Could not locate SDK part {path}.", path);
+                    throw new FileNotFoundException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_MissingSdk_Format, path), path);
                 }
             }
 

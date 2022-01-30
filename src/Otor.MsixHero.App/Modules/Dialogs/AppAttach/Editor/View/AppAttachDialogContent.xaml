@@ -10,6 +10,7 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:AppAttachViewModel}">
 
@@ -21,7 +22,7 @@
             </b:Interaction.Behaviors>
             <TabItem.Header>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="13" Text="Packages" />
+                    <TextBlock FontSize="13" Text="{localization:Loc Dialogs_AppAttach_Tabs_Packages_Header}" />
                     <Border 
                         Tag="{Binding Files.Count, Mode=OneWay}"
                         Style="{StaticResource Badge}">
@@ -36,22 +37,22 @@
                     <TextBlock 
                         DockPanel.Dock="Top" 
                         Style="{StaticResource LabelTextBlock}"
-                        Text="Package(s) to convert to app attach volumes" />
+                        Text="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List}" />
                     <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="New">
                             <controls:LabelWithIcon
                                 Icon16x16="{StaticResource SmallPlus}"
-                                Content="Add package(s)..." />
+                                Content="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_Add}" />
                         </Button>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="Open">
                             <controls:LabelWithIcon
                                 Icon16x16="{StaticResource SmallOpen}"
-                                Content="Add folder..." />
+                                Content="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_AddFolder}" />
                         </Button>
                         <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="Delete">
                             <controls:LabelWithIcon
                                 Icon16x16="{StaticResource SmallRemove}" 
-                                Content="Remove selected" />
+                                Content="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_Remove}" />
                         </Button>
                     </WrapPanel>
                     <Grid DockPanel.Dock="Top" VerticalAlignment="Stretch">
@@ -69,7 +70,7 @@
                             </ListBox.InputBindings>
                             <ListBox.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="Remove selected package(s)" Command="Delete">
+                                    <MenuItem Header="{localization:Loc Dialogs_AppAttach_Tabs_Packages_Context_Remove}" Command="Delete">
                                         <MenuItem.Icon>
                                             <Path Style="{StaticResource MediumIcon}" Data="M 3 5 L 3 10 L 3 27 L 7 27 L 7 29 L 13.007812 29 L 12.992188 27 L 19.037109 27 L 19.050781 29 L 25 29 L 25 27 L 29 27 L 29 7 L 13.414062 7 L 11.414062 5 L 3 5 z M 5 7 L 10.585938 7 L 11.585938 8 L 10.587891 9 L 5 9.0019531 L 5 7 z M 13.414062 9 L 27 9 L 27 25 L 25 25 L 25 17 L 7 17 L 7 18 L 7 25 L 5 25 L 5 11.001953 L 11.416016 11 L 13.414062 9 z M 9 19 L 23 19 L 23 27 L 21.037109 27 L 20.992188 21 L 10.949219 21 L 10.992188 27 L 9 27 L 9 19 z M 12.962891 23 L 19.007812 23 L 19.021484 25 L 12.978516 25 L 12.962891 23 z" />
                                         </MenuItem.Icon>
@@ -89,15 +90,15 @@
                             </ListBox.Style>
                         </ListBox>
                         <TextBlock 
-                        Text="Release Left Mouse Button to drop the files here" 
-                        VerticalAlignment="Center" HorizontalAlignment="Center" 
-                        Visibility="{Binding ElementName=ListBox, Path=(helpers:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" 
-                        IsHitTestVisible="False" />
+                            Text="{localization:Loc Dialogs_AppAttach_Tabs_Packages_List_DragDropHint}" 
+                            VerticalAlignment="Center" HorizontalAlignment="Center" 
+                            Visibility="{Binding ElementName=ListBox, Path=(helpers:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            IsHitTestVisible="False" />
                     </Grid>
                 </DockPanel>
             </AdornerDecorator>
         </TabItem>
-        <TabItem Header="Options">
+        <TabItem Header="{localization:Loc Dialogs_AppAttach_Tabs_Packages_Options}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabOptions}" />
             </b:Interaction.Behaviors>
@@ -110,12 +111,20 @@
                             Margin="0 0 0 6" />
 
                         <StackPanel Orientation="Horizontal">
-                            <RadioButton GroupName="type1" IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Vhd}}" Content="VHD (recommended)" Margin="0 0 10 0" />
-                            <RadioButton GroupName="type2" IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Vhdx}}" Content="VHDX" Margin="0 0 10 0" />
+                            <RadioButton 
+                                GroupName="type1" 
+                                IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Vhd}}" 
+                                Content="{localization:Loc Dialogs_AppAttach_Type_Vhd}" 
+                                Margin="0 0 10 0" />
+                            <RadioButton 
+                                GroupName="type2" 
+                                IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Vhdx}}" 
+                                Content="{localization:Loc Dialogs_AppAttach_Type_Vhdx}" 
+                                Margin="0 0 10 0" />
                             <RadioButton x:Name="RadioCim" GroupName="type3" IsChecked="{Binding VolumeType.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static appAttach:AppAttachVolumeType.Cim}}" Margin="0 0 0 0">
                                 <TextBlock>
-                            <Run Text="CIM" />
-                            <Run Text="EXPERIMENTAL" BaselineAlignment="Top" FontWeight="Bold" FontSize="8" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
+                            <Run Text="{localization:Loc Dialogs_AppAttach_Type_Cim}" />
+                            <Run Text="{localization:Loc Dialogs_AppAttach_Type_Experimental}" BaselineAlignment="Top" FontWeight="Bold" FontSize="8" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
                                 </TextBlock>
                             </RadioButton>
                         </StackPanel>
@@ -124,14 +133,16 @@
                             <TextBlock
                                 Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource LabelTextBlock}" 
-                                Text="VHD volume size" 
+                                Text="{localization:Loc Dialogs_AppAttach_VhdVolumeSize}" 
                                 Margin="0 16 0 6" />
                             <RadioButton 
                                 Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" Content="Let MSIX Hero select required dynamic VHD size" />
+                                x:Name="SizeAuto"  GroupName="g1" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Auto}, Converter={StaticResource EnumToBooleanConverter}}" 
+                                Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Auto}" />
                             <RadioButton 
                                 Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" Content="Use a dynamic size but not more than:" Margin="0 6" />
+                                x:Name="SizeFixed"  GroupName="g2" IsChecked="{Binding Path=SizeMode.CurrentValue, ConverterParameter={x:Static viewModel:AppAttachSizeMode.Fixed}, Converter={StaticResource EnumToBooleanConverter}}" 
+                                Content="{localization:Loc Dialogs_AppAttach_VhdVolumeSize_Dynamic}" Margin="0 6" />
                             <StackPanel 
                             Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Orientation="Horizontal" IsEnabled="{Binding ElementName=SizeFixed, Path=IsChecked}" Margin="22 0 0 0">
@@ -141,32 +152,32 @@
                         </StackPanel>
 
                         <CheckBox Margin="0 16 0 0" IsChecked="{Binding ExtractCertificate.CurrentValue}">
-                            <TextBlock Text="Extract certificate" TextWrapping="Wrap" />
+                            <TextBlock Text="{localization:Loc Dialogs_AppAttach_ExtractCert_Header}" TextWrapping="Wrap" />
                         </CheckBox>
 
                         <TextBlock Foreground="{StaticResource MsixHero.Brushes.Light2}" Margin="22 0 0 0" TextWrapping="Wrap">
-                            <Run Text="With this option enabled, MSIX Hero tries to extract digital certificate from the specified package(s) and puts it next to the VHD image." />
+                            <Run Text="{localization:Loc Dialogs_AppAttach_ExtractCert_HelpText}" />
                         </TextBlock>
 
                         <CheckBox 
                             IsEnabled="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource NegativeConverter}}"
                             Margin="0 16 0 0" IsChecked="{Binding GenerateScripts.CurrentValue}">
-                            <TextBlock Text="Generate scripts for staging, registering, de-staging and de-registering" TextWrapping="Wrap" />
+                            <TextBlock Text="{localization:Loc Dialogs_AppAttach_GenScripts_Header}" TextWrapping="Wrap" />
                         </CheckBox>
 
                         <TextBlock 
                             Visibility="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
                             Foreground="{StaticResource MsixHero.Brushes.Light2}" Margin="22 0 0 0">
-                            <Run Text="See" />
-                            <Hyperlink Click="HyperlinkMsdn_OnClick">this link</Hyperlink>
-                            <Run Text="for more information and samples for testing" />
+                            <Hyperlink Click="HyperlinkMsdn_OnClick">
+                                <Run Text="{localization:Loc Dialogs_AppAttach_GenScripts_HelpText}"></Run>
+                            </Hyperlink>
                         </TextBlock>
 
                         <Border 
                             Visibility="{Binding ElementName=RadioCim, Path=IsChecked, Converter={StaticResource BooleanToVisibilityConverter}}"
                             Background="{StaticResource MsixHero.Dialog.Bar.Background}" Margin="22 2 0 0">
                             <TextBlock TextWrapping="Wrap" Margin="6" Foreground="#555">
-                        <Run Text="This option is not available for CIM images." />
+                                <Run Text="{localization:Loc Dialogs_AppAttach_CimNotAvailable}" />
                             </TextBlock>
                         </Border>
                     </StackPanel>

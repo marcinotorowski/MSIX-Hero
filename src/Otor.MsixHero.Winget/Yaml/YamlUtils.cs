@@ -73,7 +73,7 @@ namespace Otor.MsixHero.Winget.Yaml
                     await using var responseStream = response.GetResponseStream();
                     if (responseStream == null)
                     {
-                        throw new InvalidOperationException("Could not download the file.");
+                        throw new InvalidOperationException(Resources.Localization.Winget_Error_DownloadFailed);
                     }
 
                     int read;
@@ -90,7 +90,7 @@ namespace Otor.MsixHero.Winget.Yaml
                         if (totalSize > 0)
                         {
                             var p = (int)(100.0 * processed / totalSize);
-                            progressForDownload.Report(new ProgressData(p, $"Downloading... ({p}%)"));
+                            progressForDownload.Report(new ProgressData(p, string.Format(Resources.Localization.Winget_Downloading_Format, p)));
                         }
 
                         cancellationToken.ThrowIfCancellationRequested();
@@ -128,7 +128,7 @@ namespace Otor.MsixHero.Winget.Yaml
                     using IAppxFileReader src = new ZipArchiveFileReaderAdapter(fileInfo.FullName);
                     if (!src.FileExists("AppxSignature.p7x"))
                     {
-                        throw new ArgumentException($"The file '{fileInfo.Name}' does not contain a signature.", nameof(fileInfo));
+                        throw new ArgumentException(string.Format(Resources.Localization.Winget_Error_NoSignature_Format, fileInfo.Name), nameof(fileInfo));
                     }
                         
                     await using var appxSignature = src.GetFile("AppxSignature.p7x");
@@ -156,23 +156,23 @@ namespace Otor.MsixHero.Winget.Yaml
                 return await CalculateHashAsync(signatureInfo, cancellationToken, progress).ConfigureAwait(false);
             }
 
-            throw new ArgumentException("Only MSIX/APPX formats support signature footprints.", nameof(fileInfo));
+            throw new ArgumentException(Resources.Localization.Winget_Error_NotMsixAppx, nameof(fileInfo));
         }
 
         public async Task<string> CalculateHashAsync(Uri file, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var httpReq = (HttpWebRequest) WebRequest.Create(file);
+            var httpReq = (HttpWebRequest)WebRequest.Create(file);
             var response = await httpReq.GetResponseAsync().ConfigureAwait(false);
             if (response == null)
             {
-                throw new InvalidOperationException("Could not download the file " + file);
+                throw new InvalidOperationException(string.Format(Resources.Localization.Winget_Error_DownloadFailed_Format, file));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            using var responseStream = response.GetResponseStream();
+            await using var responseStream = response.GetResponseStream();
             if (responseStream == null)
             {
-                throw new InvalidOperationException("Could not download the file " + file);
+                throw new InvalidOperationException(string.Format(Resources.Localization.Winget_Error_DownloadFailed_Format, file));
             }
 
             cancellationToken.ThrowIfCancellationRequested();

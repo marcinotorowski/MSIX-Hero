@@ -76,17 +76,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 switch (this.SignatureKind)
                 {
                     case SignatureKind.System:
-                        return "System app";
+                        return Resources.Localization.Packages_Type_System;
                     case SignatureKind.Store:
-                        return "Store app";
+                        return Resources.Localization.Packages_Type_Store;
                     case SignatureKind.Enterprise:
-                        return "Side-loaded (Enterprise)";
+                        return Resources.Localization.Packages_Type_Enterprise;
                     case SignatureKind.Developer:
-                        return "Side-loaded (Developer)";
+                        return Resources.Localization.Packages_Type_Developer;
                     case SignatureKind.Unsigned:
-                        return "Side-loaded (unsigned)";
+                        return Resources.Localization.Packages_Type_Unsigned;
                     default:
-                        return "Unknown";
+                        return Resources.Localization.Packages_Type_Unknown;
                 }
             }
         }

@@ -12,17 +12,17 @@ namespace Otor.MsixHero.Infrastructure.Progress
         {
             if (min < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(min), "Minimum must be greater or equal to 0.");
+                throw new ArgumentOutOfRangeException(nameof(min), @"Minimum must be greater or equal to 0.");
             }
 
             if (max > 100)
             {
-                throw new ArgumentOutOfRangeException(nameof(max), "Maximum must be lower than or equal to 100.");
+                throw new ArgumentOutOfRangeException(nameof(max), @"Maximum must be lower than or equal to 100.");
             }
 
             if (min > max)
             {
-                throw new ArgumentOutOfRangeException(nameof(min), "Minimum must not be greater than maximum.");
+                throw new ArgumentOutOfRangeException(nameof(min), @"Minimum must not be greater than maximum.");
             }
 
             this.progress = progress;

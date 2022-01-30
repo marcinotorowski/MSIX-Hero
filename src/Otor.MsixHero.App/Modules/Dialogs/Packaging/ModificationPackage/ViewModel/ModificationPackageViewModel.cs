@@ -35,6 +35,7 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Localization;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
@@ -59,7 +60,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             IUacElevation uacElevation,
             IConfigurationService configurationService,
             IInteractionService interactionService,
-            ITimeStampFeed timeStampFeed) : base("Create modification package", interactionService)
+            ITimeStampFeed timeStampFeed) : base(Resources.Localization.Dialogs_ModPack_Title, interactionService)
         {
             this._contentBuilder = contentBuilder;
             this._uacElevation = uacElevation;
@@ -166,7 +167,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
                 case ModificationPackageBuilderAction.Msix:
                 case ModificationPackageBuilderAction.SignedMsix:
-                    if (!this._interactionService.SaveFile(FileDialogSettings.FromFilterString("MSIX Modification Packages|*" + FileConstants.MsixExtension), out selectedPath))
+                    if (!this._interactionService.SaveFile(FileDialogSettings.FromFilterString(Resources.Localization.Dialogs_ModPack_MSIX_OpenDialog + "|*" + FileConstants.MsixExtension), out selectedPath))
                     {
                         return false;
                     }
@@ -282,11 +283,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         }
         private void InitializeTabProperties()
         {
-            this.DisplayName = new ValidatedChangeableProperty<string>("Displayed name", ValidatorFactory.ValidateNotEmptyField());
-            this.PublisherDisplayName = new ValidatedChangeableProperty<string>("Displayed publisher name", ValidatorFactory.ValidateNotEmptyField());
-            this.Name = new ValidatedChangeableProperty<string>("Package name", AppxValidatorFactory.ValidatePackageName());
-            this.PublisherName = new ValidatedChangeableProperty<string>("Publisher name", AppxValidatorFactory.ValidateSubject());
-            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", AppxValidatorFactory.ValidateVersion());
+            this.DisplayName = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_DisplayName, ValidatorFactory.ValidateNotEmptyField());
+            this.PublisherDisplayName = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_PublisherDisplayName, ValidatorFactory.ValidateNotEmptyField());
+            this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_Package, AppxValidatorFactory.ValidatePackageName());
+            this.PublisherName = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_Publisher, AppxValidatorFactory.ValidateSubject());
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_Version, "1.0.0.0", AppxValidatorFactory.ValidateVersion());
 
             this.TabProperties = new ChangeableContainer(
                 this.DisplayName,
@@ -325,7 +326,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
         private void InitializeTabParentPackage()
         {
-            this.SourcePath = new ChangeableFileProperty("Parent package path", this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.SourcePath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_ModPack_ParentPath, this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 // ReSharper disable once StringLiteralTypo
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter(),
@@ -333,8 +334,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             };
 
             this.PackageSourceMode = new ChangeableProperty<PackageSourceMode>();
-            this.ParentName = new ValidatedChangeableProperty<string>("Parent package name", false, AppxValidatorFactory.ValidatePackageName());
-            this.ParentPublisher = new ValidatedChangeableProperty<string>("Parent publisher", false, AppxValidatorFactory.ValidateSubject());
+            this.ParentName = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_Parent_Package, false, AppxValidatorFactory.ValidatePackageName());
+            this.ParentPublisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_ModPack_Parent_Publisher, false, AppxValidatorFactory.ValidateSubject());
             
             this.TabParentPackage = new ChangeableContainer(
                 this.PackageSourceMode,
@@ -355,7 +356,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                 var read = mr.Read(reader).GetAwaiter().GetResult();
                 if (string.IsNullOrWhiteSpace(this.DisplayName.CurrentValue))
                 {
-                    this.DisplayName.CurrentValue = read.DisplayName + " - Modification package";
+                    this.DisplayName.CurrentValue = read.DisplayName + " - " + Resources.Localization.Dialogs_ModPack_OutputSuffix;
                 }
 
                 this.ParentName.CurrentValue = read.Name;
@@ -366,7 +367,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             catch (Exception exception)
             {
                 Logger.Error().WriteLine(exception);
-                this._interactionService.ShowError("Could not read the properties from the package.", exception);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_ModPack_Error_ReadProperties, exception);
             }
         }
 
@@ -382,12 +383,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.IncludeRegistry = new ChangeableProperty<bool>();
             this.IncludeVfsFolders = new ChangeableProperty<bool>();
 
-            this.SourceFolder = new ChangeableFolderProperty("Folder to include", this._interactionService, ChangeableFolderProperty.ValidatePathAndPresence)
+            this.SourceFolder = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_ModPack_Folder, this._interactionService, ChangeableFolderProperty.ValidatePathAndPresence)
             {
                 IsValidated = false
             };
 
-            this.SourceRegistryFile = new ChangeableFileProperty(".REG file to include", this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.SourceRegistryFile = new ChangeableFileProperty(() => Resources.Localization.Dialogs_ModPack_RegFile, this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = false,
                 Filter = new DialogFilterBuilder("*.reg").BuildFilter(),

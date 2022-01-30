@@ -15,6 +15,9 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dapplo.Log;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
@@ -26,6 +29,7 @@ using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -36,6 +40,27 @@ namespace Otor.MsixHero.AdminHelper
         private static readonly LogSource Logger = new();
         static Program()
         {
+            MsixHeroTranslation.Instance.AddResourceManager(Appx.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Appx.Editor.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Infrastructure.Resources.Localization.ResourceManager);
+            MsixHeroTranslation.Instance.AddResourceManager(Registry.Resources.Localization.ResourceManager);
+            
+            Appx.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Appx.Editor.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Infrastructure.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+            Registry.Resources.Localization.Culture = MsixHeroTranslation.Instance.CurrentCulture;
+
+            MsixHeroTranslation.Instance.CultureChanged += (_, info) =>
+            {
+                Appx.Resources.Localization.Culture = info;
+                Resources.Localization.Culture = info;
+                Appx.Editor.Resources.Localization.Culture = info;
+                Infrastructure.Resources.Localization.Culture = info;
+                Registry.Resources.Localization.Culture = info;
+            };
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
             
@@ -73,7 +98,7 @@ namespace Otor.MsixHero.AdminHelper
             }
             else
             {
-                Logger.Error().WriteLine($"Unhandled exception {e.ExceptionObject}");
+                Logger.Fatal().WriteLine(Resources.Localization.AdminHelper_Error_UnhandledException_Format, e.ExceptionObject);
             }
         }
 
@@ -84,9 +109,47 @@ namespace Otor.MsixHero.AdminHelper
             {
                 if (args.Length > 0 && args[0] == "--selfElevate")
                 {
-                    var repeat = args.Length == 1 || args[1] != "--single";
+                    var repeat = args.All(item => item != "--single");
 
-                    Logger.Debug().WriteLine("Preparing to start the pipe server...");
+                    var firstLanguage = args.FirstOrDefault(a => Regex.IsMatch(a, "^[0-9]+$"));
+                    if (firstLanguage != null)
+                    {
+                        if (!int.TryParse(firstLanguage, out var parsed))
+                        {
+                            Logger.Fatal().WriteLine(Resources.Localization.AdminHelper_Error_UnsupportedArgument);
+                            Environment.ExitCode = 1;
+                        }
+
+                        try
+                        {
+                            var ci = CultureInfo.GetCultureInfo(parsed);
+                            MsixHeroTranslation.Instance.ChangeCulture(ci);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Error().WriteLine(e.Message, e);
+                            Logger.Fatal().WriteLine(Resources.Localization.AdminHelper_Error_UnsupportedArgument);
+                            Environment.ExitCode = 1;
+                        }
+                    }
+
+
+                    ExceptionGuard.Guard(() =>
+                    {
+                        var service = new LocalConfigurationService();
+                        var config = service.GetCurrentConfiguration();
+
+                        var currentCulture = config.UiConfiguration?.Language;
+                        if (!string.IsNullOrEmpty(currentCulture))
+                        {
+                            ExceptionGuard.Guard(() => MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.GetCultureInfo(currentCulture)));
+
+                            System.Threading.Thread.CurrentThread.CurrentCulture = MsixHeroTranslation.Instance.CurrentCulture;
+                            System.Threading.Thread.CurrentThread.CurrentUICulture = MsixHeroTranslation.Instance.CurrentCulture;
+                        }
+                    });
+
+                    Logger.Debug().WriteLine(Resources.Localization.AdminHelper_PipeServerStarting);
 
                     IConfigurationService configurationService = new LocalConfigurationService();
                     var signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
@@ -102,24 +165,25 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<IAppxPackageInstaller, AppxPackageInstaller>();
                     server.RegisterProxy<IAppxLogManager, AppxLogManager>();
                     server.RegisterProxy<IAppxPackageRunner, AppxPackageRunner>();
+                    server.RegisterProxy<IMsixHeroTranslationManager, MsixHeroTranslation>(() => MsixHeroTranslation.Instance);
                     server.RegisterProxy<IAppxPackageManager, AppxPackageManager>();
                     server.RegisterProxy<IAppxPackageQuery, AppxPackageQuery>(appxPackageQuery);
                     server.StartAsync(repeat).ConfigureAwait(false).GetAwaiter().GetResult();
                 }
                 else
                 {
-                    Logger.Fatal().WriteLine("Unsupported command line arguments, terminating...");
+                    Logger.Fatal().WriteLine(Resources.Localization.AdminHelper_Error_UnsupportedArgument);
                     Environment.ExitCode = 1;
                 }
             }
             catch (AggregateException e)
             {
-                Logger.Fatal().WriteLine("Fatal exception, the program will be closed.");
+                Logger.Fatal().WriteLine(Resources.Localization.AdminHelper_Error_FatalException);
                 Logger.Fatal().WriteLine(e.GetBaseException());
             }
             catch (Exception e)
             {
-                Logger.Fatal().WriteLine("Fatal exception, the program will be closed.");
+                Logger.Fatal().WriteLine(Resources.Localization.AdminHelper_Error_FatalException);
                 Logger.Error().WriteLine(e);
             }
         }

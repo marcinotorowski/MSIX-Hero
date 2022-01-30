@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Registry.Reader
         {
             if (!File.Exists(file))
             {
-                throw new FileNotFoundException("Registry file does not exist.", nameof(file));
+                throw new FileNotFoundException(Resources.Localization.Registry_Error_RegFileNotFound, nameof(file));
             }
 
             IRegHive hive = new OffregRegistryHive(OffregLib.OffregHive.Open(file));

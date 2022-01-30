@@ -40,14 +40,14 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Files
             {
                 executor.OnFileRemoved += (_, filePath) =>
                 {
-                    this.Console.WriteSuccess($"File '{filePath}' has been removed.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_RemoveFile_Success_Format, filePath)).GetAwaiter().GetResult();
                 };
 
                 await executor.Execute(action).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"File '{this.Verb.FilePath}' could not be removed.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_RemoveFile_Error_CouldNotRemove_Format, this.Verb.FilePath)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }

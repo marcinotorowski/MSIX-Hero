@@ -15,6 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -28,6 +29,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Updates;
 using Otor.MsixHero.Appx.Updates.Entities;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -40,22 +42,21 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
         private readonly IAppxUpdateImpactAnalyzer updateImpactAnalyzer;
         private readonly IInteractionService interactionService;
 
-        public UpdateImpactViewModel(IAppxUpdateImpactAnalyzer updateImpactAnalyzer, IInteractionService interactionService) : base("Analyze update impact", interactionService)
+        public UpdateImpactViewModel(IAppxUpdateImpactAnalyzer updateImpactAnalyzer, IInteractionService interactionService) : base(Resources.Localization.Dialogs_UpdateImpact_Title, interactionService)
         {
+            MsixHeroTranslation.Instance.CultureChanged += OnCultureChange;
             this.updateImpactAnalyzer = updateImpactAnalyzer;
             this.interactionService = interactionService;
-            this.Path1 = new ChangeableFileProperty("Path to the old version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.Path1 = new ChangeableFileProperty(() => Resources.Localization.Dialogs_UpdateImpact_File1_Path, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
-                Prompt = "Select the previous version of an upgradable package",
                 // ReSharper disable once StringLiteralTypo
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
             };
 
-            this.Path2 = new ChangeableFileProperty("Path to the new version", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.Path2 = new ChangeableFileProperty(() => Resources.Localization.Dialogs_UpdateImpact_File2_Path, interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = true,
-                Prompt = "Select the newer version of an upgradable package",
                 // ReSharper disable once StringLiteralTypo
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter()
             };
@@ -68,8 +69,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             
             this.Path1.ValueChanged += this.Path1OnValueChanged;
             this.Path2.ValueChanged += this.Path2OnValueChanged;
-        }
 
+            this.SetLocalizableTexts();
+        }
+        
         private void OnExport()
         {
             if (this.Results.CurrentValue == null)
@@ -83,6 +86,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             }
 
             this.Results.CurrentValue.Export(selectedFile);
+        }
+
+        private void OnCultureChange(object sender, CultureInfo e)
+        {
+            this.SetLocalizableTexts();
         }
 
         private void OnNew()
@@ -125,13 +133,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             await this.ComparePackages();
         }
         
+        private void SetLocalizableTexts()
+        {
+            this.Path1.Prompt = Resources.Localization.Dialogs_UpdateImpact_File1_HelpText;
+            this.Path2.Prompt = Resources.Localization.Dialogs_UpdateImpact_File2_HelpText;
+        }
+
         private async Task ComparePackages(bool ignorePackageVersionError = false) 
         { 
             this.IsValidated = true;
 
             if (!this.IsValid)
             {
-                this.interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, "Missing values");
+                this.interactionService.ShowError(this.ValidationMessage, InteractionResult.OK, Resources.Localization.Dialogs_UpdateImpact_Errors_MissingValues);
                 return;
             }
 
@@ -171,8 +185,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
                             return;
                         }
 
-                        var result = this.interactionService.ShowError(updateImpactException.Message + "\r\nPress Retry to ignore the version check and compare the packages anyway.", InteractionResult.Retry | InteractionResult.Close, "Invalid versions");
-                        if (result == InteractionResult.Retry)
+                        var result = this.interactionService.ShowError(updateImpactException.Message + "\r\n" + Resources.Localization.Dialogs_UpdateImpact_Errors_IgnoreRetry, InteractionResult.Retry | InteractionResult.Close, Resources.Localization.Dialogs_UpdateImpact_Errors_InvalidVersions);
+                        if (result == InteractionResult.Retry) 
                         {
                             await this.ComparePackages(true).ConfigureAwait(false);
                         }
@@ -188,7 +202,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError("Could not compare selected packages. " + e.Message, e);
+                this.interactionService.ShowError(Resources.Localization.Dialogs_UpdateImpact_Errors + " " + e.Message, e);
             }
             finally
             {

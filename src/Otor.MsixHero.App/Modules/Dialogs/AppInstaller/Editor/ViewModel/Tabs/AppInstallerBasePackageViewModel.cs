@@ -14,19 +14,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
     {
         protected AppInstallerBasePackageViewModel()
         {
-            this.Name = new ValidatedChangeableProperty<string>("Package name", AppxValidatorFactory.ValidatePackageName());
-            this.Publisher = new ValidatedChangeableProperty<string>("Package publisher", AppxValidatorFactory.ValidateSubject());
-            this.Version = new ValidatedChangeableProperty<string>("Package version", "1.0.0", AppxValidatorFactory.ValidateVersion());
-            this.Uri = new ValidatedChangeableProperty<string>("Package URI", ValidatorFactory.ValidateUri(true));
+            this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackageName, AppxValidatorFactory.ValidatePackageName());
+            this.Publisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackagePublisher, AppxValidatorFactory.ValidateSubject());
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackageVersion, "1.0.0", AppxValidatorFactory.ValidateVersion());
+            this.Uri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackageUri, ValidatorFactory.ValidateUri(true));
             this.AddChildren(this.Name, this.Publisher, this.Version, this.Uri);
         }
 
         protected AppInstallerBasePackageViewModel(AppInstallerBaseEntry baseEntry)
         {
-            this.Name = new ValidatedChangeableProperty<string>("Package name", baseEntry.Name, AppxValidatorFactory.ValidatePackageName());
-            this.Publisher = new ValidatedChangeableProperty<string>("Package publisher", baseEntry.Publisher, AppxValidatorFactory.ValidateSubject());
-            this.Version = new ValidatedChangeableProperty<string>("Package version", baseEntry.Version, AppxValidatorFactory.ValidateVersion());
-            this.Uri = new ValidatedChangeableProperty<string>("Package URI", baseEntry.Uri, ValidatorFactory.ValidateUri(true));
+            this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackageName, baseEntry.Name, AppxValidatorFactory.ValidatePackageName());
+            this.Publisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackagePublisher, baseEntry.Publisher, AppxValidatorFactory.ValidateSubject());
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackageVersion, baseEntry.Version, AppxValidatorFactory.ValidateVersion());
+            this.Uri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_PackageUri, baseEntry.Uri, ValidatorFactory.ValidateUri(true));
             this.AddChildren(this.Name, this.Publisher, this.Version, this.Uri);
         }
 

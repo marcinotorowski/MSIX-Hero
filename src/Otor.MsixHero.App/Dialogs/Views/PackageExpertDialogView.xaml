@@ -11,6 +11,7 @@
     xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:PackageExpertDialogViewModel}">
     <mvvm:Dialog.WindowStyle>
@@ -36,27 +37,6 @@
                                     x:Name="PART_Package"
                                     Visibility="Collapsed"
                                     DataContext="{TemplateBinding Package}">
-                                   
-                                    <StackPanel Visibility="Collapsed" Orientation="Horizontal" DockPanel.Dock="Top">
-                                        <Button
-                                            Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=DataContext.IsInstalled.CurrentValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
-                                            Style="{StaticResource ActionButton}">
-                                            <controls:LabelWithIcon 
-                                                Style="{StaticResource ActionLabelWithIcon}"
-                                                Icon16x16="M 2.5 2 C 1.675781 2 1 2.675781 1 3.5 L 1 12.5 C 1 13.324219 1.675781 14 2.5 14 L 8 14 L 8 13 L 2.5 13 C 2.21875 13 2 12.78125 2 12.5 L 2 5 L 13 5 L 13 8 L 14 8 L 14 3.5 C 14 2.675781 13.324219 2 12.5 2 Z M 2.5 3 L 12.5 3 C 12.78125 3 13 3.21875 13 3.5 L 13 4 L 2 4 L 2 3.5 C 2 3.21875 2.21875 3 2.5 3 Z M 9.851563 9.148438 L 9.148438 9.851563 L 11.792969 12.5 L 9.148438 15.144531 L 9.851563 15.855469 L 12.5 13.207031 L 15.144531 15.855469 L 15.855469 15.144531 L 13.207031 12.5 L 15.855469 9.851563 L 15.144531 9.148438 L 12.5 11.792969 Z"
-                                                Content="Install" />
-                                        </Button>
-                                        <Button
-                                            Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=DataContext.IsInstalled.CurrentValue, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                            Style="{StaticResource ActionButton}">
-                                            <controls:LabelWithIcon 
-                                                Style="{StaticResource ActionLabelWithIcon}"
-                                                Icon16x16="M 2.5 2 C 1.675781 2 1 2.675781 1 3.5 L 1 12.5 C 1 13.324219 1.675781 14 2.5 14 L 8 14 L 8 13 L 2.5 13 C 2.21875 13 2 12.78125 2 12.5 L 2 5 L 13 5 L 13 8 L 14 8 L 14 3.5 C 14 2.675781 13.324219 2 12.5 2 Z M 2.5 3 L 12.5 3 C 12.78125 3 13 3.21875 13 3.5 L 13 4 L 2 4 L 2 3.5 C 2 3.21875 2.21875 3 2.5 3 Z M 9.851563 9.148438 L 9.148438 9.851563 L 11.792969 12.5 L 9.148438 15.144531 L 9.851563 15.855469 L 12.5 13.207031 L 15.144531 15.855469 L 15.855469 15.144531 L 13.207031 12.5 L 15.855469 9.851563 L 15.144531 9.148438 L 12.5 11.792969 Z"
-                                                Content="Uninstall" />
-                                        </Button>
-                                    </StackPanel>
-
-                                    
                                     <views:Header DockPanel.Dock="Top" />
                                     <views:Body DockPanel.Dock="Top"  />
                                 </DockPanel>
@@ -98,7 +78,7 @@
             Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
             DockPanel.Dock="Bottom">
             <StackPanel Margin="4" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Padding="8 4" Margin="4" Content="Close" HorizontalAlignment="Right" Click="ButtonBase_OnClick" />
+                <Button Padding="8 4" Margin="4" Content="{localization:Loc Dialogs_Close}" HorizontalAlignment="Right" Click="ButtonBase_OnClick" />
             </StackPanel>
         </Border>
 

@@ -8,6 +8,7 @@
              xmlns:tabs="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance tabs:AppInstallerPackagesViewModel}">
     <UserControl.Resources>
@@ -37,7 +38,7 @@
                     SnapsToDevicePixels="True" 
                     UseLayoutRounding="True" 
                     VerticalAlignment="Center" 
-                    ToolTip="Package"
+                    ToolTip="{localization:Loc Dialog_AppInstaller_List_Tooltip_Package}"
                     Margin="0 0 6 0">
                     <Path
                         x:Name="Path"
@@ -77,8 +78,32 @@
                 </Border>
 
                 <StackPanel>
-                    <TextBlock Text="{Binding Name.CurrentValue, FallbackValue='missing name', TargetNullValue='missing name'}" VerticalAlignment="Center" Margin="0" />
-                    <TextBlock Text="{Binding Version.CurrentValue, FallbackValue='missing version', TargetNullValue='missing version'}" VerticalAlignment="Center" Opacity="0.7" Margin="0" />
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock" x:Key="TextName">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Text" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" />
+                            <Style.Triggers>
+                                <Trigger Property="Tag" Value="{x:Null}">
+                                    <Setter Property="Text" Value="{localization:Loc Dialogs_AppInstaller_Validation_MissingName}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                        <Style TargetType="TextBlock" x:Key="TextVersion">
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Opacity" Value="0.7" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Text" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" />
+                            <Style.Triggers>
+                                <Trigger Property="Tag" Value="{x:Null}">
+                                    <Setter Property="Text" Value="{localization:Loc Dialogs_AppInstaller_Validation_MissingVersion}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <TextBlock Style="{StaticResource TextName}" Tag="{Binding Name.CurrentValue}" />
+                    <TextBlock Style="{StaticResource TextVersion}" Tag="{Binding Version.CurrentValue}" />
                 </StackPanel>
             </DockPanel>
             <DataTemplate.Triggers>
@@ -96,7 +121,7 @@
                     <Setter Property="Background" TargetName="Border" Value="{StaticResource MsixHero.Brushes.Accent.Light1}" />
                     <Setter Property="Data" TargetName="Path" Value="{StaticResource SmallCubes}" />
                     <Setter Property="Fill" TargetName="Path" Value="{StaticResource MsixHero.Brushes.Accent}" />
-                    <Setter Property="ToolTip" TargetName="Border" Value="Bundle" />
+                    <Setter Property="ToolTip" TargetName="Border" Value="{localization:Loc Dialog_AppInstaller_List_Tooltip_Bundle}" />
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -121,7 +146,7 @@
                     <controls1:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallPlus}"
-                        Content="New" />
+                        Content="{localization:Loc Dialog_AppInstaller_ToggleButton_New}" />
                 </ToggleButton>
 
                 <Popup 
@@ -150,7 +175,7 @@
                                     <controls1:LabelWithIcon 
                                         Style="{StaticResource ActionLabelWithIcon}"
                                         Icon16x16="{StaticResource SmallCube}"
-                                        Content="Package (APPX/MSIX)" />
+                                        Content="{localization:Loc Dialog_AppInstaller_ToggleButton_New_AppxMsix}" />
                                 </Button>
                                 <Button 
                                     PreviewMouseUp="UIElement_OnPreviewMouseUp"
@@ -160,7 +185,7 @@
                                     <controls1:LabelWithIcon 
                                         Style="{StaticResource ActionLabelWithIcon}"
                                         Icon16x16="{StaticResource SmallCubes}"
-                                        Content="Bundle" />
+                                        Content="{localization:Loc Dialog_AppInstaller_ToggleButton_New_Bundle}" />
                                 </Button>
                             </StackPanel>
                         </Border>
@@ -170,7 +195,7 @@
                 <Button Command="{Binding Browse}" Style="{StaticResource ActionButton}">
                     <controls1:LabelWithIcon 
                         Icon16x16="{StaticResource SmallOpen}"
-                        Content="Browse..."
+                        Content="{localization:Loc Dialog_AppInstaller_ToggleButton_New_Browse}"
                         Style="{StaticResource ActionLabelWithIcon}" />
                 </Button>
             </WrapPanel>
@@ -192,25 +217,25 @@
             </ListBox.InputBindings>
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Remove" InputGestureText="Del" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.Delete}">
+                    <MenuItem Header="{localization:Loc Dialog_AppInstaller_ContextMenu_Remove}" InputGestureText="Del" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.Delete}">
                         <MenuItem.Icon>
                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorDelete}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="New package" 
+                    <MenuItem Header="{localization:Loc Dialog_AppInstaller_ContextMenu_NewPackage}" 
                               InputGestureText="Ins" 
                               CommandParameter="{x:Static tabs:AppInstallerBasePackageViewModelType.Package}"
                               Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.New}">
                         <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource SmallCube}" />
+                            <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallCube}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="New bundle" 
+                    <MenuItem Header="{localization:Loc Dialog_AppInstaller_ContextMenu_NewBundle}" 
                               CommandParameter="{x:Static tabs:AppInstallerBasePackageViewModelType.Bundle}"
                               Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}, Path=PlacementTarget.DataContext.New}">
                         <MenuItem.Icon>
-                            <Path Style="{StaticResource MediumIcon}" Data="{StaticResource SmallCubes}" />
+                            <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallCubes}" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>

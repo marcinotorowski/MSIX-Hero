@@ -87,18 +87,18 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
         {
             if (packagePath == null)
             {
-                throw new ArgumentNullException(nameof(packagePath), "Package path must not be empty.");
+                throw new ArgumentNullException(nameof(packagePath), Resources.Localization.Packages_Error_EmptyPath);
             }
 
             if (volumePath == null)
             {
-                throw new ArgumentNullException(nameof(volumePath), "Volume path must not be empty.");
+                throw new ArgumentNullException(nameof(volumePath), Resources.Localization.Packages_Error_EmptyVolumePath);
             }
 
             var packageFileInfo = new FileInfo(packagePath);
             if (!packageFileInfo.Exists)
             {
-                throw new FileNotFoundException($"File {packagePath} does not exist.", packagePath);
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath), packagePath);
             }
 
             switch (Path.GetExtension(volumePath).ToLowerInvariant())
@@ -107,7 +107,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 case FileConstants.AppAttachVhdxExtension:
                     break;
                 default:
-                    throw new NotSupportedException($"Disk format {Path.GetExtension(volumePath)} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.Packages_Error_DiskFormatNotSupported, Path.GetExtension(volumePath)));
             }
 
             var volumeFileInfo = new FileInfo(volumePath);
@@ -170,7 +170,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
                     if (newDrives.Length != 1 || newVolumes.Length != 1)
                     {
-                        throw new InvalidOperationException("Could not mount the drive.");
+                        throw new InvalidOperationException(Resources.Localization.Packages_Error_Mount);
                     }
 
                     cancellationToken.ThrowIfCancellationRequested();
@@ -197,7 +197,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
         private static Task StartService(CancellationToken cancellationToken, IProgress<ProgressData> progressReporter = default)
         {
-            progressReporter?.Report(new ProgressData(0, "Finishing..."));
+            progressReporter?.Report(new ProgressData(0, Resources.Localization.Packages_Error_AppAttachFinishing));
             var serviceController = new ServiceController("ShellHWDetection");
             if (serviceController.Status != ServiceControllerStatus.Running)
             {
@@ -228,31 +228,31 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
         {
             if (sourcePath == null)
             {
-                throw new ArgumentNullException(nameof(sourcePath), "Package path must not be empty.");
+                throw new ArgumentNullException(nameof(sourcePath), Resources.Localization.Packages_Error_EmptyPath);
             }
 
             Logger.Info().WriteLine("Expanding MSIX...");
-            progressReporter?.Report(new ProgressData(0, "Expanding MSIX..."));
+            progressReporter?.Report(new ProgressData(0, Resources.Localization.Packages_AppAttach_Expanding));
             cancellationToken.ThrowIfCancellationRequested();
 
             var dir = new DirectoryInfo(targetPath);
             var existing = dir.Exists ? dir.EnumerateDirectories().Select(d => d.Name.ToLowerInvariant()).ToArray() : Array.Empty<string>();
 
             await this.MsixMgr.Unpack(sourcePath, targetPath, cancellationToken, progressReporter).ConfigureAwait(false);
-            progressReporter?.Report(new ProgressData(70, "Expanding MSIX..."));
+            progressReporter?.Report(new ProgressData(70, Resources.Localization.Packages_AppAttach_Expanding));
 
             var result = dir.EnumerateDirectories().Single(d => !existing.Contains(d.Name.ToLowerInvariant()));
 
             Logger.Info().WriteLine("Applying ACLs...");
-            progressReporter?.Report(new ProgressData(80, "Applying ACLs..."));
+            progressReporter?.Report(new ProgressData(80, Resources.Localization.Packages_AppAttach_ApplyingACL));
             await this.MsixMgr.ApplyAcls(result.FullName, cancellationToken).ConfigureAwait(false);
-            progressReporter?.Report(new ProgressData(100, "Applying ACLs..."));
+            progressReporter?.Report(new ProgressData(100, Resources.Localization.Packages_AppAttach_ApplyingACL));
         }
 
         private static Task<bool> StopService(IProgress<ProgressData> progressReporter = default)
         {
             Logger.Debug().WriteLine("Trying to stop service ShellHWDetection...");
-            progressReporter?.Report(new ProgressData(0, "Initializing..."));
+            progressReporter?.Report(new ProgressData(0, Resources.Localization.Packages_AppAttach_Initializing));
             var serviceController = new ServiceController("ShellHWDetection");
             if (serviceController.Status == ServiceControllerStatus.Running)
             {

@@ -40,13 +40,13 @@ namespace Otor.MsixHero.Appx.Updates
             var type1 = GetPackageTypeFromFile(package1Path);
             if (type1 == PackageType.Unsupported)
             {
-                throw new ArgumentException($"File {Path.GetFileName(package1Path)} is not supported.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_FileNotsupported_Format, Path.GetFileName(package1Path)));
             }
 
             var type2 = GetPackageTypeFromFile(package2Path);
             if (type2 == PackageType.Unsupported)
             {
-                throw new ArgumentException($"File {Path.GetFileName(package2Path)} is not supported.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_FileNotsupported_Format, Path.GetFileName(package2Path)));
             }
 
             await AssertPackagesUpgradable(package1Path, package2Path, ignoreVersionCheck).ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace Otor.MsixHero.Appx.Updates
             {
                 if (type2 == PackageType.Bundle || type1 == PackageType.Bundle)
                 {
-                    throw new NotSupportedException("A bundle can be only compared to another bundle.");
+                    throw new NotSupportedException(Resources.Localization.Packages_UpdateImpact_Error_BundleMismatch);
                 }
 
                 string appxBlock1 = null;
@@ -113,18 +113,16 @@ namespace Otor.MsixHero.Appx.Updates
                         case PackageType.Msix:
                             using (IAppxFileReader fileReader = new ZipArchiveFileReaderAdapter(package1Path))
                             {
-                                using (var msixStream = fileReader.GetFile("AppxBlockMap.xml"))
+                                await using var msixStream = fileReader.GetFile("AppxBlockMap.xml");
+                                var tempFile = Path.Join(Path.GetTempPath(), "msix-hero-cp-" + Guid.NewGuid().ToString("N").Substring(0, 8));
+                                await using (var fs = File.OpenWrite(tempFile))
                                 {
-                                    var tempFile = Path.Join(Path.GetTempPath(), "msix-hero-cp-" + Guid.NewGuid().ToString("N").Substring(0, 8));
-                                    using (var fs = File.OpenWrite(tempFile))
-                                    {
-                                        await msixStream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
-                                        await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
-                                    }
-
-                                    tempPaths.Add(tempFile);
-                                    appxBlock1 = tempFile;
+                                    await msixStream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
+                                    await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
                                 }
+
+                                tempPaths.Add(tempFile);
+                                appxBlock1 = tempFile;
                             }
 
                             break;
@@ -141,18 +139,16 @@ namespace Otor.MsixHero.Appx.Updates
                         case PackageType.Msix:
                             using (IAppxFileReader fileReader = new ZipArchiveFileReaderAdapter(package2Path))
                             {
-                                using (var msixStream = fileReader.GetFile("AppxBlockMap.xml"))
+                                await using var msixStream = fileReader.GetFile("AppxBlockMap.xml");
+                                var tempFile = Path.Join(Path.GetTempPath(), "msix-hero-cp-" + Guid.NewGuid().ToString("N").Substring(0, 8));
+                                await using (var fs = File.OpenWrite(tempFile))
                                 {
-                                    var tempFile = Path.Join(Path.GetTempPath(), "msix-hero-cp-" + Guid.NewGuid().ToString("N").Substring(0, 8));
-                                    using (var fs = File.OpenWrite(tempFile))
-                                    {
-                                        await msixStream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
-                                        await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
-                                    }
-
-                                    tempPaths.Add(tempFile);
-                                    appxBlock2 = tempFile;
+                                    await msixStream.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
+                                    await fs.FlushAsync(cancellationToken).ConfigureAwait(false);
                                 }
+
+                                tempPaths.Add(tempFile);
+                                appxBlock2 = tempFile;
                             }
 
                             break;
@@ -207,7 +203,7 @@ namespace Otor.MsixHero.Appx.Updates
             }
             catch (Exception e)
             {
-                throw new UpdateImpactException($"Could not read the package. File {package1Path} has invalid or unsupported format.", UpgradeImpactError.WrongPackageFormat, e);
+                throw new UpdateImpactException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_FormatNotSupported_Format, package1Path), UpgradeImpactError.WrongPackageFormat, e);
             }
             
             try
@@ -220,12 +216,12 @@ namespace Otor.MsixHero.Appx.Updates
             }
             catch (Exception e)
             {
-                throw new UpdateImpactException($"Could not read the package. File {package2Path} has invalid or unsupported format.", UpgradeImpactError.WrongPackageFormat, e);
+                throw new UpdateImpactException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_FormatNotSupported_Format, package2Path), UpgradeImpactError.WrongPackageFormat, e);
             }
 
             if (!string.Equals(packageFamily1, packageFamily2))
             {
-                throw new UpdateImpactException($"Package '{name2}' cannot upgrade the package '{name1}' because they do not share the same family name.", UpgradeImpactError.WrongFamilyName);
+                throw new UpdateImpactException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_SameFamily_Format, name2, name1), UpgradeImpactError.WrongFamilyName);
             }
 
             if (ignoreVersionCheck)
@@ -235,7 +231,7 @@ namespace Otor.MsixHero.Appx.Updates
             
             if (Version.Parse(version2) <= Version.Parse(version1))
             {
-                throw new UpdateImpactException($"Package '{name2}' version '{version2}' cannot update the package '{name1}' version '{version1}'. The version of the upgrade package must be higher than '{version1}'.", UpgradeImpactError.WrongPackageVersion);
+                throw new UpdateImpactException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_Version_Format, name2, version2, name1, version1), UpgradeImpactError.WrongFamilyName);
             }
         }
 

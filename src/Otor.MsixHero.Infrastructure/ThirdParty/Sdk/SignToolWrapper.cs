@@ -80,17 +80,17 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         err.IndexOf("System.Net.WebException", StringComparison.OrdinalIgnoreCase) >= 0 &&
                         err.IndexOf("microsoft.com", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        throw new WebException("Unable to reach the Device Guard Signing Service", e);
+                        throw new WebException(Resources.Localization.Infrastructure_Sdk_Error_DeviceGuardNotReachable, e);
                     }
 
                     if (err.IndexOf("0x80190191", StringComparison.OrdinalIgnoreCase) >= 0 || err.IndexOf("System.Net.Http.HttpRequestException", StringComparison.OrdinalIgnoreCase) >= 0 && err.Contains("401"))
                     {
-                        throw new UnauthorizedAccessException("The provided account is not authorized to sign via the Device Guard Signing Service", e);
+                        throw new UnauthorizedAccessException(Resources.Localization.Infrastructure_Sdk_Error_DeviceGuardAccountNotAuthorized, e);
                     }
 
                     if (err.IndexOf("0x8007000d", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        throw new ArgumentException("The provided JSON token file is invalid", e);
+                        throw new ArgumentException(Resources.Localization.Infrastructure_Sdk_Error_DeviceGuardInvalidJson, e);
                     }
                 }
 
@@ -99,10 +99,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 {
                     if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
-                        throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
+                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + specialError, e.ExitCode);
                     }
 
-                    throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + $" {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)
@@ -167,10 +167,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 {
                     if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
-                        throw new SdkException($"The package could not be signed (error 0x{e.ExitCode:X2}). {specialError}", e.ExitCode);
+                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + specialError, e.ExitCode);
                     }
 
-                    throw new SdkException($"The package could not be signed (error = 0x{e.ExitCode:X2}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + line.Substring("SignTool Error: ".Length), e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)
@@ -226,10 +226,10 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 {
                     if (TryGetErrorMessageFromSignToolOutput(e.StandardOutput, out var specialError))
                     {
-                        throw new SdkException($"The package could not be signed (exit code {e.ExitCode}). {specialError}", e.ExitCode);
+                        throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + specialError, e.ExitCode);
                     }
 
-                    throw new SdkException($"The package could not be signed (exit code {e.ExitCode}). {line.Substring("SignTool Error: ".Length)}", e.ExitCode);
+                    throw new SdkException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Format, "0x" + e.ExitCode.ToString("X2")) + " " + line.Substring("SignTool Error: ".Length), e.ExitCode);
                 }
 
                 if (e.ExitCode != 0)
@@ -252,13 +252,13 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (lines.Any(l => l.Contains("-2147024885/0x8007000b")))
             {
-                error = "Package publisher and certificate subject are not the same. MSIX app cannot be signed with the selected certificate.";
+                error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_SubjectPublisherNotEqual;
                 return true;
             }
 
             if (lines.Any(l => l.Contains("-2146869243/")))
             {
-                error = "Selected timestamp server could not be used to sign the package (error 0x80096005).";
+                error = string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Timestamp_Format, "0x80096005");
                 return true;
             }
 
@@ -308,16 +308,16 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     switch (parsed.Skip(1).First().Item2.ToLowerInvariant())
                     {
                         case "private key":
-                            error = "The selected certificate does not have a private key.";
+                            error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_NoPrivateKey;
                             break;
                         case "expiry":
-                            error = "The selected certificate has expired.";
+                            error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_Expired;
                             break;
                         case "eku":
-                            error = "The selected certificate cannot be used for signing purposes (EKU mismatch).";
+                            error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_EkuMismatch;
                             break;
                         default:
-                            error = "The selected certificate does not meet the " + parsed[parsed.Count - 1].Item2 + " filter.";
+                            error = string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Filter_Format, parsed[^1].Item2);
                             break;
                     }
 
@@ -325,7 +325,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 }
                 else if (findHashIndex > 0)
                 {
-                    error = "The selected certificate failed validation of one of the following filters: " + string.Join(", ", parsed.Skip(1).Take(findHashIndex - 1).Select(x => x.Item2));
+                    error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_FailedValidation + " " + string.Join(", ", parsed.Skip(1).Take(findHashIndex - 1).Select(x => x.Item2));
                     return true;
                 }
             }
@@ -337,16 +337,16 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     switch (parsed[^1].Item2?.ToLowerInvariant())
                     {
                         case "private key":
-                            error = "The selected certificate does not have a private key.";
+                            error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_NoPrivateKey;
                             break;
                         case "expiry":
-                            error = "The selected certificate has expired.";
+                            error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_Expired;
                             break;
                         case "eku":
-                            error = "The selected certificate cannot be used for signing purposes (EKU mismatch).";
+                            error = Resources.Localization.Infrastructure_Sdk_Error_SigningError_EkuMismatch;
                             break;
                         default:
-                            error = "The selected certificate does not meet the " + parsed[^1].Item2 + " filter.";
+                            error = string.Format(Resources.Localization.Infrastructure_Sdk_Error_SigningError_Filter_Format, parsed[^1].Item2);
                             break;
                     }
                 }
@@ -354,7 +354,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (error != null)
             {
-                Logger.Info().WriteLine("Additional info from SignTool.exe: " + string.Join(Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
+                Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_Error_SigningError_ExtraInfo + " " + string.Join(Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
                 return true;
             }
 

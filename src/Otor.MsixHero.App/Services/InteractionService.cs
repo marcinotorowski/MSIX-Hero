@@ -209,7 +209,7 @@ namespace Otor.MsixHero.App.Services
                 taskDialog.ExpandedInformation = extendedInfo;
             }
 
-            taskDialog.WindowTitle = title ?? "MSIX Hero - Error";
+            taskDialog.WindowTitle = title ?? "MSIX Hero - " + Resources.Localization.Dialogs_Error_Title;
 
             if (this.context == null)
             {
@@ -411,7 +411,7 @@ namespace Otor.MsixHero.App.Services
         {
             if (string.IsNullOrEmpty(filterString))
             {
-                return "All files (*.*)|*.*";
+                return Resources.Localization.Dialogs_Browse_AllFiles + " (*.*)|*.*";
             }
 
             return filterString;

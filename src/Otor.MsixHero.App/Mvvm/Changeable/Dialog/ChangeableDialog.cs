@@ -48,6 +48,8 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
         public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(Geometry), typeof(ChangeableDialog), new PropertyMetadata(Geometry.Empty));
 
         public static readonly DependencyProperty OkButtonLabelProperty = DependencyProperty.Register("OkButtonLabel", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
+        
+        public static readonly DependencyProperty CloseButtonLabelProperty = DependencyProperty.Register("CloseButtonLabel", typeof(object), typeof(ChangeableDialog), new PropertyMetadata(null));
 
         public static readonly DependencyProperty DialogProperty = DependencyProperty.Register("Dialog", typeof(ChangeableDialogViewModel), typeof(ChangeableDialog), new PropertyMetadata(null));
         
@@ -158,6 +160,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable.Dialog
         {
             get => this.GetValue(OkButtonLabelProperty);
             set => this.SetValue(OkButtonLabelProperty, value);
+        }
+
+        public object CloseButtonLabel
+        {
+            get => this.GetValue(CloseButtonLabelProperty);
+            set => this.SetValue(CloseButtonLabelProperty, value);
         }
 
         public DataTemplate SuccessContentTemplate

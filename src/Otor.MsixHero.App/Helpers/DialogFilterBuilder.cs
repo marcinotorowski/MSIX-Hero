@@ -73,7 +73,7 @@ namespace Otor.MsixHero.App.Helpers
             var sections = filter.Split('|');
             if (sections.Length == 0)
             {
-                return "All files|*.*";
+                return Resources.Localization.Dialogs_Filter_AllFiles + "|*.*";
             }
 
             var allExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -90,18 +90,18 @@ namespace Otor.MsixHero.App.Helpers
             if (includeAllSupported && allExtensions.Count > 1 && sections.Length / 2 > 1)
             {
                 // if there is just one category then it makes no sense to show all supported files extra
-                filter = "All supported files|" + string.Join(';', allExtensions.OrderBy(e => e)) + "|" + filter;
+                filter = Resources.Localization.Dialogs_Filter_AllSupportedFiles + "|" + string.Join(';', allExtensions.OrderBy(e => e)) + "|" + filter;
             }
 
             if (includeAll && !allExtensions.Contains("*.*"))
             {
                 if (filter.Length > 0)
                 {
-                    filter += "|All files|*.*";
+                    filter += "|" + Resources.Localization.Dialogs_Filter_AllFiles + "|*.*";
                 }
                 else
                 {
-                    filter = "All files|*.*";
+                    filter = Resources.Localization.Dialogs_Filter_AllFiles + "|*.*";
                 }
             }
 
@@ -117,15 +117,15 @@ namespace Otor.MsixHero.App.Helpers
             {
                 if (exe)
                 {
-                    return "Windows Installer|*.msi|Executable files|*.exe";
+                    return Resources.Localization.Dialogs_Filter_Msi + "|*.msi|" + Resources.Localization.Dialogs_Filter_Exe + "|*.exe";
                 }
 
-                return "Windows Installer|*.msi";
+                return Resources.Localization.Dialogs_Filter_Msi + "|*.msi";
             }
 
             if (exe)
             {
-                return "Executable files|*.exe";
+                return Resources.Localization.Dialogs_Filter_Exe + "|*.exe";
             }
 
             return null;
@@ -159,7 +159,7 @@ namespace Otor.MsixHero.App.Helpers
                 }
             }).Where(ext => ext != null).OrderBy(ext => ext);
             
-            return string.Join('|', otherExtensions.Select(e => $"{e.TrimStart('*').TrimStart('.').ToUpperInvariant()} files|*.{e}"));
+            return string.Join('|', otherExtensions.Select(e => string.Format(Resources.Localization.Dialogs_Filter_MultipleFormats, e.TrimStart('*').TrimStart('.').ToUpperInvariant() + "|*." + e)));
         }
 
         private string BuildPackagesFilter()
@@ -174,7 +174,7 @@ namespace Otor.MsixHero.App.Helpers
             }
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Packages|");
+            stringBuilder.Append(Resources.Localization.Dialogs_Filter_Packages + "|");
             if (msix)
             {
                 stringBuilder.Append("*" + FileConstants.MsixExtension + ";");
@@ -191,7 +191,7 @@ namespace Otor.MsixHero.App.Helpers
         private string BuildManifestFilter()
         {
             // ReSharper disable once StringLiteralTypo
-            return this.filters.Contains(FileConstants.AppxManifestFile) ? "Manifest files|" + FileConstants.AppxManifestFile : null;
+            return this.filters.Contains(FileConstants.AppxManifestFile) ? Resources.Localization.Dialogs_Filter_Manifests + "|" + FileConstants.AppxManifestFile : null;
         }
 
         private string BuildBundles()
@@ -206,7 +206,7 @@ namespace Otor.MsixHero.App.Helpers
             }
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append("Bundles|");
+            stringBuilder.Append(Resources.Localization.Dialogs_Filter_Bundles + "|");
             
             if (msixBundle)
             {
@@ -224,7 +224,7 @@ namespace Otor.MsixHero.App.Helpers
         private string BuildWinget()
         {
             // ReSharper disable once StringLiteralTypo
-            return this.filters.Contains("*" + FileConstants.WingetExtension) ? "Winget manifests|*" + FileConstants.WingetExtension : null;
+            return this.filters.Contains("*" + FileConstants.WingetExtension) ? Resources.Localization.Dialogs_Filter_Winget + "|*" + FileConstants.WingetExtension : null;
         }
 
         private string BuildCertificateFiles()
@@ -237,7 +237,7 @@ namespace Otor.MsixHero.App.Helpers
                 return null;
             }
 
-            var stringBuilder = new StringBuilder("Certificates|");
+            var stringBuilder = new StringBuilder(Resources.Localization.Dialogs_Filter_Certificates + "|");
 
             if (pfx)
             {
@@ -254,13 +254,13 @@ namespace Otor.MsixHero.App.Helpers
 
         private string BuildRegistry()
         {
-            return this.filters.Contains("*.reg") ? "Windows Registry Files|*.reg" : null;
+            return this.filters.Contains("*.reg") ? Resources.Localization.Dialogs_Filter_Registry + "|*.reg" : null;
         }
         
         private string BuildAppInstaller()
         {
             // ReSharper disable once StringLiteralTypo
-            return this.filters.Contains("*" + FileConstants.AppInstallerExtension) ? "App installer|*" + FileConstants.AppInstallerExtension : null;
+            return this.filters.Contains("*" + FileConstants.AppInstallerExtension) ? Resources.Localization.Dialogs_Filter_AppInstaller + "|*" + FileConstants.AppInstallerExtension : null;
         }
     }
 }

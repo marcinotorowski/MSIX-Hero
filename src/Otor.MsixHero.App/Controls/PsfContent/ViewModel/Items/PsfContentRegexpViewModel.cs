@@ -14,6 +14,8 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
+using System.Text.RegularExpressions;
 using Otor.MsixHero.App.Controls.PsfContent.Model;
 using Otor.MsixHero.App.Mvvm.Changeable;
 
@@ -67,7 +69,37 @@ namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
             get => this.textAfter;
             protected set => this.SetField(ref this.textAfter, value);
         }
-        
+
+        private static (string, string, string) DecomposePsfTranslation(string translation)
+        {
+            var match = Regex.Match(translation, @"\[(?<before>[^\]]*)\]\[(?<text>[^\]]*)\]\[(?<after>[^\]]*)\]");
+            if (!match.Success)
+            {
+                throw new InvalidOperationException("Invalid value. Expected format [aaaa][bbbb][cccc]");
+            }
+
+            var before = match.Groups["after"].Value;
+            var text = match.Groups["text"].Value;
+            var after = match.Groups["after"].Value;
+
+            if (string.IsNullOrEmpty(before))
+            {
+                before = null;
+            }
+
+            if (string.IsNullOrEmpty(text))
+            {
+                text = null;
+            }
+
+            if (string.IsNullOrEmpty(after))
+            {
+                text = null;
+            }
+
+            return (before, text, after);
+        }
+
         protected virtual void SetValuesFromRegularExpression(string expr)
         {
             var interpretation = new RegexpInterpreter(expr, true);
@@ -75,34 +107,27 @@ namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
             switch (interpretation.Result)
             {
                 case InterpretationResult.Any:
-                    this.TextBefore = null;
-                    this.DisplayText = "All files";
-                    this.TextAfter = null;
+                    (this.TextBefore, this.DisplayText, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Regex_AllFiles);
                     break;
                 case InterpretationResult.Extension:
-                    this.TextBefore = "Files with extension ";
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Regex_FileWithExtension);
                     this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
                     break;
                 case InterpretationResult.Name:
-                    this.TextBefore = "File ";
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Regex_File);
                     this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
                     break;
                 case InterpretationResult.StartsWith:
-                    this.TextBefore = "Files that start with ";
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Regex_FilesStartingWith);
                     this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
                     break;
                 case InterpretationResult.EndsWith:
-                    this.TextBefore = "Files that end with ";
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Regex_FilesEndingWith);
                     this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
                     break;
                 default:
-                    this.TextBefore = "Files that match pattern";
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Regex_FilesMatching);
                     this.DisplayText = interpretation.RegularExpression;
-                    this.TextAfter = null;
                     break;
             }
         }

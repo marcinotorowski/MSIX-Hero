@@ -81,12 +81,12 @@ namespace Otor.MsixHero.Registry.Parser
 
                 if (currentRoot == null)
                 {
-                    throw new FormatException("No root found (line " + line + ")");
+                    throw new FormatException(string.Format(Resources.Localization.Registry_Error_NoRoot_Format, line));
                 }
 
                 if (string.IsNullOrEmpty(currentKey))
                 {
-                    throw new FormatException("Empty key path (line " + line + ")");
+                    throw new FormatException(string.Format(Resources.Localization.Registry_Error_EmptyKeyPath_Format, line));
                 }
 
                 var entry = new RegistryEntry
@@ -119,7 +119,7 @@ namespace Otor.MsixHero.Registry.Parser
 
                     if (match.Groups.Count != 4)
                     {
-                        throw new FormatException("Name/content pair cannot be identified (line " + line + ")");
+                        throw new FormatException(string.Format(Resources.Localization.Registry_Error_InvalidNameContentPair_Format, line));
                     }
 
                     entry.Type = ValueType.String;
@@ -180,7 +180,7 @@ namespace Otor.MsixHero.Registry.Parser
             {
                 if (!typeValuePair.EndsWith('"'))
                 {
-                    throw new FormatException("String does not end with quotes (line " + line + ")");
+                    throw new FormatException(string.Format(Resources.Localization.Registry_Error_NoEndingQuote_Format, line));
                 }
 
                 typeValuePair = typeValuePair.Trim('"');
@@ -219,12 +219,12 @@ namespace Otor.MsixHero.Registry.Parser
             // check type:value pair
             if (parts.Length != 2)
             {
-                throw new FormatException("Type/value pair could not be identified (line " + line + ")");
+                throw new FormatException(string.Format(Resources.Localization.Registry_Error_InvalidTypeValuePair_Format, line));
             }
 
             if (string.IsNullOrWhiteSpace(parts[0]))
             {
-                throw new FormatException("Type is empty (line " + line + ")");
+                throw new FormatException(string.Format(Resources.Localization.Registry_Error_TypeEmpty_Format, line));
             }
 
             var valueStr = parts[1].Trim();
@@ -243,7 +243,7 @@ namespace Otor.MsixHero.Registry.Parser
                         }
                         catch (OverflowException)
                         {
-                            throw new FormatException("Number is too big for dword (line " + line + ")");
+                            throw new FormatException(string.Format(Resources.Localization.Registry_Error_TooBigDwordNumber_Format, line));
                         }
 
                     break;
@@ -277,7 +277,7 @@ namespace Otor.MsixHero.Registry.Parser
                     {
                         if (valueStr.Split(',').Length != 4)
                         {
-                            throw new FormatException($"hex(4) type must be a list of 4 hexadecimal values, in little-indian byte order (line {line})");
+                            throw new FormatException(string.Format(Resources.Localization.Registry_Error_WrongHex4_Format, line));
                         }
 
                         return Convert.ToInt32(GetStringFromCommaSeparated(valueStr, null, true), 16);
@@ -292,7 +292,7 @@ namespace Otor.MsixHero.Registry.Parser
                     {
                         if (valueStr.Split(',').Length != 4)
                         {
-                            throw new FormatException($"hex(5) type must be a list of 4 hexadecimal values, in big-indian byte order (line {line})");
+                            throw new FormatException(string.Format(Resources.Localization.Registry_Error_WrongHex5_Format, line));
                         }
 
                         return Convert.ToInt32(GetStringFromCommaSeparated(valueStr), 16).ToString(CultureInfo.InvariantCulture);
@@ -319,14 +319,14 @@ namespace Otor.MsixHero.Registry.Parser
                         catch (OverflowException)
                         {
                             // ReSharper disable once StringLiteralTypo
-                            throw new FormatException("Number is too big for QWORD (line " + line + ")");
+                            throw new FormatException(string.Format(Resources.Localization.Registry_Error_TooBigQwordNumber_Format, line));
                         }
                     }
 
                     break;
 
                 default:
-                    throw new FormatException("Value cannot be parsed: unknown type (line " + line + ")");
+                    throw new FormatException(string.Format(Resources.Localization.Registry_Error_UnknownType_Format, line));
             }
 
             type = ValueType.None;
@@ -371,7 +371,7 @@ namespace Otor.MsixHero.Registry.Parser
 
             if (string.IsNullOrEmpty(name) || !name.StartsWith('"') || !name.EndsWith('"'))
             {
-                throw new FormatException($"'{name}' cannot be parsed for name");
+                throw new FormatException(string.Format(Resources.Localization.Registry_Error_NameParsingFailed_Format, name));
             }
 
             return name.Trim('"').Trim();
@@ -404,7 +404,7 @@ namespace Otor.MsixHero.Registry.Parser
                     !(currentLine.StartsWith("[", StringComparison.Ordinal) &&
                       currentLine.EndsWith("]", StringComparison.Ordinal)))
                 {
-                    throw new FormatException($"Error while parsing line {i + 1}: {{{lines[i]}}}");
+                    throw new FormatException(string.Format(Resources.Localization.Registry_Error_LineParsingFailed_Format, i + 1, lines[i]));
                 }
 
                 // concatenate lines
@@ -418,7 +418,7 @@ namespace Otor.MsixHero.Registry.Parser
                     }
                     else
                     {
-                        throw new FormatException($"Error while parsing line {i + 1} (unexpected end of file)");
+                        throw new FormatException(string.Format(Resources.Localization.Registry_Error_Eol_Format, i + 1));
                     }
 
                     i++;

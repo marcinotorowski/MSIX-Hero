@@ -15,6 +15,8 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Dapplo.Log;
@@ -100,12 +102,14 @@ AppDomain:      '${appdomain}'
 AssemblyVer:    '${assembly-version}'
 WorkingDir:     '${currentdir}'
 MachineName:    '${machinename}'
+Culture:        '${culture}'
+UI culture:     '${UIculture}'
 User:           '${environment-user}'
 ProcessID:      '${processid}'
 ProcessName:    '${processname}'
 ThreadID:       '${threadid}'
 BaseDir:        '${basedir}'
-Architecture:   '${environment:PROCESSOR_ARCHITECTURE}'";
+Architecture:   '${environment:PROCESSOR_ARCHITECTURE}'".Replace("${Culture}", CultureInfo.CurrentCulture.Name).Replace("${UIculture}", CultureInfo.CurrentUICulture.Name);
         }
 
         private static LogLevels Convert(MsixHeroLogLevel level)

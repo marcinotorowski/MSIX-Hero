@@ -34,7 +34,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
         public override async Task<int> Execute()
         {
-            await this.Console.WriteInfo("Reading dependencies...").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Dependencies_Reading).ConfigureAwait(false);
             var dependencyMapper = DependencyMapper.Create(new AppxPackageQuery(new RegistryManager(), new LocalConfigurationService()));
 
             var graph = await dependencyMapper.GetGraph(this.Verb.Path).ConfigureAwait(false);

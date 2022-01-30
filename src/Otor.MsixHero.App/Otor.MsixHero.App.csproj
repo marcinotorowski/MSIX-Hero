@@ -112,6 +112,11 @@
       <SubType>Code</SubType>
       <DependentUpon>PackageExpertDialogView.xaml.cs</DependentUpon>
     </Compile>
+    <Compile Update="Localization\MsixHeroApp.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MsixHeroApp.resx</DependentUpon>
+    </Compile>
     <Compile Update="Modules\Dialogs\AppAttach\Editor\View\AppAttachView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -178,6 +183,31 @@
     <Compile Update="Modules\VolumeManagement\Views\VolumesSearchView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Resources\Localization.Designer.cs">
+      <DependentUpon>Localization.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Localization.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Localization.pl.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Localization.resx">
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Localization\MsixHeroApp.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MsixHeroApp.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -276,6 +306,12 @@
     <Page Update="Modules\Dialogs\Signing\PackageSigning\View\PackageSigningView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Modules\Dialogs\Signing\SigningOptions\View\SigningOptionsDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Modules\Dialogs\Signing\SigningOptions\View\SigningOptionsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="Modules\Dialogs\Updates\UpdateImpact\View\Controls\RelativeIndicator.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

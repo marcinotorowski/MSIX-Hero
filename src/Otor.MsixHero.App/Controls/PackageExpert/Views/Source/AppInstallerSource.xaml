@@ -4,19 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              x:Name="Root"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
     <StackPanel Margin="0 0 0 0">
-        <TextBlock Style="{StaticResource DataHeader}" Text="Installed from" />
-        <TextBlock Style="{StaticResource DataValue}" Text="App installer file with update function" TextWrapping="Wrap" Margin="0 0 0 10" />
+        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_InstalledFromHeader}" />
+        <TextBlock Style="{StaticResource DataValue}" Text="{localization:Loc PackageExpert_InstalledFrom_AppInstaller}" TextWrapping="Wrap" Margin="0 0 0 10" />
 
-        <TextBlock Style="{StaticResource DataHeader}" Text="Remote .appinstaller location" />
+        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_InstalledFrom_AppInstaller_RemoteUrl}" />
         <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ElementName=Root, Path=AppInstallerUri, Mode=OneWay}" TextWrapping="Wrap" Margin="0" />
 
         <TextBlock Visibility="Collapsed" Style="{StaticResource DataValue}">
-            <Hyperlink Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}">Check for updates</Hyperlink>
+            <Hyperlink Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}">
+                <Run Text="{localization:Loc PackageExpert_CheckForUpdatesLink}" />
+            </Hyperlink>
         </TextBlock>
     </StackPanel>
 </UserControl>

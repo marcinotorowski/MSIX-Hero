@@ -7,6 +7,8 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Main.Sidebar.ViewModels"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:state="clr-namespace:Otor.MsixHero.App.Hero.State"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:SidebarViewModel}">
@@ -292,6 +294,21 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.Dashboard}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Dashboard}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.Packages}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Packages}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.VolumeManager}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_Volumes}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.EventViewer}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_EventViewer}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Screen}" Value="{x:Static state:ApplicationMode.SystemStatus}">
+                            <Setter Property="ToolTip" Value="{localization:Loc Sidebar_SystemStatus}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsVisible}">
                             <DataTrigger.Value>
                                 <system:Boolean>False</system:Boolean>
@@ -342,7 +359,7 @@
 
         <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <Button 
-                ToolTip="About MSIX Hero..."
+                ToolTip="{localization:Loc Sidebar_About}"
                 Command="Help">
                 <Viewbox Width="24" Height="24">
                     <Path 
@@ -353,7 +370,7 @@
                 </Viewbox>
             </Button>
             <Button 
-                ToolTip="Configure MSIX Hero settings..."
+                ToolTip="{localization:Loc Sidebar_Settings}"
                 Command="{Binding SettingsCommand}">
                 <Viewbox Width="24" Height="24">
                     <Path 

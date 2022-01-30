@@ -9,6 +9,7 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="400"
              d:DesignHeight="400"
@@ -44,7 +45,7 @@
         SupportsCommandLineBuilding="True"
         SilentCommandLine="{Binding SilentCommandLine}"
         Icon="{StaticResource VectorNetworkDrive}"
-        OkButtonLabel="Create volume for app attach"
+        OkButtonLabel="{localization:Loc Dialogs_AppAttach_OK}"
         Dialog="{Binding}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
@@ -54,12 +55,16 @@
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Your packages have been successfully converted to volumes for app attach." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock Text="{localization:Loc Dialogs_AppAttach_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink Click="Hyperlink_OnClick">Open the folder containing your volumes</Hyperlink>
+                        <Hyperlink Click="Hyperlink_OnClick">
+                            <Run Text="{localization:Loc Dialogs_AppAttach_Success_OpenFolder}" />
+                        </Hyperlink>
                     </TextBlock>
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink x:Name="Hyperlink" Command="{Binding ResetCommand}">Convert more packages</Hyperlink>
+                        <Hyperlink x:Name="Hyperlink" Command="{Binding ResetCommand}">
+                            <Run Text="{localization:Loc Dialogs_AppAttach_Success_ConvertMore}" />
+                        </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

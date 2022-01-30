@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.Converters"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
     <UserControl.Resources>
@@ -23,7 +24,7 @@
         <treeListView:TreeListViewControl.Columns>
             <GridViewColumn Width="400">
                 <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="DefaultSorting" Content="Name" Click="GridHeaderOnClick" />
+                    <GridViewColumnHeader Tag="DefaultSorting" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_Name}" Click="GridHeaderOnClick" />
                 </GridViewColumn.Header>
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
@@ -41,7 +42,7 @@
             </GridViewColumn>
             <GridViewColumn Width="150">
                 <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="UpdateImpact" Content="Update impact" Click="GridHeaderOnClick" />
+                    <GridViewColumnHeader Tag="UpdateImpact" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_UpdateImpact}" Click="GridHeaderOnClick" />
                 </GridViewColumn.Header>
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
@@ -51,7 +52,7 @@
             </GridViewColumn>
             <GridViewColumn Width="150">
                 <GridViewColumn.Header>
-                    <GridViewColumnHeader Tag="PossibleSizeReduction" Content="Possible size reduction" Click="GridHeaderOnClick" />
+                    <GridViewColumnHeader Tag="PossibleSizeReduction" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_SizeReduction}" Click="GridHeaderOnClick" />
                 </GridViewColumn.Header>
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>

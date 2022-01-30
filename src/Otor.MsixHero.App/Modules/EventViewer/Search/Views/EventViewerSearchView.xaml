@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:mvvm="http://prismlibrary.com/"
-             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.ViewModels"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.EventViewer.Search.ViewModels"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              Focusable="False"
@@ -21,7 +22,7 @@
                     <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
                 </Path.LayoutTransform>
             </Path>
-            <TextBlock TextTrimming="CharacterEllipsis" Text="Search in events..." Foreground="{StaticResource MsixHero.Brushes.Light2}" VerticalAlignment="Center" Margin="5 0 0 0">
+            <TextBlock TextTrimming="CharacterEllipsis" Text="{localization:Loc EventViewer_Search_Prompt}" Foreground="{StaticResource MsixHero.Brushes.Light2}" VerticalAlignment="Center" Margin="5 0 0 0">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="Visibility" Value="Collapsed" />

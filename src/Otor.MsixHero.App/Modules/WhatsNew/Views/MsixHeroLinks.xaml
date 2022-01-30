@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
@@ -17,7 +18,7 @@
                         <behaviors:HyperlinkClickBehavior Url="https://msixhero.net" />
                     </b:Interaction.Behaviors>
 
-                    <Run Text="Official website" />
+                    <Run Text="{localization:Loc Dialogs_WhatsNew_OfficialWebsite}" />
                 </Hyperlink>
             </TextBlock>
         </DockPanel>
@@ -31,7 +32,7 @@
                         <behaviors:HyperlinkClickBehavior Url="https://github.com/marcinotorowski/MSIX-Hero" />
                     </b:Interaction.Behaviors>
 
-                    <Run Text="Source code on github.com" />
+                    <Run Text="{localization:Loc Dialogs_WhatsNew_Git}" />
                 </Hyperlink>
             </TextBlock>
         </DockPanel>
@@ -45,7 +46,7 @@
                         <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/documentation/" />
                     </b:Interaction.Behaviors>
 
-                    <Run Text="Documentation and how-to" />
+                    <Run Text="{localization:Loc Dialogs_WhatsNew_Docs}" />
                 </Hyperlink>
             </TextBlock>
         </DockPanel>
@@ -59,7 +60,7 @@
                         <behaviors:HyperlinkClickBehavior Url="https://msixhero.net/license/" />
                     </b:Interaction.Behaviors>
 
-                    <Run Text="License and conditions" />
+                    <Run Text="{localization:Loc Dialogs_WhatsNew_License}" />
                 </Hyperlink>
 
                 <Run Text="GNU General Public License v3.0" Foreground="DarkGray" />

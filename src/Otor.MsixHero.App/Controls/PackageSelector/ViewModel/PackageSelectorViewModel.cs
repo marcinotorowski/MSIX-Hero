@@ -32,35 +32,31 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
 {
     public class PackageSelectorViewModel : ChangeableContainer
     {
-        private readonly PackageSelectorDisplayMode displayMode;
-        private static readonly LogSource Logger = new();        private string customPrompt;
+        private readonly PackageSelectorDisplayMode _displayMode;
+        private static readonly LogSource Logger = new();
+        private string _customPrompt;
         
-        private bool allowChangingSourcePackage;
+        private bool _allowChangingSourcePackage;
 
-        private bool showPackageTypeSelector;
+        private bool _showPackageTypeSelector;
 
         public PackageSelectorViewModel(IInteractionService interactionService, PackageSelectorDisplayMode displayMode)
         {
-            this.displayMode = displayMode;
-            this.Publisher = new ValidatedChangeableProperty<string>("Publisher name", AppxValidatorFactory.ValidateSubject());
-            this.DisplayPublisher = new ValidatedChangeableProperty<string>("Publisher display name", ValidatorFactory.ValidateNotEmptyField());
-            this.Name = new ValidatedChangeableProperty<string>("Package name", AppxValidatorFactory.ValidatePackageName());
-            this.DisplayName = new ValidatedChangeableProperty<string>("Package display name", ValidatorFactory.ValidateNotEmptyField());
-            this.Version = new ValidatedChangeableProperty<string>("Version", AppxValidatorFactory.ValidateVersion());
+            this._displayMode = displayMode;
+            this.Publisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.PackageSelector_PublisherName, AppxValidatorFactory.ValidateSubject());
+            this.DisplayPublisher = new ValidatedChangeableProperty<string>(() => Resources.Localization.PackageSelector_PublisherDisplayName, ValidatorFactory.ValidateNotEmptyField());
+            this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.PackageSelector_Name, AppxValidatorFactory.ValidatePackageName());
+            this.DisplayName = new ValidatedChangeableProperty<string>(() => Resources.Localization.PackageSelector_DisplayName, ValidatorFactory.ValidateNotEmptyField());
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.PackageSelector_Version, AppxValidatorFactory.ValidateVersion());
             this.Architecture = new ChangeableProperty<AppxPackageArchitecture>(AppxPackageArchitecture.Neutral);
             this.PackageType = new ChangeableProperty<PackageType>();
-
-            this.Publisher.DisplayName = "Publisher name";
-            this.DisplayPublisher.DisplayName = "Publisher display name";
-            this.Name.DisplayName = "Package name";
-            this.DisplayName.DisplayName = "Package display name";
-            this.Version.DisplayName = "Package version";
-            this.InputPath = new ChangeableFileProperty("Package path", interactionService, ChangeableFileProperty.ValidatePath);
+            
+            this.InputPath = new ChangeableFileProperty(() => Resources.Localization.PackageSelector_PackagePath, interactionService, ChangeableFileProperty.ValidatePath);
 
             this.PackageType.ValueChanged += this.PackageTypeOnValueChanged;
-            this.showPackageTypeSelector = displayMode.HasFlag(PackageSelectorDisplayMode.ShowTypeSelector);
+            this._showPackageTypeSelector = displayMode.HasFlag(PackageSelectorDisplayMode.ShowTypeSelector);
 
-            this.displayMode = displayMode;
+            this._displayMode = displayMode;
             this.SetInputFilter();
 
             this.InputPath.ValueChanged += this.InputPathOnValueChanged;
@@ -77,7 +73,7 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
                 this.AddChildren(this.DisplayName, this.DisplayPublisher);
             }
 
-            this.allowChangingSourcePackage = displayMode.HasFlag(PackageSelectorDisplayMode.AllowChanging);
+            this._allowChangingSourcePackage = displayMode.HasFlag(PackageSelectorDisplayMode.AllowChanging);
             this.AllowBrowsing = displayMode.HasFlag(PackageSelectorDisplayMode.AllowBrowsing);
 
             if (displayMode.HasFlag(PackageSelectorDisplayMode.RequireFullIdentity))
@@ -107,19 +103,19 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
 
         public bool ShowActualNames { get; private set; }
 
-        public string CustomPrompt { get => this.customPrompt; set => this.SetField(ref this.customPrompt, value); }
+        public string CustomPrompt { get => this._customPrompt; set => this.SetField(ref this._customPrompt, value); }
         
         public bool ShowPackageTypeSelector
         {
-            get => this.showPackageTypeSelector;
+            get => this._showPackageTypeSelector;
 
-            set => this.SetField(ref this.showPackageTypeSelector, value);
+            set => this.SetField(ref this._showPackageTypeSelector, value);
         }
 
         public bool AllowChangingSourcePackage
         {
-            get => this.allowChangingSourcePackage;
-            set => this.SetField(ref this.allowChangingSourcePackage, value);
+            get => this._allowChangingSourcePackage;
+            set => this.SetField(ref this._allowChangingSourcePackage, value);
         }
 
         public bool AllowBrowsing { get; private set; }
@@ -134,28 +130,37 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
         {
             get
             {
-                var packages = this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages);
-                var bundles = this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles);
-                var manifests = this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests);
+                var packages = this._displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages);
+                var bundles = this._displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles);
+                var manifests = this._displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests);
 
                 var options = new List<string>();
                 if (packages)
                 {
-                    options.Add("a package");
+                    options.Add(Resources.Localization.PackageSelector_Caption_LoadFromPkg);
                 }
 
                 if (bundles)
                 {
-                    options.Add("a bundle");
+                    options.Add(Resources.Localization.PackageSelector_Caption_LoadFromBundle);
                 }
 
                 if (manifests)
                 {
-                    options.Add("a manifest");
+                    options.Add(Resources.Localization.PackageSelector_Caption_LoadFromManifest);
                 }
 
-                var part1 = string.Join(", ", options.Take(options.Count - 1));
-                return "Load from " + string.Join(" or ", new[] {part1}.Concat(options.Skip(options.Count - 1)));
+                if (options.Count > 1)
+                {
+                    return Resources.Localization.PackageSelector_Caption_Start + " " + string.Join(", ", options.Take(options.Count - 1)) + " " + Resources.Localization.PackageSelector_Caption_Separator + " " + options[^1] + " " + Resources.Localization.PackageSelector_Caption_End;
+                }
+
+                if (options.Count == 1)
+                {
+                    return Resources.Localization.PackageSelector_Caption_Start + " " + options[0] + " " + Resources.Localization.PackageSelector_Caption_End;
+                }
+
+                return Resources.Localization.PackageSelector_Caption_Start + " " + Resources.Localization.PackageSelector_Caption_End;
             }
         }
 
@@ -284,7 +289,7 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
                 }
                 catch (Exception)
                 {
-                    Logger.Warn().WriteLine($"Could not read value from MSIX manifest {e.NewValue}");
+                    Logger.Warn().WriteLine(string.Format(Resources.Localization.PackageSelector_Error_Manifest_Format, e.NewValue));
                 }
             }
         }
@@ -329,9 +334,9 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
         private void SetInputFilter()
         {
             this.InputPath.Filter = this.GetFilterString(
-                this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages),
-                this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles),
-                this.displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests));
+                this._displayMode.HasFlag(PackageSelectorDisplayMode.AllowPackages),
+                this._displayMode.HasFlag(PackageSelectorDisplayMode.AllowBundles),
+                this._displayMode.HasFlag(PackageSelectorDisplayMode.AllowManifests));
         }
     }
 }

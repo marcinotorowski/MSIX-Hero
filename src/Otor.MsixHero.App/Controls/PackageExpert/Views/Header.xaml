@@ -7,6 +7,7 @@
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels"
              xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
              xmlns:fluentWpf="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="155" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
     <Border 
@@ -92,20 +93,32 @@
                         <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
                             <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='Unnamed', TargetNullValue='Unnamed'}" />
                             <TextBlock Margin="0 2 0 0" TextTrimming="CharacterEllipsis" FontFamily="{StaticResource SourceSansPro}">
-                                <Run Text="Version" Foreground="#aa000000" />
+                                <Run Text="{localization:Loc PackageExpert_Version}" Foreground="#aa000000" />
                                 <Run FontWeight="Bold" Text="{Binding Version, Mode=OneWay, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" />
-                                <Run Text="| Publisher" Foreground="#aa000000" />
+                                <Run Text="|" Foreground="#aa000000" />
+                                <Run Text="{localization:Loc PackageExpert_Publisher}" Foreground="#aa000000" />
                                 <Run ToolTip="{Binding Publisher}" FontWeight="Bold" Text="{Binding PublisherDisplayName, Mode=OneWay, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" />
                             </TextBlock>
                         </StackPanel>
                     </DockPanel>
 
-                    <TextBlock Margin="0 12 0 0" Text="{Binding Description, FallbackValue='No description', TargetNullValue='No description'}" />
+                    <TextBlock Margin="0 12 0 0" Tag="{Binding Description}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" />
+                                <Style.Triggers>
+                                    <Trigger Property="Tag" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Hidden" />
+                                    </Trigger> 
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                     <TextBox Style="{StaticResource TextBlock}" Text="{Binding PackageFullName, Mode=OneWay, FallbackValue='Missing full package name', TargetNullValue='Missing full package name'}" Opacity="0.66" />
 
                     <WrapPanel Margin="-2 8 0 -2">
                         <views:Pill
-                            ToolTip="Package architecture"
+                            ToolTip="{localization:Loc PackageExpert_PackageArchitecture}"
                             Icon="{StaticResource SmallProcessor}"
                             Content="{Binding Architecture, Converter={StaticResource UppercaseConverter}}" />
                         <views:Pill

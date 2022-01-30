@@ -170,7 +170,7 @@ public class SimpleElevationServer : SimpleElevationBase
         {
             if (methodInfo.DeclaringType == null)
             {
-                throw new ArgumentException("Missing declaring type.", nameof(methodInfo));
+                throw new ArgumentException(@"Missing declaring type.", nameof(methodInfo));
             }
 
             if (Log.IsVerboseEnabled())

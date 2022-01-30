@@ -75,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Help.ViewModel
             this.application.CommandExecutor.Invoke(this, new SetCurrentModeCommand(ApplicationMode.WhatsNew));
         }
 
-        string IDialogAware.Title => "About MSIX Hero";
+        string IDialogAware.Title => Resources.Localization.Dialogs_About_WindowTitle;
 
         public event Action<IDialogResult> RequestClose;
 

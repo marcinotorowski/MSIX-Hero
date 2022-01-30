@@ -32,7 +32,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         
         public async Task MountVhd(string vhdPath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            Logger.Info().WriteLine($"Mounting volume {vhdPath}...");
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_VhdMount_Format, vhdPath);
             var tempFile = Path.Combine(Path.GetTempPath(), "msix-hero-vhd-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".cfg");
 
             try
@@ -44,14 +44,14 @@ attach vdisk";
                 var arguments = new StringBuilder("/S ", 256);
                 arguments.Append(CommandLineHelper.EncodeParameterArgument(tempFile));
 
-                Logger.Debug().WriteLine($"DISKPART.EXE command in {tempFile}:\r\n{string.Format(content, vhdPath)}");
+                Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_DiskPartCommand_Format, tempFile) + $"\r\n{string.Format(content, vhdPath)}");
                 await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
             }
             finally
             {
                 if (File.Exists(tempFile))
                 {
-                    Logger.Debug().WriteLine($"Deleting {tempFile}...");
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_DeletingFile_Format, tempFile);
                     ExceptionGuard.Guard(() => File.Delete(tempFile));
                 }
             }
@@ -59,7 +59,7 @@ attach vdisk";
 
         public async Task CreateVhdAndAssignDriveLetter(string vhdPath, long requiredSize, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            Logger.Info().WriteLine($"Creating volume {vhdPath} with required size {requiredSize}");
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_CreatingVolume_Format, vhdPath, requiredSize);
 
             switch (Path.GetExtension(vhdPath).ToLowerInvariant())
             {
@@ -74,28 +74,26 @@ attach vdisk";
 
                         var requiredSizeMb = (int)(10 * Math.Ceiling(0.1 * requiredSize / 1024 / 1024));
                         await File.WriteAllTextAsync(tempCreateFile, string.Format(content, vhdPath, requiredSizeMb), cancellationToken).ConfigureAwait(false);
-                        
-                        var arguments = new StringBuilder("/S ", 256);
-                        arguments.Append(CommandLineHelper.EncodeParameterArgument(tempCreateFile));
-                        
-                        Logger.Debug().WriteLine($"DISKPART.EXE command in {tempCreateFile}:\r\n{string.Format(content, vhdPath, requiredSizeMb)}");
+                        var arguments = $"/S \"{tempCreateFile}\"";
+
+                        Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_DiskPartCommand_Format, tempCreateFile) + $"\r\n{string.Format(content, vhdPath)}");
                         await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                     finally
                     {
                         if (File.Exists(tempCreateFile))
                         {
-                            Logger.Debug().WriteLine($"Deleting {tempCreateFile}...");
+                            Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_DeletingFile_Format, tempCreateFile);
                             ExceptionGuard.Guard(() => File.Delete(tempCreateFile));
                         }
                     }
 
                     break;
                 default:
-                    throw new NotSupportedException($"Extension {Path.GetExtension(vhdPath)} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_NotSupportedExtension_Format, Path.GetExtension(vhdPath)));
             }
 
-            Logger.Info().WriteLine("Formatting drive and assigning drive letter...");
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_FormattingAndAssigning);
             string tempFileMount = null;
             try
             {
@@ -110,14 +108,14 @@ assign";
                 var arguments = new StringBuilder("/S ", 256);
                 arguments.Append(CommandLineHelper.EncodeParameterArgument(tempFileMount));
                 
-                Logger.Debug().WriteLine($"DISKPART.EXE command in {tempFileMount}:\r\n{string.Format(content, vhdPath)}");
+                Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_DiskPartCommand_Format, tempFileMount) + $"\r\n{string.Format(content, vhdPath)}");
                 await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
             }
             finally
             {
                 if (File.Exists(tempFileMount))
                 {
-                    Logger.Debug().WriteLine($"Deleting {tempFileMount}...");
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_DeletingFile_Format, tempFileMount);
                     ExceptionGuard.Guard(() => File.Delete(tempFileMount));
                 }
             }
@@ -125,7 +123,7 @@ assign";
 
         public async Task DismountVhd(string vhdPath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            Logger.Info().WriteLine("Dismounting volume...");
+            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_VhdDismount);
             var tempFile = Path.Combine(Path.GetTempPath(), "msix-hero-vhd-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".cfg");
 
             try
@@ -138,14 +136,14 @@ detach vdisk";
                 var arguments = new StringBuilder("/S ", 256);
                 arguments.Append(CommandLineHelper.EncodeParameterArgument(tempFile));
 
-                Logger.Debug().WriteLine($"DISKPART.EXE command in {tempFile}:\r\n{string.Format(content, vhdPath)}");
+                Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_DiskPartCommand_Format, tempFile) + $"\r\n{string.Format(content, vhdPath)}");
                 await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
             }
             finally
             {
                 if (File.Exists(tempFile))
                 {
-                    Logger.Debug().WriteLine($"Deleting {tempFile}...");
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_DeletingFile_Format, tempFile);
                     ExceptionGuard.Guard(() => File.Delete(tempFile));
                 }
             }
@@ -167,7 +165,7 @@ detach vdisk";
             }
             catch (ProcessWrapperException e)
             {
-                throw new InvalidOperationException($"Diskpart.exe failed with error code {e.ExitCode:X2}", e);
+                throw new InvalidOperationException(string.Format(Resources.Localization.Infrastructure_Sdk_Error_DiskPart_Format, e.ExitCode.ToString("X2")), e);
             }
         }
     }

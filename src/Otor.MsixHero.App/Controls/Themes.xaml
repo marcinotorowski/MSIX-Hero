@@ -2,9 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Otor.MsixHero.App.Controls"
                     xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
-                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
-                    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-                    xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors">
+                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
@@ -31,7 +29,7 @@
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                             <TextBlock VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <Hyperlink x:Name="PART_Hyperlink">
-                                    <Run Text="Learn more about" />
+                                    <Run Text="Link_LearnMore_Part1" />
                                     <Run FontWeight="SemiBold" Text="{TemplateBinding Topic}"></Run>
                                 </Hyperlink>
                             </TextBlock>
@@ -547,25 +545,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <!--<Trigger Property="helpers:WindowRenderTier.RenderTier" Value="0">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="transitionContentControl:TransitioningContentControl">
-                            <Grid x:Name="PART_Container">
-                                <ContentPresenter
-                                    x:Name="PART_CurrentContentPresentationSite"
-                                    Content="{x:Null}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                </ContentPresenter>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>-->
-        </Style.Triggers>
     </Style>
 
     <Style x:Key="TransitioningContentControlTier0" TargetType="transitionContentControl:TransitioningContentControl">

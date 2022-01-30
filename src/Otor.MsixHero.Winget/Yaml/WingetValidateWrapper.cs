@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Winget.Yaml
                 if (validationDetails.Contains("Manifest Warning: Unknown field. Field: ManifestType") || validationDetails.Contains("Unsupported ManifestVersion: 1.0.0"))
                 {
                     // This indicates that the winget that is installed is in too low version, so we return no errors.
-                    return "Your Winget version is too old to perform the validation against the manifest schema v1.";
+                    return Resources.Localization.Winget_Error_TooOldWinget;
                 }
                 
                 return validationDetails.IndexOf("Manifest validation succeeded.", StringComparison.OrdinalIgnoreCase) == -1 ? string.Join(Environment.NewLine, validationDetails.Split(Environment.NewLine).Skip(1)) : null;
@@ -103,7 +103,7 @@ namespace Otor.MsixHero.Winget.Yaml
             {
                 if (throwIfWingetMissing)
                 {
-                    throw new InvalidOperationException("Could not start winget.");
+                    throw new InvalidOperationException(Resources.Localization.Winget_Error_CouldNotStart);
                 }
 
                 return null;

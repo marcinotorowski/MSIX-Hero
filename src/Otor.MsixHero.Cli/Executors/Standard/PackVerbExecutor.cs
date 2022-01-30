@@ -36,18 +36,18 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             var msixSdkWrapper = new MakeAppxWrapper();
 
-            Logger.Info().WriteLine($"Packing [{this.Verb.Directory}] to [{this.Verb.Package}]...");
+            Logger.Info().WriteLine(Resources.Localization.CLI_Executor_Pack_Packing_Format, this.Verb.Directory, this.Verb.Package);
 
             try
             {
-                await this.Console.WriteInfo($"Packing [{this.Verb.Directory}] to [{this.Verb.Package}]...").ConfigureAwait(false);
+                await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Pack_Packing_Format, this.Verb.Directory, this.Verb.Package)).ConfigureAwait(false);
                 await msixSdkWrapper.Pack(MakeAppxPackOptions.CreateFromDirectory(this.Verb.Directory, this.Verb.Package, !this.Verb.NoCompression, !this.Verb.NoValidation)).ConfigureAwait(false);
 
-                await this.Console.WriteSuccess($"Package [{this.Verb.Package}] has been created.");
+                await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Pack_Success_Format, this.Verb.Package));
 
                 if (this.Verb.RemoveDirectoryAfterPacking)
                 {
-                    await this.Console.WriteInfo($"Removing source directory {this.Verb.Directory}...");
+                    await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Pack_RemovingSource_Format, this.Verb.Directory));
                     ExceptionGuard.Guard(() => Directory.Delete(this.Verb.Directory, true));
                 }
 

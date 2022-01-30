@@ -70,7 +70,7 @@ namespace Otor.MsixHero.Appx.Updates
             var blocksInPackage1 = new Dictionary<string, AppxBlock>();
             var blocksInPackage2 = new Dictionary<string, AppxBlock>();
 
-            progressReadFiles1.Report(new ProgressData(0, "Reading the first package..."));
+            progressReadFiles1.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_Reading1));
             var files1 = await this.GetFiles(appxBlockMap1, cancellationToken, progressReadFiles1).ConfigureAwait(false);
             foreach (var file1 in files1)
             {
@@ -82,7 +82,7 @@ namespace Otor.MsixHero.Appx.Updates
                 filesInOldPackage.Add(file1.Name, file1);
             }
 
-            progressReadFiles2.Report(new ProgressData(0, "Reading the second package..."));
+            progressReadFiles2.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_Reading2));
             var files2 = await this.GetFiles(appxBlockMap2, cancellationToken, progressReadFiles2).ConfigureAwait(false);
             foreach (var file2 in files2)
             {
@@ -94,7 +94,7 @@ namespace Otor.MsixHero.Appx.Updates
                 filesInNewPackage.Add(file2.Name, file2);
             }
 
-            progressCalculatingStatus.Report(new ProgressData(0, "Calculating file status (1/2)..."));
+            progressCalculatingStatus.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_Calculating1));
             foreach (var file in filesInOldPackage)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -146,7 +146,7 @@ namespace Otor.MsixHero.Appx.Updates
                 }
             }
             
-            progressCalculatingStatus.Report(new ProgressData(50, "Calculating file status (2/2)..."));
+            progressCalculatingStatus.Report(new ProgressData(50, Resources.Localization.Packages_UpdateImpact_Calculating2));
             foreach (var file in filesInNewPackage)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -171,7 +171,7 @@ namespace Otor.MsixHero.Appx.Updates
             var duplicates1 = new Dictionary<string, IList<AppxFile>>();
             var duplicates2 = new Dictionary<string, IList<AppxFile>>();
 
-            progressDuplicates.Report(new ProgressData(0, "Finding duplicates..."));
+            progressDuplicates.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_Deduplicating));
             using (var md5 = MD5.Create())
             {
                 foreach (var file in filesInOldPackage.Values)
@@ -219,7 +219,7 @@ namespace Otor.MsixHero.Appx.Updates
                 FileSize = duplicates2.Where(d => d.Value.Count > 1).Sum(d => d.Value[0].UncompressedSize)
             };
 
-            progressDuplicates.Report(new ProgressData(55, "Analyzing duplication impact (1/3)..."));
+            progressDuplicates.Report(new ProgressData(55, Resources.Localization.Packages_UpdateImpact_DeduplicatingImpact1));
             foreach (var file in duplicates1.Where(d => d.Value.Count > 1))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -246,7 +246,7 @@ namespace Otor.MsixHero.Appx.Updates
                 duplicatedFiles1.Duplicates.Add(duplicate);
             }
 
-            progressDuplicates.Report(new ProgressData(70, "Analyzing duplication impact (2/3)..."));
+            progressDuplicates.Report(new ProgressData(70, Resources.Localization.Packages_UpdateImpact_DeduplicatingImpact2));
             foreach (var file in duplicates2.Where(d => d.Value.Count > 1))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -273,14 +273,14 @@ namespace Otor.MsixHero.Appx.Updates
                 duplicatedFiles2.Duplicates.Add(duplicate);
             }
 
-            progressDuplicates.Report(new ProgressData(85, "Analyzing duplication impact (3/3)..."));
+            progressDuplicates.Report(new ProgressData(85, Resources.Localization.Packages_UpdateImpact_DeduplicatingImpact3));
             duplicatedFiles1.PossibleImpactReduction = duplicatedFiles1.Duplicates.Sum(d => d.PossibleImpactReduction);
             duplicatedFiles1.PossibleSizeReduction = duplicatedFiles1.Duplicates.Sum(d => d.PossibleSizeReduction);
             duplicatedFiles2.PossibleImpactReduction = duplicatedFiles2.Duplicates.Sum(d => d.PossibleImpactReduction);
             duplicatedFiles2.PossibleSizeReduction = duplicatedFiles2.Duplicates.Sum(d => d.PossibleSizeReduction);
             
             cancellationToken.ThrowIfCancellationRequested();
-            progressRemainingCalculation.Report(new ProgressData(0, "Analyzing changed files..."));
+            progressRemainingCalculation.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_AnalyzingChanges));
             var changedFiles = new ChangedFiles
             {
                 // Shared parameters
@@ -303,7 +303,7 @@ namespace Otor.MsixHero.Appx.Updates
             };
 
             cancellationToken.ThrowIfCancellationRequested();
-            progressRemainingCalculation.Report(new ProgressData(25, "Analyzing added files..."));
+            progressRemainingCalculation.Report(new ProgressData(25, Resources.Localization.Packages_UpdateImpact_AnalyzingAdded));
             var addedFiles = new AddedFiles
             {
                 UpdateImpact = filesInNewPackage.Values.Where(b => b.Status == ComparisonStatus.New).SelectMany(b => b.Blocks).Sum(b => b.UpdateImpact),
@@ -317,7 +317,7 @@ namespace Otor.MsixHero.Appx.Updates
             };
             
             cancellationToken.ThrowIfCancellationRequested();
-            progressRemainingCalculation.Report(new ProgressData(50, "Analyzing deleted files..."));
+            progressRemainingCalculation.Report(new ProgressData(50, Resources.Localization.Packages_UpdateImpact_AnalyzingDeleted));
             var deletedFiles = new DeletedFiles
             {
                 FileSize = filesInOldPackage.Values.Where(s => s.Status == ComparisonStatus.Old).Sum(f => f.UncompressedSize),
@@ -332,7 +332,7 @@ namespace Otor.MsixHero.Appx.Updates
             deletedFiles.UpdateImpact = deletedFiles.ActualUpdateImpact;
 
             cancellationToken.ThrowIfCancellationRequested();
-            progressRemainingCalculation.Report(new ProgressData(75, "Analyzing unchanged files..."));
+            progressRemainingCalculation.Report(new ProgressData(75, Resources.Localization.Packages_UpdateImpact_AnalyzingUnchanged));
             var unchangedFiles = new UnchangedFiles
             {
                 FileCount = filesInNewPackage.Values.Count(b => b.Status == ComparisonStatus.Unchanged),
@@ -343,7 +343,7 @@ namespace Otor.MsixHero.Appx.Updates
             };
             
             cancellationToken.ThrowIfCancellationRequested();
-            progressRemainingCalculation.Report(new ProgressData(90, "Please wait..."));
+            progressRemainingCalculation.Report(new ProgressData(90, Resources.Localization.Packages_UpdateImpact_Wait));
             var comparisonResult = new UpdateImpactResults
             {
                 OldPackageLayout = new AppxLayout
@@ -392,7 +392,7 @@ namespace Otor.MsixHero.Appx.Updates
 
         private async Task<IList<AppxFile>> GetFiles(Stream appxBlockMap, CancellationToken cancellationToken, IProgress<ProgressData> progress = null)
         {
-            progress?.Report(new ProgressData(0, "Reading AppxBlockMap.xml..."));
+            progress?.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_ReadingBlock));
             IList<AppxFile> list = new List<AppxFile>();
             var document = await XDocument.LoadAsync(appxBlockMap, LoadOptions.None, cancellationToken);
             var blockMap = document.Root;
@@ -405,7 +405,7 @@ namespace Otor.MsixHero.Appx.Updates
 
             const int maxBlockSize = 64 * 1024; // 64 kilobytes
 
-            progress?.Report(new ProgressData(50, "Reading files..."));
+            progress?.Report(new ProgressData(50, Resources.Localization.Packages_UpdateImpact_ReadingFiles));
             foreach (var item in blockMap.Elements(ns + "File"))
             {
                 long.TryParse(item.Attribute("Size")?.Value ?? "0", out var fileSize);

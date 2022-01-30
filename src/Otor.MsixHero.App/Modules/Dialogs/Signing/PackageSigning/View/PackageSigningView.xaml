@@ -9,6 +9,7 @@
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel"
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              d:DesignWidth="455"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModel:PackageSigningViewModel}">
@@ -38,7 +39,7 @@
 
     <dialog:ChangeableDialog
         Dialog="{Binding}"
-        OkButtonLabel="Update selected packages"
+        OkButtonLabel="{localization:Loc Dialogs_PackageSigning_OkLabel}"
         SupportsCommandLineBuilding="True"
         SilentCommandLine="{Binding SilentCommandLine}"
         Icon="{StaticResource VectorSign}">
@@ -50,12 +51,16 @@
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Text="Your package(s) have been successfully signed." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
+                    <TextBlock Text="{localization:Loc Dialogs_PackageSigning_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                     <TextBlock TextAlignment="Center" Visibility="{Binding IsOnePackage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">Open the folder containing the signed package</Hyperlink>
+                        <Hyperlink Command="{Binding OpenSuccessLinkCommand}">
+                            <Run Text="{localization:Loc Dialogs_PackageSigning_Success_OpenFolder}" />
+                        </Hyperlink>
                     </TextBlock>
                     <TextBlock TextAlignment="Center">
-                        <Hyperlink x:Name="Hyperlink" Command="{Binding ResetCommand}">Sign some more packages</Hyperlink>
+                        <Hyperlink x:Name="Hyperlink" Command="{Binding ResetCommand}">
+                            <Run Text="{localization:Loc Dialogs_PackageSigning_Success_SignMore}" />
+                        </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

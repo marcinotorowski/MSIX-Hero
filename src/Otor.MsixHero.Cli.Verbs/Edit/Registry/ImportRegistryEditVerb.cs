@@ -15,16 +15,17 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Registry
 {
-    [Verb("importRegistry", HelpText = "Imports registry from .reg file or local Registry.")]
+    [Verb("importRegistry", HelpText = "CLI_Verbs_Edit_ImportRegistry_VerbName", ResourceType = typeof(Localization))]
     public class ImportRegistryEditVerb : BaseEditVerb, IBaseEditRegistryVerb
     {
-        [Option('f', "file", HelpText = "A .reg file (Windows Registry) to be imported.", Required = true, SetName = "Import from .REG file")]
+        [Option('f', "file", HelpText = "CLI_Verbs_Edit_ImportRegistry_Prop_File", Required = true, SetName = "File", ResourceType = typeof(Localization))]
         public string FilePath { get; set; }
 
-        [Option('k', "key", HelpText = "A local registry path (for example HKLM\\Software\\abc) of a registry key to be imported.", Required = true, SetName = "Import from local registry key")]
+        [Option('k', "key", HelpText = "CLI_Verbs_Edit_ImportRegistry_Prop_RegistryKey", Required = true, SetName = "Local", ResourceType = typeof(Localization))]
         public string RegistryKey { get; set; }
     }
 }

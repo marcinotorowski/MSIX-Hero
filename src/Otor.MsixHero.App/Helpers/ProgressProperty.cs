@@ -90,7 +90,7 @@ namespace Otor.MsixHero.App.Helpers
             }
             else
             {
-                this.Message = "Please wait...";
+                this.Message = Resources.Localization.Loading_PleaseWait;
             }
 
             // ReSharper disable once ConvertToLocalFunction
@@ -151,7 +151,7 @@ namespace Otor.MsixHero.App.Helpers
             }
 
             this.Progress = -1;
-            this.Message = "Cancelling...";
+            this.Message = Resources.Localization.Loading_Cancelling;
 
             this.currentCancellationTokenSource?.Cancel();
         }

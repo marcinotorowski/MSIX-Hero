@@ -8,6 +8,7 @@
              xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:WingetViewModel}">
     <controls1:ProgressOverlay 
@@ -16,7 +17,7 @@
                     Message="{Binding GeneralProgress.Message}" 
                     Progress="{Binding GeneralProgress.Progress}">
         <TabControl IsEnabled="{Binding GeneralProgress.IsLoading, Converter={StaticResource NegativeConverter}}">
-            <TabItem Header="Identity">
+            <TabItem Header="{localization:Loc Dialogs_Winget_Tab_Identity}">
                 <b:Interaction.Behaviors>
                     <validation:ValidationBehavior ValidatedChangeable="{Binding Definition.TabIdentity}" />
                 </b:Interaction.Behaviors>
@@ -26,7 +27,7 @@
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}" 
                                 controls1:RequiredAdorner.IsRequired="True" 
-                                Text="Package name" />
+                                Text="{localization:Loc Dialogs_Winget_PackageName}" />
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -39,13 +40,13 @@
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
                                         controls1:RequiredAdorner.IsRequired="True" 
-                                        Text="Package publisher" Margin="0 16 0 6" />
+                                        Text="{localization:Loc Dialogs_Winget_Publisher}" Margin="0 16 0 6" />
                                     <TextBox Text="{Binding Publisher.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                     <TextBlock
                                         Style="{StaticResource LabelTextBlock}"
                                         controls1:RequiredAdorner.IsRequired="True" 
-                                        Text="Package version" Margin="0 16 0 6" />
+                                        Text="{localization:Loc Dialogs_Winget_PackageVersion}" Margin="0 16 0 6" />
                                     <TextBox Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                                 </StackPanel>
 
@@ -54,25 +55,25 @@
                                     <Rectangle Height="1" VerticalAlignment="Center" Fill="{StaticResource MsixHero.Brushes.Accent}" Width="20" Margin="0 0 8 0" />
                                 </StackPanel>
 
-                                <Button Grid.Column="2" Content="Load data from MSI/MSIX/EXE..." Command="{Binding LoadFromSetup}" VerticalAlignment="Center" />
+                                <Button Grid.Column="2" Content="{localization:Loc Dialogs_Winget_Button_Load}" Command="{Binding LoadFromSetup}" VerticalAlignment="Center" />
                             </Grid>
 
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}" 
                                 controls1:RequiredAdorner.IsRequired="True" 
-                                Text="Package identifier" 
+                                Text="{localization:Loc Dialogs_Winget_PackageIdentifier}" 
                                 Margin="0 16 0 6" />
                             <TextBox Text="{Binding Id.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Note: The official repository has some conventions to follow. This value must include the publisher name and application name separated by a period." 
+                                Text="{localization:Loc Dialogs_Winget_OfficialRepo_Conventions}" 
                                 Margin="0 4 0 0" />
 
                             <TextBlock
                                 controls1:RequiredAdorner.IsRequired="True" 
                                 Style="{StaticResource LabelTextBlock}" 
-                                Text="Manifest version" 
+                                Text="{localization:Loc Dialogs_Winget_ManifestVersion}" 
                                 Margin="0 16 0 6" 
                                 Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <StackPanel Orientation="Horizontal" Visibility="{Binding ShowManifestVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -84,7 +85,7 @@
                     </AdornerDecorator>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Metadata">
+            <TabItem Header="{localization:Loc Dialogs_Winget_Tab_Metadata}">
                 <b:Interaction.Behaviors>
                     <validation:ValidationBehavior ValidatedChangeable="{Binding Definition.TabMetadata}" />
                 </b:Interaction.Behaviors>
@@ -95,37 +96,37 @@
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="AppMoniker" />
+                                    Text="{localization:Loc Dialogs_Winget_AppMoniker}" />
                                 <TextBox Text="{Binding AppMoniker.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-                                <TextBlock Text="The common name someone may use to search for the package" Margin="0 2 0 0" TextWrapping="Wrap" />
+                                <TextBlock Text="{localization:Loc Dialogs_Winget_AppMoniker_Hint}" Margin="0 2 0 0" TextWrapping="Wrap" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Tags" 
+                                    Text="{localization:Loc Dialogs_Winget_Tags}" 
                                     Margin="0 16 0 6" />
                                 <TextBox Text="{Binding Tags.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
-                                <TextBlock Text="Additional strings a user would use to search for the package" Margin="0 2 0 0" TextWrapping="Wrap" />
+                                <TextBlock Text="{localization:Loc Dialogs_Winget_Tags_Hint}" Margin="0 2 0 0" TextWrapping="Wrap" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Product homepage" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Homepage}" Margin="0 16 0 6" />
                                 <TextBox Text="{Binding PackageUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Short description" 
+                                    Text="{localization:Loc Dialogs_Winget_Short_Description}" 
                                     Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="60" TextWrapping="Wrap" Text="{Binding ShortDescription.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Full description" 
+                                    Text="{localization:Loc Dialogs_Winget_Full_Description}" 
                                     Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="120" TextWrapping="Wrap" Text="{Binding Description.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}" 
-                                    Text="Minimum required Windows version" 
+                                    Text="{localization:Loc Dialogs_Winget_MinimumWindowsVersion}" 
                                     Margin="0 16 0 6" />
                                 <TextBox Text="{Binding MinOSVersion.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                             </StackPanel>
@@ -133,7 +134,7 @@
                     </ScrollViewer>
                 </AdornerDecorator>
             </TabItem>
-            <TabItem Header="Downloads">
+            <TabItem Header="{localization:Loc Dialogs_Winget_Tab_Downloads}">
                 <b:Interaction.Behaviors>
                     <validation:ValidationBehavior ValidatedChangeable="{Binding Definition.TabDownloads}" />
                 </b:Interaction.Behaviors>
@@ -152,13 +153,13 @@
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
                                     controls1:RequiredAdorner.IsRequired="True" 
-                                    Text="URL" />
+                                    Text="{localization:Loc Dialogs_Winget_Url}" />
                                 <TextBox Text="{Binding Url.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
                                     controls1:RequiredAdorner.IsRequired="True" 
-                                    Text="Installer hash" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_InstallerHash}" Margin="0 16 0 6" />
 
                                 <Border Padding="8" Background="#eee">
                                     <TextBox Text="{Binding Sha256.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
@@ -166,8 +167,8 @@
 
                                 <Border Background="#eee" Padding="8 0 8 8">
                                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="-4">
-                                        <Button Content="Get hash from installer URL" Margin="4" Command="{Binding GenerateSha256}" CommandParameter="installer" />
-                                        <Button Content="Get hash from a local file..." Margin="4" Command="{Binding  OpenSha256}" CommandParameter="installer" />
+                                        <Button Content="{localization:Loc Dialogs_Winget_Button_HashUrl}" Margin="4" Command="{Binding GenerateSha256}" CommandParameter="installer" />
+                                        <Button Content="{localization:Loc Dialogs_Winget_Button_HashFile}" Margin="4" Command="{Binding  OpenSha256}" CommandParameter="installer" />
                                     </WrapPanel>
                                 </Border>
                             </StackPanel>
@@ -175,7 +176,7 @@
                     </ScrollViewer>
                 </controls1:ProgressOverlay>
             </TabItem>
-            <TabItem Header="Installer">
+            <TabItem Header="{localization:Loc Dialogs_Winget_Tab_Installer}">
                 <b:Interaction.Behaviors>
                     <validation:ValidationBehavior ValidatedChangeable="{Binding Definition.TabInstaller}" />
                 </b:Interaction.Behaviors>
@@ -196,20 +197,20 @@
 
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
-                                        Text="Installer type" />
+                                        Text="{localization:Loc Dialogs_Winget_InstallerType}" />
 
                                     <ComboBox Margin="0 0 0 6" SelectedValuePath="Tag" SelectedValue="{Binding InstallerType.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsReadOnly="True">
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msix}">MSIX</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Appx}">APPX</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msi}">MSI (Windows Installer)</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Exe}">Executable (generic)</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.InnoSetup}">Executable (Inno Setup)</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Nullsoft}">Executable (NSIS)</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Wix}">Executable (WIX Bootstrapper)</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.ProgressiveWebApp}">Progressive Web App</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Zip}">ZIP file</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Burn}">Burn</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.None}">Unknown / not specified</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msix}" Content="{localization:Loc Dialogs_Winget_InstallerType_MSIX}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Appx}" Content="{localization:Loc Dialogs_Winget_InstallerType_APPX}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Msi}" Content="{localization:Loc Dialogs_Winget_InstallerType_MSI}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Exe}" Content="{localization:Loc Dialogs_Winget_InstallerType_EXE}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.InnoSetup}" Content="{localization:Loc Dialogs_Winget_InstallerType_Inno}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Nullsoft}" Content="{localization:Loc Dialogs_Winget_InstallerType_Nsis}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Wix}" Content="{localization:Loc Dialogs_Winget_InstallerType_Wix}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.ProgressiveWebApp}" Content="{localization:Loc Dialogs_Winget_InstallerType_PWA}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Zip}" Content="{localization:Loc Dialogs_Winget_InstallerType_Zip}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.Burn}" Content="{localization:Loc Dialogs_Winget_InstallerType_Burn}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlInstallerType.None}" Content="{localization:Loc Dialogs_Winget_InstallerType_None}" />
                                     </ComboBox>
                                 </StackPanel>
 
@@ -217,10 +218,10 @@
 
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
-                                        Text="Platform" />
+                                        Text="{localization:Loc Dialogs_Winget_Platform}" />
 
-                                    <CheckBox Margin="0 0 0 6" IsChecked="{Binding PlatformWin32.CurrentValue}" Content="Win32 Desktop App" />
-                                    <CheckBox Margin="0 0 0 6" IsChecked="{Binding PlatformUwp.CurrentValue}" Content="UWP App" />
+                                    <CheckBox Margin="0 0 0 6" IsChecked="{Binding PlatformWin32.CurrentValue}" Content="{localization:Loc Dialogs_Winget_Platform_Win32}" />
+                                    <CheckBox Margin="0 0 0 6" IsChecked="{Binding PlatformUwp.CurrentValue}" Content="{localization:Loc Dialogs_Winget_Platform_UWP}" />
                                 </StackPanel>
                             </Grid>
 
@@ -228,25 +229,25 @@
                                 <StackPanel VerticalAlignment="Top" Margin="0 0 4 0">
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
-                                        Text="Installer architecture" />
+                                        Text="{localization:Loc Dialogs_Winget_Architecture}" />
                                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Architecture.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" IsEditable="False">
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.None}">Unknown / not specified</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Neutral}">Neutral</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Arm}">ARM</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Arm64}">ARM64</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.X64}">x64</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.X86}">x86</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.None}" Content="{localization:Loc Dialogs_Winget_Architecture_None}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Neutral}" Content="{localization:Loc Dialogs_Winget_Architecture_Neutral}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Arm}" Content="{localization:Loc Dialogs_Winget_Architecture_Arm}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.Arm64}" Content="{localization:Loc Dialogs_Winget_Architecture_Arm64}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.X64}" Content="{localization:Loc Dialogs_Winget_Architecture_x64}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlArchitecture.X86}" Content="{localization:Loc Dialogs_Winget_Architecture_x86}" />
                                     </ComboBox>
                                 </StackPanel>
 
                                 <StackPanel Margin="4 0 0 0">
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
-                                        Text="Scope" />
+                                        Text="{localization:Loc Dialogs_Winget_Scope}" />
                                     <ComboBox SelectedValuePath="Tag" SelectedValue="{Binding Scope.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}">
-                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.None}">Unknown / not specified</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.Machine}">Machine installation</ComboBoxItem>
-                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.User}">User installation</ComboBoxItem>
+                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.None}" Content="{localization:Loc Dialogs_Winget_Scope_Unknown}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.Machine}" Content="{localization:Loc Dialogs_Winget_Scope_Machine}" />
+                                        <ComboBoxItem Tag="{x:Static winget:YamlScope.User}" Content="{localization:Loc Dialogs_Winget_Scope_User}" />
                                     </ComboBox>
                                 </StackPanel>
 
@@ -264,7 +265,7 @@
                                 <StackPanel>
                                     <TextBlock 
                                         Style="{StaticResource LabelTextBlock}"
-                                        Text="Signature hash" 
+                                        Text="{localization:Loc Dialogs_Winget_SignatureHash}" 
                                         Margin="0 16 0 6" />
                                     <Border Padding="8" Background="#eee">
                                         <TextBox Text="{Binding SignatureSha256.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
@@ -272,8 +273,8 @@
 
                                     <Border Background="#eee" Padding="8 0 8 8">
                                         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="-4">
-                                            <Button Content="Get hash from installer URL" Margin="4" Command="{Binding GenerateSha256}" CommandParameter="signature" />
-                                            <Button Content="Get hash from a local file..." Margin="4" Command="{Binding OpenSha256}" CommandParameter="signature" />
+                                            <Button Content="{localization:Loc Dialogs_Winget_Button_HashUrl}" Margin="4" Command="{Binding GenerateSha256}" CommandParameter="signature" />
+                                            <Button Content="{localization:Loc Dialogs_Winget_Button_HashFile}" Margin="4" Command="{Binding OpenSha256}" CommandParameter="signature" />
                                         </WrapPanel>
                                     </Border>
                                 </StackPanel>
@@ -282,32 +283,32 @@
                             <StackPanel Visibility="{Binding IsCommand, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Command line for silent installation" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Cmd_Silent}" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding SilentCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Command line for basic installation (with progress)" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Cmd_Basic}" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding SilentCommandWithProgress.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Command line for interactive installation" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Cmd_Interactive}" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding InteractiveCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Command line for custom installation" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Cmd_Custom}" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding CustomCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Command line for upgrade" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Cmd_Upgrade}" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding UpgradeCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                                 <TextBlock 
                                     Style="{StaticResource LabelTextBlock}"
-                                    Text="Command line for logging" Margin="0 16 0 6" />
+                                    Text="{localization:Loc Dialogs_Winget_Cmd_Logging}" Margin="0 16 0 6" />
                                 <TextBox VerticalContentAlignment="Top" Height="80" TextWrapping="Wrap" Text="{Binding LogCommand.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                             </StackPanel>
@@ -315,7 +316,7 @@
                     </AdornerDecorator>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="License + copyright">
+            <TabItem Header="{localization:Loc Dialogs_Winget_Tab_License}">
                 <b:Interaction.Behaviors>
                     <validation:ValidationBehavior ValidatedChangeable="{Binding Definition.TabLicense}" />
                 </b:Interaction.Behaviors>
@@ -325,24 +326,24 @@
                             <TextBlock 
                                 controls1:RequiredAdorner.IsRequired="True" 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="License" />
+                                Text="{localization:Loc Dialogs_Winget_License}" />
                             <TextBox Text="{Binding License.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Link to the license page" 
+                                Text="{localization:Loc Dialogs_Winget_LicenseUrl}" 
                                 Margin="0 16 0 6" />
                             <TextBox Text="{Binding LicenseUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                             
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Copyright string" 
+                                Text="{localization:Loc Dialogs_Winget_Copyrights}" 
                                 Margin="0 16 0 6"/>
                             <TextBox Text="{Binding Copyright.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Link to the copyright page" 
+                                Text="{localization:Loc Dialogs_Winget_CopyrightsUrl}" 
                                 Margin="0 16 0 6" />
                             <TextBox Text="{Binding CopyrightUrl.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                         </StackPanel>

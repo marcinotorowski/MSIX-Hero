@@ -40,7 +40,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
         private ICommand open;
         private string yamlPath;
 
-        public WingetViewModel(IInteractionService interactionService) : base("Create winget manifest", interactionService)
+        public WingetViewModel(IInteractionService interactionService) : base(Resources.Localization.Dialogs_Winget_Title, interactionService)
         {
             this.interactionService = interactionService;
             this.AddChild(this.Definition = new WingetDefinitionViewModel(interactionService));
@@ -106,14 +106,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 var winGetPath = await this.yamlValidator.GetWingetPath(cancellationToken).ConfigureAwait(false);
                 if (winGetPath != null)
                 {
-                    progress.Report(new ProgressData(100, "Validating with winget CLI..."));
+                    progress.Report(new ProgressData(100, Resources.Localization.Dialogs_Winget_ValidatingCli));
 
                     var validationDetails = await yamlValidator.ValidateAsync(tempPath, false, cancellationToken).ConfigureAwait(false);
                     await Task.Delay(TimeSpan.FromMilliseconds(400), cancellationToken).ConfigureAwait(false);
                     
                     if (validationDetails != null)
                     {
-                        if (1 == this.interactionService.ShowMessage("Winget validation failed. Your package may not be accepted after pushing to the official repo. Press 'See details' to to show detailed warnings.", new[] { "Ignore this warning", "Fix issues"}, "Validation errors", validationDetails))
+                        if (1 == this.interactionService.ShowMessage(Resources.Localization.Dialogs_Winget_ValidatingCli_Body, 
+                                new[] { Resources.Localization.Dialogs_Winget_ValidatingCli_Ignore, Resources.Localization.Dialogs_Winget_ValidatingCli_Fix }, 
+                                Resources.Localization.Dialogs_Winget_ValidatingCli_Title, validationDetails))
                         {
                             this.WingetVerified = false;
                             this.OnPropertyChanged(nameof(WingetVerified));

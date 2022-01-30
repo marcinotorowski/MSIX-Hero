@@ -5,20 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mvvm="http://prismlibrary.com/"
              xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.ViewModels"
-             xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
-             xmlns:timeStamping="clr-namespace:Otor.MsixHero.Appx.Signing.TimeStamping;assembly=Otor.MsixHero.Appx"
              xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.Views"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:WhatsNewViewModel}">
     <DockPanel Margin="16">
-        <Label DockPanel.Dock="Top" FontSize="36" Style="{StaticResource Label}">
-            <TextBlock>
-                <Run Text="New version" />
-            </TextBlock>
-        </Label>
+        <Label DockPanel.Dock="Top" FontSize="36" Style="{StaticResource Label}" Content="{localization:Loc Dialogs_WhatsNew_NewVersion}" />
         <DockPanel DockPanel.Dock="Top">
 
             <Path
@@ -34,24 +27,24 @@
 
             <StackPanel VerticalAlignment="Center">
                 <TextBlock DockPanel.Dock="Top">
-                    <Run Text="Your version of MSIX Hero has just been updated. The current version is" />
+                    <Run Text="{localization:Loc Dialogs_WhatsNew_AfterUpdate}" />
                     <Run Text="{Binding CurrentVersion, Mode=OneWay, FallbackValue='1.0.0.0'}"></Run>
                 </TextBlock>
-                <TextBlock Visibility="Collapsed" Text="Enjoy new updates and fixes!" Margin="0 8" />
+                
                 <TextBlock DockPanel.Dock="Top">
                     <Hyperlink Command="{Binding OpenReleaseNotes}">
-                        <Run Text="Read the news on the official website to learn more about this new update..." />
+                        <Run Text="{localization:Loc Dialogs_WhatsNew_AfterUpdate_ReadMore}" />
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>
         </DockPanel>
 
-        <Button Background="#BEE6FD" BorderBrush="#BEE6FD" Padding="16 8" FontSize="16" DockPanel.Dock="Top" Command="{Binding Dismiss}" Content="{Binding Caption, FallbackValue='Close this dialog and jump to the Packages screen'}" HorizontalAlignment="Left" Margin="0 12 0 4" />
+        <Button Background="#BEE6FD" BorderBrush="#BEE6FD" Padding="16 8" FontSize="16" DockPanel.Dock="Top" Command="{Binding Dismiss}" Content="{Binding Caption, FallbackValue='!! Close !!'}" HorizontalAlignment="Left" Margin="0 12 0 4" />
 
-        <Label Style="{StaticResource FormLabelThin}" DockPanel.Dock="Top" Content="Additional resources" Margin="0 16 0 4" />
+        <Label Style="{StaticResource FormLabelThin}" DockPanel.Dock="Top" Content="{localization:Loc Dialogs_WhatsNew_Resources}" Margin="0 16 0 4" />
 
         <views:MsixHeroLinks DockPanel.Dock="Top" />
-        <CheckBox VerticalAlignment="Bottom" IsChecked="{Binding ShowUpdateScreen}" DockPanel.Dock="Bottom" Content="Show this information after each update" Margin="0 4" />
+        <CheckBox VerticalAlignment="Bottom" IsChecked="{Binding ShowUpdateScreen}" DockPanel.Dock="Bottom" Content="{localization:Loc Dialogs_WhatsNew_ShowUpdateInfo}" Margin="0 4" />
         
     </DockPanel>
 </UserControl>

@@ -15,6 +15,8 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -29,6 +31,8 @@ using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
+using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
@@ -40,40 +44,49 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
     {
         private readonly IEventAggregator _eventAggregator;
         private readonly IConfigurationService _configurationService;
+        private readonly IUacElevation _uacElevation;
         private string _entryPoint;
 
         public SettingsViewModel(
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
+            ITranslationProvider translationProvider,
             IUacElevation uacElevation,
             ITimeStampFeed timeStampFeed)
         {
             this._eventAggregator = eventAggregator;
             this._configurationService = configurationService;
+            _uacElevation = uacElevation;
 
             var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
 
+            this.AllLanguages.Add(LanguageViewModel.FromAuto());
+            foreach (var translation in translationProvider.GetAvailableTranslations())
+            {
+                this.AllLanguages.Add(LanguageViewModel.FromCultureInfo(translation));
+            }
+
             this.TabOther.AddChildren
             (
-                this.CertificateOutputPath = new ChangeableFolderProperty("Certificate output path", interactionService, config.Signing?.DefaultOutFolder?.Resolved),
+                this.CertificateOutputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Settings_Certificate_Output, interactionService, config.Signing?.DefaultOutFolder?.Resolved),
                 this.PackerSignByDefault = new ChangeableProperty<bool>(config.Packer?.SignByDefault == true),
-                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>("Remote .msix URL", config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
-                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>("Remote .appinstaller URL", config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri)
+                this.DefaultRemoteLocationPackages = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_AppInstaller_RemoteMsix, config.AppInstaller?.DefaultRemoteLocationPackages, this.ValidateUri),
+                this.DefaultRemoteLocationAppInstaller = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_AppInstaller_RemoteUrl, config.AppInstaller?.DefaultRemoteLocationAppInstaller, this.ValidateUri)
             );
 
             this.TabEditors.AddChildren
             (
                 this.ManifestEditorType = new ChangeableProperty<EditorType>(config.Editing.ManifestEditorType),
-                this.ManifestEditorPath = new ChangeableFileProperty("Manifest editor path", interactionService, config.Editing.ManifestEditor.Resolved, this.ValidateManifestEditorPath),
+                this.ManifestEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Manifest_Path, interactionService, config.Editing.ManifestEditor.Resolved, this.ValidateManifestEditorPath),
                 this.MsixEditorType = new ChangeableProperty<EditorType>(config.Editing.MsixEditorType),
-                this.MsixEditorPath = new ChangeableFileProperty("MSIX editor path", interactionService, config.Editing.MsixEditor.Resolved, this.ValidateMsixEditorPath),
+                this.MsixEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Msix_Path, interactionService, config.Editing.MsixEditor.Resolved, this.ValidateMsixEditorPath),
                 this.AppinstallerEditorType = new ChangeableProperty<EditorType>(config.Editing.AppInstallerEditorType),
-                this.AppinstallerEditorPath = new ChangeableFileProperty("App installer editor path", interactionService, config.Editing.AppInstallerEditor.Resolved, this.ValidateAppInstallerEditorPath),
+                this.AppinstallerEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_AppInstaller_Path, interactionService, config.Editing.AppInstallerEditor.Resolved, this.ValidateAppInstallerEditorPath),
                 this.PsfEditorType = new ChangeableProperty<EditorType>(config.Editing.PsfEditorType),
-                this.PsfEditorPath = new ChangeableFileProperty("PSF editor path", interactionService, config.Editing.PsfEditor.Resolved, this.ValidatePsfEditorPath),
+                this.PsfEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Psf_Path, interactionService, config.Editing.PsfEditor.Resolved, this.ValidatePsfEditorPath),
                 this.PowerShellEditorType = new ChangeableProperty<EditorType>(config.Editing.PowerShellEditorType),
-                this.PowerShellEditorPath = new ChangeableFileProperty("PowerShell editor path", interactionService, config.Editing.PowerShellEditor.Resolved, this.ValidatePowerShellEditorPath)
+                this.PowerShellEditorPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Editors_Ps1_Path, interactionService, config.Editing.PowerShellEditor.Resolved, this.ValidatePowerShellEditorPath)
             );
 
             this.TabSigning.AddChildren
@@ -92,12 +105,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 uiLevel = -1;
             }
 
+            var language = config.UiConfiguration?.Language;
+            if (string.IsNullOrEmpty(language))
+            {
+                language = null;
+            }
+
             this.AllSettings.AddChildren(
                 this.TabSigning,
                 this.ConfirmDeletion = new ChangeableProperty<bool>(config.UiConfiguration?.ConfirmDeletion != false),
                 this.DefaultScreen = new ChangeableProperty<DefaultScreen>(config.UiConfiguration == null ? Infrastructure.Configuration.DefaultScreen.Packages : config.UiConfiguration.DefaultScreen),
                 this.ShowReleaseNotes = new ChangeableProperty<bool>(config.Update?.HideNewVersionInfo != true),
                 this.UxLevel = new ChangeableProperty<int>(uiLevel),
+                this.Language = new ChangeableProperty<string>(language),
                 this.VerboseLogging = new ChangeableProperty<bool>(config.VerboseLogging),
                 this.TabEditors,
                 this.Tools = new ToolsConfigurationViewModel(interactionService, config),
@@ -111,6 +131,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             this.PsfEditorType.ValueChanged += this.TypeOfPathChanged;
             this.MsixEditorType.ValueChanged += this.TypeOfPathChanged;
             this.PowerShellEditorType.ValueChanged += this.TypeOfPathChanged;
+
+            MsixHeroTranslation.Instance.CultureChanged += (_, _) =>
+            {
+                this.OnPropertyChanged(nameof(this.Title));
+            };
         }
 
         private void TypeOfPathChanged(object sender, ValueChangedEventArgs e)
@@ -156,7 +181,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
+            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
         }
 
         public string ValidateManifestEditorPath(string value)
@@ -166,7 +191,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
+            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
         }
 
         public string ValidateAppInstallerEditorPath(string value)
@@ -176,7 +201,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
+            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
         }
 
         public string ValidateMsixEditorPath(string value)
@@ -186,7 +211,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
+            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
         }
 
         public string ValidatePsfEditorPath(string value)
@@ -196,7 +221,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return null;
             }
 
-            return string.IsNullOrEmpty(value) ? "The path cannot be empty." : null;
+            return string.IsNullOrEmpty(value) ? Resources.Localization.Dialogs_Settings_Editors_Validation_EmptyPath : null;
         }
 
         public ChangeableContainer TabOther { get; } = new ChangeableContainer();
@@ -247,6 +272,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
         
         public ChangeableProperty<int> UxLevel { get; }
 
+        public ChangeableProperty<string> Language { get; }
+
+        public ObservableCollection<LanguageViewModel> AllLanguages { get; } = new ObservableCollection<LanguageViewModel>();
+
         public ChangeableProperty<DefaultScreen> DefaultScreen { get; }
 
         public string EntryPoint
@@ -255,7 +284,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             private set => this.SetField(ref this._entryPoint, value);
         }
 
-        public string Title => "Settings";
+        public string Title => Resources.Localization.Dialogs_Settings_Title;
 
         public bool CanCloseDialog()
         {
@@ -362,6 +391,23 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 {
                     TierController.SetCurrentTier(this.UxLevel.CurrentValue);
                 }
+            }
+
+            if (this.Language.IsTouched)
+            {
+                newConfiguration.UiConfiguration.Language = this.Language.CurrentValue;
+
+                if (string.IsNullOrEmpty(this.Language.CurrentValue))
+                {
+                    MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.InstalledUICulture);
+                }
+                else
+                {
+                    ExceptionGuard.Guard(() => MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.GetCultureInfo(this.Language.CurrentValue)));
+                }
+
+                // this is to ensure that in case of a running elevated proxy that is gets signaled we have now a new culture to consider.
+                this._uacElevation.AsHighestAvailable<IMsixHeroTranslationManager>().ChangeCulture(MsixHeroTranslation.Instance.CurrentCulture);
             }
             
             if (this.CertificateSelector.IsTouched)
@@ -509,7 +555,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
             if (!Uri.TryCreate(value, UriKind.Absolute, out _))
             {
-                return $"The value '{value}' is not a valid URI.";
+                return string.Format(Resources.Localization.Dialogs_Settings_Editors_Validation_WrongUrl, value);
             }
 
             return null;

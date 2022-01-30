@@ -45,32 +45,24 @@ namespace Otor.MsixHero.Appx.Updates
 
             if (!IsMsixPackage(msixPath1))
             {
-                throw new ArgumentException($"File {Path.GetFileName(msixPath1)} is not a valid MSIX.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_NotMsix_Format, Path.GetFileName(msixPath1)));
             }
 
             if (!IsMsixPackage(msixPath2))
             {
-                throw new ArgumentException($"File {Path.GetFileName(msixPath2)} is not a valid MSIX.");
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_UpdateImpact_Error_NotMsix_Format, Path.GetFileName(msixPath2)));
             }
 
-            progressReporter?.Report(new ProgressData(0, "Comparing files..."));
-            using (IAppxFileReader fileReader1 = new ZipArchiveFileReaderAdapter(msixPath1))
-            {
-                using (IAppxFileReader fileReader2 = new ZipArchiveFileReaderAdapter(msixPath2))
-                {
-                    await using (var file1 = fileReader1.GetFile("AppxBlockMap.xml"))
-                    {
-                        await using (var file2 = fileReader2.GetFile("AppxBlockMap.xml"))
-                        {
-                            var reader = new AppxBlockMapUpdateImpactAnalyzer();
-                            var result = await reader.Analyze(file1, file2, cancellationToken, progressReporter).ConfigureAwait(false);
-                            result.OldPackage = msixPath1;
-                            result.NewPackage = msixPath2;
-                            return result;
-                        }
-                    }
-                }
-            }
+            progressReporter?.Report(new ProgressData(0, Resources.Localization.Packages_UpdateImpact_ComparingFiles));
+            using IAppxFileReader fileReader1 = new ZipArchiveFileReaderAdapter(msixPath1);
+            using IAppxFileReader fileReader2 = new ZipArchiveFileReaderAdapter(msixPath2);
+            await using var file1 = fileReader1.GetFile("AppxBlockMap.xml");
+            await using var file2 = fileReader2.GetFile("AppxBlockMap.xml");
+            var reader = new AppxBlockMapUpdateImpactAnalyzer();
+            var result = await reader.Analyze(file1, file2, cancellationToken, progressReporter).ConfigureAwait(false);
+            result.OldPackage = msixPath1;
+            result.NewPackage = msixPath2;
+            return result;
         }
 
         private static bool IsMsixPackage(string path)

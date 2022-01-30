@@ -42,7 +42,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
             var manifestFile = Path.Combine(directory, FileConstants.AppxManifestFile);
             if (!File.Exists(manifestFile))
             {
-                throw new FileNotFoundException("Manifest file has not been found.", manifestFile);
+                throw new FileNotFoundException(Resources.Localization.Packages_Error_ManifestNotFound, manifestFile);
             }
 
             XDocument xmlDocument;
@@ -86,13 +86,13 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
         {
             if (!Directory.Exists(directory))
             {
-                throw new DirectoryNotFoundException($"Folder {directory} does not exist.");
+                throw new DirectoryNotFoundException(string.Format(Resources.Localization.Packages_Error_DirectoryMissing_Format, directory));
             }
 
             var fileInfo = new FileInfo(packagePath);
             if (fileInfo.Directory == null)
             {
-                throw new ArgumentException($"File path {packagePath} is not supported.", nameof(packagePath));
+                throw new ArgumentException(string.Format(Resources.Localization.Packages_Error_FileNotSupported, packagePath), nameof(packagePath));
             }
 
             if (!fileInfo.Directory.Exists)
@@ -209,7 +209,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
         {
             if (!File.Exists(packagePath))
             {
-                throw new FileNotFoundException($"File {packagePath} does not exist.");
+                throw new FileNotFoundException(string.Format(Resources.Localization.Packages_Error_FileMissing_Format, packagePath));
             }
 
             if (!Directory.Exists(directory) && directory != null)

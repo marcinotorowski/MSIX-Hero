@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
     <StackPanel>
 
-        <TextBlock DockPanel.Dock="Top" Text="This tool analyzes the differences between two versions of a package and determines how the changes and additions can impact the process of updating." TextWrapping="Wrap" Margin="0 0 0 16" />
+        <TextBlock DockPanel.Dock="Top" Text="{localization:Loc Dialogs_UpdateImpact_Purpose}" TextWrapping="Wrap" Margin="0 0 0 16" />
 
         <Grid VerticalAlignment="Center" HorizontalAlignment="Stretch" DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
@@ -22,8 +23,8 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0 0 0 16">
-                <Label Style="{StaticResource FormLabel}" Content="Older version" />
-                <TextBlock Text="Select the previous version of the MSIX package to be compared..." />
+                <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_UpdateImpact_Blank_Old}" />
+                <TextBlock Text="{localization:Loc Dialogs_UpdateImpact_Blank_Old_HelpText}" />
                 <DockPanel Margin="0 6 0 0">
                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path1.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                     <TextBox TabIndex="4" 
@@ -33,8 +34,8 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0 0 0 16">
-                <Label Style="{StaticResource FormLabel}" Content="Newer version" />
-                <TextBlock Text="Select the newer version of the MSIX package to be compared..." />
+                <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_UpdateImpact_Blank_New}" />
+                <TextBlock Text="{localization:Loc Dialogs_UpdateImpact_Blank_New_HelpText}" />
                 <DockPanel Margin="0 6 0 0">
                     <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path2.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                     <TextBox TabIndex="4" Text="{Binding Path2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" IsReadOnly="True" />
@@ -42,9 +43,9 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="0 0 0 16">
-                <Label Style="{StaticResource FormLabel}" Content="Compare" />
-                <TextBlock Text="Press the button to start comparing selected packages..." />
-                <Button DockPanel.Dock="Top" Command="{Binding Compare}" Content="Analyze the update impact" Margin="0 6 0 0" Padding="25 10" HorizontalAlignment="Left" />
+                <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_UpdateImpact_Compare}" />
+                <TextBlock Text="{localization:Loc Dialogs_UpdateImpact_Compare_HelpText}" />
+                <Button DockPanel.Dock="Top" Command="{Binding Compare}" Content="{localization:Loc Dialogs_UpdateImpact_Compare_Button}" Margin="0 6 0 0" Padding="25 10" HorizontalAlignment="Left" />
             </StackPanel>
         </Grid>
     </StackPanel>

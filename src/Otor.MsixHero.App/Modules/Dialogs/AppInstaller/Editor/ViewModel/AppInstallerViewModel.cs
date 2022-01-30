@@ -46,30 +46,30 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
     
     public class AppInstallerViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly AppInstallerBuilder appInstallerBuilder;
-        private readonly AppInstallerFeatureSupportHelper appInstallerFeatureSupportHelper = new AppInstallerFeatureSupportHelper();
-        private readonly IInteractionService interactionService;
-        private readonly IConfigurationService configurationService;
-        private ICommand openSuccessLink;
-        private ICommand reset;
-        private ICommand open;
-        private string previousPath;
+        private readonly AppInstallerBuilder _appInstallerBuilder;
+        private readonly AppInstallerFeatureSupportHelper _appInstallerFeatureSupportHelper = new AppInstallerFeatureSupportHelper();
+        private readonly IInteractionService _interactionService;
+        private readonly IConfigurationService _configurationService;
+        private ICommand _openSuccessLink;
+        private ICommand _reset;
+        private ICommand _open;
+        private string _previousPath;
 
         public AppInstallerViewModel(
             IInteractionService interactionService,
-            IConfigurationService configurationService) : base("Create " + FileConstants.AppInstallerExtension, interactionService)
+            IConfigurationService configurationService) : base(Resources.Localization.Dialogs_AppInstaller_Title, interactionService)
         {
-            this.appInstallerBuilder = new AppInstallerBuilder();
-            this.interactionService = interactionService;
-            this.configurationService = configurationService;
+            this._appInstallerBuilder = new AppInstallerBuilder();
+            this._interactionService = interactionService;
+            this._configurationService = configurationService;
 
             this.AppInstallerUpdateCheckingMethod = new ChangeableProperty<AppInstallerUpdateCheckingMethod>(Otor.MsixHero.AppInstaller.Entities.AppInstallerUpdateCheckingMethod.LaunchAndBackground);
             this.AllowDowngrades = new ChangeableProperty<bool>();
             this.PromptMode = new ChangeableProperty<PromptMode>(ViewModel.PromptMode.Background);
-            this.Version = new ValidatedChangeableProperty<string>("Version", "1.0.0.0", ValidatorFactory.ValidateVersion(true));
-            this.MainPackageUri = new ValidatedChangeableProperty<string>("Main package URL", true, ValidatorFactory.ValidateUri(true));
-            this.AppInstallerUri = new ValidatedChangeableProperty<string>("App installer URL", true, ValidatorFactory.ValidateUri(true));
-            this.Hours = new ValidatedChangeableProperty<string>("Hours between updates", "24", ValidateHours);
+            this.Version = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_Version, "1.0.0.0", ValidatorFactory.ValidateVersion(true));
+            this.MainPackageUri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_MainPackageUrl, true, ValidatorFactory.ValidateUri(true));
+            this.AppInstallerUri = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_AppInstallerUrl, true, ValidatorFactory.ValidateUri(true));
+            this.Hours = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_AppInstaller_HoursBetweenUpdates, "24", ValidateHours);
 
             this.TabPackage = new PackageSelectorViewModel(
                 interactionService,
@@ -81,7 +81,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 PackageSelectorDisplayMode.AllowBrowsing | 
                 PackageSelectorDisplayMode.AllowChanging)
             {
-                CustomPrompt = "What will be targeted by this .appinstaller?"
+                CustomPrompt = Resources.Localization.Dialogs_AppInstaller_Target
             };
 
             this.TabOptions = new ChangeableContainer(
@@ -93,9 +93,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             this.AddChildren(
                 this.TabPackage,
                 this.TabProperties = new ChangeableContainer(this.Version, this.MainPackageUri, this.AppInstallerUri),
-                this.TabOptionalPackages = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
-                this.TabDependencies = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
-                this.TabRelatedPackages = new AppInstallerPackagesViewModel(this.interactionService, this.configurationService),
+                this.TabOptionalPackages = new AppInstallerPackagesViewModel(this._interactionService, this._configurationService),
+                this.TabDependencies = new AppInstallerPackagesViewModel(this._interactionService, this._configurationService),
+                this.TabRelatedPackages = new AppInstallerPackagesViewModel(this._interactionService, this._configurationService),
                 this.TabOptions);
 
             this.TabPackage.InputPath.ValueChanged += this.InputPathOnValueChanged;
@@ -135,24 +135,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         {
             get
             {
-                var minWin10 = this.appInstallerFeatureSupportHelper.GetLowestSupportedWindows10Build(this.GetCurrentAppInstallerConfig());
+                var minWin10 = this._appInstallerFeatureSupportHelper.GetLowestSupportedWindows10Build(this.GetCurrentAppInstallerConfig());
                 return $"Windows 10 {minWin10}";
             }
         }
         
         public ICommand OpenSuccessLinkCommand
         {
-            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
+            get { return this._openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
         public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public ICommand OpenCommand
         {
-            get { return this.open ??= new DelegateCommand<string>(this.OpenExecuted); }
+            get { return this._open ??= new DelegateCommand<string>(this.OpenExecuted); }
         }
 
         public PackageSelectorViewModel TabPackage { get; }
@@ -184,15 +184,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 return false;
             }
 
-            var settings = new FileDialogSettings("Appinstaller files|*.appinstaller|All files|*.*", this.previousPath);
-            if (!this.interactionService.SaveFile(settings, out var selected))
+            var settings = new FileDialogSettings(Resources.Localization.Dialogs_AppInstaller_Filter_AppInstallerFiles + "|*.appinstaller|"  + Resources.Localization.Dialogs_AppInstaller_Filter_AllFiles + "|*.*", this._previousPath);
+            if (!this._interactionService.SaveFile(settings, out var selected))
             {
                 return false;
             }
 
-            this.previousPath = selected;
+            this._previousPath = selected;
             var appInstaller = this.GetCurrentAppInstallerConfig();
-            await this.appInstallerBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
+            await this._appInstallerBuilder.Create(appInstaller, selected, cancellationToken, progress).ConfigureAwait(false);
             return true;
         }
 
@@ -200,17 +200,17 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
         {
             if (string.IsNullOrEmpty(newValue))
             {
-                return "This value cannot be empty.";
+                return Resources.Localization.Dialogs_AppInstaller_Validation_Hours_Empty;
             }
 
             if (!int.TryParse(newValue, out var value))
             {
-                return $"The value '{newValue}' is not a valid number.";
+                return string.Format(Resources.Localization.Dialogs_AppInstaller_Validation_Hours_NaN, newValue);
             }
 
             if (value < 0 || value > 255)
             {
-                return $"The value '{newValue}' lies outside of valid range 0-255.";
+                return string.Format(Resources.Localization.Dialogs_AppInstaller_Validation_Hours_Range, newValue);
             }
 
             return null;
@@ -290,27 +290,27 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
                 }
                 else
                 {
-                    previousPath = selected;
+                    _previousPath = selected;
                 }
             }
 
             if (selected == null)
             {
-                if (this.previousPath != null)
+                if (this._previousPath != null)
                 {
-                    var settings = new FileDialogSettings(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter(), this.previousPath);
-                    if (!this.interactionService.SelectFile(settings, out selected))
+                    var settings = new FileDialogSettings(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter(), this._previousPath);
+                    if (!this._interactionService.SelectFile(settings, out selected))
                     {
                         return;
                     }
                 }
-                else if (!this.interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter()), out selected))
+                else if (!this._interactionService.SelectFile(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.AppInstallerExtension).BuildFilter()), out selected))
                 {
                     return;
                 }
             }
             
-            this.previousPath = selected;
+            this._previousPath = selected;
 
             AppInstallerConfig file;
             
@@ -321,7 +321,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             catch (Exception e)
             {
                 // ReSharper disable once PossibleNullReferenceException
-                this.interactionService.ShowError("The selected file is not a valid .appinstaller.", e, InteractionResult.OK);
+                this._interactionService.ShowError(Resources.Localization.Dialogs_AppInstaller_Validation_File_Format, e, InteractionResult.OK);
                 return;
             }
             
@@ -361,7 +361,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
 
         private void OpenSuccessLinkExecuted()
         {
-            Process.Start("explorer.exe", "/select," + previousPath);
+            Process.Start("explorer.exe", "/select," + _previousPath);
         }
         
         private void InputPathOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -379,7 +379,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             if (string.IsNullOrEmpty(this.MainPackageUri.CurrentValue) && !string.IsNullOrEmpty(e.NewValue as string))
             {
                 var newFilePath = new FileInfo((string)e.NewValue);
-                var configValue = this.configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationPackages;
+                var configValue = this._configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationPackages;
                 if (string.IsNullOrEmpty(configValue))
                 {
                     configValue = "http://server-name/";
@@ -391,7 +391,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel
             if (string.IsNullOrEmpty(this.AppInstallerUri.CurrentValue) && !string.IsNullOrEmpty(e.NewValue as string))
             {
                 var newFilePath = new FileInfo((string)e.NewValue);
-                var configValue = this.configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationPackages;
+                var configValue = this._configurationService.GetCurrentConfiguration().AppInstaller?.DefaultRemoteLocationPackages;
                 if (string.IsNullOrEmpty(configValue))
                 {
                     configValue = "http://server-name/";

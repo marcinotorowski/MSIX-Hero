@@ -31,9 +31,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
             this.model = model;
             
             this.AddChildren(
-                this.Path = new ChangeableFileProperty("Command path", interactionService, model.Path, ValidatePath),
-                this.Name = new ValidatedChangeableProperty<string>("Command name", model.Name, ValidateName),
-                this.Icon = new ChangeableFileProperty("Command icon", interactionService, model.Icon),
+                this.Path = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandPath, interactionService, model.Path, ValidatePath),
+                this.Name = new ValidatedChangeableProperty<string>(() => Resources.Localization.Dialogs_Settings_Tools_CommandName, model.Name, ValidateName),
+                this.Icon = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Settings_Tools_CommandIcon, interactionService, model.Icon),
                 this.Arguments = new ChangeableProperty<string>(model.Arguments),
                 this.AsAdmin = new ChangeableProperty<bool>(model.AsAdmin)
             );
@@ -95,7 +95,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
         {
             if (string.IsNullOrEmpty(path))
             {
-                return "The path to a tool cannot be empty.";
+                return Resources.Localization.Dialogs_Settings_Tools_Validation_EmptyPath;
             }
 
             return null;
@@ -108,7 +108,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools
                 return null;
             }
             
-            return "The name cannot be empty.";
+            return Resources.Localization.Dialogs_Settings_Tools_Validation_EmptyName;
         }
 
         private void IconOnValueChanged(object sender, ValueChangedEventArgs e)

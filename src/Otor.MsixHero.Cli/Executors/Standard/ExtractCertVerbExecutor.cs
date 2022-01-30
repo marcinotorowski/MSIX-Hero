@@ -35,12 +35,12 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
         public override async Task<int> Execute()
         {
-            Logger.Info().WriteLine($"Extracting certificate from [{this.Verb.File}]...");
+            Logger.Info().WriteLine(string.Format(Resources.Localization.CLI_Executor_ExtractCert_Extracting_Format, this.Verb.File));
 
             try
             {
                 await this.signingManager.ExtractCertificateFromMsix(this.Verb.File, this.Verb.Output).ConfigureAwait(false);
-                await this.Console.WriteSuccess("Certificate has been extracted.");
+                await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_ExtractCert_Success);
                 await this.Console.ShowCertSummary(signingManager, this.Verb.File);
                 return 0;
             }

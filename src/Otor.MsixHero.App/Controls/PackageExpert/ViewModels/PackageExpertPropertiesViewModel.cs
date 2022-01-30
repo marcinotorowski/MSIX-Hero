@@ -136,25 +136,25 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             {
                 if (this.Model.Source is StorePackageSource)
                 {
-                    return "Store App";
+                    return Resources.Localization.PackageExpert_AppType_Store;
                 }
 
                 if (this.Model.Source is SystemSource)
                 {
-                    return "System App";
+                    return Resources.Localization.PackageExpert_AppType_System;
                 }
 
                 if (this.Model.Source is DeveloperSource)
                 {
-                    return "Developer";
+                    return Resources.Localization.PackageExpert_AppType_Developer;
                 }
 
                 if (this.Model.Source is NotInstalledSource)
                 {
-                    return "Not installed";
+                    return Resources.Localization.PackageExpert_AppType_NotInstalled;
                 }
 
-                return "Sideloaded App";
+                return Resources.Localization.PackageExpert_AppType_Sideloaded;
             }
         }
 

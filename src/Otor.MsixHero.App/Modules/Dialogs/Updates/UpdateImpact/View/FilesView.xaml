@@ -7,6 +7,7 @@
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.ViewModel"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Updates.UpdateImpact.Converters"
              xmlns:interop="clr-namespace:Otor.MsixHero.App.Helpers.Interop"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:UpdateImpactViewModel}">
     <UserControl.Resources>
@@ -18,9 +19,9 @@
     <AdornerDecorator>
         <DockPanel IsVisibleChanged="FilesDockVisibilityChanged">
             <StackPanel Orientation="Horizontal" Margin="0 0 0 6" DockPanel.Dock="Top">
-                <RadioButton GroupName="g1" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.None}}" Content="All files" Margin="0 0 16 0" />
-                <RadioButton GroupName="g2" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.OnlyChanged}}" Content="Only changes" Margin="0 0 16 0" />
-                <RadioButton GroupName="g3" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.OnlyUpdateRelevant}}" Content="Only impacting update" Margin="0 0 16 0" />
+                <RadioButton GroupName="g1" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.None}}" Content="{localization:Loc Dialogs_UpdateImpact_Files_All}" Margin="0 0 16 0" />
+                <RadioButton GroupName="g2" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.OnlyChanged}}" Content="{localization:Loc Dialogs_UpdateImpact_Files_OnlyChanges}" Margin="0 0 16 0" />
+                <RadioButton GroupName="g3" IsChecked="{Binding Results.CurrentValue.UpdateImpactFilter, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static items:UpdateImpactViewFilter.OnlyUpdateRelevant}}" Content="{localization:Loc Dialogs_UpdateImpact_Files_OnlyImpacting}" Margin="0 0 16 0" />
             </StackPanel>
             <ListView ItemsSource="{Binding Results.CurrentValue.FilesView}" x:Name="FileGrid">
                 <ListView.View>
@@ -29,7 +30,7 @@
                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <GridViewColumn Width="400">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Name" Content="Name" Click="GridHeaderOnClick" />
+                                    <GridViewColumnHeader Tag="Name" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_Name}" Click="GridHeaderOnClick" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -43,18 +44,18 @@
                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <GridViewColumn DisplayMemberBinding="{Binding SizeDifference, Converter={StaticResource SizeConverter}}" Width="60">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Size" Content="Size" Click="GridHeaderOnClick" />
+                                    <GridViewColumnHeader Tag="Size" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_Size}" Click="GridHeaderOnClick" />
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                             <GridViewColumn DisplayMemberBinding="{Binding UpdateImpact, Converter={StaticResource SizeConverter}}" Width="120">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="UpdateImpact" Content="Update impact" Click="GridHeaderOnClick" />
+                                    <GridViewColumnHeader Tag="UpdateImpact" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_UpdateImpact}" Click="GridHeaderOnClick" />
                                 </GridViewColumn.Header>
                             </GridViewColumn>
                             <GridViewColumn Width="100">
                                 <GridViewColumn.Header>
-                                    <GridViewColumnHeader Tag="Type" Content="Type" Click="GridHeaderOnClick" />
+                                    <GridViewColumnHeader Tag="Type" Content="{localization:Loc Dialogs_UpdateImpact_Files_Column_Type}" Click="GridHeaderOnClick" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>

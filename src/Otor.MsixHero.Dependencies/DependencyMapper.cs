@@ -51,7 +51,7 @@ namespace Otor.MsixHero.Dependencies
 
         public async Task<DependencyGraph> GetGraph(string initialPackage, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            progress?.Report(new ProgressData(0, $"Reading {Path.GetFileName(initialPackage)}..."));
+            progress?.Report(new ProgressData(0,  string.Format(Resources.Localization.Dependencies_Reading_Format, Path.GetFileName(initialPackage))));
 
             var reader = new AppxManifestReader();
             using var fileReader = FileReaderFactory.CreateFileReader(initialPackage);
@@ -106,7 +106,7 @@ namespace Otor.MsixHero.Dependencies
                     var findParent = packages.FirstOrDefault(depPkg => depPkg.Package.Name == mainPackage.Name);
                     if (findParent != null)
                     {
-                        dependencyGraph.Relations.Add(new Relation(findParent, "main package", pkg));
+                        dependencyGraph.Relations.Add(new Relation(findParent, Resources.Localization.Dependencies_MainPackage, pkg));
                     }
                     else
                     {
@@ -119,7 +119,7 @@ namespace Otor.MsixHero.Dependencies
                             dependencyGraph.Elements.Add(findUnresolved);
                         }
 
-                        dependencyGraph.Relations.Add(new Relation(findUnresolved, "main package", pkg));
+                        dependencyGraph.Relations.Add(new Relation(findUnresolved, Resources.Localization.Dependencies_MainPackage, pkg));
                     }
                 }
             }
@@ -198,14 +198,14 @@ namespace Otor.MsixHero.Dependencies
 
             var manifestReader = new AppxManifestReader();
 
-            progressForGettingAddOns.Report(new ProgressData(0, "Reading optional packages..."));
+            progressForGettingAddOns.Report(new ProgressData(0, Resources.Localization.Dependencies_ReadingOptionalPackages));
             foreach (var addOnPackage in allPackages.Where(installedPackage => installedPackage.IsOptional))
             {
                 using var fileReader = FileReaderFactory.CreateFileReader(addOnPackage.ManifestLocation);
                 addOnPackages.Add(await manifestReader.Read(fileReader, false, cancellationToken).ConfigureAwait(false));
             }
 
-            progressForCalculation.Report(new ProgressData(0, "Reading relations..."));
+            progressForCalculation.Report(new ProgressData(0, Resources.Localization.Dependencies_ReadingRelations));
             for (var i = 0; i < consideredPackages.Count; i++)
             {
                 var currentPkg = consideredPackages[i];

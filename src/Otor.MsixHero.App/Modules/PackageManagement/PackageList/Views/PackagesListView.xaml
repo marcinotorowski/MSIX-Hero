@@ -13,6 +13,7 @@
     xmlns:commands="clr-namespace:Otor.MsixHero.App.Hero.Commands"
     xmlns:packageManagement="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement"
     xmlns:elements="clr-namespace:Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d" 
     FocusVisualStyle="{x:Null}"
@@ -22,102 +23,102 @@
         <system:Boolean x:Key="True">True</system:Boolean>
 
         <ContextMenu x:Key="PackageContextMenu">
-            <MenuItem Header="Copy...">
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorCopy}" />
                 </MenuItem.Icon>
-                <MenuItem Header="Full name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_FullName}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FullName}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorPackage}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Family name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FamilyName}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_FamilyName}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.FamilyName}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_Name}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Name}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Publisher" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_Publisher}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Subject}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallCertificate}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Version" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_Version}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Version}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDigits}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Display name" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_DisplayName}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.DisplayName}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallTextFormInput}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Publisher (display name)" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Publisher}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_PublisherDisplayName}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.Publisher}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallPublisher}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Install path" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.InstallPath}" InputGestureText=" ">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Copy_InstallPath}" Command="Copy" CommandParameter="{x:Static configuration:PackageProperty.InstallPath}" InputGestureText=" ">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="Open...">
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_Open}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                 </MenuItem.Icon>
-                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorer}" Header="Install folder">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorer}" Header="{localization:Loc Packages_List_ContextMenu_Open_InstallFolder}">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallOpen}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenManifest}" Header="Manifest file">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenManifest}" Header="{localization:Loc Packages_List_ContextMenu_Open_ManifestFile}">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallManifest}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenConfigJson}" Header="Config.json">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenConfigJson}" Header="{localization:Loc Packages_List_ContextMenu_Open_ConfigJson}">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallGear}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorerUser}" Header="User folder">
+                <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.OpenExplorerUser}" Header="{localization:Loc Packages_List_ContextMenu_Open_UserFolder}">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallUserFolder}" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Check for updates" Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}">
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_CheckUpdates}" Command="{x:Static commands:MsixHeroRoutedUICommands.CheckUpdates}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallAppInstaller}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Analyze dependencies" Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_AnalyzeDependencies}" Command="{x:Static commands:MsixHeroRoutedUICommands.DependencyViewer}">
                 <!-- CommandParameter="{x:Static viewModel:VariableContextCommandParameter.Selection}">-->
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallDependencies}" />
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Change volume..." Command="{x:Static commands:MsixHeroRoutedUICommands.ChangeVolume}" >
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_ChangeVolume}" Command="{x:Static commands:MsixHeroRoutedUICommands.ChangeVolume}" >
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallForward}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Remove for...">
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_RemoveFor}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemove}" />
                 </MenuItem.Icon>
-                <MenuItem Header="Current user" Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}" InputGestureText="Del">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_RemoveFor_CurrentUser}" Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}" InputGestureText="Del">
                     <MenuItem.Icon>
                         <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallRemoveMinus}" />
                     </MenuItem.Icon>
@@ -125,7 +126,7 @@
                         <system:Boolean>False</system:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
-                <MenuItem Header="All users"  Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}">
+                <MenuItem Header="{localization:Loc Packages_List_ContextMenu_RemoveFor_AllUsers}"  Command="{x:Static commands:MsixHeroRoutedUICommands.RemovePackage}">
                     <MenuItem.Icon>
                         <Image Source="{x:Static helpers:ShieldIcon.Source}" Stretch="None" UseLayoutRounding="True" SnapsToDevicePixels="True" VerticalAlignment="Center" Margin="0 0 0 0" />
                     </MenuItem.Icon>
@@ -135,17 +136,17 @@
                 </MenuItem>
             </MenuItem>
             <Separator />
-            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.StartPackage}" Header="Start app">
+            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.StartPackage}" Header="{localization:Loc Packages_List_ContextMenu_StartApp}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStart}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.StopPackage}" Header="Stop app">
+            <MenuItem Command="{x:Static commands:MsixHeroRoutedUICommands.StopPackage}" Header="{localization:Loc Packages_List_ContextMenu_StopApp}">
                 <MenuItem.Icon>
                     <Path Style="{StaticResource SmallIcon}" Data="{StaticResource SmallStop}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Run command in context..." x:Name="ContextMenuRunCommand" />
+            <MenuItem Header="{localization:Loc Packages_List_ContextMenu_RunCommand}" x:Name="ContextMenuRunCommand" />
         </ContextMenu>
     </UserControl.Resources>
 
@@ -173,51 +174,6 @@
                                 </Border.Effect>
 
                                 <ContentControl mvvm:RegionManager.RegionName="{x:Static packageManagement:PackageManagementRegionNames.PopupFilter}" />
-
-                                <!--<StackPanel>
-                                    <StackPanel.Resources>
-                                        <Style TargetType="HeaderedContentControl">
-                                            <Setter Property="Height" Value="44" />
-                                            <Setter Property="Margin" Value="0 -1 0 0" />
-                                            <Setter Property="BorderBrush" Value="#ccc" />
-                                            <Setter Property="BorderThickness" Value="0 1 0 0" />
-                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                            <Setter Property="VerticalContentAlignment" Value="Center" />
-                                            <Setter Property="HorizontalContentAlignment" Value="Left" />
-                                            <Setter Property="Padding" Value="8 0 0 0" />
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="HeaderedContentControl">
-                                                        <Border
-                                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                                            Background="Transparent">
-                                                            <StackPanel 
-                                                                Margin="{TemplateBinding Padding}"
-                                                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                                                                <TextBlock Text="{TemplateBinding Header}" FontWeight="Bold" />
-                                                                <TextBlock Text="{TemplateBinding Content}" Foreground="#888" />
-                                                            </StackPanel>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <HeaderedContentControl
-                                        Header="Apps"
-                                        Content="All" />
-                                    <HeaderedContentControl
-                                        Header="Category"
-                                        Content="All" />
-                                    <HeaderedContentControl
-                                        Header="Installation type"
-                                        Content="3 selected" />
-                                    <HeaderedContentControl
-                                        Header="Architecture"
-                                        Content="All" />
-                                </StackPanel>-->
                             </Border>
                         </Border>
                     </Popup>
@@ -229,13 +185,13 @@
                         Style="{StaticResource ActionButton}">
                         <controls:LabelWithIcon 
                             Icon16x16="{StaticResource SmallRefresh}"
-                            Content="Refresh"
+                            Content="{localization:Loc Packages_Actions_Refresh}"
                             Style="{StaticResource ActionLabelWithIcon}" />
                     </Button>
                     <ToggleButton Style="{StaticResource ActionPopupToggleButton}" x:Name="ButtonInstall">
                         <controls:LabelWithIcon 
                             Icon16x16="{StaticResource SmallPlus}"
-                            Content="Install"
+                            Content="{localization:Loc Packages_Actions_Install}"
                             Style="{StaticResource ActionLabelWithIcon}" />
                     </ToggleButton>
 
@@ -258,7 +214,7 @@
                                         <controls:LabelWithIcon
                                                 Icon16x16="M 8 2 C 6.347656 2 5 3.347656 5 5 C 5 6.652344 6.347656 8 8 8 C 9.652344 8 11 6.652344 11 5 C 11 3.347656 9.652344 2 8 2 Z M 8 8 C 5.246094 8 3 10.246094 3 13 L 4 13 C 4 10.785156 5.785156 9 8 9 C 10.214844 9 12 10.785156 12 13 L 13 13 C 13 10.246094 10.753906 8 8 8 Z M 8 3 C 9.109375 3 10 3.890625 10 5 C 10 6.109375 9.109375 7 8 7 C 6.890625 7 6 6.109375 6 5 C 6 3.890625 6.890625 3 8 3 Z"
                                                 Style="{StaticResource ActionLabelWithIcon}"
-                                                Content="From file (current user)..." />
+                                                Content="{localization:Loc Packages_Actions_Install_CurrentUser}" />
                                         <Button.CommandParameter>
                                             <system:Boolean>False</system:Boolean>
                                         </Button.CommandParameter>
@@ -284,7 +240,7 @@
                                                 VerticalAlignment="Center"
                                                 Icon16x16="M 1 2 L 1 2.5 L 1 14 L 7 14 L 7 12 L 8.9941406 12 C 8.9938519 12.161215 8.9934896 12.326888 8.9941406 12.511719 C 8.9949982 12.756825 8.9948627 12.815221 8.9960938 13 L 8 13 L 8 14 L 11 14 L 11 13 L 9.9960938 13 C 9.9948507 12.815137 9.9950122 12.754677 9.9941406 12.507812 C 9.9934922 12.323698 9.993854 12.159347 9.9941406 12 L 13.5 12 C 14.322531 12 15 11.322531 15 10.5 L 15 5.5 C 15 4.6774686 14.322531 4 13.5 4 L 7 4 L 7 2 L 1 2 z M 2 3 L 6 3 L 6 13 L 2 13 L 2 3 z M 3 4 L 3 5 L 5 5 L 5 4 L 3 4 z M 7 5 L 13.5 5 C 13.781469 5 14 5.2185314 14 5.5 L 14 10.5 C 14 10.781469 13.781469 11 13.5 11 L 7 11 L 7 5 z M 3 6 L 3 7 L 5 7 L 5 6 L 3 6 z"
                                                 Style="{StaticResource ActionLabelWithIcon}"
-                                                Content="From file (all users - provisioning)..." />
+                                                Content="{localization:Loc Packages_Actions_Install_AllUsers}" />
                                         </DockPanel>
                                     </Button>
                                 </StackPanel>
@@ -360,7 +316,7 @@
                                         <Image Source="{Binding Image, Mode=OneTime, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
                                     </Border>
                                     <Border
-                                        ToolTip="This app is currently running" 
+                                        ToolTip="{localization:Loc Packages_List_AppRunning}" 
                                         Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Bottom" HorizontalAlignment="Right" CornerRadius="16" Width="16" Height="16" Background="Green" BorderBrush="White" BorderThickness="2">
                                         <Path Width="6" Height="8" Fill="White" StrokeThickness="0" Data="M 2 0 L 6 4 2 8 Z" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                         <Border.RenderTransform>

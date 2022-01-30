@@ -26,6 +26,24 @@
     <ProjectReference Include="..\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\Localization.Designer.cs">
+      <DependentUpon>Localization.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Localization.pl.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Localization.resx">
+      <LastGenOutput>Localization.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\scripts&quot; &quot;$(TargetDir)scripts&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\redistr&quot; &quot;$(TargetDir)redistr&quot;&#xD;&#xA;XCOPY /E /I /Y &quot;$(ProjectDir)..\..\artifacts\templates&quot; &quot;$(TargetDir)templates&quot;" />
   </Target>

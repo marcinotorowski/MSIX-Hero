@@ -56,7 +56,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 if (!manifest.Applications.Any())
                 {
-                    throw new InvalidOperationException("Cannot execute a command in this package context. The package does not have any applications defined.");
+                    throw new InvalidOperationException(Resources.Localization.Packages_Error_NoEntryPointCmd);
                 }
 
                 await RunToolInContext(package.PackageFamilyName, manifest.Applications[0].Id, toolPath, arguments, cancellationToken, progress).ConfigureAwait(false);
@@ -100,12 +100,12 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 if (e.HResult == -2147024891 /* 0x80070005 E_ACCESSDENIED */)
                 {
-                    throw new DeveloperModeException("Developer mode must be enabled to use this feature.", e);
+                    throw new DeveloperModeException(Resources.Localization.Packages_Error_DeveloperMode, e);
                 }
 
                 if (e.HResult == -2146233087)
                 {
-                    throw new AdminRightsRequiredException("This tool requires admin rights.", e);
+                    throw new AdminRightsRequiredException(Resources.Localization.Packages_Error_Uac, e);
                 }
 
                 throw;
@@ -121,7 +121,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             if (appId == null)
             {
-                Logger.Info().WriteLine("Running the default entry point from package " + packageManifestLocation);
+                Logger.Info().WriteLine("Running the default entry point from package {0}", packageManifestLocation);
             }
 
             if (packageManifestLocation == null || !File.Exists(packageManifestLocation))
@@ -144,10 +144,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 if (appId == null)
                 {
                     Logger.Warn().WriteLine("The package does not contain any entry point that is visible in the start menu. Aborting...");
-                    throw new InvalidOperationException("This package has no Start Menu entry points.");
+                    throw new InvalidOperationException(Resources.Localization.Packages_Error_NoStartMenu);
                 }
 
-                throw new InvalidOperationException($"The entry point '{appId}' was not found.");
+                throw new InvalidOperationException(string.Format(Resources.Localization.Packages_Error_NoEntryPoint_Format, appId));
             }
 
             var p = new Process();
@@ -166,24 +166,22 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             if (!File.Exists(manifestLocation))
             {
-                return new string[0];
+                return Array.Empty<string>();
             }
 
             var reader = new AppxManifestReader();
-            using (IAppxFileReader appxSource = new FileInfoFileReaderAdapter(manifestLocation))
+            using IAppxFileReader appxSource = new FileInfoFileReaderAdapter(manifestLocation);
+            var appxPackage = await reader.Read(appxSource).ConfigureAwait(false);
+
+            return appxPackage.Applications.Select(app =>
             {
-                var appxPackage = await reader.Read(appxSource).ConfigureAwait(false);
-
-                return appxPackage.Applications.Select(app =>
+                if (string.IsNullOrEmpty(app.Id))
                 {
-                    if (string.IsNullOrEmpty(app.Id))
-                    {
-                        return @"shell:appsFolder\" + appxPackage.FamilyName;
-                    }
+                    return @"shell:appsFolder\" + appxPackage.FamilyName;
+                }
 
-                    return @"shell:appsFolder\" + appxPackage.FamilyName + "!" + app.Id;
-                }).ToArray();
-            }
+                return @"shell:appsFolder\" + appxPackage.FamilyName + "!" + app.Id;
+            }).ToArray();
         }
     }
 }

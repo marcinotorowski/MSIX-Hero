@@ -29,7 +29,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 
                 if (!File.Exists(this._package) && !Directory.Exists(this._package))
                 {
-                    await this.Console.WriteError($"The path {this._package} does not exist.");
+                    await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Error_PathNotExist_Format, this._package));
                     return 10;
                 }
 
@@ -58,7 +58,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 
                         try
                         {
-                            await this.Console.WriteInfo($"Opening {Path.GetFileName(this._package)}...").ConfigureAwait(false);
+                            await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_OpeningFile_Format, Path.GetFileName(this._package))).ConfigureAwait(false);
 
                             // 1) Unpack first
                             await msixMgr.Unpack(MakeAppxUnpackOptions.Create(this._package, tempFolder)).ConfigureAwait(false);
@@ -67,7 +67,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                             var result = await this.ExecuteOnExtractedPackage(tempFolder).ConfigureAwait(false);
                             if (result != StandardExitCodes.ErrorSuccess)
                             {
-                                await this.Console.WriteWarning($"The package has not been updated due to previous errors.").ConfigureAwait(false);
+                                await this.Console.WriteWarning(Resources.Localization.CLI_Executor_Warn_SkippedDueToPreviousErrors).ConfigureAwait(false);
                                 return result;
                             }
 
@@ -85,8 +85,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 
                             if (result == StandardExitCodes.ErrorSuccess)
                             {
-                                await this.Console.WriteInfo($"Saving {Path.GetFileName(this._package)}...").ConfigureAwait(false);
-
+                                await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_SavingFile_Format, Path.GetFileName(this._package))).ConfigureAwait(false);
                                 // 3) Pack again
                                 await msixMgr.Pack(MakeAppxPackOptions.CreateFromDirectory(tempFolder, this._package, false)).ConfigureAwait(false);
                                 await this.OnFinished().ConfigureAwait(false);
@@ -127,7 +126,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                     }
                 }
 
-                await this.Console.WriteError($"The path {this._package} is neither a directory with extracted MSIX, an .MSIX package or a manifest file.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Error_PathNotSupported_Format, this._package)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
             catch (Exception e)

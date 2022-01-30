@@ -39,19 +39,19 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
 
             if (string.IsNullOrEmpty(this.Verb.Name))
             {
-                await this.Console.WriteError("Capability name cannot be empty.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_Capability_Error_Empty).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
             if (this.Verb.Name.Length > 50)
             {
-                await this.Console.WriteError($"The value '{this.Verb.Name}' is longer than 50 characters.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Capability_Error_TooLong_Format, this.Verb.Name, 50)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
             if (this.Verb.Name.IndexOf('{') != -1 && !Guid.TryParse(this.Verb.Name, out var _))
             {
-                await this.Console.WriteError($"The value '{this.Verb.Name}' is not a GUID nor a valid string.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Capability_Error_NotGuid_Format, this.Verb.Name)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
@@ -70,15 +70,15 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             {
                 if (changed.IsCustom)
                 {
-                    this.Console.WriteSuccess($"Added custom capability '{changed.Name}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Capability_Success_Custom_Format, changed.Name)).GetAwaiter().GetResult();
                 }
                 else if (changed.IsRestricted)
                 {
-                    this.Console.WriteSuccess($"Added restricted capability '{changed.Name}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Capability_Success_Restricted_Format, changed.Name)).GetAwaiter().GetResult();
                 }
                 else
                 {
-                    this.Console.WriteSuccess($"Added standard capability '{changed.Name}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Capability_Success_Standard_Format, changed.Name)).GetAwaiter().GetResult();
                 }
             };
 
@@ -88,7 +88,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"Capability '{this.Verb.Name}' could not be added.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Capability_Error_CouldNotAdd_Format, this.Verb.Name)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }

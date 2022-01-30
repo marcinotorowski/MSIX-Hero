@@ -15,46 +15,47 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("newmodpack", HelpText = "Create a new modification package.")]
+    [Verb("newmodpack", HelpText = "CLI_Verbs_NewModPack_Prop_VerbName", ResourceType = typeof(Localization))]
     public class NewModPackVerb : BaseVerb
     {
-        [Value(0, HelpText = "Path to the output file. If the specified value has extension .msix, a packaged package will be created. Otherwise, the value is treated as a folder where unpacked resources will be saved.", Required = true)]
+        [Value(0, HelpText = "CLI_Verbs_NewModPack_Prop_OutputPath", Required = true, ResourceType = typeof(Localization))]
         public string OutputPath { get; set; }
 
-        [Option("name", HelpText = "The displayed name of the new modification package.", Required = true)]
+        [Option("name", HelpText = "CLI_Verbs_NewModPack_Prop_Name", Required = true, ResourceType = typeof(Localization))]
         public string Name { get; set; }
 
-        [Option("displayName", HelpText = "The displayed name of the new modification package.", Required = true)]
+        [Option("displayName", HelpText = "CLI_Verbs_NewModPack_Prop_DisplayName", Required = true, ResourceType = typeof(Localization))]
         public string DisplayName { get; set; }
 
-        [Option("publisherName", HelpText = "The publisher name of the new modification package.", Required = true)]
+        [Option("publisherName", HelpText = "CLI_Verbs_NewModPack_Prop_PublisherName", Required = true, ResourceType = typeof(Localization))]
         public string PublisherName { get; set; }
 
-        [Option("publisherDisplayName", HelpText = "The displayed name of the publisher of the new modification package.", Required = true)]
+        [Option("publisherDisplayName", HelpText = "CLI_Verbs_NewModPack_Prop_PublisherDisplayName", Required = true, ResourceType = typeof(Localization))]
         public string PublisherDisplayName { get; set; }
 
-        [Option("version", HelpText = "The version of the new modification package.", Required = true)]
+        [Option("version", HelpText = "CLI_Verbs_NewModPack_Prop_Version", Required = true, ResourceType = typeof(Localization))]
         public string Version { get; set; }
 
-        [Option("parentPath", HelpText = "Full path to the parent package (a manifest or .msix package).", SetName = "Parent is an MSIX package", Required = true)]
+        [Option("parentPath", HelpText = "CLI_Verbs_NewModPack_Prop_ParentPackagePath", SetName = "MSIX", Required = true, ResourceType = typeof(Localization))]
         public string ParentPackagePath { get; set; }
 
-        [Option("parentName", HelpText = "The name of the parent package.", SetName = "Parent from arbitrary meta-data.", Required = true)]
+        [Option("parentName", HelpText = "CLI_Verbs_NewModPack_Prop_ParentName", SetName = "METADATA", Required = true, ResourceType = typeof(Localization))]
         public string ParentName { get; set; }
 
-        [Option("parentPublisherName", HelpText = "The name of the parent package publisher.", SetName = "Parent from arbitrary meta-data.", Required = true)]
+        [Option("parentPublisherName", HelpText = "CLI_Verbs_NewModPack_Prop_ParentPublisher", SetName = "METADATA", Required = true, ResourceType = typeof(Localization))]
         public string ParentPublisher { get; set; }
 
-        [Option('r', "registry", HelpText = "Path to a .REG file containing registry keys to be inserted into the new modification package.")]
+        [Option('r', "registry", HelpText = "CLI_Verbs_NewModPack_Prop_IncludeRegFile", ResourceType = typeof(Localization))]
         public string IncludeRegFile { get; set; }
 
-        [Option('f', "folder", HelpText = "Path to a folder that will be inserted into the root folder of the new modification package.")]
+        [Option('f', "folder", HelpText = "CLI_Verbs_NewModPack_Prop_IncludeFolder", ResourceType = typeof(Localization))]
         public string IncludeFolder { get; set; }
 
-        [Option('c', "copyFolderStructure", HelpText = "Indicates whether to copy the folder structure from the parent package. This option is only valid if --parentPackage parameter is defined AND the target file path is a folder.")]
+        [Option('c', "copyFolderStructure", HelpText = "CLI_Verbs_NewModPack_Prop_CopyFolderStructure", ResourceType = typeof(Localization))]
         public bool CopyFolderStructure { get; set; }
     }
 }

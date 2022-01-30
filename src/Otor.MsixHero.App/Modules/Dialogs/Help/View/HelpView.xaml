@@ -9,6 +9,7 @@
              xmlns:views="clr-namespace:Otor.MsixHero.App.Modules.WhatsNew.Views"
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:HelpViewModel}">
@@ -84,9 +85,9 @@
                 <DockPanel DockPanel.Dock="Top">
                     <Image MouseDown="LicenseUrlMouseDown" VerticalAlignment="Top" Source="/Resources/msix-hero-64.png" Width="128" Margin="0 0 0 16" UseLayoutRounding="True" SnapsToDevicePixels="True" Height="128" HorizontalAlignment="Center" />
                     <StackPanel Margin="10 0 0 0">
-                        <Label Content="About" Style="{StaticResource FormLabel}" />
+                        <Label Content="{localization:Loc Dialogs_About_Header}" Style="{StaticResource FormLabel}" />
                         <TextBlock>
-                        <Run Text="Author:" />
+                        <Run Text="{localization:Loc Dialogs_About_Author}" /><Run Text=":" />
                         <Hyperlink>
                             <b:Interaction.Behaviors>
                                 <behaviors:HyperlinkClickBehavior Url="https://marcinotorowski.com" />
@@ -98,9 +99,9 @@
                         <views:MsixHeroLinks x:Name="Links" DockPanel.Dock="Top" Margin="0 8" />
 
                         <StackPanel Orientation="Horizontal" Margin="0 16 0 0"  HorizontalAlignment="Left">
-                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="Check for update now" HorizontalAlignment="Left" />
-                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="Check again for updates"  HorizontalAlignment="Left" />
-                            <Button Margin="0 0 6 0" Command="{Binding ShowReleaseNotes}" Content="Show release notes" />
+                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}}" Command="{Binding Check}" Content="{localization:Loc Dialogs_About_Update_CheckNow}" HorizontalAlignment="Left" />
+                            <Button Margin="0 0 6 0" Visibility="{Binding UpdateCheck.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding UpdateCheck.IsLoading, Converter={StaticResource NegativeConverter}, FallbackValue={StaticResource Collapsed}}" Command="{Binding Check}" Content="{localization:Loc Dialogs_About_Update_CheckAgain}"  HorizontalAlignment="Left" />
+                            <Button Margin="0 0 6 0" Command="{Binding ShowReleaseNotes}" Content="{localization:Loc Dialogs_About_Update_ShowRelNotes}" />
                         </StackPanel>
                     </StackPanel>
 
@@ -149,7 +150,7 @@
 
                 <Border DockPanel.Dock="Top" Background="#eee" Margin="0 16 0 0" BorderBrush="{StaticResource MsixHero.Brushes.Accent}" BorderThickness="0 4 0 0">
                     <DockPanel Margin="8">
-                        <Label DockPanel.Dock="Top" Content="License" Style="{StaticResource FormLabel}" />
+                        <Label DockPanel.Dock="Top" Content="{localization:Loc Dialogs_About_License}" Style="{StaticResource FormLabel}" />
                         <TextBox
                             Padding="0" Margin="0" BorderBrush="Transparent" 
                             HorizontalScrollBarVisibility="Disabled"

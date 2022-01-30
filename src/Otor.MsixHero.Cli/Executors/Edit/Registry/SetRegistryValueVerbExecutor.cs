@@ -40,7 +40,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
 
             if (!Enum.TryParse<ValueType>(this.Verb.ValueType, true, out var parsed))
             {
-                await this.Console.WriteError($"Value type '{this.Verb.ValueType}' could not be parsed.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_SetRegistryValue_Error_ParseType_Format, this.Verb.ValueType)).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
@@ -67,7 +67,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
                         RawRegistryValueConverter.GetByteArrayFromString(this.Verb.Value);
                         break;
                     default:
-                        await this.Console.WriteError($"The value type '{this.Verb.ValueType}' is not supported.").ConfigureAwait(false);
+                        await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_SetRegistryValue_Error_TypeNotSupported_Format, this.Verb.ValueType)).ConfigureAwait(false);
                         return StandardExitCodes.ErrorParameter;
                 }
             }
@@ -129,12 +129,12 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"Could not set registry value '{this.Verb.RegistryValueName}' to '{this.Verb.Value}' ({command.ValueType:G}) in '{target.Item1}\\{target.Item2}'.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_SetRegistryValue_Error_Format, this.Verb.RegistryValueName, this.Verb.Value, command.ValueType.ToString("G"), target.Item1, target.Item2)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }
 
-            await this.Console.WriteSuccess($"Registry value '{this.Verb.RegistryValueName}' has been set to '{this.Verb.Value}' ({command.ValueType:G}) in '{target.Item1}\\{target.Item2}'.");
+            await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SetRegistryValue_Success_Format, this.Verb.RegistryValueName, this.Verb.Value, command.ValueType.ToString("G"), target.Item1, target.Item2));
             return StandardExitCodes.ErrorSuccess;
         }
     }

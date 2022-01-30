@@ -42,14 +42,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("Publisher");
                 if (attr == null)
                 {
-                    Logger.Info().WriteLine($"Setting attribute 'Publisher' to '{command.Publisher}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_SettingPublisher_Format, command.Publisher);
                     attr = new XAttribute("Publisher", command.Publisher);
                     identity.Add(attr);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Publisher", command.Publisher));
                 }
                 else
                 {
-                    Logger.Info().WriteLine($"Changing attribute 'Publisher' from '{attr.Value}' to '{command.Publisher}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_ChangingPublisher_Format, attr.Value, command.Publisher);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Publisher", attr.Value, command.Publisher));
                     attr.Value = command.Publisher;
                 }
@@ -66,14 +66,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("Name");
                 if (attr == null)
                 {
-                    Logger.Info().WriteLine($"Setting attribute 'Name' to '{command.Name}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_SettingName_Format, command.Name);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Name", command.Name));
                     attr = new XAttribute("Name", command.Name);
                     identity.Add(attr);
                 }
                 else
                 {
-                    Logger.Info().WriteLine($"Changing attribute 'Name' from '{attr.Value}' to '{command.Name}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_ChangingName_Format, attr.Value, command.Name);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Name", attr.Value, command.Name));
                     attr.Value = command.Name;
                 }
@@ -91,7 +91,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                         throw new ArgumentException(validationError, nameof(command));
                     }
 
-                    Logger.Info().WriteLine($"Setting attribute 'Version' to '{newVersion}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_SettingVersion_Format, newVersion);
                     attr = new XAttribute("Version", newVersion);
                     identity.Add(attr);
                 }
@@ -105,7 +105,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                         throw new ArgumentException(validationError, nameof(command));
                     }
 
-                    Logger.Info().WriteLine($"Changing attribute 'Version' from '{attr.Value}' to '{newVersion}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_ChangingVersion_Format, attr.Value, newVersion);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Version", attr.Value, newVersion));
                     attr.Value = newVersion;
                 }
@@ -116,14 +116,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("ProcessorArchitecture");
                 if (attr == null)
                 {
-                    Logger.Info().WriteLine($"Setting attribute 'ProcessorArchitecture' to '{command.ProcessorArchitecture}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_SettingArchitecture_Format, command.ProcessorArchitecture);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ProcessorArchitecture", command.ProcessorArchitecture));
                     attr = new XAttribute("ProcessorArchitecture", command.ProcessorArchitecture);
                     identity.Add(attr);
                 }
                 else
                 {
-                    Logger.Info().WriteLine($"Changing attribute 'ProcessorArchitecture' from '{attr.Value}' to '{command.ProcessorArchitecture}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_ChangingArchitecture_Format, attr.Value, command.ProcessorArchitecture);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ProcessorArchitecture", attr.Value, command.ProcessorArchitecture));
                     attr.Value = command.ProcessorArchitecture;
                 }
@@ -140,14 +140,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("ResourceId");
                 if (attr == null)
                 {
-                    Logger.Info().WriteLine($"Setting attribute 'ResourceId' to '{command.ResourceId}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_SettingResourceId_Format, command.ResourceId);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ResourceId", command.ResourceId));
                     attr = new XAttribute("ResourceId", command.ResourceId);
                     identity.Add(attr);
                 }
                 else
                 {
-                    Logger.Info().WriteLine($"Changing attribute 'ResourceId' from '{attr.Value}' to '{command.ResourceId}'...");
+                    Logger.Info().WriteLine(Resources.Localization.AppxEditor_Identity_ChangingResourceId_Format, attr.Value, command.ResourceId);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ResourceId", attr.Value, command.ResourceId));
                     attr.Value = command.ResourceId;
                 }

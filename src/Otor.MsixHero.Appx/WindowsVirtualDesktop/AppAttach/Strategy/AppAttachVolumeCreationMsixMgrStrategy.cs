@@ -32,18 +32,18 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progressReporter = null)
         {
-            if (volumePath == null)
-            {
-                throw new ArgumentNullException(nameof(volumePath), "Volume path must be empty.");
-            }
-
             if (packagePath == null)
             {
-                throw new ArgumentNullException(nameof(packagePath), "Volume path must be empty.");
+                throw new ArgumentNullException(nameof(packagePath), Resources.Localization.Packages_Error_EmptyPath);
+            }
+
+            if (volumePath == null)
+            {
+                throw new ArgumentNullException(nameof(volumePath), Resources.Localization.Packages_Error_EmptyVolumePath);
             }
 
             Logger.Debug().WriteLine("Unpacking {0} with MSIXMGR...", packagePath);
-            progressReporter?.Report(new ProgressData(20, $"Unpacking {Path.GetFileName(packagePath)}..."));
+            progressReporter?.Report(new ProgressData(20, string.Format(Resources.Localization.Packages_AppAttach_Unpacking_Format, Path.GetFileName(packagePath))));
 
             MsixMgrWrapper.FileType fileType;
 
@@ -59,7 +59,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                     fileType = MsixMgrWrapper.FileType.Cim;
                     break;
                 default:
-                    throw new NotSupportedException($"Disk format {Path.GetExtension(volumePath)} is not supported.");
+                    throw new NotSupportedException(string.Format(Resources.Localization.Packages_Error_DiskFormatNotSupported, Path.GetExtension(volumePath)));
             }
 
             long size;
@@ -81,7 +81,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                         sizeCalculator = new CimSizeCalculator();
                         break;
                     default:
-                        throw new NotSupportedException("Extension " + Path.GetExtension(volumePath) + " is not supported.");
+                        throw new NotSupportedException(string.Format(Resources.Localization.Packages_Error_ExtensionNotSupported_Format, Path.GetExtension(volumePath)));
                 }
 
                 size = await sizeCalculator.GetRequiredSize(packagePath, cancellationToken: cancellationToken).ConfigureAwait(false);

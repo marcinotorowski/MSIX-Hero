@@ -41,29 +41,29 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             if (!await UserHelper.IsAdministratorAsync(CancellationToken.None).ConfigureAwait(false))
             {
-                await this.Console.WriteError("This command can be started only by a local administrator.");
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_AppAttach_Error_NotAdmin);
                 return StandardExitCodes.ErrorMustBeAdministrator;
             }
 
             if (this.Verb.Name != null && this.Verb.Package.Count() > 1)
             {
-                await this.Console.WriteError("Parameter --name/-n cannot be used with more than one instance of the --package/-p switch.");
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_AppAttach_Error_NameSwitchConflict);
                 return StandardExitCodes.ErrorParameter;
             }
 
             if (this.Verb.Size > 0 && this.Verb.Package.Count() > 1)
             {
-                await this.Console.WriteError("Parameter --size/-s cannot be used with more than one instance of the --package/-p switch.");
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_AppAttach_Error_SizeSwitchConflict);
                 return StandardExitCodes.ErrorParameter;
             }
 
             if (this.Verb.Size > 0 && this.Verb.FileType == AppAttachVolumeType.Cim)
             {
-                await this.Console.WriteError("Parameter --size/-s cannot be used with target type CIM.");
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_AppAttach_Error_SizeCimSwitchConflict);
                 return StandardExitCodes.ErrorParameter;
             }
 
-            await this.Console.WriteInfo($"Creating volume(s) in {this.Verb.Directory}...");
+            await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_AppAttach_CreatingVolumes_Format, this.Verb.Directory));
             
             try
             {
@@ -102,7 +102,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             foreach (var package in this.Verb.Package)
             {
                 var createdContainerName = (!string.IsNullOrEmpty(this.Verb.Name) ? this.Verb.Name : Path.GetFileNameWithoutExtension(package)) + "." + this.Verb.FileType.ToString("G").ToLowerInvariant();
-                await this.Console.WriteSuccess(" --> Created volume " + createdContainerName);
+                await this.Console.WriteSuccess(" --> " + string.Format(Resources.Localization.CLI_Executor_AppAttach_Success_Format, createdContainerName));
             }
 
             if (this.Verb.ExtractCertificate)
@@ -112,14 +112,14 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     var createdCertificate = Path.Combine(this.Verb.Directory, Path.GetFileNameWithoutExtension(package)) + ".cer";
                     if (File.Exists(createdCertificate))
                     {
-                        await this.Console.WriteSuccess(" --> Extracted certificate file " + Path.GetFileName(createdCertificate));
+                        await this.Console.WriteSuccess(" --> " + string.Format(Resources.Localization.CLI_Executor_AppAttach_Success_Certificate_Format, Path.GetFileName(createdCertificate)));
                     }
                 }
             }
             
             if (this.Verb.FileType != AppAttachVolumeType.Cim)
             {
-                await this.Console.WriteSuccess(" --> Created definition: app-attach.json with the following parameters:");
+                await this.Console.WriteSuccess(" --> " + string.Format(Resources.Localization.CLI_Executor_AppAttach_Success_Json_Format, "app-attach.json"));
 
                 var json = await File.ReadAllTextAsync(Path.Combine(this.Verb.Directory, "app-attach.json")).ConfigureAwait(false);
                 var jsonArray = (JArray)JToken.Parse(json);
@@ -134,7 +134,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
                 if (this.Verb.CreateScript)
                 {
-                    await this.Console.WriteSuccess(" --> Created script: stage.ps1, register.ps1, deregister.ps1, destage.ps1");
+                    await this.Console.WriteSuccess(" --> " + string.Format(Resources.Localization.CLI_Executor_AppAttach_Success_Scripts_Format, "stage.ps1", "register.ps1", "deregister.ps1", "destage.ps1"));
                 }
             }
             

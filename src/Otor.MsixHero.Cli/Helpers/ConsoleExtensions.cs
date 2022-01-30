@@ -31,30 +31,30 @@ namespace Otor.MsixHero.Cli.Helpers
 
             if (isTrusted.IsTrusted)
             {
-                await console.WriteSuccess(" * Signed by:  " + isTrusted.Trustee);
-                await console.WriteSuccess(" * Issuer:     " + isTrusted.Issuer);
-                await console.WriteSuccess(" * Thumbprint: " + isTrusted.Thumbprint);
+                await console.WriteSuccess(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_SignedBy_Aligned_Format, isTrusted.Trustee));
+                await console.WriteSuccess(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_Issuer_Aligned_Format, isTrusted.Issuer));
+                await console.WriteSuccess(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_Thumbprint_Aligned_Format, isTrusted.Thumbprint));
                 if (isTrusted.Expires.HasValue)
                 {
-                    await console.WriteSuccess(" * Expires:    " + isTrusted.Expires.Value);
+                    await console.WriteSuccess(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_Expires_Aligned_Format, isTrusted.Expires.Value));
                 }
                 else
                 {
-                    await console.WriteSuccess(" * Expires:    <never>");
+                    await console.WriteSuccess(" * " + Resources.Localization.CLI_CertificateSummary_ExpiresNever_Aligned);
                 }
             }
             else
             {
-                await console.WriteWarning(" * Signed by:  " + isTrusted.Trustee + " (untrusted)");
-                await console.WriteWarning(" * Issuer:     " + isTrusted.Issuer);
-                await console.WriteWarning(" * Thumbprint: " + isTrusted.Thumbprint);
+                await console.WriteWarning(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_SignedByUntrusted_Aligned_Format, isTrusted.Trustee));
+                await console.WriteWarning(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_Issuer_Aligned_Format, isTrusted.Issuer));
+                await console.WriteWarning(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_Thumbprint_Aligned_Format, isTrusted.Thumbprint));
                 if (isTrusted.Expires.HasValue)
                 {
-                    await console.WriteWarning(" * Expires:    " + isTrusted.Expires.Value);
+                    await console.WriteWarning(" * " + string.Format(Resources.Localization.CLI_CertificateSummary_Expires_Aligned_Format, isTrusted.Expires.Value));
                 }
                 else
                 {
-                    await console.WriteWarning(" * Expires:    <never>");
+                    await console.WriteWarning(" * " + Resources.Localization.CLI_CertificateSummary_ExpiresNever_Aligned);
                 }
             }
         }

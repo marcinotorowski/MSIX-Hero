@@ -92,11 +92,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
             {
                 if (current is AppInstallerBundleViewModel)
                 {
-                    current.Header.CurrentValue = $"BUNDLE #{++bundles}";
+                    current.Header.CurrentValue = string.Format(Resources.Localization.Dialogs_AppInstaller_List_Bundle_Format, ++bundles);
                 }
                 else if (current is AppInstallerPackageViewModel)
                 {
-                    current.Header.CurrentValue = $"PACKAGE #{++packages}";
+                    current.Header.CurrentValue = string.Format(Resources.Localization.Dialogs_AppInstaller_List_Bundle_Package, ++packages);
                 }
             }
         }
@@ -196,7 +196,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                this.interactionService.ShowError("Could not open selected package.", e);
+                this.interactionService.ShowError(Resources.Localization.Dialogs_AppInstaller_Errors_Opening, e);
             }
         }
 

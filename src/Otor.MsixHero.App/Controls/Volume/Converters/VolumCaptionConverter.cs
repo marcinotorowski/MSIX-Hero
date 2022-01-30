@@ -31,17 +31,22 @@ namespace Otor.MsixHero.App.Controls.Volume.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length != 2)
+            if (values.Length != 3)
             {
                 return Binding.DoNothing;
             }
 
-            if (!(values[0] is long val1))
+            if (!(values[0] is string format))
             {
                 return Binding.DoNothing;
             }
 
-            if (!(values[1] is long val2))
+            if (!(values[1] is long val1))
+            {
+                return Binding.DoNothing;
+            }
+
+            if (!(values[2] is long val2))
             {
                 return Binding.DoNothing;
             }
@@ -74,7 +79,7 @@ namespace Otor.MsixHero.App.Controls.Volume.Converters
 
             var sizeFree = FormatSize(totalSize - occupiedSize);
             var sizeTotal = FormatSize(totalSize);
-            return $"{sizeFree} free of {sizeTotal}";
+            return string.Format(format, sizeFree, sizeTotal);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

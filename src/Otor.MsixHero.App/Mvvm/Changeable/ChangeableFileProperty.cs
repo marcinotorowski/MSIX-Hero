@@ -48,6 +48,21 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
             this.interactionService = interactionService;
         }
 
+        public ChangeableFileProperty(Func<string> displayNamePredicate, IInteractionService interactionService, string initialFile) : base(displayNamePredicate, initialFile)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFileProperty(Func<string> displayNamePredicate, IInteractionService interactionService, string initialFile, params Func<string, string>[] validators) : base(displayNamePredicate, initialFile, validators)
+        {
+            this.interactionService = interactionService;
+        }
+
+        public ChangeableFileProperty(Func<string> displayNamePredicate, IInteractionService interactionService, params Func<string, string>[] validators) : base(displayNamePredicate, validators)
+        {
+            this.interactionService = interactionService;
+        }
+
         public string Filter { get; set; }
 
         public bool OpenForSaving { get; set; }
@@ -62,12 +77,12 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        return "The file path cannot be empty.";
+                        return Resources.Localization.Dialogs_FilePicker_Validation_Empty;
                     }
 
                     if (!Uri.TryCreate(value, UriKind.Absolute, out _))
                     {
-                        return "The file path is invalid.";
+                        return Resources.Localization.Dialogs_FilePicker_Validation_Invalid;
                     }
 
                     return null;
@@ -83,18 +98,18 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        return "The file path cannot be empty.";
+                        return Resources.Localization.Dialogs_FilePicker_Validation_Empty;
                     }
 
                     if (!Uri.TryCreate(value, UriKind.Absolute, out _))
                     {
-                        return "The file path is invalid.";
+                        return Resources.Localization.Dialogs_FilePicker_Validation_Invalid;
                     }
 
 
                     if (!File.Exists(value))
                     {
-                        return "The file does not exist.";
+                        return Resources.Localization.Dialogs_FilePicker_Validation_Missing;
                     }
 
                     return null;

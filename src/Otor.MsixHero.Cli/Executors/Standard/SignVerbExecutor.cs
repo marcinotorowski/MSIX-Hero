@@ -74,7 +74,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 }
                 else
                 {
-                    await this.Console.WriteError("In order to sign with CLI without any extra signing parameters, configure your signature in MSIX Hero settings.").ConfigureAwait(false);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_NoConfig).ConfigureAwait(false);
                     return 1;
                 }
             }
@@ -115,9 +115,9 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
                 if (cfg.Subject == null && !this.Verb.NoPublisherUpdate)
                 {
-                    await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
+                    await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Sign_DeviceGuardDeterminingPublisher).ConfigureAwait(false);
                     cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(cfg.AccessToken, cfg.RefreshToken);
-                    await this.Console.WriteSuccess("New publisher name is " + cfg.Subject).ConfigureAwait(false);
+                    await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Sign_NewName_Format, cfg.Subject)).ConfigureAwait(false);
                 }
 
                 return await this.SignDeviceGuard(
@@ -126,7 +126,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
-            await this.Console.WriteInfo("Using current MSIX Hero signing options...").ConfigureAwait(false);
+            await this.Console.WriteInfo(Resources.Localization.CLI_Executor_Sign_UsingCurrent).ConfigureAwait(false);
 
             switch (config.Signing?.Source)
             {
@@ -156,8 +156,8 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                             }
                             catch (Exception)
                             {
-                                Logger.Error().WriteLine("Could not use the configured password. Decryption of the string from settings failed.");
-                                await this.Console.WriteError("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
+                                Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DecryptFailed);
+                                await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DecryptFailed).ConfigureAwait(false);
                                 return StandardExitCodes.ErrorSettings;
                             }
                         }
@@ -176,8 +176,8 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 case CertificateSource.DeviceGuard:
                     if (config.Signing.DeviceGuard == null)
                     {
-                        Logger.Error().WriteLine("Device Guard has not been configured yet.");
-                        await this.Console.WriteError("Device Guard has not been configured yet.").ConfigureAwait(false);
+                        Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig);
+                        await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_DeviceGuardNoConfig).ConfigureAwait(false);
                         return StandardExitCodes.ErrorSettings;
                     }
 
@@ -186,8 +186,8 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                         this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
                         !this.Verb.NoPublisherUpdate);
                 default:
-                    Logger.Error().WriteLine("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.");
-                    await this.Console.WriteError("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.").ConfigureAwait(false);
+                    Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig);
+                    await this.Console.WriteError(Resources.Localization.CLI_Executor_Sign_Error_NoCertAndDefaultConfig).ConfigureAwait(false);
                     return StandardExitCodes.ErrorSettings;
             }
         }
@@ -211,7 +211,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
         private async Task<int> GetSetError(string prop1, string prop2)
         {
-            var msg = $"Options --{GetOptionName(prop1)} and --{GetOptionName(prop2)} cannot be used together.";
+            var msg = string.Format(Resources.Localization.CLI_Executor_Sign_Error_OptionConflict_Format, GetOptionName(prop1), GetOptionName(prop2));
             await this.Console.WriteError(msg).ConfigureAwait(false);
             Logger.Error().WriteLine(msg);
             return (int)ErrorType.MutuallyExclusiveSetError;
@@ -219,7 +219,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
         private async Task<int> GetSetValueError(string property, string message)
         {
-            var msg = $"Option --{GetOptionName(property)}: {message}";
+            var msg = string.Format(Resources.Localization.CLI_Executor_Sign_Error_Option_Format, GetOptionName(property), message);
             await this.Console.WriteError(msg).ConfigureAwait(false);
             Logger.Error().WriteLine(msg);
             return (int)ErrorType.SetValueExceptionError;
@@ -314,17 +314,17 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
             if (this.Verb.PfxFilePath != null && !File.Exists(this.Verb.PfxFilePath))
             {
-                return await this.GetSetValueError(nameof(SignVerb.PfxFilePath), $"The file '{this.Verb.PfxFilePath}' does not exist.");
+                return await this.GetSetValueError(nameof(SignVerb.PfxFilePath), string.Format(Resources.Localization.CLI_Error_FileNotExists_Format, this.Verb.PfxFilePath));
             }
 
             if (this.Verb.DeviceGuardFile != null && !File.Exists(this.Verb.DeviceGuardFile))
             {
-                return await this.GetSetValueError(nameof(SignVerb.DeviceGuardFile), $"The file '{this.Verb.PfxFilePath}' does not exist.");
+                return await this.GetSetValueError(nameof(SignVerb.DeviceGuardFile), string.Format(Resources.Localization.CLI_Error_FileNotExists_Format, this.Verb.DeviceGuardFile));
             }
 
             if (this.Verb.TimeStampUrl != null && !Uri.TryCreate(this.Verb.TimeStampUrl, UriKind.Absolute, out _))
             {
-                return await this.GetSetValueError(nameof(SignVerb.TimeStampUrl), $"The value '{this.Verb.TimeStampUrl}' is not a valid URI.");
+                return await this.GetSetValueError(nameof(SignVerb.TimeStampUrl), string.Format(Resources.Localization.CLI_Executor_Sign_Error_InvalidTimestampUrl_Format, this.Verb.TimeStampUrl));
             }
 
             return StandardExitCodes.ErrorSuccess;
@@ -336,10 +336,10 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             {
                 foreach (var path in this.Verb.FilePath)
                 {
-                    await this.Console.WriteInfo($"Signing '{path}' with Device Guard...");
+                    await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Sign_DeviceGuardSigning_Format, path));
                     await this._signingManager.SignPackageWithDeviceGuard(path, updatePublisherName, cfg, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
-                    await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(_signingManager, path);
+                    await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_Sign_Success).ConfigureAwait(false);
+                    await this.Console.ShowCertSummary(this._signingManager, path);
                 }
 
                 return StandardExitCodes.ErrorSuccess;
@@ -372,13 +372,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 {
                     await this.Console.WriteInfo("Determining publisher name from Device Guard Signing certificate...").ConfigureAwait(false);
                     cfg.Subject = await this.DeviceGuardHelper.GetSubjectFromDeviceGuardSigning(json).ConfigureAwait(false);
-                    await this.Console.WriteSuccess("New publisher name is " + cfg.Subject).ConfigureAwait(false);
+                    await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_Sign_NewName_Format, cfg.Subject)).ConfigureAwait(false);
                 }
             }
             catch (SdkException e)
             {
                 Logger.Error().WriteLine(e);
-                await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Sign_Error_Code_Format, "0x" + e.ExitCode.ToString("X"), e.Message));
                 return e.ExitCode;
             }
             catch (Exception e)
@@ -411,10 +411,10 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 var fileName = Path.GetFileName(pfxPath);
                 foreach (var path in this.Verb.FilePath)
                 {
-                    await this.Console.WriteInfo($"Signing '{path}' with certificate [{fileName}]...");
+                    await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Sign_SigningCerFile_Format, path, fileName));
                     await this._signingManager.SignPackageWithPfx(path, updatePublisherName, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
-                    await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(_signingManager, path);
+                    await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_Sign_Success).ConfigureAwait(false);
+                    await this.Console.ShowCertSummary(this._signingManager, path);
                 }
 
                 return StandardExitCodes.ErrorSuccess;
@@ -422,7 +422,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                await this.Console.WriteError($"Signing failed: {e.Message}");
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Sign_Error_Message_Format, e.Message));
                 return StandardExitCodes.ErrorGeneric;
             }
         }
@@ -435,8 +435,8 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             var certificate = certificates.FirstOrDefault(c => string.Equals(c.Thumbprint, thumbprint, StringComparison.Ordinal));
             if (certificate == null)
             {
-                Logger.Error().WriteLine("Certificate with thumbprint {0} was not found.", thumbprint);
-                await this.Console.WriteError($"Certificate with thumbprint {thumbprint} could not be found");
+                Logger.Error().WriteLine(Resources.Localization.CLI_Executor_Sign_Error_WrongThumbprint_Format, thumbprint);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Sign_Error_WrongThumbprint_Format, thumbprint));
                 return StandardExitCodes.ErrorGeneric;
             }
 
@@ -444,10 +444,10 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             {
                 foreach (var path in this.Verb.FilePath)
                 {
-                    await this.Console.WriteInfo($"Signing '{path}' with certificate [SHA1 = {thumbprint}]...");
+                    await this.Console.WriteInfo(string.Format(Resources.Localization.CLI_Executor_Sign_SigningSha_Format, path, thumbprint));
                     await this._signingManager.SignPackageWithInstalled(path, updatePublisherName, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
-                    await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(_signingManager, path);
+                    await this.Console.WriteSuccess(Resources.Localization.CLI_Executor_Sign_Success).ConfigureAwait(false);
+                    await this.Console.ShowCertSummary(this._signingManager, path);
                 }
 
                 return StandardExitCodes.ErrorSuccess;
@@ -455,13 +455,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             catch (SdkException e)
             {
                 Logger.Error().WriteLine(e);
-                await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Sign_Error_Code_Format, "0x" + e.ExitCode.ToString("X"), e.Message));
                 return e.ExitCode;
             }
             catch (Exception e)
             {
                 Logger.Error().WriteLine(e);
-                await this.Console.WriteError($"Signing failed: {e.Message}");
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_Sign_Error_Message_Format, e.Message));
                 return StandardExitCodes.ErrorGeneric;
             }
         }

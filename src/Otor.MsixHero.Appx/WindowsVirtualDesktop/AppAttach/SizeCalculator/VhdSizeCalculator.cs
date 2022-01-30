@@ -33,7 +33,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
 
             if (sourcePath == null)
             {
-                throw new ArgumentNullException(nameof(sourcePath), "Package path must not be empty.");
+                throw new ArgumentNullException(nameof(sourcePath), Resources.Localization.Packages_Error_EmptyPath);
             }
 
             long total = 0;

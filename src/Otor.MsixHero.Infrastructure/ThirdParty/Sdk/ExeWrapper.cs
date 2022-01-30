@@ -35,7 +35,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         protected static async Task<int> RunAsync(string path, string arguments, string workingDirectory, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
         {
-            Logger.Debug().WriteLine("Executing " + path + " " + arguments);
+            Logger.Debug().WriteLine(string.Format(Resources.Localization.Infrastructure_Sdk_Executing_Format, path, arguments));
             var processStartInfo = new ProcessStartInfo(path, arguments);
 
             var standardOutput = new List<string>();
@@ -105,7 +105,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     {
                         if (!process.HasExited)
                         {
-                            Logger.Info().WriteLine("Killing the process " + process.Id);
+                            Logger.Info().WriteLine(Resources.Localization.Infrastructure_Sdk_KillingPid_Format, process.Id);
                             process.Kill();
                         }
                     }
@@ -116,7 +116,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 if (!process.Start())
                 {
-                    tcs.TrySetException(new InvalidOperationException("Failed to start process"));
+                    tcs.TrySetException(new InvalidOperationException(Resources.Localization.Infrastructure_Sdk_Error_StartProcess));
                 }
                 else
                 {
@@ -128,26 +128,27 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 if (standardOutput.Any())
                 {
-                    Logger.Debug().WriteLine("Process has finished and returned the following standard output:\r\n" + string.Join(Environment.NewLine, standardOutput));
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_StdOut + "\r\n" + string.Join(System.Environment.NewLine, standardOutput));
                 }
                 else
                 {
-                    Logger.Debug().WriteLine("Process has finished and did not return anything to standard output.");
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_NoStdOut);
                 }
 
                 if (standardError.Any())
                 {
-                    Logger.Debug().WriteLine("Process has finished and returned the following standard error:\r\n" + string.Join(Environment.NewLine, standardError));
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_StdErr + "\r\n" + string.Join(System.Environment.NewLine, standardError));
                 }
                 else
                 {
-                    Logger.Debug().WriteLine("Process has finished and did not return anything to standard error.");
+                    Logger.Debug().WriteLine(Resources.Localization.Infrastructure_Sdk_ProcessFinished_NoStdErr);
                 }
 
                 if (properExitCodes != null && properExitCodes.Any() && !properExitCodes.Contains(result))
                 {
                     throw new ProcessWrapperException(
-                        $"Process existed with an improper exit code {result}.", result, 
+                        string.Format(Resources.Localization.Infrastructure_Sdk_ProcessExited_WrongExitCode_Format, result), 
+                        result, 
                         standardError.Any() ? standardError : standardOutput,
                         standardOutput);
                 }

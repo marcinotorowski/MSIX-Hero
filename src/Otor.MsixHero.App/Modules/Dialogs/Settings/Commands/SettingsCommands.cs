@@ -20,7 +20,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.Commands
 {
     public static class SettingsCommands
     {
-        public static RoutedUICommand OpenIcon = new RoutedUICommand { Text = "Browse for an icon..." };
-        public static RoutedUICommand DeleteIcon = new RoutedUICommand { Text = "Remove icon...", InputGestures = { new KeyGesture(Key.Delete)} };
+        public static RoutedUICommand OpenIcon = new RoutedUICommand { Text = Resources.Localization.Dialogs_Settings_BrowseIcon };
+        public static RoutedUICommand DeleteIcon = new RoutedUICommand { Text = Resources.Localization.Dialogs_Settings_RemoveIcon, InputGestures = { new KeyGesture(Key.Delete)} };
     }
 }

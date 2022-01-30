@@ -13,6 +13,7 @@
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
              xmlns:background="clr-namespace:Otor.MsixHero.App.Controls.Acrylic.Background"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" x:Name="Root" d:DataContext="{d:DesignInstance viewModels1:EventViewerDetailsViewModel}">
 
@@ -43,7 +44,7 @@
                     <controls:LabelWithIcon 
                         Style="{StaticResource ActionLabelWithIcon}"
                         Icon16x16="{StaticResource SmallCdRom}"
-                        Content="Copy to clipboard" />
+                        Content="{localization:Loc EventViewer_ContextMenu_CopyToClipboard}" />
                 </Button>
             </WrapPanel>
         </Border>
@@ -79,22 +80,22 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="views:Pill">
                                             <Border
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                                Padding="{TemplateBinding Padding}"
+                                                Background="{TemplateBinding Background}"
+                                                CornerRadius="5" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                                 <StackPanel Orientation="Horizontal" Margin="-1 0">
                                                     <Path 
-                                        x:Name="PART_Icon"
-                                        Width="16"
-                                        Height="16"
-                                        Margin="1 0"
-                                        Fill="{TemplateBinding Foreground}"
-                                        Data="{TemplateBinding Icon}" />
+                                                        x:Name="PART_Icon"
+                                                        Width="16"
+                                                        Height="16"
+                                                        Margin="1 0"
+                                                        Fill="{TemplateBinding Foreground}"
+                                                        Data="{TemplateBinding Icon}" />
                                                     <TextBlock 
-                                        x:Name="PART_Text"
-                                        Margin="1 0" 
-                                        Foreground="{TemplateBinding Foreground}"
-                                        Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
+                                                        x:Name="PART_Text"
+                                                        Margin="1 0" 
+                                                        Foreground="{TemplateBinding Foreground}"
+                                                        Text="{TemplateBinding Content, Converter={StaticResource UppercaseConverter}}" FontWeight="Bold" />
                                                 </StackPanel>
                                             </Border>
                                             <ControlTemplate.Triggers>
@@ -113,9 +114,9 @@
                         <StackPanel Margin="12">
                             <DockPanel VerticalAlignment="Top">
                                 <Border 
-                                Background="{Binding Converter={StaticResource BrushConverter}}"
-                                Width="48" 
-                                Height="48">
+                                    Background="{Binding Converter={StaticResource BrushConverter}}"
+                                    Width="48" 
+                                    Height="48">
                                     <Border>
                                         <Path 
                                         Fill="White"
@@ -129,33 +130,31 @@
                                 </WrapPanel>
 
                                 <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                                    <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" 
-                                           Text="{Binding OpcodeDisplayName}" />
-                                    <TextBlock 
-                                    FontWeight="Bold" Text="{Binding Title}" FontFamily="{StaticResource SourceSansPro}" />
+                                    <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding OpcodeDisplayName}" />
+                                    <TextBlock FontWeight="Bold" Text="{Binding Title}" FontFamily="{StaticResource SourceSansPro}" />
                                 </StackPanel>
 
                             </DockPanel>
 
                             <StackPanel Margin="0 12 0 0">
                                 <TextBlock TextWrapping="Wrap">
-                                <Run Text="File path:" FontWeight="SemiBold" />
+                                <Run Text="{localization:Loc EventViewer_Details_FilePath}" FontWeight="SemiBold" />
                                 <Run Text="{Binding FilePath, Mode=OneWay, TargetNullValue='n/a'}" />
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap">
-                                <Run Text="Error code:" FontWeight="SemiBold" />
+                                <Run Text="{localization:Loc EventViewer_Details_ErrorCode}" FontWeight="SemiBold" />
                                 <Run Text="{Binding ErrorCode, Mode=OneWay, TargetNullValue='n/a'}" />
                                 </TextBlock>
                             </StackPanel>
 
                             <WrapPanel Margin="-2 8 0 -2">
                                 <views:Pill
-                                ToolTip="Event source"
-                                Icon="{StaticResource SmallMicrosoftWindows}"
-                                Content="{Binding Source}" />
+                                    ToolTip="{localization:Loc EventViewer_Details_EventSource}"
+                                    Icon="{StaticResource SmallMicrosoftWindows}"
+                                    Content="{Binding Source}" />
                                 <views:Pill
-                                Icon="{StaticResource SmallUserFolder}"
-                                Content="{Binding User}" />
+                                    Icon="{StaticResource SmallUserFolder}"
+                                    Content="{Binding User}" />
                             </WrapPanel>
                         </StackPanel>
                     </Border>
@@ -164,11 +163,11 @@
         </Grid>
 
         <TabControl Margin="12 0 0 0">
-            <TabItem Header="Properties">
+            <TabItem Header="{localization:Loc EventViewer_Details_Properties}">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <AdornerDecorator>
                         <StackPanel>
-                            <TextBlock Style="{StaticResource DataHeader}" Text="Message" />
+                            <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_Message}" />
                             <TextBox 
                                 Style="{StaticResource DataValueTextBlock}"
                                 VerticalScrollBarVisibility="Hidden"
@@ -179,7 +178,7 @@
 
                             <TextBlock 
                                 Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                Style="{StaticResource DataHeader}" Text="Troubleshooting info" />
+                                Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_TroubleshootingInfo}" />
                             <TextBox 
                                 Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                 Style="{StaticResource DataValueTextBlock}"
@@ -188,25 +187,25 @@
                                 TextWrapping="Wrap"
                                 Text="{Binding Troubleshooting, Mode=OneWay}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package name" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_PackageName}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding PackageName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package file path" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_PackageFile}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding FilePath, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="User" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_User}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding User, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Activity ID" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_ActivityId}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ActivityId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Thread ID" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_ThreadId}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ThreadId, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Opcode Display Name" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_OpcodeDisplayName}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding OpcodeDisplayName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 
-                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Error code" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                            <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="{localization:Loc EventViewer_Details_ErrorCode}" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding ErrorCode, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" Visibility="{Binding HasErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </StackPanel>
                     </AdornerDecorator>

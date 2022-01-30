@@ -11,12 +11,11 @@
              xmlns:validation="clr-namespace:Otor.MsixHero.App.Helpers.Validation"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel"
              xmlns:view1="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.View"
-             xmlns:tabs="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs"
-             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModel:AppInstallerViewModel}">
     <TabControl>
-        <TabItem Header="Package">
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Package}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabPackage}" />
             </b:Interaction.Behaviors>
@@ -26,7 +25,7 @@
                 </AdornerDecorator>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Properties">
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Properties}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabProperties}" />
             </b:Interaction.Behaviors>
@@ -36,34 +35,34 @@
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
                             controls1:RequiredAdorner.IsRequired="True" 
-                            Text="App installer version" />
+                            Text="{localization:Loc Dialog_AppInstaller_AppInstallerVersion}" />
                         <TextBox TabIndex="1" Text="{Binding Version.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
                             controls1:RequiredAdorner.IsRequired="True" 
                             Visibility="{Binding TabPackage.IsBundle, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" 
-                            Text="URI to a remote location where the main package is available" 
+                            Text="{localization:Loc Dialog_AppInstaller_Uri_Hint}" 
                             Margin="0 16 0 6" />
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
                             controls1:RequiredAdorner.IsRequired="True" 
                             Visibility="{Binding TabPackage.IsBundle, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                            Text="URI to a remote location where the main bundle is available" 
+                            Text="{localization:Loc Dialog_AppInstaller_Uri_Bundle_Hint}" 
                             Margin="0 16 0 6" />
                         <TextBox TabIndex="2" Text="{Binding MainPackageUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
                            controls1:RequiredAdorner.IsRequired="True" 
-                           Text="URI to a remote location where the .appinstaller file will be available" 
+                           Text="{localization:Loc Dialog_AppInstaller_Uri_AppInstaller_Hint}" 
                            Margin="0 16 0 6" />
                         <TextBox TabIndex="2" Text="{Binding AppInstallerUri.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
                     </StackPanel>
                 </AdornerDecorator>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="Optional packages">
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Optional}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabOptionalPackages}" />
             </b:Interaction.Behaviors>
@@ -71,7 +70,7 @@
                 <view1:OtherPackages DataContext="{Binding TabOptionalPackages}" />
             </AdornerDecorator>
         </TabItem>
-        <TabItem Header="Dependencies">
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Dependencies}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabDependencies}" />
             </b:Interaction.Behaviors>
@@ -79,7 +78,7 @@
                 <view1:Dependencies DataContext="{Binding TabDependencies}" />
             </AdornerDecorator>
         </TabItem>
-        <TabItem Header="Related packages">
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Related}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabRelatedPackages}" />
             </b:Interaction.Behaviors>
@@ -87,7 +86,7 @@
                 <view1:OtherPackages DataContext="{Binding TabRelatedPackages}" />
             </AdornerDecorator>
         </TabItem>
-        <TabItem Header="Options">
+        <TabItem Header="{localization:Loc Dialog_AppInstaller_Tab_Options}">
             <b:Interaction.Behaviors>
                 <validation:ValidationBehavior ValidatedChangeable="{Binding TabOptions}" />
             </b:Interaction.Behaviors>
@@ -96,48 +95,48 @@
                     <StackPanel>
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
-                            Text="When to check for updates?" />
+                            Text="{localization:Loc Dialog_AppInstaller_Timing_Hint}" />
                         <ComboBox SelectedValue="{Binding AppInstallerUpdateCheckingMethod.CurrentValue}" SelectedValuePath="Tag" Margin="0 0 0 0">
-                            <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}">Never</ComboBoxItem>
-                            <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}">On launch</ComboBoxItem>
-                            <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}">Every 8 hours</ComboBoxItem>
-                            <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}">On launch and every 8 hours</ComboBoxItem>
+                            <ComboBoxItem x:Name="UpdateNever"  Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Never}" Content="{localization:Loc Dialog_AppInstaller_Never}" />
+                            <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Launch}" Content="{localization:Loc Dialog_AppInstaller_Timing_OnLaunch}" />
+                            <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.Background}" Content="{localization:Loc Dialog_AppInstaller_Timing_8Hours}" />
+                            <ComboBoxItem Tag="{x:Static appInstaller:AppInstallerUpdateCheckingMethod.LaunchAndBackground}" Content="{localization:Loc Dialog_AppInstaller_Timing_OnLaunchAnd8Hours}" />
                         </ComboBox>
 
                         <StackPanel Visibility="{Binding ElementName=UpdateNever, Path=IsSelected, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="Update options" Margin="0 16 0 6" />
+                                Text="{localization:Loc Dialog_AppInstaller_UpdateOptions}" Margin="0 16 0 6" />
                             <CheckBox IsChecked="{Binding AllowDowngrades.CurrentValue}" Margin="0 0 0 6">
-                                <TextBlock Text="Allow downgrades (installing older version of an app over the newer one)" TextWrapping="Wrap" />
+                                <TextBlock Text="{localization:Loc Dialog_AppInstaller_AllowDowngrades}" TextWrapping="Wrap" />
                             </CheckBox>
                         </StackPanel>
 
                         <StackPanel Visibility="{Binding ShowLaunchOptions, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="If a new version is available when launching the app..." 
+                                Text="{localization:Loc Dialog_AppInstaller_WhenNewVersionAvailable}" 
                                 Margin="0 16 0 6" />
 
                             <RadioButton 
                                 GroupName="g1"
                                 IsChecked="{Binding PromptMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:PromptMode.Background}}"
-                                Content="Update the app silently in background" Margin="0 0 0 6" />
+                                Content="{localization:Loc Dialog_AppInstaller_WhenNewVersionAvailable_SilentUpdate}" Margin="0 0 0 6" />
                             <RadioButton 
                                 GroupName="g2"
                                 IsChecked="{Binding PromptMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:PromptMode.Inform}}"
-                                Content="Inform about the new version, do not enforce it" Margin="0 0 0 6" />
+                                Content="{localization:Loc Dialog_AppInstaller_WhenNewVersionAvailable_Inform}" Margin="0 0 0 6" />
                             <RadioButton 
                                 GroupName="g3"
                                 IsChecked="{Binding PromptMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:PromptMode.Force}}"
-                                Content="Show prompt and force the update before the app can be launched" Margin="0 0 0 6" />
+                                Content="{localization:Loc Dialog_AppInstaller_WhenNewVersionAvailable_Force}" Margin="0 0 0 6" />
 
                             <TextBlock 
                                 Style="{StaticResource LabelTextBlock}"
-                                Text="After checking for updates, do not repeat the check for the next" Margin="0 16 0 6" />
+                                Text="{localization:Loc Dialog_AppInstaller_PostUpdateDelay}" Margin="0 16 0 6" />
                             <StackPanel Orientation="Horizontal">
                                 <xctk:ButtonSpinner Content="{Binding Hours.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" Spin="Spinner_OnSpin" AllowSpin="True" ButtonSpinnerLocation="Right" VerticalAlignment="Center" Width="80" />
-                                <TextBlock Text="hours" VerticalAlignment="Center" Margin="5 0 0 0" />
+                                <TextBlock Text="{localization:Loc Dialog_AppInstaller_Unit_Hours}" VerticalAlignment="Center" Margin="5 0 0 0" />
                             </StackPanel>
                         </StackPanel>
 
@@ -156,9 +155,8 @@
                                 </Path.LayoutTransform>
                             </Path>
                             <TextBlock Margin="0 0 0 0" TextWrapping="Wrap" VerticalAlignment="Center">
-                                        <Run Text="This combination of settings requires" />
-                                        <Run Text="{Binding CompatibleWindows, Mode=OneWay, FallbackValue='Windows 10'}" FontWeight="SemiBold" />
-                                        <Run Text="or newer." />
+                                <Run Text="{localization:Loc Dialog_AppInstaller_RequiredWin10}" />
+                                <Run Text="{Binding CompatibleWindows, Mode=OneWay, FallbackValue='Windows 10'}" FontWeight="SemiBold" />
                             </TextBlock>
                         </DockPanel>
                     </StackPanel>

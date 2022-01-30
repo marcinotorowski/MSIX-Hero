@@ -92,7 +92,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
         {
             var drivePath = System.IO.Path.Combine(this.SelectedLetter.CurrentValue ?? "C:\\", this.Path.CurrentValue ?? string.Empty);
 
-            progress.Report(new ProgressData(20, "Adding a volume..."));
+            progress.Report(new ProgressData(20, Resources.Localization.Dialogs_NewVolume_Adding));
             
             cancellationToken.ThrowIfCancellationRequested();
             
@@ -104,11 +104,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel
 
             if (this.SetAsDefault.CurrentValue)
             {
-                progress.Report(new ProgressData(80, "Changing the default volume..."));
+                progress.Report(new ProgressData(80, Resources.Localization.Dialogs_NewVolume_ChangingDefault));
                 await this._elevation.AsAdministrator<IAppxVolumeManager>().SetDefault(drivePath, cancellationToken).ConfigureAwait(false);
             }
 
-            progress.Report(new ProgressData(90, "Reading volumes..."));
+            progress.Report(new ProgressData(90, Resources.Localization.Dialogs_NewVolume_Reading));
             
             await this._application.CommandExecutor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
             return true;

@@ -19,7 +19,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
         {
             if (this.Manifest.Root == null)
             {
-                throw new InvalidOperationException("The root cannot be empty.");
+                throw new InvalidOperationException(Resources.Localization.AppxEditor_Error_PathNoRegFile);
             }
 
             var (_, buildNamespace) = this.EnsureNamespace(Namespaces.Build);

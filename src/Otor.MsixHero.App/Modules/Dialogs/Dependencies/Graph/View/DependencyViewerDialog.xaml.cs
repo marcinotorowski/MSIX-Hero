@@ -18,9 +18,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using GraphX.Common.Enums;
+using Microsoft.Win32;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.Visuals;
 
@@ -89,12 +88,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View
 
             public void ExportPng()
             {
-                this.graphArea.ExportAsImageDialog(ImageType.PNG);
+                this.ExportAsImageDialog(ImageType.PNG);
             }
-
+            
             public void ExportJpg()
             {
-                this.graphArea.ExportAsImageDialog(ImageType.JPEG);
+                this.ExportAsImageDialog(ImageType.JPEG);
             }
 
             public void ExportClipboard()
@@ -105,6 +104,48 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View
             public void Print()
             {
                 this.graphArea.PrintDialog();
+            }
+
+            private void ExportAsImageDialog(
+                ImageType type,
+                bool useZoomControlSurface = false,
+                double dpi = 96.0,
+                int quality = 100)
+            {
+                string filter;
+                switch (type)
+                {
+                    case ImageType.PNG:
+                        filter = "*.png";
+                        break;
+                    case ImageType.JPEG:
+                        filter = "*.jpg";
+                        break;
+                    case ImageType.BMP:
+                        filter = "*.bmp";
+                        break;
+                    case ImageType.GIF:
+                        filter = "*.gif";
+                        break;
+                    case ImageType.TIFF:
+                        filter = "*.tiff";
+                        break;
+                    default:
+                        throw new InvalidDataException("ExportAsImage() -> Unknown output image format specified!");
+                }
+
+                var saveFileDialog = new SaveFileDialog
+                {
+                    Filter = string.Format(MsixHero.App.Resources.Localization.Dialogs_Dependencies_Export_ImageFilter + "|{1}", type.ToString("G").ToUpperInvariant(), filter),
+                    Title = string.Format(MsixHero.App.Resources.Localization.Dialogs_Dependencies_Export_Title, filter)
+                };
+
+                if (saveFileDialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                this.graphArea.ExportAsImage(saveFileDialog.FileName, type, useZoomControlSurface, dpi, quality);
             }
         }
     }

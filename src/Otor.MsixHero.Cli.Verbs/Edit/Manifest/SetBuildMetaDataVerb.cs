@@ -15,16 +15,17 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Manifest
 {
-    [Verb("setBuildMetaData", HelpText = "Adds a specified build meta data to the package manifest.")]
+    [Verb("setBuildMetaData", HelpText = "CLI_Verbs_Edit_SetBuildMetaData_VerbName", ResourceType = typeof(Localization))]
     public class SetBuildMetaDataVerb : BaseEditVerb
     {
-        [Value(0, HelpText = "The name of the component, for example SignTool.exe.")]
+        [Value(0, HelpText = "CLI_Verbs_Edit_SetBuildMetaData_Prop_Name", ResourceType = typeof(Localization))]
         public string Name { get; set; }
 
-        [Value(1, HelpText = "The version of the component, for example 1.0.0.")]
+        [Value(1, HelpText = "CLI_Verbs_Edit_SetBuildMetaData_Prop_Version", ResourceType = typeof(Localization))]
         public string Version { get; set; }
     }
 }

@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
             converter.WriteValue(command.RegistryKey, command.RegistryValueName, command.ValueType, command.Value);
             await converter.Flush().ConfigureAwait(false);
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info().WriteLine($"Registry value {command.Value} = '{command.Value}' ({command.ValueType}) has been set in '{target.Item1}\\{target.Item2}'.");
+            Logger.Info().WriteLine(Resources.Localization.AppxEditor_Registry_RegValueSet_Format, command.RegistryValueName, command.Value, command.ValueType, target.Item1, target.Item2);
         }
     }
 }

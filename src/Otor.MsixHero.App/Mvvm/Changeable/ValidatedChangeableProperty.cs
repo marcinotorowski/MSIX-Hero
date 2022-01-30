@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Mvvm.Changeable
 {
@@ -28,14 +30,15 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         private bool isValidated;
         private IReadOnlyCollection<Func<T, string>> validators;
         private bool displayValidationErrors = true;
-        private string displayName;
+        private readonly Func<string> displayName;
 
         public ValidatedChangeableProperty(string displayName, T initialValue = default) : base(initialValue)
         {
-            this.displayName = displayName;
+            this.displayName = () => displayName;
             this.isValidated = true;
-            this.validators = new Func<T, string>[0];
+            this.validators = Array.Empty<Func<T, string>>();
             this.Validate();
+            MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
 
         public ValidatedChangeableProperty(string displayName, T initialValue, params Func<T, string>[] validators) : this(displayName, initialValue, true, validators)
@@ -48,29 +51,48 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
 
         public ValidatedChangeableProperty(string displayName, T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
         {
+            this.displayName = () => displayName;
+            this.isValidated = isValidated;
+            this.validators = validators;
+            this.Validate();
+            MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
+        }
+
+        public ValidatedChangeableProperty(Func<string> displayName, bool isValidated, params Func<T, string>[] validators) : this(displayName, default, isValidated, validators)
+        {
+        }
+
+        public ValidatedChangeableProperty(Func<string> displayName, T initialValue = default) : base(initialValue)
+        {
+            this.displayName = displayName;
+            this.isValidated = true;
+            this.validators = Array.Empty<Func<T, string>>();
+            this.Validate();
+            MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
+        }
+
+        public ValidatedChangeableProperty(Func<string> displayName, T initialValue, params Func<T, string>[] validators) : this(displayName, initialValue, true, validators)
+        {
+        }
+
+        public ValidatedChangeableProperty(Func<string> displayName, params Func<T, string>[] validators) : this(displayName, default, true, validators)
+        {
+        }
+
+        public ValidatedChangeableProperty(Func<string> displayName, T initialValue, bool isValidated, params Func<T, string>[] validators) : base(initialValue)
+        {
             this.displayName = displayName;
             this.isValidated = isValidated;
             this.validators = validators;
             this.Validate();
+            MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
 
         public ValidatedChangeableProperty(string displayName, bool isValidated, params Func<T, string>[] validators) : this(displayName, default, isValidated, validators)
         {
         }
 
-        public string DisplayName
-        {
-            get => this.displayName;
-            set
-            {
-                if (!this.SetField(ref this.displayName, value) || !this.isValidated)
-                {
-                    return;
-                }
-
-                this.Validate();
-            }
-        }
+        public string DisplayName => this.displayName();
 
         public bool DisplayValidationErrors
         {
@@ -217,6 +239,11 @@ namespace Otor.MsixHero.App.Mvvm.Changeable
         {
             base.PostSetValue();
             this.Validate();
+        }
+        private void InstanceOnCultureChanged(object sender, CultureInfo e)
+        {
+            this.Validate();
+            this.OnPropertyChanged(nameof(this.DisplayName));
         }
     }
 }

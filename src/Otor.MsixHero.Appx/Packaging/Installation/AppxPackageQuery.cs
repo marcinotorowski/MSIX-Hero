@@ -148,7 +148,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 mode = isAdmin ? PackageFindMode.AllUsers : PackageFindMode.CurrentUser;
             }
 
-            progress?.Report(new ProgressData(0, "Getting installed apps..."));
+            progress?.Report(new ProgressData(0, Resources.Localization.Packages_GettingApps));
 
             if (isAdmin)
             {
@@ -187,7 +187,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 }
             }
 
-            progress?.Report(new ProgressData(5, "Getting installed apps..."));
+            progress?.Report(new ProgressData(5, Resources.Localization.Packages_GettingApps));
 
             IList<Package> allPackages;
 
@@ -242,7 +242,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 }
             }
 
-            progress?.Report(new ProgressData(30, "Getting installed apps..."));
+            progress?.Report(new ProgressData(30, Resources.Localization.Packages_GettingApps));
 
             var total = 10.0;
             var single = allPackages.Count == 0 ? 0.0 : 90.0 / allPackages.Count;
@@ -272,7 +272,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             foreach (var item in allPackages)
             {
                 total += single;
-                progress?.Report(new ProgressData((int)total, $"Getting installed apps..."));
+                progress?.Report(new ProgressData((int)total, Resources.Localization.Packages_GettingApps));
 
                 cancellationToken.ThrowIfCancellationRequested();
 

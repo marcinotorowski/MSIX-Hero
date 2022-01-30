@@ -37,9 +37,9 @@ namespace Otor.MsixHero.Appx.Packaging
                 switch (displayType)
                 {
                     case PackageTypeDisplay.Long:
-                        return "Universal Windows Platform (UWP) app";
+                        return Resources.Localization.Packages_Types_UWP_Long;
                     default:
-                        return "UWP";
+                        return Resources.Localization.Packages_Types_UWP;
                 }
             }
 
@@ -49,9 +49,9 @@ namespace Otor.MsixHero.Appx.Packaging
                 switch (displayType)
                 {
                     case PackageTypeDisplay.Long:
-                        return "Classic Win32 app";
+                        return Resources.Localization.Packages_Types_W32_Long;
                     default:
-                        return "Win32";
+                        return Resources.Localization.Packages_Types_W32;
                 }
             }
 
@@ -61,11 +61,11 @@ namespace Otor.MsixHero.Appx.Packaging
                 switch (displayType)
                 {
                     case PackageTypeDisplay.Long:
-                        return "Classic Win32 app enhanced by Package Support Framework (PSF)";
+                        return Resources.Localization.Packages_Types_Psf_Long;
                     case PackageTypeDisplay.Short:
-                        return "PSF";
+                        return Resources.Localization.Packages_Types_Psf_Short;
                     default:
-                        return "Win32 + PSF";
+                        return Resources.Localization.Packages_Types_Psf;
                 }
             }
 
@@ -75,9 +75,9 @@ namespace Otor.MsixHero.Appx.Packaging
                 switch (displayType)
                 {
                     case PackageTypeDisplay.Long:
-                        return "Web application";
+                        return Resources.Localization.Packages_Types_Pwa_Long;
                     default:
-                        return "Web";
+                        return Resources.Localization.Packages_Types_Pwa;
                 }
             }
 
@@ -87,18 +87,18 @@ namespace Otor.MsixHero.Appx.Packaging
                 switch (displayType)
                 {
                     case PackageTypeDisplay.Short:
-                        return "FRAMEWORK";
+                        return Resources.Localization.Packages_Types_Framework;
                     default:
-                        return "Framework";
+                        return Resources.Localization.Packages_Types_Framework;
                 }
             }
 
             switch (displayType)
             {
                 case PackageTypeDisplay.Short:
-                    return "App";
+                    return Resources.Localization.Packages_Types_App;
                 default:
-                    return "Unknown";
+                    return Resources.Localization.Packages_Types_Unknown;
             }
         }
 

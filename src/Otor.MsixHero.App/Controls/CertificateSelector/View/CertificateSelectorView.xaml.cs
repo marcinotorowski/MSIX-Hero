@@ -77,7 +77,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.View
             }
             catch (Exception)
             {
-                MessageBox.Show("Could not open the link:\r\nhttps://msixhero.net/redirect/device-guard-signing");
+                MessageBox.Show(MsixHero.App.Resources.Localization.CertificateSelector_Errors_LinkOpen + System.Environment.NewLine + "https://msixhero.net/redirect/device-guard-signing");
             }
         }
 

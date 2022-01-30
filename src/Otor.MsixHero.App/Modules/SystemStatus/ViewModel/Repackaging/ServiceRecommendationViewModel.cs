@@ -105,7 +105,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
                 
                 if (!result)
                 {
-                    this.interactionService.ShowError("The action could not be executed.", InteractionResult.OK);
+                    this.interactionService.ShowError(Resources.Localization.System_Action_Error, InteractionResult.OK);
                 }
 
                 this.IsRunning = desiredState;
@@ -113,7 +113,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError("The action could not be executed.", e, InteractionResult.OK);
+                this.interactionService.ShowError(Resources.Localization.System_Action_Error, e, InteractionResult.OK);
             }
             finally
             {

@@ -39,13 +39,13 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
 
             if (string.IsNullOrEmpty(this.Verb.Name))
             {
-                await this.Console.WriteError("Build meta data name cannot be empty.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_BuildMetaData_Error_EmptyName).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
             if (string.IsNullOrEmpty(this.Verb.Version))
             {
-                await this.Console.WriteError("Build meta data version cannot be empty.").ConfigureAwait(false);
+                await this.Console.WriteError(Resources.Localization.CLI_Executor_BuildMetaData_Error_EmptyVersion).ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
 
@@ -61,11 +61,11 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             {
                 if (string.IsNullOrEmpty(change.OldValue) || string.Equals(change.OldValue, change.NewValue, StringComparison.Ordinal))
                 {
-                    this.Console.WriteSuccess($"Set '{change.Key}' to '{change.NewValue}'").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_BuildMetaData_Success_Set_Format, change.Key, change.NewValue)).GetAwaiter().GetResult();
                 }
                 else
                 {
-                    this.Console.WriteSuccess($"Changed '{change.Key}' from '{change.OldValue}' to '{change.NewValue}'").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_BuildMetaData_Success_Change_Format, change.Key, change.OldValue, change.NewValue)).GetAwaiter().GetResult();
                 }
             };
 
@@ -75,7 +75,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"Build meta data '{this.Verb.Name}' could not be added.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_BuildMetaData_Error_Format, this.Verb.Name)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }

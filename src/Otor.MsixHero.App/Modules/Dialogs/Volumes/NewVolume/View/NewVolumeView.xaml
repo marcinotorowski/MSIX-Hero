@@ -12,6 +12,7 @@
              xmlns:volume="clr-namespace:Otor.MsixHero.App.Controls.Volume"
              xmlns:items="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel.Items"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Volumes.NewVolume.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              d:DataContext="{d:DesignInstance viewModel:NewVolumeViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -33,29 +34,23 @@
     </mvvm:Dialog.WindowStyle>
     <dialog:ChangeableDialog
         Dialog="{Binding}"
-        OkButtonLabel="Add new volume"
+        OkButtonLabel="{localization:Loc Dialogs_NewVolume_OkButton}"
         ShowShield="True"
         Icon="{StaticResource VectorDisk}">
         <dialog:ChangeableDialog.SuccessContentTemplate>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Text="New volume has been created." TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
-                    <TextBlock TextAlignment="Center">
-                    <!--<Hyperlink Command="{Binding OpenSuccessLink}">Open the folder containing packed files</Hyperlink>-->
-                    </TextBlock>
-                    <TextBlock TextAlignment="Center">
-                    <!--<Hyperlink Command="{Binding Reset}">Pack another package</Hyperlink>-->
-                    </TextBlock>
+                    <TextBlock Text="{localization:Loc Dialogs_NewVolume_Success}" TextAlignment="Center" FontFamily="{StaticResource SourceSansPro}" FontSize="16" FontWeight="Light" />
                 </StackPanel>
             </DataTemplate>
         </dialog:ChangeableDialog.SuccessContentTemplate>
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate>
-                <controls:ProgressOverlay IsShown="{Binding Letters.IsLoading}" Message="Getting available drives...">
+                <controls:ProgressOverlay IsShown="{Binding Letters.IsLoading}" Message="{localization:Loc Dialogs_NewVolume_GettingDrives}">
                     <StackPanel>
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
-                            Text="Drive" 
+                            Text="{localization:Loc Dialogs_NewVolume_Drive}" 
                             Margin="0 16 0 6" />
                         <ComboBox MinHeight="57" HorizontalContentAlignment="Stretch" SelectedValuePath="PackageStorePath" SelectedValue="{Binding SelectedLetter.CurrentValue}" ItemsSource="{Binding Letters.CurrentValue}" IsEnabled="{Binding Letters.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ComboBox.ItemTemplate>
@@ -75,17 +70,17 @@
 
                         <TextBlock 
                             Style="{StaticResource LabelTextBlock}"
-                            Text="Path" 
+                            Text="{localization:Loc Dialogs_NewVolume_Path}" 
                             Margin="0 16 0 6" />
-                        <RadioButton IsChecked="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Default}, Converter={StaticResource EnumToBooleanConverter}}" Content="Install packages to WindowsApps root folder (default)" />
-                        <RadioButton IsChecked="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Custom}, Converter={StaticResource EnumToBooleanConverter}}" Content="Install packages in a custom folder path" Margin="0 4" />
+                        <RadioButton IsChecked="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Default}, Converter={StaticResource EnumToBooleanConverter}}" Content="{localization:Loc Dialogs_NewVolume_Path_Default}" />
+                        <RadioButton IsChecked="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Custom}, Converter={StaticResource EnumToBooleanConverter}}" Content="{localization:Loc Dialogs_NewVolume_Path_Custom}" Margin="0 4" />
                         <TextBox IsEnabled="{Binding PathType.CurrentValue, ConverterParameter={x:Static viewModel:NewVolumePathType.Custom}, Converter={StaticResource EnumToBooleanConverter}}" Text="{Binding Path=Path.CurrentValue, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Margin="21 0 0 0" />
 
                         <TextBlock
                             Style="{StaticResource LabelTextBlock}" 
-                            Text="Default volume" 
+                            Text="{localization:Loc Dialogs_NewVolume_DefaultVolume}" 
                             Margin="0 16 0 6" />
-                        <CheckBox Content="Make this volume my default volume" IsChecked="{Binding SetAsDefault.CurrentValue}" />
+                        <CheckBox Content="{localization:Loc Dialogs_NewVolume_SetAsDefault}" IsChecked="{Binding SetAsDefault.CurrentValue}" />
 
                     </StackPanel>
                 </controls:ProgressOverlay>

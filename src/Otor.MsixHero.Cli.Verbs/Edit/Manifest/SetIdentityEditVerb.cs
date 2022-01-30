@@ -15,25 +15,26 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs.Edit.Manifest
 {
-    [Verb("setIdentity", HelpText = "Sets package identity.")]
+    [Verb("setIdentity", HelpText = "CLI_Verbs_Edit_SetIdentity_VerbName", ResourceType = typeof(Localization))]
     public class SetIdentityEditVerb : BaseEditVerb
     {
-        [Option("publisher", HelpText = "The CN string of a publisher.")]
+        [Option("publisher", HelpText = "CLI_Verbs_Edit_SetIdentity_Prop_Publisher", ResourceType = typeof(Localization))]
         public string Publisher { get; set; }
 
-        [Option("packageVersion", HelpText = "The package version. It must be a valid version string. You can also write 'auto' to autoincrement the version, or use placeholders ^ or + to increase a unit, and 'x' or '*' to keep the unit. For example, the version *.*.+.0 would keep the major and minor version from the current value, increase the third position by one, and reset the fourth position to 0.")]
+        [Option("packageVersion", HelpText = "CLI_Verbs_Edit_SetIdentity_Prop_Version", ResourceType = typeof(Localization))]
         public string Version { get; set; }
 
-        [Option("packageName", HelpText = "The package name.")]
+        [Option("packageName", HelpText = "CLI_Verbs_Edit_SetIdentity_Prop_Name", ResourceType = typeof(Localization))]
         public string Name { get; set; }
 
-        [Option("resourceId", HelpText = "The resource ID.")]
+        [Option("resourceId", HelpText = "CLI_Verbs_Edit_SetIdentity_Prop_ResourceId", ResourceType = typeof(Localization))]
         public string ResourceId { get; set; }
 
-        [Option("processorArchitecture", HelpText = "The processor architecture, for example x64, arm or Neutral")]
+        [Option("processorArchitecture", HelpText = "CLI_Verbs_Edit_SetIdentity_Prop_ProcessorArchitecture", ResourceType = typeof(Localization))]
         public string ProcessorArchitecture { get; set; }
     }
 }

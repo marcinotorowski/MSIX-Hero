@@ -42,7 +42,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
 
             if (!File.Exists(command.SourcePath))
             {
-                throw new FileNotFoundException($"File ('{command.SourcePath}') does not exist.");
+                throw new FileNotFoundException(string.Format(Resources.Localization.AppxEditor_Error_FileMissing_Format, command.SourcePath));
             }
 
             if (destination.Directory?.Exists == false)
@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                 destination.Directory.Create();
             }
             
-            Logger.Info().WriteLine($"Copying file from '{command.SourcePath}' to '{destination.FullName}'...");
+            Logger.Info().WriteLine(Resources.Localization.AppxEditor_Files_Copy_Format, command.SourcePath, destination.FullName);
 
             if (File.Exists(destination.FullName) && !command.Force)
             {
@@ -70,6 +70,5 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
 
             public string FilePath { get; }
         }
-
     }
 }

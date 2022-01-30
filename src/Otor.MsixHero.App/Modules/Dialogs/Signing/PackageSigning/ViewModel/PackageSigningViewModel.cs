@@ -51,7 +51,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             IUacElevation uacElevation, 
             IInteractionService interactionService, 
             IConfigurationService configurationService,
-            ITimeStampFeed timeStampFeed) : base("Package signing", interactionService)
+            ITimeStampFeed timeStampFeed) : base(Resources.Localization.Dialogs_PackageSigning_Title, interactionService)
         {
             this._uacElevation = uacElevation;
             this._interactionService = interactionService;
@@ -88,7 +88,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             this.Verb.FilePath = this.Files;
             if (!this.Verb.FilePath.Any())
             {
-                this.Verb.FilePath = new[] { "<path-to-msix>" };
+                this.Verb.FilePath = new[] { Resources.Localization.Dialogs_PackageSigning_Placeholder_Msix };
             }
 
             this.Verb.IncreaseVersion = this.IncreaseVersion.CurrentValue;
@@ -125,11 +125,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             if (this.CertificateSelector.Store.CurrentValue == CertificateSource.Pfx)
             {
                 this.Verb.PfxFilePath = this.CertificateSelector.PfxPath.CurrentValue;
-                this.Verb.PfxPassword = this.CertificateSelector.Password.CurrentValue?.Length > 0 ? "<your-password>" : null;
+                this.Verb.PfxPassword = this.CertificateSelector.Password.CurrentValue?.Length > 0 ? Resources.Localization.Dialogs_PackageSigning_Placeholder_Pwd : null;
 
                 if (string.IsNullOrEmpty(this.Verb.PfxFilePath))
                 {
-                    this.Verb.PfxFilePath = "<path-to-pfx-file>";
+                    this.Verb.PfxFilePath = Resources.Localization.Dialogs_PackageSigning_Placeholder_Pfx;
                 }
             }
             else
@@ -156,7 +156,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 
                 if (string.IsNullOrEmpty(this.Verb.ThumbPrint))
                 {
-                    this.Verb.ThumbPrint = "<thumbprint-to-certificate>";
+                    this.Verb.ThumbPrint = Resources.Localization.Dialogs_PackageSigning_Placeholder_Thumbprint;
                 }
             }
             else
@@ -307,11 +307,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             {
                 IReadOnlyCollection<string> buttons = new List<string>
                 { 
-                    "Only selected folder",
-                    "Selected folder " + Path.GetFileName(folder) + " and all its subfolders"
+                    Resources.Localization.Dialogs_PackageSigning_ImportFolder_Title,
+                    string.Format(Resources.Localization.Dialogs_PackageSigning_ImportFolder_Folder_Format, Path.GetFileName(folder))
                 };
 
-                var userChoice = this._interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                var userChoice = this._interactionService.ShowMessage(Resources.Localization.Dialogs_PackageSigning_ImportFolder_Multiple, buttons, systemButtons: InteractionResult.Cancel);
                 if (userChoice < 0 || userChoice >= buttons.Count)
                 {
                     return 0;
@@ -331,7 +331,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
         {
             if (!files.Any())
             {
-                return "At least one file is required.";
+                return Resources.Localization.Dialogs_PackageSigning_Validation_FileNotSelected;
             }
 
             return null;

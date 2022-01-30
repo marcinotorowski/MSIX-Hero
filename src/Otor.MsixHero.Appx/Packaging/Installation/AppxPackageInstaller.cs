@@ -23,8 +23,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Diagnostic.Developer;
-using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
-using Otor.MsixHero.Appx.Exceptions;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Interop;
 using Otor.MsixHero.Appx.Packaging.Manifest;
@@ -64,7 +62,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 var task = AsyncOperationHelper.ConvertToTask(
                     PackageManagerWrapper.Instance.RemovePackageAsync(item, opts),
-                    "Removing...", CancellationToken.None, progress);
+                    Resources.Localization.Packages_Removing, CancellationToken.None, progress);
 
                 await task.ConfigureAwait(false);
             }
@@ -98,7 +96,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                 var task = AsyncOperationHelper.ConvertToTask(
                     PackageManagerWrapper.Instance.RemovePackageAsync(item.PackageId, opts),
-                    $"Removing {item.DisplayName}...", CancellationToken.None, progress);
+                    string.Format(Resources.Localization.Packages_Removing_Format, item.DisplayName), CancellationToken.None, progress);
 
                 await task.ConfigureAwait(false);
 
@@ -113,7 +111,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             var task = AsyncOperationHelper.ConvertToTask(
                 PackageManagerWrapper.Instance.DeprovisionPackageForAllUsersAsync(packageFamilyName),
-                "De-provisioning for all users",
+                Resources.Localization.Packages_Deprovision_AllUsers,
                 CancellationToken.None, progress);
             await task.ConfigureAwait(false);
         }
@@ -132,7 +130,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                 {
-                    throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                    throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
                 }
 
                 var reader = await AppxManifestSummaryReader.FromManifest(filePath).ConfigureAwait(false);
@@ -162,17 +160,17 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 if (options.HasFlag(AddAppxPackageOptions.AllUsers))
                 {
-                    throw new ArgumentException("Cannot install a package from .appinstaller for all users.", nameof(options));
+                    throw new ArgumentException(Resources.Localization.Packages_Error_AppInstallerAllUsers, nameof(options));
                 }
 
                 if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                 {
-                    throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                    throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
                 }
 
                 if (options.HasFlag(AddAppxPackageOptions.AllowDowngrade))
                 {
-                    throw new ArgumentException("Cannot force a downgrade with .appinstaller. The .appinstaller defines on its own whether the downgrade is allowed.", nameof(options));
+                    throw new ArgumentException(Resources.Localization.Packages_Error_AppInstallerDowngrade, nameof(options));
                 }
 
                 AddPackageByAppInstallerOptions deploymentOptions = 0;
@@ -185,7 +183,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 var volume = PackageManagerWrapper.Instance.GetDefaultPackageVolume();
                 await AsyncOperationHelper.ConvertToTask(
                     PackageManagerWrapper.Instance.AddPackageByAppInstallerFileAsync(new Uri(filePath, UriKind.Absolute), deploymentOptions, volume),
-                    "Installing from " + Path.GetFileName(filePath) + "...",
+                    string.Format(Resources.Localization.Packages_InstallingFrom_Format, Path.GetFileName(filePath)),
                     cancellationToken,
                     progress).ConfigureAwait(false);
             }
@@ -218,7 +216,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                     {
                         if (options.HasFlag(AddAppxPackageOptions.AllBundleResources))
                         {
-                            throw new ArgumentException("Cannot use the flag AllBundleResources with non-bundle packages.", nameof(options));
+                            throw new ArgumentException(Resources.Localization.Packages_Error_AllBundleResources, nameof(options));
                         }
 
                         var reader = await AppxManifestSummaryReader.FromMsix(filePath).ConfigureAwait(false);
@@ -250,20 +248,20 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
                     if (!deploymentResult.IsRegistered)
                     {
-                        throw new InvalidOperationException("The package could not be registered.");
+                        throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
                     }
 
                     var findInstalled = PackageManagerWrapper.Instance.FindPackages(name, publisher).FirstOrDefault();
                     if (findInstalled == null)
                     {
-                        throw new InvalidOperationException("The package could not be registered.");
+                        throw new InvalidOperationException(Resources.Localization.Packages_Error_Registering);
                     }
 
                     var familyName = findInstalled.Id.FamilyName;
 
                     await AsyncOperationHelper.ConvertToTask(
                         PackageManagerWrapper.Instance.ProvisionPackageForAllUsersAsync(familyName),
-                        $"Provisioning {name} {version}...",
+                        string.Format(Resources.Localization.Packages_Provisioning_Format, name, version),
                         cancellationToken,
                         progress).ConfigureAwait(false);
                 }
@@ -271,13 +269,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 {
                     var deploymentResult = await AsyncOperationHelper.ConvertToTask(
                         PackageManagerWrapper.Instance.AddPackageAsync(new Uri(filePath, UriKind.Absolute), Enumerable.Empty<Uri>(), deploymentOptions),
-                        "Installing " + name + "...",
+                        string.Format(Resources.Localization.Packages_Installing_Format, name),
                         cancellationToken,
                         progress).ConfigureAwait(false);
 
                     if (!deploymentResult.IsRegistered)
                     {
-                        var message = "Could not install " + name + " " + version + ".";
+                        var message = string.Format(Resources.Localization.Packages_Error_Install_Format, name, version);
                         if (!string.IsNullOrEmpty(deploymentResult.ErrorText))
                         {
                             message += " " + deploymentResult.ErrorText;

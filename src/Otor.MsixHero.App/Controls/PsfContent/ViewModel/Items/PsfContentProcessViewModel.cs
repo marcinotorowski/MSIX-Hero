@@ -15,8 +15,10 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
+using System.Text.RegularExpressions;
 using Otor.MsixHero.App.Controls.PsfContent.Model;
 using Otor.MsixHero.App.Mvvm.Changeable;
+using Otor.MsixHero.Infrastructure.Localization;
 
 namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
 {
@@ -59,6 +61,36 @@ namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
             }
         }
 
+        private static (string, string, string) DecomposePsfTranslation(string translation)
+        {
+            var match = Regex.Match(translation, @"\[(?<before>[^\]]*)\]\[(?<text>[^\]]*)\]\[(?<after>[^\]]*)\]");
+            if (!match.Success)
+            {
+                throw new InvalidOperationException("Invalid value. Expected format [aaaa][bbbb][cccc]");
+            }
+
+            var before = match.Groups["after"].Value;
+            var text = match.Groups["text"].Value;
+            var after = match.Groups["after"].Value;
+
+            if (string.IsNullOrEmpty(before))
+            {
+                before = null;
+            }
+
+            if (string.IsNullOrEmpty(text))
+            {
+                text = null;
+            }
+
+            if (string.IsNullOrEmpty(after))
+            {
+                text = null;
+            }
+
+            return (before, text, after);
+        }
+
         protected sealed override void SetValuesFromRegularExpression(string expr)
         {
             var interpretation = new RegexpInterpreter(expr, false);
@@ -66,29 +98,21 @@ namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
             switch (interpretation.Result)
             {
                 case InterpretationResult.Any:
-                    this.TextBefore = null;
-                    this.DisplayText = "any ";
-                    this.TextAfter = "process";
+                    (this.TextBefore, this.DisplayText, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Process_AnyProcess);
                     break;
                 case InterpretationResult.Name:
-                    this.TextBefore = "process ";
-                    this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Process_AnyProcess);
+                    // wtf?
+                    this.TextBefore = Resources.Localization.Psf_Process_NamedProcess_TextBefore + " ";
                     break;
                 case InterpretationResult.StartsWith:
-                    this.TextBefore = "processes that start with ";
-                    this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Process_StartsWith);
                     break;
                 case InterpretationResult.EndsWith:
-                    this.TextBefore = "processes that end with ";
-                    this.DisplayText = interpretation.DisplayText;
-                    this.TextAfter = null;
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Process_EndsWith);
                     break;
                 default:
-                    this.TextBefore = "processes that match pattern ";
-                    this.DisplayText = interpretation.RegularExpression;
-                    this.TextAfter = null;
+                    (this.TextBefore, _, this.TextAfter) = DecomposePsfTranslation(Resources.Localization.Psf_Process_EndsWith);
                     break;
             }
         }

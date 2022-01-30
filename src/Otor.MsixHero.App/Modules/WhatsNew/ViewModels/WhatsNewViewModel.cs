@@ -16,14 +16,15 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
-using Otor.MsixHero.App.Helpers.Update;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 using Prism.Regions;
@@ -36,9 +37,10 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
         private bool showUpdateScreen;
+        private DefaultScreen currentScreen;
 
         public WhatsNewViewModel(
-            IMsixHeroApplication application, 
+            IMsixHeroApplication application,
             IInteractionService interactionService,
             IConfigurationService configurationService)
         {
@@ -47,6 +49,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             this.configurationService = configurationService;
             this.Dismiss = new DelegateCommand(this.OnDismiss);
             this.OpenReleaseNotes = new DelegateCommand(this.OnOpenReleaseNotes);
+            MsixHeroTranslation.Instance.CultureChanged += this.InstanceOnCultureChanged;
         }
 
         private void OnOpenReleaseNotes()
@@ -61,6 +64,11 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
                 Process.Start(psi);
             },
             this.interactionService);
+        }
+
+        private void InstanceOnCultureChanged(object sender, CultureInfo e)
+        {
+            this.OnPropertyChanged(nameof(this.Caption));
         }
 
         private void OnDismiss()
@@ -80,7 +88,21 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             get;
         }
 
-        public string Caption { get; private set; }
+        public string Caption
+        {
+            get
+            {
+                return this.currentScreen switch
+                {
+                    DefaultScreen.Dashboard => Resources.Localization.Dialogs_WhatsNew_SkipToDashboard,
+                    DefaultScreen.Packages => Resources.Localization.Dialogs_WhatsNew_SkipToPackages,
+                    DefaultScreen.Volumes => Resources.Localization.Dialogs_WhatsNew_SkipToVolumes,
+                    DefaultScreen.Events => Resources.Localization.Dialogs_WhatsNew_SkipToEventViewer,
+                    DefaultScreen.System => Resources.Localization.Dialogs_WhatsNew_SkipToStatus,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+            }
+        }
 
         public ICommand OpenReleaseNotes
         {
@@ -98,27 +120,7 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
             var cfg = this.configurationService.GetCurrentConfiguration();
             this.showUpdateScreen = cfg.Update?.HideNewVersionInfo != true;
 
-            var startScreen = cfg.UiConfiguration?.DefaultScreen ?? DefaultScreen.Packages;
-            switch (startScreen)
-            {
-                case DefaultScreen.Dashboard:
-                    this.Caption = "Dismiss and go to the Dashboard";
-                    break;
-                case DefaultScreen.Packages:
-                    this.Caption = "Dismiss and go to the list of installed apps";
-                    break;
-                case DefaultScreen.Volumes:
-                    this.Caption = "Dismiss and go to the list of volumes";
-                    break;
-                case DefaultScreen.Events:
-                    this.Caption = "Dismiss and go to MSIX logs";
-                    break;
-                case DefaultScreen.System:
-                    this.Caption = "Dismiss and go to the System status";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            this.currentScreen = cfg.UiConfiguration?.DefaultScreen ?? DefaultScreen.Packages;
 
             this.OnPropertyChanged(nameof(ShowUpdateScreen));
             this.OnPropertyChanged(nameof(Caption));
@@ -131,15 +133,6 @@ namespace Otor.MsixHero.App.Modules.WhatsNew.ViewModels
 
         void INavigationAware.OnNavigatedFrom(NavigationContext navigationContext)
         {
-            return;
-            if (navigationContext.Uri.OriginalString == NavigationPaths.WhatsNew)
-            {
-                return;
-            }
-
-            this.interactionService.ShowToast("Info about the new version", "You can find these information later in the ABOUT menu (bottom left corner).");
-            var releaseNotesHelper = new ReleaseNotesHelper(this.configurationService);
-            releaseNotesHelper.SaveReleaseNotesConfig(this.showUpdateScreen);
         }
     }
 }

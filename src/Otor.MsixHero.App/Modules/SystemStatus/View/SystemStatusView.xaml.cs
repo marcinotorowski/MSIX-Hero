@@ -74,7 +74,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.View
             catch (Exception exception)
             {
                 Logger.Error().WriteLine(exception);
-                this.interactionService.ShowError($"Could not open the URL {url}", exception);
+                this.interactionService.ShowError(string.Format(MsixHero.App.Resources.Localization.System_Error_UrlCouldNotOpen, url), exception);
             }
         }
 

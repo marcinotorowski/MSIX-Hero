@@ -15,13 +15,14 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using CommandLine;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("trust", HelpText = "Import a certificate or a certificate from MSIX to Trusted People store")]
+    [Verb("trust", HelpText = "CLI_Verbs_Trust_VerbName", ResourceType = typeof(Localization))]
     public class TrustVerb : BaseVerb
     {
-        [Value(1, Required = true)]
+        [Value(1, Required = true, HelpText = "CLI_Verbs_Trust_Prop_File", ResourceType = typeof(Localization))]
         public string File { get; set; }
     }
 }

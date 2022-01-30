@@ -44,12 +44,12 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Registry
             }
             catch (Exception e)
             {
-                await this.Console.WriteError($"Could not set registry key {target.Item1}\\{target.Item2}.").ConfigureAwait(false);
+                await this.Console.WriteError(string.Format(Resources.Localization.CLI_Executor_SetRegistryKey_Error_Format, target.Item1, target.Item2)).ConfigureAwait(false);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }
 
-            await this.Console.WriteSuccess($"Registry key {target.Item1}\\{target.Item2} has been set.");
+            await this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SetRegistryKey_Success_Format, target.Item1, target.Item2));
             return StandardExitCodes.ErrorSuccess;
         }
     }

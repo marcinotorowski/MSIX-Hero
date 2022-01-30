@@ -63,7 +63,7 @@ namespace Otor.MsixHero.Infrastructure.Cryptography
                 }
 
                 var percent = (int) (100.0 * totalBytesRead / size);
-                progress?.Report(new ProgressData(percent, $"Calculating hash {percent}%..."));
+                progress?.Report(new ProgressData(percent, string.Format(Resources.Localization.Infrastructure_Hashing_Format, percent)));
             } while (readAheadBytesRead != 0);
 
             cancellationToken.ThrowIfCancellationRequested();

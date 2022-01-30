@@ -17,43 +17,44 @@
 using System.Collections.Generic;
 using CommandLine;
 using Otor.MsixHero.Appx.Signing;
+using Otor.MsixHero.Cli.Verbs.Resources;
 
 namespace Otor.MsixHero.Cli.Verbs
 {
-    [Verb("sign", HelpText = "Sign a package")]
+    [Verb("sign", HelpText = "CLI_Verbs_Sign_VerbName", ResourceType = typeof(Localization))]
     public class SignVerb : BaseVerb
     {
-        [Value(1, MetaName = "file path", HelpText = "Full paths to one or more files (separated by space).")]
+        [Value(1, MetaName = "file path", HelpText = "CLI_Verbs_Sign_Prop_FilePath", ResourceType = typeof(Localization))]
         public IEnumerable<string> FilePath { get; set; }
 
-        [Option("sm", HelpText = "Specifies that a machine store, instead of a user store, is used.", Default = false, Required = false, SetName = "Installed certificate")]
+        [Option("sm", HelpText = "CLI_Verbs_Sign_Prop_UseMachineStore", ResourceType = typeof(Localization), Default = false, Required = false, SetName = "Installed")]
         public bool UseMachineStore { get; set; }
 
-        [Option('t', "timestamp", HelpText = "Specifies the URL of the RFC 3161 time stamp server. If not specified, the default value from MSIX Hero settings will be used.", Required = false)]
+        [Option('t', "timestamp", HelpText = "CLI_Verbs_Sign_Prop_TimeStampUrl", ResourceType = typeof(Localization), Required = false)]
         public string TimeStampUrl { get; set; }
         
-        [Option("sha1", HelpText = "Specifies the SHA1 hash of the signing certificate. The SHA1 hash is commonly specified when multiple certificates satisfy the criteria specified by the remaining switches.", Required = false, SetName = "Installed certificate")]
+        [Option("sha1", HelpText = "CLI_Verbs_Sign_Prop_ThumbPrint", ResourceType = typeof(Localization), Required = false, SetName = "Installed")]
         public string ThumbPrint { get; set; }
 
-        [Option('f', "file", HelpText = "Specifies the signing certificate in a file. If the file is in Personal Information Exchange (PFX) format and protected by a password, use the -p option to specify the password.", Required = false, SetName = "PFX")]
+        [Option('f', "file", HelpText = "CLI_Verbs_Sign_Prop_PfxFilePath", ResourceType = typeof(Localization), Required = false, SetName = "PFX")]
         public string PfxFilePath { get; set; }
         
-        [Option('p', "password", HelpText = "	Specifies the password to use when opening a PFX file.", Required = false, SetName = "PFX")]
+        [Option('p', "password", HelpText = "CLI_Verbs_Sign_Prop_PfxPassword", ResourceType = typeof(Localization), Required = false, SetName = "PFX")]
         public string PfxPassword { get; set; }
 
-        [Option("dgf", HelpText = "Full path to JSON file containing access tokens to AzureAD.", SetName = "Device Guard Signing")]
+        [Option("dgf", HelpText = "CLI_Verbs_Sign_Prop_DeviceGuardFile", ResourceType = typeof(Localization), SetName = "DeviceGuard")]
         public string DeviceGuardFile { get; set; }
 
-        [Option("dg", HelpText = "A switch for interactive Device Guard signing (you will be asked for AzureAD credentials).", SetName = "Device Guard Signing")]
+        [Option("dg", HelpText = "CLI_Verbs_Sign_Prop_DeviceGuardInteractive", ResourceType = typeof(Localization), SetName = "DeviceGuard")]
         public bool DeviceGuardInteractive { get; set; }
         
-        [Option("dgp", HelpText = "Publisher name used for signing with Device Guard.", SetName = "Device Guard Signing")]
+        [Option("dgp", HelpText = "CLI_Verbs_Sign_Prop_DeviceGuardSubject", ResourceType = typeof(Localization), SetName = "DeviceGuard")]
         public string DeviceGuardSubject { get; set; }
 
-        [Option('i', "increaseVersion", HelpText = "Specifies whether the version should be automatically increased, and (if yes) which component of it. Supported values are [None, Major, Minor, Build, Revision].", Default = IncreaseVersionMethod.None, Required = false)]
+        [Option('i', "increaseVersion", HelpText = "CLI_Verbs_Sign_Prop_IncreaseVersion", ResourceType = typeof(Localization), Default = IncreaseVersionMethod.None, Required = false)]
         public IncreaseVersionMethod IncreaseVersion { get; set; }
 
-        [Option("noPublisherUpdate", HelpText = "Disables the automatic update of publisher name with the value of certificate subject.", Default = false)]
+        [Option("noPublisherUpdate", HelpText = "CLI_Verbs_Sign_Prop_NoPublisherUpdate", ResourceType = typeof(Localization), Default = false)]
         public bool NoPublisherUpdate { get; set; }
     }
 }

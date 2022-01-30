@@ -35,6 +35,7 @@ using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -54,16 +55,16 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             IAppxManifestCreator manifestCreator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
-            ITimeStampFeed timeStampFeed) : base("Pack MSIX package", interactionService)
+            ITimeStampFeed timeStampFeed) : base(Resources.Localization.Dialogs_Pack_Title, interactionService)
         {
             this._uacElevation = uacElevation;
             this._manifestCreator = manifestCreator;
             var signConfig = configurationService.GetCurrentConfiguration().Signing ?? new SigningConfiguration();
             var signByDefault = configurationService.GetCurrentConfiguration().Packer?.SignByDefault == true;
 
-            this.InputPath = new ChangeableFolderProperty("Source directory", interactionService, ChangeableFolderProperty.ValidatePath);
+            this.InputPath = new ChangeableFolderProperty(() => Resources.Localization.Dialogs_Pack_SrcDir, interactionService, ChangeableFolderProperty.ValidatePath);
 
-            this.OutputPath = new ChangeableFileProperty("Target package path", interactionService, ChangeableFileProperty.ValidatePath)
+            this.OutputPath = new ChangeableFileProperty(() => Resources.Localization.Dialogs_Pack_TargetPackagePath, interactionService, ChangeableFileProperty.ValidatePath)
             {
                 OpenForSaving = true,
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension).BuildFilter()
@@ -131,12 +132,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 {
                     if (!this.PrePackOptions.CanConvert)
                     {
-                        throw new InvalidOperationException("The selected folder does not contain a manifest file and any executable files. It cannot be packed to MSIX format.");
+                        throw new InvalidOperationException(Resources.Localization.Dialogs_Pack_NoManifests);
                     }
 
                     if (!string.IsNullOrEmpty(this.InputPath.CurrentValue))
                     {
-                        progress.Report(new ProgressData(0, "Creating manifest file..."));
+                        progress.Report(new ProgressData(0, Resources.Localization.Dialogs_Pack_CreatingManifest));
                         var options = new AppxManifestCreatorOptions
                         {
                             CreateLogo = this.PrePackOptions.CreateLogo,
@@ -173,7 +174,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 var srcManifest = fileListBuilder.GetManifestSourcePath();
                 if (srcManifest == null || !File.Exists(srcManifest))
                 {
-                    throw new InvalidOperationException("The selected folder cannot be packed because it has no manifest, and MSIX Hero was unable to create one. A manifest can be only created if the selected folder contains any executable file.");
+                    throw new InvalidOperationException(Resources.Localization.Dialogs_Pack_NoManifestException);
                 }
 
                 // Copy manifest to a temporary file

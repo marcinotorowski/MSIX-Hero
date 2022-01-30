@@ -161,13 +161,11 @@ Task("Trim publish folder")
         
         var removeFolder = new string[] {
             "cs",
-            "de",
             "es",
             "fr",
             "it",
             "ja",
             "ko",
-            "pl",
             "pt-br",
             "ru",
             "tr",

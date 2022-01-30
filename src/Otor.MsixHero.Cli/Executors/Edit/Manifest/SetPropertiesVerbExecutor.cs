@@ -45,11 +45,11 @@ namespace Otor.MsixHero.Cli.Executors.Edit.Manifest
             {
                 if (string.IsNullOrEmpty(changed.OldValue) || string.Equals(changed.OldValue, changed.NewValue))
                 {
-                    this.Console.WriteSuccess($"Set property '{changed.Key}' to '{changed.NewValue}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SetIdentity_Success_Set_Format, changed.Key, changed.NewValue)).GetAwaiter().GetResult();
                 }
                 else
                 {
-                    this.Console.WriteSuccess($"Changed property '{changed.Key}' from '{changed.OldValue}' to '{changed.NewValue}'.").GetAwaiter().GetResult();
+                    this.Console.WriteSuccess(string.Format(Resources.Localization.CLI_Executor_SetIdentity_Success_Change_Format, changed.Key, changed.OldValue, changed.NewValue)).GetAwaiter().GetResult();
                 }
             };
 

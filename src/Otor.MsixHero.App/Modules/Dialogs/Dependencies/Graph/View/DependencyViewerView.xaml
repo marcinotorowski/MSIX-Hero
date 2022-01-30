@@ -9,6 +9,7 @@
              xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
              xmlns:view="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.View"
              xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Dependencies.Graph.ViewModel"
+             xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
              mc:Ignorable="d" 
              d:DesignWidth="700"
              d:DesignHeight="400"
@@ -35,7 +36,7 @@
         x:Name="Dialog"
         Dialog="{Binding}"
         OkButtonVisibility="Collapsed"
-        OkButtonLabel="Analyze dependencies"
+        OkButtonLabel="{localization:Loc Dialogs_Dependencies_Analyze_Button}"
         Icon="{StaticResource VectorDependencies}">
         <dialog:ChangeableDialog.DialogContentTemplate>
             <DataTemplate DataType="viewModel:DependencyViewerViewModel">
@@ -54,8 +55,8 @@
                 <StackPanel 
                     Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Orientation="Horizontal">
-                    <Button Command="{Binding Export}" CommandParameter=".png" Content="Export..." Margin="4" />
-                    <Button Command="{Binding Print}" CommandParameter="*.pdf" Content="Print..." Margin="4" />
+                    <Button Command="{Binding Export}" CommandParameter=".png" Content="{localization:Loc Dialogs_Dependencies_ExportButton}" Margin="4" />
+                    <Button Command="{Binding Print}" CommandParameter="*.pdf" Content="{localization:Loc Dialogs_Dependencies_PrintButton}" Margin="4" />
                 </StackPanel>
             </StackPanel>
         </dialog:ChangeableDialog.Footer>
