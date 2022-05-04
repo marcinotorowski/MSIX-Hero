@@ -25,8 +25,6 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Verbs;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -36,12 +34,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 {
     public class NewSelfSignedViewModel : ChangeableAutomatedDialogViewModel<NewCertVerb>
     {
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
+        private readonly ISigningManager signingManagerFactory;
         private bool isSubjectTouched;
         private ICommand importNewCertificate;
 
         public NewSelfSignedViewModel(
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, 
+            ISigningManager signingManagerFactory, 
             IInteractionService interactionService, 
             IConfigurationService configurationService) : base("New self signed certificate", interactionService)
         {
@@ -98,10 +96,9 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
-            await manager.CreateSelfSignedCertificate(
+            await this.signingManagerFactory.CreateSelfSignedCertificate(
                 new DirectoryInfo(this.OutputPath.CurrentValue),
                 this.PublisherName.CurrentValue,
                 this.PublisherFriendlyName.CurrentValue,
@@ -136,7 +133,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.NewSelfSigned.ViewModel
                 return;
             }
 
-            var mgr = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator).ConfigureAwait(true);
+            var mgr = this.signingManagerFactory;
             await mgr.InstallCertificate(file, CancellationToken.None).ConfigureAwait(true);
 
             this.CloseCommand.Execute(ButtonResult.OK);

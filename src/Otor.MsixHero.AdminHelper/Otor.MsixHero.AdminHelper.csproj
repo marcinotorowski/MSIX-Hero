@@ -16,12 +16,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapplo.Log.Loggers" Version="1.4.1" />
     <PackageReference Include="NLog" Version="4.7.13" />
     <PackageReference Include="System.Management.Automation" Version="7.2.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Elevation\Otor.MsixHero.Elevation.csproj" />
   </ItemGroup>
 
 </Project>

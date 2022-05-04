@@ -25,9 +25,9 @@ using Otor.MsixHero.App.Hero.Commands.Volumes;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Volumes.Entities;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism;
 using Prism.Events;
 

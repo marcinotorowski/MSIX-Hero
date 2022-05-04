@@ -16,6 +16,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Dapplo.Log;
 using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Registry;
 using Otor.MsixHero.Appx.Packaging.Installation;
@@ -23,16 +24,10 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Processes.Ipc;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Proxy.Diagnostic;
-using Otor.MsixHero.Lib.Proxy.Packaging;
-using Otor.MsixHero.Lib.Proxy.Signing;
-using Otor.MsixHero.Lib.Proxy.Volumes;
-using Otor.MsixHero.Lib.Proxy.WindowsVirtualDesktop;
 
 namespace Otor.MsixHero.AdminHelper
 {
@@ -89,36 +84,30 @@ namespace Otor.MsixHero.AdminHelper
         {
             try
             {
+                LogSettings.RegisterDefaultLogger<Dapplo.Log.Loggers.ColorConsoleLogger>();
+                LogSettings.DefaultLogger.LogLevel = LogLevels.Verbose;
+
                 if (args.Length > 0 && args[0] == "--selfElevate")
                 {
                     Logger.Debug("Preparing to start the pipe server...");
 
                     IConfigurationService configurationService = new LocalConfigurationService();
-                    ISigningManager signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
-                    IAppAttachManager appAttachManager = new AppAttachManager(signingManager, configurationService);
-                    IAppxVolumeManager appxVolumeManager = new AppxVolumeManager();
-                    IRegistryManager registryManager = new RegistryManager();
-                    IAppxPackageManager appxPackageManager = new AppxPackageManager();
-                    IAppxPackageQuery appxPackageQuery = new AppxPackageQuery(registryManager, configurationService);
-                    IAppxPackageInstaller appxPackageInstaller = new AppxPackageInstaller();
-                    IAppxPackageRunner appxPackageRunner = new AppxPackageRunner();
-                    IAppxLogManager appxLogManager = new AppxLogManager();
-
-                    var receivers = new ISelfElevationProxyReceiver[]
-                    {
-                        new AppAttachManagerProxyReceiver(appAttachManager),
-                        new AppxPackageManagerProxyReceiver(appxPackageManager),
-                        new AppxPackageQueryProxyReceiver(appxPackageQuery),
-                        new AppxPackageInstallerProxyReceiver(appxPackageInstaller),
-                        new AppxPackageRunnerProxyReceiver(appxPackageRunner),
-                        new AppxLogManagerProxyReceiver(appxLogManager), 
-                        new AppxVolumeManagerProxyReceiver(appxVolumeManager),
-                        new RegistryManagerProxyReceiver(registryManager),
-                        new SigningManagerProxyReceiver(signingManager)
-                    };
-
-                    var server = new Server(receivers);
-                    server.Start().GetAwaiter().GetResult();
+                    var signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
+                    var appAttachManager = new AppAttachManager(signingManager, configurationService);
+                    var registryManager = new RegistryManager();
+                    var appxPackageQuery = new AppxPackageQuery(registryManager, configurationService);
+                    
+                    var server = new SimpleElevationServer();
+                    server.RegisterProxy<ISigningManager, SigningManager>(signingManager);
+                    server.RegisterProxy<IAppAttachManager, AppAttachManager>(appAttachManager);
+                    server.RegisterProxy<IRegistryManager, RegistryManager>(registryManager);
+                    server.RegisterProxy<IAppxVolumeManager, AppxVolumeManager>();
+                    server.RegisterProxy<IAppxPackageInstaller, AppxPackageInstaller>();
+                    server.RegisterProxy<IAppxLogManager, AppxLogManager>();
+                    server.RegisterProxy<IAppxPackageRunner, AppxPackageRunner>();
+                    server.RegisterProxy<IAppxPackageManager, AppxPackageManager>();
+                    server.RegisterProxy<IAppxPackageQuery, AppxPackageQuery>(appxPackageQuery);
+                    server.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
                     Console.ReadKey();
                 }
                 else

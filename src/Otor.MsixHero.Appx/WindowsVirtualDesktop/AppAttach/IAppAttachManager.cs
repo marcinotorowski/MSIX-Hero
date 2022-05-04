@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
@@ -30,7 +29,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         Vhdx
     }
     
-    public interface IAppAttachManager : ISelfElevationAware
+    public interface IAppAttachManager
     {
         [Obsolete]
         Task CreateVolume(

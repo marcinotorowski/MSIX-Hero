@@ -35,48 +35,37 @@ using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities;
-using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Processes;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Domain.State;
 using Prism.Commands;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 {
     public class PackageExpertViewModel : NotifyPropertyChanged
     {
-        private readonly IInterProcessCommunicationManager interProcessCommunicationManager;
-        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> appxPackageQueryProvider;
-        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider;
-        private readonly FileInvoker fileInvoker;
-        private readonly IAppxFileViewer fileViewer;
-        private readonly string packagePath;
-        private ICommand findUsers;
+        private readonly IUacElevation _uacElevation;
+        private readonly FileInvoker _fileInvoker;
+        private readonly IAppxFileViewer _fileViewer;
+        private readonly string _packagePath;
+        private ICommand _findUsers;
 
         public PackageExpertViewModel(
             string packagePath,
-            IInterProcessCommunicationManager interProcessCommunicationManager,
-            ISelfElevationProxyProvider<IAppxPackageQuery> appxPackageQueryProvider,
-            ISelfElevationProxyProvider<IAppxVolumeManager> appxVolumeManagerProvider,
-            ISelfElevationProxyProvider<ISigningManager> signManager,
             IInteractionService interactionService,
+            IUacElevation uacElevation,
             IAppxFileViewer fileViewer,
             FileInvoker fileInvoker)
         {
-            this.interProcessCommunicationManager = interProcessCommunicationManager;
-            this.appxPackageQueryProvider = appxPackageQueryProvider;
-            this.appxVolumeManagerProvider = appxVolumeManagerProvider;
-            this.fileViewer = fileViewer;
-            this.fileInvoker = fileInvoker;
-            this.packagePath = packagePath;
+            this._uacElevation = uacElevation;
+            this._fileViewer = fileViewer;
+            this._fileInvoker = fileInvoker;
+            this._packagePath = packagePath;
 
-            this.Trust = new TrustViewModel(packagePath, interactionService, signManager);
+            this.Trust = new TrustViewModel(packagePath, interactionService, this._uacElevation);
         }
         
         public ProgressProperty Progress { get; } = new ProgressProperty();
@@ -84,8 +73,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         public async Task Load()
         {
             using var cts = new CancellationTokenSource();
-            using var reader = FileReaderFactory.CreateFileReader(this.packagePath);
-            var canElevate = await UserHelper.IsAdministratorAsync(cts.Token) || await this.interProcessCommunicationManager.Test(cts.Token);
+            using var reader = FileReaderFactory.CreateFileReader(this._packagePath);
+            var canElevate = await UserHelper.IsAdministratorAsync(cts.Token);
             var progress = new Progress<ProgressData>();
 
             // Load manifest
@@ -115,15 +104,15 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                 taskUsers = this.GetUsers(manifest, false, cts.Token);
             }
 
-            await this.Manifest.Load(Task.FromResult(new PackageExpertPropertiesViewModel(manifest, this.packagePath))).ConfigureAwait(false);
+            await this.Manifest.Load(Task.FromResult(new PackageExpertPropertiesViewModel(manifest, this._packagePath))).ConfigureAwait(false);
             await this.PackageSupportFramework.Load(taskPsf).ConfigureAwait(false);
             await this.AddOns.Load(taskAddOns).ConfigureAwait(false);
             await this.Users.Load(taskUsers).ConfigureAwait(false);
 
-            this.Registry = new AppxRegistryViewModel(this.packagePath);
+            this.Registry = new AppxRegistryViewModel(this._packagePath);
             this.OnPropertyChanged(nameof(this.Registry));
             
-            this.Files = new AppxFilesViewModel(this.packagePath, this.fileViewer, this.fileInvoker);
+            this.Files = new AppxFilesViewModel(this._packagePath, this._fileViewer, this._fileInvoker);
             this.OnPropertyChanged(nameof(this.Files));
             
             // Wait for them all
@@ -134,8 +123,8 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
         public async Task<PackageDriveViewModel> LoadDisk()
         {
-            var disk = new PackageDriveViewModel(this.appxVolumeManagerProvider);
-            await disk.Load(this.packagePath);
+            var disk = new PackageDriveViewModel(this._uacElevation.AsCurrentUser<IAppxVolumeManager>());
+            await disk.Load(this._packagePath);
             return disk;
         }
 
@@ -159,11 +148,11 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         {
             get
             {
-                return this.findUsers ??= new DelegateCommand(
+                return this._findUsers ??= new DelegateCommand(
                     async () =>
                     {
 #pragma warning disable 4014
-                        using var reader = FileReaderFactory.CreateFileReader(this.packagePath);
+                        using var reader = FileReaderFactory.CreateFileReader(this._packagePath);
                         var manifest = await this.LoadManifest(reader).ConfigureAwait(false);
                         await this.Users.Load(this.GetUsers(manifest, true)).ConfigureAwait(false);
 #pragma warning restore 4014
@@ -186,16 +175,25 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
             try
             {
-                var manager = await this.appxPackageQueryProvider.GetProxyFor(forceElevation ? SelfElevationLevel.AsAdministrator : SelfElevationLevel.HighestAvailable, cancellationToken);
+                IAppxPackageQuery actualSource;
+                
+                if (forceElevation)
+                {
+                    actualSource = this._uacElevation.AsAdministrator<IAppxPackageQuery>();
+                }
+                else
+                {
+                    actualSource = this._uacElevation.AsHighestAvailable<IAppxPackageQuery>();
+                }
 
-                var stateDetails = await manager.GetUsersForPackage(package.FullName, cancellationToken, progress).ConfigureAwait(false);
+                var stateDetails = await actualSource.GetUsersForPackage(package.FullName, cancellationToken, progress).ConfigureAwait(false);
 
                 if (stateDetails == null)
                 {
                     return new FoundUsersViewModel(new List<User>(), ElevationStatus.ElevationRequired);
                 }
 
-                return new FoundUsersViewModel(stateDetails, ElevationStatus.OK);
+                return new FoundUsersViewModel(stateDetails, ElevationStatus.Ok);
             }
             catch (Exception)
             {
@@ -205,8 +203,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
         private async Task<List<InstalledPackageViewModel>> GetAddOns(AppxPackage package, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var manager = await this.appxPackageQueryProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken);
-            var results = await manager.GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken, progress).ConfigureAwait(false);
+            var results = await this._uacElevation.AsHighestAvailable<IAppxPackageQuery>().GetModificationPackages(package.FullName, PackageFindMode.Auto, cancellationToken, progress).ConfigureAwait(false);
 
             var list = new List<InstalledPackageViewModel>();
             foreach (var item in results)

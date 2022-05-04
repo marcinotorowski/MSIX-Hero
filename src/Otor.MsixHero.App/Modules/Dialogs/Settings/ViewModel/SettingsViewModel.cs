@@ -25,12 +25,11 @@ using Otor.MsixHero.App.Hero.Events;
 using Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel.Tools;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
-using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
 using Prism.Services.Dialogs;
@@ -39,19 +38,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 {
     public class SettingsViewModel : NotifyPropertyChanged, IDialogAware
     {
-        private readonly IEventAggregator eventAggregator;
-        private readonly IConfigurationService configurationService;
-        private string entryPoint;
+        private readonly IEventAggregator _eventAggregator;
+        private readonly IConfigurationService _configurationService;
+        private string _entryPoint;
 
         public SettingsViewModel(
             IEventAggregator eventAggregator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
+            IUacElevation uacElevation,
             ITimeStampFeed timeStampFeed)
         {
-            this.eventAggregator = eventAggregator;
-            this.configurationService = configurationService;
+            this._eventAggregator = eventAggregator;
+            this._configurationService = configurationService;
 
             var config = configurationService.GetCurrentConfiguration() ?? new Configuration();
 
@@ -81,7 +80,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             (
                 this.CertificateSelector = new CertificateSelectorViewModel(
                     interactionService, 
-                    signingManagerFactory, 
+                    uacElevation, 
                     config.Signing,
                     timeStampFeed,
                     true)
@@ -252,8 +251,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
 
         public string EntryPoint
         {
-            get => this.entryPoint;
-            private set => this.SetField(ref this.entryPoint, value);
+            get => this._entryPoint;
+            private set => this.SetField(ref this._entryPoint, value);
         }
 
         public string Title => "Settings";
@@ -329,7 +328,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 return false;
             }
 
-            var newConfiguration = await this.configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
+            var newConfiguration = await this._configurationService.GetCurrentConfigurationAsync(false).ConfigureAwait(false);
             
             UpdateConfiguration(newConfiguration.Signing, cfg => cfg.DefaultOutFolder, this.CertificateOutputPath);
             UpdateConfiguration(newConfiguration.Packer, cfg => cfg.SignByDefault, this.PackerSignByDefault);
@@ -487,11 +486,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
                 newConfiguration.Packages.Tools.AddRange(this.Tools.Items.Select(t => (ToolListConfiguration)t));
             }
 
-            await this.configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);
+            await this._configurationService.SetCurrentConfigurationAsync(newConfiguration).ConfigureAwait(false);
 
             if (toolsTouched)
             {
-                this.eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Tools.Items.Select(t => (ToolListConfiguration)t).ToArray());
+                this._eventAggregator.GetEvent<ToolsChangedEvent>().Publish(this.Tools.Items.Select(t => (ToolListConfiguration)t).ToArray());
             }
             
             return true;

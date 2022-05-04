@@ -20,19 +20,17 @@ using System.Linq;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Prism.Services.Dialogs;
 
 namespace Otor.MsixHero.App.Dialogs.ViewModels
 {
     public class PackageExpertDialogViewModel : NotifyPropertyChanged, IDialogAware
     {
-        private readonly ISelfElevationProxyProvider<IAppxPackageInstaller> packageQueryInstaller;
+        private readonly IAppxPackageInstaller _packageQueryInstaller;
 
-        public PackageExpertDialogViewModel(ISelfElevationProxyProvider<IAppxPackageInstaller> packageQueryInstaller)
+        public PackageExpertDialogViewModel(IAppxPackageInstaller packageQueryInstaller)
         {
-            this.packageQueryInstaller = packageQueryInstaller;
+            this._packageQueryInstaller = packageQueryInstaller;
         }
 
         public bool CanCloseDialog()
@@ -73,8 +71,7 @@ namespace Otor.MsixHero.App.Dialogs.ViewModels
         {
             try
             {
-                var manager = await this.packageQueryInstaller.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
-                this.IsInstalled.CurrentValue = await manager.IsInstalled(this.FilePath).ConfigureAwait(false);
+                this.IsInstalled.CurrentValue = await this._packageQueryInstaller.IsInstalled(this.FilePath).ConfigureAwait(false);
             }
             catch
             {

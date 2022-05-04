@@ -17,7 +17,6 @@
 using System.Collections.Generic;
 using Otor.MsixHero.App.Mvvm;
 using Otor.MsixHero.Appx.Users;
-using Otor.MsixHero.Lib.Domain.State;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
 {
@@ -26,7 +25,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
         public FoundUsersViewModel(List<User> listOfInstalls, ElevationStatus status)
         {
             this.InstalledBy = listOfInstalls;
-            this.IsElevated = status == ElevationStatus.OK;
+            this.IsElevated = status == ElevationStatus.Ok;
         }
 
         public bool IsElevated { get; }

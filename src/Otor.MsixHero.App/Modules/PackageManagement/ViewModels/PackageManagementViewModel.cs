@@ -20,11 +20,9 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Modules.PackageManagement.Commands;
 using Otor.MsixHero.App.Mvvm;
-using Otor.MsixHero.Appx.Diagnostic.Registry;
-using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Events;
 using Prism.Regions;
 
@@ -32,29 +30,25 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
 {
     public class PackageManagementViewModel : NotifyPropertyChanged
     {
-        private readonly IMsixHeroApplication application;
-        private readonly PrismServices prismServices;
+        private readonly IMsixHeroApplication _application;
+        private readonly PrismServices _prismServices;
 
         public PackageManagementViewModel(
             IMsixHeroApplication application,
             IInteractionService interactionService,
-            ISelfElevationProxyProvider<IAppxPackageRunner> packageRunnerProvider,
-            ISelfElevationProxyProvider<IAppxPackageInstaller> packageInstallerProvider,
-            ISelfElevationProxyProvider<IRegistryManager> registryManagerProvider,
+            IUacElevation uacElevation,
             PrismServices prismServices,
             IBusyManager busyManager, 
             IConfigurationService configurationService)
         {
-            this.application = application;
-            this.prismServices = prismServices;
+            this._application = application;
+            this._prismServices = prismServices;
             this.CommandHandler = new PackagesManagementCommandHandler(
                 application, 
                 interactionService, 
                 configurationService,
-                prismServices,
-                packageRunnerProvider, 
-                packageInstallerProvider, 
-                registryManagerProvider,
+                prismServices, 
+                uacElevation,
                 busyManager);
 
             application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackages, ThreadOption.UIThread);
@@ -64,19 +58,19 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.ViewModels
         {
             var parameters = new NavigationParameters
             {
-                { "packages", this.application.ApplicationState.Packages.SelectedPackages }
+                { "packages", this._application.ApplicationState.Packages.SelectedPackages }
             };
 
-            switch (this.application.ApplicationState.Packages.SelectedPackages.Count)
+            switch (this._application.ApplicationState.Packages.SelectedPackages.Count)
             {
                 case 0:
-                    this.prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.ZeroSelection, UriKind.Relative), parameters);
+                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.ZeroSelection, UriKind.Relative), parameters);
                     break;
                 case 1:
-                    this.prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.SingleSelection, UriKind.Relative), parameters);
+                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.SingleSelection, UriKind.Relative), parameters);
                     break;
                 default:
-                    this.prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), parameters);
+                    this._prismServices.RegionManager.Regions[PackageManagementRegionNames.Details].NavigationService.RequestNavigate(new Uri(NavigationPaths.PackageManagementPaths.MultipleSelection, UriKind.Relative), parameters);
                     break;
             }
         }

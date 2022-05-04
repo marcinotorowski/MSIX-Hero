@@ -22,9 +22,9 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 {

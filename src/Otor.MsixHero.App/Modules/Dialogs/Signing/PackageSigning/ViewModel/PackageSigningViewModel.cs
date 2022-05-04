@@ -31,9 +31,8 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Cli.Verbs;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -43,26 +42,26 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 {
     public class PackageSigningViewModel : ChangeableAutomatedDialogViewModel<SignVerb>, IDialogAware
     {
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
-        private readonly IInteractionService interactionService;
-        private readonly IConfigurationService configurationService;
-        private ICommand openSuccessLink, reset;
+        private readonly IUacElevation _uacElevation;
+        private readonly IInteractionService _interactionService;
+        private readonly IConfigurationService _configurationService;
+        private ICommand _openSuccessLink, _reset;
 
         public PackageSigningViewModel(
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, 
+            IUacElevation uacElevation, 
             IInteractionService interactionService, 
             IConfigurationService configurationService,
             ITimeStampFeed timeStampFeed) : base("Package signing", interactionService)
         {
-            this.signingManagerFactory = signingManagerFactory;
-            this.interactionService = interactionService;
-            this.configurationService = configurationService;
+            this._uacElevation = uacElevation;
+            this._interactionService = interactionService;
+            this._configurationService = configurationService;
 
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.IncreaseVersion = new ChangeableProperty<IncreaseVersionMethod>();
             this.CertificateSelector = new CertificateSelectorViewModel(
                 interactionService, 
-                signingManagerFactory, 
+                uacElevation, 
                 configurationService?.GetCurrentConfiguration()?.Signing,
                 timeStampFeed);
             this.OverrideSubject = new ChangeableProperty<bool>(true);
@@ -95,7 +94,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             this.Verb.IncreaseVersion = this.IncreaseVersion.CurrentValue;
             this.Verb.NoPublisherUpdate = !this.OverrideSubject.CurrentValue;
 
-            var signConfig = this.configurationService.GetCurrentConfiguration().Signing;
+            var signConfig = this._configurationService.GetCurrentConfiguration().Signing;
 
             if (this.CertificateSelector.Store.CurrentValue == CertificateSource.DeviceGuard)
             {
@@ -206,7 +205,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
             }
             else
             {
-                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out string[] selection);
+                var interactionResult = this._interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out string[] selection);
                 if (!interactionResult || !selection.Any())
                 {
                     return;
@@ -228,48 +227,47 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 
         protected override async Task<bool> Save(CancellationToken cancellationToken, IProgress<ProgressData> progress)
         {
-            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+            var manager = this._uacElevation.AsCurrentUser<ISigningManager>();
+
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var progressAll = new WrappedProgress(progress))
-            {
-                // ReSharper disable once AccessToDisposedClosure
-                var progressForFiles = this.Files.ToDictionary(p => p, _ => progressAll.GetChildProgress());
+            using var progressAll = new WrappedProgress(progress);
+            // ReSharper disable once AccessToDisposedClosure
+            var progressForFiles = this.Files.ToDictionary(p => p, _ => progressAll.GetChildProgress());
                 
-                foreach (var file in this.Files)
-                {
-                    var currentProgress = progressForFiles[file];
+            foreach (var file in this.Files)
+            {
+                var currentProgress = progressForFiles[file];
                     
-                    cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                    string timeStampUrl;
-                    switch (this.CertificateSelector.TimeStampSelectionMode.CurrentValue)
-                    {
-                        case TimeStampSelectionMode.None:
-                            timeStampUrl = null;
-                            break;
-                        case TimeStampSelectionMode.Auto:
-                            timeStampUrl = "auto";
-                            break;
-                        case TimeStampSelectionMode.Url:
-                            timeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                string timeStampUrl;
+                switch (this.CertificateSelector.TimeStampSelectionMode.CurrentValue)
+                {
+                    case TimeStampSelectionMode.None:
+                        timeStampUrl = null;
+                        break;
+                    case TimeStampSelectionMode.Auto:
+                        timeStampUrl = "auto";
+                        break;
+                    case TimeStampSelectionMode.Url:
+                        timeStampUrl = this.CertificateSelector.TimeStamp.CurrentValue;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
-                    switch (this.CertificateSelector.Store.CurrentValue)
-                    {
-                        case CertificateSource.Pfx:
-                            await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
-                            break;
-                        case CertificateSource.Personal:
-                            await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
-                            break;
-                        case CertificateSource.DeviceGuard:
-                            await manager.SignPackageWithDeviceGuardFromUi(file, this.CertificateSelector.DeviceGuard.CurrentValue, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
-                            break;
-                    }
+                switch (this.CertificateSelector.Store.CurrentValue)
+                {
+                    case CertificateSource.Pfx:
+                        await manager.SignPackageWithPfx(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.PfxPath.CurrentValue, this.CertificateSelector.Password.CurrentValue, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                        break;
+                    case CertificateSource.Personal:
+                        await manager.SignPackageWithInstalled(file, this.OverrideSubject.CurrentValue, this.CertificateSelector.SelectedPersonalCertificate.CurrentValue.Model, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                        break;
+                    case CertificateSource.DeviceGuard:
+                        await manager.SignPackageWithDeviceGuardFromUi(file, this.CertificateSelector.DeviceGuard.CurrentValue, timeStampUrl, this.IncreaseVersion.CurrentValue, cancellationToken, currentProgress).ConfigureAwait(false);
+                        break;
                 }
             }
 
@@ -280,7 +278,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 
         public ICommand OpenSuccessLinkCommand
         {
-            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted, this.CanOpenSuccessLinkExecute); }
+            get { return this._openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted, this.CanOpenSuccessLinkExecute); }
         }
 
         public bool IsOnePackage
@@ -290,12 +288,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
 
         public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public async Task<int> ImportFolder()
         {
-            if (!this.interactionService.SelectFolder(out var folder))
+            if (!this._interactionService.SelectFolder(out var folder))
             {
                 return 0;
             }
@@ -313,7 +311,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.PackageSigning.ViewModel
                     "Selected folder " + Path.GetFileName(folder) + " and all its subfolders"
                 };
 
-                var userChoice = this.interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                var userChoice = this._interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
                 if (userChoice < 0 || userChoice >= buttons.Count)
                 {
                     return 0;

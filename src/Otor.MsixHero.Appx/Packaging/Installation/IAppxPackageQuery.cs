@@ -21,12 +21,11 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Users;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
-    public interface IAppxPackageQuery : ISelfElevationAware
+    public interface IAppxPackageQuery
     {
         Task<List<InstalledPackage>> GetInstalledPackages(PackageFindMode mode = PackageFindMode.Auto, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

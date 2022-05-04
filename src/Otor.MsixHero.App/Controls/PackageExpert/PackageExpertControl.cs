@@ -23,15 +23,11 @@ using System.Windows.Controls;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
 using Otor.MsixHero.App.Controls.PackageExpert.Views;
 using Otor.MsixHero.App.Hero.Events;
-using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
-using Otor.MsixHero.Appx.Signing;
-using Otor.MsixHero.Appx.Volumes;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Processes;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Common;
 using Prism.Events;
@@ -61,38 +57,29 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             DefaultStyleKeyProperty.OverrideMetadata(typeof(PackageExpertControl), new FrameworkPropertyMetadata(typeof(PackageExpertControl)));
         }
 
-        private readonly IInterProcessCommunicationManager ipcManager;
-        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> packageQueryProvider;
-        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider;
-        private readonly IInteractionService interactionService;
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerProvider;
-        private readonly IConfigurationService configurationService;
-        private readonly IAppxFileViewer fileViewer;
-        private readonly FileInvoker fileInvoker;
-        private readonly ObservableObject<object> context;
-        private ActionBar actionBar;
+        private readonly IInteractionService _interactionService;
+        private readonly IUacElevation _uacElevation;
+        private readonly IConfigurationService _configurationService;
+        private readonly IAppxFileViewer _fileViewer;
+        private readonly FileInvoker _fileInvoker;
+        private readonly ObservableObject<object> _context;
+        private ActionBar _actionBar;
 
         public PackageExpertControl(IEventAggregator eventAggregator,
-            IInterProcessCommunicationManager ipcManager,
-            ISelfElevationProxyProvider<IAppxPackageQuery> packageQueryProvider,
-            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
-            ISelfElevationProxyProvider<ISigningManager> signingManagerProvider,
             IInteractionService interactionService,
+            IUacElevation uacElevation,
             IConfigurationService configurationService,
             IAppxFileViewer fileViewer,
             FileInvoker fileInvoker
         )
         {
-            this.context = RegionContext.GetObservableContext(this);
-            this.context.PropertyChanged += this.OnPropertyChanged;
-            this.ipcManager = ipcManager;
-            this.packageQueryProvider = packageQueryProvider;
-            this.volumeManagerProvider = volumeManagerProvider;
-            this.interactionService = interactionService;
-            this.signingManagerProvider = signingManagerProvider;
-            this.configurationService = configurationService;
-            this.fileViewer = fileViewer;
-            this.fileInvoker = fileInvoker;
+            this._context = RegionContext.GetObservableContext(this);
+            this._context.PropertyChanged += this.OnPropertyChanged;
+            this._interactionService = interactionService;
+            this._uacElevation = uacElevation;
+            this._configurationService = configurationService;
+            this._fileViewer = fileViewer;
+            this._fileInvoker = fileInvoker;
 
             eventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(this.CreateTools, ThreadOption.UIThread);
         }
@@ -100,20 +87,20 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            this.actionBar = (ActionBar)this.GetTemplateChild("PART_ActionBar");
+            this._actionBar = (ActionBar)this.GetTemplateChild("PART_ActionBar");
             this.CreateTools(null);
         }
 
         private async void CreateTools(IReadOnlyCollection<ToolListConfiguration> tools)
         {
-            if (this.actionBar == null)
+            if (this._actionBar == null)
             {
                 return;
             }
             
             if (tools == null)
             {
-                var cfg = await this.configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
+                var cfg = await this._configurationService.GetCurrentConfigurationAsync().ConfigureAwait(true);
                 tools = cfg.Packages?.Tools;
             }
 
@@ -129,12 +116,12 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
                 this.Tools.Add(new ToolItem(item));
             }
 
-            this.actionBar.Tools = this.Tools;
+            this._actionBar.Tools = this.Tools;
         }
         
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.FilePath = (string) this.context.Value;
+            this.FilePath = (string) this._context.Value;
         }
 
         public PackageExpertViewModel Package
@@ -178,13 +165,10 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 
             var newDataContext = new PackageExpertViewModel(
                 newFilePath,
-                sender.ipcManager,
-                sender.packageQueryProvider,
-                sender.volumeManagerProvider,
-                sender.signingManagerProvider,
-                sender.interactionService,
-                sender.fileViewer,
-                sender.fileInvoker);
+                sender._interactionService,
+                sender._uacElevation,
+                sender._fileViewer,
+                sender._fileInvoker);
 
             try
             {

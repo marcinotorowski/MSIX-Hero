@@ -21,11 +21,11 @@ using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.Search.ViewModels

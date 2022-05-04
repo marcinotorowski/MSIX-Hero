@@ -28,11 +28,10 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -43,23 +42,23 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(CertificateSelectorViewModel));
 
-        private readonly IInteractionService interactionService;
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
-        private readonly ITimeStampFeed timeStampFeed;
-        private ICommand signOutDeviceGuard, signInDeviceGuard;
-        private bool allowNoSelection;
+        private readonly IInteractionService _interactionService;
+        private readonly IUacElevation _uacElevation;
+        private readonly ITimeStampFeed _timeStampFeed;
+        private ICommand _signOutDeviceGuard, _signInDeviceGuard;
+        private bool _allowNoSelection;
 
         public CertificateSelectorViewModel(
             IInteractionService interactionService,
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
+            IUacElevation uacElevation,
             SigningConfiguration configuration,
             ITimeStampFeed timeStampFeed,
             bool allowNoSelection = false)
         {
-            this.allowNoSelection = allowNoSelection;
-            this.interactionService = interactionService;
-            this.signingManagerFactory = signingManagerFactory;
-            this.timeStampFeed = timeStampFeed;
+            this._allowNoSelection = allowNoSelection;
+            this._interactionService = interactionService;
+            this._uacElevation = uacElevation;
+            this._timeStampFeed = timeStampFeed;
             var signConfig = configuration ?? new SigningConfiguration();
 
 
@@ -171,10 +170,10 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 
         public bool AllowNoSelection
         {
-            get => this.allowNoSelection;
+            get => this._allowNoSelection;
             set
             {
-                if (!this.SetField(ref this.allowNoSelection, value))
+                if (!this.SetField(ref this._allowNoSelection, value))
                 {
                     return;
                 }
@@ -190,7 +189,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
         {
             get
             {
-                return this.signInDeviceGuard ??= new DelegateCommand(this.ExecuteSignInDeviceGuard);
+                return this._signInDeviceGuard ??= new DelegateCommand(this.ExecuteSignInDeviceGuard);
             }
         }
 
@@ -198,7 +197,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
         {
             get
             {
-                return this.signOutDeviceGuard ??= new DelegateCommand(this.ExecuteSignOutDeviceGuard);
+                return this._signOutDeviceGuard ??= new DelegateCommand(this.ExecuteSignOutDeviceGuard);
             }
         }
 
@@ -248,13 +247,13 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError(e.Message, e, InteractionResult.OK);
+                this._interactionService.ShowError(e.Message, e, InteractionResult.OK);
             }
         }
 
         private async Task<ObservableCollection<CertificateViewModel>> LoadPersonalCertificates(string thumbprint = null, bool onlyValid = true, CancellationToken cancellationToken = default)
         {
-            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, CancellationToken.None).ConfigureAwait(false);
+            var manager = this._uacElevation.AsCurrentUser<ISigningManager>();
             cancellationToken.ThrowIfCancellationRequested();
 
             var needsCommit = this.SelectedPersonalCertificate.CurrentValue == null;
@@ -331,7 +330,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             try
             {
                 var newList = new List<string>();
-                var entries = await this.timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
+                var entries = await this._timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
                 foreach (var item in entries?.Servers ?? Enumerable.Empty<TimeStampServerEntry>())
                 {
                     newList.Add(item.Url);
@@ -352,7 +351,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
             }
             catch (Exception e)
             {
-                this.interactionService.ShowError("Could not fetch the list of time stamp servers.", e);
+                this._interactionService.ShowError("Could not fetch the list of time stamp servers.", e);
                 return null;
             }
         }

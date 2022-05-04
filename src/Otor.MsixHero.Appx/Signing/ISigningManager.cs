@@ -22,12 +22,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Signing
 {
-    public interface ISigningManager : ISelfElevationAware
+    public interface ISigningManager
     {
         Task InstallCertificate(string certificateFilePath, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
         

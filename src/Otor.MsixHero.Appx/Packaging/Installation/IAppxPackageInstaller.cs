@@ -19,12 +19,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
-    public interface IAppxPackageInstaller : ISelfElevationAware
+    public interface IAppxPackageInstaller
     {
         Task Deprovision(string packageFamilyName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

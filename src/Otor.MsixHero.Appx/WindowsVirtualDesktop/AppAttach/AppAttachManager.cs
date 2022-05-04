@@ -27,8 +27,6 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.MountVol;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -42,14 +40,8 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
         private static readonly ILog Logger = LogManager.GetLogger(typeof(AppAttachManager));
         
         private readonly ISigningManager signingManager;
-        private readonly ISelfElevationProxyProvider<ISigningManager> managerFactory;
         private readonly IConfigurationService configurationService;
-
-        public AppAttachManager(ISelfElevationProxyProvider<ISigningManager> managerFactory, IConfigurationService configurationService) : this(configurationService)
-        {
-            this.managerFactory = managerFactory;
-        }
-
+        
         public AppAttachManager(ISigningManager signingManager, IConfigurationService configurationService) : this(configurationService)
         {
             this.signingManager = signingManager;
@@ -127,7 +119,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                     if (extractCertificate)
                     {
                         packageProgressReporter.Report(new ProgressData(100, $"Extracting certificate from {Path.GetFileName(packagePath)}..."));
-                        var actualSigningManager = this.signingManager ?? await this.managerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                        var actualSigningManager = this.signingManager;
 
                         cancellationToken.ThrowIfCancellationRequested();
 
@@ -225,7 +217,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 if (extractCertificate)
                 {
                     progressReporter?.Report(new ProgressData(80, "Extracting certificate..."));
-                    var actualSigningManager = this.signingManager ?? await this.managerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                    var actualSigningManager = this.signingManager;
 
                     cancellationToken.ThrowIfCancellationRequested();
 

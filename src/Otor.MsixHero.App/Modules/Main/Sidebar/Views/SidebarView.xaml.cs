@@ -15,7 +15,7 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System.Windows;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
+using Otor.MsixHero.App.Mvvm.Progress;
 
 namespace Otor.MsixHero.App.Modules.Main.Sidebar.Views
 {

@@ -20,10 +20,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.State;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 
 namespace Otor.MsixHero.App.Hero.Executor
 {

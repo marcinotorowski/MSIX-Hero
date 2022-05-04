@@ -30,10 +30,10 @@ using Otor.MsixHero.App.Hero.Events.Base;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism;
 using Prism.Events;
 

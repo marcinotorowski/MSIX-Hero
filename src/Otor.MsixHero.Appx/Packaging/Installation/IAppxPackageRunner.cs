@@ -18,12 +18,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
 {
-    public interface IAppxPackageRunner : ISelfElevationAware
+    public interface IAppxPackageRunner
     {
         Task RunToolInContext(InstalledPackage package, string toolPath, string arguments = null, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
 

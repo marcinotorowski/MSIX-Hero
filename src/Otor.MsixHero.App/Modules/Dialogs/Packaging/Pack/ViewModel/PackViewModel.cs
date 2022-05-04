@@ -32,10 +32,9 @@ using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.ManifestCreator;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -45,20 +44,20 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
 {
     public class PackViewModel : ChangeableDialogViewModel
     {
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
-        private readonly IAppxManifestCreator manifestCreator;
-        private ICommand openSuccessLink;
-        private ICommand resetCommand;
+        private readonly IUacElevation _uacElevation;
+        private readonly IAppxManifestCreator _manifestCreator;
+        private ICommand _openSuccessLink;
+        private ICommand _resetCommand;
 
         public PackViewModel(
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
+            IUacElevation uacElevation,
             IAppxManifestCreator manifestCreator,
             IConfigurationService configurationService,
             IInteractionService interactionService,
             ITimeStampFeed timeStampFeed) : base("Pack MSIX package", interactionService)
         {
-            this.signingManagerFactory = signingManagerFactory;
-            this.manifestCreator = manifestCreator;
+            this._uacElevation = uacElevation;
+            this._manifestCreator = manifestCreator;
             var signConfig = configurationService.GetCurrentConfiguration().Signing ?? new SigningConfiguration();
             var signByDefault = configurationService.GetCurrentConfiguration().Packer?.SignByDefault == true;
 
@@ -76,7 +75,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
             this.RemoveDirectory = new ChangeableProperty<bool>();
             this.OverrideSubject = new ChangeableProperty<bool>(true);
 
-            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, signingManagerFactory, signConfig, timeStampFeed)
+            this.SelectedCertificate = new CertificateSelectorViewModel(interactionService, uacElevation, signConfig, timeStampFeed)
             {
                 IsValidated = false
             };
@@ -102,12 +101,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
 
         public ICommand OpenSuccessLink
         {
-            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
+            get { return this._openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
         public ICommand ResetCommand
         {
-            get { return this.resetCommand ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._resetCommand ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public CertificateSelectorViewModel SelectedCertificate { get; }
@@ -147,7 +146,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                         };
 
                         // ReSharper disable once AssignNullToNotNullAttribute
-                        await foreach(var result in this.manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
+                        await foreach(var result in this._manifestCreator.CreateManifestForDirectory(new DirectoryInfo(this.InputPath.CurrentValue), options, cancellationToken).ConfigureAwait(false))
                         {
                             temporaryFiles.Add(result.SourcePath);
 
@@ -194,7 +193,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 
                 if (this.Sign.CurrentValue)
                 {
-                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+                    var manager = this._uacElevation.AsHighestAvailable<ISigningManager>();
 
                     string timeStampUrl;
                     switch (this.SelectedCertificate.TimeStampSelectionMode.CurrentValue)
@@ -276,7 +275,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 AppxManifestCreatorAdviser adviser;
                 try
                 {
-                    adviser = await this.manifestCreator.AnalyzeDirectory(new DirectoryInfo(this.InputPath.CurrentValue)).ConfigureAwait(false);
+                    adviser = await this._manifestCreator.AnalyzeDirectory(new DirectoryInfo(this.InputPath.CurrentValue)).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {

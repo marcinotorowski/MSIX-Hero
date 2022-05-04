@@ -17,13 +17,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Otor.MsixHero.Appx.Diagnostic.Registry;
+using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Dependencies;
 using Otor.MsixHero.Dependencies.Domain;
-using Otor.MsixHero.Infrastructure.Processes;
-using Otor.MsixHero.Infrastructure.Processes.Ipc;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Proxy;
 
 namespace Otor.MsixHero.Cli.Executors.Standard
 {
@@ -36,7 +35,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         public override async Task<int> Execute()
         {
             await this.Console.WriteInfo("Reading dependencies...").ConfigureAwait(false);
-            var dependencyMapper = new DependencyMapper(new SelfElevationManagerFactory(new Client(new InterProcessCommunicationManager()), new LocalConfigurationService()));
+            var dependencyMapper = DependencyMapper.Create(new AppxPackageQuery(new RegistryManager(), new LocalConfigurationService()));
 
             var graph = await dependencyMapper.GetGraph(this.Verb.Path).ConfigureAwait(false);
             

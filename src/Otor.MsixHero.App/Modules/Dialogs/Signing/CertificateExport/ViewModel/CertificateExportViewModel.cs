@@ -25,8 +25,7 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Verbs;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -40,11 +39,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
 
     public class CertificateExportViewModel : ChangeableAutomatedDialogViewModel
     {
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
+        private readonly IUacElevation _uacElevation;
 
-        public CertificateExportViewModel(ISelfElevationProxyProvider<ISigningManager> signingManagerFactory, IInteractionService interactionService) : base("Extract certificate", interactionService)
+        public CertificateExportViewModel(IUacElevation uacElevation, IInteractionService interactionService) : base("Extract certificate", interactionService)
         {
-            this.signingManagerFactory = signingManagerFactory;
+            this._uacElevation = uacElevation;
 
             this.InputPath = new ChangeableFileProperty("Path to signed MSIX file", interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
@@ -156,16 +155,13 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
             {
                 case CertOperationType.Import:
                 {
-                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
-                    await manager.Trust(this.InputPath.CurrentValue, cancellationToken).ConfigureAwait(false);
+                    await this._uacElevation.AsAdministrator<ISigningManager>().Trust(this.InputPath.CurrentValue, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case CertOperationType.Extract:
                 {
-                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
-                    await manager.ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.ExtractCertificate.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
+                    await this._uacElevation.AsCurrentUser<ISigningManager>().ExtractCertificateFromMsix(this.InputPath.CurrentValue, this.ExtractCertificate.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
                     break;
                 }
 
@@ -179,12 +175,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Signing.CertificateExport.ViewModel
         private async Task<CertificateViewModel> GetCertificateDetails(string msixFilePath, CancellationToken cancellationToken)
         {
             this.DisplayValidationErrors = true;
-
-            var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
+            
             cancellationToken.ThrowIfCancellationRequested();
-
-            var result = await manager.GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
-
+            var result = await this._uacElevation.AsHighestAvailable<ISigningManager>().GetCertificateFromMsix(msixFilePath, cancellationToken).ConfigureAwait(false);
+            
             if (result == null)
             {
                 return null;

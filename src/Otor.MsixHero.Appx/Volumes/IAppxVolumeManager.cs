@@ -20,12 +20,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Volumes.Entities;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Volumes
 {
-    public interface IAppxVolumeManager : ISelfElevationAware
+    public interface IAppxVolumeManager
     {
         Task<List<AppxVolume>> GetAll(CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default);
         

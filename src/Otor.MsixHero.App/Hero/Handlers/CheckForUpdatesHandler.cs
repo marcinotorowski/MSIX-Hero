@@ -4,24 +4,21 @@ using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class CheckForUpdatesHandler : IRequestHandler<CheckForUpdatesCommand, AppInstallerUpdateAvailabilityResult>
     {
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly IAppxPackageManager _packageManagerProvider;
 
-        public CheckForUpdatesHandler(ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider)
+        public CheckForUpdatesHandler(IAppxPackageManager packageManagerProvider)
         {
-            this.packageManagerProvider = packageManagerProvider;
+            this._packageManagerProvider = packageManagerProvider;
         }
 
-        public async Task<AppInstallerUpdateAvailabilityResult> Handle(CheckForUpdatesCommand request, CancellationToken cancellationToken)
+        public Task<AppInstallerUpdateAvailabilityResult> Handle(CheckForUpdatesCommand request, CancellationToken cancellationToken)
         {
-            var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
-            return await manager.CheckForUpdates(request.PackageFullName, cancellationToken).ConfigureAwait(false);
+            return this._packageManagerProvider.CheckForUpdates(request.PackageFullName, cancellationToken);
         }
     }
 }

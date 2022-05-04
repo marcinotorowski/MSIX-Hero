@@ -3,24 +3,22 @@ using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.Appx.Packaging.Installation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Elevation;
 
 namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class StopPackageHandler : AsyncRequestHandler<StopPackageCommand>
     {
-        private readonly ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider;
+        private readonly IUacElevation uacElevation;
 
-        public StopPackageHandler(ISelfElevationProxyProvider<IAppxPackageManager> packageManagerProvider)
+        public StopPackageHandler(IUacElevation uacElevation)
         {
-            this.packageManagerProvider = packageManagerProvider;
+            this.uacElevation = uacElevation;
         }
 
-        protected override async Task Handle(StopPackageCommand request, CancellationToken cancellationToken)
+        protected override Task Handle(StopPackageCommand request, CancellationToken cancellationToken)
         {
-            var manager = await this.packageManagerProvider.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
-            await manager.Stop(request.Package.PackageId, cancellationToken).ConfigureAwait(false);
+            return this.uacElevation.AsHighestAvailable<IAppxPackageManager>().Stop(request.Package.PackageId, cancellationToken);
         }
     }
 }

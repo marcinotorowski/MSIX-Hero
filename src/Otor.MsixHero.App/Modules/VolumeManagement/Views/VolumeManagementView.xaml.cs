@@ -17,10 +17,9 @@
 using System.Windows;
 using Otor.MsixHero.App.Events;
 using Otor.MsixHero.App.Hero;
-using Otor.MsixHero.Appx.Volumes;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
+using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Services;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Modularity;
 using Prism.Regions;
 using Prism.Services.Dialogs;
@@ -29,27 +28,25 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.Views
 {
     public partial class VolumeManagementView : INavigationAware
     {
-        private readonly IMsixHeroApplication application;
+        private readonly IMsixHeroApplication _application;
 
         // ReSharper disable once NotAccessedField.Local
-        private VolumeManagementHandler commandHandler;
+        private VolumeManagementHandler _commandHandler;
 
         public VolumeManagementView(
             IMsixHeroApplication application,
             IInteractionService interactionService, 
-            IConfigurationService configurationService, 
-            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerProvider,
+            IUacElevation volumeManagerProvider,
             IBusyManager busyManager,
             IDialogService dialogService, 
             IModuleManager moduleManager)
         {
-            this.application = application;
+            this._application = application;
             this.InitializeComponent();
-            this.commandHandler = new VolumeManagementHandler(
+            this._commandHandler = new VolumeManagementHandler(
                 this, 
                 application, 
                 interactionService, 
-                configurationService,
                 volumeManagerProvider, 
                 busyManager, 
                 dialogService,
@@ -58,7 +55,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.Views
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            this.application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
+            this._application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -72,7 +69,7 @@ namespace Otor.MsixHero.App.Modules.VolumeManagement.Views
 
         private void RegionOnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
+            this._application.EventAggregator.GetEvent<TopSearchWidthChangeEvent>().Publish(new TopSearchWidthChangeEventPayLoad(this.Region.ActualWidth));
         }
     }
 }

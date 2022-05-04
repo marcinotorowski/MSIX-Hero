@@ -25,19 +25,28 @@ using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Dependencies.Domain;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Dependencies
 {
     public class DependencyMapper : IDependencyMapper
     {
-        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> packageQuery;
+        private readonly IAppxPackageQuery _packageQuery;
 
-        public DependencyMapper(ISelfElevationProxyProvider<IAppxPackageQuery> packageQuery)
+        public DependencyMapper(IUacElevation uacElevation)
         {
-            this.packageQuery = packageQuery;
+            this._packageQuery = uacElevation.AsHighestAvailable<IAppxPackageQuery>();
+        }
+
+        private DependencyMapper(IAppxPackageQuery packageQuery)
+        {
+            this._packageQuery = packageQuery;
+        }
+
+        public static DependencyMapper Create(IAppxPackageQuery packageQuery)
+        {
+            return new DependencyMapper(packageQuery);
         }
 
         public async Task<DependencyGraph> GetGraph(string initialPackage, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
@@ -183,8 +192,7 @@ namespace Otor.MsixHero.Dependencies
             var progressForGettingAddOns = new RangeProgress(progress, 70, 90);
             var progressForCalculation = new RangeProgress(progress, 90, 100);
             
-            var manager = await this.packageQuery.GetProxyFor(SelfElevationLevel.HighestAvailable, cancellationToken).ConfigureAwait(false);
-            var allPackages = await manager.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
+            var allPackages = await _packageQuery.GetInstalledPackages(PackageFindMode.Auto, cancellationToken, progressForGettingPackages).ConfigureAwait(false);
             var consideredPackages = new List<AppxPackage> { startPackage };
             var addOnPackages = new List<AppxPackage>();
 

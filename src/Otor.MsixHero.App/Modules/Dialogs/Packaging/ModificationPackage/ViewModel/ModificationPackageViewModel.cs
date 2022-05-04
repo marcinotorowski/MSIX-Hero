@@ -33,10 +33,9 @@ using Otor.MsixHero.Appx.Packaging.ModificationPackages;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Logging;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -48,26 +47,26 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
     public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(ModificationPackageViewModel));
-        private readonly IModificationPackageBuilder contentBuilder;
-        private readonly ISelfElevationProxyProvider<ISigningManager> signingManagerFactory;
-        private readonly IConfigurationService configurationService;
-        private readonly IInteractionService interactionService;
-        private readonly ITimeStampFeed timeStampFeed;
-        private ICommand openSuccessLink;
-        private ICommand reset;
+        private readonly IModificationPackageBuilder _contentBuilder;
+        private readonly IUacElevation _uacElevation;
+        private readonly IConfigurationService _configurationService;
+        private readonly IInteractionService _interactionService;
+        private readonly ITimeStampFeed _timeStampFeed;
+        private ICommand _openSuccessLink;
+        private ICommand _reset;
         
         public ModificationPackageViewModel(
             IModificationPackageBuilder contentBuilder,
-            ISelfElevationProxyProvider<ISigningManager> signingManagerFactory,
+            IUacElevation uacElevation,
             IConfigurationService configurationService,
             IInteractionService interactionService,
             ITimeStampFeed timeStampFeed) : base("Create modification package", interactionService)
         {
-            this.contentBuilder = contentBuilder;
-            this.signingManagerFactory = signingManagerFactory;
-            this.configurationService = configurationService;
-            this.interactionService = interactionService;
-            this.timeStampFeed = timeStampFeed;
+            this._contentBuilder = contentBuilder;
+            this._uacElevation = uacElevation;
+            this._configurationService = configurationService;
+            this._interactionService = interactionService;
+            this._timeStampFeed = timeStampFeed;
 
             this.InitializeTabProperties();
             this.InitializeTabParentPackage();
@@ -119,12 +118,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
         public ICommand OpenSuccessLinkCommand
         {
-            get { return this.openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
+            get { return this._openSuccessLink ??= new DelegateCommand(this.OpenSuccessLinkExecuted); }
         }
 
         public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public string Result { get; private set; }
@@ -158,7 +157,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             switch (this.Create.CurrentValue)
             {
                 case ModificationPackageBuilderAction.Manifest:
-                    if (!this.interactionService.SelectFolder(out selectedPath))
+                    if (!this._interactionService.SelectFolder(out selectedPath))
                     {
                         return false;
                     }
@@ -168,7 +167,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
                 case ModificationPackageBuilderAction.Msix:
                 case ModificationPackageBuilderAction.SignedMsix:
-                    if (!this.interactionService.SaveFile(FileDialogSettings.FromFilterString("MSIX Modification Packages|*" + FileConstants.MsixExtension), out selectedPath))
+                    if (!this._interactionService.SaveFile(FileDialogSettings.FromFilterString("MSIX Modification Packages|*" + FileConstants.MsixExtension), out selectedPath))
                     {
                         return false;
                     }
@@ -193,7 +192,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                 ParentPackagePath = this.SourcePath.CurrentValue
             };
 
-            await this.contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
+            await this._contentBuilder.Create(modificationPkgCreationRequest, selectedPath, this.Create.CurrentValue, cancellationToken, progress).ConfigureAwait(false);
 
             switch (this.Create.CurrentValue)
             {
@@ -205,7 +204,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
                     break;
                 case ModificationPackageBuilderAction.SignedMsix:
 
-                    var manager = await this.signingManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker, cancellationToken).ConfigureAwait(false);
+                    var manager = this._uacElevation.AsCurrentUser<ISigningManager>();
                     cancellationToken.ThrowIfCancellationRequested();
 
                     string timeStampUrl;
@@ -327,7 +326,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 
         private void InitializeTabParentPackage()
         {
-            this.SourcePath = new ChangeableFileProperty("Parent package path", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.SourcePath = new ChangeableFileProperty("Parent package path", this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 // ReSharper disable once StringLiteralTypo
                 Filter = new DialogFilterBuilder("*" + FileConstants.MsixExtension, "*" + FileConstants.AppxExtension, FileConstants.AppxManifestFile).BuildFilter(),
@@ -368,14 +367,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             catch (Exception exception)
             {
                 Logger.Error(exception);
-                this.interactionService.ShowError("Could not read the properties from the package.", exception);
+                this._interactionService.ShowError("Could not read the properties from the package.", exception);
             }
         }
 
         private void InitializeTabContent()
         {
             this.Create = new ChangeableProperty<ModificationPackageBuilderAction>();
-            if (configurationService.GetCurrentConfiguration().Packer.SignByDefault)
+            if (_configurationService.GetCurrentConfiguration().Packer.SignByDefault)
             {
                 this.Create.CurrentValue = ModificationPackageBuilderAction.SignedMsix;
             }
@@ -384,12 +383,12 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             this.IncludeRegistry = new ChangeableProperty<bool>();
             this.IncludeVfsFolders = new ChangeableProperty<bool>();
 
-            this.SourceFolder = new ChangeableFolderProperty("Folder to include", this.interactionService, ChangeableFolderProperty.ValidatePathAndPresence)
+            this.SourceFolder = new ChangeableFolderProperty("Folder to include", this._interactionService, ChangeableFolderProperty.ValidatePathAndPresence)
             {
                 IsValidated = false
             };
 
-            this.SourceRegistryFile = new ChangeableFileProperty(".REG file to include", this.interactionService, ChangeableFileProperty.ValidatePathAndPresence)
+            this.SourceRegistryFile = new ChangeableFileProperty(".REG file to include", this._interactionService, ChangeableFileProperty.ValidatePathAndPresence)
             {
                 IsValidated = false,
                 Filter = new DialogFilterBuilder("*.reg").BuildFilter(),
@@ -412,10 +411,10 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
         private void InitializeTabCertificate()
         {
             this.TabCertificate = new CertificateSelectorViewModel(
-                this.interactionService, 
-                this.signingManagerFactory, 
-                this.configurationService.GetCurrentConfiguration()?.Signing,
-                this.timeStampFeed);
+                this._interactionService, 
+                this._uacElevation, 
+                this._configurationService.GetCurrentConfiguration()?.Signing,
+                this._timeStampFeed);
         }
     }
 }

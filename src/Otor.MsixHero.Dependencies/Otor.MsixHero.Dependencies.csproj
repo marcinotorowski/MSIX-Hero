@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
+    <ProjectReference Include="..\Otor.MsixHero.Elevation\Otor.MsixHero.Elevation.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
   </ItemGroup>
 

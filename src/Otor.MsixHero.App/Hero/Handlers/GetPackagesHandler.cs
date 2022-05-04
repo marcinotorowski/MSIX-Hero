@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Executor;
+using Otor.MsixHero.App.Mvvm.Progress;
 using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
-using Otor.MsixHero.Lib.Infrastructure.Progress;
 using Prism.Events;
 
 namespace Otor.MsixHero.App.Hero.Handlers
@@ -22,23 +21,23 @@ namespace Otor.MsixHero.App.Hero.Handlers
     {
         private readonly IMsixHeroCommandExecutor commandExecutor;
         private readonly IBusyManager busyManager;
+        private readonly IUacElevation uacElevation;
         private readonly IEventAggregator eventAggregator;
         private readonly IRunningAppsDetector detector;
-        private readonly ISelfElevationProxyProvider<IAppxPackageQuery> packageQueryProvider;
 
         public GetPackagesHandler(
             IMsixHeroCommandExecutor commandExecutor,
             IBusyManager busyManager,
+            IUacElevation uacElevation,
             IEventAggregator eventAggregator,
-            IRunningAppsDetector detector,
-            ISelfElevationProxyProvider<IAppxPackageQuery> packageQueryProvider)
+            IRunningAppsDetector detector)
         {
             detector.Subscribe(this);
             this.commandExecutor = commandExecutor;
             this.busyManager = busyManager;
+            this.uacElevation = uacElevation;
             this.eventAggregator = eventAggregator;
             this.detector = detector;
-            this.packageQueryProvider = packageQueryProvider;
         }
 
         public async Task<IList<InstalledPackage>> Handle(GetPackagesCommand request, CancellationToken cancellationToken)
@@ -46,14 +45,7 @@ namespace Otor.MsixHero.App.Hero.Handlers
             var context = this.busyManager.Begin(OperationType.PackageLoading);
             try
             {
-                var level = SelfElevationLevel.HighestAvailable;
-
-                if (request.FindMode == PackageFindMode.AllUsers)
-                {
-                    level = SelfElevationLevel.AsAdministrator;
-                }
-
-                var manager = await this.packageQueryProvider.GetProxyFor(level, cancellationToken).ConfigureAwait(false);
+                var manager = request.FindMode == PackageFindMode.AllUsers ? this.uacElevation.AsAdministrator<IAppxPackageQuery>() : this.uacElevation.AsHighestAvailable<IAppxPackageQuery>();
 
                 PackageFindMode mode;
                 if (request.FindMode.HasValue)
@@ -81,8 +73,9 @@ namespace Otor.MsixHero.App.Hero.Handlers
                 }
 
                 var selected = this.commandExecutor.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToArray();
+                
                 var results = await manager.GetInstalledPackages(mode, cancellationToken, context).ConfigureAwait(false);
-
+                
                 // this.packageListSynchronizer.EnterWriteLock();
                 this.commandExecutor.ApplicationState.Packages.AllPackages.Clear();
                 this.commandExecutor.ApplicationState.Packages.AllPackages.AddRange(results);

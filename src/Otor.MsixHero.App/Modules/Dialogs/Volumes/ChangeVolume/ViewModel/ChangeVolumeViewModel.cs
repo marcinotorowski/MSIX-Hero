@@ -28,8 +28,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Appx.Volumes.Entities;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Modularity;
@@ -39,25 +38,24 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 {
     public class ChangeVolumeViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private readonly IMsixHeroApplication application;
-        private readonly IInteractionService interactionService;
-        private readonly IModuleManager moduleManager;
-        private readonly IDialogService dialogService;
-        private readonly ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerFactory;
-        private string packageInstallLocation;
+        private readonly IMsixHeroApplication _application;
+        private readonly IInteractionService _interactionService;
+        private readonly IModuleManager _moduleManager;
+        private readonly IDialogService _dialogService;
+        private readonly IUacElevation _uacElevation;
+        private string _packageInstallLocation;
 
-        public ChangeVolumeViewModel(
-            IMsixHeroApplication application,
+        public ChangeVolumeViewModel(IMsixHeroApplication application,
             IInteractionService interactionService, 
             IModuleManager moduleManager,
             IDialogService dialogService,
-            ISelfElevationProxyProvider<IAppxVolumeManager> volumeManagerFactory) : base("Change volume", interactionService)
+            IUacElevation uacElevation) : base("Change volume", interactionService)
         {
-            this.application = application;
-            this.interactionService = interactionService;
-            this.moduleManager = moduleManager;
-            this.dialogService = dialogService;
-            this.volumeManagerFactory = volumeManagerFactory;
+            this._application = application;
+            this._interactionService = interactionService;
+            this._moduleManager = moduleManager;
+            this._dialogService = dialogService;
+            this._uacElevation = uacElevation;
 
             // This can be longer...
             var taskForFreeLetters = this.GetAllVolumes();
@@ -116,7 +114,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                         "Go back"
                     };
 
-                    var option = this.interactionService.ShowMessage("The selected package is already available on the required volume. Currently, there is only a single volume available, did you mean to create a new one first?", buttons);
+                    var option = this._interactionService.ShowMessage("The selected package is already available on the required volume. Currently, there is only a single volume available, did you mean to create a new one first?", buttons);
 
                     if (option == 0)
                     {
@@ -136,7 +134,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                         "Cancel"
                     };
 
-                    var option = this.interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
+                    var option = this._interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
 
                     if (option == 1)
                     {
@@ -159,7 +157,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                         "Cancel"
                     };
 
-                    var option = this.interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
+                    var option = this._interactionService.ShowMessage("The selected package is already available on the required volume. Did you mean another volume?", buttons);
 
                     if (option == 1)
                     {
@@ -171,15 +169,15 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
             }
 
             progress.Report(new ProgressData(20, "Moving to the selected volume..."));
-            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var id = Path.GetFileName(this.packageInstallLocation);
-            await mgr.MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
+            var id = Path.GetFileName(this._packageInstallLocation);
+
+            await this._uacElevation.AsAdministrator<IAppxVolumeManager>().MovePackageToVolume(this.TargetVolume.CurrentValue, id, cancellationToken, progress).ConfigureAwait(false);
 
             progress.Report(new ProgressData(100, "Reading packages..."));
 
-            await this.application.CommandExecutor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
+            await this._application.CommandExecutor.Invoke<GetVolumesCommand, IList<AppxVolume>>(this, new GetVolumesCommand(), cancellationToken).ConfigureAwait(false);
 
             return true;
         }
@@ -187,7 +185,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
         public void OnDialogOpened(IDialogParameters parameters)
         {
             var param = parameters.Count > 0 ? parameters.GetValue<string>(parameters.Keys.First()) : null;
-            this.packageInstallLocation = param;
+            this._packageInstallLocation = param;
 
 #pragma warning disable 4014
             this.CurrentVolume.Load(this.GetCurrentVolume(param));
@@ -196,14 +194,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
 
         private async Task<List<VolumeCandidateViewModel>> GetAllVolumes()
         {
-            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+            var mgr = this._uacElevation.AsCurrentUser<IAppxVolumeManager>();
             var disks = await mgr.GetAll().ConfigureAwait(false);
             return disks.Where(d => !d.IsOffline).Select(r => new VolumeCandidateViewModel(r)).Concat(new[] { new VolumeCandidateViewModel(new AppxVolume()) }).ToList();
         }
 
         private async Task<VolumeCandidateViewModel> GetCurrentVolume(string packagePath)
         {
-            var mgr = await this.volumeManagerFactory.GetProxyFor(SelfElevationLevel.AsInvoker).ConfigureAwait(false);
+            var mgr = this._uacElevation.AsCurrentUser<IAppxVolumeManager>();
             var disk = await mgr.GetVolumeForPath(packagePath).ConfigureAwait(false);
             if (disk == null)
             {
@@ -217,8 +215,8 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
         {
             var current = this.AllVolumes.CurrentValue.Select(c => c.PackageStorePath).ToList();
 
-            this.moduleManager.LoadModule(ModuleNames.Dialogs.Volumes);
-            this.dialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesNewVolume, new DialogParameters(), async result =>
+            this._moduleManager.LoadModule(ModuleNames.Dialogs.Volumes);
+            this._dialogService.ShowDialog(NavigationPaths.DialogPaths.VolumesNewVolume, new DialogParameters(), async result =>
             {
                 if (result.Result == ButtonResult.Cancel)
                 {

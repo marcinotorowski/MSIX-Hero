@@ -63,7 +63,6 @@
     <ProjectReference Include="..\Otor.MsixHero.Appx\Otor.MsixHero.Appx.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Dependencies\Otor.MsixHero.Dependencies.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Infrastructure\Otor.MsixHero.Infrastructure.csproj" />
-    <ProjectReference Include="..\Otor.MsixHero.Lib\Otor.MsixHero.Lib.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Registry\Otor.MsixHero.Registry.csproj" />
     <ProjectReference Include="..\Otor.MsixHero.Winget\Otor.MsixHero.Winget.csproj" />
   </ItemGroup>

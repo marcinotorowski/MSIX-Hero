@@ -19,7 +19,7 @@ using System;
 namespace Otor.MsixHero.Infrastructure.Progress
 {
     [Serializable]
-    public struct ProgressData
+    public class ProgressData
     {
         public ProgressData(int progress, string message)
         {
@@ -32,5 +32,10 @@ namespace Otor.MsixHero.Infrastructure.Progress
 
         // ReSharper disable once MemberCanBePrivate.Global
         public string Message { get; }
+
+        public override string ToString()
+        {
+            return $"({this.Progress:000}%) - {this.Message}";
+        }
     }
 }

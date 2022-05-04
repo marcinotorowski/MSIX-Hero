@@ -27,8 +27,7 @@ using Otor.MsixHero.App.Mvvm.Changeable.Dialog.ViewModel;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach;
 using Otor.MsixHero.Cli.Verbs;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation;
-using Otor.MsixHero.Infrastructure.Processes.SelfElevation.Enums;
+using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -38,14 +37,14 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 {
     public class AppAttachViewModel : ChangeableAutomatedDialogViewModel<AppAttachVerb>, IDialogAware
     {
-        private readonly IInteractionService interactionService;
-        private readonly ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory;
-        private ICommand reset;
+        private readonly IInteractionService _interactionService;
+        private readonly IUacElevation _uacElevation;
+        private ICommand _reset;
         
-        public AppAttachViewModel(ISelfElevationProxyProvider<IAppAttachManager> appAttachManagerFactory, IInteractionService interactionService) : base("Prepare volume for app attach", interactionService)
+        public AppAttachViewModel(IUacElevation uacElevation, IInteractionService interactionService) : base("Prepare volume for app attach", interactionService)
         {
-            this.appAttachManagerFactory = appAttachManagerFactory;
-            this.interactionService = interactionService;
+            this._uacElevation = uacElevation;
+            this._interactionService = interactionService;
             
             this.Files = new ValidatedChangeableCollection<string>(this.ValidateFiles);
             this.Files.CollectionChanged += (_, _) =>
@@ -71,7 +70,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             string[] selection;
             if (string.IsNullOrEmpty(packagePath))
             {
-                var interactionResult = this.interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out selection);
+                var interactionResult = this._interactionService.SelectFiles(FileDialogSettings.FromFilterString(new DialogFilterBuilder("*" + FileConstants.MsixExtension).BuildFilter()), out selection);
                 if (!interactionResult || !selection.Any())
                 {
                     return;
@@ -113,7 +112,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
         public ICommand ResetCommand
         {
-            get { return this.reset ??= new DelegateCommand(this.ResetExecuted); }
+            get { return this._reset ??= new DelegateCommand(this.ResetExecuted); }
         }
 
         public bool IsOnePackage => this.Files.Count == 1;
@@ -122,7 +121,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
         public async Task<int> ImportFolder()
         {
-            if (!this.interactionService.SelectFolder(out var folder))
+            if (!this._interactionService.SelectFolder(out var folder))
             {
                 return 0;
             }
@@ -140,7 +139,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                     "Selected folder " + Path.GetFileName(folder) + " and all its subfolders"
                 };
 
-                var userChoice = this.interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
+                var userChoice = this._interactionService.ShowMessage("The selected folder contains *" + FileConstants.MsixExtension + " file(s) and subfolders. Do you want to import all *.msix files, also including subfolders?", buttons, systemButtons: InteractionResult.Cancel);
                 if (userChoice < 0 || userChoice >= buttons.Count)
                 {
                     return 0;
@@ -153,7 +152,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
 
             if (!files.Any())
             {
-                this.interactionService.ShowError("The selected folder contains no MSIX packages.");
+                this._interactionService.ShowError("The selected folder contains no MSIX packages.");
                 return 0;
             }
 
@@ -250,7 +249,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                         ? new FileDialogSettings(filter, Path.Combine(this.OutputDirectory, Path.GetFileName(this.Files[0]) + "." + this.VolumeType.CurrentValue.ToString("G").ToLowerInvariant()))
                         : new FileDialogSettings(filter);
                 
-                if (!this.interactionService.SaveFile(settings, out var output))
+                if (!this._interactionService.SaveFile(settings, out var output))
                 {
                     return false;
                 }
@@ -260,7 +259,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             }
             else
             {
-                if (!this.interactionService.SelectFolder(out var output))
+                if (!this._interactionService.SelectFolder(out var output))
                 {
                     return false;
                 }
@@ -269,10 +268,11 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
             }
 
             var sizeInMegabytes = this.SizeMode.CurrentValue == AppAttachSizeMode.Auto ? 0 : uint.Parse(this.FixedSize.CurrentValue);
-
-            var appAttach = await this.appAttachManagerFactory.GetProxyFor(SelfElevationLevel.AsAdministrator, cancellationToken).ConfigureAwait(false);
+            
             cancellationToken.ThrowIfCancellationRequested();
 
+            var appAttach = this._uacElevation.AsAdministrator<IAppAttachManager>();
+            
             if (this.Files.Count == 1)
             {
                 await appAttach.CreateVolume(
@@ -296,7 +296,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppAttach.Editor.ViewModel
                     this.ExtractCertificate.CurrentValue,
                     this.GenerateScripts.CurrentValue,
                     cancellationToken,
-                    progress).ConfigureAwait(false);
+                    progress).ConfigureAwait(false); 
             }
             
             return true;
