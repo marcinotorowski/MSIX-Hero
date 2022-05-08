@@ -82,7 +82,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             this.OpenStore = new DelegateCommand(this.OnOpenStore, this.CanOpenStore);
             this.CheckUpdates = new DelegateCommand(this.OnCheckUpdates, this.CanCheckUpdates);
             this.RunTool = new DelegateCommand<object>(this.OnRunTool, this.CanRunTool);
-            this.RemovePackage = new DelegateCommand(this.OnRemovePackage, this.CanRemovePackage);
+            this.RemovePackage = new DelegateCommand<object>(o => this.OnRemovePackage(o is true), _ => this.CanRemovePackage());
             this.Copy = new DelegateCommand<object>(this.OnCopy, this.CanCopy);
             this.ViewDependencies = new DelegateCommand(this.OnViewDependencies, this.CanViewDependencies);
             this.ChangeVolume = new DelegateCommand(this.OnChangeVolume, this.CanChangeVolume);
@@ -764,7 +764,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 
         private bool CanViewDependencies() => this.IsSingleSelected();
 
-        private async void OnRemovePackage()
+        private async void OnRemovePackage(bool forAllUsers)
         {
             if (!this.IsAnySelected())
             {
@@ -776,7 +776,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             {
                 var options = new List<string>
                 {
-                    "Remove for current user",
+                    forAllUsers ? "Remove for all users" : "Remove for current user",
                     "Do not remove"
                 };
 
@@ -811,11 +811,28 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 var p1 = wrappedProgress.GetChildProgress(70);
                 var p2 = wrappedProgress.GetChildProgress(30);
 
+                if (forAllUsers)
+                {
+                    var p0 = wrappedProgress.GetChildProgress(50);
+
+                    var processed = 0;
+                    var toProcess = this._application.ApplicationState.Packages.SelectedPackages.Count;
+
+                    var adminManager = this._uacElevation.AsAdministrator<IAppxPackageInstaller>();
+
+                    foreach (var item in this._application.ApplicationState.Packages.SelectedPackages)
+                    {
+                        p0.Report(new ProgressData((int)(100.0 * processed / toProcess), $"De-provisioning {item.Name}..."));
+                        await adminManager.Deprovision(item.PackageFamilyName, CancellationToken.None).ConfigureAwait(false);
+                        processed++;
+                    }
+                }
+
                 var manager = this._uacElevation.AsCurrentUser<IAppxPackageInstaller>();
                 var removedPackageNames = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.DisplayName).ToArray();
                 var removedPackages = this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.PackageId).ToArray();
                 await manager.Remove(removedPackages, progress: p1).ConfigureAwait(false);
-
+                
                 await this._application.CommandExecutor.Invoke(this, new SelectPackagesCommand()).ConfigureAwait(false);
 
                 switch (removedPackages.Length)
