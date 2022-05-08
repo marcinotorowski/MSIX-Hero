@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using Notifications.Wpf.Core;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
 
@@ -67,7 +66,7 @@ namespace Otor.MsixHero.App.Controls
                     };
                     Process.Start(psi);
                 },
-                new InteractionService(new NotificationManager()));
+                new InteractionService());
         }
     }
 }

@@ -48,6 +48,6 @@ namespace Otor.MsixHero.Infrastructure.Services
 
         int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = 0);
 
-        Task ShowToast(string title, string message, InteractionType type = InteractionType.Information, Action clickCallback = null);
+        Task ShowToast(string title, string message);
     }
 }

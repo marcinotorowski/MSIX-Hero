@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using Notifications.Wpf.Core;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Ookii.Dialogs.Wpf;
 using Otor.MsixHero.Infrastructure.Services;
 using Application = System.Windows.Application;
@@ -35,12 +35,10 @@ namespace Otor.MsixHero.App.Services
 {
     public class InteractionService : IInteractionService
     {
-        private readonly INotificationManager notificationManager;
         private readonly SynchronizationContext context;
 
-        public InteractionService(INotificationManager notificationManager)
+        public InteractionService()
         {
-            this.notificationManager = notificationManager;
             this.context = SynchronizationContext.Current;
         }
 
@@ -54,45 +52,14 @@ namespace Otor.MsixHero.App.Services
             return (InteractionResult)(int)result;
         }
 
-        public Task ShowToast(string title, string message, InteractionType type = InteractionType.Information, Action clickCallback = null)
+        public Task ShowToast(string title, string message)
         {
-            NotificationType toastType;
+            new ToastContentBuilder()
+                .AddText(title)
+                .AddText(message)
+                .Show();
 
-            switch (type)
-            {
-                case InteractionType.None:
-                    toastType = NotificationType.Success;
-                    break;
-                case InteractionType.Error:
-                    toastType = NotificationType.Error;
-                    break;
-                case InteractionType.Warning:
-                    toastType = NotificationType.Warning;
-                    break;
-                default:
-                    toastType = NotificationType.Information;
-                    break;
-            }
-
-            if (clickCallback == null)
-            {
-                return this.notificationManager.ShowAsync(new NotificationContent()
-                {
-                    Message = message,
-                    Type = toastType,
-                    Title = title
-                }, 
-                "WindowArea");
-            }
-
-            return this.notificationManager.ShowAsync(new NotificationContent()
-                {
-                    Message = message,
-                    Type = toastType,
-                    Title = title
-                },
-                "WindowArea", 
-                onClick: clickCallback);
+            return Task.CompletedTask;
         }
 
         public int ShowMessage(string body, IReadOnlyCollection<string> buttons, string title = null, string extendedInfo = null, InteractionResult systemButtons = InteractionResult.None)

@@ -13,7 +13,6 @@
     DragLeave="OnDragLeave"
     xmlns:regions="http://prismlibrary.com/"
     xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
-    xmlns:controls="clr-namespace:Notifications.Wpf.Core.Controls;assembly=Notifications.Wpf.Core"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
     mc:Ignorable="d"
     Style="{StaticResource Acrylic}"
@@ -293,11 +292,7 @@
             Margin="0"
             Foreground="Black"
             Padding="0" regions:RegionManager.RegionName="{x:Static modules:RegionNames.Root}" />
-        <controls:NotificationArea
-            MaxItems="3"
-            Margin="8 63  8 8"
-            x:Name="WindowArea"
-            Position="TopRight" />
+        
         <Border IsHitTestVisible="False" Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=(helpers:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" Background="#aaffffff">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Path Data="{StaticResource SmallOpen}" Style="{StaticResource SmallIcon}" HorizontalAlignment="Center" Margin="0 0 0 10" />

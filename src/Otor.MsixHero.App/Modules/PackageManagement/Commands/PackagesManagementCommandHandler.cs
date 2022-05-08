@@ -474,13 +474,13 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                     appxIdentity = await new AppxIdentityReader().GetIdentity(packagePath).ConfigureAwait(false);
 
 #pragma warning disable 4014
-                    this._interactionService.ShowToast("App installed", $"{appxIdentity.Name} has been just installed.", InteractionType.None);
+                    this._interactionService.ShowToast("App installed", $"{appxIdentity.Name} has been just installed.");
 #pragma warning restore 4014
                 }
                 else
                 {
 #pragma warning disable 4014
-                    this._interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.", InteractionType.None);
+                    this._interactionService.ShowToast("App installed", $"A new app has been just installed from {Path.GetFileName(packagePath)}.");
 #pragma warning restore 4014
                 }
 
@@ -839,12 +839,12 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
                 {
                     case 1:
 #pragma warning disable 4014
-                        this._interactionService.ShowToast("App removed", $"{removedPackageNames.FirstOrDefault()} has been just removed.", InteractionType.None);
+                        this._interactionService.ShowToast("App removed", $"{removedPackageNames.FirstOrDefault()} has been just removed.");
 #pragma warning restore 4014
                         break;
                     default:
 #pragma warning disable 4014
-                        this._interactionService.ShowToast("Apps removed", $"{removedPackages.Length} apps has been just removed.", InteractionType.None);
+                        this._interactionService.ShowToast("Apps removed", $"{removedPackages.Length} apps has been just removed.");
 #pragma warning restore 4014
                         break;
                 }

@@ -668,11 +668,11 @@ MSIX Hero uses the following third-party software and libraries.
 * GongSolutions.WPF.DragDrop (by Jan Karger, Steven Kirk)
 * GraphX (by Alexander Smirnov)
 * Microsoft.Identity.Client (by Microsoft and contributors)
+* Microsoft.Toolkit.Uwp.Notifications (by Microsoft and contributors)
 * MSIX Package Support Framework (by Microsoft and contributors)
 * msixmgr (by Microsoft)
 * Newtonsoft.Json (by James Newton-King)
 * NLog (by Jaroslaw Kowalski, Kim Christensen, Julian Verdurmen)
-* Notifications.Wpf.Core (by Adrian Gaś)
 * OffregLib (by Michael Bisbjerg) [fork]
 * Ookii Dialogs WPF (by Sven Groot)
 * Prism (by .NET Foundation)
@@ -1349,6 +1349,22 @@ SOFTWARE.
 
 ------------------------------------------------------
 
+License agreement for Microsoft.Toolkit.Uwp.Notifications
+
+Windows Community Toolkit
+Copyright © .NET Foundation and Contributors
+
+All rights reserved.
+
+MIT License (MIT)
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------------------------------------------------------
+
 License agreement for MSIX Package Support Framework
 
 MIT License
@@ -1432,33 +1448,6 @@ INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
 THE POSSIBILITY OF SUCH DAMAGE.
-
-
-------------------------------------------------------
-
-License agreement for Notifications.Wpf.Core
-
-MIT License
-
-Copyright (c) 2017 xfedererx
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the ""Software""), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 ------------------------------------------------------
 

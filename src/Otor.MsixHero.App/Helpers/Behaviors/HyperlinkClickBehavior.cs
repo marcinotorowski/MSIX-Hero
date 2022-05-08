@@ -2,9 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
-using ABI.System;
 using Microsoft.Xaml.Behaviors;
-using Notifications.Wpf.Core;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Uri = System.Uri;
@@ -55,7 +53,7 @@ namespace Otor.MsixHero.App.Helpers.Behaviors
                     };
                     Process.Start(psi);
             },
-            new InteractionService(new NotificationManager()));
+            new InteractionService());
         }
     }
 }

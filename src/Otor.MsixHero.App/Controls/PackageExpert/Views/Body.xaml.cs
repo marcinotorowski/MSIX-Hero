@@ -18,7 +18,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Documents;
-using Notifications.Wpf.Core;
 using Otor.MsixHero.App.Services;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -46,7 +45,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.Views
 
                 Process.Start(psi);
             }, 
-            new InteractionService(new NotificationManager()));
+            new InteractionService());
         }
 
         private void Hyperlink_OnClick(object sender, RoutedEventArgs e)
@@ -56,7 +55,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.Views
                 var dir = (string)((Hyperlink) sender).Tag;
                 Process.Start("explorer.exe", "/select," + Path.Combine(dir, FileConstants.AppxManifestFile));
             }, 
-            new InteractionService(new NotificationManager()));
+            new InteractionService());
         }
     }
 }

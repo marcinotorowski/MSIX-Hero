@@ -21,8 +21,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using MediatR;
-using Notifications.Wpf.Core;
-using Notifications.Wpf.Core.Controls;
 using Otor.MsixHero.App.Controls;
 using Otor.MsixHero.App.Controls.PackageExpert;
 using Otor.MsixHero.App.Dialogs.ViewModels;
@@ -137,7 +135,6 @@ namespace Otor.MsixHero.App
             containerRegistry.RegisterSingleton<IAppxPacker, AppxPacker>();
             containerRegistry.RegisterSingleton<IModificationPackageBuilder, ModificationPackageBuilder>();
             containerRegistry.RegisterSingleton<IBusyManager, BusyManager>();
-            containerRegistry.RegisterSingleton<INotificationManager>(() => new NotificationManager(NotificationPosition.TopRight));
             containerRegistry.RegisterSingleton<IConfigurationService, LocalConfigurationService>();
             containerRegistry.RegisterSingleton<IUpdateChecker, HttpUpdateChecker>();
             containerRegistry.RegisterSingleton<IAppxFileViewer, AppxFileViewer>();
