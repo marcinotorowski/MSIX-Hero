@@ -19,14 +19,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 {
     public class ImportLocalRegistryKeyExecutor : ExtractedAppxExecutor<ImportLocalRegistryKey>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(ImportLocalRegistryKeyExecutor));
-
+        private static readonly LogSource Logger = new();
         public ImportLocalRegistryKeyExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -42,11 +41,11 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
             
             if (await regWriter.Flush().ConfigureAwait(false))
             {
-                Logger.Info("Registry key has been successfully imported.");
+                Logger.Info().WriteLine("Registry key has been successfully imported.");
             }
             else
             {
-                Logger.Warn("No new entries have been imported.");
+                Logger.Warn().WriteLine("No new entries have been imported.");
             }
         }
     }

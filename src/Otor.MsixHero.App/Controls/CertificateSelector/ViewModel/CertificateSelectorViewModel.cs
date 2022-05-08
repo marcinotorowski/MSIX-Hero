@@ -31,7 +31,7 @@ using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -40,8 +40,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
 {
     public class CertificateSelectorViewModel : ChangeableContainer
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(CertificateSelectorViewModel));
-
+        private static readonly LogSource Logger = new();
         private readonly IInteractionService _interactionService;
         private readonly IUacElevation _uacElevation;
         private readonly ITimeStampFeed _timeStampFeed;
@@ -113,7 +112,7 @@ namespace Otor.MsixHero.App.Controls.CertificateSelector.ViewModel
                     }
                     catch (Exception)
                     {
-                        Logger.Warn("The encrypted password from settings could not be decrypted.");
+                        Logger.Warn().WriteLine("The encrypted password from settings could not be decrypted.");
                     }
                 }
             }

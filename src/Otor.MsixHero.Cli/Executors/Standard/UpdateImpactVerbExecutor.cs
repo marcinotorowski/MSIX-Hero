@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Updates;
 using Otor.MsixHero.Appx.Updates.Entities;
 using Otor.MsixHero.Cli.Verbs;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Cli.Executors.Standard
 {
     public class UpdateImpactVerbExecutor : VerbExecutor<UpdateImpactVerb>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(UpdateImpactVerbExecutor));
-        
+        private static readonly LogSource Logger = new();        
         public UpdateImpactVerbExecutor(UpdateImpactVerb verb, IConsole console) : base(verb, console)
         {
         }
@@ -37,7 +36,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (UpdateImpactException e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 switch (e.ErrorType)
                 {
                     case UpgradeImpactError.Unknown:
@@ -61,13 +60,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                         return StandardExitCodes.ErrorFormat;
                 }
 
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }
@@ -116,25 +115,25 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 }
                 catch (ArgumentException e)
                 {
-                    Logger.Error(e);
+                    Logger.Error().WriteLine(e);
                     await this.Console.WriteError("The path to XML file is invalid.");
                     return StandardExitCodes.ErrorParameter;
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    Logger.Error(e);
+                    Logger.Error().WriteLine(e);
                     await this.Console.WriteError($"Could not write to {fileInfo.FullName}. Access denied (error code: 0x{e.HResult:X2}).");
                     return e.HResult;
                 }
                 catch (IOException e)
                 {
-                    Logger.Error(e);
+                    Logger.Error().WriteLine(e);
                     await this.Console.WriteError($"{e.Message} (error code: 0x{e.HResult:X2})");
                     return e.HResult;
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.Error().WriteLine(e);
                     await this.Console.WriteError($"Could not write the results to {fileInfo.FullName} (error code: 0x{e.HResult:X2})");
                     return e.HResult;
                 }

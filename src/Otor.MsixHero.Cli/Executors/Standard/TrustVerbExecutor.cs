@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Helpers;
 using Otor.MsixHero.Cli.Verbs;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Cli.Executors.Standard
@@ -27,8 +27,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
     public class TrustVerbExecutor : VerbExecutor<TrustVerb>
     {
         private readonly ISigningManager signingManager;
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(TrustVerbExecutor));
-
+        private static readonly LogSource Logger = new();
         public TrustVerbExecutor(TrustVerb verb, ISigningManager signingManager, IConsole console) : base(verb, console)
         {
             this.signingManager = signingManager;
@@ -36,7 +35,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 
         public override async Task<int> Execute()
         {
-            Logger.Info($"Importing certificate from [{this.Verb.File}]...");
+            Logger.Info().WriteLine($"Importing certificate from [{this.Verb.File}]...");
 
             try
             {
@@ -47,13 +46,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (SdkException e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message);
                 return e.ExitCode;
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message);
                 return StandardExitCodes.ErrorGeneric;
             }

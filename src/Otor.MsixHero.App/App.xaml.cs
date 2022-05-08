@@ -102,7 +102,6 @@ namespace Otor.MsixHero.App
             {
                 var service = new LocalConfigurationService();
                 var config = service.GetCurrentConfiguration();
-
                 logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
             });
 

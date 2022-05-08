@@ -46,17 +46,17 @@ public class ElevatedProcessClientHandler : ClientHandler
 
     public override ValueTask<bool> IsUacHelperRunning()
     {
-        Log.Debug().WriteLine("UAC Client | Checking if UAC helper process is running...");
+        Log.Debug().WriteLine("UAC Client -> Checking if UAC helper process is running...");
         var currentPid = Process.GetCurrentProcess().Id;
         var target = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(this._executablePath)).FirstOrDefault(p => p.Id != currentPid);
 
         if (target != null)
         {
-            Log.Debug().WriteLine("UAC Client | UAC helper is running with PID = {0}...", target.Id);
+            Log.Debug().WriteLine("UAC Client -> UAC helper is running with PID = {0}...", target.Id);
         }
         else
         {
-            Log.Debug().WriteLine("UAC Client | No matching process was found.");
+            Log.Debug().WriteLine("UAC Client -> No matching process was found.");
         }
 
         return ValueTask.FromResult(target != null);
@@ -64,8 +64,8 @@ public class ElevatedProcessClientHandler : ClientHandler
 
     public override async ValueTask<bool> StartServerAsync(bool keepElevation)
     {
-        Log.Info().WriteLine("UAC Client | Starting server...");
-        Log.Debug().WriteLine("UAC Client | Starting elevation helper '{0}' {1}", this._executablePath, keepElevation ? this._argumentsKeepActive : this._argumentsSingleRun);
+        Log.Info().WriteLine("UAC Client -> Starting server...");
+        Log.Debug().WriteLine("UAC Client -> Starting elevation helper '{0}' {1}", this._executablePath, keepElevation ? this._argumentsKeepActive : this._argumentsSingleRun);
         var psi = new ProcessStartInfo(this._executablePath, keepElevation ? this._argumentsKeepActive : this._argumentsSingleRun)
         {
             Verb = "runas",
@@ -93,7 +93,7 @@ public class ElevatedProcessClientHandler : ClientHandler
         _processes.Add(newProcess);
         newProcess.Exited += (_, _) =>
         {
-            Log.Info().WriteLine("UAC Client | Server process has finished.");
+            Log.Info().WriteLine("UAC Client -> Server process has finished.");
             _processes.Remove(newProcess);
         };
 
@@ -133,7 +133,7 @@ public class ElevatedProcessClientHandler : ClientHandler
             {
                 if (!process.HasExited)
                 {
-                    Log.Debug().WriteLine("UAC Client | Killing dangling process PID = {0}", process.Id);
+                    Log.Debug().WriteLine("UAC Client -> Killing dangling process PID = {0}", process.Id);
                     process.Kill();
                 }
 
@@ -160,7 +160,7 @@ public class ElevatedProcessClientHandler : ClientHandler
             {
                 if (!process.HasExited)
                 {
-                    Log.Debug().WriteLine("UAC Client | Killing dangling process PID = {0}", process.Id);
+                    Log.Debug().WriteLine("UAC Client -> Killing dangling process PID = {0}", process.Id);
                     process.Kill();
                 }
 

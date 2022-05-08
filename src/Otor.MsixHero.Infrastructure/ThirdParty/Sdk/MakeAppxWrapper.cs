@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
@@ -28,8 +28,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public class MakeAppxWrapper : ExeWrapper
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(MakeAppxWrapper));
-        
+        private static readonly LogSource Logger = new();        
         public Task UnpackPackage(string sourceMsixPath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             return this.UnpackPackage(sourceMsixPath, unpackedDirectory, false, cancellationToken);
@@ -84,7 +83,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         private async Task RunMakeAppx(string arguments, CancellationToken cancellationToken, Action<string> callBack = null)
         {
             var makeAppx = SdkPathHelper.GetSdkPath("makeappx.exe", BundleHelper.SdkPath);
-            Logger.Info("Executing {0} {1}", makeAppx, arguments);
+            Logger.Info().WriteLine("Executing {0} {1}", makeAppx, arguments);
 
             try
             {

@@ -27,7 +27,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Common;
 using Prism.Events;
@@ -37,8 +37,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
 {
     public class PackageExpertControl : Control
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(PackageExpertControl));
-
+        private static readonly LogSource Logger = new();
         public static readonly DependencyProperty FilePathProperty = DependencyProperty.Register("FilePath", typeof(string), typeof(PackageExpertControl), new PropertyMetadata(null, OnFilePathChanged));
         
         private static readonly DependencyPropertyKey PackagePropertyKey = DependencyProperty.RegisterReadOnly("Package", typeof(PackageExpertViewModel), typeof(PackageExpertControl), new PropertyMetadata(null));
@@ -180,7 +179,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             {
                 sender.Package = null;
                 sender.ErrorMessage = "Could not load details. " + exception.Message;
-                Logger.Warn($"Could not load details of package '{newFilePath}'.");
+                Logger.Warn().WriteLine($"Could not load details of package '{newFilePath}'.");
             }
         }
     }

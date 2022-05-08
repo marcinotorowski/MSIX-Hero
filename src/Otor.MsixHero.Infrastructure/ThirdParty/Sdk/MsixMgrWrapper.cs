@@ -20,8 +20,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
@@ -30,9 +30,9 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
     [SuppressMessage("ReSharper", "IdentifierTypo")]
     public class MsixMgrWrapper : ExeWrapper
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixMgrWrapper));
+        private static readonly LogSource Logger = new();
 
-        private readonly bool forceRunFromSource;
+        private readonly bool _forceRunFromSource;
 
         /// <summary>
         /// Initializes a new instance of <see cref="MsixMgrWrapper"/> class.
@@ -43,7 +43,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
         /// which if running from MSIX is read-only.</param>
         public MsixMgrWrapper(bool forceRunFromSource = false)
         {
-            this.forceRunFromSource = forceRunFromSource;
+            this._forceRunFromSource = forceRunFromSource;
         }
 
         public enum FileType
@@ -132,9 +132,9 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             string msixMgrDirectory;
             bool cleanupMsixMgrDirectory;
 
-            if (!this.forceRunFromSource && new DesktopBridge.Helpers().IsRunningAsUwp())
+            if (!this._forceRunFromSource && new DesktopBridge.Helpers().IsRunningAsUwp())
             {
-                Logger.Info("Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location...");
+                Logger.Info().WriteLine("Detected MSIX Hero running with package identity. MSIXMGR must be started from a temporary location...");
                 msixMgrDirectory = Path.Combine(Path.GetTempPath(), "msixmgr-" + Guid.NewGuid().ToString("N").Substring(0, 10));
                 
                 var originalMsixMgrPath = GetMsixMgrPath("msixmgr.exe", BundleHelper.MsixMgrPath);
@@ -155,7 +155,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         targetFile.Directory.Create();
                     }
 
-                    Logger.Debug("Copying {0} to {1}...", sourceFile.FullName, targetFile.FullName);
+                    Logger.Debug().WriteLine("Copying {0} to {1}...", sourceFile.FullName, targetFile.FullName);
                     sourceFile.CopyTo(targetFile.FullName);
                 }
 
@@ -169,7 +169,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 cleanupMsixMgrDirectory = false;
             }
             
-            Logger.Info("Executing {0} {1}", msixMgrPath, arguments);
+            Logger.Info().WriteLine("Executing {0} {1}", msixMgrPath, arguments);
 
             try
             {
@@ -178,7 +178,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (ProcessWrapperException e)
             {
-                Logger.Warn("Process returned exit code " + e.ExitCode);
+                Logger.Warn().WriteLine("Process returned exit code " + e.ExitCode);
                 if (e.ExitCode == -1951596541)
                 {
                     throw new InvalidOperationException("Could not expand MSIX Package to the VHD file. The maximum size of the virtual disk is smaller than the file size of expanded MSIX package. Try using a bigger disk size.", e);
@@ -201,7 +201,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             {
                 if (cleanupMsixMgrDirectory)
                 {
-                    Logger.Debug("Removing temporary files from {0}...", msixMgrDirectory);
+                    Logger.Debug().WriteLine("Removing temporary files from {0}...", msixMgrDirectory);
                     ExceptionGuard.Guard(() => Directory.Delete(msixMgrDirectory, true));
                 }
             }

@@ -3,14 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
 {
     public class SetPackagePropertiesExecutor : AppxManifestEditExecutor<SetPackageProperties>, IValueChangedExecutor
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SetPackagePropertiesExecutor));
-
+        private static readonly LogSource Logger = new();
         public SetPackagePropertiesExecutor(XDocument manifest) : base(manifest)
         {
         }
@@ -36,7 +35,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var prop = properties.Element(rootNamespace + "Description");
                 if (prop == null)
                 {
-                    Logger.Info($"Setting property 'Description' to '{command.Description}'...");
+                    Logger.Info().WriteLine($"Setting property 'Description' to '{command.Description}'...");
                     prop = new XElement("Description")
                     {
                         Value = command.Description
@@ -47,7 +46,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'Description' from '{prop.Value}' to '{command.Description}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'Description' from '{prop.Value}' to '{command.Description}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Description", prop.Value, command.Description));
                     prop.Value = command.Description;
                 }
@@ -58,7 +57,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var prop = properties.Element(rootNamespace + "ModificationPackage");
                 if (prop == null)
                 {
-                    Logger.Info("Setting property 'ModificationPackage' to 'true'...");
+                    Logger.Info().WriteLine("Setting property 'ModificationPackage' to 'true'...");
                     prop = new XElement("ModificationPackage")
                     {
                         Value = "true"
@@ -68,7 +67,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 }
                 else
                 {
-                    Logger.Info($"Changing property 'ModificationPackage' from '{prop.Value}' to 'true'...");
+                    Logger.Info().WriteLine($"Changing property 'ModificationPackage' from '{prop.Value}' to 'true'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ModificationPackage", prop.Value, "true"));
                     prop.Value = "true";
                 }
@@ -78,7 +77,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var prop = properties.Element(rootNamespace + "ModificationPackage");
                 if (prop != null)
                 {
-                    Logger.Info("Removing property 'ModificationPackage'...");
+                    Logger.Info().WriteLine("Removing property 'ModificationPackage'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ModificationPackage", prop.Value, "false"));
                     prop.Remove();
                 }
@@ -89,7 +88,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var prop = properties.Element(rootNamespace + "Logo");
                 if (prop == null)
                 {
-                    Logger.Info($"Setting attribute 'Logo' to '{command.Logo}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'Logo' to '{command.Logo}'...");
                     prop = new XElement("Logo")
                     {
                         Value = command.Logo
@@ -100,7 +99,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'Logo' from '{prop.Value}' to '{command.Logo}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'Logo' from '{prop.Value}' to '{command.Logo}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Logo", prop.Value, command.Logo));
                     prop.Value = command.Logo;
                 }
@@ -111,7 +110,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var prop = properties.Element(rootNamespace + "DisplayName");
                 if (prop == null)
                 {
-                    Logger.Info($"Setting attribute 'DisplayName' to '{command.DisplayName}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'DisplayName' to '{command.DisplayName}'...");
                     prop = new XElement("DisplayName")
                     {
                         Value = command.DisplayName
@@ -122,7 +121,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'DisplayName' from '{prop.Value}' to '{command.DisplayName}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'DisplayName' from '{prop.Value}' to '{command.DisplayName}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("DisplayName", prop.Value, command.DisplayName));
                     prop.Value = command.DisplayName;
                 }
@@ -133,7 +132,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var prop = properties.Element(rootNamespace + "PublisherDisplayName");
                 if (prop == null)
                 {
-                    Logger.Info($"Setting attribute 'PublisherDisplayName' to '{command.PublisherDisplayName}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'PublisherDisplayName' to '{command.PublisherDisplayName}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("PublisherDisplayName", command.PublisherDisplayName));
                     prop = new XElement("PublisherDisplayName")
                     {
@@ -144,7 +143,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'PublisherDisplayName' from '{prop.Value}' to '{command.PublisherDisplayName}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'PublisherDisplayName' from '{prop.Value}' to '{command.PublisherDisplayName}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("PublisherDisplayName", prop.Value, command.PublisherDisplayName));
                     prop.Value = command.PublisherDisplayName;
                 }

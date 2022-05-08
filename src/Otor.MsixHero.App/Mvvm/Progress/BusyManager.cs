@@ -21,38 +21,37 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.App.Mvvm.Progress
 {
     public class BusyManager : IBusyManager
     {
-        private static readonly ILog Logger = LogManager.GetLogger<BusyManager>();
-        private readonly IList<IBusyContext> contexts = new List<IBusyContext>();
+        private static readonly LogSource Logger = new();        private readonly IList<IBusyContext> contexts = new List<IBusyContext>();
         private readonly object lockObject = new object();
 
         public IBusyContext Begin(OperationType type = OperationType.Other)
         {
-            Logger.Trace("Starting a context...");
+            Logger.Verbose().WriteLine("Starting a context...");
             lock (lockObject)
             {
                 var context = new ProgressBusyContext(this, type);
                 this.contexts.Add(context);
                 this.RefreshStatus(type);
-                Logger.Trace("Context started...");
+                Logger.Verbose().WriteLine("Context started...");
                 return context;
             }
         }
 
         public void End(IBusyContext context)
         {
-            Logger.Trace("Ending a context...");
+            Logger.Verbose().WriteLine("Ending a context...");
             lock (lockObject)
             {
                 contexts.Remove(context);
                 this.RefreshStatus(context.Type);
-                Logger.Trace("Context ended...");
+                Logger.Verbose().WriteLine("Context ended...");
             }
 
             if (Application.Current?.Dispatcher != null)
@@ -103,12 +102,12 @@ namespace Otor.MsixHero.App.Mvvm.Progress
             var context = this.contexts.LastOrDefault();
             if (context != null)
             {
-                Logger.Trace($@"Notifying ({{true}}, {context.Message}, {context.Progress}%");
+                Logger.Verbose().WriteLine($@"Notifying {context.Message}, {context.Progress}%...");
                 sc(this, new BusyStatusChange(operationType, true, context.Message, context.Progress));
             }
             else
             {
-                Logger.Trace($@"Notifying ({{false}}, 100%");
+                Logger.Verbose().WriteLine($@"Notifying 100%...");
                 sc(this, new BusyStatusChange(operationType, false, null, 100));
             }
         }

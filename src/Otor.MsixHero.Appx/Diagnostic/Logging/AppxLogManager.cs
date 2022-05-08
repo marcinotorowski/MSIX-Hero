@@ -23,7 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Enums;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
@@ -31,11 +31,10 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
 {
     public class AppxLogManager : IAppxLogManager
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-
+        private static readonly LogSource Logger = new();
         public async Task<List<Log>> GetLogs(int maxCount, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Logger.Info("Getting last {0} log files...", maxCount);
+            Logger.Info().WriteLine("Getting last {0} log files...", maxCount);
 
             var allLogs = new List<Log>();
 

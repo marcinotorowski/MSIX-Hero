@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.MountVol;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
@@ -35,8 +35,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
     /// </summary>
     public class AppAttachVolumeCreationMsixHeroStrategy : IAppAttachVolumeCreationStrategy
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppAttachVolumeCreationMsixHeroStrategy));
-        
+        private static readonly LogSource Logger = new();        
         protected readonly MsixMgrWrapper MsixMgr = new MsixMgrWrapper(true);
 
 
@@ -54,7 +53,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
             if (requiresRestart)
             {
-                Logger.Info("Service ShellHWDetection has been stopped and will be restarted once the operation finishes.");
+                Logger.Info().WriteLine("Service ShellHWDetection has been stopped and will be restarted once the operation finishes.");
             }
 
             return new InitializationResult
@@ -73,7 +72,8 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn(e, "Could not restart the service ShellHWDetection.");
+                    Logger.Warn().WriteLine("Could not restart the service ShellHWDetection.");
+                    Logger.Debug().WriteLine(e);
                 }
             }
         }
@@ -142,30 +142,30 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
                 try
                 {
-                    Logger.Debug("Getting drives (NTFS, ready) and volumes...");
+                    Logger.Debug().WriteLine("Getting drives (NTFS, ready) and volumes...");
                     var allDrives = DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveFormat == "NTFS").Select(d => d.Name.ToLowerInvariant()).ToArray();
                     foreach (var item in allDrives)
                     {
-                        Logger.Debug("* Drive: " + item);
+                        Logger.Debug().WriteLine("* Drive: " + item);
                     }
 
                     var allVolumes = await MountVolumeHelper.GetVolumeIdentifiers().ConfigureAwait(false);
                     foreach (var item in allDrives)
                     {
-                        Logger.Debug("* Volume: " + item);
+                        Logger.Debug().WriteLine("* Volume: " + item);
                     }
 
                     await wrapper.CreateVhdAndAssignDriveLetter(tmpPath, minimumSize, cancellationToken, progressInitializeDisk).ConfigureAwait(false);
                     var newVolumes = (await MountVolumeHelper.GetVolumeIdentifiers().ConfigureAwait(false)).Except(allVolumes).ToArray();
                     foreach (var item in newVolumes)
                     {
-                        Logger.Debug("* New volume: " + item);
+                        Logger.Debug().WriteLine("* New volume: " + item);
                     }
 
                     var newDrives = DriveInfo.GetDrives().Where(d => d.IsReady && d.DriveFormat == "NTFS").Select(d => d.Name.ToLowerInvariant()).Except(allDrives).ToArray();
                     foreach (var item in newDrives)
                     {
-                        Logger.Debug("* New drive: " + item);
+                        Logger.Debug().WriteLine("* New drive: " + item);
                     }
 
                     if (newDrives.Length != 1 || newVolumes.Length != 1)
@@ -202,7 +202,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
             if (serviceController.Status != ServiceControllerStatus.Running)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Logger.Info("Starting service ShellHWDetection...");
+                Logger.Info().WriteLine("Starting service ShellHWDetection...");
 
                 try
                 {
@@ -213,12 +213,12 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                     // Some machines have issues and throw Access to the path 'x:\System Volume Information' is denied.
                     // This seems to be also the case in msixmgr.exe implementation.
                     // Since the VHD has been created, the issue will be discarded here and the process should continue.
-                    Logger.Warn("Could not start ShellHWDetection service.");
+                    Logger.Warn().WriteLine("Could not start ShellHWDetection service.");
                 }
             }
             else
             {
-                Logger.Debug("Service ShellHWDetection is already started...");
+                Logger.Debug().WriteLine("Service ShellHWDetection is already started...");
             }
 
             return Task.CompletedTask;
@@ -231,7 +231,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 throw new ArgumentNullException(nameof(sourcePath), "Package path must not be empty.");
             }
 
-            Logger.Info("Expanding MSIX...");
+            Logger.Info().WriteLine("Expanding MSIX...");
             progressReporter?.Report(new ProgressData(0, "Expanding MSIX..."));
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -243,7 +243,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
             var result = dir.EnumerateDirectories().Single(d => !existing.Contains(d.Name.ToLowerInvariant()));
 
-            Logger.Info("Applying ACLs...");
+            Logger.Info().WriteLine("Applying ACLs...");
             progressReporter?.Report(new ProgressData(80, "Applying ACLs..."));
             await this.MsixMgr.ApplyAcls(result.FullName, cancellationToken).ConfigureAwait(false);
             progressReporter?.Report(new ProgressData(100, "Applying ACLs..."));
@@ -251,17 +251,17 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 
         private static Task<bool> StopService(IProgress<ProgressData> progressReporter = default)
         {
-            Logger.Debug("Trying to stop service ShellHWDetection...");
+            Logger.Debug().WriteLine("Trying to stop service ShellHWDetection...");
             progressReporter?.Report(new ProgressData(0, "Initializing..."));
             var serviceController = new ServiceController("ShellHWDetection");
             if (serviceController.Status == ServiceControllerStatus.Running)
             {
                 serviceController.Stop();
-                Logger.Debug("Service ShellHWDetection has been stopped...");
+                Logger.Debug().WriteLine("Service ShellHWDetection has been stopped...");
                 return Task.FromResult(true);
             }
 
-            Logger.Debug("Service ShellHWDetection did not require stopping...");
+            Logger.Debug().WriteLine("Service ShellHWDetection did not require stopping...");
             return Task.FromResult(false);
         }
 

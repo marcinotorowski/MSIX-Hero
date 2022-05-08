@@ -20,15 +20,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public abstract class ExeWrapper
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(ExeWrapper));
-
+        private static readonly LogSource Logger = new();
         protected static Task<int> RunAsync(string path, string arguments, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
         {
             return RunAsync(path, arguments, null, cancellationToken, callBack, properExitCodes);
@@ -36,7 +35,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         protected static async Task<int> RunAsync(string path, string arguments, string workingDirectory, CancellationToken cancellationToken, Action<string> callBack, params int[] properExitCodes)
         {
-            Logger.Debug("Executing " + path + " " + arguments);
+            Logger.Debug().WriteLine("Executing " + path + " " + arguments);
             var processStartInfo = new ProcessStartInfo(path, arguments);
 
             var standardOutput = new List<string>();
@@ -94,8 +93,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 await standardOutputResults.Task.ConfigureAwait(false);
                 await standardErrorResults.Task.ConfigureAwait(false);
 
-                Logger.Trace("Standard error: " + string.Join(Environment.NewLine, standardError));
-                Logger.Trace("Standard output: " + string.Join(Environment.NewLine, standardOutput));
+                Logger.Verbose().WriteLine("Standard error: " + string.Join(Environment.NewLine, standardError));
+                Logger.Verbose().WriteLine("Standard output: " + string.Join(Environment.NewLine, standardOutput));
                 tcs.TrySetResult(process.ExitCode);
             };
 
@@ -106,7 +105,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     {
                         if (!process.HasExited)
                         {
-                            Logger.Info("Killing the process " + process.Id);
+                            Logger.Info().WriteLine("Killing the process " + process.Id);
                             process.Kill();
                         }
                     }
@@ -129,20 +128,20 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                 if (standardOutput.Any())
                 {
-                    Logger.Debug("Process has finished and returned the following standard output:\r\n" + string.Join(System.Environment.NewLine, standardOutput));
+                    Logger.Debug().WriteLine("Process has finished and returned the following standard output:\r\n" + string.Join(Environment.NewLine, standardOutput));
                 }
                 else
                 {
-                    Logger.Debug("Process has finished and did not return anything to standard output.");
+                    Logger.Debug().WriteLine("Process has finished and did not return anything to standard output.");
                 }
 
                 if (standardError.Any())
                 {
-                    Logger.Debug("Process has finished and returned the following standard error:\r\n" + string.Join(System.Environment.NewLine, standardError));
+                    Logger.Debug().WriteLine("Process has finished and returned the following standard error:\r\n" + string.Join(Environment.NewLine, standardError));
                 }
                 else
                 {
-                    Logger.Debug("Process has finished and did not return anything to standard error.");
+                    Logger.Debug().WriteLine("Process has finished and did not return anything to standard error.");
                 }
 
                 if (properExitCodes != null && properExitCodes.Any() && !properExitCodes.Contains(result))

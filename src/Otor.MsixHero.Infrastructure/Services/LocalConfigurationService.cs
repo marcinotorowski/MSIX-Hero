@@ -25,14 +25,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Infrastructure.Services
 {
     public class LocalConfigurationService : IConfigurationService, IDisposable
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-
+        private static readonly LogSource Logger = new();
         private readonly AutoResetEvent lockObject = new AutoResetEvent(true);
 
         private Configuration.Configuration currentConfiguration;
@@ -82,7 +81,8 @@ namespace Otor.MsixHero.Infrastructure.Services
                 catch (Exception e)
                 {
                     this.currentConfiguration = FixConfiguration(new Configuration.Configuration());
-                    Logger.Warn(e, "Could not read the settings. Default settings will be used.");
+                    Logger.Warn().WriteLine("Could not read the settings. Default settings will be used.");
+                    Logger.Debug().WriteLine(e);
                 }
 
                 return this.currentConfiguration;

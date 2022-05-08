@@ -38,7 +38,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -48,8 +48,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
 {
     public class PackagesManagementCommandHandler
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(PackagesManagementCommandHandler));
-        
+        private static readonly LogSource Logger = new();        
         private readonly IMsixHeroApplication _application;
         private readonly IInteractionService _interactionService;
         private readonly IConfigurationService _configurationService;
@@ -505,7 +504,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.Commands
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                Logger.Error().WriteLine(exception);
                 this._interactionService.ShowError(exception.Message, exception);
             }
             finally

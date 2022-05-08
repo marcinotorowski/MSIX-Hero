@@ -57,11 +57,11 @@ public abstract class ClientHandler : IDisposable, IAsyncDisposable
         var principal = new WindowsPrincipal(identity);
         if (principal.IsInRole(WindowsBuiltInRole.Administrator))
         {
-            Log.Info().WriteLine("UAC Client | Running as administrator...");
+            Log.Info().WriteLine("UAC Client -> Running as administrator...");
             return true;
         }
 
-        Log.Info().WriteLine("UAC Client | Running as administrator...");
+        Log.Info().WriteLine("UAC Client -> Running as administrator...");
         return false;
     }
 }

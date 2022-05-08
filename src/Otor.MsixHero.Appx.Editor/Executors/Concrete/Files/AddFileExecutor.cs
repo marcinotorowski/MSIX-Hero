@@ -18,14 +18,14 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapplo.Log;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Files;
-using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
 {
     public class AddFileExecutor : ExtractedAppxExecutor<AddFile>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AddFileExecutor));
+        private static readonly LogSource Logger = new();
 
         public AddFileExecutor(DirectoryInfo directory) : base(directory)
         {
@@ -50,7 +50,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                 destination.Directory.Create();
             }
             
-            Logger.Info($"Copying file from '{command.SourcePath}' to '{destination.FullName}'...");
+            Logger.Info().WriteLine($"Copying file from '{command.SourcePath}' to '{destination.FullName}'...");
 
             if (File.Exists(destination.FullName) && !command.Force)
             {

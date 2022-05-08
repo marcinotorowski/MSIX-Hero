@@ -24,14 +24,13 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
     public class AppxIdentityReader : IAppxIdentityReader
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppxIdentityReader));
-        
+        private static readonly LogSource Logger = new();        
         public async Task<AppxIdentity> GetIdentity(string filePath, CancellationToken cancellationToken = default)
         {
             switch (Path.GetExtension(filePath).ToLowerInvariant())
@@ -70,17 +69,17 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 throw new ArgumentNullException(nameof(file));
             }    
             
-            Logger.Info("Reading identity from stream of type " + file.GetType().Name);
+            Logger.Info().WriteLine("Reading identity from stream of type " + file.GetType().Name);
             
             if (file is FileStream fileStream)
             {
-                Logger.Debug("The input is a file stream, trying to evaluate its name...");
+                Logger.Debug().WriteLine("The input is a file stream, trying to evaluate its name...");
                 switch (Path.GetExtension(fileStream.Name).ToLowerInvariant())
                 {
                     case FileConstants.AppxBundleExtension:
                     case FileConstants.MsixBundleExtension:
                     {
-                        Logger.Info("The file seems to be a bundle package (compressed).");
+                        Logger.Info().WriteLine("The file seems to be a bundle package (compressed).");
                         try
                         {
                             using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(fileStream);
@@ -95,7 +94,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                     case FileConstants.AppxExtension:
                     case FileConstants.MsixExtension:
                     {
-                        Logger.Info("The file seems to be a package (compressed).");
+                        Logger.Info().WriteLine("The file seems to be a package (compressed).");
                         try
                         {
                             using IAppxFileReader reader = new ZipArchiveFileReaderAdapter(fileStream);
@@ -111,30 +110,30 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 switch (Path.GetFileName(fileStream.Name).ToLowerInvariant())
                 {
                     case FileConstants.AppxManifestFile:
-                        Logger.Info("The file seems to be a package (manifest).");
+                        Logger.Info().WriteLine("The file seems to be a package (manifest).");
                         return await GetIdentityFromPackageManifest(fileStream, cancellationToken).ConfigureAwait(false);
                     case FileConstants.AppxBundleManifestFile:
-                        Logger.Info("The file seems to be a bundle (manifest).");
+                        Logger.Info().WriteLine("The file seems to be a bundle (manifest).");
                         return await GetIdentityFromBundleManifest(fileStream, cancellationToken).ConfigureAwait(false);
                 }
             }
             
             try
             {
-                Logger.Debug("Trying to interpret the input file as an XML manifest...");
+                Logger.Debug().WriteLine("Trying to interpret the input file as an XML manifest...");
                 var doc = await XDocument.LoadAsync(file, LoadOptions.None, cancellationToken).ConfigureAwait(false);
                 var firstElement = doc.Elements().FirstOrDefault();
                 if (firstElement != null)
                 {
                     if (firstElement.Name.LocalName == "Package")
                     {
-                        Logger.Info("The file seems to be a package (manifest).");
+                        Logger.Info().WriteLine("The file seems to be a package (manifest).");
                         return GetIdentityFromPackageManifest(doc);
                     }
 
                     if (firstElement.Name.LocalName == "Bundle")
                     {
-                        Logger.Info("The file seems to be a bundle (manifest).");
+                        Logger.Info().WriteLine("The file seems to be a bundle (manifest).");
                         return GetIdentityFromBundleManifest(doc);
                     }
 
@@ -145,7 +144,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             catch
             {
                 // this is ok, it seems that the file was not XML so we should continue to find out some other possibilities
-                Logger.Debug("The file was not in XML format (exception thrown during parsing).");
+                Logger.Debug().WriteLine("The file was not in XML format (exception thrown during parsing).");
             }
 
             try
@@ -170,7 +169,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             catch
             {
                 // this is ok, it seems that the file was not ZIP format so we should continue to find out some other possibilities
-                Logger.Debug("The file was not in ZIP format (exception thrown during opening).");
+                Logger.Debug().WriteLine("The file was not in ZIP format (exception thrown during opening).");
             }
 
             throw new ArgumentException("The input stream is neither a valid manifest or package file.");
@@ -251,7 +250,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 }
                 else
                 {
-                    Logger.Warn("Could not parse the value " + architecture.Value + " to one of known enums.");
+                    Logger.Warn().WriteLine("Could not parse the value " + architecture.Value + " to one of known enums.");
                 }
             }
             
@@ -316,7 +315,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                     }
                     else
                     {
-                        Logger.Warn("Could not parse the value " + architecture.Value + " to one of known enums.");
+                        Logger.Warn().WriteLine("Could not parse the value " + architecture.Value + " to one of known enums.");
                     }
                 }
 

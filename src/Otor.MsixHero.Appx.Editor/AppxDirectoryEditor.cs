@@ -27,20 +27,18 @@ using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
 
 namespace Otor.MsixHero.Appx.Editor
 {
     public class AppxDirectoryEditor : IAppxEditor
     {
-        private readonly DirectoryInfo directoryInfo;
-        public static readonly ILog Log = LogManager.GetLogger(typeof(AppxDirectoryEditor));
+        private readonly DirectoryInfo _directoryInfo;
         
-        private XDocument manifest;
+        private XDocument _manifest;
 
         public AppxDirectoryEditor(DirectoryInfo directoryInfo)
         {
-            this.directoryInfo = directoryInfo;
+            this._directoryInfo = directoryInfo;
         }
 
         public AppxDirectoryEditor(string directory) : this(new DirectoryInfo(directory))
@@ -49,20 +47,20 @@ namespace Otor.MsixHero.Appx.Editor
 
         public async Task Begin(CancellationToken cancellationToken = default)
         {
-            var path = Path.Combine(this.directoryInfo.FullName, "appxmanifest.xml");
+            var path = Path.Combine(this._directoryInfo.FullName, "appxmanifest.xml");
             if (!File.Exists(path))
             {
                 throw new FileNotFoundException("Manifest file not found in " + path);
             }
 
             await using var fs = File.Open(path, FileMode.Open);
-            this.manifest = await XDocument.LoadAsync(fs, LoadOptions.None, CancellationToken.None).ConfigureAwait(false);
+            this._manifest = await XDocument.LoadAsync(fs, LoadOptions.None, CancellationToken.None).ConfigureAwait(false);
         }
 
         public async Task Finish(CancellationToken cancellationToken = default)
         {
-            var path = Path.Combine(this.directoryInfo.FullName, "AppxManifest.xml");
-            var writer = new AppxDocumentWriter(this.manifest);
+            var path = Path.Combine(this._directoryInfo.FullName, "AppxManifest.xml");
+            var writer = new AppxDocumentWriter(this._manifest);
             await writer.WriteAsync(path).ConfigureAwait(false);
         }
         
@@ -72,67 +70,67 @@ namespace Otor.MsixHero.Appx.Editor
             {
                 case SetPackageIdentity setIdentity:
                 {
-                    await new SetPackageIdentityExecutor(this.manifest).Execute(setIdentity, cancellationToken).ConfigureAwait(false);
+                    await new SetPackageIdentityExecutor(this._manifest).Execute(setIdentity, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case SetPackageProperties setPackageDisplayInformation:
                 {
-                    await new SetPackagePropertiesExecutor(this.manifest).Execute(setPackageDisplayInformation, cancellationToken).ConfigureAwait(false);
+                    await new SetPackagePropertiesExecutor(this._manifest).Execute(setPackageDisplayInformation, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case AddCapability addCapability:
                 {
-                    await new AddCapabilityExecutor(this.manifest).Execute(addCapability, cancellationToken).ConfigureAwait(false);
+                    await new AddCapabilityExecutor(this._manifest).Execute(addCapability, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case DeleteFile deleteFile:
                 {
-                    await new DeleteFileExecutor(this.directoryInfo).Execute(deleteFile, cancellationToken).ConfigureAwait(false);
+                    await new DeleteFileExecutor(this._directoryInfo).Execute(deleteFile, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case AddFile replaceFile:
                 {
-                    await new AddFileExecutor(this.directoryInfo).Execute(replaceFile, cancellationToken).ConfigureAwait(false);
+                    await new AddFileExecutor(this._directoryInfo).Execute(replaceFile, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case SetBuildMetaData addBuildMetaData:
                 {
-                    await new SetBuildMetaDataExecutor(this.manifest).Execute(addBuildMetaData, cancellationToken).ConfigureAwait(false);
+                    await new SetBuildMetaDataExecutor(this._manifest).Execute(addBuildMetaData, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case DeleteRegistryKey deleteRegistryKey:
                 {
-                    await new DeleteRegistryKeyExecutor(this.directoryInfo).Execute(deleteRegistryKey, cancellationToken).ConfigureAwait(false);
+                    await new DeleteRegistryKeyExecutor(this._directoryInfo).Execute(deleteRegistryKey, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case SetRegistryKey setRegistryKey:
                 {
-                    await new SetRegistryKeyExecutor(this.directoryInfo).Execute(setRegistryKey, cancellationToken).ConfigureAwait(false);
+                    await new SetRegistryKeyExecutor(this._directoryInfo).Execute(setRegistryKey, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case SetRegistryValue setRegistryValue:
                 {
-                    await new SetRegistryValueExecutor(this.directoryInfo).Execute(setRegistryValue, cancellationToken).ConfigureAwait(false);
+                    await new SetRegistryValueExecutor(this._directoryInfo).Execute(setRegistryValue, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case ImportLocalRegistryKey importLocalRegistryKey:
                 {
-                    await new ImportLocalRegistryKeyExecutor(this.directoryInfo).Execute(importLocalRegistryKey, cancellationToken).ConfigureAwait(false);
+                    await new ImportLocalRegistryKeyExecutor(this._directoryInfo).Execute(importLocalRegistryKey, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 
                 case ImportRegistryFile importRegistryFile:
                 {
-                    await new ImportRegistryFileExecutor(this.directoryInfo).Execute(importRegistryFile, cancellationToken).ConfigureAwait(false);
+                    await new ImportRegistryFileExecutor(this._directoryInfo).Execute(importRegistryFile, cancellationToken).ConfigureAwait(false);
                     break;
                 }
 

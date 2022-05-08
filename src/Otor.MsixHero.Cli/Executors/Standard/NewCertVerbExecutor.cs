@@ -19,14 +19,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Cli.Verbs;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Cli.Executors.Standard
 {
     public class NewCertVerbExecutor : VerbExecutor<NewCertVerb>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(NewCertVerbExecutor));
-
+        private static readonly LogSource Logger = new();
         private readonly ISigningManager signingManager;
 
         public NewCertVerbExecutor(NewCertVerb verb, ISigningManager signingManager, IConsole console) : base(verb, console)
@@ -66,7 +65,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message).ConfigureAwait(false);
                 return StandardExitCodes.ErrorGeneric;
             }

@@ -9,7 +9,7 @@ using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
 
@@ -19,8 +19,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
     {
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppInstallerPackagesViewModel));
-        
+        private static readonly LogSource Logger = new();        
         public AppInstallerPackagesViewModel(
             IInteractionService interactionService, 
             IConfigurationService configurationService,
@@ -72,7 +71,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
                 }
                 else
                 {
-                    Logger.Warn($"Unknown type of the entry ({item.GetType().Name}. Only packages and bundles are supported.");
+                    Logger.Warn().WriteLine($"Unknown type of the entry ({item.GetType().Name}. Only packages and bundles are supported.");
                 }
             }
 
@@ -196,7 +195,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.AppInstaller.Editor.ViewModel.Tabs
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 this.interactionService.ShowError("Could not open selected package.", e);
             }
         }

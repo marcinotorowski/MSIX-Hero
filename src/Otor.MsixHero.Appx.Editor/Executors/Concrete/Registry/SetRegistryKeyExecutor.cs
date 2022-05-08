@@ -19,15 +19,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Registry.Converter;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 {
     public class SetRegistryKeyExecutor : ExtractedAppxExecutor<SetRegistryKey>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SetRegistryKeyExecutor));
-
+        private static readonly LogSource Logger = new();
         public SetRegistryKeyExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -42,7 +41,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
             converter.WriteKey(command.RegistryKey);
             await converter.Flush().ConfigureAwait(false);
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info($"Registry key {target.Item1}\\{target.Item2} has been set.");
+            Logger.Info().WriteLine($"Registry key {target.Item1}\\{target.Item2} has been set.");
         }
     }
 }

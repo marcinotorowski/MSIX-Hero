@@ -23,14 +23,13 @@ using System.ServiceProcess;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Recommendations.Enums;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
 {
     public class ServiceRecommendationAdvisor : IServiceRecommendationAdvisor
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(ServiceRecommendationAdvisor));
-
+        private static readonly LogSource Logger = new();
         public Task<bool> Fix(IServiceRecommendation recommendation)
         {
             switch (recommendation.Type)
@@ -56,7 +55,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 throw;
             }
         }
@@ -105,7 +104,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.Error().WriteLine(e);
                     throw;
                 }
             });
@@ -194,7 +193,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.Error().WriteLine(e);
                     throw;
                 }
             });
@@ -209,7 +208,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Warn().WriteLine(e);
                 return false;
             }
         }
@@ -223,7 +222,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Recommendations
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Warn().WriteLine(e);
                 return false;
             }
         }

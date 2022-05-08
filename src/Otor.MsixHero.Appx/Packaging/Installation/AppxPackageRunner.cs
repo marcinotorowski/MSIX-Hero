@@ -26,7 +26,7 @@ using Otor.MsixHero.Appx.Exceptions;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
@@ -35,8 +35,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     [SuppressMessage("ReSharper", "UnusedVariable")]
     public class AppxPackageRunner : IAppxPackageRunner
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
+        private static readonly LogSource Logger = new();        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
         
         public async Task RunToolInContext(InstalledPackage package, string toolPath, string arguments, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
@@ -68,7 +67,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             this.SideloadingConfigurator.AssertDeveloperModeEnabled();
 
-            Logger.Info("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')...", toolPath, arguments, packageFamilyName, appId);
+            Logger.Info().WriteLine("Running tool '{0}' with arguments '{1}' in package '{2}' (AppId = '{3}')...", toolPath, arguments, packageFamilyName, appId);
             if (packageFamilyName == null)
             {
                 throw new ArgumentNullException(nameof(packageFamilyName));
@@ -91,7 +90,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 cmd.AddParameter("Args", arguments);
             }
 
-            Logger.Debug("Executing Invoke-CommandInDesktopPackage");
+            Logger.Debug().WriteLine("Executing Invoke-CommandInDesktopPackage");
             try
             {
                 // ReSharper disable once UnusedVariable
@@ -122,7 +121,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             if (appId == null)
             {
-                Logger.Info("Running the default entry point from package " + packageManifestLocation);
+                Logger.Info().WriteLine("Running the default entry point from package " + packageManifestLocation);
             }
 
             if (packageManifestLocation == null || !File.Exists(packageManifestLocation))
@@ -144,7 +143,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             {
                 if (appId == null)
                 {
-                    Logger.Warn("The package does not contain any entry point that is visible in the start menu. Aborting...");
+                    Logger.Warn().WriteLine("The package does not contain any entry point that is visible in the start menu. Aborting...");
                     throw new InvalidOperationException("This package has no Start Menu entry points.");
                 }
 
@@ -158,7 +157,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 FileName = entryPoint
             };
 
-            Logger.Info("Executing " + entryPoint + " (with shell execute)...");
+            Logger.Info().WriteLine("Executing " + entryPoint + " (with shell execute)...");
             p.StartInfo = startInfo;
             p.Start();
         }

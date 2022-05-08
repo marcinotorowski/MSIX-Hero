@@ -18,16 +18,15 @@ using System;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Events;
-using LogManager = Otor.MsixHero.Infrastructure.Logging.LogManager;
 
 namespace Otor.MsixHero.App.Hero
 {
     public class MsixHeroApplication : IMsixHeroApplication
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixHeroApplication));
+        private static readonly LogSource Logger = new();
 
         public MsixHeroApplication(
             IMsixHeroCommandExecutor commandExecutor, 
@@ -73,9 +72,9 @@ namespace Otor.MsixHero.App.Hero
             }
             catch (Exception e)
             {
-                Logger.Warn(e, "Settings could not be restored upon exiting.");
+                Logger.Warn().WriteLine("Settings could not be restored upon exiting.");
+                Logger.Warn().WriteLine(e);
             }
         }
-
     }
 }

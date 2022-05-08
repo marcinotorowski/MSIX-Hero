@@ -21,15 +21,14 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
 namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 {
     public class DeviceGuardHelper
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(DeviceGuardHelper));
-
+        private static readonly LogSource Logger = new();
 
         public async Task<string> GetSubjectFromDeviceGuardSigning(string accessToken, string refreshToken, CancellationToken cancellationToken = default)
         {
@@ -58,7 +57,7 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
 
         public async Task<string> GetSubjectFromDeviceGuardSigning(string dgssTokenPath, CancellationToken cancellationToken = default)
         {
-            Logger.Info("Getting certificate subject for Device Guard signing...");
+            Logger.Info().WriteLine("Getting certificate subject for Device Guard signing...");
 
             var tempFilePath = Path.Combine(Path.GetTempPath(), "msix-hero-" + Guid.NewGuid().ToString("N") + ".cat");
             try
@@ -71,30 +70,31 @@ namespace Otor.MsixHero.Appx.Signing.DeviceGuard
                         throw new InvalidOperationException("Cannot extract temporary file.");
                     }
 
-                    Logger.Debug($"Creating temporary file path {tempFilePath}");
+                    Logger.Debug().WriteLine($"Creating temporary file path {tempFilePath}");
                     await using var fileStream = File.Create(tempFilePath);
                     manifestResourceStream.Seek(0L, SeekOrigin.Begin);
                     await manifestResourceStream.CopyToAsync(fileStream, cancellationToken).ConfigureAwait(false);
                 }
 
                 var sdk = new SignToolWrapper();
-                Logger.Debug($"Signing temporary file path {tempFilePath}");
+                Logger.Debug().WriteLine($"Signing temporary file path {tempFilePath}");
                 await sdk.SignPackageWithDeviceGuard(new[] {tempFilePath}, "SHA256", dgssTokenPath, null, cancellationToken).ConfigureAwait(false);
 
                 using var fromSignedFile = X509Certificate.CreateFromSignedFile(tempFilePath);
-                Logger.Info($"Certificate subject is {tempFilePath}");
+                Logger.Info().WriteLine($"Certificate subject is {tempFilePath}");
                 return fromSignedFile.Subject;
             }
             catch (Exception e)
             {
-                Logger.Error("Could not read subject from Device Guard certificate.", e);
+                Logger.Error().WriteLine("Could not read subject from Device Guard certificate.");
+                Logger.Error().WriteLine(e);
                 throw;
             }
             finally
             {
                 if (File.Exists(tempFilePath))
                 {
-                    Logger.Debug($"Removing {tempFilePath}");
+                    Logger.Debug().WriteLine($"Removing {tempFilePath}");
                     ExceptionGuard.Guard(() => File.Delete(tempFilePath));
                 }
             }

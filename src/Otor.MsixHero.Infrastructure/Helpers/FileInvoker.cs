@@ -19,15 +19,14 @@ using System.Diagnostics;
 using System.IO;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.Infrastructure.Helpers
 {
     public class FileInvoker
     {
-        private static readonly ILog Logger = LogManager.GetLogger<FileInvoker>();
-
+        private static readonly LogSource Logger = new();
         private readonly IInteractionService interactionService;
         private readonly IConfigurationService configurationService;
 
@@ -115,7 +114,8 @@ namespace Otor.MsixHero.Infrastructure.Helpers
             }
             catch (Exception e)
             {
-                Logger.Error(e, $"Could not open the file {filePath.Resolved}");
+                Logger.Error().WriteLine($"Could not open the file {filePath.Resolved}");
+                Logger.Error().WriteLine(e);
 
                 if (throwExceptions)
                 {

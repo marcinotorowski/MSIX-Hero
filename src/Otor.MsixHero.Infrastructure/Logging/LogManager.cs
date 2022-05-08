@@ -15,10 +15,9 @@
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using Dapplo.Log;
 using NLog;
 using NLog.Targets;
 
@@ -27,41 +26,26 @@ namespace Otor.MsixHero.Infrastructure.Logging
     public class LogManager
     {
         public static string LogFile { get; private set; }
-
-        public static ILog GetLogger<T>()
-        {
-            return GetLogger(typeof(T));
-        }
-
-        public static ILog GetLogger(Type type)
-        {
-            return GetLogger(type.FullName);
-        }
-
-        public static ILog GetLogger(string type)
-        {
-            return new NLogWrapper(NLog.LogManager.GetLogger(type));
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static ILog GetLogger()
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            var mth = new StackTrace().GetFrame(1).GetMethod();
-            if (mth == null || mth.DeclaringType == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            var cls = mth.DeclaringType.FullName;
-
-            return GetLogger(cls);
-        }
         
         public static void Initialize(MsixHeroLogLevel minLogLevel = MsixHeroLogLevel.Info, MsixHeroLogLevel maxLogLevel = MsixHeroLogLevel.Fatal)
         {
             var assembly = Path.GetFileName((Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location);
-            var fileName = $"{assembly}\\{DateTime.Now:yyyyMMdd-hhmmss}_{minLogLevel}.log";
+
+            // Rewrite cryptic assembly names into something meaningful
+            switch (Path.GetFileNameWithoutExtension(assembly).ToLowerInvariant())
+            {
+                case "msixhero":
+                    assembly = "app";
+                    break;
+                case "msixherocli":
+                    assembly = "cli";
+                    break;
+                case "msixhero-uac":
+                    assembly = "uac";
+                    break;
+            }
+
+            var fileName = $"{assembly}\\{DateTime.Now:yyyyMMdd-HHmmss}_{minLogLevel}.log";
             var targetFileNameInfo = new FileInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MSIX-Hero", "Logs", fileName));
 
             Initialize(targetFileNameInfo.FullName, minLogLevel, maxLogLevel);
@@ -91,12 +75,10 @@ namespace Otor.MsixHero.Infrastructure.Logging
             var fileTarget = new FileTarget
             {
                 FileName = logFile,
-                Header = GetHeader(),
-                Layout = "${longdate}\t${level:uppercase=true}\t${logger}\t${message}\t${exception:format=tostring}"
+                Header = GetHeader()
             };
 
-            config.AddRule(Convert(minLogLevel), Convert(maxLogLevel), fileTarget);
-
+            config.AddRuleForAllLevels(fileTarget);
             config.AddRule(LogLevel.Warn, LogLevel.Fatal, new ColoredConsoleTarget
             {
                 Layout = "${message}",
@@ -104,6 +86,9 @@ namespace Otor.MsixHero.Infrastructure.Logging
             });
 
             NLog.LogManager.Configuration = config;
+
+            LogSettings.RegisterDefaultLogger<NLogLogger>();
+            LogSettings.DefaultLogger.LogLevel = Convert(minLogLevel);
         }
         
         private static string GetHeader()
@@ -123,22 +108,22 @@ BaseDir:        '${basedir}'
 Architecture:   '${environment:PROCESSOR_ARCHITECTURE}'";
         }
 
-        private static LogLevel Convert(MsixHeroLogLevel level)
+        private static LogLevels Convert(MsixHeroLogLevel level)
         {
             switch (level)
             {
                 case MsixHeroLogLevel.Trace:
-                    return LogLevel.Trace;
+                    return LogLevels.Verbose;
                 case MsixHeroLogLevel.Debug:
-                    return LogLevel.Debug;
+                    return LogLevels.Debug;
                 case MsixHeroLogLevel.Info:
-                    return LogLevel.Info;
+                    return LogLevels.Info;
                 case MsixHeroLogLevel.Warn:
-                    return LogLevel.Warn;
+                    return LogLevels.Warn;
                 case MsixHeroLogLevel.Error:
-                    return LogLevel.Error;
+                    return LogLevels.Error;
                 case MsixHeroLogLevel.Fatal:
-                    return LogLevel.Fatal;
+                    return LogLevels.Fatal;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }

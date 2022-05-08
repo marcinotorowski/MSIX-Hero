@@ -19,15 +19,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Registry.Converter;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 {
     public class SetRegistryValueExecutor : ExtractedAppxExecutor<SetRegistryValue>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SetRegistryValueExecutor));
-
+        private static readonly LogSource Logger = new();
         public SetRegistryValueExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -42,7 +41,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
             converter.WriteValue(command.RegistryKey, command.RegistryValueName, command.ValueType, command.Value);
             await converter.Flush().ConfigureAwait(false);
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info($"Registry value {command.Value} = '{command.Value}' ({command.ValueType}) has been set in '{target.Item1}\\{target.Item2}'.");
+            Logger.Info().WriteLine($"Registry value {command.Value} = '{command.Value}' ({command.ValueType}) has been set in '{target.Item1}\\{target.Item2}'.");
         }
     }
 }

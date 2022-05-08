@@ -24,7 +24,7 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Mvvm.Changeable;
 using Otor.MsixHero.Appx.Packaging;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Winget.Yaml;
@@ -35,8 +35,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 {
     public class WingetDefinitionViewModel : ChangeableContainer
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(WingetDefinitionViewModel));
-
+        private static readonly LogSource Logger = new();
         private readonly IInteractionService interactionService;
         protected readonly YamlWriter YamlWriter = new YamlWriter();
         protected readonly YamlReader YamlReader = new YamlReader();
@@ -201,7 +200,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 this.interactionService.ShowError("Could not load the details from the selected file.", e);
             }
             finally
@@ -243,7 +242,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
         private void IdOnValueChanged(object sender, ValueChangedEventArgs e)
         {
-            Logger.Debug($"Package ID is not touched manually and will not auto update...");
+            Logger.Debug().WriteLine($"Package ID is not touched manually and will not auto update...");
             this.autoId = false;
         }
         private void UrlOnValueChanged(object sender, ValueChangedEventArgs e)
@@ -508,7 +507,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
                 }
 
                 this.model.ManifestVersion = System.Version.Parse($"{v1}.{v2}.{v3}");
-                Logger.Info("Manifest version changed to {0}.", (object) this.model.ManifestVersion);
+                Logger.Info().WriteLine("Manifest version changed to {0}.", (object) this.model.ManifestVersion);
             }
             
             this.TabInstaller.Commit();
@@ -523,7 +522,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Winget.YamlEditor.ViewModel
 
             using (var fs = File.OpenWrite(fileName))
             {
-                Logger.Info("Writing YAML manifest to {0}", (object) fileName);
+                Logger.Info().WriteLine("Writing YAML manifest to {0}", (object) fileName);
                 await this.YamlWriter.WriteAsync(model, fs, cancellationToken).ConfigureAwait(false);
             }
 

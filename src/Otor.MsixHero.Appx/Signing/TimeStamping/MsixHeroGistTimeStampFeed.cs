@@ -5,14 +5,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Signing.TimeStamping
 {
     public class MsixHeroGistTimeStampFeed : StreamTimeStampFeed
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixHeroGistTimeStampFeed));
-
+        private static readonly LogSource Logger = new();
         public const string Url = "https://gist.githubusercontent.com/marcinotorowski/0bed416d906aef48f17e56c8946648bb/raw/TimeStampServer.json";
 
         public static ITimeStampFeed CreateCached()
@@ -29,7 +28,7 @@ namespace Otor.MsixHero.Appx.Signing.TimeStamping
                 return originalList;
             }
 
-            Logger.Debug("Randomizing the list of timestamp servers...");
+            Logger.Debug().WriteLine("Randomizing the list of timestamp servers...");
 
             var randomList = new TimeStampFeedEntries
             {
@@ -49,7 +48,7 @@ namespace Otor.MsixHero.Appx.Signing.TimeStamping
 
         protected override async Task<Stream> OpenStream(CancellationToken cancellationToken)
         {
-            Logger.Info($"Querying the list of available time stamp servers from {Url}...");
+            Logger.Info().WriteLine($"Querying the list of available time stamp servers from {Url}...");
             using var httpClient = new HttpClient();
             using var response = await httpClient.GetAsync(Url, HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false);
 

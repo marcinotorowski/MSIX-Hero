@@ -25,14 +25,13 @@ using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public class TaskListWrapper : ExeWrapper
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(TaskListWrapper));
-
+        private static readonly LogSource Logger = new();
         public async Task<IList<AppProcess>> GetBasicAppProcesses(string status = null, CancellationToken cancellationToken = default)
         {
             var stringBuilder = new StringBuilder();
@@ -58,8 +57,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             }
             catch (BadDataException e)
             {
-                Logger.Error($"Invalid data format.", e);
-                Logger.Warn("CSV content:\r\n" + stringBuilder);
+                Logger.Error().WriteLine(e);
+                Logger.Warn().WriteLine("CSV content:\r\n" + stringBuilder);
                 throw;
             }
         }

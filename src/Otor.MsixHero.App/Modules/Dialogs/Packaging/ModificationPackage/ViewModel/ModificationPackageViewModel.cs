@@ -35,7 +35,7 @@ using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Commands;
@@ -46,8 +46,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
 {
     public class ModificationPackageViewModel : ChangeableDialogViewModel, IDialogAware
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(ModificationPackageViewModel));
-        private readonly IModificationPackageBuilder _contentBuilder;
+        private static readonly LogSource Logger = new();        private readonly IModificationPackageBuilder _contentBuilder;
         private readonly IUacElevation _uacElevation;
         private readonly IConfigurationService _configurationService;
         private readonly IInteractionService _interactionService;
@@ -366,7 +365,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.ModificationPackage.ViewMo
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                Logger.Error().WriteLine(exception);
                 this._interactionService.ShowError("Could not read the properties from the package.", exception);
             }
         }

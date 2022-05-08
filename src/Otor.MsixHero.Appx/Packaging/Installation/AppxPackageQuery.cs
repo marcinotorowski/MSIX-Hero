@@ -35,7 +35,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -46,8 +46,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     {
         public static Lazy<PackageManager> PackageManager = new(() => new PackageManager(), true);
 
-        private static readonly ILog Logger = LogManager.GetLogger();
-
+        private static readonly LogSource Logger = new();
         private readonly IRegistryManager registryManager;
         private readonly IConfigurationService configurationService;
 
@@ -64,10 +63,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
         public async Task<List<User>> GetUsersForPackage(string packageName, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
-            Logger.Info("Getting users who installed package {0}...", packageName);
+            Logger.Info().WriteLine("Getting users who installed package {0}...", packageName);
             if (!await UserHelper.IsAdministratorAsync(cancellationToken).ConfigureAwait(false))
             {
-                Logger.Info("The user is not administrator. Returning an empty list.");
+                Logger.Info().WriteLine("The user is not administrator. Returning an empty list.");
                 return new List<User>();
             }
 
@@ -79,7 +78,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 },
                 cancellationToken).ConfigureAwait(false);
 
-            Logger.Info("Returning {0} users...", result.Count);
+            Logger.Info().WriteLine("Returning {0} users...", result.Count);
             return result;
         }
         
@@ -153,7 +152,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             if (isAdmin)
             {
-                Logger.Info("Getting provisioned packages...");
+                Logger.Info().WriteLine("Getting provisioned packages...");
                 var tempFile = Path.GetTempFileName();
                 try
                 {
@@ -164,11 +163,11 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                         CreateNoWindow = true
                     };
 
-                    Logger.Debug("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");
+                    Logger.Debug().WriteLine("Executing powershell.exe " + "-Command \"&{ " + cmd + "}\"");
                     var p = Process.Start(proc);
                     if (p == null)
                     {
-                        Logger.Error("Could not get the list of provisioned apps.");
+                        Logger.Error().WriteLine("Could not get the list of provisioned apps.");
                     }
                     else
                     {
@@ -194,7 +193,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             if (string.IsNullOrEmpty(packageName))
             {
-                Logger.Info("Getting all packages by find mode = '{0}'", mode);
+                Logger.Info().WriteLine("Getting all packages by find mode = '{0}'", mode);
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
@@ -209,7 +208,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
             else
             {
-                Logger.Info("Getting package name '{0}' by find mode = '{1}'", packageName, mode);
+                Logger.Info().WriteLine("Getting package name '{0}' by find mode = '{1}'", packageName, mode);
                 switch (mode)
                 {
                     case PackageFindMode.CurrentUser:
@@ -317,13 +316,13 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
 
             sw.Stop();
 
-            Logger.Info("Returning {0} packages (the operation took {1})...", list.Count, sw.Elapsed);
+            Logger.Info().WriteLine("Returning {0} packages (the operation took {1})...", list.Count, sw.Elapsed);
             return list;
         }
 
         private async Task<InstalledPackage> ConvertFrom(Package item, CancellationToken cancellationToken, IProgress<ProgressData> progress = default)
         {
-            Logger.Debug("Getting details about package {0}...", item.Id.Name);
+            Logger.Debug().WriteLine("Getting details about package {0}...", item.Id.Name);
             string installLocation;
             DateTime installDate;
             try
@@ -332,7 +331,8 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
             catch (Exception e)
             {
-                Logger.Warn(e, "Installed location for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
+                Logger.Warn().WriteLine("Installed location for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
+                Logger.Verbose().WriteLine(e);
                 installLocation = null;
             }
 
@@ -344,7 +344,8 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn(e, "Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
+                    Logger.Warn().WriteLine("Installed date for package {0} is invalid. This may be expected for some installed packages.", item.Id.Name);
+                    Logger.Verbose().WriteLine(e);
                     installDate = DateTime.MinValue;
                 }
             }

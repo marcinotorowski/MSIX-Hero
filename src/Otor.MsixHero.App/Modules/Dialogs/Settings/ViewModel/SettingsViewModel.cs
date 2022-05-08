@@ -348,7 +348,6 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             if (this.VerboseLogging.IsTouched)
             {
                 newConfiguration.VerboseLogging = this.VerboseLogging.CurrentValue;
-                
                 LogManager.Initialize(newConfiguration.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info);
             }
 

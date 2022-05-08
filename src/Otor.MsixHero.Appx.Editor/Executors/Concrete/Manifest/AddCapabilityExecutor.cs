@@ -21,14 +21,13 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
 {
     public class AddCapabilityExecutor : AppxManifestEditExecutor<AddCapability>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AddCapabilityExecutor));
-
+        private static readonly LogSource Logger = new();
         public AddCapabilityExecutor(XDocument manifest) : base(manifest)
         {
         }
@@ -253,7 +252,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
             var find = capabilities.Elements().FirstOrDefault(e => e.Name.Namespace == ns && e.Name.LocalName == nodeName && e.Attribute("Name")?.Value == command.Name);
             if (find != null)
             {
-                Logger.Warn($"The capability '{command.Name}' already exists and will not be added again.");
+                Logger.Warn().WriteLine($"The capability '{command.Name}' already exists and will not be added again.");
                 return Task.CompletedTask;
             }
 

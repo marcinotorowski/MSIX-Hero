@@ -3,14 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Manifest;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
 {
     public class SetPackageIdentityExecutor : AppxManifestEditExecutor<SetPackageIdentity>, IValueChangedExecutor
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SetPackageIdentityExecutor));
-
+        private static readonly LogSource Logger = new();
         public SetPackageIdentityExecutor(XDocument manifest) : base(manifest)
         {
         }
@@ -43,14 +42,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("Publisher");
                 if (attr == null)
                 {
-                    Logger.Info($"Setting attribute 'Publisher' to '{command.Publisher}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'Publisher' to '{command.Publisher}'...");
                     attr = new XAttribute("Publisher", command.Publisher);
                     identity.Add(attr);
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Publisher", command.Publisher));
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'Publisher' from '{attr.Value}' to '{command.Publisher}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'Publisher' from '{attr.Value}' to '{command.Publisher}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Publisher", attr.Value, command.Publisher));
                     attr.Value = command.Publisher;
                 }
@@ -67,14 +66,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("Name");
                 if (attr == null)
                 {
-                    Logger.Info($"Setting attribute 'Name' to '{command.Name}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'Name' to '{command.Name}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Name", command.Name));
                     attr = new XAttribute("Name", command.Name);
                     identity.Add(attr);
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'Name' from '{attr.Value}' to '{command.Name}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'Name' from '{attr.Value}' to '{command.Name}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Name", attr.Value, command.Name));
                     attr.Value = command.Name;
                 }
@@ -92,7 +91,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                         throw new ArgumentException(validationError, nameof(command));
                     }
 
-                    Logger.Info($"Setting attribute 'Version' to '{newVersion}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'Version' to '{newVersion}'...");
                     attr = new XAttribute("Version", newVersion);
                     identity.Add(attr);
                 }
@@ -106,7 +105,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                         throw new ArgumentException(validationError, nameof(command));
                     }
 
-                    Logger.Info($"Changing attribute 'Version' from '{attr.Value}' to '{newVersion}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'Version' from '{attr.Value}' to '{newVersion}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("Version", attr.Value, newVersion));
                     attr.Value = newVersion;
                 }
@@ -117,14 +116,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("ProcessorArchitecture");
                 if (attr == null)
                 {
-                    Logger.Info($"Setting attribute 'ProcessorArchitecture' to '{command.ProcessorArchitecture}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'ProcessorArchitecture' to '{command.ProcessorArchitecture}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ProcessorArchitecture", command.ProcessorArchitecture));
                     attr = new XAttribute("ProcessorArchitecture", command.ProcessorArchitecture);
                     identity.Add(attr);
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'ProcessorArchitecture' from '{attr.Value}' to '{command.ProcessorArchitecture}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'ProcessorArchitecture' from '{attr.Value}' to '{command.ProcessorArchitecture}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ProcessorArchitecture", attr.Value, command.ProcessorArchitecture));
                     attr.Value = command.ProcessorArchitecture;
                 }
@@ -141,14 +140,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Manifest
                 var attr = identity.Attribute("ResourceId");
                 if (attr == null)
                 {
-                    Logger.Info($"Setting attribute 'ResourceId' to '{command.ResourceId}'...");
+                    Logger.Info().WriteLine($"Setting attribute 'ResourceId' to '{command.ResourceId}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ResourceId", command.ResourceId));
                     attr = new XAttribute("ResourceId", command.ResourceId);
                     identity.Add(attr);
                 }
                 else
                 {
-                    Logger.Info($"Changing attribute 'ResourceId' from '{attr.Value}' to '{command.ResourceId}'...");
+                    Logger.Info().WriteLine($"Changing attribute 'ResourceId' from '{attr.Value}' to '{command.ResourceId}'...");
                     this.ValueChanged?.Invoke(this, new CommandValueChanged("ResourceId", attr.Value, command.ResourceId));
                     attr.Value = command.ResourceId;
                 }

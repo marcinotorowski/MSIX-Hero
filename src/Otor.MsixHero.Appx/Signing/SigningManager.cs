@@ -32,7 +32,7 @@ using Otor.MsixHero.Appx.Signing.DeviceGuard;
 using Otor.MsixHero.Appx.Signing.Entities;
 using Otor.MsixHero.Appx.Signing.TimeStamping;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
@@ -44,8 +44,7 @@ namespace Otor.MsixHero.Appx.Signing
     public class SigningManager : ISigningManager
     {
         private readonly ITimeStampFeed timeStampFeed;
-        private static readonly ILog Logger = LogManager.GetLogger();
-
+        private static readonly LogSource Logger = new();
         public SigningManager(ITimeStampFeed timeStampFeed)
         {
             this.timeStampFeed = timeStampFeed;
@@ -86,7 +85,7 @@ namespace Otor.MsixHero.Appx.Signing
                     catch (Exception e)
                     {
                         // This will be probably WindowsCryptographicException but we do not want to expose too much...
-                        Logger.Debug("Selected file {0} is not signed and no certificate could be exported from it (exception of type {1}).", msixFile, e.GetType().Name);
+                        Logger.Debug().WriteLine("Selected file {0} is not signed and no certificate could be exported from it (exception of type {1}).", msixFile, e.GetType().Name);
                         return null;
                     }
                 },
@@ -108,7 +107,7 @@ namespace Otor.MsixHero.Appx.Signing
                     case ".dll":
                     case FileConstants.AppxBundleExtension:
                     case FileConstants.MsixBundleExtension:
-                        Logger.Info("Verifying certificate from a signable file {0}...", certificateFileOrSignedFile);
+                        Logger.Info().WriteLine("Verifying certificate from a signable file {0}...", certificateFileOrSignedFile);
 
                         try
                         {
@@ -122,7 +121,7 @@ namespace Otor.MsixHero.Appx.Signing
                         }
                         catch (Exception e)
                         {
-                            Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile, e);
+                            Logger.Debug().WriteLine("Could not get certificate details from file " + certificateFileOrSignedFile, e);
                             return new TrustStatus();
                         }
                         break;
@@ -130,7 +129,7 @@ namespace Otor.MsixHero.Appx.Signing
                     case ".p12":
                     case ".pfx":
                     case ".p7x":
-                        Logger.Info("Verifying certificate file {0}...", certificateFileOrSignedFile);
+                        Logger.Info().WriteLine("Verifying certificate file {0}...", certificateFileOrSignedFile);
 
                         try
                         {
@@ -144,7 +143,7 @@ namespace Otor.MsixHero.Appx.Signing
                         }
                         catch (Exception e)
                         {
-                            Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile, e);
+                            Logger.Debug().WriteLine("Could not get certificate details from file " + certificateFileOrSignedFile, e);
                             return new TrustStatus();
                         }
 
@@ -152,7 +151,7 @@ namespace Otor.MsixHero.Appx.Signing
                     default:
                         try
                         {
-                            Logger.Info("Trying to verify the certificate from a potentially signable file {0}...", certificateFileOrSignedFile);
+                            Logger.Info().WriteLine("Trying to verify the certificate from a potentially signable file {0}...", certificateFileOrSignedFile);
                             // certObject = X509Certificate.CreateFromSignedFile(certificateFileOrSignedFile);
                             certObject = new X509Certificate2Collection();
                             certObject.Import(certificateFileOrSignedFile);
@@ -163,8 +162,8 @@ namespace Otor.MsixHero.Appx.Signing
                         }
                         catch (Exception)
                         {
-                            Logger.Warn("The file {0} does not seem to be signed.", certificateFileOrSignedFile);
-                            Logger.Info("Trying to verify the certificate from a potential certificate file {0}...", certificateFileOrSignedFile);
+                            Logger.Warn().WriteLine("The file {0} does not seem to be signed.", certificateFileOrSignedFile);
+                            Logger.Info().WriteLine("Trying to verify the certificate from a potential certificate file {0}...", certificateFileOrSignedFile);
 
                             try
                             {
@@ -178,7 +177,7 @@ namespace Otor.MsixHero.Appx.Signing
                             }
                             catch (Exception e)
                             {
-                                Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile, e);
+                                Logger.Debug().WriteLine("Could not get certificate details from file " + certificateFileOrSignedFile, e);
                                 return new TrustStatus();
                             }
                         }
@@ -188,7 +187,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                 if (certObject.Count == 0)
                 {
-                    Logger.Debug("Could not get certificate details from file " + certificateFileOrSignedFile + " because the list of certificates was empty.");
+                    Logger.Debug().WriteLine("Could not get certificate details from file " + certificateFileOrSignedFile + " because the list of certificates was empty.");
                     return new TrustStatus();
                 }
 
@@ -200,7 +199,7 @@ namespace Otor.MsixHero.Appx.Signing
                 var validated = await Task.Run(() => certObject.OfType<X509Certificate2>().FirstOrDefault(c => c.Verify()), cancellationToken).ConfigureAwait(false);
                 if (validated != null)
                 {
-                    Logger.Debug("The certificate seems to be valid.");
+                    Logger.Debug().WriteLine("The certificate seems to be valid.");
                     return new TrustStatus(true, (preferredCertObject ?? validated).GetNameInfo(X509NameType.SimpleName, false))
                     {
                         Expires = (preferredCertObject ?? validated).NotAfter,
@@ -210,7 +209,7 @@ namespace Otor.MsixHero.Appx.Signing
                 }
                 else
                 {
-                    Logger.Warn("The certificate seems to be invalid.");
+                    Logger.Warn().WriteLine("The certificate seems to be invalid.");
                     return new TrustStatus(false, (preferredCertObject ?? certObject[0]).GetNameInfo(X509NameType.SimpleName, false))
                     {
                         Expires = (preferredCertObject ?? certObject[0]).NotAfter,
@@ -263,7 +262,7 @@ namespace Otor.MsixHero.Appx.Signing
                     throw new ArgumentOutOfRangeException(nameof(certStoreType), certStoreType, null);
             }
 
-            Logger.Info($"Getting the list of certificates from {loc} containing a private key and in a valid time range.");
+            Logger.Info().WriteLine($"Getting the list of certificates from {loc} containing a private key and in a valid time range.");
 
             using var store = new X509Store(StoreName.My, loc);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
@@ -282,7 +281,7 @@ namespace Otor.MsixHero.Appx.Signing
 
             foreach (var certificate in col)
             {
-                Logger.Debug("Processing certificate {0}...", certificate);
+                Logger.Debug().WriteLine("Processing certificate {0}...", certificate);
                 cancellationToken.ThrowIfCancellationRequested();
                 list.Add(CreateFromX509(certificate, certStoreType));
             }
@@ -354,7 +353,7 @@ namespace Otor.MsixHero.Appx.Signing
                 throw new ArgumentNullException(nameof(certificate));
             }
 
-            Logger.Info("Signing package {0} using personal certificate {1}.", package, certificate.Subject);
+            Logger.Info().WriteLine("Signing package {0} using personal certificate {1}.", package, certificate.Subject);
 
             StoreLocation loc;
 
@@ -412,7 +411,7 @@ namespace Otor.MsixHero.Appx.Signing
                     throw new NotSupportedException($"Signature algorithm {x509[0].SignatureAlgorithm.FriendlyName} is not supported.");
                 }
 
-                Logger.Debug("Signing package {0} with algorithm {1}.", localCopy, x509[0].SignatureAlgorithm.FriendlyName);
+                Logger.Debug().WriteLine("Signing package {0} with algorithm {1}.", localCopy, x509[0].SignatureAlgorithm.FriendlyName);
 
                 var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
@@ -423,7 +422,7 @@ namespace Otor.MsixHero.Appx.Signing
                 progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
-                Logger.Debug("Moving {0} to {1}.", localCopy, package);
+                Logger.Debug().WriteLine("Moving {0} to {1}.", localCopy, package);
                 File.Copy(localCopy, package, true);
                 progress?.Report(new ProgressData(95, "Signing..."));
             }
@@ -438,7 +437,8 @@ namespace Otor.MsixHero.Appx.Signing
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn(e, "Clean-up of a temporary file {0} failed.", localCopy);
+                    Logger.Warn().WriteLine("Clean-up of a temporary file {0} failed.", localCopy);
+                    Logger.Warn().WriteLine(e);
                 }
             }
         }
@@ -451,7 +451,7 @@ namespace Otor.MsixHero.Appx.Signing
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            Logger.Info("Signing package {0} using Device Guard for {1}.", package, config.Subject);
+            Logger.Info().WriteLine("Signing package {0} using Device Guard for {1}.", package, config.Subject);
 
             var dgssTokenPath = await new DgssTokenCreator().CreateDeviceGuardJsonTokenFile(config, cancellationToken);
             try
@@ -477,7 +477,7 @@ namespace Otor.MsixHero.Appx.Signing
                     progress?.Report(new ProgressData(75, "Signing with Device Guard..."));
                     await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
-                    Logger.Debug("Moving {0} to {1}.", localCopy, package);
+                    Logger.Debug().WriteLine("Moving {0} to {1}.", localCopy, package);
                     File.Copy(localCopy, package, true);
                     progress?.Report(new ProgressData(95, "Signing with Device Guard..."));
                 }
@@ -492,7 +492,8 @@ namespace Otor.MsixHero.Appx.Signing
                     }
                     catch (Exception e)
                     {
-                        Logger.Warn(e, "Clean-up of a temporary file {0} failed.", localCopy);
+                        Logger.Warn().WriteLine("Clean-up of a temporary file {0} failed.", localCopy);
+                        Logger.Warn().WriteLine(e);
                     }
                 }
             }
@@ -521,7 +522,7 @@ namespace Otor.MsixHero.Appx.Signing
             var rnd = new Random();
             var autoServer = servers.Servers[rnd.Next(0, servers.Servers.Count)].Url;
 
-            Logger.Info($"Generated a random pick timestamp URL ({autoServer}).");
+            Logger.Info().WriteLine($"Generated a random pick timestamp URL ({autoServer}).");
             return autoServer;
         }
 
@@ -535,14 +536,14 @@ namespace Otor.MsixHero.Appx.Signing
             CancellationToken cancellationToken = default,
             IProgress<ProgressData> progress = null)
         {
-            Logger.Info("Signing package {0} using PFX {1}.", package, pfxPath);
+            Logger.Info().WriteLine("Signing package {0} using PFX {1}.", package, pfxPath);
 
             if (!File.Exists(pfxPath))
             {
                 throw new FileNotFoundException($"File {pfxPath} does not exit.");
             }
 
-            Logger.Debug("Analyzing given certificate...");
+            Logger.Debug().WriteLine("Analyzing given certificate...");
             var x509 = new X509Certificate2(await File.ReadAllBytesAsync(pfxPath, cancellationToken).ConfigureAwait(false), password);
 
             var localCopy = await this.PreparePackageForSigning(package, updatePublisher, increaseVersion, x509, cancellationToken).ConfigureAwait(false);
@@ -562,7 +563,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                 var openTextPassword = new System.Net.NetworkCredential(string.Empty, password).Password;
 
-                Logger.Debug("Signing package {0} with algorithm {1}.", localCopy, x509.SignatureAlgorithm.FriendlyName);
+                Logger.Debug().WriteLine("Signing package {0} with algorithm {1}.", localCopy, x509.SignatureAlgorithm.FriendlyName);
 
                 var sdk = new SignToolWrapper();
                 progress?.Report(new ProgressData(25, "Signing..."));
@@ -571,7 +572,7 @@ namespace Otor.MsixHero.Appx.Signing
                 progress?.Report(new ProgressData(75, "Signing..."));
                 await Task.Delay(500, cancellationToken).ConfigureAwait(false);
 
-                Logger.Debug("Moving {0} to {1}.", localCopy, package);
+                Logger.Debug().WriteLine("Moving {0} to {1}.", localCopy, package);
                 File.Copy(localCopy, package, true);
                 progress?.Report(new ProgressData(95, "Signing..."));
             }
@@ -586,7 +587,8 @@ namespace Otor.MsixHero.Appx.Signing
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn(e, "Clean-up of a temporary file {0} failed.", localCopy);
+                    Logger.Warn().WriteLine("Clean-up of a temporary file {0} failed.", localCopy);
+                    Logger.Warn().WriteLine(e);
                 }
             }
         }
@@ -737,13 +739,13 @@ namespace Otor.MsixHero.Appx.Signing
             if (updatePublisher)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                Logger.Info("Updating Publisher property based on the PFX file...");
+                Logger.Info().WriteLine("Updating Publisher property based on the PFX file...");
 
                 var tempDirectory = Path.Combine(Path.GetTempPath(), "MSIX-Hero", Guid.NewGuid().ToString("N").Substring(0, 8).ToUpperInvariant());
 
                 try
                 {
-                    Logger.Debug("Unpacking {0} to {1}.", package, tempDirectory);
+                    Logger.Debug().WriteLine("Unpacking {0} to {1}.", package, tempDirectory);
                     await sdk.UnpackPackage(package, tempDirectory, cancellationToken).ConfigureAwait(false);
 
                     var manifestFilePath = Path.Combine(tempDirectory, FileConstants.AppxManifestFile);
@@ -776,12 +778,12 @@ namespace Otor.MsixHero.Appx.Signing
                         var publisher = identityNode.Attribute("Publisher");
                         if (publisher == null)
                         {
-                            Logger.Info("Setting Publisher to '{0}'", subject);
+                            Logger.Info().WriteLine("Setting Publisher to '{0}'", subject);
                             identityNode.Add(new XAttribute("Publisher", subject));
                         }
                         else
                         {
-                            Logger.Info("Replacing Publisher '{0}' with '{1}'", publisher.Value, subject);
+                            Logger.Info().WriteLine("Replacing Publisher '{0}' with '{1}'", publisher.Value, subject);
                             publisher.Value = subject;
                         }
                         
@@ -824,7 +826,7 @@ namespace Otor.MsixHero.Appx.Signing
                                         break;
                                 }
 
-                                Logger.Info("Replacing Version '{0}' with '{1}'", content, parsedVersion);
+                                Logger.Info().WriteLine("Replacing Version '{0}' with '{1}'", content, parsedVersion);
                                 version.Value = parsedVersion.ToString();
                             }
                         }
@@ -851,7 +853,7 @@ namespace Otor.MsixHero.Appx.Signing
                         File.Delete(localCopy);
                     }
 
-                    Logger.Debug("Packing {0} to {1}.", tempDirectory, localCopy);
+                    Logger.Debug().WriteLine("Packing {0} to {1}.", tempDirectory, localCopy);
                     cancellationToken.ThrowIfCancellationRequested();
                     await sdk.PackPackageDirectory(tempDirectory, localCopy, true, true, cancellationToken).ConfigureAwait(false);
                 }
@@ -863,18 +865,19 @@ namespace Otor.MsixHero.Appx.Signing
                 {
                     try
                     {
-                        Logger.Trace("Deleting temporary directory {0}.", tempDirectory);
+                        Logger.Verbose().WriteLine("Deleting temporary directory {0}.", tempDirectory);
                         Directory.Delete(tempDirectory, true);
                     }
                     catch (Exception e)
                     {
-                        Logger.Warn(e, "Clean-up of temporary directory {0} failed.", tempDirectory);
+                        Logger.Warn().WriteLine("Clean-up of temporary directory {0} failed.", tempDirectory);
+                        Logger.Warn().WriteLine(e);
                     }
                 }
             }
             else
             {
-                Logger.Debug("Copying {0} to {1}.", package, localCopy);
+                Logger.Debug().WriteLine("Copying {0} to {1}.", package, localCopy);
                 File.Copy(package, localCopy, true);
             }
 

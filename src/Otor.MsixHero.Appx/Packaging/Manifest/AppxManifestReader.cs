@@ -33,7 +33,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.Manifest.Helpers;
 using Otor.MsixHero.Appx.Psf;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest
 {
@@ -41,8 +41,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
     {
         protected readonly PsfReader PsfReader = new PsfReader();
 
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppxManifestReader));
-
+        private static readonly LogSource Logger = new();
         public Task<AppxPackage> Read(IAppxFileReader fileReader, CancellationToken cancellationToken = default)
         {
             var isMsix = fileReader.FileExists(FileConstants.AppxManifestFile);
@@ -76,7 +75,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest
                     }
                     catch (Exception)
                     {
-                        Logger.Warn("Could not read a dependency to {0} {2} by {1}", item.Name, item.Publisher, item.Version);
+                        Logger.Warn().WriteLine("Could not read a dependency to {0} {2} by {1}", item.Name, item.Publisher, item.Version);
                     }
                 }
             }

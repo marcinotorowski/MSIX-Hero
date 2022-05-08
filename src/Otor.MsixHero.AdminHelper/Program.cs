@@ -33,8 +33,7 @@ namespace Otor.MsixHero.AdminHelper
 {
     public class Program
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-
+        private static readonly LogSource Logger = new();
         static Program()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
@@ -46,7 +45,6 @@ namespace Otor.MsixHero.AdminHelper
             {
                 var service = new LocalConfigurationService();
                 var config = service.GetCurrentConfiguration();
-
                 logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
             });
 
@@ -64,18 +62,18 @@ namespace Otor.MsixHero.AdminHelper
                 return;
             }
 
-            Logger.Warn(e.Exception);
+            Logger.Warn().WriteLine(e.Exception);
         }
         
         private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.ExceptionObject is Exception ex)
             {
-                Logger.Fatal(ex);
+                Logger.Error().WriteLine(ex);
             }
             else
             {
-                Logger.Fatal($"Unhandled exception {e.ExceptionObject}");
+                Logger.Error().WriteLine($"Unhandled exception {e.ExceptionObject}");
             }
         }
 
@@ -84,12 +82,9 @@ namespace Otor.MsixHero.AdminHelper
         {
             try
             {
-                LogSettings.RegisterDefaultLogger<Dapplo.Log.Loggers.ColorConsoleLogger>();
-                LogSettings.DefaultLogger.LogLevel = LogLevels.Verbose;
-
                 if (args.Length > 0 && args[0] == "--selfElevate")
                 {
-                    Logger.Debug("Preparing to start the pipe server...");
+                    Logger.Debug().WriteLine("Preparing to start the pipe server...");
 
                     IConfigurationService configurationService = new LocalConfigurationService();
                     var signingManager = new SigningManager(MsixHeroGistTimeStampFeed.CreateCached());
@@ -112,20 +107,22 @@ namespace Otor.MsixHero.AdminHelper
                 }
                 else
                 {
-                    Logger.Fatal("Unsupported command line arguments, terminating...");
+                    Logger.Fatal().WriteLine("Unsupported command line arguments, terminating...");
                     Environment.ExitCode = 1;
                 }
             }
             catch (AggregateException e)
             {
-                Logger.Fatal(e.GetBaseException(), "Fatal exception, the program will be closed.");
+                Logger.Fatal().WriteLine("Fatal exception, the program will be closed.");
+                Logger.Fatal().WriteLine(e.GetBaseException());
             }
             catch (Exception e)
             {
-                Logger.Fatal(e, "Fatal exception, the program will be closed.");
+                Logger.Fatal().WriteLine("Fatal exception, the program will be closed.");
+                Logger.Error().WriteLine(e);
             }
 
-            Logger.Info("Waiting for the user to press a key...");
+            Logger.Info().WriteLine("Waiting for the user to press a key...");
             Console.ReadKey();
         }
     }

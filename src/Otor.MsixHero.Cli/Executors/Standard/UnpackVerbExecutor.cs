@@ -19,7 +19,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
@@ -27,8 +27,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 {
     public class UnpackVerbExecutor : VerbExecutor<UnpackVerb>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(UnpackVerbExecutor));
-
+        private static readonly LogSource Logger = new();
         public UnpackVerbExecutor(UnpackVerb verb, IConsole console) : base(verb, console)
         {
         }
@@ -37,7 +36,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             var msixSdkWrapper = new MakeAppxWrapper();
 
-            Logger.Info($"Unpacking [{this.Verb.Package}] to [{this.Verb.Directory}]...");
+            Logger.Info().WriteLine($"Unpacking [{this.Verb.Package}] to [{this.Verb.Directory}]...");
 
             try
             {
@@ -56,13 +55,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (SdkException e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message);
                 return e.ExitCode;
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError(e.Message);
                 return StandardExitCodes.ErrorGeneric;
             }

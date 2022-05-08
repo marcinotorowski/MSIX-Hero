@@ -25,7 +25,7 @@ using Otor.MsixHero.AppInstaller.Entities;
 using Otor.MsixHero.Appx.Editor;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
@@ -33,8 +33,7 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
     public class PackageSelectorViewModel : ChangeableContainer
     {
         private readonly PackageSelectorDisplayMode displayMode;
-        private static readonly ILog Logger = LogManager.GetLogger();
-        private string customPrompt;
+        private static readonly LogSource Logger = new();        private string customPrompt;
         
         private bool allowChangingSourcePackage;
 
@@ -285,7 +284,7 @@ namespace Otor.MsixHero.App.Controls.PackageSelector.ViewModel
                 }
                 catch (Exception)
                 {
-                    Logger.Warn($"Could not read value from MSIX manifest {e.NewValue}");
+                    Logger.Warn().WriteLine($"Could not read value from MSIX manifest {e.NewValue}");
                 }
             }
         }

@@ -18,17 +18,16 @@ using System;
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
 {
     public class VhdSizeCalculator : ISizeCalculator
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(VhdSizeCalculator));
-
+        private static readonly LogSource Logger = new();
         public Task<long> GetRequiredSize(string sourcePath, double extraMargin = 0.2, CancellationToken cancellationToken = default)
         {
-            Logger.Debug($"Determining required size for VHD(X) drive {sourcePath} with extra margin {(int)(100 * extraMargin)}%...");
+            Logger.Debug().WriteLine($"Determining required size for VHD(X) drive {sourcePath} with extra margin {(int)(100 * extraMargin)}%...");
             const long reserved = 16 * 1024 * 1024;
             const long minSize = 32 * 1024 * 1024;
 
@@ -61,7 +60,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator
             }
 
             var actualMinSize = Math.Max(minSize, (long)(total * (1 + extraMargin) + reserved));
-            Logger.Info("Required minimum size for VHD volume is " + actualMinSize + " bytes.");
+            Logger.Info().WriteLine("Required minimum size for VHD volume is " + actualMinSize + " bytes.");
             return Task.FromResult(actualMinSize);
         }
     }

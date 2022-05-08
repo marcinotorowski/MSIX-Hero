@@ -25,7 +25,7 @@ using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.DeveloperMode;
 using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.Repackaging;
 using Otor.MsixHero.App.Modules.SystemStatus.ViewModel.WindowsStoreUpdates;
 using Otor.MsixHero.Appx.Diagnostic.Developer.Enums;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.SystemStatus.View
@@ -35,8 +35,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.View
     /// </summary>
     public partial class SystemStatusView
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SystemStatusView));
-
+        private static readonly LogSource Logger = new();
         private readonly IInteractionService interactionService;
 
         public SystemStatusView(IInteractionService interactionService)
@@ -74,7 +73,7 @@ namespace Otor.MsixHero.App.Modules.SystemStatus.View
             }
             catch (Exception exception)
             {
-                Logger.Error(exception);
+                Logger.Error().WriteLine(exception);
                 this.interactionService.ShowError($"Could not open the URL {url}", exception);
             }
         }

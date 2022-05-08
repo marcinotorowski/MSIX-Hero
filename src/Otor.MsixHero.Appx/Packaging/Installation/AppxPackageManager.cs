@@ -25,7 +25,7 @@ using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Appx.Packaging.Interop;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
@@ -34,8 +34,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     [SuppressMessage("ReSharper", "UnusedVariable")]
     public class AppxPackageManager : IAppxPackageManager
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-        
+        private static readonly LogSource Logger = new();        
         public async Task<AppInstallerUpdateAvailabilityResult> CheckForUpdates(string itemPackageId, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = default)
         {
             if (string.IsNullOrEmpty(itemPackageId))
@@ -71,7 +70,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         
         public async Task Stop(string packageFullName, CancellationToken cancellationToken = default)
         {
-            Logger.Info("Stopping package " + packageFullName);
+            Logger.Info().WriteLine("Stopping package " + packageFullName);
 
             var taskListWrapper = new TaskListWrapper();
             IList<TaskListWrapper.AppProcess> processes;
@@ -85,10 +84,10 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             }
 
             var processIds = processes.Where(p => p.PackageName == packageFullName).Select(p => p.ProcessId).ToArray();
-            Logger.Info("The package appears to have currently {0} associated running processes with the following PIDs: {1}.", processIds.Length, string.Join(", ", processIds));
+            Logger.Info().WriteLine("The package appears to have currently {0} associated running processes with the following PIDs: {1}.", processIds.Length, string.Join(", ", processIds));
             foreach (var pid in processIds)
             {
-                Logger.Info("Killing process PID = " + pid + " and its children...");
+                Logger.Info().WriteLine("Killing process PID = " + pid + " and its children...");
 
                 try
                 {
@@ -97,11 +96,11 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
                 }
                 catch (ArgumentException)
                 {
-                    Logger.Warn("Could not find the process PID = " + pid + ". Most likely, the process has been already killed or stopped.");
+                    Logger.Warn().WriteLine("Could not find the process PID = " + pid + ". Most likely, the process has been already killed or stopped.");
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn("Could not kill process PID = " + pid + ".", e);
+                    Logger.Warn().WriteLine("Could not kill process PID = " + pid + ".", e);
                 }
             }
         }

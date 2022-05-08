@@ -31,7 +31,7 @@ using Otor.MsixHero.Cli.Verbs;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Cryptography;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
@@ -39,8 +39,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 {
     public class SignVerbExecutor : VerbExecutor<SignVerb>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SignVerbExecutor));
-        private readonly ISigningManager signingManager;
+        private static readonly LogSource Logger = new();        private readonly ISigningManager signingManager;
         private readonly IConfigurationService configurationService;
         protected readonly DeviceGuardHelper DeviceGuardHelper = new DeviceGuardHelper();
         protected readonly DgssTokenCreator DeviceGuardTokenCreator = new DgssTokenCreator();
@@ -142,7 +141,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                         }
                         catch (Exception)
                         {
-                            Logger.Error("Could not use the configured password. Decryption of the string from settings failed.");
+                            Logger.Error().WriteLine("Could not use the configured password. Decryption of the string from settings failed.");
                             await this.Console.WriteError("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
                             return StandardExitCodes.ErrorSettings;
                         }
@@ -161,7 +160,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 case CertificateSource.DeviceGuard:
                     if (config.Signing.DeviceGuard == null)
                     {
-                        Logger.Error("Device Guard has not been configured yet.");
+                        Logger.Error().WriteLine("Device Guard has not been configured yet.");
                         await this.Console.WriteError("Device Guard has not been configured yet.").ConfigureAwait(false);
                         return StandardExitCodes.ErrorSettings;
                     }
@@ -171,7 +170,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                         this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
                         !this.Verb.NoPublisherUpdate);
                 default:
-                    Logger.Error("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.");
+                    Logger.Error().WriteLine("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.");
                     await this.Console.WriteError("No certificate has been provided, and no default certificate has been configured in MSIX Hero settings.").ConfigureAwait(false);
                     return StandardExitCodes.ErrorSettings;
             }
@@ -198,7 +197,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             var msg = $"Options --{GetOptionName(prop1)} and --{GetOptionName(prop2)} cannot be used together.";
             await this.Console.WriteError(msg).ConfigureAwait(false);
-            Logger.Error(msg);
+            Logger.Error().WriteLine(msg);
             return (int)ErrorType.MutuallyExclusiveSetError;
         }
 
@@ -206,7 +205,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         {
             var msg = $"Option --{GetOptionName(property)}: {message}";
             await this.Console.WriteError(msg).ConfigureAwait(false);
-            Logger.Error(msg);
+            Logger.Error().WriteLine(msg);
             return (int)ErrorType.SetValueExceptionError;
         }
 
@@ -331,13 +330,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (SdkException e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
                 return e.ExitCode;
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed: {e.Message}");
                 return StandardExitCodes.ErrorGeneric;
             }
@@ -362,13 +361,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (SdkException e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
                 return e.ExitCode;
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed: {e.Message}");
                 return StandardExitCodes.ErrorGeneric;
             }
@@ -406,7 +405,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed: {e.Message}");
                 return StandardExitCodes.ErrorGeneric;
             }
@@ -420,7 +419,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             var certificate = certificates.FirstOrDefault(c => string.Equals(c.Thumbprint, thumbprint, StringComparison.Ordinal));
             if (certificate == null)
             {
-                Logger.Error("Certificate with thumbprint {0} was not found.", thumbprint);
+                Logger.Error().WriteLine("Certificate with thumbprint {0} was not found.", thumbprint);
                 await this.Console.WriteError($"Certificate with thumbprint {thumbprint} could not be found");
                 return StandardExitCodes.ErrorGeneric;
             }
@@ -439,13 +438,13 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             }
             catch (SdkException e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed with error code 0x{e.ExitCode:X}: {e.Message}");
                 return e.ExitCode;
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.Error().WriteLine(e);
                 await this.Console.WriteError($"Signing failed: {e.Message}");
                 return StandardExitCodes.ErrorGeneric;
             }

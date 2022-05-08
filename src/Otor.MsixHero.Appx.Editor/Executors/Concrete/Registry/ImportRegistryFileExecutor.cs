@@ -19,14 +19,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 {
     public class ImportRegistryFileExecutor : ExtractedAppxExecutor<ImportRegistryFile>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(ImportRegistryFileExecutor));
-
+        private static readonly LogSource Logger = new();
         public ImportRegistryFileExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -37,12 +36,12 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 
         public override async Task Execute(ImportRegistryFile command, CancellationToken cancellationToken = default)
         {
-            Logger.Info($"Importing registry file {command.FilePath}...");
+            Logger.Info().WriteLine($"Importing registry file {command.FilePath}...");
             var regFileWriter = new MsixRegistryFileWriter(this.Directory.FullName);
             regFileWriter.ImportRegFile(command.FilePath);
             if (!await regFileWriter.Flush().ConfigureAwait(false))
             {
-                Logger.Warn("No entries have been imported.");
+                Logger.Warn().WriteLine("No entries have been imported.");
             }
         }
     }

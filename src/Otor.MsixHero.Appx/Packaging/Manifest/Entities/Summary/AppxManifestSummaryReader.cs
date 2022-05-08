@@ -22,17 +22,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otor.MsixHero.Appx.Packaging.Installation.Enums;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 {
     public static class AppxManifestSummaryReader
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-        
+        private static readonly LogSource Logger = new();        
         public static async Task<AppxManifestSummary> FromMsix(string fullMsixFilePath, ReadMode mode = ReadMode.Minimal)
         {
-            Logger.Info("Reading application manifest {0}...", fullMsixFilePath);
+            Logger.Info().WriteLine("Reading application manifest {0}...", fullMsixFilePath);
             
             if (!File.Exists(fullMsixFilePath))
             {
@@ -41,10 +40,10 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             
             try
             {
-                Logger.Debug("Opening file as ZIP...");
+                Logger.Debug().WriteLine("Opening file as ZIP...");
                 using var zipFile = ZipFile.OpenRead(fullMsixFilePath);
 
-                Logger.Debug("Getting entry {0}...", FileConstants.AppxManifestFile);
+                Logger.Debug().WriteLine("Getting entry {0}...", FileConstants.AppxManifestFile);
                 var entry = zipFile.GetEntry(FileConstants.AppxManifestFile) ?? zipFile.Entries.FirstOrDefault(e => string.Equals(e.FullName, FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase));
                 if (entry == null)
                 {
@@ -62,7 +61,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
 
         public static Task<AppxManifestSummary> FromInstallLocation(string installLocation, ReadMode mode = ReadMode.Minimal)
         {
-            Logger.Debug("Reading application manifest from install location {0}...", installLocation);
+            Logger.Debug().WriteLine("Reading application manifest from install location {0}...", installLocation);
             if (!Directory.Exists(installLocation))
             {
                 throw new DirectoryNotFoundException("Install location " + installLocation + " not found.");
@@ -86,7 +85,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
         {
             var result = new AppxManifestSummary();
             
-            Logger.Debug("Loading XML file...");
+            Logger.Debug().WriteLine("Loading XML file...");
             var xmlDocument = await XDocument.LoadAsync(manifestStream, LoadOptions.None, CancellationToken.None).ConfigureAwait(false);
             
             var identity = AppxIdentityReader.GetIdentityFromPackageManifest(xmlDocument);
@@ -109,7 +108,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
             if ((mode & ReadMode.Properties) == ReadMode.Properties)
             {
                 var propertiesNode = packageNode.Element(win10Namespace + "Properties") ?? packageNode.Element(appxNamespace + "Properties");
-                Logger.Trace("Executing XQuery /*[local-name()='Package']/*[local-name()='Properties'] for a single node...");
+                Logger.Verbose().WriteLine("Executing XQuery /*[local-name()='Package']/*[local-name()='Properties'] for a single node...");
                
                 if (propertiesNode != null)
                 {
@@ -174,7 +173,7 @@ namespace Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary
                 }
             }
 
-            Logger.Debug("Manifest information parsed.");
+            Logger.Debug().WriteLine("Manifest information parsed.");
             return result;
         }
 

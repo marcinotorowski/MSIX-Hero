@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Files.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Registry.Converter;
 using Otor.MsixHero.Registry.Parser;
 
@@ -27,8 +27,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 {
     public class DeleteRegistryValueExecutor : ExtractedAppxExecutor<DeleteRegistryValue>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(DeleteRegistryValueExecutor));
-
+        private static readonly LogSource Logger = new();
         public DeleteRegistryValueExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -40,12 +39,12 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
         public override async Task Execute(DeleteRegistryValue command, CancellationToken cancellationToken = default)
         {
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info($"Removing value {command.RegistryValueName} from key {target.Item1}\\{target.Item2}.");
+            Logger.Info().WriteLine($"Removing value {command.RegistryValueName} from key {target.Item1}\\{target.Item2}.");
             var regFileWriter = new MsixRegistryFileWriter(this.Directory.FullName);
             regFileWriter.WriteValue(command.RegistryKey, command.RegistryValueName, ValueType.None, null);
             if (!await regFileWriter.Flush().ConfigureAwait(false))
             {
-                Logger.Warn($"No changes have been applied. Registry key {target.Item1}\\{target.Item2} does not exist.");
+                Logger.Warn().WriteLine($"No changes have been applied. Registry key {target.Item1}\\{target.Item2} does not exist.");
             }
         }
     }

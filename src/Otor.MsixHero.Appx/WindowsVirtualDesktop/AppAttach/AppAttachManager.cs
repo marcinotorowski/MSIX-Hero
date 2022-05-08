@@ -26,7 +26,7 @@ using Newtonsoft.Json.Linq;
 using Otor.MsixHero.Appx.Signing;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.MountVol;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
@@ -37,8 +37,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
     {
         protected readonly MsixMgrWrapper MsixMgr = new MsixMgrWrapper();
         
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppAttachManager));
-        
+        private static readonly LogSource Logger = new();        
         private readonly ISigningManager signingManager;
         private readonly IConfigurationService configurationService;
         
@@ -75,7 +74,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             
             if (!Directory.Exists(volumeDirectory))
             {
-                Logger.Info("Creating directory {0}...", volumeDirectory);
+                Logger.Info().WriteLine("Creating directory {0}...", volumeDirectory);
                 Directory.CreateDirectory(volumeDirectory);
             }
 
@@ -186,14 +185,14 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             var packageFileInfo = new FileInfo(packagePath);
             if (!packageFileInfo.Exists)
             {
-                Logger.Error($"File {packagePath} does not exist.");
+                Logger.Error().WriteLine($"File {packagePath} does not exist.");
                 throw new FileNotFoundException($"File {packagePath} does not exist.", packagePath);
             }
 
             var volumeFileInfo = new FileInfo(volumePath);
             if (volumeFileInfo.Directory != null && !volumeFileInfo.Directory.Exists)
             {
-                Logger.Info($"Creating directory {volumeFileInfo.Directory.FullName}...");
+                Logger.Info().WriteLine($"Creating directory {volumeFileInfo.Directory.FullName}...");
                 volumeFileInfo.Directory.Create();
             }
 
@@ -201,7 +200,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             
             if (File.Exists(volumePath))
             {
-                Logger.Info($"Deleting existing file {volumePath}...");
+                Logger.Info().WriteLine($"Deleting existing file {volumePath}...");
                 File.Delete(volumePath);
             }
 
@@ -282,7 +281,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
         private async Task<Tuple<Guid, string>> GetExpandedPackageData(string volumePath, CancellationToken cancellationToken)
         {
-            Logger.Debug("Getting GUID and extracted path from volume {0}...", volumePath);
+            Logger.Debug().WriteLine("Getting GUID and extracted path from volume {0}...", volumePath);
             var wrapper = new DiskPartWrapper();
 
             var mountedVhd = false;
@@ -292,7 +291,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
                 var existing = await MountVolumeHelper.GetVolumeIdentifiers().ConfigureAwait(false);
 
-                Logger.Debug("Mounting {0}...", volumePath);
+                Logger.Debug().WriteLine("Mounting {0}...", volumePath);
                 await wrapper.MountVhd(volumePath, cancellationToken).ConfigureAwait(false);
                 mountedVhd = true;
 
@@ -318,7 +317,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
             {
                 if (mountedVhd)
                 {
-                    Logger.Debug("Dismounting {0}...", volumePath);
+                    Logger.Debug().WriteLine("Dismounting {0}...", volumePath);
                     await wrapper.DismountVhd(volumePath, cancellationToken).ConfigureAwait(false);
                 }
             }
@@ -330,7 +329,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
             foreach (var item in jsonData)
             {
-                Logger.Debug("Creating JSON file {0}...", jsonPath);
+                Logger.Debug().WriteLine("Creating JSON file {0}...", jsonPath);
 
                 var jsonObject = new JObject
                 {
@@ -355,7 +354,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
                 throw new InvalidOperationException("The target path must be a directory.");
             }
 
-            Logger.Debug("Creating scripts in {0}...", directory);
+            Logger.Debug().WriteLine("Creating scripts in {0}...", directory);
             var templateStage = Path.Combine(BundleHelper.TemplatesPath, "AppAttachStage.ps1");
 
             if (!File.Exists(templateStage))
@@ -394,7 +393,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach
 
             foreach (var file in files)
             {
-                Logger.Debug("Copying {0} to {1}...", file.Item1, file.Item2);
+                Logger.Debug().WriteLine("Copying {0} to {1}...", file.Item1, file.Item2);
                 await using var source = File.OpenRead(file.Item1);
                 await using var target = File.OpenWrite(file.Item2);
                 await source.CopyToAsync(target, cancellationToken).ConfigureAwait(false);

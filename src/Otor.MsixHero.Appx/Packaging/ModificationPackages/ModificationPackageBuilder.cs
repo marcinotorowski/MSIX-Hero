@@ -32,15 +32,14 @@ using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Packaging.ModificationPackages.Entities;
 using Otor.MsixHero.Appx.Packaging.Packer;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
 {
     public class ModificationPackageBuilder : IModificationPackageBuilder
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-
+        private static readonly LogSource Logger = new();
         private readonly IAppxPacker packer;
 
         public ModificationPackageBuilder(IAppxPacker packer)
@@ -185,7 +184,8 @@ namespace Otor.MsixHero.Appx.Packaging.ModificationPackages
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn(e, "Clean-up failed.");
+                    Logger.Warn().WriteLine("Clean-up failed.");
+                    Logger.Warn().WriteLine(e);
                 }
             }
         }

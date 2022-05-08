@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Packaging;
 using Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.SizeCalculator;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Sdk;
 
@@ -12,8 +12,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
 {
     public class AppAttachVolumeCreationMsixMgrStrategy : IAppAttachVolumeCreationStrategy
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(AppAttachVolumeCreationMsixMgrStrategy));
-
+        private static readonly LogSource Logger = new();
         protected readonly MsixMgrWrapper MsixMgr = new MsixMgrWrapper();
 
         public Task<IAppAttachVolumeCreationStrategyInitialization> Initialize(CancellationToken cancellation = default)
@@ -43,7 +42,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 throw new ArgumentNullException(nameof(packagePath), "Volume path must be empty.");
             }
 
-            Logger.Debug("Unpacking {0} with MSIXMGR...", packagePath);
+            Logger.Debug().WriteLine("Unpacking {0} with MSIXMGR...", packagePath);
             progressReporter?.Report(new ProgressData(20, $"Unpacking {Path.GetFileName(packagePath)}..."));
 
             MsixMgrWrapper.FileType fileType;
@@ -93,7 +92,7 @@ namespace Otor.MsixHero.Appx.WindowsVirtualDesktop.AppAttach.Strategy
                 size = (long)Math.Max(5, size / (1024.0 * 1024));
             }
 
-            Logger.Info("Expanding MSIX...");
+            Logger.Info().WriteLine("Expanding MSIX...");
             await this.MsixMgr.UnpackEx(
                 packagePath,
                 volumePath,

@@ -35,7 +35,6 @@ namespace Otor.MsixHero.Cli
             {
                 var service = new LocalConfigurationService();
                 var config = service.GetCurrentConfiguration();
-
                 logLevel = config.VerboseLogging ? MsixHeroLogLevel.Trace : MsixHeroLogLevel.Info;
             });
 

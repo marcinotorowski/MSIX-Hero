@@ -22,15 +22,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public class SignToolWrapper : ExeWrapper
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(SignToolWrapper));
-
+        private static readonly LogSource Logger = new();
         public async Task SignPackageWithDeviceGuard(IEnumerable<string> filePaths, string algorithmType, string dgssTokenPath, string timestampUrl, CancellationToken cancellationToken = default)
         {
             var signToolArguments = new StringBuilder();
@@ -59,7 +58,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             var args = signToolArguments.ToString();
             var signTool = SdkPathHelper.GetSdkPath("signTool.exe", BundleHelper.SdkPath);
-            Logger.Info("Executing {0} {1}", signTool, args);
+            Logger.Info().WriteLine("Executing {0} {1}", signTool, args);
 
             Action<string> callBack = _ => { };
 
@@ -147,7 +146,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var maskedArgs = remove < 0 ? args : args.Remove(remove, removeLength).Insert(remove, "<removed-from-log>");
 
             var signTool = SdkPathHelper.GetSdkPath("signTool.exe", BundleHelper.SdkPath);
-            Logger.Info("Executing {0} {1}", signTool, maskedArgs);
+            Logger.Info().WriteLine("Executing {0} {1}", signTool, maskedArgs);
 
             Action<string> callBack = _ => { };
 
@@ -208,7 +207,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             var args = signToolArguments.ToString();
             var signTool = SdkPathHelper.GetSdkPath("signTool.exe", BundleHelper.SdkPath);
-            Logger.Info("Executing {0} {1}", signTool, args);
+            Logger.Info().WriteLine("Executing {0} {1}", signTool, args);
 
             Action<string> callBack = _ => { };
 
@@ -351,7 +350,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             if (error != null)
             {
-                Logger.Info("Additional info from SignTool.exe: " + string.Join(Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
+                Logger.Info().WriteLine("Additional info from SignTool.exe: " + string.Join(Environment.NewLine, lines.Where(l => !string.IsNullOrWhiteSpace(l))));
                 return true;
             }
 

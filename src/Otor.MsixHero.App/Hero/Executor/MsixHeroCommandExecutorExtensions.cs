@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Otor.MsixHero.App.Hero.State;
 using Otor.MsixHero.App.Mvvm.Progress;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.Services;
 
@@ -42,8 +42,7 @@ namespace Otor.MsixHero.App.Hero.Executor
 
         private class MsixHeroDecoratedCommandExecutor : IMsixHeroCommandExecutor
         {
-            private static readonly ILog Logger = LogManager.GetLogger(typeof(MsixHeroDecoratedCommandExecutor));
-
+            private static readonly LogSource Logger = new();
             private readonly IMsixHeroCommandExecutor commandExecutor;
 
             private IInteractionService interactionService;
@@ -128,16 +127,16 @@ namespace Otor.MsixHero.App.Hero.Executor
                 }
                 catch (OperationCanceledException e)
                 {
-                    Logger.Warn(e.Message, e);
+                    Logger.Warn().WriteLine(e.Message, e);
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e.Message, e);
+                    Logger.Error().WriteLine(e.Message, e);
                     if (this.interactionService != null)
                     {
                         if (this.ShowError(e) == InteractionResult.Retry)
                         {
-                            Logger.Info("The user wanted to retry...");
+                            Logger.Info().WriteLine("The user wanted to retry...");
                             await this.Invoke(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                         }
                     }
@@ -168,17 +167,17 @@ namespace Otor.MsixHero.App.Hero.Executor
                 }
                 catch (OperationCanceledException e)
                 {
-                    Logger.Warn(e.Message, e);
+                    Logger.Warn().WriteLine(e);
                     return default;
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e.Message, e);
+                    Logger.Error().WriteLine(e);
                     if (this.interactionService != null)
                     {
                         if (this.ShowError(e) == InteractionResult.Retry)
                         {
-                            Logger.Info("The user wanted to retry...");
+                            Logger.Info().WriteLine("The user wanted to retry...");
                             return await this.Invoke<TCommand, TResult>(sender, command, cancellationToken, innerProgress).ConfigureAwait(false);
                         }
                     }

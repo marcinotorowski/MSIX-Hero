@@ -21,14 +21,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Files;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
 {
     public class DeleteFileExecutor : ExtractedAppxExecutor<DeleteFile>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(DeleteFileExecutor));
-
+        private static readonly LogSource Logger = new();
         public DeleteFileExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -61,7 +60,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                     var dir = new DirectoryInfo(this.Directory.FullName + "\\" + relativeDirectoryPath);
                     if (!dir.Exists)
                     {
-                        Logger.Warn($"Part of the path ('{relativeDirectoryPath}') does not exist.");
+                        Logger.Warn().WriteLine($"Part of the path ('{relativeDirectoryPath}') does not exist.");
                         filesToDelete = new List<FileInfo>();
                     }
                     else
@@ -87,7 +86,7 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                 if (!file.Exists)
                 {
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    Logger.Warn($"File {Path.GetRelativePath(this.Directory.FullName, file.FullName)} does not exist.");
+                    Logger.Warn().WriteLine($"File {Path.GetRelativePath(this.Directory.FullName, file.FullName)} does not exist.");
                 }
                 else
                 {
@@ -99,14 +98,14 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Files
                     }
                     catch (Exception e)
                     {
-                        Logger.Warn($"File {Path.GetRelativePath(this.Directory.FullName, file.FullName)} could not be removed ({e.Message}).");
+                        Logger.Warn().WriteLine($"File {Path.GetRelativePath(this.Directory.FullName, file.FullName)} could not be removed ({e.Message}).");
                     }
                 }
             }
 
             if (cnt == 0)
             {
-                Logger.Warn("No files have been removed.");
+                Logger.Warn().WriteLine("No files have been removed.");
             }
 
             return Task.CompletedTask;

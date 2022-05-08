@@ -19,15 +19,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Editor.Commands.Concrete.Registry;
 using Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Registry.Converter;
 
 namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
 {
     public class DeleteRegistryKeyExecutor : ExtractedAppxExecutor<DeleteRegistryKey>
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(DeleteRegistryKeyExecutor));
-
+        private static readonly LogSource Logger = new();
         public DeleteRegistryKeyExecutor(DirectoryInfo directory) : base(directory)
         {
         }
@@ -39,12 +38,12 @@ namespace Otor.MsixHero.Appx.Editor.Executors.Concrete.Registry
         public override async Task Execute(DeleteRegistryKey command, CancellationToken cancellationToken = default)
         {
             var target = RegistryPathConverter.ToCanonicalRegistryPath(command.RegistryKey);
-            Logger.Info($"Removing registry key {target.Item1}\\{target.Item2}...");
+            Logger.Info().WriteLine($"Removing registry key {target.Item1}\\{target.Item2}...");
             var regFileDeleter = new MsixRegistryFileKeyDeleter(this.Directory.FullName);
             regFileDeleter.RemoveKey(command.RegistryKey);
             if (!await regFileDeleter.Flush().ConfigureAwait(false))
             {
-                Logger.Warn($"No changes have been applied. Registry key {target.Item1}\\{target.Item2} does not exist.");
+                Logger.Warn().WriteLine($"No changes have been applied. Registry key {target.Item1}\\{target.Item2} does not exist.");
             }
         }
     }

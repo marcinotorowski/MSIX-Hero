@@ -83,11 +83,11 @@ public class SimpleUacElevationClient : SimpleElevationBase, IUacElevation, IDis
 
             if (Log.IsVerboseEnabled())
             {
-                Log.Verbose().WriteLine("UAC Client | " + GetMethodLogInfo(targetMethod, args));
+                Log.Verbose().WriteLine("UAC Client -> " + GetMethodLogInfo(targetMethod, args));
             }
             else
             {
-                Log.Debug().WriteLine("UAC Client | Executing {0}.{1}...", targetMethod.DeclaringType.Name, targetMethod.Name);
+                Log.Debug().WriteLine("UAC Client -> Executing {0}.{1}...", targetMethod.DeclaringType.Name, targetMethod.Name);
             }
 
             try

@@ -31,7 +31,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Summary;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Packaging.Installation
@@ -39,18 +39,17 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
     [SuppressMessage("ReSharper", "UnusedVariable")]
     public class AppxPackageInstaller : IAppxPackageInstaller
     {
-        private static readonly ILog Logger = LogManager.GetLogger();
-        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
+        private static readonly LogSource Logger = new();        protected readonly ISideloadingConfigurator SideloadingConfigurator = new SideloadingConfigurator();
         
         public async Task Remove(IReadOnlyCollection<string> packages, bool preserveAppData = false, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
             if (!packages.Any())
             {
-                Logger.Warn("Removing 0 packages, the list from the user is empty.");
+                Logger.Warn().WriteLine("Removing 0 packages, the list from the user is empty.");
                 return;
             }
 
-            Logger.Info("Removing {0} packages...", packages.Count);
+            Logger.Info().WriteLine("Removing {0} packages...", packages.Count);
 
             var opts = RemovalOptions.None;
             if (preserveAppData)
@@ -61,7 +60,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
-                Logger.Info("Removing {0}", item);
+                Logger.Info().WriteLine("Removing {0}", item);
 
                 var task = AsyncOperationHelper.ConvertToTask(
                     PackageManagerWrapper.Instance.RemovePackageAsync(item, opts),
@@ -75,11 +74,11 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             if (!packages.Any())
             {
-                Logger.Warn("Removing 0 packages, the list from the user is empty.");
+                Logger.Warn().WriteLine("Removing 0 packages, the list from the user is empty.");
                 return;
             }
 
-            Logger.Info("Removing {0} packages...", packages.Count);
+            Logger.Info().WriteLine("Removing {0} packages...", packages.Count);
 
             var opts = RemovalOptions.None;
             if (preserveAppData)
@@ -95,7 +94,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
             // ReSharper disable once PossibleMultipleEnumeration
             foreach (var item in packages)
             {
-                Logger.Info("Removing {0}", item.PackageId);
+                Logger.Info().WriteLine("Removing {0}", item.PackageId);
 
                 var task = AsyncOperationHelper.ConvertToTask(
                     PackageManagerWrapper.Instance.RemovePackageAsync(item.PackageId, opts),
@@ -123,7 +122,7 @@ namespace Otor.MsixHero.Appx.Packaging.Installation
         {
             this.SideloadingConfigurator.AssertSideloadingEnabled();
 
-            Logger.Info("Installing package {0}", filePath);
+            Logger.Info().WriteLine("Installing package {0}", filePath);
             if (filePath == null)
             {
                 throw new ArgumentNullException(nameof(filePath));

@@ -27,7 +27,6 @@ using System.Reflection;
 using System.Security.Principal;
 using Dapplo.Log;
 using Otor.MsixHero.Elevation.Ipc;
-using Otor.MsixHero.Elevation.Ipc.Helpers;
 using Otor.MsixHero.Elevation.Ipc.Native;
 using Otor.MsixHero.Elevation.Progress;
 using Otor.MsixHero.Infrastructure.Helpers;
@@ -46,7 +45,7 @@ public class SimpleElevationServer : SimpleElevationBase
     /// <returns>A task that encapsulates the lifetime of the server operation.</returns>
     public async Task StartAsync(bool repeat = true, CancellationToken cancellationToken = default)
     {
-        Log.Info().WriteLine("UAC Server | Awaiting client connection...");
+        Log.Info().WriteLine("UAC Server -> Awaiting client connection...");
 
         do
         {
@@ -103,11 +102,11 @@ public class SimpleElevationServer : SimpleElevationBase
 
             if (repeat)
             {
-                Log.Info().WriteLine("UAC Server | Request finished, awaiting client connection...");
+                Log.Info().WriteLine("UAC Server -> Request finished, awaiting client connection...");
             }
             else
             {
-                Log.Info().WriteLine("UAC Server | Request finished.");
+                Log.Info().WriteLine("UAC Server -> Request finished.");
             }
 
             // ReSharper disable once LoopVariableIsNeverChangedInsideLoop
@@ -176,11 +175,11 @@ public class SimpleElevationServer : SimpleElevationBase
 
             if (Log.IsVerboseEnabled())
             {
-                Log.Verbose().WriteLine("UAC Server | {0}", GetMethodLogInfo(methodInfo, parameters));
+                Log.Verbose().WriteLine("UAC Server -> {0}", GetMethodLogInfo(methodInfo, parameters));
             }
             else
             {
-                Log.Debug().WriteLine("UAC Server | Executing {0}.{1}...", methodInfo.DeclaringType.Name, methodInfo.Name);
+                Log.Debug().WriteLine("UAC Server -> Executing {0}.{1}...", methodInfo.DeclaringType.Name, methodInfo.Name);
             }
 
             var methodParamTypes = methodInfo.GetParameters().Select(p => p.ParameterType).ToArray();
@@ -258,7 +257,7 @@ public class SimpleElevationServer : SimpleElevationBase
             catch (IOException)
             {
                 this._hasFinished = true;
-                Log.Warn().WriteLine("UAC Server | The client is not anymore interested in the results. The pipe is broken.");
+                Log.Warn().WriteLine("UAC Server -> The client is not anymore interested in the results. The pipe is broken.");
                 throw;
             }
             catch (TargetInvocationException e)
@@ -307,7 +306,7 @@ public class SimpleElevationServer : SimpleElevationBase
             }
             catch (IOException)
             {
-                Log.Warn().WriteLine("UAC Server | The client is not anymore interested in the results. The pipe is broken.");
+                Log.Warn().WriteLine("UAC Server -> The client is not anymore interested in the results. The pipe is broken.");
                 this._hasFinished = true;
             }
         }

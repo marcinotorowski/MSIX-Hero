@@ -19,14 +19,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Otor.MsixHero.Infrastructure.Logging;
+using Dapplo.Log;
 
 namespace Otor.MsixHero.Appx.Signing.TimeStamping;
 
 public abstract class StreamTimeStampFeed : ITimeStampFeed
 {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(StreamTimeStampFeed));
-
+    private static readonly LogSource Logger = new();
     public virtual async Task<TimeStampFeedEntries> GetTimeStampServers(CancellationToken cancellationToken = default)
     {
         await using var stream = await this.OpenStream(cancellationToken);
@@ -35,7 +34,7 @@ public abstract class StreamTimeStampFeed : ITimeStampFeed
 
     protected async Task<TimeStampFeedEntries> GetTimeStampServers(Stream stream, CancellationToken cancellationToken = default)
     {
-        Logger.Debug("Parsing stream to JSON...");
+        Logger.Debug().WriteLine("Parsing stream to JSON...");
         using var textReader = new StreamReader(stream);
         using var jsonReader = new JsonTextReader(textReader);
         var parsedJson = await JToken.LoadAsync(jsonReader, cancellationToken).ConfigureAwait(false);
