@@ -84,6 +84,8 @@ namespace Otor.MsixHero.AdminHelper
             {
                 if (args.Length > 0 && args[0] == "--selfElevate")
                 {
+                    var repeat = args.Length == 1 || args[1] != "--single";
+
                     Logger.Debug().WriteLine("Preparing to start the pipe server...");
 
                     IConfigurationService configurationService = new LocalConfigurationService();
@@ -102,8 +104,7 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<IAppxPackageRunner, AppxPackageRunner>();
                     server.RegisterProxy<IAppxPackageManager, AppxPackageManager>();
                     server.RegisterProxy<IAppxPackageQuery, AppxPackageQuery>(appxPackageQuery);
-                    server.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    Console.ReadKey();
+                    server.StartAsync(repeat).ConfigureAwait(false).GetAwaiter().GetResult();
                 }
                 else
                 {
@@ -121,9 +122,6 @@ namespace Otor.MsixHero.AdminHelper
                 Logger.Fatal().WriteLine("Fatal exception, the program will be closed.");
                 Logger.Error().WriteLine(e);
             }
-
-            Logger.Info().WriteLine("Waiting for the user to press a key...");
-            Console.ReadKey();
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Otor.MsixHero.App
         
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var uacClient = new SimpleUacElevationClient(new ElevatedProcessClientHandler(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msixhero-uac.exe"), "--selfElevate", "--selfElevate"));
+            var uacClient = new SimpleUacElevationClient(new ElevatedProcessClientHandler(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msixhero-uac.exe"), "--selfElevate --single", "--selfElevate"));
             
             // Registration of proxies for UAC handling
             uacClient.RegisterProxy<IAppxVolumeManager>(this.Container);
@@ -120,6 +120,7 @@ namespace Otor.MsixHero.App
             uacClient.RegisterProxy<IAppxPackageManager>(this.Container);
             uacClient.RegisterProxy<IAppxPackageQuery>(this.Container);
             uacClient.RegisterProxy<IAppxPackageInstaller>(this.Container);
+            uacClient.RegisterProxy<IAppxPackageRunner>(this.Container);
             uacClient.RegisterProxy<IAppAttachManager>(this.Container);
             
             containerRegistry.RegisterSingleton<IUacElevation>(() => uacClient);
