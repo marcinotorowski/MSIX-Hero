@@ -15,11 +15,11 @@
     <PackageReference Include="Dapplo.Log" Version="1.4.1" />
     <PackageReference Include="DesktopBridge.Helpers" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog" Version="4.7.13" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="NLog" Version="4.7.15" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="System.IO.Pipes.AccessControl" Version="5.0.0" />
-    <PackageReference Include="System.Linq.Async" Version="5.1.0" />
-    <PackageReference Include="System.Management.Automation" Version="7.2.1" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Management.Automation" Version="7.2.3" />
     <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="6.0.0" />
   </ItemGroup>
