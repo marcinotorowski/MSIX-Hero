@@ -3333,4 +3333,289 @@
   <data name="PackageExpert_Target" xml:space="preserve">
     <value>Target</value>
   </data>
+  <data name="UacApp_AdminRightsRequired" xml:space="preserve">
+    <value>This operation requires administrative rights.</value>
+  </data>
+  <data name="Capability_3d" xml:space="preserve">
+    <value>3D Objects</value>
+  </data>
+  <data name="Capability_AccessoryManagement" xml:space="preserve">
+    <value>Accessory Management</value>
+  </data>
+  <data name="Capability_AppCloseConfirmation" xml:space="preserve">
+    <value>App Close Confirmation</value>
+  </data>
+  <data name="Capability_AppLicensing" xml:space="preserve">
+    <value>Install and query apps (OEM)</value>
+  </data>
+  <data name="Capability_AutoVoIP" xml:space="preserve">
+    <value>Automatically accept VoIP calls</value>
+  </data>
+  <data name="Capability_BackgroundMedia" xml:space="preserve">
+    <value>Background media playback</value>
+  </data>
+  <data name="Capability_Bios" xml:space="preserve">
+    <value>System Firmware and BIOS</value>
+  </data>
+  <data name="Capability_BroadFs" xml:space="preserve">
+    <value>Broad Filesystem Access</value>
+  </data>
+  <data name="Capability_CallHistory" xml:space="preserve">
+    <value>Call History</value>
+  </data>
+  <data name="Capability_CameraProcExt" xml:space="preserve">
+    <value>Camera Processing Extension</value>
+  </data>
+  <data name="Capability_Cellular" xml:space="preserve">
+    <value>Control over cellular device</value>
+  </data>
+  <data name="Capability_CellularIdentity" xml:space="preserve">
+    <value>Access celullar identification data</value>
+  </data>
+  <data name="Capability_CellularMsg" xml:space="preserve">
+    <value>Make use of SMS and RCS</value>
+  </data>
+  <data name="Capability_ConfigureWAP" xml:space="preserve">
+    <value>Configure WAP-based services</value>
+  </data>
+  <data name="Capability_CustomDevices" xml:space="preserve">
+    <value>Custom devices</value>
+  </data>
+  <data name="Capability_DataUsageMgmt" xml:space="preserve">
+    <value>Data usage Management</value>
+  </data>
+  <data name="Capability_DevelopmentModeNetwork" xml:space="preserve">
+    <value>Development Mode Network</value>
+  </data>
+  <data name="Capability_Documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="Capability_DriverAccess" xml:space="preserve">
+    <value>Driver access</value>
+  </data>
+  <data name="Capability_DualSim" xml:space="preserve">
+    <value>Dual SIM Tiles</value>
+  </data>
+  <data name="Capability_Elevation" xml:space="preserve">
+    <value>Elevation</value>
+  </data>
+  <data name="Capability_Email" xml:space="preserve">
+    <value>Email Access</value>
+  </data>
+  <data name="Capability_EnterpriseSharedStorage" xml:space="preserve">
+    <value>Enterprise Shared Storage</value>
+  </data>
+  <data name="Capability_EnterpriseSSO" xml:space="preserve">
+    <value>Enterprise Cloud Single Sign On</value>
+  </data>
+  <data name="Capability_ExtendedBgTaskTime" xml:space="preserve">
+    <value>Extended Background Task Time</value>
+  </data>
+  <data name="Capability_ExtendedExecBgAudio" xml:space="preserve">
+    <value>Extended Execution Background Audio</value>
+  </data>
+  <data name="Capability_FirstTimeSignIn" xml:space="preserve">
+    <value>First-Time Sign-in Settings</value>
+  </data>
+  <data name="Capability_ForegroundObservation" xml:space="preserve">
+    <value>Foreground observation</value>
+  </data>
+  <data name="Capability_FullTrust" xml:space="preserve">
+    <value>Full Trust Permission Level</value>
+  </data>
+  <data name="Capability_GameDvr" xml:space="preserve">
+    <value>Game DVR Settings</value>
+  </data>
+  <data name="Capability_GamesList" xml:space="preserve">
+    <value>Games List</value>
+  </data>
+  <data name="Capability_GatherInfoOtherApps" xml:space="preserve">
+    <value>Gather information about other apps</value>
+  </data>
+  <data name="Capability_Gaze" xml:space="preserve">
+    <value>Eye tracker</value>
+  </data>
+  <data name="Capability_HID" xml:space="preserve">
+    <value>Human interface device (HID)</value>
+  </data>
+  <data name="Capability_HidTelephony" xml:space="preserve">
+    <value>HID Telephony</value>
+  </data>
+  <data name="Capability_HomeNetwork" xml:space="preserve">
+    <value>Home and work networks</value>
+  </data>
+  <data name="Capability_InProcMediaExt" xml:space="preserve">
+    <value>In-Process Media Extension</value>
+  </data>
+  <data name="Capability_InternetClient" xml:space="preserve">
+    <value>Internet and public networks (client)</value>
+  </data>
+  <data name="Capability_InternetClientServer" xml:space="preserve">
+    <value>Internet and public networks (client + server)</value>
+  </data>
+  <data name="Capability_IoT" xml:space="preserve">
+    <value>IoT system administration</value>
+  </data>
+  <data name="Capability_LocationHistory" xml:space="preserve">
+    <value>Location History</value>
+  </data>
+  <data name="Capability_LowLevel" xml:space="preserve">
+    <value>GPIO, I2C, SPI, and PWM</value>
+  </data>
+  <data name="Capability_ManageEmailAccount" xml:space="preserve">
+    <value>Add and manage email account (MO)</value>
+  </data>
+  <data name="Capability_ManageOtherApps" xml:space="preserve">
+    <value>Manage other apps</value>
+  </data>
+  <data name="Capability_ManagePhoneLine" xml:space="preserve">
+    <value>Manage phone line connectivity</value>
+  </data>
+  <data name="Capability_MdmCspInf" xml:space="preserve">
+    <value>Access to MDM CSP infrastructure</value>
+  </data>
+  <data name="Capability_MotionActivity" xml:space="preserve">
+    <value>Motion activity</value>
+  </data>
+  <data name="Capability_Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Capability_ObserveInput" xml:space="preserve">
+    <value>Observe Input</value>
+  </data>
+  <data name="Capability_OemDeploy" xml:space="preserve">
+    <value>Access to the shared app folder (OEM)</value>
+  </data>
+  <data name="Capability_OpticalDisc" xml:space="preserve">
+    <value>Optical disc</value>
+  </data>
+  <data name="Capability_PackagePolicyControl" xml:space="preserve">
+    <value>Package Policy Control</value>
+  </data>
+  <data name="Capability_PenWorkspace" xml:space="preserve">
+    <value>Pen Workspace</value>
+  </data>
+  <data name="Capability_PhoneCallHistory" xml:space="preserve">
+    <value>Phone call history</value>
+  </data>
+  <data name="Capability_PhoneCalls" xml:space="preserve">
+    <value>Phone calls</value>
+  </data>
+  <data name="Capability_Pictures" xml:space="preserve">
+    <value>Pictures</value>
+  </data>
+  <data name="Capability_POS" xml:space="preserve">
+    <value>Point of Service (POS)</value>
+  </data>
+  <data name="Capability_ProvisionConfigureOmaDm" xml:space="preserve">
+    <value>Provision and configure MO OMA-DM</value>
+  </data>
+  <data name="Capability_RadioState" xml:space="preserve">
+    <value>Radio state</value>
+  </data>
+  <data name="Capability_ReadBlockedMessages" xml:space="preserve">
+    <value>Read blocked messages</value>
+  </data>
+  <data name="Capability_RemoteUnlock" xml:space="preserve">
+    <value>Remote Unlock</value>
+  </data>
+  <data name="Capability_RemovableStorage" xml:space="preserve">
+    <value>Removable storage</value>
+  </data>
+  <data name="Capability_ReserveVoIP" xml:space="preserve">
+    <value>Reserve resources for VoIP calls</value>
+  </data>
+  <data name="Capability_ScreenProjection" xml:space="preserve">
+    <value>Screen Projection</value>
+  </data>
+  <data name="Capability_SerialCommunication" xml:space="preserve">
+    <value>Serial communication</value>
+  </data>
+  <data name="Capability_Sms" xml:space="preserve">
+    <value>Send Text Messages</value>
+  </data>
+  <data name="Capability_SoftwareLicensing" xml:space="preserve">
+    <value>Software Licensing</value>
+  </data>
+  <data name="Capability_SpeechRecognition" xml:space="preserve">
+    <value>Speech Recognition for Accessories</value>
+  </data>
+  <data name="Capability_StorePreview" xml:space="preserve">
+    <value>Store Preview Feature</value>
+  </data>
+  <data name="Capability_SuppressInput" xml:space="preserve">
+    <value>Suppress Input</value>
+  </data>
+  <data name="Capability_SysInputInjection" xml:space="preserve">
+    <value>System Input Injection</value>
+  </data>
+  <data name="Capability_SystemAllUsers" xml:space="preserve">
+    <value>System Level Access to All User Data</value>
+  </data>
+  <data name="Capability_SystemAppointment" xml:space="preserve">
+    <value>System Level Appointment Access</value>
+  </data>
+  <data name="Capability_SystemCallHistory" xml:space="preserve">
+    <value>System Level Call History Access</value>
+  </data>
+  <data name="Capability_SystemChat" xml:space="preserve">
+    <value>System Level Chat Message Access</value>
+  </data>
+  <data name="Capability_SystemContacts" xml:space="preserve">
+    <value>System Level Contact Access</value>
+  </data>
+  <data name="Capability_SystemEmail" xml:space="preserve">
+    <value>System Level Email Access</value>
+  </data>
+  <data name="Capability_UIAutomation" xml:space="preserve">
+    <value>UI Automation</value>
+  </data>
+  <data name="Capability_USB" xml:space="preserve">
+    <value>USB</value>
+  </data>
+  <data name="Capability_UserPrincipalName" xml:space="preserve">
+    <value>User Principal Name</value>
+  </data>
+  <data name="Capability_UserSignIn" xml:space="preserve">
+    <value>User Sign-in Support</value>
+  </data>
+  <data name="Capability_UserSystemID" xml:space="preserve">
+    <value>User System ID</value>
+  </data>
+  <data name="Capability_Videos" xml:space="preserve">
+    <value>Videos</value>
+  </data>
+  <data name="Capability_VoIP" xml:space="preserve">
+    <value>VoIP calling</value>
+  </data>
+  <data name="Capability_VPN" xml:space="preserve">
+    <value>VPN App</value>
+  </data>
+  <data name="Capability_Wallet" xml:space="preserve">
+    <value>Wallet</value>
+  </data>
+  <data name="Capability_WiFi" xml:space="preserve">
+    <value>Wi-Fi networking</value>
+  </data>
+  <data name="Capability_WindowsTeamAppView" xml:space="preserve">
+    <value>Windows Team Application View</value>
+  </data>
+  <data name="Capability_WindowsTeamDeviceCreds" xml:space="preserve">
+    <value>Windows Team Device Credentials</value>
+  </data>
+  <data name="Capability_WindowsTeamExperience" xml:space="preserve">
+    <value>Windows Team Experience</value>
+  </data>
+  <data name="Capability_XboxAccessory" xml:space="preserve">
+    <value>Xbox Accessory</value>
+  </data>
+  <data name="Capability_Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="Capability_Webcam" xml:space="preserve">
+    <value>Webcam</value>
+  </data>
+  <data name="Capability_Microphone" xml:space="preserve">
+    <value>Microphone</value>
+  </data>
 </root>

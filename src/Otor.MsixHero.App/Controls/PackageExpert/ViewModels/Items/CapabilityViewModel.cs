@@ -179,187 +179,193 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items
             switch (name)
             {
                 case "usb":
-                    return "USB";
+                    return Resources.Localization.Capability_USB;
                 case "humaninterfacedevice":
-                    return "Human interface device (HID)";
+                    return Resources.Localization.Capability_HID;
                 case "pointOfService":
-                    return "Point of Service (POS)";
+                    return Resources.Localization.Capability_POS;
                 case "wiFiControl":
-                    return "Wi-Fi networking";
+                    return Resources.Localization.Capability_WiFi;
                 case "radios":
-                    return "Radio state";
+                    return Resources.Localization.Capability_RadioState;
                 case "optical":
-                    return "Optical disc";
+                    return Resources.Localization.Capability_OpticalDisc;
                 case "activity":
-                    return "Motion activity";
+                    return Resources.Localization.Capability_MotionActivity;
                 case "serialcommunication":
-                    return "Serial communication";
+                    return Resources.Localization.Capability_SerialCommunication;
                 case "gazeInput":
-                    return "Eye tracker";
+                    return Resources.Localization.Capability_Gaze;
                 case "lowLevel":
-                    return "GPIO, I2C, SPI, and PWM";
+                    return Resources.Localization.Capability_LowLevel;
                 case "documentsLibrary":
-                    return "Documents";
+                    return Resources.Localization.Capability_Documents;
                 case "appCaptureSettings":
-                    return "Game DVR Settings";
+                    return Resources.Localization.Capability_GameDvr;
                 case "cellularDeviceControl":
-                    return "Control over cellular device";
+                    return Resources.Localization.Capability_Cellular;
                 case "cellularDeviceIdentity":
-                    return "Access celullar identification data";
+                    return Resources.Localization.Capability_CellularIdentity;
                 case "cellularMessaging":
-                    return "Make use of SMS and RCS";
+                    return Resources.Localization.Capability_CellularMsg;
                 case "dualSimTiles":
-                    return "Dual SIM Tiles";
+                    return Resources.Localization.Capability_DualSim;
                 case "enterpriseDeviceLockdown":
-                    return "Enterprise Shared Storage";
+                    return Resources.Localization.Capability_EnterpriseSharedStorage;
                 case "inputInjectionBrokered":
-                    return "System Input Injection";
+                    return Resources.Localization.Capability_SysInputInjection;
                 case "inputObservation":
-                    return "Observe Input";
+                    return Resources.Localization.Capability_ObserveInput;
                 case "inputSuppression":
-                    return "Suppress Input";
+                    return Resources.Localization.Capability_SuppressInput;
                 case "networkingVpnProvider":
-                    return "VPN App";
+                    return Resources.Localization.Capability_VPN;
                 case "packageManagement":
-                    return "Manage other apps";
+                    return Resources.Localization.Capability_ManageOtherApps;
                 case "packageQuery":
-                    return "Gather information about other apps";
+                    return Resources.Localization.Capability_GatherInfoOtherApps;
                 case "screenDuplication":
-                    return "Screen Projection";
+                    return Resources.Localization.Capability_ScreenProjection;
+                case "location":
+                    return Resources.Localization.Capability_Location;
+                case "webcam":
+                    return Resources.Localization.Capability_Webcam;
+                case "microphone":
+                    return Resources.Localization.Capability_Microphone;
                 case "userPrincipalName":
-                    return "User Principal Name";
+                    return Resources.Localization.Capability_UserPrincipalName;
                 case "walletSystem":
-                    return "Wallet";
+                    return Resources.Localization.Capability_Wallet;
                 case "locationHistory":
-                    return "Location History";
+                    return Resources.Localization.Capability_LocationHistory;
                 case "confirmAppClose":
-                    return "App Close Confirmation";
+                    return Resources.Localization.Capability_AppCloseConfirmation;
                 case "phoneCallHistory":
-                    return "Call History";
+                    return Resources.Localization.Capability_CallHistory;
                 case "appointmentsSystem":
-                    return "System Level Appointment Access";
+                    return Resources.Localization.Capability_SystemAppointment;
                 case "chatSystem":
-                    return "System Level Chat Message Access";
+                    return Resources.Localization.Capability_SystemChat;
                 case "contactsSystem":
-                    return "System Level Contact Access";
+                    return Resources.Localization.Capability_SystemContacts;
                 case "email":
-                    return "Email Access";
+                    return Resources.Localization.Capability_Email;
                 case "emailSystem":
-                    return "System Level Email Access";
+                    return Resources.Localization.Capability_SystemEmail;
                 case "phoneCallHistorySystem":
-                    return "System Level Call History Access";
+                    return Resources.Localization.Capability_SystemCallHistory;
                 case "smsSend":
-                    return "Send Text Messages";
+                    return Resources.Localization.Capability_Sms;
                 case "userDataSystem":
-                    return "System Level Access to All User Data";
+                    return Resources.Localization.Capability_SystemAllUsers;
                 case "previewStore":
-                    return "Store Preview Feature";
+                    return Resources.Localization.Capability_StorePreview;
                 case "firstSignInSettings":
-                    return "First-Time Sign-in Settings";
+                    return Resources.Localization.Capability_FirstTimeSignIn;
                 case "teamEditionExperience":
-                    return "Windows Team Experience";
+                    return Resources.Localization.Capability_WindowsTeamExperience;
                 case "remotePassportAuthentication":
-                    return "Remote Unlock";
+                    return Resources.Localization.Capability_RemoteUnlock;
                 case "runFullTrust":
-                    return "Full Trust Permission Level";
+                    return Resources.Localization.Capability_FullTrust;
                 case "allowElevation":
-                    return "Elevation";
+                    return Resources.Localization.Capability_Elevation;
                 case "teamEditionDeviceCredential":
-                    return "Windows Team Device Credentials";
+                    return Resources.Localization.Capability_WindowsTeamDeviceCreds;
                 case "teamEditionView":
-                    return "Windows Team Application View";
+                    return Resources.Localization.Capability_WindowsTeamAppView;
                 case "cameraProcessingExtension":
-                    return "Camera Processing Extension";
+                    return Resources.Localization.Capability_CameraProcExt;
                 case "musicLibrary":
-                    return "Music";
+                    return Resources.Localization.Capability_Music;
                 case "picturesLibrary":
-                    return "Pictures";
+                    return Resources.Localization.Capability_Pictures;
                 case "videosLibrary":
-                    return "Videos";
+                    return Resources.Localization.Capability_Videos;
                 case "removableStorage":
-                    return "Removable storage";
+                    return Resources.Localization.Capability_RemovableStorage;
                 case "internetClient":
-                    return "Internet and public networks (client)";
+                    return Resources.Localization.Capability_InternetClient;
                 case "internetClientServer":
-                    return "Internet and public networks (client + server)";
+                    return Resources.Localization.Capability_InternetClientServer;
                 case "privateNetworkClientServer":
-                    return "Home and work networks";
+                    return Resources.Localization.Capability_HomeNetwork;
                 case "phoneCall":
-                    return "Phone calls";
+                    return Resources.Localization.Capability_PhoneCalls;
                 case "phoneCallHistoryPublic":
-                    return "Phone call history";
+                    return Resources.Localization.Capability_PhoneCallHistory;
                 case "voipCall":
-                    return "VoIP calling";
+                    return Resources.Localization.Capability_VoIP;
                 case "objects3D":
-                    return "3D Objects";
+                    return Resources.Localization.Capability_3d;
                 case "blockedChatMessages":
-                    return "Read blocked messages";
+                    return Resources.Localization.Capability_ReadBlockedMessages;
                 case "lowLevelDevices":
-                    return "Custom devices";
+                    return Resources.Localization.Capability_CustomDevices;
                 case "systemManagement":
-                    return "IoT system administration";
+                    return Resources.Localization.Capability_IoT;
                 case "backgroundMediaPlayback":
-                    return "Background media playback";
+                    return Resources.Localization.Capability_BackgroundMedia;
                 case "phoneLineTransportManagement":
-                    return "Manage phone line connectivity";
+                    return Resources.Localization.Capability_ManagePhoneLine;
                 case "networkDataUsageManagement":
-                    return "Data usage Management";
+                    return Resources.Localization.Capability_DataUsageMgmt;
                 case "smbios":
-                    return "System Firmware and BIOS";
+                    return Resources.Localization.Capability_Bios;
                 case "broadFileSystemAccess":
-                    return "Broad Filesystem Access";
+                    return Resources.Localization.Capability_BroadFs;
                 case "developmentModeNetwork":
-                    return "Development Mode Network";
+                    return Resources.Localization.Capability_DevelopmentModeNetwork;
                 case "oneProcessVoIP":
-                    return "Reserve resources for VoIP calls";
+                    return Resources.Localization.Capability_ReserveVoIP;
                 case "backgroundVoIP":
-                    return "Automatically accept VoIP calls";
+                    return Resources.Localization.Capability_AutoVoIP;
                 case "enterpriseCloudSSO":
-                    return "Enterprise Cloud Single Sign On";
+                    return Resources.Localization.Capability_EnterpriseSSO;
                 case "uiAutomation":
-                    return "UI Automation";
+                    return Resources.Localization.Capability_UIAutomation;
                 case "userSystemId":
-                    return "User System ID";
+                    return Resources.Localization.Capability_UserSystemID;
                 case "previewPenWorkspace":
-                    return "Pen Workspace";
+                    return Resources.Localization.Capability_PenWorkspace;
                 case "appLicensing":
-                    return "Install and query apps (OEM)";
+                    return Resources.Localization.Capability_AppLicensing;
                 case "oemDeployment":
-                    return "Access to the shared app folder (OEM)";
+                    return Resources.Localization.Capability_OemDeploy;
                 case "userSigninSupport":
-                    return "User Sign-in Support";
+                    return Resources.Localization.Capability_UserSignIn;
                 case "inputForegroundObservation":
-                    return "Foreground observation";
+                    return Resources.Localization.Capability_ForegroundObservation;
                 case "interopServices":
-                    return "Driver access";
+                    return Resources.Localization.Capability_DriverAccess;
                 case "accessoryManager":
-                    return "Accessory Management";
+                    return Resources.Localization.Capability_AccessoryManagement;
                 case "cortanaSpeechAccessory":
-                    return "Speech Recognition for Accessories";
+                    return Resources.Localization.Capability_SpeechRecognition;
                 case "xboxAccessoryManagement":
-                    return "Xbox Accessory";
+                    return Resources.Localization.Capability_XboxAccessory;
                 case "gameList":
-                    return "Games List";
+                    return Resources.Localization.Capability_GamesList;
                 case "packagePolicySystem":
-                    return "Package Policy Control";
+                    return Resources.Localization.Capability_PackagePolicyControl;
                 case "deviceManagementDmAccount":
-                    return "Provision and configure MO OMA-DM";
+                    return Resources.Localization.Capability_ProvisionConfigureOmaDm;
                 case "deviceManagementFoundation":
-                    return "Access to MDM CSP infrastructure";
+                    return Resources.Localization.Capability_MdmCspInf;
                 case "deviceManagementWapSecurityPolicies":
-                    return "Configure WAP-based services";
+                    return Resources.Localization.Capability_ConfigureWAP;
                 case "deviceManagementEmailAccount":
-                    return "Add and manage email account (MO)";
+                    return Resources.Localization.Capability_ManageEmailAccount;
                 case "extendedBackgroundTaskTime":
-                    return "Extended Background Task Time";
+                    return Resources.Localization.Capability_ExtendedBgTaskTime;
                 case "extendedExecutionBackgroundAudio":
-                    return "Extended Execution Background Audio";
+                    return Resources.Localization.Capability_ExtendedExecBgAudio;
                 case "slapiQueryLicenseValue":
-                    return "Software Licensing";
+                    return Resources.Localization.Capability_SoftwareLicensing;
                 case "inProcessMediaExtension":
-                    return "In-Process Media Extension";
+                    return Resources.Localization.Capability_InProcMediaExt;
                 case "hidTelephony":
-                    return "HID Telephony";
+                    return Resources.Localization.Capability_HidTelephony;
                 default:
 
                     var regex = Regex.Matches(name, "[A-Z](?![A-Z])");

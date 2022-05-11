@@ -203,14 +203,13 @@ namespace Otor.MsixHero.App.Hero.Executor
 
                 if (exception is Win32Exception win32Exception)
                 {
-                    var message = win32Exception.NativeErrorCode == 1223 ? "This operation requires administrative rights." : exception.Message;
+                    var message = win32Exception.NativeErrorCode == 1223 ? Resources.Localization.UacApp_AdminRightsRequired : exception.Message;
                     return this.interactionService.ShowError(message, win32Exception, buttons: buttons);
                 }
 
                 if (exception is UnauthorizedAccessException)
                 {
-                    var message = "This operation requires administrative rights.";
-                    return this.interactionService.ShowError(message, exception, buttons: buttons);
+                    return this.interactionService.ShowError(Resources.Localization.UacApp_AdminRightsRequired, exception, buttons: buttons);
                 }
 
                 return this.interactionService.ShowError(exception.Message, exception, buttons: buttons);

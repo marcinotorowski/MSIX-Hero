@@ -61,6 +61,852 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 3D Objects.
+        /// </summary>
+        public static string Capability_3d {
+            get {
+                return ResourceManager.GetString("Capability_3d", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accessory Management.
+        /// </summary>
+        public static string Capability_AccessoryManagement {
+            get {
+                return ResourceManager.GetString("Capability_AccessoryManagement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Close Confirmation.
+        /// </summary>
+        public static string Capability_AppCloseConfirmation {
+            get {
+                return ResourceManager.GetString("Capability_AppCloseConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install and query apps (OEM).
+        /// </summary>
+        public static string Capability_AppLicensing {
+            get {
+                return ResourceManager.GetString("Capability_AppLicensing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically accept VoIP calls.
+        /// </summary>
+        public static string Capability_AutoVoIP {
+            get {
+                return ResourceManager.GetString("Capability_AutoVoIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background media playback.
+        /// </summary>
+        public static string Capability_BackgroundMedia {
+            get {
+                return ResourceManager.GetString("Capability_BackgroundMedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Firmware and BIOS.
+        /// </summary>
+        public static string Capability_Bios {
+            get {
+                return ResourceManager.GetString("Capability_Bios", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Broad Filesystem Access.
+        /// </summary>
+        public static string Capability_BroadFs {
+            get {
+                return ResourceManager.GetString("Capability_BroadFs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Call History.
+        /// </summary>
+        public static string Capability_CallHistory {
+            get {
+                return ResourceManager.GetString("Capability_CallHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Camera Processing Extension.
+        /// </summary>
+        public static string Capability_CameraProcExt {
+            get {
+                return ResourceManager.GetString("Capability_CameraProcExt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control over cellular device.
+        /// </summary>
+        public static string Capability_Cellular {
+            get {
+                return ResourceManager.GetString("Capability_Cellular", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access celullar identification data.
+        /// </summary>
+        public static string Capability_CellularIdentity {
+            get {
+                return ResourceManager.GetString("Capability_CellularIdentity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make use of SMS and RCS.
+        /// </summary>
+        public static string Capability_CellularMsg {
+            get {
+                return ResourceManager.GetString("Capability_CellularMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure WAP-based services.
+        /// </summary>
+        public static string Capability_ConfigureWAP {
+            get {
+                return ResourceManager.GetString("Capability_ConfigureWAP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom devices.
+        /// </summary>
+        public static string Capability_CustomDevices {
+            get {
+                return ResourceManager.GetString("Capability_CustomDevices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data usage Management.
+        /// </summary>
+        public static string Capability_DataUsageMgmt {
+            get {
+                return ResourceManager.GetString("Capability_DataUsageMgmt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Development Mode Network.
+        /// </summary>
+        public static string Capability_DevelopmentModeNetwork {
+            get {
+                return ResourceManager.GetString("Capability_DevelopmentModeNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documents.
+        /// </summary>
+        public static string Capability_Documents {
+            get {
+                return ResourceManager.GetString("Capability_Documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driver access.
+        /// </summary>
+        public static string Capability_DriverAccess {
+            get {
+                return ResourceManager.GetString("Capability_DriverAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dual SIM Tiles.
+        /// </summary>
+        public static string Capability_DualSim {
+            get {
+                return ResourceManager.GetString("Capability_DualSim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Elevation.
+        /// </summary>
+        public static string Capability_Elevation {
+            get {
+                return ResourceManager.GetString("Capability_Elevation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email Access.
+        /// </summary>
+        public static string Capability_Email {
+            get {
+                return ResourceManager.GetString("Capability_Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enterprise Shared Storage.
+        /// </summary>
+        public static string Capability_EnterpriseSharedStorage {
+            get {
+                return ResourceManager.GetString("Capability_EnterpriseSharedStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enterprise Cloud Single Sign On.
+        /// </summary>
+        public static string Capability_EnterpriseSSO {
+            get {
+                return ResourceManager.GetString("Capability_EnterpriseSSO", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extended Background Task Time.
+        /// </summary>
+        public static string Capability_ExtendedBgTaskTime {
+            get {
+                return ResourceManager.GetString("Capability_ExtendedBgTaskTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extended Execution Background Audio.
+        /// </summary>
+        public static string Capability_ExtendedExecBgAudio {
+            get {
+                return ResourceManager.GetString("Capability_ExtendedExecBgAudio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First-Time Sign-in Settings.
+        /// </summary>
+        public static string Capability_FirstTimeSignIn {
+            get {
+                return ResourceManager.GetString("Capability_FirstTimeSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Foreground observation.
+        /// </summary>
+        public static string Capability_ForegroundObservation {
+            get {
+                return ResourceManager.GetString("Capability_ForegroundObservation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full Trust Permission Level.
+        /// </summary>
+        public static string Capability_FullTrust {
+            get {
+                return ResourceManager.GetString("Capability_FullTrust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game DVR Settings.
+        /// </summary>
+        public static string Capability_GameDvr {
+            get {
+                return ResourceManager.GetString("Capability_GameDvr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Games List.
+        /// </summary>
+        public static string Capability_GamesList {
+            get {
+                return ResourceManager.GetString("Capability_GamesList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gather information about other apps.
+        /// </summary>
+        public static string Capability_GatherInfoOtherApps {
+            get {
+                return ResourceManager.GetString("Capability_GatherInfoOtherApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eye tracker.
+        /// </summary>
+        public static string Capability_Gaze {
+            get {
+                return ResourceManager.GetString("Capability_Gaze", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Human interface device (HID).
+        /// </summary>
+        public static string Capability_HID {
+            get {
+                return ResourceManager.GetString("Capability_HID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HID Telephony.
+        /// </summary>
+        public static string Capability_HidTelephony {
+            get {
+                return ResourceManager.GetString("Capability_HidTelephony", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home and work networks.
+        /// </summary>
+        public static string Capability_HomeNetwork {
+            get {
+                return ResourceManager.GetString("Capability_HomeNetwork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In-Process Media Extension.
+        /// </summary>
+        public static string Capability_InProcMediaExt {
+            get {
+                return ResourceManager.GetString("Capability_InProcMediaExt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internet and public networks (client).
+        /// </summary>
+        public static string Capability_InternetClient {
+            get {
+                return ResourceManager.GetString("Capability_InternetClient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Internet and public networks (client + server).
+        /// </summary>
+        public static string Capability_InternetClientServer {
+            get {
+                return ResourceManager.GetString("Capability_InternetClientServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IoT system administration.
+        /// </summary>
+        public static string Capability_IoT {
+            get {
+                return ResourceManager.GetString("Capability_IoT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string Capability_Location {
+            get {
+                return ResourceManager.GetString("Capability_Location", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location History.
+        /// </summary>
+        public static string Capability_LocationHistory {
+            get {
+                return ResourceManager.GetString("Capability_LocationHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GPIO, I2C, SPI, and PWM.
+        /// </summary>
+        public static string Capability_LowLevel {
+            get {
+                return ResourceManager.GetString("Capability_LowLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add and manage email account (MO).
+        /// </summary>
+        public static string Capability_ManageEmailAccount {
+            get {
+                return ResourceManager.GetString("Capability_ManageEmailAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage other apps.
+        /// </summary>
+        public static string Capability_ManageOtherApps {
+            get {
+                return ResourceManager.GetString("Capability_ManageOtherApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage phone line connectivity.
+        /// </summary>
+        public static string Capability_ManagePhoneLine {
+            get {
+                return ResourceManager.GetString("Capability_ManagePhoneLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access to MDM CSP infrastructure.
+        /// </summary>
+        public static string Capability_MdmCspInf {
+            get {
+                return ResourceManager.GetString("Capability_MdmCspInf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microphone.
+        /// </summary>
+        public static string Capability_Microphone {
+            get {
+                return ResourceManager.GetString("Capability_Microphone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Motion activity.
+        /// </summary>
+        public static string Capability_MotionActivity {
+            get {
+                return ResourceManager.GetString("Capability_MotionActivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Music.
+        /// </summary>
+        public static string Capability_Music {
+            get {
+                return ResourceManager.GetString("Capability_Music", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Observe Input.
+        /// </summary>
+        public static string Capability_ObserveInput {
+            get {
+                return ResourceManager.GetString("Capability_ObserveInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access to the shared app folder (OEM).
+        /// </summary>
+        public static string Capability_OemDeploy {
+            get {
+                return ResourceManager.GetString("Capability_OemDeploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optical disc.
+        /// </summary>
+        public static string Capability_OpticalDisc {
+            get {
+                return ResourceManager.GetString("Capability_OpticalDisc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Policy Control.
+        /// </summary>
+        public static string Capability_PackagePolicyControl {
+            get {
+                return ResourceManager.GetString("Capability_PackagePolicyControl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pen Workspace.
+        /// </summary>
+        public static string Capability_PenWorkspace {
+            get {
+                return ResourceManager.GetString("Capability_PenWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone call history.
+        /// </summary>
+        public static string Capability_PhoneCallHistory {
+            get {
+                return ResourceManager.GetString("Capability_PhoneCallHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone calls.
+        /// </summary>
+        public static string Capability_PhoneCalls {
+            get {
+                return ResourceManager.GetString("Capability_PhoneCalls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pictures.
+        /// </summary>
+        public static string Capability_Pictures {
+            get {
+                return ResourceManager.GetString("Capability_Pictures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Point of Service (POS).
+        /// </summary>
+        public static string Capability_POS {
+            get {
+                return ResourceManager.GetString("Capability_POS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provision and configure MO OMA-DM.
+        /// </summary>
+        public static string Capability_ProvisionConfigureOmaDm {
+            get {
+                return ResourceManager.GetString("Capability_ProvisionConfigureOmaDm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Radio state.
+        /// </summary>
+        public static string Capability_RadioState {
+            get {
+                return ResourceManager.GetString("Capability_RadioState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read blocked messages.
+        /// </summary>
+        public static string Capability_ReadBlockedMessages {
+            get {
+                return ResourceManager.GetString("Capability_ReadBlockedMessages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote Unlock.
+        /// </summary>
+        public static string Capability_RemoteUnlock {
+            get {
+                return ResourceManager.GetString("Capability_RemoteUnlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removable storage.
+        /// </summary>
+        public static string Capability_RemovableStorage {
+            get {
+                return ResourceManager.GetString("Capability_RemovableStorage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reserve resources for VoIP calls.
+        /// </summary>
+        public static string Capability_ReserveVoIP {
+            get {
+                return ResourceManager.GetString("Capability_ReserveVoIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Screen Projection.
+        /// </summary>
+        public static string Capability_ScreenProjection {
+            get {
+                return ResourceManager.GetString("Capability_ScreenProjection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serial communication.
+        /// </summary>
+        public static string Capability_SerialCommunication {
+            get {
+                return ResourceManager.GetString("Capability_SerialCommunication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Text Messages.
+        /// </summary>
+        public static string Capability_Sms {
+            get {
+                return ResourceManager.GetString("Capability_Sms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Software Licensing.
+        /// </summary>
+        public static string Capability_SoftwareLicensing {
+            get {
+                return ResourceManager.GetString("Capability_SoftwareLicensing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Speech Recognition for Accessories.
+        /// </summary>
+        public static string Capability_SpeechRecognition {
+            get {
+                return ResourceManager.GetString("Capability_SpeechRecognition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Store Preview Feature.
+        /// </summary>
+        public static string Capability_StorePreview {
+            get {
+                return ResourceManager.GetString("Capability_StorePreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suppress Input.
+        /// </summary>
+        public static string Capability_SuppressInput {
+            get {
+                return ResourceManager.GetString("Capability_SuppressInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Input Injection.
+        /// </summary>
+        public static string Capability_SysInputInjection {
+            get {
+                return ResourceManager.GetString("Capability_SysInputInjection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Level Access to All User Data.
+        /// </summary>
+        public static string Capability_SystemAllUsers {
+            get {
+                return ResourceManager.GetString("Capability_SystemAllUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Level Appointment Access.
+        /// </summary>
+        public static string Capability_SystemAppointment {
+            get {
+                return ResourceManager.GetString("Capability_SystemAppointment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Level Call History Access.
+        /// </summary>
+        public static string Capability_SystemCallHistory {
+            get {
+                return ResourceManager.GetString("Capability_SystemCallHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Level Chat Message Access.
+        /// </summary>
+        public static string Capability_SystemChat {
+            get {
+                return ResourceManager.GetString("Capability_SystemChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Level Contact Access.
+        /// </summary>
+        public static string Capability_SystemContacts {
+            get {
+                return ResourceManager.GetString("Capability_SystemContacts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Level Email Access.
+        /// </summary>
+        public static string Capability_SystemEmail {
+            get {
+                return ResourceManager.GetString("Capability_SystemEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UI Automation.
+        /// </summary>
+        public static string Capability_UIAutomation {
+            get {
+                return ResourceManager.GetString("Capability_UIAutomation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB.
+        /// </summary>
+        public static string Capability_USB {
+            get {
+                return ResourceManager.GetString("Capability_USB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Principal Name.
+        /// </summary>
+        public static string Capability_UserPrincipalName {
+            get {
+                return ResourceManager.GetString("Capability_UserPrincipalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Sign-in Support.
+        /// </summary>
+        public static string Capability_UserSignIn {
+            get {
+                return ResourceManager.GetString("Capability_UserSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User System ID.
+        /// </summary>
+        public static string Capability_UserSystemID {
+            get {
+                return ResourceManager.GetString("Capability_UserSystemID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Videos.
+        /// </summary>
+        public static string Capability_Videos {
+            get {
+                return ResourceManager.GetString("Capability_Videos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VoIP calling.
+        /// </summary>
+        public static string Capability_VoIP {
+            get {
+                return ResourceManager.GetString("Capability_VoIP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VPN App.
+        /// </summary>
+        public static string Capability_VPN {
+            get {
+                return ResourceManager.GetString("Capability_VPN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wallet.
+        /// </summary>
+        public static string Capability_Wallet {
+            get {
+                return ResourceManager.GetString("Capability_Wallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Webcam.
+        /// </summary>
+        public static string Capability_Webcam {
+            get {
+                return ResourceManager.GetString("Capability_Webcam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wi-Fi networking.
+        /// </summary>
+        public static string Capability_WiFi {
+            get {
+                return ResourceManager.GetString("Capability_WiFi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Team Application View.
+        /// </summary>
+        public static string Capability_WindowsTeamAppView {
+            get {
+                return ResourceManager.GetString("Capability_WindowsTeamAppView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Team Device Credentials.
+        /// </summary>
+        public static string Capability_WindowsTeamDeviceCreds {
+            get {
+                return ResourceManager.GetString("Capability_WindowsTeamDeviceCreds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows Team Experience.
+        /// </summary>
+        public static string Capability_WindowsTeamExperience {
+            get {
+                return ResourceManager.GetString("Capability_WindowsTeamExperience", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xbox Accessory.
+        /// </summary>
+        public static string Capability_XboxAccessory {
+            get {
+                return ResourceManager.GetString("Capability_XboxAccessory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certificate to sign the package.
         /// </summary>
         public static string CertificateSelector_Certificate {
@@ -9372,6 +10218,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string System_UAC {
             get {
                 return ResourceManager.GetString("System_UAC", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This operation requires administrative rights..
+        /// </summary>
+        public static string UacApp_AdminRightsRequired {
+            get {
+                return ResourceManager.GetString("UacApp_AdminRightsRequired", resourceCulture);
             }
         }
         
