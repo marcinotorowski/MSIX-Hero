@@ -91,13 +91,13 @@
                         </Grid>
 
                         <StackPanel Margin="12 0 0 0" VerticalAlignment="Center">
-                            <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='Unnamed', TargetNullValue='Unnamed'}" />
+                            <TextBlock FontSize="16" FontFamily="{StaticResource SourceSansPro}" Text="{Binding DisplayName, FallbackValue='n/a', TargetNullValue='n/a'}" />
                             <TextBlock Margin="0 2 0 0" TextTrimming="CharacterEllipsis" FontFamily="{StaticResource SourceSansPro}">
                                 <Run Text="{localization:Loc PackageExpert_Version}" Foreground="#aa000000" />
-                                <Run FontWeight="Bold" Text="{Binding Version, Mode=OneWay, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" />
+                                <Run FontWeight="Bold" Text="{Binding Version, Mode=OneWay, TargetNullValue='n/a', FallbackValue='n/a'}" />
                                 <Run Text="|" Foreground="#aa000000" />
                                 <Run Text="{localization:Loc PackageExpert_Publisher}" Foreground="#aa000000" />
-                                <Run ToolTip="{Binding Publisher}" FontWeight="Bold" Text="{Binding PublisherDisplayName, Mode=OneWay, TargetNullValue='Unknown version', FallbackValue='Unknown version'}" />
+                                <Run ToolTip="{Binding Publisher}" FontWeight="Bold" Text="{Binding PublisherDisplayName, Mode=OneWay, TargetNullValue='n/a', FallbackValue='n/a'}" />
                             </TextBlock>
                         </StackPanel>
                     </DockPanel>
@@ -114,7 +114,7 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <TextBox Style="{StaticResource TextBlock}" Text="{Binding PackageFullName, Mode=OneWay, FallbackValue='Missing full package name', TargetNullValue='Missing full package name'}" Opacity="0.66" />
+                    <TextBox Style="{StaticResource TextBlock}" Text="{Binding PackageFullName, Mode=OneWay, FallbackValue='n/a', TargetNullValue='n/a'}" Opacity="0.66" />
 
                     <WrapPanel Margin="-2 8 0 -2">
                         <views:Pill

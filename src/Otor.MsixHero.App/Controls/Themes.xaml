@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Otor.MsixHero.App.Controls"
                     xmlns:transitionContentControl="clr-namespace:Otor.MsixHero.App.Controls.TransitionContentControl"
-                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers">
+                    xmlns:tiers="clr-namespace:Otor.MsixHero.App.Helpers.Tiers"
+                    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/msixhero;component/Themes/Colors.xaml" />
@@ -29,7 +30,7 @@
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                             <TextBlock VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <Hyperlink x:Name="PART_Hyperlink">
-                                    <Run Text="Link_LearnMore_Part1" />
+                                    <Run Text="{localization:Loc Link_LearnMore_Part1}" />
                                     <Run FontWeight="SemiBold" Text="{TemplateBinding Topic}"></Run>
                                 </Hyperlink>
                             </TextBlock>
@@ -690,7 +691,7 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                     <TextBlock 
                         x:Name="PART_Overlay"
-                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0">
+                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message}" TextAlignment="Center" Opacity="0">
 
                     </TextBlock>
 
@@ -717,6 +718,9 @@
             </Border>
         </Grid>
         <ControlTemplate.Triggers>
+            <Trigger Property="Message" Value="{x:Null}">
+                <Setter TargetName="PART_Overlay" Property="Text" Value="{localization:Loc Loading_PleaseWait}" />
+            </Trigger>
             <Trigger Property="CancelCommand" Value="{x:Null}">
                 <Setter TargetName="PART_CancelButton" Property="Visibility" Value="Collapsed" />
             </Trigger>
@@ -790,7 +794,7 @@
                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
                     <TextBlock 
                         x:Name="PART_Overlay"
-                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message, TargetNullValue='Please wait...', FallbackValue='Please wait...'}" TextAlignment="Center" Opacity="0">
+                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Message}" TextAlignment="Center" Opacity="0">
                         <TextBlock.RenderTransform>
                             <TranslateTransform Y="40" />
                         </TextBlock.RenderTransform>
@@ -825,6 +829,9 @@
             </Border>
         </Grid>
         <ControlTemplate.Triggers>
+            <Trigger Property="Message" Value="{x:Null}">
+                <Setter TargetName="PART_Overlay" Property="Text" Value="{localization:Loc Loading_PleaseWait}" />
+            </Trigger>
             <Trigger Property="CancelCommand" Value="{x:Null}">
                 <Setter TargetName="PART_CancelButton" Property="Visibility" Value="Collapsed" />
             </Trigger>

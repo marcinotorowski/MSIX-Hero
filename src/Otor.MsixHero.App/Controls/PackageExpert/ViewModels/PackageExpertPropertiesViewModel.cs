@@ -25,6 +25,7 @@ using Otor.MsixHero.Appx.Packaging.Installation.Enums;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Build;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities.Sources;
+using Otor.MsixHero.Appx.Packaging.Manifest.Enums;
 
 namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 {
@@ -37,7 +38,30 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             this.Description = model.Description;
             this.Publisher = model.Publisher;
             this.FamilyName = model.FamilyName;
-            this.Architecture = model.ProcessorArchitecture.ToString();
+
+            switch (model.ProcessorArchitecture)
+            {
+                
+                case AppxPackageArchitecture.Neutral:
+                    this.Architecture = Resources.Localization.Packages_Filter_Architecture_Neutral;
+                    break;
+                case AppxPackageArchitecture.Arm64:
+                    this.Architecture = Resources.Localization.Packages_Filter_Architecture_ARM64;
+                    break;
+                case AppxPackageArchitecture.x86:
+                    this.Architecture = Resources.Localization.Packages_Filter_Architecture_32Bit;
+                    break;
+                case AppxPackageArchitecture.Arm:
+                    this.Architecture = Resources.Localization.Packages_Filter_Architecture_64Bit;
+                    break;
+                case AppxPackageArchitecture.x64:
+                    this.Architecture = Resources.Localization.Packages_Filter_Architecture_64Bit;
+                    break;
+                default:
+                    this.Architecture = model.ProcessorArchitecture.ToString();
+                    break;
+            }
+
             this.PackageFullName = model.FullName;
             this.PublisherDisplayName = model.PublisherDisplayName;
             this.Version = model.Version;
@@ -164,30 +188,30 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
             {
                 if (this.Model.Source is StorePackageSource)
                 {
-                    return "This application has been installed from Microsoft Store.";
+                    return Resources.Localization.PackageExpert_AppTypeToolTip_Store;
                 }
 
                 if (this.Model.Source is SystemSource)
                 {
-                    return "This application has been pre-installed with Windows.";
+                    return Resources.Localization.PackageExpert_AppTypeToolTip_PreInstalled;
                 }
 
                 if (this.Model.Source is DeveloperSource)
                 {
-                    return "This application has been installed from a manifest file, using the Developer mode.";
+                    return Resources.Localization.PackageExpert_AppTypeToolTip_Manifest;
                 }
 
                 if (this.Model.Source is NotInstalledSource)
                 {
-                    return "This application has not been installed yet.";
+                    return Resources.Localization.PackageExpert_AppTypeToolTip_NotInstalled;
                 }
 
                 if (this.Model.Source is AppInstallerPackageSource)
                 {
-                    return "This application has been side-loaded from an .appinstaller file.";
+                    return Resources.Localization.PackageExpert_AppTypeToolTip_AppInstaller;
                 }
 
-                return "This application has been side-loaded.";
+                return Resources.Localization.PackageExpert_AppTypeToolTip_SideLoading;
             }
         }
 
@@ -233,17 +257,17 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                 switch (result)
                 {
                     case MsixPackageType.Uwp:
-                        return "This is Universal Windows Platform (UWP) package.";
+                        return Resources.Localization.PackageExpert_CaptionToolTip_Uwp;
                     case MsixPackageType.BridgeDirect:
-                        return "This is a Win32 packaged app.";
+                        return Resources.Localization.PackageExpert_CaptionToolTip_Win32;
                     case MsixPackageType.BridgePsf:
-                        return "This is a Win32 packaged app, enhanced by Package Support Framework (PSF)";
+                        return Resources.Localization.PackageExpert_CaptionToolTip_Win32_Psf;
                     case MsixPackageType.Web:
-                        return "This is a web app.";
+                        return Resources.Localization.PackageExpert_CaptionToolTip_Web;
                     case MsixPackageType.Framework:
-                        return "This is a framework app";
+                        return Resources.Localization.PackageExpert_CaptionToolTip_Framework;
                     default:
-                        return "This is an app of an unknown type.";
+                        return Resources.Localization.PackageExpert_CaptionToolTip_Unknown;
                 }
             }
         }

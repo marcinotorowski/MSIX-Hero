@@ -132,9 +132,9 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
 
             using var scriptLocal = psLocal.AddScript(scriptContent);
 
-            itemProgress?.Report(new ProgressData(10, "Getting events, please wait..."));
+            itemProgress?.Report(new ProgressData(10, Resources.Localization.Events_PleaseWait));
             using var logItems = await psLocal.InvokeAsync(itemProgress).ConfigureAwait(false);
-            itemProgress?.Report(new ProgressData(70, "Getting events, please wait..."));
+            itemProgress?.Report(new ProgressData(70, Resources.Localization.Events_PleaseWait));
             return logItems.Select(log => factory.CreateFromPowerShellObject(log, logName)).ToList();
         }
     }

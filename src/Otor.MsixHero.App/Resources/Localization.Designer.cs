@@ -1717,6 +1717,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show silent command line.
+        /// </summary>
+        public static string Dialogs_CmdLineCheckbox {
+            get {
+                return ResourceManager.GetString("Dialogs_CmdLineCheckbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analyze dependencies.
         /// </summary>
         public static string Dialogs_Dependencies_Analyze_Button {
@@ -2334,6 +2343,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_ModPack_DisplayName {
             get {
                 return ResourceManager.GetString("Dialogs_ModPack_DisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display options.
+        /// </summary>
+        public static string Dialogs_ModPack_DisplayOptions {
+            get {
+                return ResourceManager.GetString("Dialogs_ModPack_DisplayOptions", resourceCulture);
             }
         }
         
@@ -6379,6 +6397,42 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accessible via.
+        /// </summary>
+        public static string PackageExpert_AccessibleVia {
+            get {
+                return ResourceManager.GetString("PackageExpert_AccessibleVia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execution alias.
+        /// </summary>
+        public static string PackageExpert_AccessibleVia_ExecAlias {
+            get {
+                return ResourceManager.GetString("PackageExpert_AccessibleVia_ExecAlias", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start menu tile.
+        /// </summary>
+        public static string PackageExpert_AccessibleVia_StartMenu {
+            get {
+                return ResourceManager.GetString("PackageExpert_AccessibleVia_StartMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package has no installed add-ons or modification packages..
+        /// </summary>
+        public static string PackageExpert_AddOns_None {
+            get {
+                return ResourceManager.GetString("PackageExpert_AddOns_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check for updates.
         /// </summary>
         public static string PackageExpert_App_CheckUpdates {
@@ -6487,6 +6541,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This package has no applications..
+        /// </summary>
+        public static string PackageExpert_Applications_None {
+            get {
+                return ResourceManager.GetString("PackageExpert_Applications_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Developer.
         /// </summary>
         public static string PackageExpert_AppType_Developer {
@@ -6532,6 +6595,60 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This application has been side-loaded from an .appinstaller file..
+        /// </summary>
+        public static string PackageExpert_AppTypeToolTip_AppInstaller {
+            get {
+                return ResourceManager.GetString("PackageExpert_AppTypeToolTip_AppInstaller", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application has been installed from a manifest file, using the Developer mode..
+        /// </summary>
+        public static string PackageExpert_AppTypeToolTip_Manifest {
+            get {
+                return ResourceManager.GetString("PackageExpert_AppTypeToolTip_Manifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application has not been installed yet..
+        /// </summary>
+        public static string PackageExpert_AppTypeToolTip_NotInstalled {
+            get {
+                return ResourceManager.GetString("PackageExpert_AppTypeToolTip_NotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application has been pre-installed with Windows..
+        /// </summary>
+        public static string PackageExpert_AppTypeToolTip_PreInstalled {
+            get {
+                return ResourceManager.GetString("PackageExpert_AppTypeToolTip_PreInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application has been side-loaded..
+        /// </summary>
+        public static string PackageExpert_AppTypeToolTip_SideLoading {
+            get {
+                return ResourceManager.GetString("PackageExpert_AppTypeToolTip_SideLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This application has been installed from Microsoft Store..
+        /// </summary>
+        public static string PackageExpert_AppTypeToolTip_Store {
+            get {
+                return ResourceManager.GetString("PackageExpert_AppTypeToolTip_Store", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Architecture.
         /// </summary>
         public static string PackageExpert_Architecture {
@@ -6550,6 +6667,60 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is a framework app.
+        /// </summary>
+        public static string PackageExpert_CaptionToolTip_Framework {
+            get {
+                return ResourceManager.GetString("PackageExpert_CaptionToolTip_Framework", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is an app of an unknown type..
+        /// </summary>
+        public static string PackageExpert_CaptionToolTip_Unknown {
+            get {
+                return ResourceManager.GetString("PackageExpert_CaptionToolTip_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is Universal Windows Platform (UWP) package..
+        /// </summary>
+        public static string PackageExpert_CaptionToolTip_Uwp {
+            get {
+                return ResourceManager.GetString("PackageExpert_CaptionToolTip_Uwp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a web app..
+        /// </summary>
+        public static string PackageExpert_CaptionToolTip_Web {
+            get {
+                return ResourceManager.GetString("PackageExpert_CaptionToolTip_Web", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a Win32 packaged app..
+        /// </summary>
+        public static string PackageExpert_CaptionToolTip_Win32 {
+            get {
+                return ResourceManager.GetString("PackageExpert_CaptionToolTip_Win32", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is a Win32 packaged app, enhanced by Package Support Framework (PSF).
+        /// </summary>
+        public static string PackageExpert_CaptionToolTip_Win32_Psf {
+            get {
+                return ResourceManager.GetString("PackageExpert_CaptionToolTip_Win32_Psf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check for updates.
         /// </summary>
         public static string PackageExpert_CheckForUpdatesLink {
@@ -6564,6 +6735,78 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageExpert_CopyPath {
             get {
                 return ResourceManager.GetString("PackageExpert_CopyPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to open Windows 10 version history in Wikipedia.
+        /// </summary>
+        public static string PackageExpert_Dependencies_Explanation {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_Explanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEVICE FAMILIES.
+        /// </summary>
+        public static string PackageExpert_Dependencies_Family_Header {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_Family_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open dependencies graph....
+        /// </summary>
+        public static string PackageExpert_Dependencies_Link {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_Link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum required OS.
+        /// </summary>
+        public static string PackageExpert_Dependencies_MinOs {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_MinOs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [MSIX Core] Minimum required OS.
+        /// </summary>
+        public static string PackageExpert_Dependencies_MinOs_MsixCore {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_MinOs_MsixCore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PACKAGE DEPENDENCIES.
+        /// </summary>
+        public static string PackageExpert_Dependencies_Package_Header {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_Package_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tested on.
+        /// </summary>
+        public static string PackageExpert_Dependencies_TestedOn {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_TestedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [MSIX Core] Tested on.
+        /// </summary>
+        public static string PackageExpert_Dependencies_TestedOn_MsixCore {
+            get {
+                return ResourceManager.GetString("PackageExpert_Dependencies_TestedOn_MsixCore", resourceCulture);
             }
         }
         
@@ -6604,6 +6847,33 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View/edit.
+        /// </summary>
+        public static string PackageExpert_Files_Context_View {
+            get {
+                return ResourceManager.GetString("PackageExpert_Files_Context_View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PackageExpert_Files_Header_Name {
+            get {
+                return ResourceManager.GetString("PackageExpert_Files_Header_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string PackageExpert_Files_Header_Size {
+            get {
+                return ResourceManager.GetString("PackageExpert_Files_Header_Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Full package name.
         /// </summary>
         public static string PackageExpert_FullPackageName {
@@ -6613,11 +6883,110 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change install directory....
+        /// </summary>
+        public static string PackageExpert_Installation_ChangeDir {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_ChangeDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed.
+        /// </summary>
+        public static string PackageExpert_Installation_Installed {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_Installed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed on.
+        /// </summary>
+        public static string PackageExpert_Installation_InstalledOn {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_InstalledOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation type.
+        /// </summary>
+        public static string PackageExpert_Installation_InstallType {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_InstallType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manifest file (developer mode).
+        /// </summary>
+        public static string PackageExpert_Installation_InstallType_Manifest {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_InstallType_Manifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System package.
+        /// </summary>
+        public static string PackageExpert_Installation_InstallType_System {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_InstallType_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installed manifest path location.
+        /// </summary>
+        public static string PackageExpert_Installation_Manifest {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_Manifest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not installed.
+        /// </summary>
+        public static string PackageExpert_Installation_NotInstalled {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_NotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string PackageExpert_Installation_Status {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installation_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installation folder.
         /// </summary>
         public static string PackageExpert_InstallationFolder {
             get {
                 return ResourceManager.GetString("PackageExpert_InstallationFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to view who installed this package you must be an administrator..
+        /// </summary>
+        public static string PackageExpert_Installations_UacPrompt {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installations_UacPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press here to query the packages as local administrator.
+        /// </summary>
+        public static string PackageExpert_Installations_UacPrompt_Caption {
+            get {
+                return ResourceManager.GetString("PackageExpert_Installations_UacPrompt_Caption", resourceCulture);
             }
         }
         
@@ -6654,6 +7023,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageExpert_LoadingCertificate {
             get {
                 return ResourceManager.GetString("PackageExpert_LoadingCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MSIX modification packages.
+        /// </summary>
+        public static string PackageExpert_ModPack_Topic {
+            get {
+                return ResourceManager.GetString("PackageExpert_ModPack_Topic", resourceCulture);
             }
         }
         
@@ -6721,11 +7099,182 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Support Framework.
+        /// </summary>
+        public static string PackageExpert_Psf {
+            get {
+                return ResourceManager.GetString("PackageExpert_Psf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command line arguments.
+        /// </summary>
+        public static string PackageExpert_Psf_CmdArgs {
+            get {
+                return ResourceManager.GetString("PackageExpert_Psf_CmdArgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entry point.
+        /// </summary>
+        public static string PackageExpert_Psf_EntryPoint {
+            get {
+                return ResourceManager.GetString("PackageExpert_Psf_EntryPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to launched by.
+        /// </summary>
+        public static string PackageExpert_Psf_LaunchedBy {
+            get {
+                return ResourceManager.GetString("PackageExpert_Psf_LaunchedBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package does not contain any fix-ups.
+        /// </summary>
+        public static string PackageExpert_Psf_None {
+            get {
+                return ResourceManager.GetString("PackageExpert_Psf_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working directory.
+        /// </summary>
+        public static string PackageExpert_Psf_WkDir {
+            get {
+                return ResourceManager.GetString("PackageExpert_Psf_WkDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PSF configuration.
         /// </summary>
         public static string PackageExpert_PsfConfig {
             get {
                 return ResourceManager.GetString("PackageExpert_PsfConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After the application finishes.
+        /// </summary>
+        public static string PackageExpert_PsScripts_AfterFinish {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_AfterFinish", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arguments.
+        /// </summary>
+        public static string PackageExpert_PsScripts_Args {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_Args", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before the application starts.
+        /// </summary>
+        public static string PackageExpert_PsScripts_BeforeStart {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_BeforeStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string PackageExpert_PsScripts_BeforeStart_Text {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_BeforeStart_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to POWERSHELL SCRIPTS.
+        /// </summary>
+        public static string PackageExpert_PsScripts_Header {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run in a virtual environment.
+        /// </summary>
+        public static string PackageExpert_PsScripts_Inside {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_Inside", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show no window.
+        /// </summary>
+        public static string PackageExpert_PsScripts_NoWindow {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_NoWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run outside of the virtual environment.
+        /// </summary>
+        public static string PackageExpert_PsScripts_Outside {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_Outside", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run always.
+        /// </summary>
+        public static string PackageExpert_PsScripts_RunAlways {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_RunAlways", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run asynchronously.
+        /// </summary>
+        public static string PackageExpert_PsScripts_RunAsync {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_RunAsync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run only once.
+        /// </summary>
+        public static string PackageExpert_PsScripts_RunOnce {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_RunOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show window.
+        /// </summary>
+        public static string PackageExpert_PsScripts_ShowWindow {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_ShowWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait for finish.
+        /// </summary>
+        public static string PackageExpert_PsScripts_Wait {
+            get {
+                return ResourceManager.GetString("PackageExpert_PsScripts_Wait", resourceCulture);
             }
         }
         
@@ -6753,6 +7302,51 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageExpert_Reading {
             get {
                 return ResourceManager.GetString("PackageExpert_Reading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string PackageExpert_Registry_Header_Data {
+            get {
+                return ResourceManager.GetString("PackageExpert_Registry_Header_Data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PackageExpert_Registry_Header_Name {
+            get {
+                return ResourceManager.GetString("PackageExpert_Registry_Header_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string PackageExpert_Registry_Header_Type {
+            get {
+                return ResourceManager.GetString("PackageExpert_Registry_Header_Type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading registry keys....
+        /// </summary>
+        public static string PackageExpert_Registry_Loading {
+            get {
+                return ResourceManager.GetString("PackageExpert_Registry_Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package does not contain Registry entries..
+        /// </summary>
+        public static string PackageExpert_Registry_None {
+            get {
+                return ResourceManager.GetString("PackageExpert_Registry_None", resourceCulture);
             }
         }
         
@@ -6892,11 +7486,110 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Overview.
+        /// </summary>
+        public static string PackageExpert_Tab_Overview {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tab_Overview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
         public static string PackageExpert_Tab_Properties {
             get {
                 return ResourceManager.GetString("PackageExpert_Tab_Properties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add-ons and modification packages.
+        /// </summary>
+        public static string PackageExpert_Tabs_AddOns {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_AddOns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applications.
+        /// </summary>
+        public static string PackageExpert_Tabs_Applications {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Applications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content.
+        /// </summary>
+        public static string PackageExpert_Tabs_Content {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dependencies.
+        /// </summary>
+        public static string PackageExpert_Tabs_Dependencies {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Dependencies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files.
+        /// </summary>
+        public static string PackageExpert_Tabs_Files {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string PackageExpert_Tabs_General {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation.
+        /// </summary>
+        public static string PackageExpert_Tabs_Installation {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Installation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Registry.
+        /// </summary>
+        public static string PackageExpert_Tabs_Registry {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Registry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string PackageExpert_Tabs_Users {
+            get {
+                return ResourceManager.GetString("PackageExpert_Tabs_Users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target.
+        /// </summary>
+        public static string PackageExpert_Target {
+            get {
+                return ResourceManager.GetString("PackageExpert_Target", resourceCulture);
             }
         }
         

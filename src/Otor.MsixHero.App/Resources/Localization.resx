@@ -2661,6 +2661,9 @@
   <data name="Dialogs_ModPack_DisplayName" xml:space="preserve">
     <value>Displayed package name</value>
   </data>
+  <data name="Dialogs_ModPack_DisplayOptions" xml:space="preserve">
+    <value>Display options</value>
+  </data>
   <data name="Dialogs_ModPack_Error_ReadProperties" xml:space="preserve">
     <value>Could not read the properties from the package.</value>
   </data>
@@ -3101,5 +3104,233 @@
   </data>
   <data name="Packages_Type_Unsigned" xml:space="preserve">
     <value>Side-loaded (unsigned)</value>
+  </data>
+  <data name="Dialogs_CmdLineCheckbox" xml:space="preserve">
+    <value>Show silent command line</value>
+  </data>
+  <data name="PackageExpert_AccessibleVia" xml:space="preserve">
+    <value>Accessible via</value>
+  </data>
+  <data name="PackageExpert_AccessibleVia_ExecAlias" xml:space="preserve">
+    <value>Execution alias</value>
+  </data>
+  <data name="PackageExpert_AccessibleVia_StartMenu" xml:space="preserve">
+    <value>Start menu tile</value>
+  </data>
+  <data name="PackageExpert_AddOns_None" xml:space="preserve">
+    <value>This package has no installed add-ons or modification packages.</value>
+  </data>
+  <data name="PackageExpert_Applications_None" xml:space="preserve">
+    <value>This package has no applications.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_AppInstaller" xml:space="preserve">
+    <value>This application has been side-loaded from an .appinstaller file.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_Manifest" xml:space="preserve">
+    <value>This application has been installed from a manifest file, using the Developer mode.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_NotInstalled" xml:space="preserve">
+    <value>This application has not been installed yet.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_PreInstalled" xml:space="preserve">
+    <value>This application has been pre-installed with Windows.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_SideLoading" xml:space="preserve">
+    <value>This application has been side-loaded.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_Store" xml:space="preserve">
+    <value>This application has been installed from Microsoft Store.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Framework" xml:space="preserve">
+    <value>This is a framework app</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Unknown" xml:space="preserve">
+    <value>This is an app of an unknown type.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Uwp" xml:space="preserve">
+    <value>This is Universal Windows Platform (UWP) package.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Web" xml:space="preserve">
+    <value>This is a web app.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Win32" xml:space="preserve">
+    <value>This is a Win32 packaged app.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Win32_Psf" xml:space="preserve">
+    <value>This is a Win32 packaged app, enhanced by Package Support Framework (PSF)</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Explanation" xml:space="preserve">
+    <value>Click to open Windows 10 version history in Wikipedia</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Family_Header" xml:space="preserve">
+    <value>DEVICE FAMILIES</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Link" xml:space="preserve">
+    <value>Open dependencies graph...</value>
+  </data>
+  <data name="PackageExpert_Dependencies_MinOs" xml:space="preserve">
+    <value>Minimum required OS</value>
+  </data>
+  <data name="PackageExpert_Dependencies_MinOs_MsixCore" xml:space="preserve">
+    <value>[MSIX Core] Minimum required OS</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Package_Header" xml:space="preserve">
+    <value>PACKAGE DEPENDENCIES</value>
+  </data>
+  <data name="PackageExpert_Dependencies_TestedOn" xml:space="preserve">
+    <value>Tested on</value>
+  </data>
+  <data name="PackageExpert_Dependencies_TestedOn_MsixCore" xml:space="preserve">
+    <value>[MSIX Core] Tested on</value>
+  </data>
+  <data name="PackageExpert_Files_Context_View" xml:space="preserve">
+    <value>View/edit</value>
+  </data>
+  <data name="PackageExpert_Files_Header_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PackageExpert_Files_Header_Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PackageExpert_Installations_UacPrompt" xml:space="preserve">
+    <value>In order to view who installed this package you must be an administrator.</value>
+  </data>
+  <data name="PackageExpert_Installations_UacPrompt_Caption" xml:space="preserve">
+    <value>Press here to query the packages as local administrator</value>
+  </data>
+  <data name="PackageExpert_Installation_ChangeDir" xml:space="preserve">
+    <value>Change install directory...</value>
+  </data>
+  <data name="PackageExpert_Installation_Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="PackageExpert_Installation_InstalledOn" xml:space="preserve">
+    <value>Installed on</value>
+  </data>
+  <data name="PackageExpert_Installation_InstallType" xml:space="preserve">
+    <value>Installation type</value>
+  </data>
+  <data name="PackageExpert_Installation_InstallType_Manifest" xml:space="preserve">
+    <value>Manifest file (developer mode)</value>
+  </data>
+  <data name="PackageExpert_Installation_InstallType_System" xml:space="preserve">
+    <value>System package</value>
+  </data>
+  <data name="PackageExpert_Installation_Manifest" xml:space="preserve">
+    <value>Installed manifest path location</value>
+  </data>
+  <data name="PackageExpert_Installation_NotInstalled" xml:space="preserve">
+    <value>Not installed</value>
+  </data>
+  <data name="PackageExpert_Installation_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="PackageExpert_ModPack_Topic" xml:space="preserve">
+    <value>MSIX modification packages</value>
+  </data>
+  <data name="PackageExpert_Psf" xml:space="preserve">
+    <value>Package Support Framework</value>
+  </data>
+  <data name="PackageExpert_Psf_CmdArgs" xml:space="preserve">
+    <value>Command line arguments</value>
+  </data>
+  <data name="PackageExpert_Psf_EntryPoint" xml:space="preserve">
+    <value>Entry point</value>
+  </data>
+  <data name="PackageExpert_Psf_LaunchedBy" xml:space="preserve">
+    <value>launched by</value>
+  </data>
+  <data name="PackageExpert_Psf_None" xml:space="preserve">
+    <value>This package does not contain any fix-ups</value>
+  </data>
+  <data name="PackageExpert_Psf_WkDir" xml:space="preserve">
+    <value>Working directory</value>
+  </data>
+  <data name="PackageExpert_PsScripts_AfterFinish" xml:space="preserve">
+    <value>After the application finishes</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Args" xml:space="preserve">
+    <value>Arguments</value>
+  </data>
+  <data name="PackageExpert_PsScripts_BeforeStart" xml:space="preserve">
+    <value>Before the application starts</value>
+  </data>
+  <data name="PackageExpert_PsScripts_BeforeStart_Text" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Header" xml:space="preserve">
+    <value>POWERSHELL SCRIPTS</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Inside" xml:space="preserve">
+    <value>Run in a virtual environment</value>
+  </data>
+  <data name="PackageExpert_PsScripts_NoWindow" xml:space="preserve">
+    <value>Show no window</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Outside" xml:space="preserve">
+    <value>Run outside of the virtual environment</value>
+  </data>
+  <data name="PackageExpert_PsScripts_RunAlways" xml:space="preserve">
+    <value>Run always</value>
+  </data>
+  <data name="PackageExpert_PsScripts_RunAsync" xml:space="preserve">
+    <value>Run asynchronously</value>
+  </data>
+  <data name="PackageExpert_PsScripts_RunOnce" xml:space="preserve">
+    <value>Run only once</value>
+  </data>
+  <data name="PackageExpert_PsScripts_ShowWindow" xml:space="preserve">
+    <value>Show window</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Wait" xml:space="preserve">
+    <value>Wait for finish</value>
+  </data>
+  <data name="PackageExpert_Registry_Header_Data" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="PackageExpert_Registry_Header_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="PackageExpert_Registry_Header_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="PackageExpert_Registry_Loading" xml:space="preserve">
+    <value>Loading registry keys...</value>
+  </data>
+  <data name="PackageExpert_Registry_None" xml:space="preserve">
+    <value>This package does not contain Registry entries.</value>
+  </data>
+  <data name="PackageExpert_Tabs_AddOns" xml:space="preserve">
+    <value>Add-ons and modification packages</value>
+  </data>
+  <data name="PackageExpert_Tabs_Applications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
+  <data name="PackageExpert_Tabs_Content" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="PackageExpert_Tabs_Dependencies" xml:space="preserve">
+    <value>Dependencies</value>
+  </data>
+  <data name="PackageExpert_Tabs_Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="PackageExpert_Tabs_General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="PackageExpert_Tabs_Installation" xml:space="preserve">
+    <value>Installation</value>
+  </data>
+  <data name="PackageExpert_Tabs_Registry" xml:space="preserve">
+    <value>Registry</value>
+  </data>
+  <data name="PackageExpert_Tabs_Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="PackageExpert_Tab_Overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="PackageExpert_Target" xml:space="preserve">
+    <value>Target</value>
   </data>
 </root>

@@ -3016,7 +3016,7 @@
     <value>Manifest pakietu</value>
   </data>
   <data name="PackageExpert_PhysicalUserDir" xml:space="preserve">
-    <value>Fizyczna folder użytkownika</value>
+    <value>Fizyczny folder użytkownika</value>
   </data>
   <data name="PackageExpert_ProductPage" xml:space="preserve">
     <value>Strona produktu</value>
@@ -3077,5 +3077,239 @@
   </data>
   <data name="Packages_Type_Unsigned" xml:space="preserve">
     <value>Ręcznie zainstalowana (niepodpisana)</value>
+  </data>
+  <data name="Dialogs_CmdLineCheckbox" xml:space="preserve">
+    <value>Pokaż cichą linię komend</value>
+  </data>
+  <data name="Dialogs_ModPack_DisplayOptions" xml:space="preserve">
+    <value>Opcje wyświetlania</value>
+  </data>
+  <data name="Link_LearnMore_Part1" xml:space="preserve">
+    <value>Dowiedz się więcej na temat</value>
+  </data>
+  <data name="PackageExpert_AccessibleVia" xml:space="preserve">
+    <value>Dostępna przez</value>
+  </data>
+  <data name="PackageExpert_AccessibleVia_ExecAlias" xml:space="preserve">
+    <value>Alias wykonawczy</value>
+  </data>
+  <data name="PackageExpert_AccessibleVia_StartMenu" xml:space="preserve">
+    <value>Kafelek w menu Start</value>
+  </data>
+  <data name="PackageExpert_AddOns_None" xml:space="preserve">
+    <value>Ten pakiet nie zawiera dodatków ani pakietów modyfikujących</value>
+  </data>
+  <data name="PackageExpert_Applications_None" xml:space="preserve">
+    <value>Ten pakiet nie zawiera aplikacji</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_AppInstaller" xml:space="preserve">
+    <value>Ta aplikacja została zainstalowana przy pomocy pliku instalatora .appinstaller.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_Manifest" xml:space="preserve">
+    <value>Ta aplikacja została zainstalowana z luźnego pliku manifestu, w trybie deweloperskim.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_NotInstalled" xml:space="preserve">
+    <value>Ta aplikacja nie jest zainstalowana.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_PreInstalled" xml:space="preserve">
+    <value>Ta aplikacja została preinstalowana z systemem Windows.</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_SideLoading" xml:space="preserve">
+    <value>Ta aplikacja została zainstalowana ręcznie (side-loading).</value>
+  </data>
+  <data name="PackageExpert_AppTypeToolTip_Store" xml:space="preserve">
+    <value>Ta aplikacja została zainstalowana z poziomu sklepu Microsoft.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Framework" xml:space="preserve">
+    <value>To jest aplikacja typu framework.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Unknown" xml:space="preserve">
+    <value>To jest aplikacja nieznanego typu.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Uwp" xml:space="preserve">
+    <value>To jest pakiet z aplikacją uniwersalną UWP (Universal Windows Platform).</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Web" xml:space="preserve">
+    <value>To jest aplikacja webowa.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Win32" xml:space="preserve">
+    <value>To jest aplikacja win32.</value>
+  </data>
+  <data name="PackageExpert_CaptionToolTip_Win32_Psf" xml:space="preserve">
+    <value>To jest aplikacja win32, rozszerzona możliwościami technologii Package Support Framework (PSF)</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Explanation" xml:space="preserve">
+    <value>Kliknij, by otworzyć temat Windows 10 w Encyklopedii Wikipedia</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Family_Header" xml:space="preserve">
+    <value>RODZINY URZĄDZEŃ</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Link" xml:space="preserve">
+    <value>Otwórz diagram zależności...</value>
+  </data>
+  <data name="PackageExpert_Dependencies_MinOs" xml:space="preserve">
+    <value>Minimalna wymagana wersja systemu</value>
+  </data>
+  <data name="PackageExpert_Dependencies_MinOs_MsixCore" xml:space="preserve">
+    <value>[MSIX Core] Minimalna wymagana wersja systemu</value>
+  </data>
+  <data name="PackageExpert_Dependencies_Package_Header" xml:space="preserve">
+    <value>ZALEŻNOŚCI PAKIETOWE</value>
+  </data>
+  <data name="PackageExpert_Dependencies_TestedOn" xml:space="preserve">
+    <value>Testowane na</value>
+  </data>
+  <data name="PackageExpert_Dependencies_TestedOn_MsixCore" xml:space="preserve">
+    <value>[MSIX Core] Testowane na</value>
+  </data>
+  <data name="PackageExpert_Files_Context_View" xml:space="preserve">
+    <value>Podgląd/edytuj</value>
+  </data>
+  <data name="PackageExpert_Files_Header_Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="PackageExpert_Files_Header_Size" xml:space="preserve">
+    <value>Rozmiar</value>
+  </data>
+  <data name="PackageExpert_Installations_UacPrompt" xml:space="preserve">
+    <value>Musisz mieć uprawnienia adminsitracyjne by zobaczyć, kto zainstalował ten pakiet.</value>
+  </data>
+  <data name="PackageExpert_Installations_UacPrompt_Caption" xml:space="preserve">
+    <value>Kliknij, aby uzyskać listę użytkowników w trybie administratora</value>
+  </data>
+  <data name="PackageExpert_Installation_ChangeDir" xml:space="preserve">
+    <value>Zmień folder instalacji...</value>
+  </data>
+  <data name="PackageExpert_Installation_Installed" xml:space="preserve">
+    <value>Zainstalowana</value>
+  </data>
+  <data name="PackageExpert_Installation_InstalledOn" xml:space="preserve">
+    <value>Zainstalowana</value>
+  </data>
+  <data name="PackageExpert_Installation_InstallType" xml:space="preserve">
+    <value>Typ instalacji</value>
+  </data>
+  <data name="PackageExpert_Installation_InstallType_Manifest" xml:space="preserve">
+    <value>Plik manifestu (tryb deweloperski)</value>
+  </data>
+  <data name="PackageExpert_Installation_InstallType_System" xml:space="preserve">
+    <value>Pakiet systemowy</value>
+  </data>
+  <data name="PackageExpert_Installation_Manifest" xml:space="preserve">
+    <value>Lokalizacja zainstalowanego manifestu</value>
+  </data>
+  <data name="PackageExpert_Installation_NotInstalled" xml:space="preserve">
+    <value>Niezainstalowana</value>
+  </data>
+  <data name="PackageExpert_Installation_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="PackageExpert_ModPack_Topic" xml:space="preserve">
+    <value>Pakiety modifikujące MSIX</value>
+  </data>
+  <data name="PackageExpert_Psf" xml:space="preserve">
+    <value>Package Support Framework</value>
+  </data>
+  <data name="PackageExpert_Psf_CmdArgs" xml:space="preserve">
+    <value>Lina komend</value>
+  </data>
+  <data name="PackageExpert_Psf_EntryPoint" xml:space="preserve">
+    <value>Punkt startowy</value>
+  </data>
+  <data name="PackageExpert_Psf_LaunchedBy" xml:space="preserve">
+    <value>uruchamiane przez</value>
+  </data>
+  <data name="PackageExpert_Psf_None" xml:space="preserve">
+    <value>Ten pakiet nie zawiera poprawek kompatybilności (fix-up)</value>
+  </data>
+  <data name="PackageExpert_Psf_WkDir" xml:space="preserve">
+    <value>Folder roboczy</value>
+  </data>
+  <data name="PackageExpert_PsScripts_AfterFinish" xml:space="preserve">
+    <value>Po zakończeniu aplikacji</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Args" xml:space="preserve">
+    <value>Argumenty</value>
+  </data>
+  <data name="PackageExpert_PsScripts_BeforeStart" xml:space="preserve">
+    <value>Przed startem aplikacji</value>
+  </data>
+  <data name="PackageExpert_PsScripts_BeforeStart_Text" xml:space="preserve">
+    <value>Uruchom</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Header" xml:space="preserve">
+    <value>SKRYPTY POWERSHELL</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Inside" xml:space="preserve">
+    <value>Uruchom w środowisku wirtualnym</value>
+  </data>
+  <data name="PackageExpert_PsScripts_NoWindow" xml:space="preserve">
+    <value>Nie pokazuj okna</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Outside" xml:space="preserve">
+    <value>Uruchom poza wirtualnym środowiskiem</value>
+  </data>
+  <data name="PackageExpert_PsScripts_RunAlways" xml:space="preserve">
+    <value>Zawsze uruchamiaj</value>
+  </data>
+  <data name="PackageExpert_PsScripts_RunAsync" xml:space="preserve">
+    <value>Uruchom asynchronicznie</value>
+  </data>
+  <data name="PackageExpert_PsScripts_RunOnce" xml:space="preserve">
+    <value>Uruchom jeden raz</value>
+  </data>
+  <data name="PackageExpert_PsScripts_ShowWindow" xml:space="preserve">
+    <value>Pokazuj okno</value>
+  </data>
+  <data name="PackageExpert_PsScripts_Wait" xml:space="preserve">
+    <value>Czekaj za zakończenie</value>
+  </data>
+  <data name="PackageExpert_Registry_Header_Data" xml:space="preserve">
+    <value>Wartość</value>
+  </data>
+  <data name="PackageExpert_Registry_Header_Name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="PackageExpert_Registry_Header_Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="PackageExpert_Registry_Loading" xml:space="preserve">
+    <value>Wczytywanie kluczy rejestru...</value>
+  </data>
+  <data name="PackageExpert_Registry_None" xml:space="preserve">
+    <value>Ten pakiet nie zawiera wpisów w rejestrze</value>
+  </data>
+  <data name="PackageExpert_Tabs_AddOns" xml:space="preserve">
+    <value>Dodatki i pakiety modyfikujące</value>
+  </data>
+  <data name="PackageExpert_Tabs_Applications" xml:space="preserve">
+    <value>Aplikacje</value>
+  </data>
+  <data name="PackageExpert_Tabs_Content" xml:space="preserve">
+    <value>Zawartość</value>
+  </data>
+  <data name="PackageExpert_Tabs_Dependencies" xml:space="preserve">
+    <value>Zależności</value>
+  </data>
+  <data name="PackageExpert_Tabs_Files" xml:space="preserve">
+    <value>Pliki</value>
+  </data>
+  <data name="PackageExpert_Tabs_General" xml:space="preserve">
+    <value>Ogólne</value>
+  </data>
+  <data name="PackageExpert_Tabs_Installation" xml:space="preserve">
+    <value>Instalacja</value>
+  </data>
+  <data name="PackageExpert_Tabs_Registry" xml:space="preserve">
+    <value>Rejestr</value>
+  </data>
+  <data name="PackageExpert_Tabs_Users" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="PackageExpert_Tab_Overview" xml:space="preserve">
+    <value>Przegląd</value>
+  </data>
+  <data name="PackageExpert_Target" xml:space="preserve">
+    <value>Cel</value>
   </data>
 </root>

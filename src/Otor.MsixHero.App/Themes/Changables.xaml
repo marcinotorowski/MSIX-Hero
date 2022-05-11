@@ -167,7 +167,7 @@
                                             <StackPanel IsEnabled="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Dialog.State.IsSaved, Converter={StaticResource NegativeConverter}}" Orientation="Horizontal" Margin="4" HorizontalAlignment="Left" DockPanel.Dock="Left">
                                                 <CheckBox
                                                     Visibility="{TemplateBinding SupportsCommandLineBuilding, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="Show silent command line" Margin="0 0 4 0" VerticalAlignment="Center" />
+                                                    IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ShowSilentCommandLine}" Content="{localization:Loc Dialogs_CmdLineCheckbox}" Margin="0 0 4 0" VerticalAlignment="Center" />
                                                 <ContentPresenter Content="{TemplateBinding Footer}" VerticalAlignment="Center" />
                                             </StackPanel>
 

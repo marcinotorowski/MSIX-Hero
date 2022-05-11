@@ -35,7 +35,7 @@
                                 Margin="0 16 0 6" />
                             <TextBox Margin="0 0 0 16" Text="{Binding PublisherDisplayName.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
 
-                            <Label Style="{StaticResource FormLabel}" Margin="0 16 0 10" Content="{localization:Loc Dialogs_ModPack_Identity}" /> 
+                            <Label Style="{StaticResource FormLabel}" Margin="0 16 0 10" Content="{localization:Loc Dialogs_PackageName_Identity}" /> 
                             <TextBlock 
                                 controls1:RequiredAdorner.IsRequired="True" 
                                 Style="{StaticResource LabelTextBlock}"

@@ -61,6 +61,15 @@ namespace Otor.MsixHero.Appx.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Getting events, please wait....
+        /// </summary>
+        public static string Events_PleaseWait {
+            get {
+                return ResourceManager.GetString("Events_PleaseWait", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Analyzing {0}....
         /// </summary>
         public static string Packages_Analyzing {

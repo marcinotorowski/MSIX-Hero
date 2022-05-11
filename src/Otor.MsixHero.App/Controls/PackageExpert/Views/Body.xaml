@@ -32,7 +32,7 @@
             <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
                 <TabItem>
                     <TabItem.Header>
-                        <Viewbox ToolTip="General" Height="24" Width="24">
+                        <Viewbox ToolTip="{localization:Loc PackageExpert_Tabs_General}" Height="24" Width="24">
                             <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorInfo}" />
                         </Viewbox>
                     </TabItem.Header>
@@ -100,9 +100,9 @@
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel  
-                        DataContext="{Binding Manifest.CurrentValue}"
-                        Margin="0 10 0 0" 
-                        Visibility="{Binding HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                DataContext="{Binding Manifest.CurrentValue}"
+                                Margin="0 10 0 0" 
+                                Visibility="{Binding HasBuildInfo, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Builds_Environment}" />
                                 <TextBlock Style="{StaticResource DataValue}" Margin="0">
                                     <Run Text="{Binding BuildInfo.ProductName, Mode=OneWay, TargetNullValue='?'}" />
@@ -231,11 +231,11 @@
                 </TabItem>
             </TabControl>
         </TabItem>
-        <TabItem Header="Content">
+        <TabItem Header="{localization:Loc PackageExpert_Tabs_Content}">
             <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
                 <TabItem>
                     <TabItem.Header>
-                        <Grid DataContext="{Binding Manifest.CurrentValue}" Background="Transparent" ToolTip="Applications" Width="24" Height="24">
+                        <Grid DataContext="{Binding Manifest.CurrentValue}" Background="Transparent" ToolTip="{localization:Loc PackageExpert_Tabs_Applications}" Width="24" Height="24">
                             <Viewbox HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" Width="24">
                                 <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorConsole}" />
                             </Viewbox>
@@ -294,11 +294,11 @@
                                                             </Viewbox>
                                                         </views:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Target" />
+                                                        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Target}" />
                                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="{Binding Start, Mode=OneTime}" TextWrapping="Wrap" />
                                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasPsf, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" TextWrapping="Wrap">
-                                                                        <Run Text="{Binding Psf.Executable, Mode=OneTime}" />
-                                                                        <Run Text="(launched by " Foreground="{StaticResource MsixHero.Brushes.Light2}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text=")" />
+                                                            <Run Text="{Binding Psf.Executable, Mode=OneTime}" />
+                                                            <Run Text="(" Foreground="{StaticResource MsixHero.Brushes.Light2}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text=")" /><Run Text="{localization:Loc PackageExpert_Psf_LaunchedBy}" Foreground="{StaticResource MsixHero.Brushes.Light2}" /> <Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text="{Binding Start, Mode=OneWay}" /><Run Foreground="{StaticResource MsixHero.Brushes.Light2}" Text=")" />
                                                         </TextBlock>
                                                     </views:BulletItemControl>
 
@@ -309,7 +309,7 @@
                                                             </Viewbox>
                                                         </views:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Entry point" />
+                                                        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Psf_EntryPoint}" />
                                                         <TextBlock Style="{StaticResource DataValue}" Text="{Binding EntryPoint, Mode=OneTime}" TextWrapping="Wrap" />
                                                     </views:BulletItemControl>
 
@@ -320,7 +320,7 @@
                                                             </Viewbox>
                                                         </views:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Command line arguments" />
+                                                        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Psf_CmdArgs}" />
                                                         <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding Psf.Arguments, Mode=OneTime}" TextWrapping="Wrap" />
                                                     </views:BulletItemControl>
 
@@ -331,7 +331,7 @@
                                                             </Viewbox>
                                                         </views:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Working directory" />
+                                                        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Psf_WkDir}" />
                                                         <TextBlock Style="{StaticResource DataValue}" Text="{Binding Psf.WorkingDirectory}" TextWrapping="Wrap" />
                                                     </views:BulletItemControl>
 
@@ -342,18 +342,18 @@
                                                             </Viewbox>
                                                         </views:BulletItemControl.Header>
 
-                                                        <TextBlock Style="{StaticResource DataHeader}" Text="Accessible via" />
-                                                        <TextBlock Margin="0" x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="Start menu tile" TextWrapping="Wrap" />
+                                                        <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_AccessibleVia}" />
+                                                        <TextBlock Margin="0" x:Name="AppListEntryText" Style="{StaticResource DataValue}" Text="{localization:Loc PackageExpert_AccessibleVia_StartMenu}" TextWrapping="Wrap" />
                                                         <TextBlock Margin="0" x:Name="AppAliasText" Style="{StaticResource DataValue}" TextWrapping="Wrap">
-                                                                    <Run Text="Execution alias:" />
-                                                                    <Run Text="{Binding Mode=OneWay, Path=Alias}" />
+                                                            <Run Text="{localization:Loc PackageExpert_AccessibleVia_ExecAlias}" /><Run Text=":" />
+                                                            <Run Text="{Binding Mode=OneWay, Path=Alias}" />
                                                         </TextBlock>
                                                     </views:BulletItemControl>
 
                                                     <Border x:Name="HeaderScripts" Visibility="Collapsed">
                                                         <StackPanel>
                                                             <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
-                                                                <TextBlock Text="POWERSHELL SCRIPTS" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                                                <TextBlock Text="{localization:Loc PackageExpert_PsScripts_Header}" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                                                             </Border>
                                                             <views:BulletItemControl Height="10" />
                                                         </StackPanel>
@@ -369,34 +369,68 @@
                                                                         </Viewbox>
                                                                     </views:BulletItemControl.Header>
 
-                                                                    <TextBlock Style="{StaticResource DataHeader}" x:Name="Header" Text="Before the application starts" />
+                                                                    <TextBlock Style="{StaticResource DataHeader}" x:Name="Header" Text="{localization:Loc PackageExpert_PsScripts_BeforeStart}" />
                                                                     <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap">
-                                                                        <Run x:Name="Caption2" Text="Start" />
+                                                                        <Run x:Name="Caption2" Text="{localization:Loc PackageExpert_PsScripts_BeforeStart_Text}" />
                                                                         <Hyperlink Command="{x:Static psf:AppxPsfViewModel.EditScript}" CommandParameter="{Binding}">
                                                                             <Run Text="{Binding Name, Mode=OneWay}" />
                                                                         </Hyperlink>
                                                                     </TextBlock>
 
                                                                     <DockPanel Margin="32 0 0 0" VerticalAlignment="Center" Visibility="{Binding HasArguments, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                        <TextBlock Text="&#x2022; Arguments: " VerticalAlignment="Center" />
-                                                                        <TextBlock Text="{Binding Arguments, Mode=OneWay}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                                                                        <TextBlock VerticalAlignment="Center" >
+                                                                            <Run Text="&#x2022;" />
+                                                                            <Run Text="{localization:Loc PackageExpert_PsScripts_Args}" /><Run Text=":" />
+                                                                        </TextBlock>
+
+                                                                        <TextBlock Text="{Binding Arguments, Mode=OneWay}" 
+                                                                            TextWrapping="Wrap" VerticalAlignment="Center" />
                                                                     </DockPanel>
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Run only once" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run always" VerticalAlignment="Center" />
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_RunOnce}" />
+                                                                    </TextBlock>
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Run in a virtual environment" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run outside of the virtual environment" VerticalAlignment="Center" />
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding OnlyOnce, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_RunAlways}" />
+                                                                    </TextBlock>
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Show window" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Show no window" VerticalAlignment="Center" />
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_Inside}" />
+                                                                    </TextBlock>
 
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#x2022; Wait for finish" VerticalAlignment="Center" />
-                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" Text="&#x2022; Run asynchronously" VerticalAlignment="Center" />
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding InVirtualEnvironment, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_Outside}" />
+                                                                    </TextBlock>
+
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_ShowWindow}" />
+                                                                    </TextBlock>
+
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding ShowWindow, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_NoWindow}" />
+                                                                    </TextBlock>
+
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_Wait}" />
+                                                                    </TextBlock>
+
+                                                                    <TextBlock Margin="32 0 0 0" Visibility="{Binding WaitForFinish, Converter={StaticResource NegativeBooleanToVisibilityConverter}}" VerticalAlignment="Center">
+                                                                        <Run Text="&#x2022;" />
+                                                                        <Run Text="{localization:Loc PackageExpert_PsScripts_RunAsync}" />
+                                                                    </TextBlock>
+
                                                                 </views:BulletItemControl>
                                                                 <DataTemplate.Triggers>
                                                                     <DataTrigger Binding="{Binding Timing}" Value="{x:Static descriptor:PsfScriptDescriptorTiming.Finish}">
-                                                                        <Setter TargetName="Header" Property="Text" Value="After the application finishes" />
+                                                                        <Setter TargetName="Header" Property="Text" Value="{localization:Loc PackageExpert_PsScripts_AfterFinish}" />
                                                                     </DataTrigger>
                                                                 </DataTemplate.Triggers>
                                                             </DataTemplate>
@@ -454,7 +488,7 @@
                             </controls:ZeroOrAny.AnyItemTemplate>
                             <controls:ZeroOrAny.NoItemsTemplate>
                                 <DataTemplate>
-                                    <TextBlock VerticalAlignment="Top" Text="This package has no applications." />
+                                    <TextBlock VerticalAlignment="Top" Text="{localization:Loc PackageExpert_Applications_None}" />
                                 </DataTemplate>
                             </controls:ZeroOrAny.NoItemsTemplate>
                         </controls:ZeroOrAny>
@@ -463,7 +497,7 @@
 
                 <TabItem>
                     <TabItem.Header>
-                        <Border Background="Transparent" ToolTip="Package Support Framework">
+                        <Border Background="Transparent" ToolTip="{localization:Loc PackageExpert_Psf}">
                             <Viewbox Height="24" Width="24">
                                 <TextBlock Text="PSF" FontWeight="Bold" Foreground="{StaticResource MsixHero.Brushes.Accent}" />
                             </Viewbox>
@@ -491,11 +525,11 @@
                                                 <Setter.Value>
                                                     <DataTemplate>
                                                         <StackPanel>
-                                                            <TextBlock Text="This package does not contain any fix-ups" />
+                                                            <TextBlock Text="{localization:Loc PackageExpert_Psf_None}" />
 
                                                             <controls:LearnMore 
                                                                 Link="psf"
-                                                                Topic="Package Support Framework"
+                                                                Topic="{localization:Loc PackageExpert_Psf}"
                                                                 Margin="0 6 0 0" />
                                                         </StackPanel>
                                                     </DataTemplate>
@@ -511,7 +545,7 @@
 
                 <TabItem>
                     <TabItem.Header>
-                        <Border Background="Transparent" ToolTip="Files">
+                        <Border Background="Transparent" ToolTip="{localization:Loc PackageExpert_Tabs_Files}">
                             <Viewbox Height="24" Width="24">
                                 <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorBrowse}" />
                             </Viewbox>
@@ -571,7 +605,7 @@
                             </ListView.Style>
                             <ListView.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="View/edit" Command="{x:Static hero:MsixHeroRoutedUICommands.OpenFile}">
+                                    <MenuItem Header="{localization:Loc PackageExpert_Files_Context_View}" Command="{x:Static hero:MsixHeroRoutedUICommands.OpenFile}">
                                         <MenuItem.Icon>
                                             <Path Style="{StaticResource MediumIcon}" Data="{StaticResource VectorOpen}" />
                                         </MenuItem.Icon>
@@ -582,7 +616,7 @@
                                 <GridView>
                                     <GridView.Columns>
                                         <GridViewColumn 
-                                            Header="Name"
+                                            Header="{localization:Loc PackageExpert_Files_Header_Name}"
                                             Width="200">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
@@ -594,7 +628,7 @@
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn 
-                                            Header="Size"
+                                            Header="{localization:Loc PackageExpert_Files_Header_Size}"
                                             Width="100">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
@@ -613,7 +647,7 @@
 
                 <TabItem>
                     <TabItem.Header>
-                        <Border Background="Transparent" ToolTip="Registry">
+                        <Border Background="Transparent" ToolTip="{localization:Loc PackageExpert_Tabs_Registry}">
                             <Viewbox Height="24" Width="24">
                                 <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorRegistry}" />
                             </Viewbox>
@@ -677,7 +711,7 @@
                                                         <GridView>
                                                             <GridView.Columns>
                                                                 <GridViewColumn 
-                                                                    Header="Name"
+                                                                    Header="{localization:Loc PackageExpert_Registry_Header_Name}"
                                                                     Width="150">
                                                                     <GridViewColumn.CellTemplate>
                                                                         <DataTemplate>
@@ -689,7 +723,7 @@
                                                                     </GridViewColumn.CellTemplate>
                                                                 </GridViewColumn>
                                                                 <GridViewColumn 
-                                                                    Header="Type">
+                                                                    Header="{localization:Loc PackageExpert_Registry_Header_Type}">
                                                                     <GridViewColumn.CellTemplate>
                                                                         <DataTemplate>
                                                                             <TextBlock TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="3 2" Text="{Binding Type}" />
@@ -697,7 +731,7 @@
                                                                     </GridViewColumn.CellTemplate>
                                                                 </GridViewColumn>
                                                                 <GridViewColumn 
-                                                                    Header="Data"
+                                                                    Header="{localization:Loc PackageExpert_Registry_Header_Data}"
                                                                     Width="150">
                                                                     <GridViewColumn.CellTemplate>
                                                                         <DataTemplate>
@@ -718,7 +752,7 @@
                                         <Setter Property="ContentTemplate">
                                             <Setter.Value>
                                                 <DataTemplate>
-                                                    <TextBlock Text="This package does not contain Registry entries." />
+                                                    <TextBlock Text="{localization:Loc PackageExpert_Registry_None}" />
                                                 </DataTemplate>
                                             </Setter.Value>
                                         </Setter>
@@ -730,7 +764,7 @@
                                         <Setter Property="ContentTemplate">
                                             <Setter.Value>
                                                 <DataTemplate>
-                                                    <TextBlock Text="Loading registry keys..." />
+                                                    <TextBlock Text="{localization:Loc PackageExpert_Registry_Loading}" />
                                                 </DataTemplate>
                                             </Setter.Value>
                                         </Setter>
@@ -742,13 +776,13 @@
                 </TabItem>
             </TabControl>
         </TabItem>
-        <TabItem DataContext="{Binding Manifest.CurrentValue}" Header="Dependencies">
+        <TabItem DataContext="{Binding Manifest.CurrentValue}" Header="{localization:Loc PackageExpert_Tabs_Dependencies}">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Margin="0">
                     <Border DockPanel.Dock="Top" Visibility="{Binding HasOperatingSystemDependencies, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Visible}}">
                         <StackPanel>
                             <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
-                                <TextBlock Text="DEVICE FAMILIES" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                <TextBlock Text="{localization:Loc PackageExpert_Dependencies_Family_Header}" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                             </Border>
                             <views:BulletItemControl Height="10" />
                         </StackPanel>
@@ -762,7 +796,7 @@
                                         <Style TargetType="Hyperlink">
                                             <Setter Property="Foreground" Value="Black" />
                                             <Setter Property="Tag" Value="https://msixhero.net/redirect/windows-10-version-history" />
-                                            <Setter Property="ToolTip" Value="Click to open Windows 10 version history in Wikipedia" />
+                                            <Setter Property="ToolTip" Value="{localization:Loc PackageExpert_Dependencies_Explanation}" />
                                             <Setter Property="TextDecorations" Value="None" />
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="true">
@@ -778,7 +812,7 @@
                                                 <Path x:Name="Icon1" Style="{StaticResource Icon}" Data="{StaticResource VectorWindows}" />
                                             </Viewbox>
                                         </views:BulletItemControl.Header>
-                                        <TextBlock x:Name="Text1" Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Minimum required OS" />
+                                        <TextBlock x:Name="Text1" Style="{StaticResource DataHeader}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{localization:Loc PackageExpert_Dependencies_MinOs}" />
                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasMinimumVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                         <Hyperlink Click="HyperlinkOnClick">
                                                             <Run Text="{Binding Path=MinimumDisplayName , Mode=OneWay}" />
@@ -792,7 +826,7 @@
                                                 <Path x:Name="Icon2" Style="{StaticResource Icon}" Data="{StaticResource VectorTestPassed}" />
                                             </Viewbox>
                                         </views:BulletItemControl.Header>
-                                        <TextBlock x:Name="Text2" Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="Tested on" />
+                                        <TextBlock x:Name="Text2" Style="{StaticResource DataHeader}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}" Text="{localization:Loc PackageExpert_Dependencies_TestedOn}" />
                                         <TextBlock Style="{StaticResource DataValue}" Visibility="{Binding HasTestedVersion, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                         <Hyperlink Click="HyperlinkOnClick">
                                                             <Run Text="{Binding Path=TestedDisplayName , Mode=OneWay}" />
@@ -803,8 +837,8 @@
                                 </StackPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding FamilyName}" Value="MSIXCore.Desktop">
-                                        <Setter TargetName="Text1" Property="Text" Value="[MSIX Core] Minimum required OS" />
-                                        <Setter TargetName="Text2" Property="Text" Value="[MSIX Core] Tested on" />
+                                        <Setter TargetName="Text1" Property="Text" Value="{localization:Loc PackageExpert_Dependencies_MinOs_MsixCore}" />
+                                        <Setter TargetName="Text2" Property="Text" Value="{localization:Loc PackageExpert_Dependencies_TestedOn_MsixCore}" />
                                         <Setter TargetName="Icon1" Property="Data" Value="{StaticResource VectorWindowsOld}" />
                                         <Setter TargetName="Icon2" Property="Data" Value="{StaticResource VectorWindowsOld}" />
                                         <Setter TargetName="Bullet2" Property="Visibility" Value="Collapsed" />
@@ -817,7 +851,7 @@
                     <Border Visibility="{Binding HasPackageDependencies, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Visible}}">
                         <StackPanel>
                             <Border BorderBrush="#ddd" SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1" CornerRadius="5" HorizontalAlignment="Left">
-                                <TextBlock Text="PACKAGE DEPENDENCIES" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
+                                <TextBlock Text="{localization:Loc PackageExpert_Dependencies_Package_Header}" Margin="10 5" FontWeight="SemiBold" Foreground="#444" />
                             </Border>
                             <views:BulletItemControl Height="10" />
                         </StackPanel>
@@ -848,18 +882,18 @@
                     <TextBlock 
                         DockPanel.Dock="Top" Margin="0 10">
                         <Hyperlink Command="{x:Static hero:MsixHeroRoutedUICommands.DependencyViewer}">
-                            <Run Text="Open dependencies graph..." />
+                            <Run Text="{localization:Loc PackageExpert_Dependencies_Link}" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
             </ScrollViewer>
 
         </TabItem>
-        <TabItem Header="Installation">
+        <TabItem Header="{localization:Loc PackageExpert_Tabs_Installation}">
             <TabControl Margin="0 -10 0 0" Style="{StaticResource SideMenuTabControl}">
                 <TabItem>
                     <TabItem.Header>
-                        <Viewbox Height="24" Width="24" ToolTip="Overview">
+                        <Viewbox Height="24" Width="24" ToolTip="{localization:Loc PackageExpert_Tab_Overview}">
                             <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorInfo}" />
                         </Viewbox>
                     </TabItem.Header>
@@ -868,14 +902,14 @@
                         <ScrollViewer.Resources>
                             <DataTemplate DataType="{x:Type sources:StorePackageSource}">
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
                                     <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
-                                <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
-                                    <Run Text="{Binding RootDirectory, Mode=OneWay}" />
-                                </Hyperlink>
+                                        <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
+                                            <Run Text="{Binding RootDirectory, Mode=OneWay}" />
+                                        </Hyperlink>
                                     </TextBlock>
 
                                     <source:StoreSource FamilyName="{Binding FamilyName}" />
@@ -883,10 +917,10 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type sources:AppInstallerPackageSource}">
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
                                     <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
@@ -898,56 +932,56 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type sources:DeveloperSource}">
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
                                     <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
                                     </TextBlock>
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="Manifest file (developer mode)" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstallType}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{localization:Loc PackageExpert_Installation_InstallType_Manifest}" TextWrapping="Wrap" Margin="0 0 0 10" />
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type sources:StandardSource}">
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
                                     <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
                                     </TextBlock>
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstallType}" />
                                     <TextBlock Style="{StaticResource DataValue}" Text="Side-loaded package" TextWrapping="Wrap" Margin="0 0 0 10" />
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type sources:SystemSource}">
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_Installed}" />
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed manifest path location" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Manifest}" />
                                     <TextBlock Style="{StaticResource DataValue}" TextWrapping="Wrap" Margin="0 0 0 10">
                                             <Hyperlink Click="Hyperlink_OnClick" Tag="{Binding RootDirectory, Mode=OneWay}">
                                                 <Run Text="{Binding RootDirectory, Mode=OneWay}" />
                                             </Hyperlink>
                                     </TextBlock>
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installation type" />
-                                    <TextBlock Style="{StaticResource DataValue}" Text="System package" TextWrapping="Wrap" Margin="0 0 0 10" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstallType}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Text="{localization:Loc PackageExpert_Installation_InstallType_System}" TextWrapping="Wrap" Margin="0 0 0 10" />
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type sources:NotInstalledSource}">
                                 <StackPanel>
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Status" />
-                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="Not installed" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_Status}" />
+                                    <TextBlock Style="{StaticResource DataValue}" Margin="0 0 0 10" Text="{localization:Loc PackageExpert_Installation_NotInstalled}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ScrollViewer.Resources>
@@ -959,7 +993,7 @@
                                 IsShown="{Binding Disk.IsLoading}">
                                 <StackPanel>
 
-                                    <TextBlock Style="{StaticResource DataHeader}" Text="Installed on" />
+                                    <TextBlock Style="{StaticResource DataHeader}" Text="{localization:Loc PackageExpert_Installation_InstalledOn}" />
 
                                     <volume:VolumeControl
                                         DataContext="{Binding Disk.CurrentValue}"
@@ -972,7 +1006,7 @@
 
                                     <TextBlock HorizontalAlignment="Left" Margin="0 10 0 0">
                                         <Hyperlink Command="{x:Static hero:MsixHeroRoutedUICommands.ChangeVolume}">
-                                            <Run Text="Change install directory..." />
+                                            <Run Text="{localization:Loc PackageExpert_Installation_ChangeDir}" />
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -983,7 +1017,7 @@
 
                 <TabItem>
                     <TabItem.Header>
-                        <Grid Background="Transparent" ToolTip="Add-ons and modification packages" Height="24" Width="24">
+                        <Grid Background="Transparent" ToolTip="{localization:Loc PackageExpert_Tabs_AddOns}" Height="24" Width="24">
                             <Viewbox Height="24" Width="24">
                                 <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorPlugin}" />
                             </Viewbox>
@@ -1042,11 +1076,11 @@
                             <controls:ZeroOrAny.NoItemsTemplate>
                                 <DataTemplate>
                                     <StackPanel>
-                                        <TextBlock VerticalAlignment="Center" Text="This package has no installed add-ons or modification packages." />
+                                        <TextBlock VerticalAlignment="Center" Text="{localization:Loc PackageExpert_AddOns_None}" />
 
                                         <controls:LearnMore 
                                             Link="modification-packages"
-                                            Topic="MSIX modification packages"
+                                            Topic="{localization:Loc PackageExpert_ModPack_Topic}"
                                             Margin="0 6 0 0" />
                                     </StackPanel>
                                 </DataTemplate>
@@ -1057,7 +1091,7 @@
 
                 <TabItem>
                     <TabItem.Header>
-                        <Grid Background="Transparent" Width="24" Height="24" ToolTip="Users">
+                        <Grid Background="Transparent" Width="24" Height="24" ToolTip="{localization:Loc PackageExpert_Tabs_Users}">
                             <Viewbox Height="24" Width="24">
                                 <Path Width="32" Height="32" Fill="{StaticResource MsixHero.Brushes.Accent}" Data="{StaticResource VectorUsers}" />
                             </Viewbox>
@@ -1078,7 +1112,7 @@
                         <Grid>
                             <StackPanel Margin="8 0" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding Users.CurrentValue.IsElevated, Converter={StaticResource NegativeBooleanToVisibilityConverter}}">
 
-                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="In order to view who installed this package you must be an administrator." Margin="0 0 0 8" />
+                                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Text="{localization:Loc PackageExpert_Installations_UacPrompt}" Margin="0 0 0 8" />
                                 <Button 
                                     DockPanel.Dock="Top" 
                                     Padding="8 4"
@@ -1086,7 +1120,7 @@
                                     Command="{Binding FindUsers}">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Image Source="{x:Static helpers:ShieldIcon.Source}" Width="{x:Static SystemParameters.SmallIconWidth}"  Height="{x:Static SystemParameters.SmallIconHeight}" VerticalAlignment="Center" Margin="0 0 4 0" />
-                                        <TextBlock Text="Press here to query the packages as local administrator" VerticalAlignment="Center" />
+                                        <TextBlock Text="{localization:Loc PackageExpert_Installations_UacPrompt_Caption}" VerticalAlignment="Center" />
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
