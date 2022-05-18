@@ -59,26 +59,9 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 return checkCmd;
             }
 
-            var config = await configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+            var config = await configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false) ?? new Configuration();
 
-            if (config.Signing?.Source == CertificateSource.Unknown)
-            {
-                // workaround for some migration issues
-                if (!string.IsNullOrEmpty(config.Signing.PfxPath))
-                {
-                    config.Signing.Source = CertificateSource.Pfx;
-                }
-                else if (!string.IsNullOrEmpty(config.Signing.Thumbprint))
-                {
-                    config.Signing.Source = CertificateSource.Personal;
-                }
-                else
-                {
-                    await this.Console.WriteError("In order to sign with CLI without any extra signing parameters, configure your signature in MSIX Hero settings.").ConfigureAwait(false);
-                    return 1;
-                }
-            }
-
+            // Signing with thumbprint
             if (this.Verb.ThumbPrint != null)
             {
                 return await this.SignStore(
@@ -87,6 +70,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
+            // Signing with PFX
             if (this.Verb.PfxFilePath != null)
             {
                 return await this.SignPfx(
@@ -96,6 +80,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
+            // Signing with Device Guard (interactive)
             if (this.Verb.DeviceGuardInteractive)
             {
                 return await this.SignDeviceGuardInteractive(
@@ -103,6 +88,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
 
+            // Signing with Device Guard
             if (this.Verb.DeviceGuardFile != null)
             {
                 var json = JObject.Parse(await File.ReadAllTextAsync(this.Verb.DeviceGuardFile).ConfigureAwait(false));
@@ -125,6 +111,30 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     this.Verb.TimeStampUrl ?? config.Signing?.TimeStampServer,
                     !this.Verb.NoPublisherUpdate).ConfigureAwait(false);
             }
+
+            // Fallback - try to get MSIX Hero default settings
+            if (config.Signing?.Source == CertificateSource.Unknown)
+            {
+                // workaround for some migration issues
+                if (!string.IsNullOrEmpty(config.Signing.PfxPath))
+                {
+                    config.Signing.Source = CertificateSource.Pfx;
+                }
+                else if (!string.IsNullOrEmpty(config.Signing.Thumbprint))
+                {
+                    config.Signing.Source = CertificateSource.Personal;
+                }
+                else if (config.Signing.DeviceGuard?.EncodedAccessToken != null)
+                {
+                    config.Signing.Source = CertificateSource.DeviceGuard;
+                }
+                else
+                {
+                    await this.Console.WriteError("In order to sign with CLI without any extra signing parameters, configure your signature in MSIX Hero settings.").ConfigureAwait(false);
+                    return 1;
+                }
+            }
+
 
             await this.Console.WriteInfo("Using current MSIX Hero signing options...").ConfigureAwait(false);
 
