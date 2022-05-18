@@ -39,15 +39,16 @@ namespace Otor.MsixHero.Cli.Executors.Standard
 {
     public class SignVerbExecutor : VerbExecutor<SignVerb>
     {
-        private static readonly LogSource Logger = new();        private readonly ISigningManager signingManager;
-        private readonly IConfigurationService configurationService;
-        protected readonly DeviceGuardHelper DeviceGuardHelper = new DeviceGuardHelper();
-        protected readonly DgssTokenCreator DeviceGuardTokenCreator = new DgssTokenCreator();
+        private static readonly LogSource Logger = new();        
+        private readonly ISigningManager _signingManager;
+        private readonly IConfigurationService _configurationService;
+        protected readonly DeviceGuardHelper DeviceGuardHelper = new();
+        protected readonly DgssTokenCreator DeviceGuardTokenCreator = new();
 
         public SignVerbExecutor(SignVerb signVerb, ISigningManager signingManager, IConfigurationService configurationService, IConsole console) : base(signVerb, console)
         {
-            this.signingManager = signingManager;
-            this.configurationService = configurationService;
+            this._signingManager = signingManager;
+            this._configurationService = configurationService;
         }
 
         public override async Task<int> Execute()
@@ -58,7 +59,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 return checkCmd;
             }
 
-            var config = await configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
+            var config = await _configurationService.GetCurrentConfigurationAsync().ConfigureAwait(false);
 
             if (config.Signing?.Source == CertificateSource.Unknown)
             {
@@ -135,15 +136,30 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                     if (!string.IsNullOrEmpty(config.Signing?.EncodedPassword))
                     {
                         var crypto = new Crypto();
+
                         try
                         {
-                            password = crypto.DecryptString(config.Signing.EncodedPassword, "$%!!ASddahs55839AA___ąółęńśSdcvv");
+                            password = crypto.UnprotectUnsafe(config.Signing?.EncodedPassword);
                         }
-                        catch (Exception)
+                        catch
                         {
-                            Logger.Error().WriteLine("Could not use the configured password. Decryption of the string from settings failed.");
-                            await this.Console.WriteError("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
-                            return StandardExitCodes.ErrorSettings;
+                            Logger.Warn().WriteLine("It seems that your are using the old-way of protecting password. MSIX Hero will try to use the legacy method now, but consider updating your settings so that the password will be safely encrypted.");
+                            await this.Console.WriteWarning("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
+
+                            try
+                            {
+                                // ReSharper disable StringLiteralTypo
+#pragma warning disable CS0618
+                                password = crypto.DecryptString(config.Signing?.EncodedPassword, @"$%!!ASddahs55839AA___ąółęńśSdcvv");
+#pragma warning restore CS0618
+                                // ReSharper restore StringLiteralTypo
+                            }
+                            catch (Exception)
+                            {
+                                Logger.Error().WriteLine("Could not use the configured password. Decryption of the string from settings failed.");
+                                await this.Console.WriteError("Could not use the configured password. Decryption of the string from settings failed.").ConfigureAwait(false);
+                                return StandardExitCodes.ErrorSettings;
+                            }
                         }
                     }
                         
@@ -321,9 +337,9 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 foreach (var path in this.Verb.FilePath)
                 {
                     await this.Console.WriteInfo($"Signing '{path}' with Device Guard...");
-                    await this.signingManager.SignPackageWithDeviceGuard(path, updatePublisherName, cfg, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this._signingManager.SignPackageWithDeviceGuard(path, updatePublisherName, cfg, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                     await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(signingManager, path);
+                    await this.Console.ShowCertSummary(_signingManager, path);
                 }
 
                 return StandardExitCodes.ErrorSuccess;
@@ -396,9 +412,9 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 foreach (var path in this.Verb.FilePath)
                 {
                     await this.Console.WriteInfo($"Signing '{path}' with certificate [{fileName}]...");
-                    await this.signingManager.SignPackageWithPfx(path, updatePublisherName, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this._signingManager.SignPackageWithPfx(path, updatePublisherName, pfxPath, secPass, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                     await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(signingManager, path);
+                    await this.Console.ShowCertSummary(_signingManager, path);
                 }
 
                 return StandardExitCodes.ErrorSuccess;
@@ -414,7 +430,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
         private async Task<int> SignStore(string thumbprint, string timestamp, bool updatePublisherName)
         {
             var mode = this.Verb.UseMachineStore ? CertificateStoreType.Machine : CertificateStoreType.User;
-            var certificates = await this.signingManager.GetCertificatesFromStore(mode, false).ConfigureAwait(false);
+            var certificates = await this._signingManager.GetCertificatesFromStore(mode, false).ConfigureAwait(false);
 
             var certificate = certificates.FirstOrDefault(c => string.Equals(c.Thumbprint, thumbprint, StringComparison.Ordinal));
             if (certificate == null)
@@ -429,9 +445,9 @@ namespace Otor.MsixHero.Cli.Executors.Standard
                 foreach (var path in this.Verb.FilePath)
                 {
                     await this.Console.WriteInfo($"Signing '{path}' with certificate [SHA1 = {thumbprint}]...");
-                    await this.signingManager.SignPackageWithInstalled(path, updatePublisherName, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
+                    await this._signingManager.SignPackageWithInstalled(path, updatePublisherName, certificate, timestamp, this.Verb.IncreaseVersion).ConfigureAwait(false);
                     await this.Console.WriteSuccess("Package signed successfully!").ConfigureAwait(false);
-                    await this.Console.ShowCertSummary(signingManager, path);
+                    await this.Console.ShowCertSummary(_signingManager, path);
                 }
 
                 return StandardExitCodes.ErrorSuccess;
