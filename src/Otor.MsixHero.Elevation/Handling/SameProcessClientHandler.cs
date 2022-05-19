@@ -52,7 +52,7 @@ public class SameProcessClientHandler : ClientHandler, IDisposable
         return ValueTask.FromResult(true);
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         if (this._server.IsValueCreated)
         {

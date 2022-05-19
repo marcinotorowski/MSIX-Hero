@@ -44,8 +44,10 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 
         Neutral = 1 << 7,
 
+        // ReSharper disable once InconsistentNaming
         x64 = 1 << 8,
 
+        // ReSharper disable once InconsistentNaming
         x86 = 1 << 9,
 
         Arm = 1 << 10,

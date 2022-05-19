@@ -27,13 +27,13 @@ namespace Otor.MsixHero.Infrastructure.Helpers
     public class FileInvoker
     {
         private static readonly LogSource Logger = new();
-        private readonly IInteractionService interactionService;
-        private readonly IConfigurationService configurationService;
+        private readonly IInteractionService _interactionService;
+        private readonly IConfigurationService _configurationService;
 
         public FileInvoker(IInteractionService interactionService, IConfigurationService configurationService)
         {
-            this.interactionService = interactionService;
-            this.configurationService = configurationService;
+            this._interactionService = interactionService;
+            this._configurationService = configurationService;
         }
 
         public void Execute(ResolvablePath filePath, bool throwExceptions = false)
@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Infrastructure.Helpers
             ResolvablePath toolPath = null;
             EditorType? editorType = null;
             
-            var config = this.configurationService.GetCurrentConfiguration().Editing;
+            var config = this._configurationService.GetCurrentConfiguration().Editing;
 
             if (string.Equals("appxmanifest.xml", Path.GetFileName(filePath.Resolved), StringComparison.OrdinalIgnoreCase))
             {
@@ -122,7 +122,7 @@ namespace Otor.MsixHero.Infrastructure.Helpers
                     throw;
                 }
 
-                this.interactionService.ShowError($"Could not open the file {filePath.Resolved}", e, InteractionResult.OK);
+                this._interactionService.ShowError($"Could not open the file {filePath.Resolved}", e, InteractionResult.OK);
             }
         }
     }

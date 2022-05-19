@@ -25,11 +25,11 @@ namespace Otor.MsixHero.Infrastructure.Cryptography
 {
     public class AsyncHashing
     {
-        private readonly HashAlgorithm hashAlgorithm;
+        private readonly HashAlgorithm _hashAlgorithm;
 
         public AsyncHashing(HashAlgorithm hashAlgorithm, int bufferSize = 4096)
         {
-            this.hashAlgorithm = hashAlgorithm;
+            this._hashAlgorithm = hashAlgorithm;
             this.BufferSize = bufferSize;
         }
 
@@ -55,11 +55,11 @@ namespace Otor.MsixHero.Infrastructure.Cryptography
 
                 if (readAheadBytesRead == 0)
                 {
-                    hashAlgorithm.TransformFinalBlock(buffer, 0, bytesRead);
+                    _hashAlgorithm.TransformFinalBlock(buffer, 0, bytesRead);
                 }
                 else
                 {
-                    hashAlgorithm.TransformBlock(buffer, 0, bytesRead, buffer, 0);
+                    _hashAlgorithm.TransformBlock(buffer, 0, bytesRead, buffer, 0);
                 }
 
                 var percent = (int) (100.0 * totalBytesRead / size);
@@ -68,7 +68,7 @@ namespace Otor.MsixHero.Infrastructure.Cryptography
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            return hashAlgorithm.Hash;
+            return _hashAlgorithm.Hash;
         }
 
         public int BufferSize { get; }

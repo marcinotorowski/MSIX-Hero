@@ -25,8 +25,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder
     {
         private static readonly Lazy<List<FolderDefinition>> PathLookup = new Lazy<List<FolderDefinition>>(GeneratePaths);
 
-        private string resolved;
-        private string compacted;
+        private string _resolved;
+        private string _compacted;
 
         public ResolvablePath()
         {
@@ -39,13 +39,13 @@ namespace Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder
 
         public string Resolved
         {
-            get => this.resolved;
+            get => this._resolved;
             set => this.SetFromResolved(value);
         }
 
         public string Compacted
         {
-            get => this.compacted;
+            get => this._compacted;
             set => this.SetFromCompacted(value);
         }
 
@@ -74,8 +74,8 @@ namespace Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder
 
         private void SetFromResolved(string resolvedPath)
         {
-            this.resolved = resolvedPath;
-            this.compacted = resolvedPath;
+            this._resolved = resolvedPath;
+            this._compacted = resolvedPath;
 
             if (string.IsNullOrEmpty(resolvedPath))
             {
@@ -98,20 +98,20 @@ namespace Otor.MsixHero.Infrastructure.Configuration.ResolvableFolder
                 resolvedPath = resolvedPath.Remove(indexOf, item.Path.Length).Insert(indexOf, item.Key);
             }
 
-            this.compacted = resolvedPath;
+            this._compacted = resolvedPath;
         }
 
         private void SetFromCompacted(string compactedPath)
         {
-            this.compacted = compactedPath;
-            this.resolved = compactedPath;
+            this._compacted = compactedPath;
+            this._resolved = compactedPath;
 
             if (string.IsNullOrEmpty(compactedPath))
             {
                 return;
             }
 
-            this.resolved = Regex.Replace(compactedPath, "{{([a-zA-Z0-9]+)}}", match =>
+            this._resolved = Regex.Replace(compactedPath, "{{([a-zA-Z0-9]+)}}", match =>
             {
                 var matchedValue = match.Groups[1].Value;
                 

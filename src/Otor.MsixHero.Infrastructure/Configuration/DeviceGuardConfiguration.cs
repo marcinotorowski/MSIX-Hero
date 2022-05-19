@@ -20,10 +20,6 @@ namespace Otor.MsixHero.Infrastructure.Configuration
 {
     public class DeviceGuardConfiguration : BaseJsonSetting
     {
-        public DeviceGuardConfiguration()
-        {
-        }
-        
         [DataMember(Name = "accessToken")]
         public string EncodedAccessToken { get; set; }
 
