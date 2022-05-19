@@ -17,12 +17,16 @@
 using System;
 using Newtonsoft.Json;
 using Otor.MsixHero.App.Mvvm;
+using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
 {
     public class LogViewModel : NotifyPropertyChanged
     {
+        private static readonly ErrorCodes ErrorCodes = new();
+
         public LogViewModel(Log model)
         {
             this.Model = model;
@@ -41,6 +45,84 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Details.ViewModels
         public string ErrorCode => this.Model.ErrorCode;
 
         public string Message => this.Model.Message;
+
+        public string CompactMessage
+        {
+            get
+            {
+                string msg;
+                if (this.Model.Message.IndexOf(System.Environment.NewLine, StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    msg = this.Model.Message.Remove(this.Model.Message.IndexOf(System.Environment.NewLine, StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    msg = this.Model.Message;
+                }
+
+                if (msg.Length > 300)
+                {
+                    return msg + " [...]";
+                }
+
+                return msg;
+            }
+        }
+
+        public bool HasTranslatedErrorCode
+        {
+            get
+            {
+                if (this.Model.ErrorCode == null || !this.Model.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                return ExceptionGuard.Guard(() => ErrorCodes.TryGetCode(Convert.ToUInt32(this.Model.ErrorCode, 16), out _));
+            }
+        }
+        
+        public string Troubleshooting
+        {
+            get
+            {
+                if (this.Model.ErrorCode == null || !this.Model.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+
+                return ExceptionGuard.Guard(() =>
+                {
+                    if (ErrorCodes.TryGetDescription(Convert.ToUInt32(this.Model.ErrorCode, 16), out var translated))
+                    {
+                        return translated;
+                    }
+
+                    return null;
+                });
+            }
+        }
+
+        public string TranslatedErrorCode 
+        {
+            get
+            {
+                if (this.Model.ErrorCode == null || !this.Model.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+
+                return ExceptionGuard.Guard(() =>
+                {
+                    if (ErrorCodes.TryGetCode(Convert.ToUInt32(this.Model.ErrorCode, 16), out var translated))
+                    {
+                        return translated;
+                    }
+
+                    return null;
+                });
+            }
+        }
 
         public string PackageName => this.Model.PackageName;
 

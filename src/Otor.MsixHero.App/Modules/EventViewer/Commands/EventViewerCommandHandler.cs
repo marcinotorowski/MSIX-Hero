@@ -14,6 +14,7 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -23,16 +24,18 @@ using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands.Logs;
 using Otor.MsixHero.App.Hero.Executor;
 using Otor.MsixHero.App.Mvvm.Progress;
+using Otor.MsixHero.Appx.Diagnostic.Logging;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Services;
 
 namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 {
     public class EventViewerCommandHandler
     {
-        private readonly IMsixHeroApplication application;
-        private readonly IBusyManager busyManager;
-        private readonly IInteractionService interactionService;
+        private readonly IMsixHeroApplication _application;
+        private readonly IBusyManager _busyManager;
+        private readonly IInteractionService _interactionService;
 
         public EventViewerCommandHandler(
             UIElement parent,
@@ -40,9 +43,9 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
             IInteractionService interactionService,
             IBusyManager busyManager)
         {
-            this.application = application;
-            this.interactionService = interactionService;
-            this.busyManager = busyManager;
+            this._application = application;
+            this._interactionService = interactionService;
+            this._busyManager = busyManager;
 
             parent.CommandBindings.Add(new CommandBinding(NavigationCommands.Refresh, this.OnRefresh, this.CanRefresh));
             parent.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, this.OnCopy, this.CanCopy));
@@ -50,9 +53,9 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 
         private async void OnRefresh(object sender, ExecutedRoutedEventArgs e)
         {
-            var executor = this.application.CommandExecutor
-                .WithErrorHandling(this.interactionService, true)
-                .WithBusyManager(this.busyManager, OperationType.EventsLoading);
+            var executor = this._application.CommandExecutor
+                .WithErrorHandling(this._interactionService, true)
+                .WithBusyManager(this._busyManager, OperationType.EventsLoading);
 
             await executor.Invoke<GetLogsCommand, IList<Log>>(this, new GetLogsCommand(), CancellationToken.None).ConfigureAwait(false);
         }
@@ -64,7 +67,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 
         private void OnCopy(object sender, ExecutedRoutedEventArgs e)
         {
-            var log = this.application.ApplicationState.EventViewer.SelectedLog;
+            var log = this._application.ApplicationState.EventViewer.SelectedLog;
             if (log != null)
             {
                 Clipboard.SetText(GetCopyText(log), TextDataFormat.Text);
@@ -73,7 +76,7 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
 
         private void CanCopy(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.application.ApplicationState.EventViewer.SelectedLog != null;
+            e.CanExecute = this._application.ApplicationState.EventViewer.SelectedLog != null;
         }
 
         private static string GetCopyText(Log log)
@@ -136,6 +139,22 @@ namespace Otor.MsixHero.App.Modules.EventViewer.Commands
                 copiedText.AppendFormat("Message:\t{0}\r\n", log.Message);
             }
 
+            if (log.ErrorCode != null && log.ErrorCode.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                var errorCodes = new ErrorCodes();
+
+                string text = null;
+                if (ExceptionGuard.Guard(() => errorCodes.TryGetCode(Convert.ToUInt32(log.ErrorCode, 16), out text)) && !string.IsNullOrEmpty(text))
+                {
+                    if (errorCodes.TryGetCode(Convert.ToUInt32(log.ErrorCode, 16), out var message))
+                    {
+                        text += " | " + message;
+                    }
+
+                    copiedText.AppendFormat("Troubleshooting info: {0}", text);
+                }
+            }
+            
             return copiedText.ToString().TrimEnd();
         }
     }

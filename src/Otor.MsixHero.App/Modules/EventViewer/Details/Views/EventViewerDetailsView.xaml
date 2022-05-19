@@ -177,6 +177,17 @@
                                 TextWrapping="Wrap"
                                 Text="{Binding Message, Mode=OneWay}" />
 
+                            <TextBlock 
+                                Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Style="{StaticResource DataHeader}" Text="Troubleshooting info" />
+                            <TextBox 
+                                Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                Style="{StaticResource DataValueTextBlock}"
+                                VerticalScrollBarVisibility="Hidden"
+                                VerticalContentAlignment="Top"
+                                TextWrapping="Wrap"
+                                Text="{Binding Troubleshooting, Mode=OneWay}" />
+
                             <TextBlock Margin="0 8 0 0" Style="{StaticResource DataHeader}" Text="Package name" />
                             <TextBox Style="{StaticResource DataValueTextBlock}" Text="{Binding PackageName, Mode=OneWay, FallbackValue='user', TargetNullValue='n/a'}" />
 

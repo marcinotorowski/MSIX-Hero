@@ -21,6 +21,7 @@ using System.Management.Automation;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Logging
 {
@@ -44,8 +45,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
 
                 log.Level = eventLogRecord.LevelDisplayName;
                 log.Message = eventLogRecord.FormatDescription();
-
-
+                
                 log.ThreadId = eventLogRecord.ThreadId ?? 0;
 
                 log.OpcodeDisplayName = eventLogRecord.OpcodeDisplayName;
@@ -86,12 +86,13 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
                             break;
                         case "UserId":
                             var sid = (SecurityIdentifier)item.Value;
-                            var account = (NTAccount)sid.Translate(typeof(NTAccount));
-                            try
+                            if (sid != null)
                             {
-                                log.User = account.ToString();
+                                var account = (NTAccount)sid.Translate(typeof(NTAccount));
+                                ExceptionGuard.Guard(() => log.User = account.ToString());
                             }
-                            catch (Exception)
+
+                            if (log.User == null && sid != null)
                             {
                                 log.User = sid.ToString();
                             }

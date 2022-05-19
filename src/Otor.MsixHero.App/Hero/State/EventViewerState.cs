@@ -21,6 +21,13 @@ namespace Otor.MsixHero.App.Hero.State
 {
     public class EventViewerState
     {
+        public EventViewerState()
+        {
+            this.Filter = EventFilter.Warning | EventFilter.Error; // default show only warning and errors
+            this.SortMode = EventSort.Date;
+            this.SortDescending = true;
+        }
+
         public string SearchKey { get; set; }
 
         public Log SelectedLog { get; set; }

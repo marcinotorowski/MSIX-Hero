@@ -156,35 +156,31 @@
                                         Opacity="0.65" />
                                 </StackPanel>
 
-                                <StackPanel Margin="10 0">
+                                <StackPanel x:Name="WithPackageName" Margin="10 0">
                                     <TextBlock 
-                                        Text="{Binding OpcodeDisplayName, Mode=OneTime}" 
-                                        controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
-                                        TextTrimming="CharacterEllipsis" />
-                                    <TextBlock 
-                                        x:Name="NameText"
+                                        Visibility="{Binding HasPackageName, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         Text="{Binding Path=PackageName, Mode=OneTime}" 
                                         controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
-                                        TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                        TextTrimming="CharacterEllipsis" />
+
                                     <TextBlock 
-                                        x:Name="SourceText"
-                                        Visibility="Collapsed"
+                                        Visibility="{Binding HasPackageName, Converter={StaticResource NegativeBooleanToVisibilityConverter}}"
                                         Text="{Binding Path=Source, Mode=OneTime}" 
+                                        controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
+                                        TextTrimming="CharacterEllipsis" />
+
+                                    <!--<TextBlock 
+                                        Visibility="{Binding HasTranslatedErrorCode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Text="{Binding Path=TranslatedErrorCode, Mode=OneTime}" 
+                                        controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
+                                        TextTrimming="CharacterEllipsis" Opacity="0.65" />-->
+
+                                    <TextBlock 
+                                        Text="{Binding Path=CompactMessage, Mode=OneTime}" 
                                         controls:Highlighter.Selection="{Binding ElementName=Root, Path=DataContext.SearchKey}" 
                                         TextTrimming="CharacterEllipsis" Opacity="0.65" />
                                 </StackPanel>
-
                             </DockPanel>
-
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding PackageName}" Value="{x:Null}">
-                                    <Setter TargetName="SourceText" Property="Visibility" Value="Visible" />
-                                    <Setter TargetName="NameText" Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding ErrorCode}" Value="{x:Null}">
-                                    <Setter TargetName="ErrorText" Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
