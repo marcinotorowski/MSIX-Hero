@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
@@ -35,11 +36,12 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var signToolArguments = new StringBuilder();
 
             signToolArguments.Append("sign");
-            signToolArguments.AppendFormat(" /debug /fd {0}", algorithmType);
+            signToolArguments.AppendFormat(" /debug /fd {0}", CommandLineHelper.EncodeParameterArgument(algorithmType));
             
             if (!string.IsNullOrEmpty(timestampUrl))
             {
-                signToolArguments.AppendFormat(" /tr \"{0}\"", timestampUrl);
+                signToolArguments.Append(" /tr ");
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(timestampUrl));
 
                 // required in SDK builds 20236 and later
                 // see https://docs.microsoft.com/en-us/dotnet/framework/tools/signtool-exe
@@ -48,12 +50,16 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
             var libPath = SdkPathHelper.GetSdkPath("Microsoft.Acs.Dlib.dll");
 
-            signToolArguments.AppendFormat(" /dlib \"{0}\"", libPath);
-            signToolArguments.AppendFormat(" /dmdf \"{0}\"", dgssTokenPath);
+            signToolArguments.Append(" /dlib ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(libPath));
+
+            signToolArguments.Append(" /dmdf ");
+            signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(dgssTokenPath));
 
             foreach (var filePath in filePaths)
             {
-                signToolArguments.AppendFormat(" \"{0}\"", filePath);
+                signToolArguments.Append(" ");
+                signToolArguments.Append(CommandLineHelper.EncodeParameterArgument(filePath));
             }
 
             var args = signToolArguments.ToString();

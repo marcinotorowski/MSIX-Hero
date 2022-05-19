@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Winget.Yaml
 {
@@ -108,7 +109,7 @@ namespace Otor.MsixHero.Winget.Yaml
                 return null;
             }
             
-            var processStartInfo = new ProcessStartInfo(winGetPath, $"validate \"{yamlPath}\"")
+            var processStartInfo = new ProcessStartInfo(winGetPath, "validate " + CommandLineHelper.EncodeParameterArgument(yamlPath))
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,

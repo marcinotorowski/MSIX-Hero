@@ -17,10 +17,12 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
 
@@ -28,59 +30,85 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
     public class MakeAppxWrapper : ExeWrapper
     {
-        private static readonly LogSource Logger = new();        
-        public Task UnpackPackage(string sourceMsixPath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
-        {
-            return this.UnpackPackage(sourceMsixPath, unpackedDirectory, false, cancellationToken);
-        }
+        private static readonly LogSource Logger = new();
 
-        public Task UnpackPackage(string sourceMsixPath, string unpackedDirectory, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        public Task Unpack(MakeAppxUnpackOptions options, IProgress<ProgressData> progress = default, CancellationToken cancellationToken = default)
         {
             var wrapper = new PackUnPackProgressWrapper(progress);
-            var arguments = $"unpack /d \"{unpackedDirectory}\" /p \"{sourceMsixPath}\" /v /o";
-            if (!validate)
+            var arguments = new StringBuilder("unpack", 256);
+            arguments.Append(" /d ");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(options.Target.FullName));
+
+            arguments.Append(" /p ");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(options.Source.FullName));
+
+            if (options.Overwrite)
             {
-                arguments += " /nv";
+                arguments.Append(" /o");
             }
 
-            return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
+            if (options.Verbose)
+            {
+                arguments.Append(" /v");
+            }
+
+            if (!options.Validate)
+            {
+                arguments.Append(" /nv");
+            }
+
+            return this.RunMakeAppx(arguments.ToString(), wrapper.Callback, cancellationToken);
         }
-
-        public Task PackPackageDirectory(string unpackedDirectory, string targetMsixPath, bool compress, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
+        
+        public Task Pack(MakeAppxPackOptions options, IProgress<ProgressData> progress = null, CancellationToken cancellationToken = default)
         {
-            var arguments = $"pack /d \"{unpackedDirectory}\" /p \"{targetMsixPath}\" /v /o";
-            if (!compress)
+            var arguments = new StringBuilder("pack", 256);
+
+            if (options.Source is FileInfo fileInfo)
             {
-                arguments += " /nc";
+                arguments.Append(" /f ");
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(fileInfo.FullName));
+            }
+            else
+            {
+                arguments.Append(" /d ");
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(options.Source.FullName));
             }
 
-            if (!validate)
+            arguments.Append(" /p ");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(options.Target.FullName));
+
+            if (options.Verbose)
             {
-                arguments += " /nv";
+                arguments.Append(" /v");
+            }
+
+            if (options.Overwrite)
+            {
+                arguments.Append(" /o");
+            }
+
+            if (!options.Compress)
+            {
+                arguments.Append(" /nc");
+            }
+
+            if (!options.Validate)
+            {
+                arguments.Append(" /nv");
+            }
+
+            if (options.PublisherBridge != null)
+            {
+                arguments.Append(" /pb");
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(options.PublisherBridge));
             }
 
             var wrapper = new PackUnPackProgressWrapper(progress);
-            return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
+            return this.RunMakeAppx(arguments.ToString(), wrapper.Callback, cancellationToken);
         }
-
-        public Task PackPackageFiles(string mappingFile, string targetMsixPath, bool compress, bool validate, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
-        {
-            var arguments = $"pack /f \"{mappingFile}\" /p \"{targetMsixPath}\" /v /o";
-            if (!compress)
-            {
-                arguments += " /nc";
-            }
-
-            if (!validate)
-            {
-                arguments += " /nv";
-            }
-
-            var wrapper = new PackUnPackProgressWrapper(progress);
-            return this.RunMakeAppx(arguments, cancellationToken, wrapper.Callback);
-        }
-
-        private async Task RunMakeAppx(string arguments, CancellationToken cancellationToken, Action<string> callBack = null)
+        
+        private async Task RunMakeAppx(string arguments, Action<string> callBack, CancellationToken cancellationToken = default)
         {
             var makeAppx = SdkPathHelper.GetSdkPath("makeappx.exe", BundleHelper.SdkPath);
             Logger.Info().WriteLine("Executing {0} {1}", makeAppx, arguments);
@@ -105,7 +133,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
                     throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", e.ExitCode);
                 }
-                
+
                 findSimilar = e.StandardError.FirstOrDefault(item => item.StartsWith("MakeAppx : error: 0x", StringComparison.OrdinalIgnoreCase));
                 if (findSimilar != null)
                 {
@@ -126,7 +154,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         {
                             findSimilar = findSimilar.Substring(error.Length).Trim();
                         }
-                        
+
                         if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
                         {
                             throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode} due to error {error.Groups[1].Value}. {findSimilar}", exitCode);
@@ -148,7 +176,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     {
                         findSimilar = manifestError;
                     }
-                    
+
                     if (int.TryParse(error.Groups[1].Value, out exitCode) && exitCode > 0)
                     {
                         throw new SdkException($"MakeAppx.exe returned exit code {e.ExitCode}. {findSimilar}", exitCode);
@@ -169,46 +197,46 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 throw;
             }
         }
-        
+
         private class PackUnPackProgressWrapper
         {
-            private readonly IProgress<ProgressData> progressReporter;
+            private readonly IProgress<ProgressData> _progressReporter;
             
-            private int? fileCounter;
+            private int? _fileCounter;
 
-            private int alreadyProcessed;
+            private int _alreadyProcessed;
 
             public PackUnPackProgressWrapper(IProgress<ProgressData> progressReporter)
             {
-                this.progressReporter = progressReporter;
+                this._progressReporter = progressReporter;
             }
 
             public Action<string> Callback => this.OnProgress;
 
             private void OnProgress(string data)
             {
-                if (string.IsNullOrEmpty(data) || this.progressReporter == null)
+                if (string.IsNullOrEmpty(data) || this._progressReporter == null)
                 {
                     return;
                 }
 
-                if (!this.fileCounter.HasValue)
+                if (!this._fileCounter.HasValue)
                 {
                     var match = Regex.Match(data, @"^Packing (\d+) files?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
                     if (match.Success)
                     {
-                        this.fileCounter = int.Parse(match.Groups[1].Value);
+                        this._fileCounter = int.Parse(match.Groups[1].Value);
                     }
                 }
 
                 var regexFile = Regex.Match(data, "^Processing \"([^\"]+)\"", RegexOptions.IgnoreCase | RegexOptions.Compiled);
                 if (regexFile.Success)
                 {
-                    this.alreadyProcessed++;
+                    this._alreadyProcessed++;
                     int currentProgress;
-                    if (this.fileCounter.HasValue && this.fileCounter.Value > 0)
+                    if (this._fileCounter.HasValue && this._fileCounter.Value > 0)
                     {
-                        currentProgress = (int)(100.0 * this.alreadyProcessed / this.fileCounter.Value);
+                        currentProgress = (int)(100.0 * this._alreadyProcessed / this._fileCounter.Value);
                     }
                     else
                     {
@@ -222,18 +250,18 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     }
 
                     fileName = Path.GetFileName(fileName);
-                    this.progressReporter.Report(new ProgressData(currentProgress, $"Compressing {fileName}..."));
+                    this._progressReporter.Report(new ProgressData(currentProgress, $"Compressing {fileName}..."));
                 }
                 else
                 {
                     regexFile = Regex.Match(data, "^Extracting file ([^ ]+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
                     if (regexFile.Success)
                     {
-                        this.alreadyProcessed++;
+                        this._alreadyProcessed++;
                         int currentProgress;
-                        if (this.fileCounter.HasValue && this.fileCounter.Value > 0)
+                        if (this._fileCounter.HasValue && this._fileCounter.Value > 0)
                         {
-                            currentProgress = (int)(100.0 * this.alreadyProcessed / this.fileCounter.Value);
+                            currentProgress = (int)(100.0 * this._alreadyProcessed / this._fileCounter.Value);
                         }
                         else
                         {
@@ -247,7 +275,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                         }
 
                         fileName = Path.GetFileName(fileName);
-                        this.progressReporter.Report(new ProgressData(currentProgress, $"Extracting {fileName}..."));
+                        this._progressReporter.Report(new ProgressData(currentProgress, $"Extracting {fileName}..."));
                     }
                 }
             }

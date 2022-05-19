@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             try
             {
                 await this.Console.WriteInfo($"Unpacking [{this.Verb.Package}] to [{this.Verb.Directory}]...").ConfigureAwait(false);
-                await msixSdkWrapper.UnpackPackage(this.Verb.Package, this.Verb.Directory, !this.Verb.NoValidation).ConfigureAwait(false);
+                await msixSdkWrapper.Unpack(MakeAppxUnpackOptions.Create(this.Verb.Package, this.Verb.Directory, !this.Verb.NoValidation)).ConfigureAwait(false);
 
                 await this.Console.WriteSuccess($"The package has been unpacked to [{this.Verb.Directory}].");
 

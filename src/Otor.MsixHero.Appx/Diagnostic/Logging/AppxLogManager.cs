@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Entities;
 using Otor.MsixHero.Appx.Diagnostic.Logging.Enums;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.PowerShell;
 
@@ -99,7 +100,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Logging
             }
 
             logName = Environment.ExpandEnvironmentVariables(logName);
-            var process = new ProcessStartInfo("eventvwr", $"/l:\"{logName}\"")
+            var process = new ProcessStartInfo("eventvwr", $"/l:{CommandLineHelper.EncodeParameterArgument(logName, true)}")
             {
                 Verb = "runas",
                 UseShellExecute = true

@@ -14,11 +14,11 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 {
     public abstract class BaseEditVerbExecutor<T> : VerbExecutor<T> where T : BaseEditVerb
     {
-        private readonly string package;
+        private readonly string _package;
 
         protected BaseEditVerbExecutor(string package, T verb, IConsole console) : base(verb, console)
         {
-            this.package = package;
+            this._package = package;
         }
         
         public override async Task<int> Execute()
@@ -27,9 +27,9 @@ namespace Otor.MsixHero.Cli.Executors.Edit
             {
                 await this.OnBegin().ConfigureAwait(false);
 
-                if (!File.Exists(this.package) && !Directory.Exists(this.package))
+                if (!File.Exists(this._package) && !Directory.Exists(this._package))
                 {
-                    await this.Console.WriteError($"The path {this.package} does not exist.");
+                    await this.Console.WriteError($"The path {this._package} does not exist.");
                     return 10;
                 }
 
@@ -39,18 +39,18 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                     return validation;
                 }
 
-                if (File.Exists(this.package))
+                if (File.Exists(this._package))
                 {
                     // This is a file...
-                    if (string.Equals(Path.GetFileName(this.package), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(Path.GetFileName(this._package), FileConstants.AppxManifestFile, StringComparison.OrdinalIgnoreCase))
                     {
                         // .. a manifest file
-                        var result = await this.ExecuteOnExtractedPackage(Path.GetDirectoryName(this.package)).ConfigureAwait(false);
+                        var result = await this.ExecuteOnExtractedPackage(Path.GetDirectoryName(this._package)).ConfigureAwait(false);
                         await this.OnFinished().ConfigureAwait(false);
                         return result;
                     }
 
-                    if (string.Equals(".msix", Path.GetExtension(this.package)))
+                    if (string.Equals(".msix", Path.GetExtension(this._package)))
                     {
                         // .. an MSIX package
                         var msixMgr = new MakeAppxWrapper();
@@ -58,10 +58,10 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 
                         try
                         {
-                            await this.Console.WriteInfo($"Opening {Path.GetFileName(this.package)}...").ConfigureAwait(false);
+                            await this.Console.WriteInfo($"Opening {Path.GetFileName(this._package)}...").ConfigureAwait(false);
 
                             // 1) Unpack first
-                            await msixMgr.UnpackPackage(this.package, tempFolder, false).ConfigureAwait(false);
+                            await msixMgr.Unpack(MakeAppxUnpackOptions.Create(this._package, tempFolder)).ConfigureAwait(false);
 
                             // 2) Make edit
                             var result = await this.ExecuteOnExtractedPackage(tempFolder).ConfigureAwait(false);
@@ -85,9 +85,10 @@ namespace Otor.MsixHero.Cli.Executors.Edit
 
                             if (result == StandardExitCodes.ErrorSuccess)
                             {
-                                await this.Console.WriteInfo($"Saving {Path.GetFileName(this.package)}...").ConfigureAwait(false);
+                                await this.Console.WriteInfo($"Saving {Path.GetFileName(this._package)}...").ConfigureAwait(false);
+
                                 // 3) Pack again
-                                await msixMgr.PackPackageDirectory(tempFolder, this.package, false, false);
+                                await msixMgr.Pack(MakeAppxPackOptions.CreateFromDirectory(tempFolder, this._package, false)).ConfigureAwait(false);
                                 await this.OnFinished().ConfigureAwait(false);
                             }
 
@@ -102,13 +103,13 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                         }
                     }
                 }
-                else if (Directory.Exists(this.package))
+                else if (Directory.Exists(this._package))
                 {
                     // this is extracted directory
-                    var manifestPath = Path.Combine(this.package, FileConstants.AppxManifestFile);
+                    var manifestPath = Path.Combine(this._package, FileConstants.AppxManifestFile);
                     if (File.Exists(manifestPath))
                     {
-                        var result = await this.ExecuteOnExtractedPackage(this.package).ConfigureAwait(false);
+                        var result = await this.ExecuteOnExtractedPackage(this._package).ConfigureAwait(false);
                         
                         XDocument document;
                         await using (var fs = File.OpenRead(manifestPath))
@@ -126,7 +127,7 @@ namespace Otor.MsixHero.Cli.Executors.Edit
                     }
                 }
 
-                await this.Console.WriteError($"The path {this.package} is neither a directory with extracted MSIX, an .MSIX package or a manifest file.").ConfigureAwait(false);
+                await this.Console.WriteError($"The path {this._package} is neither a directory with extracted MSIX, an .MSIX package or a manifest file.").ConfigureAwait(false);
                 return StandardExitCodes.ErrorParameter;
             }
             catch (Exception e)

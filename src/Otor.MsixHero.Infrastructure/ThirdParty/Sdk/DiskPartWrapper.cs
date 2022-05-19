@@ -16,14 +16,13 @@
 
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Helpers;
-using Dapplo.Log;
 using Otor.MsixHero.Infrastructure.Progress;
 using Otor.MsixHero.Infrastructure.ThirdParty.Exceptions;
-using NotSupportedException = System.NotSupportedException;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
@@ -42,10 +41,11 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 attach vdisk";
 
                 await File.WriteAllTextAsync(tempFile, string.Format(content, vhdPath), cancellationToken).ConfigureAwait(false);
-                var arguments = $"/S \"{tempFile}\"";
+                var arguments = new StringBuilder("/S ", 256);
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(tempFile));
 
                 Logger.Debug().WriteLine($"DISKPART.EXE command in {tempFile}:\r\n{string.Format(content, vhdPath)}");
-                await this.RunDiskPart(arguments, cancellationToken).ConfigureAwait(false);
+                await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -74,10 +74,12 @@ attach vdisk";
 
                         var requiredSizeMb = (int)(10 * Math.Ceiling(0.1 * requiredSize / 1024 / 1024));
                         await File.WriteAllTextAsync(tempCreateFile, string.Format(content, vhdPath, requiredSizeMb), cancellationToken).ConfigureAwait(false);
-                        var arguments = $"/S \"{tempCreateFile}\"";
-
+                        
+                        var arguments = new StringBuilder("/S ", 256);
+                        arguments.Append(CommandLineHelper.EncodeParameterArgument(tempCreateFile));
+                        
                         Logger.Debug().WriteLine($"DISKPART.EXE command in {tempCreateFile}:\r\n{string.Format(content, vhdPath, requiredSizeMb)}");
-                        await this.RunDiskPart(arguments, cancellationToken).ConfigureAwait(false);
+                        await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -104,10 +106,12 @@ format fs=ntfs
 assign";
                 tempFileMount = Path.Combine(Path.GetTempPath(), "msix-hero-vhd-" + Guid.NewGuid().ToString("N").Substring(0, 10) + ".cfg");
                 await File.WriteAllTextAsync(tempFileMount, string.Format(content, vhdPath), cancellationToken).ConfigureAwait(false);
-                var arguments = $"/S \"{tempFileMount}\"";
+                
+                var arguments = new StringBuilder("/S ", 256);
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(tempFileMount));
                 
                 Logger.Debug().WriteLine($"DISKPART.EXE command in {tempFileMount}:\r\n{string.Format(content, vhdPath)}");
-                await this.RunDiskPart(arguments, cancellationToken).ConfigureAwait(false);
+                await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -130,10 +134,12 @@ assign";
 detach vdisk";
 
                 await File.WriteAllTextAsync(tempFile, string.Format(content, vhdPath), cancellationToken).ConfigureAwait(false);
-                var arguments = $"/S \"{tempFile}\"";
+                
+                var arguments = new StringBuilder("/S ", 256);
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(tempFile));
 
                 Logger.Debug().WriteLine($"DISKPART.EXE command in {tempFile}:\r\n{string.Format(content, vhdPath)}");
-                await this.RunDiskPart(arguments, cancellationToken).ConfigureAwait(false);
+                await this.RunDiskPart(arguments.ToString(), cancellationToken).ConfigureAwait(false);
             }
             finally
             {

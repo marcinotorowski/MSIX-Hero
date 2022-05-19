@@ -73,7 +73,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 await File.WriteAllBytesAsync(Path.Combine(emptyDir.FullName, "GeneratedFile.txt"), Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
             }
 
-            await new MakeAppxWrapper().PackPackageDirectory(directory, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
+            await new MakeAppxWrapper().Pack(MakeAppxPackOptions.CreateFromDirectory(directory, packagePath, compress, validate), progress, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task Pack(
@@ -184,7 +184,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 var compress = !options.HasFlag(AppxPackerOptions.NoCompress);
                 var validate = !options.HasFlag(AppxPackerOptions.NoValidation);
 
-                await new MakeAppxWrapper().PackPackageFiles(tempFile, packagePath, compress, validate, cancellationToken, progress).ConfigureAwait(false);
+                await new MakeAppxWrapper().Pack(MakeAppxPackOptions.CreateFromMapping(tempFile, packagePath, compress, validate), progress, cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -217,16 +217,7 @@ namespace Otor.MsixHero.Appx.Packaging.Packer
                 Directory.CreateDirectory(directory);
             }
 
-            return new MakeAppxWrapper().UnpackPackage(packagePath, directory, cancellationToken, progress);
-        }
-
-        private class Utf8StringWriter : StringWriter
-        {
-            public Utf8StringWriter(StringBuilder sb) : base(sb)
-            {
-            }
-
-            public override Encoding Encoding => Encoding.UTF8;
+            return new MakeAppxWrapper().Unpack(MakeAppxUnpackOptions.Create(packagePath, directory), progress, cancellationToken);
         }
     }
 }

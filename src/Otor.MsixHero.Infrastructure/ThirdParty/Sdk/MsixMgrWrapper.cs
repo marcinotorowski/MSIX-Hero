@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapplo.Log;
@@ -56,14 +57,25 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 
         public Task Unpack(string packageFilePath, string unpackedDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{unpackedDirectory}\"";
-            return this.RunMsixMgr(arguments, cancellationToken);
+            var arguments = new StringBuilder("-Unpack ", 256);
+
+            arguments.Append(" -packagePath");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(packageFilePath));
+            
+            arguments.Append(" -destination");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(unpackedDirectory));
+            
+            return this.RunMsixMgr(arguments.ToString(), cancellationToken);
         }
 
         public Task ApplyAcls(string unpackedPackageDirectory, CancellationToken cancellationToken = default, IProgress<ProgressData> progress = null)
         {
-            var arguments = $"-ApplyACLs -packagePath \"{unpackedPackageDirectory}\"";
-            return this.RunMsixMgr(arguments, cancellationToken);
+            var arguments = new StringBuilder("-ApplyACLs ", 256);
+
+            arguments.Append(" -packagePath");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(unpackedPackageDirectory));
+
+            return this.RunMsixMgr(arguments.ToString(), cancellationToken);
         }
 
         public Task UnpackEx(
@@ -77,35 +89,44 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             string rootDirectory = null,
             CancellationToken cancellationToken = default)
         {
-            var arguments = $"-Unpack -packagePath \"{packageFilePath}\" -destination \"{containerPath}\"";
+            var arguments = new StringBuilder("-Unpack ", 256);
 
+            arguments.Append(" -packagePath");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(packageFilePath));
+
+            arguments.Append(" -destination");
+            arguments.Append(CommandLineHelper.EncodeParameterArgument(containerPath));
+            
             if (fileType.HasValue)
             {
-                arguments += $" -fileType {fileType.Value.ToString("G").ToUpperInvariant()}";
+                arguments.Append(" -fileType");
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(fileType.Value.ToString("G").ToUpperInvariant()));
             }
 
             if (size > 0)
             {
-                arguments += $" -vhdSize \"{size}\"";
+                arguments.Append(" -vhdSize");
+                arguments.Append(size);
             }
 
             if (applyAcls)
             {
                 // ReSharper disable once StringLiteralTypo
-                arguments += " -applyacls";
+                arguments.Append(" -applyacls");
             }
             
             if (create)
             {
-                arguments += " -create";
+                arguments.Append(" -create");
             }
 
             if (!string.IsNullOrEmpty(rootDirectory))
             {
-                arguments += $" -rootDirectory \"{rootDirectory}\"";
+                arguments.Append(" -rootDirectory");
+                arguments.Append(CommandLineHelper.EncodeParameterArgument(rootDirectory));
             }
             
-            return this.RunMsixMgr(arguments, cancellationToken);
+            return this.RunMsixMgr(arguments.ToString(), cancellationToken);
         }
         
         public static string GetMsixMgrPath(string localName, string baseDirectory = null)
@@ -185,6 +206,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                 }
 
 #pragma warning disable 652
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (e.ExitCode == 0x80070522)
 #pragma warning restore 652
                 {

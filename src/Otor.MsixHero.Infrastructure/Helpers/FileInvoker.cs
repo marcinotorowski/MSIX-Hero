@@ -106,7 +106,7 @@ namespace Otor.MsixHero.Infrastructure.Helpers
 
                     default:
                     {
-                        var spi = new ProcessStartInfo(toolPath.Resolved, "\"" + filePath.Resolved + "\"") { UseShellExecute = true };
+                        var spi = new ProcessStartInfo(toolPath.Resolved, CommandLineHelper.EncodeParameterArgument(filePath.Resolved)) { UseShellExecute = true };
                         Process.Start(spi);
                         break;
                     }

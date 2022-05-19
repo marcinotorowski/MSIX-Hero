@@ -41,7 +41,7 @@ namespace Otor.MsixHero.Cli.Executors.Standard
             try
             {
                 await this.Console.WriteInfo($"Packing [{this.Verb.Directory}] to [{this.Verb.Package}]...").ConfigureAwait(false);
-                await msixSdkWrapper.PackPackageDirectory(this.Verb.Directory, this.Verb.Package, !this.Verb.NoCompression, !this.Verb.NoValidation).ConfigureAwait(false);
+                await msixSdkWrapper.Pack(MakeAppxPackOptions.CreateFromDirectory(this.Verb.Directory, this.Verb.Package, !this.Verb.NoCompression, !this.Verb.NoValidation)).ConfigureAwait(false);
 
                 await this.Console.WriteSuccess($"Package [{this.Verb.Package}] has been created.");
 

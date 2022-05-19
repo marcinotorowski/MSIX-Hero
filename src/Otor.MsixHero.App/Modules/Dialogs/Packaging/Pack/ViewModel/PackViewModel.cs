@@ -189,7 +189,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel
                 await File.WriteAllTextAsync(tempFileList, fileListBuilder.ToString(), cancellationToken).ConfigureAwait(false);
 
                 var sdk = new MakeAppxWrapper();
-                await sdk.PackPackageFiles(tempFileList, this.OutputPath.CurrentValue, this.Compress.CurrentValue, this.Validate.CurrentValue, cancellationToken, progress1).ConfigureAwait(false);
+                await sdk.Pack(MakeAppxPackOptions.CreateFromMapping(tempFileList, this.OutputPath.CurrentValue, this.Compress.CurrentValue, this.Validate.CurrentValue), progress1, cancellationToken).ConfigureAwait(false);
                 
                 if (this.Sign.CurrentValue)
                 {

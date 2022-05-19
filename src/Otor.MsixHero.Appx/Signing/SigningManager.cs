@@ -43,11 +43,12 @@ namespace Otor.MsixHero.Appx.Signing
 {
     public class SigningManager : ISigningManager
     {
-        private readonly ITimeStampFeed timeStampFeed;
         private static readonly LogSource Logger = new();
+        private readonly ITimeStampFeed _timeStampFeed;
+        
         public SigningManager(ITimeStampFeed timeStampFeed)
         {
-            this.timeStampFeed = timeStampFeed;
+            this._timeStampFeed = timeStampFeed;
         }
 
         public Task ExtractCertificateFromMsix(
@@ -513,7 +514,7 @@ namespace Otor.MsixHero.Appx.Signing
                 return inputTimeStampUrl;
             }
             
-            var servers = await this.timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
+            var servers = await this._timeStampFeed.GetTimeStampServers().ConfigureAwait(false);
             if (servers?.Servers.Any() != true)
             {
                 throw new ApplicationException("Could not get a random timestamp server.");
@@ -746,7 +747,7 @@ namespace Otor.MsixHero.Appx.Signing
                 try
                 {
                     Logger.Debug().WriteLine("Unpacking {0} to {1}.", package, tempDirectory);
-                    await sdk.UnpackPackage(package, tempDirectory, cancellationToken).ConfigureAwait(false);
+                    await sdk.Unpack(MakeAppxUnpackOptions.Create(package, tempDirectory), cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     var manifestFilePath = Path.Combine(tempDirectory, FileConstants.AppxManifestFile);
                     if (!File.Exists(manifestFilePath))
@@ -855,7 +856,7 @@ namespace Otor.MsixHero.Appx.Signing
 
                     Logger.Debug().WriteLine("Packing {0} to {1}.", tempDirectory, localCopy);
                     cancellationToken.ThrowIfCancellationRequested();
-                    await sdk.PackPackageDirectory(tempDirectory, localCopy, true, true, cancellationToken).ConfigureAwait(false);
+                    await sdk.Pack(MakeAppxPackOptions.CreateFromDirectory(tempDirectory, localCopy, true, true), cancellationToken: cancellationToken).ConfigureAwait(false);
                 }
                 catch (SdkException e)
                 {

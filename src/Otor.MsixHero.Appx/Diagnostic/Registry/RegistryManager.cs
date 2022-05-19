@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using Otor.MsixHero.Appx.Diagnostic.Registry.Enums;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
+using Otor.MsixHero.Infrastructure.Helpers;
 using Otor.MsixHero.Infrastructure.Progress;
 
 namespace Otor.MsixHero.Appx.Diagnostic.Registry
@@ -72,7 +73,7 @@ namespace Otor.MsixHero.Appx.Diagnostic.Registry
         {
             return Task.Run(() =>
             {
-                var proc = new ProcessStartInfo("cmd.exe", @"/c REG UNLOAD HKLM\MSIX-Hero-" + packageName);
+                var proc = new ProcessStartInfo("cmd.exe", "/c REG UNLOAD " + CommandLineHelper.EncodeParameterArgument(@"HKLM\MSIX-Hero-" + packageName));
                 Console.WriteLine(@"/c REG UNLOAD HKLM\MSIX-Hero-" + packageName);
                 proc.UseShellExecute = true;
                 proc.Verb = "runas";
@@ -112,9 +113,8 @@ namespace Otor.MsixHero.Appx.Diagnostic.Registry
                         // whatever...
                     }
                 }
-
-                Console.WriteLine(@"/c REG LOAD HKLM\MSIX-Hero-" + packageName);
-                var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD HKLM\MSIX-Hero-" + packageName + " \"" + Path.Combine(installLocation, "Registry.dat") + "\"")
+                
+                var proc = new ProcessStartInfo("cmd.exe", @"/c REG LOAD " + CommandLineHelper.EncodeParameterArgument(@"HKLM\MSIX-Hero-" + packageName) + " " + CommandLineHelper.EncodeParameterArgument(Path.Combine(installLocation, "Registry.dat")))
                 {
                     UseShellExecute = true,
                     CreateNoWindow = true,

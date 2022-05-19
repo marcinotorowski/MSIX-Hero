@@ -26,6 +26,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Helpers;
 
 namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
 {
@@ -90,9 +91,8 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
             var sb = new StringBuilder("/apps");
             if (!string.IsNullOrEmpty(status))
             {
-                sb.Append(" /fi \"status eq ");
-                sb.Append(status);
-                sb.Append("\"");
+                sb.Append(" /fi ");
+                sb.Append(CommandLineHelper.EncodeParameterArgument("status eq " + status));
             }
 
             sb.Append(" /fo CSV");
