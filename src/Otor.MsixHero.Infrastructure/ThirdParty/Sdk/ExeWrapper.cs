@@ -87,7 +87,7 @@ namespace Otor.MsixHero.Infrastructure.ThirdParty.Sdk
                     standardErrorResults.SetResult(standardError.ToArray());
                 }
             };
-
+            
             process.Exited += async (_, _) =>
             {
                 await standardOutputResults.Task.ConfigureAwait(false);

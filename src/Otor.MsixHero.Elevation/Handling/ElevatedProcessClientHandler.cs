@@ -70,9 +70,12 @@ public class ElevatedProcessClientHandler : ClientHandler
         {
             Verb = "runas",
             UseShellExecute = true,
-#if RELEASE
+#if !DEBUG
             WindowStyle = ProcessWindowStyle.Hidden,
             CreateNoWindow = true
+#else
+            WindowStyle = ProcessWindowStyle.Normal,
+            CreateNoWindow = false
 #endif
         };
 
@@ -83,19 +86,28 @@ public class ElevatedProcessClientHandler : ClientHandler
 
     private Process Start(ProcessStartInfo info)
     {
-        var newProcess = Process.Start(info);
+        var newProcess = new Process
+        {
+            StartInfo = info,
+            EnableRaisingEvents = true
+        };
+
         if (newProcess == null)
         {
             throw new InvalidOperationException("Could not start the process.");
         }
-
-        newProcess.EnableRaisingEvents = true;
+        
         _processes.Add(newProcess);
         newProcess.Exited += (_, _) =>
         {
             Log.Info().WriteLine("UAC Client -> Server process has finished.");
             _processes.Remove(newProcess);
         };
+
+        if (!newProcess.Start())
+        {
+            throw new InvalidOperationException($"Could not start '{info.FileName}'.");
+        }
 
         return newProcess;
     }
