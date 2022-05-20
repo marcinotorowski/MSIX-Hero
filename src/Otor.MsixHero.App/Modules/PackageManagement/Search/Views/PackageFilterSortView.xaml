@@ -166,7 +166,7 @@
                     <Hyperlink 
                         Command="{Binding Clear}" 
                         CommandParameter="{x:Static viewModels:ClearFilter.Activity}">
-                        <Run Text="Clear" />
+                        <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
                 </TextBlock>
             </DockPanel>
@@ -181,7 +181,7 @@
                     <Hyperlink 
                         Command="{Binding Clear}" 
                         CommandParameter="{x:Static viewModels:ClearFilter.Type}">
-                        <Run Text="Clear" />
+                        <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
                 </TextBlock>
             </DockPanel>
@@ -197,7 +197,7 @@
                     <Hyperlink 
                         Command="{Binding Clear}" 
                         CommandParameter="{x:Static viewModels:ClearFilter.Category}">
-                        <Run Text="Clear" />
+                        <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
                 </TextBlock>
             </DockPanel>
@@ -214,7 +214,7 @@
                     <Hyperlink 
                         Command="{Binding Clear}" 
                         CommandParameter="{x:Static viewModels:ClearFilter.Architecture}">
-                        <Run Text="Clear" />
+                        <Run Text="{localization:Loc Button_Clear}" />
                     </Hyperlink>
                 </TextBlock>
             </DockPanel>

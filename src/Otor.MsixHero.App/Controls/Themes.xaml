@@ -628,7 +628,7 @@
                         HorizontalAlignment="Center" 
                         Margin="0 8 0 0" 
                         Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
-                        Content="Cancel" />
+                        Content="{localization:Loc Button_Cancel}" />
                 </StackPanel>
             </Border>
         </Grid>
@@ -712,7 +712,7 @@
                         HorizontalAlignment="Center" 
                         Margin="0 8 0 0" 
                         Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
-                        Content="Cancel">
+                        Content="{localization:Loc Button_Cancel}">
                     </Button>
                 </StackPanel>
             </Border>
@@ -820,7 +820,7 @@
                         HorizontalAlignment="Center" 
                         Margin="0 8 0 0" 
                         Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CancelCommand}" 
-                        Content="Cancel">
+                        Content="{localization:Loc Button_Cancel}">
                         <Button.RenderTransform>
                             <TranslateTransform Y="40" />
                         </Button.RenderTransform>

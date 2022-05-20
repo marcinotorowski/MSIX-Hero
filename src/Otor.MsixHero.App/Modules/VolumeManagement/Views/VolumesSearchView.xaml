@@ -48,7 +48,7 @@
         <Button 
             HorizontalAlignment="Right"
             Cursor="Hand"
-            ToolTip="Clear" 
+            ToolTip="{localization:Loc Button_Clear}" 
             Padding="0" 
             Width="26" 
             MinWidth="26" 

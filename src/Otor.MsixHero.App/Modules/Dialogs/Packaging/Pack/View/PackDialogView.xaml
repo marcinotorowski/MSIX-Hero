@@ -99,7 +99,7 @@
                             Margin="0 6 0 0"
                             Background="#ffeeee" Visibility="{Binding PrePackOptions, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}, TargetNullValue={x:Static Visibility.Collapsed}}">
                             <StackPanel Margin="8">
-                                <TextBlock TextWrapping="Wrap" Text="Selected folder contains no manifest files, and no executable files have been found. Packing to MSIX format is not possible." />
+                                <TextBlock TextWrapping="Wrap" Text="{localization:Loc Dialogs_Pack_PackingNotPossible}" />
                             </StackPanel>
                         </Border>
 

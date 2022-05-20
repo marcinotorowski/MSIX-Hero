@@ -82,9 +82,12 @@
             <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="4" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.OldPackageLayout.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.OldPackageLayout.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.OldPackageLayout.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
@@ -180,81 +183,108 @@
             <StackPanel Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.DeletedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.DeletedFiles.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.DeletedFiles.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="2" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.UnchangedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.UnchangedFiles.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.UnchangedFiles.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="3" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" Content="{Binding ComparisonModel.ChangedFiles.OldPackageFileSize, Converter={StaticResource SizeConverter}}" Margin="0" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.ChangedFiles.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.ChangedFiles.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="2" Grid.Row="6" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" Content="{Binding ComparisonModel.OldPackageDuplication.FileSize, Converter={StaticResource SizeConverter}}" Margin="0" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding Path=ComparisonModel.OldPackageDuplication.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.OldPackageDuplication.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="4" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.NewPackageLayout.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.NewPackageLayout.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.NewPackageLayout.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel Grid.Column="6" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.AddedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.AddedFiles.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.AddedFiles.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="2" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.UnchangedFiles.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.UnchangedFiles.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.UnchangedFiles.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="3" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.ChangedFiles.OldPackageFileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.ChangedFiles.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.ChangedFiles.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center"  Grid.Column="6" Grid.Row="6" VerticalAlignment="Center">
                 <Label Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0" Content="{Binding ComparisonModel.NewPackageDuplication.FileSize, Converter={StaticResource SizeConverter}}" HorizontalContentAlignment="Center" />
                 <TextBlock Foreground="#666" VerticalAlignment="Center" TextAlignment="Center">
-                    <Run Text="in" />
-                    <Run Text="{Binding ComparisonModel.NewPackageDuplication.FileCount, Mode=OneWay}" />
-                    <Run Text="files" />
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                            <localization:Loc StringName="Dialogs_UpdateImpact_InXFiles" />
+                            <Binding Path="ComparisonModel.NewPackageDuplication.FileCount" Mode="OneWay" />
+                        </MultiBinding>
+                    </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
         </Grid>

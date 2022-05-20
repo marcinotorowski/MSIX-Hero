@@ -61,23 +61,26 @@
                                     <DataTemplate>
                                         <Border CornerRadius="4" Padding="4 2" Margin="0 -4" Background="LightGray" x:Name="Border">
                                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                                            <TextBlock x:Name="Text" Foreground="Black" Text="{Binding Type}" />
+                                            <TextBlock x:Name="Text" Foreground="Black" Text="{localization:Loc Dialogs_UpdateImpact_ChangeType_Unchanged}" />
                                         </Border>
                                         <DataTemplate.Triggers>
                                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                                             <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Added}">
                                                 <Setter Property="Background" TargetName="Border" Value="MediumSeaGreen" />
                                                 <Setter Property="Foreground" TargetName="Text" Value="White" />
+                                                <Setter Property="Text" TargetName="Text" Value="{localization:Loc Dialogs_UpdateImpact_ChangeType_Added}" />
                                             </DataTrigger>
                                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                                             <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Deleted}">
                                                 <Setter Property="Background" TargetName="Border" Value="IndianRed" />
                                                 <Setter Property="Foreground" TargetName="Text" Value="White" />
+                                                <Setter Property="Text" TargetName="Text" Value="{localization:Loc Dialogs_UpdateImpact_ChangeType_Deleted}" />
                                             </DataTrigger>
                                             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                                             <DataTrigger Binding="{Binding Type}" Value="{x:Static items:FileType.Changed}">
                                                 <Setter Property="Background" TargetName="Border" Value="SandyBrown" />
                                                 <Setter Property="Foreground" TargetName="Text" Value="White" />
+                                                <Setter Property="Text" TargetName="Text" Value="{localization:Loc Dialogs_UpdateImpact_ChangeType_Changed}" />
                                             </DataTrigger>
                                         </DataTemplate.Triggers>
                                     </DataTemplate>

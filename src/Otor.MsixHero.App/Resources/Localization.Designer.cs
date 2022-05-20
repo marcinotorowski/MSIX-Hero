@@ -61,6 +61,42 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse….
+        /// </summary>
+        public static string Button_Browse {
+            get {
+                return ResourceManager.GetString("Button_Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Button_Cancel {
+            get {
+                return ResourceManager.GetString("Button_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Button_Clear {
+            get {
+                return ResourceManager.GetString("Button_Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Button_Save {
+            get {
+                return ResourceManager.GetString("Button_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 3D Objects.
         /// </summary>
         public static string Capability_3d {
@@ -1402,6 +1438,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign in with Microsoft.
+        /// </summary>
+        public static string DeviceGuard_SignWithMS {
+            get {
+                return ResourceManager.GetString("DeviceGuard_SignWithMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow downgrades (installing older version of an app over the newer one).
         /// </summary>
         public static string Dialog_AppInstaller_AllowDowngrades {
@@ -1771,6 +1816,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are currently using the newest version of MSIX Hero.
+        /// </summary>
+        public static string Dialogs_About_Update_AlreadyNew {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_AlreadyNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Check again for updates.
         /// </summary>
         public static string Dialogs_About_Update_CheckAgain {
@@ -1789,11 +1843,65 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get the new version from the following URL:.
+        /// </summary>
+        public static string Dialogs_About_Update_NewUrl {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_NewUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The new version is:.
+        /// </summary>
+        public static string Dialogs_About_Update_NewVersionIs {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_NewVersionIs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to released on.
+        /// </summary>
+        public static string Dialogs_About_Update_NewVersionReleasedOn {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_NewVersionReleasedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting information about the new version....
+        /// </summary>
+        public static string Dialogs_About_Update_Reading {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_Reading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show release notes.
         /// </summary>
         public static string Dialogs_About_Update_ShowRelNotes {
             get {
                 return ResourceManager.GetString("Dialogs_About_Update_ShowRelNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New version of MSIX Hero is available..
+        /// </summary>
+        public static string Dialogs_About_Update_UpdateAvailable {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your version is:.
+        /// </summary>
+        public static string Dialogs_About_Update_YourVersion {
+            get {
+                return ResourceManager.GetString("Dialogs_About_Update_YourVersion", resourceCulture);
             }
         }
         
@@ -1920,6 +2028,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_AppAttach_ExtractCert_HelpText {
             get {
                 return ResourceManager.GetString("Dialogs_AppAttach_ExtractCert_HelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File type.
+        /// </summary>
+        public static string Dialogs_AppAttach_FileType {
+            get {
+                return ResourceManager.GetString("Dialogs_AppAttach_FileType", resourceCulture);
             }
         }
         
@@ -2392,7 +2509,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version.
+        ///   Looks up a localized string similar to &gt;C.
         /// </summary>
         public static string Dialogs_AppInstaller_Version {
             get {
@@ -2460,15 +2577,6 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice {
             get {
                 return ResourceManager.GetString("Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
-        public static string Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack {
-            get {
-                return ResourceManager.GetString("Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack", resourceCulture);
             }
         }
         
@@ -3868,6 +3976,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selected folder contains no manifest files, and no executable files have been found. Packing to MSIX format is not possible..
+        /// </summary>
+        public static string Dialogs_Pack_PackingNotPossible {
+            get {
+                return ResourceManager.GetString("Dialogs_Pack_PackingNotPossible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MSIX Hero found at least one file with .reg extension. Do you want to convert it to MSIX registry?.
         /// </summary>
         public static string Dialogs_Pack_RegFileAction {
@@ -4179,6 +4296,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_PackageName_PublisherHash {
             get {
                 return ResourceManager.GetString("Dialogs_PackageName_PublisherHash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy publisher hash to clipboard.
+        /// </summary>
+        public static string Dialogs_PackageName_PublisherHash_Copy {
+            get {
+                return ResourceManager.GetString("Dialogs_PackageName_PublisherHash_Copy", resourceCulture);
             }
         }
         
@@ -5434,6 +5560,42 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Added.
+        /// </summary>
+        public static string Dialogs_UpdateImpact_ChangeType_Added {
+            get {
+                return ResourceManager.GetString("Dialogs_UpdateImpact_ChangeType_Added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changed.
+        /// </summary>
+        public static string Dialogs_UpdateImpact_ChangeType_Changed {
+            get {
+                return ResourceManager.GetString("Dialogs_UpdateImpact_ChangeType_Changed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted.
+        /// </summary>
+        public static string Dialogs_UpdateImpact_ChangeType_Deleted {
+            get {
+                return ResourceManager.GetString("Dialogs_UpdateImpact_ChangeType_Deleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unchanged.
+        /// </summary>
+        public static string Dialogs_UpdateImpact_ChangeType_Unchanged {
+            get {
+                return ResourceManager.GetString("Dialogs_UpdateImpact_ChangeType_Unchanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compare.
         /// </summary>
         public static string Dialogs_UpdateImpact_Compare {
@@ -5637,6 +5799,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Dialogs_UpdateImpact_Files_OnlyImpacting {
             get {
                 return ResourceManager.GetString("Dialogs_UpdateImpact_Files_OnlyImpacting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to in {0} files.
+        /// </summary>
+        public static string Dialogs_UpdateImpact_InXFiles {
+            get {
+                return ResourceManager.GetString("Dialogs_UpdateImpact_InXFiles", resourceCulture);
             }
         }
         
@@ -7243,6 +7414,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Drop any file here to open it.
+        /// </summary>
+        public static string Package_DragDropToOpen {
+            get {
+                return ResourceManager.GetString("Package_DragDropToOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accessible via.
         /// </summary>
         public static string PackageExpert_AccessibleVia {
@@ -7500,6 +7680,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string PackageExpert_Architecture {
             get {
                 return ResourceManager.GetString("PackageExpert_Architecture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Root folder.
+        /// </summary>
+        public static string PackageExpert_Browser_Root {
+            get {
+                return ResourceManager.GetString("PackageExpert_Browser_Root", resourceCulture);
             }
         }
         
@@ -8967,6 +9156,42 @@ namespace Otor.MsixHero.App.Resources {
         public static string Packages_Search_TextBox_Prompt {
             get {
                 return ResourceManager.GetString("Packages_Search_TextBox_Prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple items selected.
+        /// </summary>
+        public static string Packages_Sidebar_MultipleItems {
+            get {
+                return ResourceManager.GetString("Packages_Sidebar_MultipleItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a single package to display its properties..
+        /// </summary>
+        public static string Packages_Sidebar_MultipleItems_Hint {
+            get {
+                return ResourceManager.GetString("Packages_Sidebar_MultipleItems_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing selected.
+        /// </summary>
+        public static string Packages_Sidebar_NoSelection {
+            get {
+                return ResourceManager.GetString("Packages_Sidebar_NoSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select any package to display its properties..
+        /// </summary>
+        public static string Packages_Sidebar_NoSelection_Hint {
+            get {
+                return ResourceManager.GetString("Packages_Sidebar_NoSelection_Hint", resourceCulture);
             }
         }
         
@@ -10519,7 +10744,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select any volume to display its properties..
+        ///   Looks up a localized string similar to Select a single volume to display its properties..
         /// </summary>
         public static string Volumes_Sidebar_MultipleItems_Hint {
             get {

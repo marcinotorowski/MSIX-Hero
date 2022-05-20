@@ -107,7 +107,7 @@
                     <StackPanel>
                         <TextBlock
                             Style="{StaticResource LabelTextBlock}" 
-                            Text="File type" 
+                            Text="{localization:Loc Dialogs_AppAttach_FileType}" 
                             Margin="0 0 0 6" />
 
                         <StackPanel Orientation="Horizontal">

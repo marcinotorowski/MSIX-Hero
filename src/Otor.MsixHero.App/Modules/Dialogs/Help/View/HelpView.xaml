@@ -76,7 +76,7 @@
         </Border>
         <Border Background="#eee" DockPanel.Dock="Bottom">
             <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                <Button Padding="8 4" Margin="4" Command="{Binding CloseCommand}" Content="Close" />
+                <Button Padding="8 4" Margin="4" Command="{Binding CloseCommand}" Content="{localization:Loc Dialogs_Close}" />
             </StackPanel>
         </Border>
 
@@ -109,7 +109,7 @@
 
                 <Border DockPanel.Dock="Top" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
                     <StackPanel>
-                        <TextBlock Text="Getting information about the new version..." />
+                        <TextBlock Text="{localization:Loc Dialogs_About_Update_Reading}" />
                         <ProgressBar Height="8" IsIndeterminate="True" Margin="0 8 0 0" />
                     </StackPanel>
                 </Border>
@@ -117,19 +117,19 @@
                 <Border DockPanel.Dock="Top" Background="#FFFFDD" Margin="0 8 0 0" 
                         Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource NegativeBooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
                     <StackPanel Margin="8">
-                        <TextBlock Text="New version of MSIX Hero is available." />
+                        <TextBlock Text="{localization:Loc Dialogs_About_Update_UpdateAvailable}" />
                         <TextBlock>
-                                <Run Text="Your version is:" />
+                                <Run Text="{localization:Loc Dialogs_About_Update_YourVersion}" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.CurrentVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
                         </TextBlock>
                         <TextBlock>
-                                <Run Text="The new version is:" />
+                                <Run Text="{localization:Loc Dialogs_About_Update_NewVersionIs}" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.AvailableVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
-                                <Run Text="released on" />
+                                <Run Text="{localization:Loc Dialogs_About_Update_NewVersionReleasedOn}" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.ReleaseDate, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
                         </TextBlock>
 
-                        <TextBlock Margin="0 10 0 0" Text="Get the new version from the following URL:" />
+                        <TextBlock Margin="0 10 0 0" Text="{localization:Loc Dialogs_About_Update_NewUrl}" />
 
                         <TextBlock TextAlignment="Left">
                             <Hyperlink FontSize="18" Click="Hyperlink_OnClick">MSIXHERO.net/get</Hyperlink>
@@ -139,9 +139,9 @@
 
                 <Border DockPanel.Dock="Top" Background="#DDFFDD" Margin="0 8 0 0" Visibility="{Binding UpdateCheck.CurrentValue.IsCurrentVersionUpToDate, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={StaticResource Collapsed}}">
                     <StackPanel Margin="8">
-                        <TextBlock Text="You are currently using the newest version of MSIX Hero" />
+                        <TextBlock Text="{localization:Loc Dialogs_About_Update_AlreadyNew}" />
                         <TextBlock>
-                                <Run Text="Your version is:" />
+                                <Run Text="{localization:Loc Dialogs_About_Update_YourVersion}" />
                                 <Run Text="{Binding UpdateCheck.CurrentValue.CurrentVersion, FallbackValue='1.0.0', Mode=OneWay}" FontWeight="Bold" />
                         </TextBlock>
 

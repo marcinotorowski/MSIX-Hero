@@ -103,7 +103,7 @@
             Background="{StaticResource MsixHero.Dialog.Bar.Background}" 
             DockPanel.Dock="Bottom">
             <StackPanel Orientation="Horizontal" Margin="4" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-                <Button Padding="8 4" Margin="4" Command="Save" Content="OK">
+                <Button Padding="8 4" Margin="4" Command="{localization:Loc Button_Save}" Content="OK">
                     <Button.CommandParameter>
                         <system:Boolean>True</system:Boolean>
                     </Button.CommandParameter>

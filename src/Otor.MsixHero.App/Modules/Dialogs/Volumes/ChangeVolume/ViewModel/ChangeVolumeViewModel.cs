@@ -111,7 +111,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                     var buttons = new List<string>
                     {
                         Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume,
-                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack
+                        Resources.Localization.Button_Cancel
                     };
 
                     var option = this._interactionService.ShowMessage(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume, buttons);
@@ -131,7 +131,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                     {
                         string.Format(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Use_Format, suggestion?.PackageStorePath),
                         Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume,
-                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack
+                        Resources.Localization.Button_Cancel
                     };
 
                     var option = this._interactionService.ShowMessage(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice, buttons);
@@ -154,7 +154,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Volumes.ChangeVolume.ViewModel
                     {
                         Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Select,
                         Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume,
-                        Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack
+                        Resources.Localization.Button_Cancel
                     };
 
                     var option = this._interactionService.ShowMessage(Resources.Localization.Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice, buttons);

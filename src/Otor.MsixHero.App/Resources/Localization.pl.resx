@@ -621,6 +621,9 @@
   <data name="Dialogs_UpdateImpact_File1_Path" xml:space="preserve">
     <value>Ścieżka do starszej wersji</value>
   </data>
+  <data name="Dialogs_UpdateImpact_Title" xml:space="preserve">
+    <value>Analizuj wpływ aktualizacji</value>
+  </data>
   <data name="Dialogs_UpdateImpact_File2_HelpText" xml:space="preserve">
     <value>Wybierz nowszą wersję aktualizowanego pakietu</value>
   </data>
@@ -961,10 +964,10 @@
     <value>Wyszukaj w zdarzeniach...</value>
   </data>
   <data name="EventViewer_Sidebar_NoSelection" xml:space="preserve">
-    <value>Brak zaznaczenia</value>
+    <value>Nic nie zaznaczono</value>
   </data>
   <data name="EventViewer_Sidebar_NoSelection_Hint" xml:space="preserve">
-    <value>Zaznacz zdarzenie aby wyświetlić jego szczegóły.</value>
+    <value>Wybierz zdarzenie aby wyświetlić jego szczegóły.</value>
   </data>
   <data name="HumanDate_Last6Months" xml:space="preserve">
     <value>Ostatnie 6 miesięcy</value>
@@ -1444,7 +1447,7 @@
     <value>Proces i wątek</value>
   </data>
   <data name="Psf_Trace_Level_Registry" xml:space="preserve">
-    <value>Rejest</value>
+    <value>Rejestr</value>
   </data>
   <data name="Psf_Trace_UnexpectedFailures" xml:space="preserve">
     <value>Nieoczekiwane problemy</value>
@@ -2042,9 +2045,6 @@
   </data>
   <data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice" xml:space="preserve">
     <value>Zaznaczony pakiet jest już zainstalowany na wybranym woluminie. Czy miałeś na myśli inny wolumin?</value>
-  </data>
-  <data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack" xml:space="preserve">
-    <value>Anuluj</value>
   </data>
   <data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume" xml:space="preserve">
     <value>Stwórz nowy wolumin...</value>
@@ -3503,5 +3503,86 @@
   </data>
   <data name="Capability_Microphone" xml:space="preserve">
     <value>Mikrofon</value>
+  </data>
+  <data name="EventViewer_Details_TroubleShootingInfo" xml:space="preserve">
+    <value>Informacje diagnostyczne</value>
+  </data>
+  <data name="Packages_Sidebar_NoSelection" xml:space="preserve">
+    <value>Nic nie zaznaczono</value>
+  </data>
+  <data name="Packages_Sidebar_NoSelection_Hint" xml:space="preserve">
+    <value>Wybierz pakiet aby wyświetlić w tym miejscu jego właściwości.</value>
+  </data>
+  <data name="Packages_Sidebar_MultipleItems" xml:space="preserve">
+    <value>Wielokrotne zaznaczenie</value>
+  </data>
+  <data name="Packages_Sidebar_MultipleItems_Hint" xml:space="preserve">
+    <value>Wybierz pakiet aby wyświetlić jego właściwości.</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="Button_Browse" xml:space="preserve">
+    <value>Przeglądaj...</value>
+  </data>
+  <data name="Button_Clear" xml:space="preserve">
+    <value>Wyczyść</value>
+  </data>
+  <data name="Button_Save" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="DeviceGuard_SignWithMS" xml:space="preserve">
+    <value>Zaloguj z kontem Microsoft</value>
+  </data>
+  <data name="Dialogs_About_Update_AlreadyNew" xml:space="preserve">
+    <value>Używasz obecnie najnowszej wersji MSIX HEro</value>
+  </data>
+  <data name="Dialogs_About_Update_NewUrl" xml:space="preserve">
+    <value>Pobierz nową wersję za pomocą poniższego adresu URL:</value>
+  </data>
+  <data name="Dialogs_About_Update_NewVersionIs" xml:space="preserve">
+    <value>Nowa wersja to:</value>
+  </data>
+  <data name="Dialogs_About_Update_NewVersionReleasedOn" xml:space="preserve">
+    <value>wydana</value>
+  </data>
+  <data name="Dialogs_About_Update_Reading" xml:space="preserve">
+    <value>Pobieranie informacji o nowszych wersjach...</value>
+  </data>
+  <data name="Dialogs_About_Update_UpdateAvailable" xml:space="preserve">
+    <value>Dostępna jest nowsza wersja MSIX Hero</value>
+  </data>
+  <data name="Dialogs_About_Update_YourVersion" xml:space="preserve">
+    <value>Twoja wersja to:</value>
+  </data>
+  <data name="Dialogs_AppAttach_FileType" xml:space="preserve">
+    <value>Typ pliku</value>
+  </data>
+  <data name="Dialogs_PackageName_PublisherHash_Copy" xml:space="preserve">
+    <value>Skopiuj skrót identyfikatora wydawcy do schowka</value>
+  </data>
+  <data name="Dialogs_Pack_PackingNotPossible" xml:space="preserve">
+    <value>Zaznaczony folder nie zawiera pliku manifestu ani plików wykonawczych. Pakowanie do formatu MSIX nie jest możliwe.</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_InXFiles" xml:space="preserve">
+    <value>w {0} plikach</value>
+  </data>
+  <data name="Package_DragDropToOpen" xml:space="preserve">
+    <value>Upuść w tym miejscu plik, aby go otworzyć</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Added" xml:space="preserve">
+    <value>Dodany</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Changed" xml:space="preserve">
+    <value>Zmieniony</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Deleted" xml:space="preserve">
+    <value>Usunięty</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Unchanged" xml:space="preserve">
+    <value>Niezmieniony</value>
+  </data>
+  <data name="PackageExpert_Browser_Root" xml:space="preserve">
+    <value>Folder główny</value>
   </data>
 </root>

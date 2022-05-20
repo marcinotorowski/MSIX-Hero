@@ -11,4 +11,6 @@
     <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
     <converters:NegativeEnumToVisibilityConverter x:Key="NegativeEnumToVisibilityConverter" />
     <converters:GroupNameConverter x:Key="GroupConverter" />
+    <converters:StringFormatConverter x:Key="StringFormatConverter" />
+    <converters:StringConcatConverter x:Key="StringConcatConverter" />
 </ResourceDictionary>

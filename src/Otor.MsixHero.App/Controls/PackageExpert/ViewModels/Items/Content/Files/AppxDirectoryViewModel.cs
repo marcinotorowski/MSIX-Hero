@@ -10,7 +10,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content.File
         public AppxDirectoryViewModel(TreeViewModel parent, string fullPath, bool hasChildren) : base(parent)
         {
             this.Path = fullPath;
-            this.Name = string.IsNullOrEmpty(fullPath) ? "Package Root" : System.IO.Path.GetFileName(fullPath);
+            this.Name = string.IsNullOrEmpty(fullPath) ? Resources.Localization.PackageExpert_Browser_Root : System.IO.Path.GetFileName(fullPath);
             this.IsExpandable = hasChildren;
             if (hasChildren)
             {

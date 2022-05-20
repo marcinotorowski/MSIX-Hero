@@ -26,7 +26,7 @@
                 <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_UpdateImpact_Blank_Old}" />
                 <TextBlock Text="{localization:Loc Dialogs_UpdateImpact_Blank_Old_HelpText}" />
                 <DockPanel Margin="0 6 0 0">
-                    <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path1.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
+                    <Button TabIndex="5" Content="{localization:Loc Button_Browse}" DockPanel.Dock="Right" Command="{Binding Path1.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                     <TextBox TabIndex="4" 
                          Text="{Binding Path1.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True }" 
                          IsReadOnly="True" />
@@ -37,7 +37,7 @@
                 <Label Style="{StaticResource FormLabel}" Content="{localization:Loc Dialogs_UpdateImpact_Blank_New}" />
                 <TextBlock Text="{localization:Loc Dialogs_UpdateImpact_Blank_New_HelpText}" />
                 <DockPanel Margin="0 6 0 0">
-                    <Button TabIndex="5" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Path2.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
+                    <Button TabIndex="5" Content="{localization:Loc Button_Browse}" DockPanel.Dock="Right" Command="{Binding Path2.Browse}" HorizontalAlignment="Left" Margin="4 0 0 0" />
                     <TextBox TabIndex="4" Text="{Binding Path2.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" IsReadOnly="True" />
                 </DockPanel>
             </StackPanel>

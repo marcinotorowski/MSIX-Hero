@@ -69,7 +69,7 @@
                     DockPanel.Dock="Right"
                     VerticalAlignment="Center"
                     Padding="2"
-                    ToolTip="Copy publisher hash to clipboard"
+                    ToolTip="{localization:Loc Dialogs_PackageName_PublisherHash_Copy}"
                     Command="{Binding CopyCommand}"
                     CommandParameter="{x:Static configuration:PackageProperty.Subject}">
                     <Path Data="{StaticResource VectorCopy}" Style="{StaticResource MediumIcon}" Margin="0 -2" />

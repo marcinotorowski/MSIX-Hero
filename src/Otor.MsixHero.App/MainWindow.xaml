@@ -14,6 +14,7 @@
     xmlns:regions="http://prismlibrary.com/"
     xmlns:modules="clr-namespace:Otor.MsixHero.App.Modules"
     xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     mc:Ignorable="d"
     Style="{StaticResource Acrylic}"
     Margin="0"
@@ -296,7 +297,7 @@
         <Border IsHitTestVisible="False" Visibility="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=(helpers:DropFileObject.IsDragging), Converter={StaticResource BooleanToVisibilityConverter}}" Background="#aaffffff">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Path Data="{StaticResource SmallOpen}" Style="{StaticResource SmallIcon}" HorizontalAlignment="Center" Margin="0 0 0 10" />
-                <TextBlock Text="Drop any file here to open it" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <TextBlock Text="{localization:Loc Package_DragDropToOpen}" VerticalAlignment="Center" HorizontalAlignment="Center" />
             </StackPanel>
         </Border>
     </Grid>

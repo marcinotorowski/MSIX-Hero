@@ -406,7 +406,7 @@
     <value>missing version</value>
   </data>
   <data name="Dialogs_AppInstaller_Version" xml:space="preserve">
-    <value>Version</value>
+    <value>&gt;C</value>
   </data>
   <data name="Dialogs_Browse_AllFiles" xml:space="preserve">
     <value>All files</value>
@@ -1744,7 +1744,7 @@
     <value>Multiple items selected</value>
   </data>
   <data name="Volumes_Sidebar_MultipleItems_Hint" xml:space="preserve">
-    <value>Select any volume to display its properties.</value>
+    <value>Select a single volume to display its properties.</value>
   </data>
   <data name="Volumes_Sidebar_NoSelection" xml:space="preserve">
     <value>Nothing selected</value>
@@ -2060,9 +2060,6 @@
   </data>
   <data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_Choice" xml:space="preserve">
     <value>The selected package is already available on the required volume. Did you mean another volume?</value>
-  </data>
-  <data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_GoBack" xml:space="preserve">
-    <value>Cancel</value>
   </data>
   <data name="Dialogs_ChangeVolume_PackageAlreadyOnVolume_NewVolume" xml:space="preserve">
     <value>Create a new volume</value>
@@ -3617,5 +3614,86 @@
   </data>
   <data name="Capability_Microphone" xml:space="preserve">
     <value>Microphone</value>
+  </data>
+  <data name="EventViewer_Details_TroubleShootingInfo" xml:space="preserve">
+    <value>Troubleshooting info</value>
+  </data>
+  <data name="Packages_Sidebar_NoSelection" xml:space="preserve">
+    <value>Nothing selected</value>
+  </data>
+  <data name="Packages_Sidebar_NoSelection_Hint" xml:space="preserve">
+    <value>Select any package to display its properties.</value>
+  </data>
+  <data name="Packages_Sidebar_MultipleItems" xml:space="preserve">
+    <value>Multiple items selected</value>
+  </data>
+  <data name="Packages_Sidebar_MultipleItems_Hint" xml:space="preserve">
+    <value>Select a single package to display its properties.</value>
+  </data>
+  <data name="Button_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Button_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="Button_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Button_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DeviceGuard_SignWithMS" xml:space="preserve">
+    <value>Sign in with Microsoft</value>
+  </data>
+  <data name="Dialogs_About_Update_AlreadyNew" xml:space="preserve">
+    <value>You are currently using the newest version of MSIX Hero</value>
+  </data>
+  <data name="Dialogs_About_Update_NewUrl" xml:space="preserve">
+    <value>Get the new version from the following URL:</value>
+  </data>
+  <data name="Dialogs_About_Update_NewVersionIs" xml:space="preserve">
+    <value>The new version is:</value>
+  </data>
+  <data name="Dialogs_About_Update_NewVersionReleasedOn" xml:space="preserve">
+    <value>released on</value>
+  </data>
+  <data name="Dialogs_About_Update_Reading" xml:space="preserve">
+    <value>Getting information about the new version...</value>
+  </data>
+  <data name="Dialogs_About_Update_UpdateAvailable" xml:space="preserve">
+    <value>New version of MSIX Hero is available.</value>
+  </data>
+  <data name="Dialogs_About_Update_YourVersion" xml:space="preserve">
+    <value>Your version is:</value>
+  </data>
+  <data name="Dialogs_AppAttach_FileType" xml:space="preserve">
+    <value>File type</value>
+  </data>
+  <data name="Dialogs_PackageName_PublisherHash_Copy" xml:space="preserve">
+    <value>Copy publisher hash to clipboard</value>
+  </data>
+  <data name="Dialogs_Pack_PackingNotPossible" xml:space="preserve">
+    <value>Selected folder contains no manifest files, and no executable files have been found. Packing to MSIX format is not possible.</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Added" xml:space="preserve">
+    <value>Added</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Changed" xml:space="preserve">
+    <value>Changed</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Deleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_ChangeType_Unchanged" xml:space="preserve">
+    <value>Unchanged</value>
+  </data>
+  <data name="Dialogs_UpdateImpact_InXFiles" xml:space="preserve">
+    <value>in {0} files</value>
+  </data>
+  <data name="PackageExpert_Browser_Root" xml:space="preserve">
+    <value>Root folder</value>
+  </data>
+  <data name="Package_DragDropToOpen" xml:space="preserve">
+    <value>Drop any file here to open it</value>
   </data>
 </root>

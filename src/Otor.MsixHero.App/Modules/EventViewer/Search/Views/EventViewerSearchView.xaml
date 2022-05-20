@@ -49,7 +49,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button 
                 Cursor="Hand"
-                ToolTip="Clear" 
+                ToolTip="{localization:Loc Button_Clear}" 
                 Padding="0" 
                 Width="26" 
                 MinWidth="26" 
