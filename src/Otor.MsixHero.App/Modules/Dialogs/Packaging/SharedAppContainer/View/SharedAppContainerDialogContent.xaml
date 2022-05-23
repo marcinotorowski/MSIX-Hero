@@ -1,0 +1,238 @@
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedAppContainer.View.SharedAppContainerDialogContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mvvm:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:mvvm="http://prismlibrary.com/" xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
+    xmlns:viewModel="clr-namespace:Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedAppContainer.ViewModel"
+    xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
+    xmlns:dd="urn:gong-wpf-dragdrop"
+    xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
+    mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+    d:DataContext="{d:DesignInstance viewModel:SharedAppContainerViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/msixhero;component/Themes/Generic.xaml" />
+                <ResourceDictionary Source="/msixhero;component/Themes/Changables.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <DockPanel>
+
+        <ScrollViewer Margin="0 16 0 0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <commands:RoutedCommandHandlers.Commands>
+                <commands:RoutedCommandHandler RoutedCommand="New" Command="{Binding Add}" />
+                <commands:RoutedCommandHandler RoutedCommand="Delete" Command="{Binding Remove}" />
+                <commands:RoutedCommandHandler RoutedCommand="Open" Command="{Binding Open}" />
+            </commands:RoutedCommandHandlers.Commands>
+            <AdornerDecorator>
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
+                        Style="{StaticResource LabelTextBlock}" Text="Container name" />
+
+                    <TextBox 
+                        DockPanel.Dock="Top" Margin="0 0 0 16"
+                        TabIndex="4"
+                        Text="{Binding Name.CurrentValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnNotifyDataErrors=True, NotifyOnValidationError=True}" />
+
+                    <TextBlock 
+                        DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
+                        Style="{StaticResource LabelTextBlock}" Text="Apps in the container" />
+
+                    <Border DockPanel.Dock="Bottom" Margin="0 16 0 0">
+                        <StackPanel>
+                            <TextBlock DockPanel.Dock="Top" controls:RequiredAdorner.IsRequired="True"
+                                Style="{StaticResource LabelTextBlock}" Text="Operation type" />
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton
+                                    GroupName="g1"
+                                    IsChecked="{Binding CreationMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:CreationMode.Xml}}" 
+                                    Margin="0 0 16 6" Content="Create .XML file" />
+                                <RadioButton
+                                    GroupName="g2"
+                                    IsChecked="{Binding CreationMode.CurrentValue, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static viewModel:CreationMode.Install}}" 
+                                    Margin="0 0 16 6" Content="Deploy the container" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border 
+                        Background="{StaticResource CardBackgroundBrush}"
+                        BorderThickness="{StaticResource CardBorderThickness}"
+                        BorderBrush="{StaticResource CardBorderBrush}"
+                        DockPanel.Dock="Bottom">
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                                <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="New">
+                                    <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="New..." />
+                                </Button>
+
+                                <ToggleButton Style="{StaticResource ActionPopupToggleButton}" x:Name="AddNew">
+                                    <controls:LabelWithIcon Icon16x16="{StaticResource SmallPlus}" Content="Add installed..." />
+                                </ToggleButton>
+
+                                <Popup
+                                    StaysOpen="False"
+                                    HorizontalOffset="9"
+                                    AllowsTransparency="True" 
+                                    PlacementTarget="{Binding ElementName=AddNew}" 
+                                    IsOpen="{Binding ElementName=AddNew, Path=IsChecked}">
+                                    <Border 
+                                        Width="300"
+                                        Background="White" Padding="6" BorderThickness="{StaticResource CardBorderThickness}" BorderBrush="{StaticResource CardBorderBrush}">
+                                        <DockPanel>
+                                            <Grid DockPanel.Dock="Top">
+
+                                                <DockPanel
+                                                    DockPanel.Dock="Top"
+                                                    IsHitTestVisible="False" VerticalAlignment="Center" Margin="5 0">
+                                                    <Path Fill="Black" Data="{StaticResource VectorSearch}" Width="32" Height="32">
+                                                        <Path.LayoutTransform>
+                                                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                                                        </Path.LayoutTransform>
+                                                    </Path>
+                                                    <TextBlock 
+                                                        TextTrimming="CharacterEllipsis" 
+                                                        Text="{localization:Loc Packages_Search_TextBox_Prompt}" 
+                                                        Foreground="{StaticResource MsixHero.Brushes.Light2}" 
+                                                        VerticalAlignment="Center" Margin="5 0 0 0">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                <Style.Triggers>
+                                                                    <MultiDataTrigger>
+                                                                        <MultiDataTrigger.Conditions>
+                                                                            <Condition Binding="{Binding ElementName=SearchBox, Path=IsKeyboardFocused}" Value="False" />
+                                                                            <Condition Binding="{Binding ElementName=SearchBox, Path=Text.Length}">
+                                                                                <Condition.Value>
+                                                                                    <system:Int32>0</system:Int32>
+                                                                                </Condition.Value>
+                                                                            </Condition>
+                                                                        </MultiDataTrigger.Conditions>
+                                                                        <MultiDataTrigger.Setters>
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </MultiDataTrigger.Setters>
+                                                                    </MultiDataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </DockPanel>
+
+                                                <TextBox 
+                                                    Style="{StaticResource SearchBox}" 
+                                                    x:Name="SearchBox"  />
+
+                                            </Grid>
+
+                                            <cards:Card DockPanel.Dock="Top" Height="32" />
+                                            <cards:Card DockPanel.Dock="Top" Height="32" />
+                                            <cards:Card DockPanel.Dock="Top" Height="32" />
+                                            <cards:Card DockPanel.Dock="Top" Height="32" />
+                                        </DockPanel>
+                                    </Border>
+                                </Popup>
+                                <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="Open">
+                                    <controls:LabelWithIcon Icon16x16="{StaticResource SmallOpen}" Content="Import..." />
+                                </Button>
+                                <Button Style="{StaticResource ActionButton}" DockPanel.Dock="Top" HorizontalAlignment="Left" Command="Delete">
+                                    <controls:LabelWithIcon Icon16x16="{StaticResource SmallRemove}" Content="Remove" />
+                                </Button>
+                            </StackPanel>
+
+                            <DockPanel DockPanel.Dock="Bottom">
+                                <controls:LabelWithIcon 
+                                    Margin="7.5"
+                                    Icon16x16="{StaticResource SmallHelp}">
+                                    <TextBlock Text="{localization:Loc Dialogs_Settings_Commands_Reorder_Hint}" TextWrapping="Wrap" />
+                                </controls:LabelWithIcon>
+                            </DockPanel>
+
+                            <ListBox 
+                                x:Name="ListBox"
+                                dd:DragDrop.IsDragSource="True"
+                                MouseDoubleClick="ListBox_OnMouseDoubleClick"
+                                dd:DragDrop.IsDropTarget="True"
+                                dd:DragDrop.DropHandler="{Binding}"
+                                ItemsSource="{Binding Apps}"
+                                SelectedItem="{Binding SelectedApp}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="viewModel:SharedAppViewModel">
+                                        <Grid>
+                                            <DockPanel
+                                                    Visibility="Collapsed"
+                                                    IsHitTestVisible="{Binding IsEditing, Converter={StaticResource NegativeConverter}}"
+                                                    x:Name="DetailsUnknown">
+
+                                                <Border
+                                                        Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Border Background="{Binding Color}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                        <Image Source="{StaticResource DummyLogo}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                    </Border>
+                                                </Border>
+
+                                                <StackPanel 
+                                                        Margin="10 0">
+                                                    <TextBlock Text="{Binding FamilyName.CurrentValue}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                                </StackPanel>
+
+                                            </DockPanel>
+                                            <DockPanel
+                                                    x:Name="DetailsKnown"
+                                                    IsHitTestVisible="{Binding IsEditing, Converter={StaticResource NegativeConverter}}">
+
+                                                <Border
+                                                        x:Name="Logo"
+                                                        Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <Border Background="{Binding Color}" Width="32" Height="32" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                        <Image Source="{Binding Logo, TargetNullValue={StaticResource DummyLogo}, FallbackValue={StaticResource DummyLogo}}" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" />
+                                                    </Border>
+                                                </Border>
+
+                                                <StackPanel 
+                                                        x:Name="Column1"
+                                                        Margin="10 0">
+                                                    <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding PublisherDisplayName}" TextTrimming="CharacterEllipsis" Opacity="0.65" />
+                                                </StackPanel>
+
+                                            </DockPanel>
+
+                                            <Border
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Opacity="0.6" Background="White" Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                                            <TextBox 
+                                                x:Name="textBox"
+                                                Focusable="True"
+                                                IsVisibleChanged="TextBox_OnIsVisibleChanged"
+                                                KeyDown="TextBox_OnKeyDown"
+                                                Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                VerticalAlignment="Center" 
+                                                HorizontalAlignment="Stretch" 
+                                                Margin="6 0"  />
+                                        </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Path=DisplayName}" Value="{x:Null}">
+                                                <Setter TargetName="DetailsKnown" Property="Visibility" Value="Collapsed" />
+                                                <Setter TargetName="DetailsUnknown" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsEditing}" Value="{StaticResource True}">
+                                                <Setter Property="FocusManager.FocusedElement" Value="{Binding ElementName=textBox}"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                        </DockPanel>
+                    </Border>
+                </DockPanel>
+            </AdornerDecorator>
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

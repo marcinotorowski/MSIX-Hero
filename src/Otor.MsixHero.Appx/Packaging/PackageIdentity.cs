@@ -31,6 +31,8 @@ namespace Otor.MsixHero.Appx.Packaging
 
         public string ResourceId { get; set; }
 
+        public string GetFamilyName() => this.AppName + "_" + this.PublisherHash;
+
         public static PackageIdentity FromFullName(string packageFullName)
         {
             if (packageFullName == null)

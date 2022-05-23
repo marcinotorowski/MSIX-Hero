@@ -1,25 +1,23 @@
-﻿<UserControl 
-    x:Class="Otor.MsixHero.App.Modules.Tools.Views.ToolsView"
+﻿<UserControl x:Class="Otor.MsixHero.App.Modules.Tools.Views.ToolsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:controls="clr-namespace:Otor.MsixHero.App.Controls"
     xmlns:packaging="clr-namespace:Otor.MsixHero.Appx.Packaging;assembly=Otor.MsixHero.Appx"
     xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
     xmlns:viewModels="clr-namespace:Otor.MsixHero.App.Modules.Tools.ViewModels"
-    xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards"
-    mc:Ignorable="d" 
-    Background="#FBFBFB"
+    xmlns:cards="clr-namespace:Otor.MsixHero.App.Controls.Cards" mc:Ignorable="d" Background="#FBFBFB"
     d:DesignWidth="820" d:DataContext="{d:DesignInstance viewModels:ToolViewModel}">
     <Grid>
-        <Border HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="200" Background="{StaticResource CardFooterGradientBrush}"></Border>
+        <Border HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="200"
+            Background="{StaticResource CardFooterGradientBrush}"></Border>
         <DockPanel>
-            <Label Margin="20 20 20 10"  Style="{StaticResource Label}" Content="MSIX Hero" DockPanel.Dock="Top" FontSize="32" />
+            <Label Margin="20 20 20 10" Style="{StaticResource Label}" Content="MSIX Hero" DockPanel.Dock="Top"
+                FontSize="32" />
 
-            <ScrollViewer
-            FocusVisualStyle="{x:Null}"
-            HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer FocusVisualStyle="{x:Null}" HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
                 <ScrollViewer.Resources>
                     <Style TargetType="Label" BasedOn="{StaticResource Label}">
                         <Setter Property="Height" Value="65" />
@@ -28,12 +26,11 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Label">
-                                    <TextBlock
-                                    Margin="{TemplateBinding Padding}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    controls:Highlighter.Selection="{Binding SearchKey}"
-                                    Text="{TemplateBinding Content}" />
+                                    <TextBlock Margin="{TemplateBinding Padding}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        controls:Highlighter.Selection="{Binding SearchKey}"
+                        Text="{TemplateBinding Content}" />
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
@@ -50,14 +47,12 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="Button">
-                                    <Border
-                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            Background="{TemplateBinding Background}">
-                                        <ContentPresenter
-                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                            Margin="{TemplateBinding Padding}" />
+                                    <Border BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Margin="{TemplateBinding Padding}" />
                                     </Border>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -110,26 +105,22 @@
                         </cards:CardAction.Icon>
                         <cards:CardAction.ContentRight>
                             <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                <Border
-                                Style="{StaticResource ExtensionBackground}">
+                                <Border Style="{StaticResource ExtensionBackground}">
                                     <TextBlock Style="{StaticResource ExtensionText}" Text=".msix" />
                                 </Border>
-                                <Border
-                                Style="{StaticResource ExtensionBackground}">
+                                <Border Style="{StaticResource ExtensionBackground}">
                                     <TextBlock Style="{StaticResource ExtensionText}" Text=".appinstaller" />
                                 </Border>
-                                <Border
-                                Style="{StaticResource ExtensionBackground}">
+                                <Border Style="{StaticResource ExtensionBackground}">
                                     <TextBlock Style="{StaticResource ExtensionText}" Text=".yaml" />
                                 </Border>
                             </StackPanel>
                         </cards:CardAction.ContentRight>
 
                         <StackPanel>
-                            <TextBlock 
-                            Style="{StaticResource ButtonText}"
-                            Text="{localization:Loc Dashboard_Open}" />
-                            <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}" Text="{localization:Loc Dashboard_Open_SecondLine}" />
+                            <TextBlock Style="{StaticResource ButtonText}" Text="{localization:Loc Dashboard_Open}" />
+                            <TextBlock Foreground="{StaticResource CardHeaderSecondLineBrush}"
+                                Text="{localization:Loc Dashboard_Open_SecondLine}" />
                         </StackPanel>
                     </cards:CardAction>
 
@@ -155,101 +146,127 @@
                                     <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorPack}" />
                                 </cards:CardAction.Icon>
                                 <cards:CardAction.ContentRight>
-                                    <Border
-                            Style="{StaticResource ExtensionBackground}">
-                                        <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
+                                    <Border Style="{StaticResource ExtensionBackground}">
+                                        <TextBlock Style="{StaticResource ExtensionText}"
+                                            Text="{x:Static packaging:FileConstants.MsixExtension}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
-                                <TextBlock 
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_PackToMsix}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_PackToMsix}" />
                             </cards:CardAction>
                             <cards:CardAction Command="{Binding ShowUnpackDialog}">
                                 <cards:CardAction.Icon>
                                     <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorUnpack}" />
                                 </cards:CardAction.Icon>
-                                <TextBlock 
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_UnpackMsix}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_UnpackMsix}" />
                             </cards:CardAction>
 
                             <cards:CardAction Command="{Binding ShowModificationPackageDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                            Style="{StaticResource LargeIcon}"
-                            Data="{StaticResource VectorTransform}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorTransform}" />
                                 </cards:CardAction.Icon>
                                 <cards:CardAction.ContentRight>
-                                    <Border
-                            Style="{StaticResource ExtensionBackground}">
-                                        <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.MsixExtension}" />
+                                    <Border Style="{StaticResource ExtensionBackground}">
+                                        <TextBlock Style="{StaticResource ExtensionText}"
+                                            Text="{x:Static packaging:FileConstants.MsixExtension}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
-                                <TextBlock 
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_CreateModPackage}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_CreateModPackage}" />
                             </cards:CardAction>
 
 
                             <Label Content="App installer + App attach" />
                             <cards:CardAction Command="{Binding ShowAppInstallerDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                            Style="{StaticResource LargeIcon}"
-                            Data="{StaticResource VectorRefreshDocument}" />
+                                    <Path Style="{StaticResource LargeIcon}"
+                                        Data="{StaticResource VectorRefreshDocument}" />
                                 </cards:CardAction.Icon>
                                 <cards:CardAction.ContentRight>
-                                    <Border
-                            Style="{StaticResource ExtensionBackground}">
-                                        <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.AppInstallerExtension}" />
+                                    <Border Style="{StaticResource ExtensionBackground}">
+                                        <TextBlock Style="{StaticResource ExtensionText}"
+                                            Text="{x:Static packaging:FileConstants.AppInstallerExtension}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
 
-                                <TextBlock 
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_CreateAppInstaller}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_CreateAppInstaller}" />
                             </cards:CardAction>
                             <cards:CardAction Command="{Binding ShowAppAttachDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                            Style="{StaticResource LargeIcon}"
-                            Data="{StaticResource VectorNetworkDrive}" />
+                                    <Path Style="{StaticResource LargeIcon}"
+                                        Data="{StaticResource VectorNetworkDrive}" />
                                 </cards:CardAction.Icon>
                                 <cards:CardAction.ContentRight>
                                     <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                        <Border
-                                Style="{StaticResource ExtensionBackground}">
+                                        <Border Style="{StaticResource ExtensionBackground}">
                                             <TextBlock Style="{StaticResource ExtensionText}" Text=".vhd" />
                                         </Border>
-                                        <Border
-                                Style="{StaticResource ExtensionBackground}">
+                                        <Border Style="{StaticResource ExtensionBackground}">
                                             <TextBlock Style="{StaticResource ExtensionText}" Text=".cim" />
                                         </Border>
                                     </StackPanel>
                                 </cards:CardAction.ContentRight>
 
-                                <TextBlock 
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_AppAttach}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_AppAttach}" />
+                            </cards:CardAction>
+
+                            <!-- 
+                            
+
+                    <Button Command="{Binding ShowSharedAppContainerDialog}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Path 
+                                Style="{StaticResource ButtonIcon}"
+                                Data="{StaticResource VectorCollection}" />
+                            <TextBlock 
+                                Grid.Column="1"
+                                Style="{StaticResource ButtonText}"
+                                Text="Create shared app container" />
+                            <Border
+                                Grid.Column="2"
+                                Style="{StaticResource ExtensionBackground}">
+                                <TextBlock Style="{StaticResource ExtensionText}" Text=".xml" />
+                            </Border>
+                        </Grid>
+                    </Button>
+                            -->
+                            <cards:CardAction Command="{Binding ShowSharedAppContainerDialog}">
+                                <cards:CardAction.Icon>
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorGroupTree}" />
+                                </cards:CardAction.Icon>
+                                <cards:CardAction.ContentRight>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <Border Style="{StaticResource ExtensionBackground}">
+                                            <TextBlock Style="{StaticResource ExtensionText}" Text=".xml" />
+                                        </Border>
+                                    </StackPanel>
+                                </cards:CardAction.ContentRight>
+
+                                <TextBlock Style="{StaticResource ButtonText}" Text="Create shared app container" />
                             </cards:CardAction>
 
                             <Label Content="Winget" />
                             <cards:CardAction Command="{Binding ShowWingetDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                                    Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorConsole}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorConsole}" />
                                 </cards:CardAction.Icon>
                                 <cards:CardAction.ContentRight>
-                                    <Border
-                                    Style="{StaticResource ExtensionBackground}">
-                                        <TextBlock Style="{StaticResource ExtensionText}" Text="{x:Static packaging:FileConstants.WingetExtension}" />
+                                    <Border Style="{StaticResource ExtensionBackground}">
+                                        <TextBlock Style="{StaticResource ExtensionText}"
+                                            Text="{x:Static packaging:FileConstants.WingetExtension}" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
 
-                                <TextBlock 
-                                Style="{StaticResource ButtonText}"
-                                Text="{localization:Loc Dashboard_CreateWinget}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_CreateWinget}" />
                             </cards:CardAction>
                         </StackPanel>
 
@@ -257,41 +274,31 @@
                             <Label Content="{localization:Loc Dashboard_Header_CertAndSigning}" />
                             <cards:CardAction Command="{Binding ShowSignPackageDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                            Style="{StaticResource LargeIcon}"
-                            Data="{StaticResource VectorSign}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSign}" />
                                 </cards:CardAction.Icon>
                                 <DockPanel>
-                                    <TextBlock 
-                            Style="{StaticResource ButtonText}"
-                            Text="{localization:Loc Dashboard_SignResign}" />
+                                    <TextBlock Style="{StaticResource ButtonText}"
+                                        Text="{localization:Loc Dashboard_SignResign}" />
                                 </DockPanel>
                             </cards:CardAction>
                             <cards:CardAction Command="{Binding ShowNewSelfSignedDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                            Style="{StaticResource LargeIcon}"
-                            Data="{StaticResource VectorSelfSign}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorSelfSign}" />
                                 </cards:CardAction.Icon>
                                 <cards:CardAction.ContentRight>
-                                    <Border
-                            Style="{StaticResource ExtensionBackground}">
+                                    <Border Style="{StaticResource ExtensionBackground}">
                                         <TextBlock Style="{StaticResource ExtensionText}" Text=".cer" />
                                     </Border>
                                 </cards:CardAction.ContentRight>
-                                <TextBlock
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_CreateSelfSigned}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_CreateSelfSigned}" />
                             </cards:CardAction>
                             <cards:CardAction Command="{Binding ShowExtractCertificateDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                            Style="{StaticResource LargeIcon}"
-                            Data="{StaticResource VectorExport}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorExport}" />
                                 </cards:CardAction.Icon>
-                                <TextBlock 
-                        Style="{StaticResource ButtonText}"
-                        Text="{localization:Loc Dashboard_ExtractCer}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_ExtractCer}" />
                             </cards:CardAction>
 
 
@@ -299,38 +306,29 @@
 
                             <cards:CardAction Command="{Binding ShowDependencyGraphDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                                    Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorDependencies}" />
+                                    <Path Style="{StaticResource LargeIcon}"
+                                        Data="{StaticResource VectorDependencies}" />
                                 </cards:CardAction.Icon>
-                                <TextBlock 
-                                Style="{StaticResource ButtonText}"
-                                Text="{localization:Loc Dashboard_ShowDeps}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_ShowDeps}" />
                             </cards:CardAction>
 
                             <cards:CardAction Command="{Binding ShowUpdateImpactDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                                    Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorCheckmark}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorCheckmark}" />
                                 </cards:CardAction.Icon>
-                                <TextBlock 
-                                Style="{StaticResource ButtonText}"
-                                Text="{localization:Loc Dashboard_AnalyzeImpact}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_AnalyzeImpact}" />
                             </cards:CardAction>
 
                             <cards:CardAction Command="{Binding ShowNamesDialog}">
                                 <cards:CardAction.Icon>
-                                    <Path 
-                                    Style="{StaticResource LargeIcon}"
-                                    Data="{StaticResource VectorCopy}" />
+                                    <Path Style="{StaticResource LargeIcon}" Data="{StaticResource VectorCopy}" />
                                 </cards:CardAction.Icon>
-                                <TextBlock 
-                                Style="{StaticResource ButtonText}"
-                                Text="{localization:Loc Dashboard_CalculateNames}" />
+                                <TextBlock Style="{StaticResource ButtonText}"
+                                    Text="{localization:Loc Dashboard_CalculateNames}" />
                             </cards:CardAction>
                         </StackPanel>
-
                     </Grid>
                 </StackPanel>
             </ScrollViewer>

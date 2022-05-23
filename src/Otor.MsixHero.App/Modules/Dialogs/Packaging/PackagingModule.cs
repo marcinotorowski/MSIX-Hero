@@ -21,6 +21,8 @@ using Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.View;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.Names.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.View;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.Pack.ViewModel;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedAppContainer.View;
+using Otor.MsixHero.App.Modules.Dialogs.Packaging.SharedAppContainer.ViewModel;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.View;
 using Otor.MsixHero.App.Modules.Dialogs.Packaging.Unpack.ViewModel;
 using Prism.Ioc;
@@ -35,6 +37,7 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Packaging
             containerRegistry.RegisterDialog<ModificationPackageView, ModificationPackageViewModel>(NavigationPaths.DialogPaths.PackagingModificationPackage);
             containerRegistry.RegisterDialog<PackView, PackViewModel>(NavigationPaths.DialogPaths.PackagingPack);
             containerRegistry.RegisterDialog<NamesView, NamesViewModel>(NavigationPaths.DialogPaths.PackagingNames);
+            containerRegistry.RegisterDialog<SharedAppContainerView, SharedAppContainerViewModel>(NavigationPaths.DialogPaths.PackagingSharedAppContainer);
             containerRegistry.RegisterDialog<UnpackView, UnpackViewModel>(NavigationPaths.DialogPaths.PackagingUnpack);
         }
 
