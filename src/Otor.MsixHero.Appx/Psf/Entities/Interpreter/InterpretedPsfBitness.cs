@@ -14,15 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items.Redirection
-{
-    public class PsfContentFileRedirectionViewModel : PsfContentRegexpViewModel
-    {
-        public PsfContentFileRedirectionViewModel(string regularExpression, bool isExclusion = false) : base(regularExpression)
-        {
-            this.IsExclusion = isExclusion;
-        }
+namespace Otor.MsixHero.Appx.Psf.Entities.Interpreter;
 
-        public bool IsExclusion { get; }
-    }
+public enum InterpretedPsfBitness
+{
+    // ReSharper disable once InconsistentNaming
+    x64,
+
+    // ReSharper disable once InconsistentNaming
+    x86,
+
+    Unknown
 }

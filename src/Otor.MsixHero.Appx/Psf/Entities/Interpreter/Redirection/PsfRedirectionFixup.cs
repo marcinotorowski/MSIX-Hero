@@ -14,15 +14,17 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PsfContent.Model
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Otor.MsixHero.Appx.Psf.Entities.Interpreter.Redirection;
+
+public class PsfRedirectionFixup : PsfProcessMatch
 {
-    public enum InterpretationResult
+    public PsfRedirectionFixup(IEnumerable<PsfRedirectionRule> rules, string processRegularExpression, string fixupName) : base(processRegularExpression, fixupName)
     {
-        Any,
-        Extension,
-        Name,
-        Custom,
-        StartsWith,
-        EndsWith
+        this.Rules = rules?.ToList() ?? new List<PsfRedirectionRule>();
     }
+    
+    public IReadOnlyList<PsfRedirectionRule> Rules { get; private set; }
 }

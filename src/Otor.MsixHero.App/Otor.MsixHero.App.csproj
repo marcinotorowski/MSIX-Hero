@@ -105,9 +105,6 @@
     <Compile Update="Controls\CertificateSelector\View\CertificateSelectorView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Controls\PsfContent\View\PsfContentView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Dialogs\Views\PackageExpertDialogView - Copy.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>PackageExpertDialogView.xaml.cs</DependentUpon>
@@ -223,9 +220,6 @@
     </Page>
     <Page Update="Controls\PackageSelector\View\PackageSelectorView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="Controls\PsfContent\View\PsfContentView.xaml">
-      <SubType>Designer</SubType>
     </Page>
     <Page Update="Controls\TransitionContentControl\Theme.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>

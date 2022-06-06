@@ -14,12 +14,15 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items.Redirection
+namespace Otor.MsixHero.Appx.Psf.Entities.Interpreter.Redirection;
+
+public enum RegexInterpretationResult
 {
-    public enum PsfContentFolderRelationTo
-    {
-        PackageRoot,
-        Drive,
-        KnownFolder
-    }
+    Any,
+    Extension,
+    Name,
+    Custom,
+    StartsWith,
+    EndsWith,
+    Contains
 }

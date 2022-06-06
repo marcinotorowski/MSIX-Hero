@@ -14,14 +14,14 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-using Otor.MsixHero.Appx.Psf.Entities;
+namespace Otor.MsixHero.Appx.Psf.Entities.Interpreter.Custom;
 
-namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items.Electron
+public class PsfCustomFixup : PsfProcessMatch
 {
-    public class PsfContentProcessElectronViewModel : PsfContentProcessViewModel
+    public PsfCustomFixup(string jsonContent, string processRegularExpression, string fixupName) : base(processRegularExpression, fixupName)
     {
-        public PsfContentProcessElectronViewModel(string processRegularExpression, string fixupName, PsfElectronFixupConfig traceFixup) : base(processRegularExpression, fixupName)
-        {
-        }
+        this.JsonContent = jsonContent;
     }
+    
+    public string JsonContent { get; private set; }
 }

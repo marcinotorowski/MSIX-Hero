@@ -33,6 +33,7 @@ using Otor.MsixHero.Appx.Diagnostic.RunningDetector;
 using Otor.MsixHero.Appx.Packaging.Installation;
 using Otor.MsixHero.Appx.Packaging.Installation.Entities;
 using Otor.MsixHero.Infrastructure.Configuration;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism;
 using Prism.Events;
@@ -80,6 +81,11 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
             this.busyManager.StatusChanged += BusyManagerOnStatusChanged;
             this.SetSortingAndGrouping();
+
+            MsixHeroTranslation.Instance.CultureChanged += (_, _) =>
+            {
+                this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand());
+            };
         }
 
         public string SearchKey

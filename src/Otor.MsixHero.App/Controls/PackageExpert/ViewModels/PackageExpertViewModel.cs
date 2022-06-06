@@ -24,7 +24,6 @@ using System.Windows.Input;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content.Files;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Content.Registry;
-using Otor.MsixHero.App.Controls.PsfContent.ViewModel;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.App.Mvvm;
@@ -35,6 +34,7 @@ using Otor.MsixHero.Appx.Packaging.Manifest;
 using Otor.MsixHero.Appx.Packaging.Manifest.Entities;
 using Otor.MsixHero.Appx.Packaging.Manifest.FileReaders;
 using Otor.MsixHero.Appx.Psf.Entities;
+using Otor.MsixHero.Appx.Psf.Entities.Interpreter;
 using Otor.MsixHero.Appx.Users;
 using Otor.MsixHero.Appx.Volumes;
 using Otor.MsixHero.Elevation;
@@ -138,7 +138,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
 
         public AsyncProperty<PackageExpertPropertiesViewModel> Manifest { get; } = new AsyncProperty<PackageExpertPropertiesViewModel>();
 
-        public AsyncProperty<PsfContentViewModel> PackageSupportFramework { get; } = new AsyncProperty<PsfContentViewModel>();
+        public AsyncProperty<InterpretedPsf> PackageSupportFramework { get; } = new AsyncProperty<InterpretedPsf>();
 
         public AsyncProperty<List<InstalledPackageViewModel>> AddOns { get; } = new AsyncProperty<List<InstalledPackageViewModel>>();
 
@@ -215,7 +215,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
         }
         
         // ReSharper disable once MemberCanBeMadeStatic.Local
-        private async Task<PsfContentViewModel> LoadPsf(IAppxFileReader source, AppxPackage manifest)
+        private async Task<InterpretedPsf> LoadPsf(IAppxFileReader source, AppxPackage manifest)
         {
             var paths = manifest.Applications.Where(a => PackageTypeConverter.GetPackageTypeFrom(a.EntryPoint, a.Executable, a.StartPage, manifest.IsFramework) == MsixPackageType.BridgePsf).Select(a => a.Executable).Where(a => a != null).Select(Path.GetDirectoryName).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             paths.Add(string.Empty);
@@ -230,15 +230,15 @@ namespace Otor.MsixHero.App.Controls.PackageExpert.ViewModels
                     continue;
                 }
 
-                using (var s = source.GetFile(configJsonPath))
-                {
-                    using var stringReader = new StreamReader(s);
-                    var all = await stringReader.ReadToEndAsync().ConfigureAwait(false);
-                    var psfSerializer = new PsfConfigSerializer();
+                await using var s = source.GetFile(configJsonPath);
+                using var stringReader = new StreamReader(s);
+                var all = await stringReader.ReadToEndAsync().ConfigureAwait(false);
+                var psfSerializer = new PsfConfigSerializer();
 
-                    var configJson = psfSerializer.Deserialize(all);
-                    return new PsfContentViewModel(configJson);
-                }
+                var cfg = psfSerializer.Deserialize(all);
+
+                var interpreted = new InterpretedPsf(cfg);
+                return interpreted;
             }
 
             return null;

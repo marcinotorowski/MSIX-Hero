@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using Otor.MsixHero.App.Controls.PackageExpert.ViewModels;
@@ -28,6 +29,7 @@ using Otor.MsixHero.Elevation;
 using Otor.MsixHero.Infrastructure.Configuration;
 using Otor.MsixHero.Infrastructure.Helpers;
 using Dapplo.Log;
+using Otor.MsixHero.Infrastructure.Localization;
 using Otor.MsixHero.Infrastructure.Services;
 using Prism.Common;
 using Prism.Events;
@@ -178,7 +180,7 @@ namespace Otor.MsixHero.App.Controls.PackageExpert
             catch (Exception exception)
             {
                 sender.Package = null;
-                sender.ErrorMessage = "Could not load details. " + exception.Message;
+                sender.ErrorMessage = string.Format(Otor.MsixHero.App.Resources.Localization.PackageControl_Error_Exception, exception.Message);
                 Logger.Warn().WriteLine($"Could not load details of package '{newFilePath}'.");
             }
         }

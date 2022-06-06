@@ -1338,11 +1338,8 @@
   <data name="Packages_Search_TextBox_Prompt" xml:space="preserve">
     <value>Search applications...</value>
   </data>
-  <data name="Psf_CustomFixup_Part1" xml:space="preserve">
-    <value>Inject a fixup with</value>
-  </data>
-  <data name="Psf_CustomFixup_Part2" xml:space="preserve">
-    <value>a custom configuration</value>
+  <data name="Psf_CustomFixup" xml:space="preserve">
+    <value>Inject a fixup with **a custom configuration**</value>
   </data>
   <data name="Psf_Electron_Enable" xml:space="preserve">
     <value>Enable launching this app in an application container</value>
@@ -1359,35 +1356,26 @@
   <data name="Psf_NotConfiguredForAnyProcess" xml:space="preserve">
     <value>Not configured for any process</value>
   </data>
-  <data name="Psf_Process_3264Bit_Part2" xml:space="preserve">
-    <value>all</value>
-  </data>
-  <data name="Psf_Process_32Bit_Part1" xml:space="preserve">
-    <value>For</value>
-  </data>
-  <data name="Psf_Process_32Bit_Part2" xml:space="preserve">
-    <value>32-bit</value>
-  </data>
-  <data name="Psf_Process_64Bit_Part2" xml:space="preserve">
-    <value>64-bit</value>
-  </data>
-  <data name="Psf_Process_AnyProcess" xml:space="preserve">
-    <value>[][any][ process]</value>
+  <data name="Psf_Process_Any" xml:space="preserve">
+    <value>For **any** process</value>
   </data>
   <data name="Psf_Process_EndsWith" xml:space="preserve">
-    <value>[processes that end with ][][]</value>
+    <value>For processes that end with **{0}**</value>
+  </data>
+  <data name="Psf_Process_Contains" xml:space="preserve">
+    <value>For processes that contain **{0}**</value>
   </data>
   <data name="Psf_Process_Pattern" xml:space="preserve">
-    <value>[processes that match pattern ][][]</value>
+    <value>For processes that match pattern **{0}**</value>
   </data>
   <data name="Psf_Process_StartsWith" xml:space="preserve">
-    <value>[processes that start with ][][]</value>
+    <value>For processes that start with **{0}**</value>
   </data>
   <data name="Psf_Redirection_ExceptOf" xml:space="preserve">
     <value>Except of:</value>
   </data>
-  <data name="Psf_Redirection_ForDir_Part1" xml:space="preserve">
-    <value>In directory</value>
+  <data name="Psf_Redirection_ForDir" xml:space="preserve">
+    <value>In directory **{0}**</value>
   </data>
   <data name="Psf_Redirection_LocalAppData" xml:space="preserve">
     <value>Local AppData (default)</value>
@@ -1402,64 +1390,70 @@
     <value>Root drive</value>
   </data>
   <data name="Psf_Regex_AllFiles" xml:space="preserve">
-    <value>[][All files][]</value>
+    <value>All files</value>
   </data>
   <data name="Psf_Regex_Any" xml:space="preserve">
     <value>any</value>
   </data>
   <data name="Psf_Regex_File" xml:space="preserve">
-    <value>[File ][][]</value>
+    <value>File **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesEndingWith" xml:space="preserve">
-    <value>[Files that end with ][][]</value>
+    <value>Files that end with **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesMatching" xml:space="preserve">
-    <value>[Files that match pattern ][][]</value>
+    <value>Files that match pattern **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesStartingWith" xml:space="preserve">
-    <value>[Files that start with ][][]</value>
+    <value>Files that start with **{0}**</value>
   </data>
   <data name="Psf_Regex_FileWithExtension" xml:space="preserve">
-    <value>[Files with extension ][][]</value>
+    <value>Files with extension **{0}**</value>
   </data>
   <data name="Psf_Trace_AllFailures" xml:space="preserve">
-    <value>All failures</value>
+    <value>all failures</value>
   </data>
   <data name="Psf_Trace_Always" xml:space="preserve">
-    <value>Always</value>
+    <value>always</value>
   </data>
-  <data name="Psf_Trace_EnableMethod_Part1" xml:space="preserve">
-    <value>Enable trace method</value>
-  </data>
-  <data name="Psf_Trace_EnableMethod_Part3" xml:space="preserve">
-    <value>breaking on</value>
+  <data name="Psf_Trace_EnableMethod" xml:space="preserve">
+    <value>Write trace events **{0}** breaking on: **{1}**</value>
   </data>
   <data name="Psf_Trace_Ignore" xml:space="preserve">
-    <value>Ignore</value>
+    <value>ignore</value>
   </data>
   <data name="Psf_Trace_IgnoreSuccess" xml:space="preserve">
-    <value>Ignore success</value>
+    <value>ignore success</value>
   </data>
   <data name="Psf_Trace_Levels" xml:space="preserve">
     <value>Trace levels:</value>
   </data>
   <data name="Psf_Trace_Level_Default" xml:space="preserve">
-    <value>Default</value>
+    <value>Default: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_Dll" xml:space="preserve">
-    <value>DLL</value>
+    <value>DLL: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_FileSystem" xml:space="preserve">
-    <value>File system</value>
+    <value>File system: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_ProcessThread" xml:space="preserve">
-    <value>Process and thread</value>
+    <value>Process and thread: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_Registry" xml:space="preserve">
-    <value>Registry</value>
+    <value>Registry: **{0}**</value>
   </data>
   <data name="Psf_Trace_UnexpectedFailures" xml:space="preserve">
-    <value>Unexpected failures</value>
+    <value>unexpected failures</value>
+  </data>
+  <data name="Psf_Trace_EventLog" xml:space="preserve">
+    <value>in event log</value>
+  </data>
+  <data name="Psf_Trace_Console" xml:space="preserve">
+    <value>in console</value>
+  </data>
+  <data name="Psf_Trace_Default" xml:space="preserve">
+    <value>by default</value>
   </data>
   <data name="Sidebar_About" xml:space="preserve">
     <value>About MSIX Hero…</value>
@@ -3695,5 +3689,20 @@
   </data>
   <data name="Package_DragDropToOpen" xml:space="preserve">
     <value>Drop any file here to open it</value>
+  </data>
+  <data name="Psf_Redirect" xml:space="preserve">
+    <value>Redirect to **{0}**  </value>
+  </data>
+  <data name="Psf_Redirect_Default" xml:space="preserve">
+    <value>Redirect to **Local application data** (default)</value>
+  </data>
+  <data name="Psf_Redirect_Default_ReadOnly" xml:space="preserve">
+    <value>Redirect to read-only **Local application data**</value>
+  </data>
+  <data name="Psf_Redirect_ReadOnly" xml:space="preserve">
+    <value>Redirect to read-only **{0}**</value>
+  </data>
+  <data name="PackageControl_Error_Exception" xml:space="preserve">
+    <value>Could not load details. {0}</value>
   </data>
 </root>

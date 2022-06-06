@@ -14,16 +14,11 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PsfContent.ViewModel.Items
+namespace Otor.MsixHero.Appx.Psf.Entities.Interpreter.Redirection;
+
+public enum PsfRedirectionRoot
 {
-    public enum Bitness
-    {
-        // ReSharper disable once InconsistentNaming
-        x64,
-
-        // ReSharper disable once InconsistentNaming
-        x86,
-
-        Unknown
-    }
+    PackageRoot,
+    Drive,
+    KnownFolder
 }

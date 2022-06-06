@@ -1329,11 +1329,8 @@
   <data name="Packages_Search_TextBox_Prompt" xml:space="preserve">
     <value>Wyszukaj w aplikacjach...</value>
   </data>
-  <data name="Psf_CustomFixup_Part1" xml:space="preserve">
-    <value>Wstrzyknij poprawkę</value>
-  </data>
-  <data name="Psf_CustomFixup_Part2" xml:space="preserve">
-    <value>z własną konfiguracją</value>
+  <data name="Psf_CustomFixup" xml:space="preserve">
+    <value>Wstrzyknij poprawkę **z własną konfiguracją**</value>
   </data>
   <data name="Psf_Electron_Enable" xml:space="preserve">
     <value>Zezwól na uruchamianie aplikacji w kontenerze</value>
@@ -1350,35 +1347,26 @@
   <data name="Psf_NotConfiguredForAnyProcess" xml:space="preserve">
     <value>Nie skonfigurowane dla żadnego procesu</value>
   </data>
-  <data name="Psf_Process_3264Bit_Part2" xml:space="preserve">
-    <value>wszystkich</value>
-  </data>
-  <data name="Psf_Process_32Bit_Part1" xml:space="preserve">
-    <value>Dla</value>
-  </data>
-  <data name="Psf_Process_32Bit_Part2" xml:space="preserve">
-    <value>32-bitowych</value>
-  </data>
-  <data name="Psf_Process_64Bit_Part2" xml:space="preserve">
-    <value>64-bitowych</value>
-  </data>
-  <data name="Psf_Process_AnyProcess" xml:space="preserve">
-    <value>[][dowolnych][ procesów]</value>
+  <data name="Psf_Process_Any" xml:space="preserve">
+    <value>Dla **dowolnych** procesów</value>
   </data>
   <data name="Psf_Process_EndsWith" xml:space="preserve">
-    <value>[procesów, kończących się sekwencją ][][]</value>
+    <value>Dla procesów, kończących się sekwencją **{0}**</value>
+  </data>
+  <data name="Psf_Process_Contains" xml:space="preserve">
+    <value>Dla procesów, zawierających **{0}**</value>
   </data>
   <data name="Psf_Process_Pattern" xml:space="preserve">
-    <value>[procesów, pasujących do wzorca ][][]</value>
+    <value>Dla procesów, pasujących do wzorca **{0}**</value>
   </data>
   <data name="Psf_Process_StartsWith" xml:space="preserve">
-    <value>[procesów, zaczynających się od ][][]</value>
+    <value>Dla procesów, zaczynających się od **{0}**</value>
   </data>
   <data name="Psf_Redirection_ExceptOf" xml:space="preserve">
     <value>Poza:</value>
   </data>
-  <data name="Psf_Redirection_ForDir_Part1" xml:space="preserve">
-    <value>W folderze</value>
+  <data name="Psf_Redirection_ForDir" xml:space="preserve">
+    <value>W folderze **{0}**</value>
   </data>
   <data name="Psf_Redirection_LocalAppData" xml:space="preserve">
     <value>Lokalne dane aplikacji (domyślnie)</value>
@@ -1393,64 +1381,70 @@
     <value>Główny napęd</value>
   </data>
   <data name="Psf_Regex_AllFiles" xml:space="preserve">
-    <value>[][Wszystkie pliki][]</value>
+    <value>Wszystkie pliki</value>
   </data>
   <data name="Psf_Regex_Any" xml:space="preserve">
-    <value>każdy</value>
+    <value>**Wszystkie** pliki</value>
   </data>
   <data name="Psf_Regex_File" xml:space="preserve">
-    <value>[Plik ][][]</value>
+    <value>Plik **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesEndingWith" xml:space="preserve">
-    <value>[Pliki zaczynające się od ][][]</value>
+    <value>Pliki zaczynające się od **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesMatching" xml:space="preserve">
-    <value>[Pliki pasujące do wzorca ][][]</value>
+    <value>Pliki pasujące do wzorca **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesStartingWith" xml:space="preserve">
-    <value>[Pliki kończące się sekwencją ][][]</value>
+    <value>Pliki kończące się sekwencją **{0}**</value>
   </data>
   <data name="Psf_Regex_FileWithExtension" xml:space="preserve">
-    <value>[Pliki z rozszerzeniem ][][]</value>
+    <value>Pliki z rozszerzeniem **{0}**</value>
   </data>
   <data name="Psf_Trace_AllFailures" xml:space="preserve">
-    <value>Wszystkie problemy</value>
+    <value>wszystkie problemy</value>
   </data>
   <data name="Psf_Trace_Always" xml:space="preserve">
-    <value>Zawsze</value>
+    <value>zawsze</value>
   </data>
-  <data name="Psf_Trace_EnableMethod_Part1" xml:space="preserve">
-    <value>Włącz metodę śledzenia</value>
-  </data>
-  <data name="Psf_Trace_EnableMethod_Part3" xml:space="preserve">
-    <value>wyskakującą na</value>
+  <data name="Psf_Trace_EnableMethod" xml:space="preserve">
+    <value>Loguj **{0}** przy wystąpieniu: **{1}**</value>
   </data>
   <data name="Psf_Trace_Ignore" xml:space="preserve">
-    <value>Ignoruj</value>
+    <value>ignoruj</value>
   </data>
   <data name="Psf_Trace_IgnoreSuccess" xml:space="preserve">
-    <value>Ignoruj sukcesy</value>
+    <value>ignoruj sukcesy</value>
   </data>
   <data name="Psf_Trace_Levels" xml:space="preserve">
     <value>Poziomy logowania:</value>
   </data>
   <data name="Psf_Trace_Level_Default" xml:space="preserve">
-    <value>Domyślne</value>
+    <value>Domyślne: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_Dll" xml:space="preserve">
-    <value>DLL</value>
+    <value>DLL: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_FileSystem" xml:space="preserve">
-    <value>System plików</value>
+    <value>System plików: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_ProcessThread" xml:space="preserve">
-    <value>Proces i wątek</value>
+    <value>Proces i wątek: **{0}**</value>
   </data>
   <data name="Psf_Trace_Level_Registry" xml:space="preserve">
-    <value>Rejestr</value>
+    <value>Rejestr: **{0}**</value>
   </data>
   <data name="Psf_Trace_UnexpectedFailures" xml:space="preserve">
-    <value>Nieoczekiwane problemy</value>
+    <value>nieoczekiwane problemy</value>
+  </data>
+  <data name="Psf_Trace_EventLog" xml:space="preserve">
+    <value>w dzienniku zdarzeń</value>
+  </data>
+  <data name="Psf_Trace_Console" xml:space="preserve">
+    <value>do konsoli</value>
+  </data>
+  <data name="Psf_Trace_Default" xml:space="preserve">
+    <value>domyślnie</value>
   </data>
   <data name="Sidebar_About" xml:space="preserve">
     <value>O MSIX Hero...</value>
@@ -3584,5 +3578,20 @@
   </data>
   <data name="PackageExpert_Browser_Root" xml:space="preserve">
     <value>Folder główny</value>
+  </data>
+  <data name="Psf_Redirect" xml:space="preserve">
+    <value>Przekieruj do **{0}**  </value>
+  </data>
+  <data name="Psf_Redirect_Default" xml:space="preserve">
+    <value>Przekieruj do **lokalnych danych aplikacji** (domyślnie)</value>
+  </data>
+  <data name="Psf_Redirect_Default_ReadOnly" xml:space="preserve">
+    <value>Przekieruj do **lokalnych danych aplikacji** w trybie tylko do odczytu</value>
+  </data>
+  <data name="Psf_Redirect_ReadOnly" xml:space="preserve">
+    <value>Przekieruj do **{0}** w trybie tylko do odczytu</value>
+  </data>
+  <data name="PackageControl_Error_Exception" xml:space="preserve">
+    <value>Wczytywanie szczegółów nie powiodło się. {0}</value>
   </data>
 </root>

@@ -7162,6 +7162,15 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Troubleshooting info.
+        /// </summary>
+        public static string EventViewer_Details_TroubleShootingInfo {
+            get {
+                return ResourceManager.GetString("EventViewer_Details_TroubleShootingInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
         public static string EventViewer_Details_User {
@@ -7419,6 +7428,15 @@ namespace Otor.MsixHero.App.Resources {
         public static string Package_DragDropToOpen {
             get {
                 return ResourceManager.GetString("Package_DragDropToOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not load details. {0}.
+        /// </summary>
+        public static string PackageControl_Error_Exception {
+            get {
+                return ResourceManager.GetString("PackageControl_Error_Exception", resourceCulture);
             }
         }
         
@@ -9511,20 +9529,11 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inject a fixup with.
+        ///   Looks up a localized string similar to Inject a fixup with **a custom configuration**.
         /// </summary>
-        public static string Psf_CustomFixup_Part1 {
+        public static string Psf_CustomFixup {
             get {
-                return ResourceManager.GetString("Psf_CustomFixup_Part1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to a custom configuration.
-        /// </summary>
-        public static string Psf_CustomFixup_Part2 {
-            get {
-                return ResourceManager.GetString("Psf_CustomFixup_Part2", resourceCulture);
+                return ResourceManager.GetString("Psf_CustomFixup", resourceCulture);
             }
         }
         
@@ -9574,52 +9583,25 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to all.
+        ///   Looks up a localized string similar to For **any** process.
         /// </summary>
-        public static string Psf_Process_3264Bit_Part2 {
+        public static string Psf_Process_Any {
             get {
-                return ResourceManager.GetString("Psf_Process_3264Bit_Part2", resourceCulture);
+                return ResourceManager.GetString("Psf_Process_Any", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For.
+        ///   Looks up a localized string similar to For processes that contain **{0}**.
         /// </summary>
-        public static string Psf_Process_32Bit_Part1 {
+        public static string Psf_Process_Contains {
             get {
-                return ResourceManager.GetString("Psf_Process_32Bit_Part1", resourceCulture);
+                return ResourceManager.GetString("Psf_Process_Contains", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 32-bit.
-        /// </summary>
-        public static string Psf_Process_32Bit_Part2 {
-            get {
-                return ResourceManager.GetString("Psf_Process_32Bit_Part2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 64-bit.
-        /// </summary>
-        public static string Psf_Process_64Bit_Part2 {
-            get {
-                return ResourceManager.GetString("Psf_Process_64Bit_Part2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [][any][ process].
-        /// </summary>
-        public static string Psf_Process_AnyProcess {
-            get {
-                return ResourceManager.GetString("Psf_Process_AnyProcess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [processes that end with ][][].
+        ///   Looks up a localized string similar to For processes that end with **{0}**.
         /// </summary>
         public static string Psf_Process_EndsWith {
             get {
@@ -9637,7 +9619,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [processes that match pattern ][][].
+        ///   Looks up a localized string similar to For processes that match pattern **{0}**.
         /// </summary>
         public static string Psf_Process_Pattern {
             get {
@@ -9646,11 +9628,47 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [processes that start with ][][].
+        ///   Looks up a localized string similar to For processes that start with **{0}**.
         /// </summary>
         public static string Psf_Process_StartsWith {
             get {
                 return ResourceManager.GetString("Psf_Process_StartsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect to **{0}**  .
+        /// </summary>
+        public static string Psf_Redirect {
+            get {
+                return ResourceManager.GetString("Psf_Redirect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect to **Local application data** (default).
+        /// </summary>
+        public static string Psf_Redirect_Default {
+            get {
+                return ResourceManager.GetString("Psf_Redirect_Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect to read-only **Local application data**.
+        /// </summary>
+        public static string Psf_Redirect_Default_ReadOnly {
+            get {
+                return ResourceManager.GetString("Psf_Redirect_Default_ReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect to read-only **{0}**.
+        /// </summary>
+        public static string Psf_Redirect_ReadOnly {
+            get {
+                return ResourceManager.GetString("Psf_Redirect_ReadOnly", resourceCulture);
             }
         }
         
@@ -9664,11 +9682,11 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to In directory.
+        ///   Looks up a localized string similar to In directory **{0}**.
         /// </summary>
-        public static string Psf_Redirection_ForDir_Part1 {
+        public static string Psf_Redirection_ForDir {
             get {
-                return ResourceManager.GetString("Psf_Redirection_ForDir_Part1", resourceCulture);
+                return ResourceManager.GetString("Psf_Redirection_ForDir", resourceCulture);
             }
         }
         
@@ -9709,7 +9727,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [][All files][].
+        ///   Looks up a localized string similar to All files.
         /// </summary>
         public static string Psf_Regex_AllFiles {
             get {
@@ -9727,7 +9745,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [File ][][].
+        ///   Looks up a localized string similar to File **{0}**.
         /// </summary>
         public static string Psf_Regex_File {
             get {
@@ -9736,7 +9754,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Files that end with ][][].
+        ///   Looks up a localized string similar to Files that end with **{0}**.
         /// </summary>
         public static string Psf_Regex_FilesEndingWith {
             get {
@@ -9745,7 +9763,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Files that match pattern ][][].
+        ///   Looks up a localized string similar to Files that match pattern **{0}**.
         /// </summary>
         public static string Psf_Regex_FilesMatching {
             get {
@@ -9754,7 +9772,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Files that start with ][][].
+        ///   Looks up a localized string similar to Files that start with **{0}**.
         /// </summary>
         public static string Psf_Regex_FilesStartingWith {
             get {
@@ -9763,7 +9781,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Files with extension ][][].
+        ///   Looks up a localized string similar to Files with extension **{0}**.
         /// </summary>
         public static string Psf_Regex_FileWithExtension {
             get {
@@ -9772,7 +9790,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All failures.
+        ///   Looks up a localized string similar to all failures.
         /// </summary>
         public static string Psf_Trace_AllFailures {
             get {
@@ -9781,7 +9799,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Always.
+        ///   Looks up a localized string similar to always.
         /// </summary>
         public static string Psf_Trace_Always {
             get {
@@ -9790,25 +9808,43 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable trace method.
+        ///   Looks up a localized string similar to in console.
         /// </summary>
-        public static string Psf_Trace_EnableMethod_Part1 {
+        public static string Psf_Trace_Console {
             get {
-                return ResourceManager.GetString("Psf_Trace_EnableMethod_Part1", resourceCulture);
+                return ResourceManager.GetString("Psf_Trace_Console", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to breaking on.
+        ///   Looks up a localized string similar to by default.
         /// </summary>
-        public static string Psf_Trace_EnableMethod_Part3 {
+        public static string Psf_Trace_Default {
             get {
-                return ResourceManager.GetString("Psf_Trace_EnableMethod_Part3", resourceCulture);
+                return ResourceManager.GetString("Psf_Trace_Default", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore.
+        ///   Looks up a localized string similar to Write trace events **{0}** breaking on: **{1}**.
+        /// </summary>
+        public static string Psf_Trace_EnableMethod {
+            get {
+                return ResourceManager.GetString("Psf_Trace_EnableMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to in event log.
+        /// </summary>
+        public static string Psf_Trace_EventLog {
+            get {
+                return ResourceManager.GetString("Psf_Trace_EventLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ignore.
         /// </summary>
         public static string Psf_Trace_Ignore {
             get {
@@ -9817,7 +9853,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ignore success.
+        ///   Looks up a localized string similar to ignore success.
         /// </summary>
         public static string Psf_Trace_IgnoreSuccess {
             get {
@@ -9826,7 +9862,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default.
+        ///   Looks up a localized string similar to Default: **{0}**.
         /// </summary>
         public static string Psf_Trace_Level_Default {
             get {
@@ -9835,7 +9871,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DLL.
+        ///   Looks up a localized string similar to DLL: **{0}**.
         /// </summary>
         public static string Psf_Trace_Level_Dll {
             get {
@@ -9844,7 +9880,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File system.
+        ///   Looks up a localized string similar to File system: **{0}**.
         /// </summary>
         public static string Psf_Trace_Level_FileSystem {
             get {
@@ -9853,7 +9889,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Process and thread.
+        ///   Looks up a localized string similar to Process and thread: **{0}**.
         /// </summary>
         public static string Psf_Trace_Level_ProcessThread {
             get {
@@ -9862,7 +9898,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Registry.
+        ///   Looks up a localized string similar to Registry: **{0}**.
         /// </summary>
         public static string Psf_Trace_Level_Registry {
             get {
@@ -9880,7 +9916,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected failures.
+        ///   Looks up a localized string similar to unexpected failures.
         /// </summary>
         public static string Psf_Trace_UnexpectedFailures {
             get {

@@ -14,16 +14,17 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
-namespace Otor.MsixHero.App.Controls.PsfContent.View
+namespace Otor.MsixHero.Appx.Psf.Entities.Interpreter.Redirection;
+
+public class PsfRedirectionBase
 {
-    /// <summary>
-    /// Interaction logic for PsfContentView.xaml
-    /// </summary>
-    public partial class PsfContentView
+    public PsfRedirectionBase(string target = null, bool isReadOnly = false)
     {
-        public PsfContentView()
-        {
-            InitializeComponent();
-        }
+        IsReadOnly = isReadOnly;
+        Target = target;
     }
+
+    public bool IsReadOnly { get; private set; }
+
+    public string Target { get; private set; }
 }

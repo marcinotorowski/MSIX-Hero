@@ -13,7 +13,6 @@
              xmlns:views="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views"
              xmlns:packageExpert="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert"
              xmlns:psf="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.ViewModels.Items.Psf"
-             xmlns:view="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.View"
              xmlns:helpers="clr-namespace:Otor.MsixHero.App.Helpers"
              xmlns:converters="clr-namespace:Otor.MsixHero.App.Converters"
              xmlns:hero="clr-namespace:Otor.MsixHero.App.Hero.Commands"
@@ -24,6 +23,8 @@
              xmlns:behaviors="clr-namespace:Otor.MsixHero.App.Helpers.Behaviors"
              xmlns:commands="clr-namespace:Otor.MsixHero.App.Mvvm.Commands"
              xmlns:localization="clr-namespace:Otor.MsixHero.App.Localization"
+             xmlns:controls1="clr-namespace:Otor.MsixHero.App.Controls.PsfContent.Controls"
+             xmlns:psf1="clr-namespace:Otor.MsixHero.App.Controls.PackageExpert.Views.Psf"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:PackageExpertViewModel}">
 
@@ -200,7 +201,7 @@
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
-                                
+
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding  Manifest.CurrentValue.Capabilities.Count}">
                                         <DataTrigger.Value>
@@ -512,9 +513,7 @@
                                         <Setter.Value>
                                             <DataTemplate>
                                                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                                    <view:PsfContentView 
-                                                        IsEnabled="False" 
-                                                        DataContext="{Binding  PackageSupportFramework.CurrentValue}" />
+                                                    <psf1:PsfControl Psf="{Binding  PackageSupportFramework.CurrentValue}" />
                                                 </ScrollViewer>
                                             </DataTemplate>
                                         </Setter.Value>
