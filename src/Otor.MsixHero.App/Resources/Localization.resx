@@ -1357,19 +1357,19 @@
     <value>Not configured for any process</value>
   </data>
   <data name="Psf_Process_Any" xml:space="preserve">
-    <value>For **any** process</value>
+    <value>Always</value>
   </data>
   <data name="Psf_Process_EndsWith" xml:space="preserve">
-    <value>For processes that end with **{0}**</value>
+    <value>If process name ends with **{0}**</value>
   </data>
   <data name="Psf_Process_Contains" xml:space="preserve">
-    <value>For processes that contain **{0}**</value>
+    <value>If process name contains **{0}**</value>
   </data>
   <data name="Psf_Process_Pattern" xml:space="preserve">
-    <value>For processes that match pattern **{0}**</value>
+    <value>If process name matches **{0}**</value>
   </data>
   <data name="Psf_Process_StartsWith" xml:space="preserve">
-    <value>For processes that start with **{0}**</value>
+    <value>If process name starts with **{0}**</value>
   </data>
   <data name="Psf_Redirection_ExceptOf" xml:space="preserve">
     <value>Except of:</value>

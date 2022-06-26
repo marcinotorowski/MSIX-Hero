@@ -9583,7 +9583,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For **any** process.
+        ///   Looks up a localized string similar to Always.
         /// </summary>
         public static string Psf_Process_Any {
             get {
@@ -9592,7 +9592,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For processes that contain **{0}**.
+        ///   Looks up a localized string similar to If process name contains **{0}**.
         /// </summary>
         public static string Psf_Process_Contains {
             get {
@@ -9601,7 +9601,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For processes that end with **{0}**.
+        ///   Looks up a localized string similar to If process name ends with **{0}**.
         /// </summary>
         public static string Psf_Process_EndsWith {
             get {
@@ -9619,7 +9619,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For processes that match pattern **{0}**.
+        ///   Looks up a localized string similar to If process name matches **{0}**.
         /// </summary>
         public static string Psf_Process_Pattern {
             get {
@@ -9628,7 +9628,7 @@ namespace Otor.MsixHero.App.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For processes that start with **{0}**.
+        ///   Looks up a localized string similar to If process name starts with **{0}**.
         /// </summary>
         public static string Psf_Process_StartsWith {
             get {

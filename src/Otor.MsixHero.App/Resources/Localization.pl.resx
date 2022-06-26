@@ -1348,19 +1348,19 @@
     <value>Nie skonfigurowane dla żadnego procesu</value>
   </data>
   <data name="Psf_Process_Any" xml:space="preserve">
-    <value>Dla **dowolnych** procesów</value>
+    <value>Zawsze</value>
   </data>
   <data name="Psf_Process_EndsWith" xml:space="preserve">
-    <value>Dla procesów, kończących się sekwencją **{0}**</value>
+    <value>Jeśli nazwa procesu kończy się ciągiem **{0}**</value>
   </data>
   <data name="Psf_Process_Contains" xml:space="preserve">
-    <value>Dla procesów, zawierających **{0}**</value>
+    <value>Jeśli nazwa procesu zawiera ciąg **{0}**</value>
   </data>
   <data name="Psf_Process_Pattern" xml:space="preserve">
-    <value>Dla procesów, pasujących do wzorca **{0}**</value>
+    <value>Jeśli nazwa procesu pasuje do wzorca **{0}**</value>
   </data>
   <data name="Psf_Process_StartsWith" xml:space="preserve">
-    <value>Dla procesów, zaczynających się od **{0}**</value>
+    <value>Jeśli nazwa procesu zaczyna się na **{0}**</value>
   </data>
   <data name="Psf_Redirection_ExceptOf" xml:space="preserve">
     <value>Poza:</value>
@@ -1396,7 +1396,7 @@
     <value>Pliki pasujące do wzorca **{0}**</value>
   </data>
   <data name="Psf_Regex_FilesStartingWith" xml:space="preserve">
-    <value>Pliki kończące się sekwencją **{0}**</value>
+    <value>Pliki kończące się ciągiem **{0}**</value>
   </data>
   <data name="Psf_Regex_FileWithExtension" xml:space="preserve">
     <value>Pliki z rozszerzeniem **{0}**</value>
