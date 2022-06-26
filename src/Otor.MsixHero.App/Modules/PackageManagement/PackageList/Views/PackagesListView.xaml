@@ -259,14 +259,51 @@
             SupportsCancelling="{Binding Progress.SupportsCancelling}"
             IsShown="{Binding Progress.IsLoading}">
 
+            <controls:ProgressOverlay.Resources>
+                <Style TargetType="ListBoxItem" x:Key="Bound">
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="BorderThickness" Value="0 0 0 0" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                    <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
+                                        <ContentPresenter Margin="{TemplateBinding Padding}" />
+                                    </Border>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsProvisioned}" Value="{StaticResource True}">
+                            <Setter Property="Background" Value="#CCFFD1" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="#B1D6F0" />
+                            <Setter Property="Background" Value="#E6F2FA" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="#B1D6F0" />
+                            <Setter Property="Background" Value="#CDE6F7" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </controls:ProgressOverlay.Resources>
+
             <ListBox 
                 FocusVisualStyle="{x:Null}"
                 IsEnabled="{Binding Progress.IsLoading, Converter={StaticResource NegativeConverter}}"
                 x:Name="ListBox"
                 ItemsSource="{Binding ItemsCollection}"
                 SelectionMode="Extended"
+                SelectedValuePath="ManifestPath"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ContextMenuOpening="PackageContextMenu_OnContextMenuOpening"
+                ItemContainerStyle="{StaticResource Bound}"
                 ContextMenu="{StaticResource PackageContextMenu}">
                 <ListBox.GroupStyle>
                     <GroupStyle ContainerStyle="{StaticResource GroupStyle}" />
@@ -274,41 +311,8 @@
                 <ListBox.InputBindings>
                     <KeyBinding Modifiers="Control" Key="F" Command="Find" />
                 </ListBox.InputBindings>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="10" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="BorderThickness" Value="0 0 0 0" />
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                        <Border BorderBrush="#e1e1e1" BorderThickness="0 0 0 0">
-                                            <ContentPresenter Margin="{TemplateBinding Padding}" />
-                                        </Border>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsProvisioned}" Value="{StaticResource True}">
-                                <Setter Property="Background" Value="#CCFFD1" />
-                            </DataTrigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                <Setter Property="Background" Value="#E6F2FA" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="BorderBrush" Value="#B1D6F0" />
-                                <Setter Property="Background" Value="#CDE6F7" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type elements:InstalledPackageViewModel}">
+                    <DataTemplate DataType="{x:Type elements:SelectableInstalledPackageViewModel}">
                         <DockPanel>
                             <Border Background="{StaticResource MsixHero.Brushes.Accent}" Width="32" Height="32" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <Grid>

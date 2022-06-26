@@ -43,79 +43,89 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 {
     public class PackagesListViewModel : NotifyPropertyChanged, INavigationAware, IActiveAware
     {
-        private readonly IBusyManager busyManager;
-        private readonly IMsixHeroApplication application;
-        private readonly IInteractionService interactionService;
-        private readonly ReaderWriterLockSlim packagesSync = new ReaderWriterLockSlim();
-        private bool firstRun = true;
-        private bool isActive;
+        private readonly IBusyManager _busyManager;
+        private readonly IMsixHeroApplication _application;
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IInteractionService _interactionService;
+        private readonly ReaderWriterLockSlim _packagesSync = new ReaderWriterLockSlim();
+        private readonly HashSet<string> _selectedManifests = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private bool _firstRun = true;
+        private bool _isActive;
 
         public PackagesListViewModel(
             IBusyManager busyManager,
             IMsixHeroApplication application,
+            IMsixHeroCommandExecutor commandExecutor,
             IInteractionService interactionService)
         {
-            this.busyManager = busyManager;
-            this.application = application;
-            this.interactionService = interactionService;
-            this.Items = new ObservableCollection<InstalledPackageViewModel>();
+            this._busyManager = busyManager;
+            this._application = application;
+            _commandExecutor = commandExecutor;
+            this._interactionService = interactionService;
+            this.Items = new ObservableCollection<SelectableInstalledPackageViewModel>();
             this.ItemsCollection = CollectionViewSource.GetDefaultView(this.Items);
-            this.ItemsCollection.Filter = row => this.IsPackageVisible((InstalledPackageViewModel)row);
+            this.ItemsCollection.Filter = row => this.IsPackageVisible((SelectableInstalledPackageViewModel)row);
 
             // reloading packages
-            this.application.EventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuting);
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesFailed);
-            this.application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCancelled);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand, IList<InstalledPackage>>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
+
+            // selecting packages
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SelectPackagesCommand>>().Subscribe(this.OnSelectPackagesExecuted);
 
             // filtering
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageFilterCommand>>().Subscribe(this.OnSetPackageFilterCommand, ThreadOption.UIThread);
 
             // sorting ang grouping
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
-            this.application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageSortingCommand>>().Subscribe(this.OnSetPackageSorting, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<UiExecutedEvent<SetPackageGroupingCommand>>().Subscribe(this.OnSetPackageGrouping, ThreadOption.UIThread);
 
             // is running indicator
-            this.application.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndication);
-            this.application.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndicationFinished, ThreadOption.UIThread);
+            this._application.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndication);
+            this._application.EventAggregator.GetEvent<PubSubEvent<ActivePackageFullNames>>().Subscribe(this.OnActivePackageIndicationFinished, ThreadOption.UIThread);
 
-            this.busyManager.StatusChanged += BusyManagerOnStatusChanged;
+            this._busyManager.StatusChanged += BusyManagerOnStatusChanged;
             this.SetSortingAndGrouping();
 
             MsixHeroTranslation.Instance.CultureChanged += (_, _) =>
             {
-                this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand());
+                var current = this.Items.Where(item => item.IsSelected).ToArray();
+                if (current.Length == 1)
+                {
+                    // Re-select the current package so that we get a refreshed view with all translated pieces.
+                    current.First().IsSelected = false;
+                    current.First().IsSelected = true;
+                }
             };
         }
 
         public string SearchKey
         {
-            get => this.application.ApplicationState.Packages.SearchKey;
-            set => this.application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this.application.CommandExecutor.ApplicationState.Packages.Filter, value));
+            get => this._application.ApplicationState.Packages.SearchKey;
+            set => this._application.CommandExecutor.Invoke(this, new SetPackageFilterCommand(this._application.CommandExecutor.ApplicationState.Packages.Filter, value));
         }
 
         public bool IsActive
         {
-            get => this.isActive;
+            get => this._isActive;
             set
             {
-                if (!this.SetField(ref this.isActive, value))
+                if (!this.SetField(ref this._isActive, value))
                 {
                     return;
                 }
 
                 this.IsActiveChanged?.Invoke(this, EventArgs.Empty);
 
-                if (firstRun)
+                if (_firstRun)
                 {
-                    this.application
+                    this._application
                         .CommandExecutor
-                        .WithBusyManager(this.busyManager, OperationType.PackageLoading)
-                        .WithErrorHandling(this.interactionService, true)
+                        .WithBusyManager(this._busyManager, OperationType.PackageLoading)
+                        .WithErrorHandling(this._interactionService, true)
                         .Invoke<GetPackagesCommand, IList<InstalledPackage>>(this, new GetPackagesCommand(PackageFindMode.Auto));
                 }
 
-                this.firstRun = false;
+                this._firstRun = false;
             }
         }
 
@@ -138,8 +148,8 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         public ICollectionView ItemsCollection { get; }
 
-        public ObservableCollection<InstalledPackageViewModel> Items { get; }
-
+        public ObservableCollection<SelectableInstalledPackageViewModel> Items { get; }
+        
         private void BusyManagerOnStatusChanged(object sender, IBusyStatusChange e)
         {
             if (e.Type != OperationType.PackageLoading && e.Type != OperationType.Other)
@@ -151,28 +161,31 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             this.Progress.Message = e.Message;
             this.Progress.Progress = e.Progress;
         }
-
-        private void OnGetPackagesExecuting(UiExecutingPayload<GetPackagesCommand> eventPayload)
-        {
-        }
-
-        private void OnGetPackagesCancelled(UiCancelledPayload<GetPackagesCommand> eventPayload)
-        {
-        }
-
-        private void OnGetPackagesFailed(UiFailedPayload<GetPackagesCommand> eventPayload)
-        {
-        }
-
+        
         private void OnSetPackageFilterCommand(UiExecutedPayload<SetPackageFilterCommand> obj)
         {
             this.OnPropertyChanged(nameof(SearchKey));
             this.ItemsCollection.Refresh();
         }
 
+        private void OnSelectPackagesExecuted(UiExecutedPayload<SelectPackagesCommand> obj)
+        {
+            this._selectedManifests.Clear();
+            
+            foreach (var item in this._application.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation))
+            {
+                this._selectedManifests.Add(item);
+            }
+            
+            foreach (var package in this.Items)
+            {
+                package.IsSelected = this._selectedManifests.Contains(package.ManifestLocation);
+            }
+        }
+
         private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand, IList<InstalledPackage>> eventPayload)
         {
-            this.packagesSync.EnterWriteLock();
+            this._packagesSync.EnterWriteLock();
 
             try
             {
@@ -180,18 +193,18 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
                 foreach (var item in eventPayload.Result)
                 {
-                    this.Items.Add(new InstalledPackageViewModel(item));
+                    this.Items.Add(new SelectableInstalledPackageViewModel(item, this._commandExecutor, _selectedManifests.Contains(item.ManifestLocation)));
                 }
             }
             finally
             {
-                this.packagesSync.ExitWriteLock();
+                this._packagesSync.ExitWriteLock();
             }
         }
 
-        private bool IsPackageVisible(InstalledPackageViewModel item)
+        private bool IsPackageVisible(SelectableInstalledPackageViewModel item)
         {
-            var packageFilterSignatureFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.AllSources;
+            var packageFilterSignatureFlags = this._application.ApplicationState.Packages.Filter & PackageFilter.AllSources;
             if (packageFilterSignatureFlags != 0 && packageFilterSignatureFlags != PackageFilter.AllSources)
             {
                 switch (item.SignatureKind)
@@ -222,7 +235,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var packageFilterAddOnFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.MainAppsAndAddOns;
+            var packageFilterAddOnFlags = this._application.ApplicationState.Packages.Filter & PackageFilter.MainAppsAndAddOns;
             if (packageFilterAddOnFlags != 0 && packageFilterAddOnFlags != PackageFilter.MainAppsAndAddOns)
             {
                 if (item.IsAddon)
@@ -241,7 +254,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var packageFilterPlatformFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
+            var packageFilterPlatformFlags = this._application.ApplicationState.Packages.Filter & PackageFilter.AllArchitectures;
             if (packageFilterPlatformFlags != PackageFilter.AllArchitectures && packageFilterPlatformFlags != 0)
             {
                 switch (item.Model.Architecture?.ToLowerInvariant())
@@ -294,7 +307,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 }
             }
 
-            var packageFilterIsRunningFlags = this.application.ApplicationState.Packages.Filter & PackageFilter.InstalledAndRunning;
+            var packageFilterIsRunningFlags = this._application.ApplicationState.Packages.Filter & PackageFilter.InstalledAndRunning;
             if (packageFilterIsRunningFlags == PackageFilter.Running)
             {
                 if (!item.IsRunning)
@@ -304,16 +317,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             }
 
             // If the user searched nothing, return all packages
-            if (string.IsNullOrWhiteSpace(this.application.ApplicationState.Packages.SearchKey))
+            if (string.IsNullOrWhiteSpace(this._application.ApplicationState.Packages.SearchKey))
             {
                 return true;
             }
 
             if (
-                (item.DisplayName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
-                (item.DisplayPublisherName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
-                (item.ProductId?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 &&
-                (item.PackageFamilyName?.IndexOf(this.application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
+                (item.DisplayName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
+                (item.DisplayPublisherName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 && 
+                (item.ProductId?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1 &&
+                (item.PackageFamilyName?.IndexOf(this._application.ApplicationState.Packages.SearchKey, StringComparison.OrdinalIgnoreCase) ?? -1) == -1
             )
             {
                 return false;
@@ -324,7 +337,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         private void OnActivePackageIndication(ActivePackageFullNames obj)
         {
-            this.packagesSync.EnterReadLock();
+            this._packagesSync.EnterReadLock();
             try
             {
                 foreach (var item in this.Items)
@@ -334,7 +347,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
             }
             finally
             {
-                this.packagesSync.ExitReadLock();
+                this._packagesSync.ExitReadLock();
             }
         }
 
@@ -355,9 +368,9 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
 
         private void SetSortingAndGrouping()
         {
-            var currentSort = this.application.ApplicationState.Packages.SortMode;
-            var currentSortDescending = this.application.ApplicationState.Packages.SortDescending;
-            var currentGroup = this.application.ApplicationState.Packages.GroupMode;
+            var currentSort = this._application.ApplicationState.Packages.SortMode;
+            var currentSortDescending = this._application.ApplicationState.Packages.SortDescending;
+            var currentGroup = this._application.ApplicationState.Packages.GroupMode;
 
             using (this.ItemsCollection.DeferRefresh())
             {
@@ -367,25 +380,25 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                 switch (currentSort)
                 {
                     case PackageSort.Name:
-                        sortProperty = nameof(InstalledPackageViewModel.DisplayName);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.DisplayName);
                         break;
                     case PackageSort.Publisher:
-                        sortProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.DisplayPublisherName);
                         break;
                     case PackageSort.Architecture:
-                        sortProperty = nameof(InstalledPackageViewModel.Architecture);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.Architecture);
                         break;
                     case PackageSort.InstallDate:
-                        sortProperty = nameof(InstalledPackageViewModel.InstallDate);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.InstallDate);
                         break;
                     case PackageSort.Type:
-                        sortProperty = nameof(InstalledPackageViewModel.Type);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.Type);
                         break;
                     case PackageSort.Version:
-                        sortProperty = nameof(InstalledPackageViewModel.Version);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.Version);
                         break;
                     case PackageSort.PackageType:
-                        sortProperty = nameof(InstalledPackageViewModel.DisplayPackageType);
+                        sortProperty = nameof(SelectableInstalledPackageViewModel.DisplayPackageType);
                         break;
                     default:
                         sortProperty = null;
@@ -398,16 +411,16 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                         groupProperty = null;
                         break;
                     case PackageGroup.Publisher:
-                        groupProperty = nameof(InstalledPackageViewModel.DisplayPublisherName);
+                        groupProperty = nameof(SelectableInstalledPackageViewModel.DisplayPublisherName);
                         break;
                     case PackageGroup.Architecture:
-                        groupProperty = nameof(InstalledPackageViewModel.Architecture);
+                        groupProperty = nameof(SelectableInstalledPackageViewModel.Architecture);
                         break;
                     case PackageGroup.InstallDate:
-                        groupProperty = nameof(InstalledPackageViewModel.InstallDate);
+                        groupProperty = nameof(SelectableInstalledPackageViewModel.InstallDate);
                         break;
                     case PackageGroup.Type:
-                        groupProperty = nameof(InstalledPackageViewModel.Type);
+                        groupProperty = nameof(SelectableInstalledPackageViewModel.Type);
                         break;
                     default:
                         return;
@@ -425,7 +438,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels
                     {
                         this.ItemsCollection.GroupDescriptions.Clear();
 
-                        if (groupProperty == nameof(InstalledPackageViewModel.InstallDate))
+                        if (groupProperty == nameof(SelectableInstalledPackageViewModel.InstallDate))
                         {
                             this.ItemsCollection.GroupDescriptions.Add(new PropertyGroupDescription(groupProperty, GroupDateConverter.Instance));
                         }

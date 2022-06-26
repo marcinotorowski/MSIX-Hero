@@ -18,16 +18,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Otor.MsixHero.App.Helpers;
 using Otor.MsixHero.App.Hero;
 using Otor.MsixHero.App.Hero.Commands;
-using Otor.MsixHero.App.Hero.Commands.Packages;
 using Otor.MsixHero.App.Hero.Events;
-using Otor.MsixHero.App.Hero.Events.Base;
-using Otor.MsixHero.App.Modules.PackageManagement.PackageList.ViewModels;
 using Otor.MsixHero.Infrastructure.Services;
-using Prism.Events;
 
 namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 {
@@ -36,86 +31,20 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
     /// </summary>
     public partial class PackagesListView
     {
-        private readonly IMsixHeroApplication application;
-        private readonly IConfigurationService configService;
-        private IList<MenuItem> tools;
+        private readonly IConfigurationService _configService;
+        private IList<MenuItem> _tools;
 
-        public PackagesListView(
-            IMsixHeroApplication application, 
-            IConfigurationService configService)
+        public PackagesListView(IMsixHeroApplication application, IConfigurationService configService)
         {
-            this.application = application;
-            this.configService = configService;
+            this._configService = configService;
 
-            application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(payload => this.tools = null);
-            application.EventAggregator.GetEvent<UiFailedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesFailed, ThreadOption.UIThread);
-            application.EventAggregator.GetEvent<UiExecutingEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuting);
-            application.EventAggregator.GetEvent<UiCancelledEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesCancelled, ThreadOption.UIThread);
-            application.EventAggregator.GetEvent<UiExecutedEvent<GetPackagesCommand>>().Subscribe(this.OnGetPackagesExecuted, ThreadOption.UIThread);
-            
+            application.EventAggregator.GetEvent<ToolsChangedEvent>().Subscribe(payload => this._tools = null);
             this.InitializeComponent();
-            this.ListBox.PreviewKeyDown += ListBoxOnKeyDown;
-            this.ListBox.PreviewKeyUp += ListBoxOnKeyUp;
         }
-
-        private void ListBoxOnKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.PageDown || e.Key == Key.PageUp)
-            {
-                this.ListBox.SelectionChanged -= this.OnSelectionChanged;
-            }
-        }
-
-        private void ListBoxOnKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Down || e.Key == Key.Up || e.Key == Key.PageDown || e.Key == Key.PageUp)
-            {
-                this.ListBox.SelectionChanged += this.OnSelectionChanged;
-
-                this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(p => p.ManifestLocation)));
-            }
-        }
-
-        private void OnGetPackagesExecuting(UiExecutingPayload<GetPackagesCommand> obj)
-        {
-            this.ListBox.SelectionChanged -= this.OnSelectionChanged;
-        }
-
-        private void OnGetPackagesFailed(UiFailedPayload<GetPackagesCommand> obj)
-        {
-            this.ListBox.SelectionChanged += this.OnSelectionChanged;
-        }
-
-        private void OnGetPackagesCancelled(UiCancelledPayload<GetPackagesCommand> obj)
-        {
-            this.ListBox.SelectionChanged += this.OnSelectionChanged;
-        }
-
-        private void OnGetPackagesExecuted(UiExecutedPayload<GetPackagesCommand> obj)
-        {
-            try
-            {
-                this.ListBox.SelectedItems.Clear();
-
-                foreach (var item in this.ListBox.Items.OfType<InstalledPackageViewModel>())
-                {
-                    if (!this.application.ApplicationState.Packages.SelectedPackages.Contains(item.Model))
-                    {
-                        continue;
-                    }
-
-                    this.ListBox.SelectedItems.Add(item);
-                }
-            }
-            finally
-            {
-                this.ListBox.SelectionChanged += this.OnSelectionChanged;
-            }
-        }
-
+        
         private void PackageContextMenu_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (this.tools != null)
+            if (this._tools != null)
             {
                 return;
             }
@@ -126,7 +55,7 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
             var lastMenu = frameworkElement.ContextMenu.Items.OfType<MenuItem>().Last();
 
             lastMenu.Items.Clear();
-            foreach (var item in this.tools)
+            foreach (var item in this._tools)
             {
                 lastMenu.Items.Add(item);
             }
@@ -142,17 +71,17 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
 
         private void SetTools()
         {
-            if (this.tools != null)
+            if (this._tools != null)
             {
                 return;
             }
 
-            this.tools = new List<MenuItem>();
-            var configuredTools = this.configService.GetCurrentConfiguration().Packages.Tools;
+            this._tools = new List<MenuItem>();
+            var configuredTools = this._configService.GetCurrentConfiguration().Packages.Tools;
 
             foreach (var item in configuredTools)
             {
-                this.tools.Add(new MenuItem
+                this._tools.Add(new MenuItem
                 {
                     Command = MsixHeroRoutedUICommands.RunTool,
                     Icon = new Image { Source = ShellIcon.GetIconFor(string.IsNullOrEmpty(item.Icon) ? item.Path : item.Icon) },
@@ -160,11 +89,6 @@ namespace Otor.MsixHero.App.Modules.PackageManagement.PackageList.Views
                     CommandParameter = item
                 });
             }
-        }
-
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.application.CommandExecutor.Invoke(this, new SelectPackagesCommand(this.ListBox.SelectedItems.OfType<InstalledPackageViewModel>().Select(p => p.ManifestLocation)));
         }
     }
 }

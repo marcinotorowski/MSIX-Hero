@@ -11,53 +11,84 @@ namespace Otor.MsixHero.App.Hero.Handlers
 {
     public class SelectPackagesHandler : RequestHandler<SelectPackagesCommand>
     {
-        private readonly ReaderWriterLockSlim packageListSynchronizer = new ReaderWriterLockSlim();
-        private readonly IMsixHeroCommandExecutor commandExecutor;
+        private readonly ReaderWriterLockSlim _packageListSynchronizer = new ReaderWriterLockSlim();
+        private readonly IMsixHeroCommandExecutor _commandExecutor;
+        private readonly IMsixHeroApplication _app;
 
-        public SelectPackagesHandler(IMsixHeroCommandExecutor commandExecutor)
+        public SelectPackagesHandler(IMsixHeroCommandExecutor commandExecutor, IMsixHeroApplication app)
         {
-            this.commandExecutor = commandExecutor;
+            this._commandExecutor = commandExecutor;
+            this._app = app;
         }
 
         protected override void Handle(SelectPackagesCommand request)
         {
             IList<InstalledPackage> selected;
-            if (!request.SelectedManifestPaths.Any())
+            List<string> actualSelection;
+
+            switch (request.SelectionMode)
+            {
+                case SelectPackagesCommand.PackageSelectionMode.Replace:
+                    actualSelection = new List<string>(request.SelectedManifestPaths);
+                    break;
+                case SelectPackagesCommand.PackageSelectionMode.Add:
+                    actualSelection = new List<string>(this._app.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).Union(request.SelectedManifestPaths));
+                    break;
+                case SelectPackagesCommand.PackageSelectionMode.Remove:
+                    actualSelection = new List<string>(this._app.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).Except(request.SelectedManifestPaths));
+                    break;
+                case SelectPackagesCommand.PackageSelectionMode.Toggle:
+                    actualSelection = this._app.ApplicationState.Packages.SelectedPackages.Select(p => p.ManifestLocation).ToList();
+
+                    foreach (var item in request.SelectedManifestPaths)
+                    {
+                        if (actualSelection.Contains(item))
+                        {
+                            actualSelection.Remove(item);
+                        }
+                        else
+                        {
+                            actualSelection.Add(item);
+                        }
+                    }
+                    
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+            
+            if (!actualSelection.Any())
             {
                 selected = new List<InstalledPackage>();
             }
-            else if (request.SelectedManifestPaths.Count == 1)
+            else if (actualSelection.Count == 1)
             {
                 try
                 {
-                    this.packageListSynchronizer.EnterReadLock();
-                    var singleSelection = this.commandExecutor.ApplicationState.Packages.AllPackages.FirstOrDefault(a =>
-                        string.Equals(a.ManifestLocation, request.SelectedManifestPaths[0],
-                            StringComparison.OrdinalIgnoreCase));
-                    selected = singleSelection != null
-                        ? new List<InstalledPackage> { singleSelection }
-                        : new List<InstalledPackage>();
+                    this._packageListSynchronizer.EnterReadLock();
+                    var singleSelection = this._commandExecutor.ApplicationState.Packages.AllPackages.FirstOrDefault(a => string.Equals(a.ManifestLocation, actualSelection[0], StringComparison.OrdinalIgnoreCase));
+                    selected = singleSelection != null ? new List<InstalledPackage> { singleSelection } : new List<InstalledPackage>();
                 }
                 finally
                 {
-                    this.packageListSynchronizer.ExitReadLock();
+                    this._packageListSynchronizer.ExitReadLock();
                 }
             }
             else
             {
                 try
                 {
-                    this.packageListSynchronizer.EnterReadLock();
-                    selected = this.commandExecutor.ApplicationState.Packages.AllPackages.Where(a => request.SelectedManifestPaths.Contains(a.ManifestLocation)).ToList();
+                    this._packageListSynchronizer.EnterReadLock();
+                    selected = this._commandExecutor.ApplicationState.Packages.AllPackages.Where(a => actualSelection.Contains(a.ManifestLocation)).ToList();
                 }
                 finally
                 {
-                    this.packageListSynchronizer.ExitReadLock();
+                    this._packageListSynchronizer.ExitReadLock();
                 }
             }
 
-            this.commandExecutor.ApplicationState.Packages.SelectedPackages.Clear();
-            this.commandExecutor.ApplicationState.Packages.SelectedPackages.AddRange(selected);
+            this._commandExecutor.ApplicationState.Packages.SelectedPackages.Clear();
+            this._commandExecutor.ApplicationState.Packages.SelectedPackages.AddRange(selected);
         }
     }
 }

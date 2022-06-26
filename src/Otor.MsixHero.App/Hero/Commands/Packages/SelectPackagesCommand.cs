@@ -14,21 +14,31 @@
 // Full notice:
 // https://github.com/marcinotorowski/msix-hero/blob/develop/LICENSE.md
 
+using MediatR;
 using System.Collections.Generic;
 using System.Linq;
-using MediatR;
 
 namespace Otor.MsixHero.App.Hero.Commands.Packages
 {
     public class SelectPackagesCommand : IRequest
     {
+        public enum PackageSelectionMode
+        {
+            Replace,
+            Add,
+            Remove,
+            Toggle
+        }
+        
         public SelectPackagesCommand()
         {
+            this.SelectionMode = PackageSelectionMode.Replace;
             this.SelectedManifestPaths = new List<string>();
         }
 
-        public SelectPackagesCommand(string manifestPaths)
+        public SelectPackagesCommand(string manifestPaths, PackageSelectionMode mode = PackageSelectionMode.Replace)
         {
+            this.SelectionMode = mode;
             if (manifestPaths == null)
             {
                 this.SelectedManifestPaths = new List<string>();
@@ -41,19 +51,24 @@ namespace Otor.MsixHero.App.Hero.Commands.Packages
 
         public SelectPackagesCommand(IList<string> manifestPaths)
         {
+            this.SelectionMode = PackageSelectionMode.Replace;
             this.SelectedManifestPaths = manifestPaths;
         }
 
         public SelectPackagesCommand(params string[] manifestPaths)
         {
+            this.SelectionMode = PackageSelectionMode.Replace;
             this.SelectedManifestPaths = manifestPaths.ToList();
         }
 
         public SelectPackagesCommand(IEnumerable<string> manifestPaths)
         {
+            this.SelectionMode = PackageSelectionMode.Replace;
             this.SelectedManifestPaths = manifestPaths.ToList();
         }
 
         public IList<string> SelectedManifestPaths { get; }
+
+        public PackageSelectionMode SelectionMode { get; set; }
     }
 }
