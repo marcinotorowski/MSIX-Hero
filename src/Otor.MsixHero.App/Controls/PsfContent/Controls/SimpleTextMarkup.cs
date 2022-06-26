@@ -32,6 +32,8 @@ namespace Otor.MsixHero.App.Controls.PsfContent.Controls
 
         public static void InsertMarkup(InlineCollection collection, string text)
         {
+            collection.Clear();
+
             var index = 0;
             var isBold = false;
 
