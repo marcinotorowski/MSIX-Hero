@@ -8,7 +8,7 @@ using Dapplo.Log;
 
 namespace Otor.MsixHero.Infrastructure.Localization
 {
-    public class MsixHeroTranslation : INotifyPropertyChanged, IMsixHeroTranslationManager
+    public class MsixHeroTranslation : INotifyPropertyChanged
     {
         private static readonly LogSource Logger = new();
 
@@ -85,26 +85,24 @@ namespace Otor.MsixHero.Infrastructure.Localization
             get => _currentCulture;
             private set
             {
-                if (this._currentCulture.Equals(value))
+                if (value == null)
+                {
+                    value = CultureInfo.InstalledUICulture;
+                }
+
+                if (this._currentCulture == value)
                 {
                     return;
                 }
-                
-                if (value != default)
-                {
-                    Logger.Info().WriteLine("Changing current culture from '{0}' to '{1}'...", this.CurrentCulture.Name, value.Name);
 
-                    Thread.CurrentThread.CurrentCulture = MsixHeroTranslation.Instance.CurrentCulture;
-                    Thread.CurrentThread.CurrentUICulture = MsixHeroTranslation.Instance.CurrentCulture;
-                    this._currentCulture = value;
-                }
-                else
-                {
-                    this._currentCulture = default;
-                }
-                
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+                Logger.Info().WriteLine("Changing current culture from '{0}' to '{1}'...", this.CurrentCulture.Name, value.Name);
+
+                Thread.CurrentThread.CurrentCulture = value;
+                Thread.CurrentThread.CurrentUICulture = value;
+                this._currentCulture = value;
+
                 this.CultureChanged?.Invoke(this, this._currentCulture);
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
             }
         }
 

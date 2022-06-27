@@ -165,7 +165,7 @@ namespace Otor.MsixHero.AdminHelper
                     server.RegisterProxy<IAppxPackageInstaller, AppxPackageInstaller>();
                     server.RegisterProxy<IAppxLogManager, AppxLogManager>();
                     server.RegisterProxy<IAppxPackageRunner, AppxPackageRunner>();
-                    server.RegisterProxy<IMsixHeroTranslationManager, MsixHeroTranslation>(() => MsixHeroTranslation.Instance);
+                    server.RegisterProxy<IMsixHeroTranslationService, MsixHeroTranslationService>();
                     server.RegisterProxy<IAppxPackageManager, AppxPackageManager>();
                     server.RegisterProxy<IAppxPackageQuery, AppxPackageQuery>(appxPackageQuery);
                     server.StartAsync(repeat).ConfigureAwait(false).GetAwaiter().GetResult();

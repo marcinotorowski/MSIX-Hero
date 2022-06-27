@@ -18,7 +18,7 @@ using System.Globalization;
 
 namespace Otor.MsixHero.Infrastructure.Localization;
 
-public interface IMsixHeroTranslationManager
+public interface IMsixHeroTranslationService
 {
     void ChangeCulture(CultureInfo cultureInfo);
 }

@@ -397,17 +397,19 @@ namespace Otor.MsixHero.App.Modules.Dialogs.Settings.ViewModel
             {
                 newConfiguration.UiConfiguration.Language = this.Language.CurrentValue;
 
+                CultureInfo newCulture;
                 if (string.IsNullOrEmpty(this.Language.CurrentValue))
                 {
-                    MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.InstalledUICulture);
+                    newCulture = CultureInfo.InstalledUICulture;
                 }
                 else
                 {
-                    ExceptionGuard.Guard(() => MsixHeroTranslation.Instance.ChangeCulture(CultureInfo.GetCultureInfo(this.Language.CurrentValue)));
+                    newCulture = ExceptionGuard.Guard(() => CultureInfo.GetCultureInfo(this.Language.CurrentValue));
                 }
 
                 // this is to ensure that in case of a running elevated proxy that is gets signaled we have now a new culture to consider.
-                this._uacElevation.AsHighestAvailable<IMsixHeroTranslationManager>().ChangeCulture(MsixHeroTranslation.Instance.CurrentCulture);
+                this._uacElevation.AsHighestAvailable<IMsixHeroTranslationService>().ChangeCulture(newCulture);
+                MsixHeroTranslation.Instance.ChangeCulture(newCulture);
             }
             
             if (this.CertificateSelector.IsTouched)

@@ -14,6 +14,7 @@
              xmlns:interpreter="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter;assembly=Otor.MsixHero.Appx"
              xmlns:custom="clr-namespace:Otor.MsixHero.Appx.Psf.Entities.Interpreter.Custom;assembly=Otor.MsixHero.Appx"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:localization1="clr-namespace:Otor.MsixHero.Infrastructure.Localization;assembly=Otor.MsixHero.Infrastructure"
              x:Name="PsfControlRoot"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -26,13 +27,15 @@
                 Tag="{localization:Loc Psf_Process_Pattern}"
                 TextTrimming="CharacterEllipsis">
                 <controls:SimpleTextMarkup.Markup>
-                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                    <MultiBinding 
+                        Converter="{StaticResource StringFormatConverter}">
                         <Binding Path="Tag">
                             <Binding.RelativeSource>
                                 <RelativeSource Mode="Self" />
                             </Binding.RelativeSource>
                         </Binding>
                         <Binding Path="RegularExpression.RegularExpression" />
+                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                     </MultiBinding>
                 </controls:SimpleTextMarkup.Markup>
             </TextBlock>
@@ -130,9 +133,11 @@
 
                                             <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
                                                 <controls:SimpleTextMarkup.Markup>
-                                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                    <MultiBinding 
+                                                        Converter="{StaticResource StringFormatConverter}">
                                                         <localization:Loc StringName="Psf_Redirection_ForDir" />
                                                         <Binding Mode="OneWay" Path="DirectoryPath" />
+                                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                                     </MultiBinding>
                                                 </controls:SimpleTextMarkup.Markup>
                                             </TextBlock>
@@ -151,15 +156,19 @@
                                                                 ToolTip="{Binding RegularExpression}"
                                                                 ToolTipService.Placement="Bottom"
                                                                 ToolTipService.VerticalOffset="-1"
-                                                                x:Name="TextBlockRegex" Tag="{localization:Loc Psf_Regex_FilesMatching}" TextWrapping="Wrap">
+                                                                x:Name="TextBlockRegex" 
+                                                                Tag="{localization:Loc Psf_Regex_FilesMatching}" 
+                                                                TextWrapping="Wrap">
                                                                 <controls:SimpleTextMarkup.Markup>
-                                                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                                    <MultiBinding 
+                                                                        Converter="{StaticResource StringFormatConverter}">
                                                                         <Binding Mode="OneWay" Path="Tag">
                                                                             <Binding.RelativeSource>
                                                                                 <RelativeSource Mode="Self" />
                                                                             </Binding.RelativeSource>
                                                                         </Binding>
                                                                         <Binding Path="Target" Mode="OneWay" />
+                                                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                                                     </MultiBinding>
                                                                 </controls:SimpleTextMarkup.Markup>
                                                             </TextBlock>
@@ -189,13 +198,15 @@
                                                     x:Name="TextBlockTextRedirectTo" 
                                                     Margin="0 6">
                                                     <controls:SimpleTextMarkup.Markup>
-                                                        <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                                        <MultiBinding 
+                                                            Converter="{StaticResource StringFormatConverter}">
                                                             <Binding Mode="OneWay" Path="Tag">
                                                                 <Binding.RelativeSource>
                                                                     <RelativeSource Mode="Self" />
                                                                 </Binding.RelativeSource>
                                                             </Binding>
                                                             <Binding Path="RedirectionBase.Target" Mode="OneWay" />
+                                                            <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                                         </MultiBinding>
                                                     </controls:SimpleTextMarkup.Markup>
                                                 </TextBlock>
@@ -216,29 +227,6 @@
                                                     ItemTemplate="{StaticResource Rule}"
                                                     Visibility="{Binding RelativeSource={RelativeSource Self}, Path=HasItems, Converter={StaticResource BooleanToVisibilityConverter}}" 
                                                     ItemsSource="{Binding Exclude}" />
-
-                                                <!--<StackPanel Orientation="Horizontal">
-                                                    <Path VerticalAlignment="Center" Width="32" Height="32" Data="M 5 5 L 5 22 L 24.0625 22 L 19.78125 26.28125 L 21.21875 27.71875 L 27.21875 21.71875 L 27.90625 21 L 27.21875 20.28125 L 21.21875 14.28125 L 19.78125 15.71875 L 24.0625 20 L 7 20 L 7 5 Z" Fill="Black">
-                                                        <Path.LayoutTransform>
-                                                            <ScaleTransform ScaleX="0.3" ScaleY="0.3" />
-                                                        </Path.LayoutTransform>
-                                                    </Path>
-                                                    <TextBlock 
-                                                        Tag="{localization:Loc Psf_Redirect_Default}" 
-                                                        Margin="0 6" x:Name="TextBlockTextRedirectTo" 
-                                                        VerticalAlignment="Center">
-                                                        <controls:SimpleTextMarkup.Markup>
-                                                            <MultiBinding Converter="{StaticResource StringFormatConverter}">
-                                                                <Binding Mode="OneWay" Path="Tag">
-                                                                    <Binding.RelativeSource>
-                                                                        <RelativeSource Mode="Self" />
-                                                                    </Binding.RelativeSource>
-                                                                </Binding>
-                                                                <Binding Path="RedirectionBase.Target" Mode="OneWay" />
-                                                            </MultiBinding>
-                                                        </controls:SimpleTextMarkup.Markup>
-                                                    </TextBlock>
-                                                </StackPanel>-->
                                             </StackPanel>
                                         </Border>
                                     </StackPanel>
@@ -311,6 +299,7 @@
         </views:BulletItemControl>
 
         <ItemsControl 
+            x:Name="ItemsControl"
             ItemsSource="{Binding ElementName=PsfControlRoot, Path=Psf.TraceRules}" 
             Visibility="{Binding  ElementName=PsfControlRoot, Path=HasTraceRules, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
@@ -333,7 +322,8 @@
                                 VerticalAlignment="Center" 
                                 TextWrapping="Wrap">
                                 <controls:SimpleTextMarkup.Markup>
-                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <MultiBinding 
+                                        Converter="{StaticResource StringFormatConverter}">
                                         <localization:Loc StringName="Psf_Trace_EnableMethod" />
                                         <Binding Path="Tag" Mode="OneWay">
                                             <Binding.RelativeSource>
@@ -341,6 +331,7 @@
                                             </Binding.RelativeSource>
                                         </Binding>
                                         <Binding Path="BreakOn" Mode="OneWay" Converter="{converters:TraceLevelConverter}" />
+                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                     </MultiBinding>
                                 </controls:SimpleTextMarkup.Markup>
                             </TextBlock>
@@ -353,11 +344,15 @@
                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
                             </Border>
 
-                            <TextBlock TextWrapping="Wrap">
+                            <TextBlock
+                                x:Name="TextBlockTraceMethod1" 
+                                TextWrapping="Wrap">
                                 <controls:SimpleTextMarkup.Markup>
-                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <MultiBinding 
+                                        Converter="{StaticResource StringFormatConverter}">
                                         <localization:Loc StringName="Psf_Trace_Level_Default" />
                                         <Binding Path="TraceLevels.Default" Mode="OneWay" Converter="{converters:TraceLevelConverter}" />
+                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                     </MultiBinding>
                                 </controls:SimpleTextMarkup.Markup>
                             </TextBlock>
@@ -368,11 +363,15 @@
                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
                             </Border>
 
-                            <TextBlock TextWrapping="Wrap">
+                            <TextBlock
+                                x:Name="TextBlockTraceMethod2" 
+                                TextWrapping="Wrap">
                                 <controls:SimpleTextMarkup.Markup>
-                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <MultiBinding 
+                                        Converter="{StaticResource StringFormatConverter}">
                                         <localization:Loc StringName="Psf_Trace_Level_FileSystem" />
                                         <Binding Path="TraceLevels.Filesystem" Mode="OneWay" Converter="{converters:TraceLevelConverter}" />
+                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                     </MultiBinding>
                                 </controls:SimpleTextMarkup.Markup>
                             </TextBlock>
@@ -383,11 +382,15 @@
                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
                             </Border>
 
-                            <TextBlock TextWrapping="Wrap">
+                            <TextBlock
+                                x:Name="TextBlockTraceMethod3" 
+                                TextWrapping="Wrap">
                                 <controls:SimpleTextMarkup.Markup>
-                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <MultiBinding 
+                                        Converter="{StaticResource StringFormatConverter}">
                                         <localization:Loc StringName="Psf_Trace_Level_Registry" />
                                         <Binding Path="TraceLevels.Registry" Mode="OneWay" Converter="{converters:TraceLevelConverter}" />
+                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                     </MultiBinding>
                                 </controls:SimpleTextMarkup.Markup>
                             </TextBlock>
@@ -398,11 +401,15 @@
                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
                             </Border>
 
-                            <TextBlock TextWrapping="Wrap">
+                            <TextBlock
+                                x:Name="TextBlockTraceMethod4" 
+                                TextWrapping="Wrap">
                                 <controls:SimpleTextMarkup.Markup>
-                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <MultiBinding 
+                                        Converter="{StaticResource StringFormatConverter}">
                                         <localization:Loc StringName="Psf_Trace_Level_ProcessThread" />
                                         <Binding Path="TraceLevels.ProcessAndThread" Mode="OneWay" Converter="{converters:TraceLevelConverter}" />
+                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                     </MultiBinding>
                                 </controls:SimpleTextMarkup.Markup>
                             </TextBlock>
@@ -413,11 +420,15 @@
                                 <Ellipse Width="4" Height="4" Fill="Black" VerticalAlignment="Center" />
                             </Border>
 
-                            <TextBlock TextWrapping="Wrap">
+                            <TextBlock
+                                x:Name="TextBlockTraceMethod5" 
+                                TextWrapping="Wrap">
                                 <controls:SimpleTextMarkup.Markup>
-                                    <MultiBinding Converter="{StaticResource StringFormatConverter}">
+                                    <MultiBinding 
+                                        Converter="{StaticResource StringFormatConverter}">
                                         <localization:Loc StringName="Psf_Trace_Level_Dll" />
                                         <Binding Path="TraceLevels.DynamicLinkLibrary" Mode="OneWay" Converter="{converters:TraceLevelConverter}" />
+                                        <Binding Mode="OneWay" Source="{x:Static localization1:MsixHeroTranslation.Instance}" Path="CurrentCulture" />
                                     </MultiBinding>
                                 </controls:SimpleTextMarkup.Markup>
                             </TextBlock>
